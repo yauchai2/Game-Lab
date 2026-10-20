@@ -96,14 +96,17 @@ def to_three(p, piv):
     x, y, z = p[0] - piv[0], p[1] - piv[1], p[2] - piv[2]
     return (x, z, y)           # three：x 右、y 上、z 前
 
-def export_parts():
+def export_parts(zmap=None):
+    """zmap：可選的高度重新對應函式（用來拉長腿而不改建模程式）。"""
+    zm = zmap or (lambda z: z)
+    mp = lambda p: (p[0], p[1], zm(p[2]))
     out = {}
     for grp, items in PARTS.items():
-        piv = PIVOT[grp]; lst = []
+        piv = mp(PIVOT[grp]); lst = []
         for it in items:
             pos = []
             for v in it['v']:
-                q = to_three(v, piv); pos += [round(q[0]*100), round(q[1]*100), round(q[2]*100)]
+                q = to_three(mp(v), piv); pos += [round(q[0]*100), round(q[1]*100), round(q[2]*100)]
             idx = []
             for t in it['t']: idx += [t[0], t[2], t[1]]       # 座標軸互換後要翻轉繞向
             lst.append({'c': it['c'], 'p': pos, 'i': idx})

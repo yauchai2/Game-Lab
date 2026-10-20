@@ -95,7 +95,12 @@ for d in ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)):
     finish(cone((4.0 + d[0]*.7, 2.0 + d[1]*.7, 12.0 + d[2]*.7), .22, .9, n=4), 'tail', SILVER)
 
 # ---------------------------------------------------------------- 匯出
-out = export_parts()
+# 把腿與上身拉長：z 4 到 15.5 的區段拉成 4 到 18，其上整體往上移 2.5（約 6 頭身）
+def stretch(z):
+    if z <= 4: return z
+    if z <= 15.5: return 4 + (z - 4)*14/11.5
+    return z + 2.5
+out = export_parts(stretch)
 js = '/* 由 tools/model/gen_hero.py 以 Blender（bpy）產生，請勿手改。座標已是 three.js 的（x, y 上, z 前），數值乘以 100。 */\nconst HERO_MODEL = ' + json.dumps(out, separators=(',', ':')) + ';\n'
 open(OUT, 'w').write(js)
 print('wrote', os.path.relpath(OUT), len(js)//1024, 'KB', tri_count(out), 'triangles')

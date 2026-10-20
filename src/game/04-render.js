@@ -74,7 +74,7 @@ function buildHero(at, ar, wt, wr){
   const armL = modelGroup(HERO_MODEL.armL, recolor); g.add(armL);
   const armR = modelGroup(HERO_MODEL.armR, recolor); g.add(armR); g.userData.armR = armR;
   const tail = modelGroup(HERO_MODEL.tail, recolor); g.add(tail); g.userData.tail = tail;
-  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 23.2, 0, g); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 20, 3.0, g); }
+  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 25.7, 0, g); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 22.5, 3.0, g); }
   if (at >= 2){   // 鴨舌帽
     mk(new T3.SphereGeometry(3.5, 9, 6, 0, Math.PI*2, 0, Math.PI*.5), m3(steel), 0, 1.0, -.2, head);
     mk(new T3.BoxGeometry(4.8, .35, 2.8), m3(steel), 0, 1.6, 3.6, head).rotation.x = .18;
@@ -88,7 +88,7 @@ function buildHero(at, ar, wt, wr){
   mk(new T3.BoxGeometry(.8 + wt*.2, len, .3), m3(blade[0], { emissive:wr >= 2 ? blade[1] : '#000000', emissiveIntensity:wr >= 2 ? .35 : 0 }), 0, 1.8 + len/2, 0, sw);
   cone(sw, blade[0], 0, 1.8 + len + .9, 0, .5 + wt*.1, 1.8, 4);
   if (wr === 3) mk(ico(len*.6, 1), basic('#ff9a3c', .2), 0, len/2, 0, sw);
-  const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 15, 3.6, g); orb.visible = false; g.userData.orb = orb;
+  const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 17.4, 3.6, g); orb.visible = false; g.userData.orb = orb;
   addShadow(g, 5.5);
   return g;
 }
@@ -184,9 +184,10 @@ function buildGround(bi){
   const B = BIOMES[bi], g = new T3.Group();
   mk(new T3.BoxGeometry(BXW, 4.2, BYW), [m3(B.board.m), m3(B.board.d), m3(B.board.l), m3(B.board.d), m3(B.board.m), m3(B.board.d)], BXW/2, BZ - 2.1, BYW/2, g);
   mk(new T3.BoxGeometry(BXW - 1, .3, BYW - 1), m3(B.board.l), BXW/2, BZ + .15, BYW/2, g);
-  mk(new T3.BoxGeometry(10, .2, BYW - 4), m3('#aab2cc'), 15, BZ + .35, BYW/2, g);
-  for (let y = 16; y <= 66; y += 6) mk(new T3.BoxGeometry(.5, .12, 2.6), m3('#ffffff'), 15, BZ + .5, y, g);
-  for (let k = 0; k < 6; k++) mk(new T3.BoxGeometry(1.2, .12, 5), m3('#ffffff'), 10.8 + k*1.7, BZ + .5, 40, g);   // 斑馬線
+  const rows = Math.round((BYW - 4)/2.5), cv = document.createElement('canvas'); cv.width = 4; cv.height = rows; const cx = cv.getContext('2d');   // 棋盤格步道：每格一個像素，用最近鄰放大
+  for (let r = 0; r < rows; r++) for (let c = 0; c < 4; c++){ cx.fillStyle = (r + c) % 2 ? '#fff6fb' : ['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]; cx.fillRect(c, r, 1, 1); }
+  const tx = new T3.CanvasTexture(cv); tx.magFilter = T3.NearestFilter; tx.minFilter = T3.NearestFilter; tx.colorSpace = T3.SRGBColorSpace;
+  mk(new T3.PlaneGeometry(10, BYW - 4).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:tx }), 15, BZ + .5, BYW/2, g);
   for (let i = 0; i < 26; i++){
     const x = 2 + aRnd(i*3 + 1)*(BXW - 4), y = 3 + aRnd(i*3 + 2)*(BYW - 6); if (Math.abs(x - 15) < 5.5) continue;
     if (bi === 0){ if (i % 3 === 0){ mk(ico(.7, 0), m3(['#ffd1e6', '#fff3a8', '#ffffff'][(i/3|0) % 3]), x, BZ + 1.3, y, g); mk(cylG(.08, .08, 1.2, 3), m3('#6aa27a'), x, BZ + .7, y, g); } else cone(g, '#79c98c', x, BZ + .9, y, .55, 1.8, 4); }
@@ -294,7 +295,7 @@ function updateFx(){
 function overlay(){
   const k = pxu(); let s = '';
   const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z), W2 = w*k*.8, H2 = 1.5*k; return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
-  if (G.h.dead <= 0) s += bar(HX, HY, BZ + 36, 9, G.h.hp/G.st.life, '#ff6a8a');
+  if (G.h.dead <= 0) s += bar(HX, HY, BZ + 39, 9, G.h.hp/G.st.life, '#ff6a8a');
   for (const m of G.mons) if (!m.dead) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 42 : m.type === 'brute' ? 34 : 30), 8, m.hp/m.hpMax, '#ff6a8a');
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + fl.t*9);
     s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" font-size="${(fl.size*1.5*k*.62).toFixed(1)}" fill="${fl.col}" style="stroke:#f2f7ff;stroke-width:${(1.8*k*.5).toFixed(1)}px;paint-order:stroke" font-family="ui-monospace,Menlo,monospace" font-weight="800" opacity="${(1 - fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
