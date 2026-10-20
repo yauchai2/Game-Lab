@@ -58,45 +58,30 @@ function mouth(parent, R, elev, w, col='#2b2552', up=1){
 
 /* ---------- 主角 ---------- */
 const HAIR = ['#2b2552', '#2b2552', '#3a3f8f', '#d9dff2'];   // 藍黑、深藍、銀白
+function modelGroup(def, recolor){   // 把 Blender 匯出的零件組成 three.js 群組（平塗、flat shading）
+  const g = new T3.Group(); g.position.set(...def.at.map(v => v/1)); 
+  for (const m of def.m){
+    const geom = new T3.BufferGeometry(); geom.setAttribute('position', new T3.Float32BufferAttribute(m.p.map(v => v/100), 3)); geom.setIndex(m.i);
+    g.add(new T3.Mesh(geom, m3(recolor[m.c] || m.c)));
+  }
+  return g;
+}
 function buildHero(at, ar, wt, wr){
-  const g = new T3.Group(), cloth = ['#e8eef5', '#9fb8e8', '#f2d27a', '#f09a8a'][ar], steel = ['#cfd6e0', '#bcd0f0', '#f4e3a8', '#f2b09a'][ar];
-  const pants = at >= 1 ? '#7d8fb8' : '#6f8f4a', hair = HAIR[at >= 2 ? 2 : 0], skin = '#f4cfb4', white = '#f4f6fb';
-  // 大鞋 + 超寬工作褲（褲管蓋住鞋面）
-  for (const sx of [-2.5, 2.5]){
-    mk(new T3.BoxGeometry(3.7, 1.3, 6.6), m3(white), sx, .65, 1, g);
-    mk(new T3.BoxGeometry(3.5, 2.2, 5), m3(white), sx, 2.4, .6, g);
-    mk(new T3.BoxGeometry(3.3, .5, 2.2), m3('#8fb6ff'), sx, 3.3, 2.4, g);
-    mk(cylG(2.5, 3.6, 12.6, 8), m3(pants), sx, 9.4, -.2, g);
-    mk(new T3.BoxGeometry(.8, 3, 2.8), m3(pants), sx + (sx < 0 ? -2.9 : 2.9), 9.5, .4, g);
-  }
-  mk(cylG(4.2, 4.2, 1, 8), m3('#2b2552'), 0, 15.7, 0, g);                         // 腰帶
-  mk(new T3.TorusGeometry(.55, .13, 4, 8), m3('#e8eef5'), 3.8, 15.2, 1.8, g);
-  g.userData.tail = new T3.Group(); g.userData.tail.position.set(3.9, 15.2, 1.8); g.add(g.userData.tail);   // 腰鍊與尖刺吊飾
-  mk(new T3.CylinderGeometry(.08, .08, 3, 4), m3('#e8eef5'), 0, -1.5, 0, g.userData.tail); mk(new T3.OctahedronGeometry(.8, 0), m3('#e8eef5'), 0, -3.4, 0, g.userData.tail);
-  mk(cylG(3.1, 3.7, 6.8, 8), m3(cloth), 0, 20, 0, g);                             // 寬鬆上衣
-  mk(cylG(3.9, 3.9, .8, 8), m3(ar ? steel : '#d6deee'), 0, 16.7, 0, g);
-  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4, 23.2, 0, g); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 20, 3.1, g); }
-  mk(cylG(.9, 1, 1.4, 6), m3(skin), 0, 23.9, 0, g);                               // 脖子
-  const head = new T3.Group(); head.position.set(0, 26.6, 0); g.add(head); g.userData.head = head;
-  mk(ico(2.9, 1), m3(skin), 0, 0, 0, head);
-  const cap = mk(new T3.SphereGeometry(3.25, 9, 6, 0, Math.PI*2, 0, Math.PI*.6), m3(hair), 0, .25, -.3, head); cap.rotation.x = -.3;
-  mk(new T3.BoxGeometry(6.6, 8, 1.6), m3(hair), 0, -3.4, -2.6, head).rotation.x = .12;   // 後面的長直髮
-  for (const sx of [-1, 1]){ mk(new T3.BoxGeometry(1.1, 5.4, 1.5), m3(hair), sx*3.2, -1.6, .2, head); mk(new T3.BoxGeometry(1.5, 1.8, 1.2), m3(hair), sx*2.6, 1.8, 2.2, head); }
-  mk(new T3.BoxGeometry(5.8, 1, .9), m3(hair), 0, 2.2, 2.55, head).rotation.x = -.5;      // 齊瀏海
+  const g = new T3.Group(), steel = ['#cfd6e0', '#bcd0f0', '#f4e3a8', '#f2b09a'][ar];
+  const recolor = { '#e9edf6':['#e8eef5', '#9fb8e8', '#f2d27a', '#f09a8a'][ar], '#6f8f4a':at >= 1 ? '#7d8fb8' : '#6f8f4a', '#2b2552':at >= 2 ? '#3a3f8f' : '#2b2552' };
+  const body = modelGroup(HERO_MODEL.body, recolor); body.position.set(0, 0, 0); g.add(body);
+  const head = modelGroup(HERO_MODEL.head, recolor); g.add(head); g.userData.head = head;
+  const armL = modelGroup(HERO_MODEL.armL, recolor); g.add(armL);
+  const armR = modelGroup(HERO_MODEL.armR, recolor); g.add(armR); g.userData.armR = armR;
+  const tail = modelGroup(HERO_MODEL.tail, recolor); g.add(tail); g.userData.tail = tail;
+  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 23.2, 0, g); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 20, 3.0, g); }
   if (at >= 2){   // 鴨舌帽
-    mk(new T3.SphereGeometry(3.4, 9, 6, 0, Math.PI*2, 0, Math.PI*.5), m3(steel), 0, .9, -.2, head);
-    mk(new T3.BoxGeometry(4.6, .35, 2.6), m3(steel), 0, 1.5, 3.5, head).rotation.x = .18;
-  } else {   // 耳機（白色、帶小鰭）
-    mk(new T3.TorusGeometry(3.7, .3, 5, 12, Math.PI), m3(white), 0, 0, 0, head);
-    for (const sx of [-1, 1]){ const cup = mk(cylG(1.5, 1.5, 1.1, 8), m3(white), sx*3.7, -.2, 0, head); cup.rotation.z = Math.PI/2; mk(new T3.ConeGeometry(.35, 1.8, 4), m3(white), sx*4.1, 1.3, -.4, head); }
+    mk(new T3.SphereGeometry(3.5, 9, 6, 0, Math.PI*2, 0, Math.PI*.5), m3(steel), 0, 1.0, -.2, head);
+    mk(new T3.BoxGeometry(4.8, .35, 2.8), m3(steel), 0, 1.6, 3.6, head).rotation.x = .18;
   }
-  eye(head, 2.9, -.42, -.02, 1.9, '#46c8f0', 'cool'); eye(head, 2.9, .42, -.02, 1.9, '#46c8f0', 'cool');
-  const mo = new T3.Mesh(new T3.PlaneGeometry(.7, .13), basic('#7a3a4a')); mo.position.set(0, -1.15, 2.88); mo.rotation.x = -.25; head.add(mo);
-  const armL = new T3.Group(); armL.position.set(-4.4, 22.8, 0); g.add(armL);   // 左臂：垂下的寬袖
-  mk(cylG(1.5, 1.9, 8, 6), m3(cloth), 0, -4, 0, armL); mk(ico(.95, 0), m3(skin), 0, -8.4, 0, armL); armL.rotation.z = .1;
-  const armR = new T3.Group(); armR.position.set(4.4, 22.8, 0); g.add(armR); g.userData.armR = armR;   // 右臂（持劍）
-  mk(cylG(1.5, 1.9, 6.4, 6), m3(cloth), 0, -3.2, 0, armR);
-  const hand = new T3.Group(); hand.position.set(0, -6.4, 0); armR.add(hand); mk(ico(.95, 0), m3(skin), 0, 0, 0, hand);
+  eye(head, 3.25, -.42, -.02, 2.0, '#46c8f0', 'cool'); eye(head, 3.25, .42, -.02, 2.0, '#46c8f0', 'cool');
+  const mo = new T3.Mesh(new T3.PlaneGeometry(.7, .13), basic('#7a3a4a')); mo.position.set(0, -1.25, 3.2); mo.rotation.x = -.25; head.add(mo);
+  const hand = new T3.Group(); hand.position.set(.6, -7.6, .8); armR.add(hand);
   const sw = new T3.Group(); hand.add(sw); g.userData.sword = sw;
   const blade = [['#e8eef5', '#cfdcf0'], ['#b9d6ff', '#8fb6ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff6a3a']][wr], len = 8.2 + wt*1.5;
   mk(cylG(.35, .35, 2.8, 5), m3('#2b2552'), 0, 0, 0, sw); mk(new T3.BoxGeometry(2.2 + wt*.4, .45, .8), m3('#e8eef5'), 0, 1.5, 0, sw);
@@ -297,7 +282,7 @@ function heroLook(g){
   at3(g, HX + (h.hurtT > 0 ? Math.sin(t*90)*.5 : 0), HY, BZ + Math.max(0, Math.sin(t*3)*.35)); g.rotation.y = 50*D2R;
   const a = h.swingT < 0 ? 72 + Math.sin(t*3)*3 : tLerp(115, -30, ease(h.swingT/.3));
   ps.armR.rotation.x = (90 - a)*D2R*.9 + 1.2; ps.sword.rotation.x = (90 - a)*D2R*.35 + .1;
-  ps.tail.rotation.x = Math.sin(t*4.5)*.25; ps.tail.position.y = 14.5 + Math.sin(t*4.5)*.3; ps.head.rotation.z = Math.sin(t*1.5)*.03;
+  ps.tail.rotation.x = Math.sin(t*3.5)*.18; ps.head.rotation.z = Math.sin(t*1.5)*.03;
   if (h.castT >= 0){ const u = ease(tClamp(h.castT/.25)); ps.orb.visible = true; ps.orb.material.color.set((SKILLS[h.castSk] || SKILLS.FIRE).col); ps.orb.scale.setScalar(Math.max(.01, u)); } else ps.orb.visible = false;
 }
 

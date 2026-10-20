@@ -100,6 +100,15 @@ Idle Hero 的視覺主軸是 **Y2K low poly 3D**，介面參考「幸福 Online�
 - 待機：呼吸起伏、馬尾與緞帶擺動、耳機燈號閃爍。
 - 升級、掉寶：加星星與愛心的粉彩彩帶，像童話遊戲的小慶祝。
 
+## 三之一、美術工具鏈
+
+- **Blender（bpy 5.2.2，`pip install bpy`）**：無頭模式建模。腳本在 `tools/model/gen_hero.py`，用 bmesh 做放樣、倒角與微幅抖動，得到像手工雕塑的切面。
+- **輸出格式**：不用 glTF，改輸出成 `src/game/models.js`（頂點乘 100 的整數陣列加三角形索引，約 28 KB），好處是不用額外的載入器，單檔打包不增加依賴。
+- **分件與轉軸**：body、head（含髮型與耳機）、armL、armR、tail 各自有轉軸，由 three.js 程式做動畫；劍、帽子、肩甲與眼睛貼圖仍由程式依裝備生成。
+- **three.js r160**（MIT）：渲染；**Chromium（Playwright）**：無頭截圖驗證。
+- 流程：改腳本，執行 `python3 tools/model/gen_hero.py`，再 `python3 tools/build.py`，開頁面或截圖看結果。
+- 之後的怪物、首領與道具照同一套流程做。
+
 ## 三、開發計劃
 
 每階段先完成再進下一階段；每階段結束都用無頭 Chromium 截圖，推到 PR，由使用者確認。
