@@ -868,7 +868,7 @@ function buildHero(at, ar, wt, wr){
   cone(sw, blade[0], 0, 1.8 + len + .9, 0, .5 + wt*.1, 1.8, 4);
   if (wr === 3) mk(ico(len*.6, 1), basic('#ff9a3c', .2), 0, len/2, 0, sw);
   const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 13, 5.5, g); orb.visible = false; g.userData.orb = orb;
-  g.scale.setScalar(.85); g.rotation.order = 'YXZ'; addShadow(g, 5.5);
+  g.scale.setScalar(.85*CK); g.rotation.order = 'YXZ'; addShadow(g, 5.5);
   return g;
 }
 function buildGrave(){
@@ -958,7 +958,8 @@ function buildSign(){
 }
 
 /* ---------- 地面、傳送池 ---------- */
-const FIELD = 150;   // 地面往四周延伸到鏡頭外，畫面裡看不到浮島邊緣
+const CK = .62;   // 角色整體縮放：浮島變大後人物相對縮小
+const ISL = [-36, 66, -18, 90];   // 浮島範圍（x0, x1, y0, y1）：比戰場大很多，台階、樹林、小河都在島上
 function treeAt(g, bi, x, y, z, k){   // 依生態放一棵低面數樹：森林圓冠樹、沙漠椰子樹、雪原雪松、熔岩水晶
   const t = new T3.Group(); t.position.set(x, y, z); t.scale.setScalar(k); t.rotation.y = aRnd(x*7 + z)*6; g.add(t);
   if (bi === 0){ mk(cylG(.9, 1.3, 6, 6), m3('#a8785a'), 0, 3, 0, t); for (const [cx, cy, cz, r, c] of [[0, 8.6, 0, 4.2, '#5fbf7a'], [2.2, 7.2, 1.2, 3, '#79d18e'], [-1.8, 10.4, -.6, 2.8, '#8fe0a0']]) mk(ico(r, 0), m3(c), cx, cy, cz, t); }
@@ -969,22 +970,26 @@ function treeAt(g, bi, x, y, z, k){   // 依生態放一棵低面數樹：森林
 }
 function buildGround(bi){
   const B = BIOMES[bi], g = new T3.Group(), cx0 = BXW/2, cy0 = BYW/2;
-  // 大片地面：兩色方格（像參考圖的地磚），畫在一張小貼圖上再放大
-  const N = 50, fc = document.createElement('canvas'); fc.width = fc.height = N; const fx = fc.getContext('2d');
+  // 浮島：兩色地磚的頂面、土色側面，下方再收窄一層像懸空的岩塊
+  const [X0, X1, Y0, Y1] = ISL, IW = X1 - X0, ID = Y1 - Y0, icx = (X0 + X1)/2, icy = (Y0 + Y1)/2;
+  mk(new T3.BoxGeometry(IW, 6, ID), m3(B.board.d), icx, BZ - 3.05, icy, g);
+  mk(new T3.BoxGeometry(IW - 10, 5, ID - 10), m3(B.board.m), icx, BZ - 8, icy, g);
+  mk(new T3.BoxGeometry(IW - 26, 4, ID - 26), m3(B.board.d), icx, BZ - 12, icy, g);
+  const N = 34, fc = document.createElement('canvas'); fc.width = fc.height = N; const fx = fc.getContext('2d');
   for (let r = 0; r < N; r++) for (let c = 0; c < N; c++){ fx.fillStyle = (r + c) % 2 ? B.board.l : B.board.m; fx.fillRect(c, r, 1, 1); }
   const ft = new T3.CanvasTexture(fc); ft.magFilter = ft.minFilter = T3.NearestFilter; ft.colorSpace = T3.SRGBColorSpace;
-  mk(new T3.PlaneGeometry(FIELD*2, FIELD*2).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:ft }), cx0, BZ, cy0, g);
+  mk(new T3.PlaneGeometry(IW, ID).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:ft }), icx, BZ, icy, g);
   // 棋盤格步道
-  const rows = Math.round((BYW - 4)/2.5), cv = document.createElement('canvas'); cv.width = 4; cv.height = rows + 16; const cx = cv.getContext('2d');
+  const rows = Math.round(ID/2.5) - 16, cv = document.createElement('canvas'); cv.width = 4; cv.height = rows + 16; const cx = cv.getContext('2d');
   for (let r = 0; r < rows + 16; r++) for (let c = 0; c < 4; c++){ cx.fillStyle = (r + c) % 2 ? '#fff6fb' : ['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]; cx.fillRect(c, r, 1, 1); }
   const tx = new T3.CanvasTexture(cv); tx.magFilter = T3.NearestFilter; tx.minFilter = T3.NearestFilter; tx.colorSpace = T3.SRGBColorSpace;
-  mk(new T3.PlaneGeometry(10, (rows + 16)*2.5).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:tx }), 15, BZ + .08, BYW/2 - 2, g);
-  mk(new T3.BoxGeometry(11, .3, (rows + 16)*2.5), m3(B.board.d), 15, BZ - .1, BYW/2 - 2, g);
+  mk(new T3.PlaneGeometry(10, ID).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:tx }), 15, BZ + .08, icy, g);
+  mk(new T3.BoxGeometry(11, .3, ID), m3(B.board.d), 15, BZ - .1, icy, g);
   // 高低台階：離步道越遠越高，一格 6×6，頂面是草（或沙、雪），側面是土
   const top = m3(B.t1), side = m3(B.board.d), lip = m3(B.t2), ub = geo('ubox', () => new T3.BoxGeometry(1, 1, 1)), C = 6;
-  const hAt = (i, j) => { const x = i*C + C/2, fr = x > cx0, d = Math.abs(x - cx0) - (fr ? 26 : 20); if (d < 0) return 0; const h = Math.max(0, Math.floor(d/9 + aRnd(i*31 + j*17)*1.3 - .2))*3; return fr ? Math.min(3, h) : h; };   // 鏡頭在右前方：右側台階壓低，免得擋住人物
+  const hAt = (i, j) => { const x = i*C + C/2, fr = x > cx0, d = Math.abs(x - cx0) - (fr ? 26 : 20); if (d < 0) return 0; if (!fr && (j === Y0/C || j === Y1/C - 1) && aRnd(i + j*5) < .5) return 3; const h = Math.max(0, Math.floor(d/9 + aRnd(i*31 + j*17)*1.3 - .2))*3; return fr ? Math.min(3, h) : h; };   // 鏡頭在右前方：右側台階壓低，免得擋住人物
   const tops = [];
-  for (let i = -9; i < 14; i++) for (let j = -8; j < 22; j++){
+  for (let i = X0/C; i < X1/C; i++) for (let j = Y0/C; j < Y1/C; j++){
     const h = hAt(i, j); if (!h) continue; const x = i*C + C/2, z = j*C + C/2;
     mk(ub, side, x, BZ + h/2 - .2, z, g).scale.set(C, h - .4, C); mk(ub, top, x, BZ + h - .2, z, g).scale.set(C, .4, C);
     mk(ub, lip, x, BZ + h + .05, z, g).scale.set(C - .6, .1, C - .6);
@@ -992,19 +997,19 @@ function buildGround(bi){
   }
   // 水道與木橋：步道右側一條小河，橫跨一座木橋
   const wc = ['#7fd0f5', '#7fd0f5', '#cfefff', '#ff8fb0'][bi], wx = cx0 + 19;
-  mk(new T3.BoxGeometry(6, .5, FIELD*2), m3(B.board.d), wx, BZ - .2, cy0, g);
-  mk(new T3.PlaneGeometry(5, FIELD*2).rotateX(-Math.PI/2), m3(wc, { emissive:bi === 3 ? wc : '#000000', emissiveIntensity:bi === 3 ? .35 : 0, transparent:true, opacity:.88 }), wx, BZ + .1, cy0, g);
-  for (let k = 0; k < 18; k++) mk(new T3.BoxGeometry(1.6 + aRnd(k)*2, .06, .25), basic('#ffffff', .8), wx - 1.5 + aRnd(k + 50)*3, BZ + .16, 2 + k*7 + aRnd(k + 9)*3, g);
+  mk(new T3.BoxGeometry(6, .5, ID), m3(B.board.d), wx, BZ - .2, icy, g);
+  mk(new T3.PlaneGeometry(5, ID).rotateX(-Math.PI/2), m3(wc, { emissive:bi === 3 ? wc : '#000000', emissiveIntensity:bi === 3 ? .35 : 0, transparent:true, opacity:.88 }), wx, BZ + .1, icy, g);
+  for (let k = 0; k < 14; k++) mk(new T3.BoxGeometry(1.6 + aRnd(k)*2, .06, .25), basic('#ffffff', .8), wx - 1.5 + aRnd(k + 50)*3, BZ + .16, Y0 + 4 + k*7.5 + aRnd(k + 9)*3, g);
   for (const by of [24, 52]){ for (let k = -3; k <= 3; k++) mk(new T3.BoxGeometry(8, .45, 1.1), m3(k % 2 ? '#c99a62' : '#b5844f'), wx, BZ + .7, by + k*1.25, g); for (const sx of [-1, 1]) for (const sy of [-4, 4]) mk(cylG(.35, .35, 2.6, 5), m3('#8a6040'), wx + sx*3.6, BZ + 1.3, by + sy, g); }
   // 樹、樹樁、石頭、花：放在台階頂面與平地邊緣
   tops.forEach(([x, y, z, i, j], n) => {
     const r = aRnd(i*13 + j*7 + 3);
-    if (r < (x > cx0 ? (x > cx0 + 44 ? .3 : 0) : .26)) treeAt(g, bi, x + (aRnd(n)-.5)*2, y, z + (aRnd(n + 1)-.5)*2, .75 + aRnd(n + 2)*.5);
+    if (r < (x > cx0 ? (x > cx0 + 30 ? .22 : 0) : .3)) treeAt(g, bi, x + (aRnd(n)-.5)*2, y, z + (aRnd(n + 1)-.5)*2, .75 + aRnd(n + 2)*.5);
     else if (r < .48) mk(cylG(1.2, 1.4, 1.3, 7), m3('#b5844f'), x, y + .65, z, g);
     else if (r < .58) mk(new T3.DodecahedronGeometry(1.2, 0), m3('#c8c2e0'), x, y + .7, z, g).scale.set(1.2, .8, 1);
   });
   for (let n = 0; n < 70; n++){
-    const x = cx0 + (aRnd(n*3 + 1) < .5 ? -1 : 1)*(6 + aRnd(n*3 + 2)*16), y = -20 + aRnd(n*3 + 3)*(BYW + 40); if (Math.abs(x - wx) < 4) continue;
+    const x = cx0 + (aRnd(n*3 + 1) < .5 ? -1 : 1)*(6 + aRnd(n*3 + 2)*16), y = Y0 + 2 + aRnd(n*3 + 3)*(ID - 4); if (Math.abs(x - wx) < 4) continue;
     if (bi === 0){ if (n % 3 === 0){ mk(ico(.7, 0), m3(['#ffd1e6', '#fff3a8', '#ffffff'][(n/3|0) % 3]), x, BZ + 1.3, y, g); mk(cylG(.08, .08, 1.2, 3), m3('#6aa27a'), x, BZ + .7, y, g); } else cone(g, '#79c98c', x, BZ + .9, y, .55, 1.8, 4); }
     else if (bi === 1) mk(new T3.DodecahedronGeometry(.5 + aRnd(n)*.5, 0), m3(n % 2 ? B.board.d : '#fff0c8'), x, BZ + .6, y, g);
     else if (bi === 2) mk(cylG(1.3 + aRnd(n), 1.5 + aRnd(n), .25, 6), m3(n % 2 ? '#ffffff' : '#bfe3f5'), x, BZ + .2, y, g);
@@ -1074,14 +1079,16 @@ function r3init(){
   R3.hero = null; R3.gnd = null; R3.portal = null; R3.decor = []; R3.bi = -1; R3.ready = true;
 }
 function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相機視野
+  const fig0 = document.getElementById('fig'), vb0 = fig0.viewBox.baseVal, ptv = innerHeight > innerWidth;   // 手機直式改成 4:5 的高畫框，桌機維持 4:3
+  if (vb0.width && Math.abs(vb0.height/vb0.width - (ptv ? .9 : .75)) > .01) fig0.setAttribute('viewBox', `0 0 ${vb0.width} ${vb0.width*(ptv ? .9 : .75)}`);
   const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
   const cv = R3.rd.domElement; cv.style.imageRendering = R3.res < 1 ? 'pixelated' : 'auto'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
   if (W !== R3.W || H !== R3.H || dpr !== R3.dpr){ R3.W = W; R3.H = H; R3.dpr = dpr; R3.rd.setPixelRatio(dpr*R3.res); R3.rd.setSize(W, H, false); }
   const cam = R3.cam, tgt = new T3.Vector3(BXW/2, BZ + 6, BYW/2); cam.position.copy(tgt).add((innerHeight > innerWidth ? new T3.Vector3(.34, .8, 1) : new T3.Vector3(1, .86, 1)).normalize().multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-  for (const x of [-10, BXW + 10]) for (const y of [0, BYW]) for (const z of [BZ - 4, BZ + 40]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
-  const bw = x1 - x0, bh = y1 - y0, ar = W/H, cx = (x0 + x1)/2 + bw*.04; let cy = (y0 + y1)/2 + bh*.02;
-  const pt = innerHeight > innerWidth; let vw = bw/(pt ? 1.3 : .97), vh = bh/1.0; if (pt){ vh = bh/1.25; cy -= bh*.07; } if (vw/vh < ar) vw = vh*ar; else vh = vw/ar; if (!pt){ vw *= 1.25; vh *= 1.25; }   // 桌機拉遠一點，多看到周圍地形
+  for (const x of [ISL[0], ISL[1]]) for (const y of [ISL[2], ISL[3]]) for (const z of [BZ - 14, BZ + 14]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
+  const bw = x1 - x0, bh = y1 - y0, ar = W/H, cx = (x0 + x1)/2, cy = (y0 + y1)/2 - bh*.03;   // 整座浮島放進畫框，留一點天空
+  let vw = bw*(ptv ? .8 : 1.04), vh = bh*(ptv ? .84 : 1.08); if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;   // 手機直式裁掉島的左右邊緣，人物不會太小
   cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2; cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
   const vb = fig.viewBox.baseVal; R3.vbW = vb.width; R3.vbH = vb.height;
 }
@@ -1095,9 +1102,9 @@ const MPOSE_ATK = { hips:[.25, 0, 0], torso:[.65, 0, 0], head:[.35, 0, 0], armL:
 const MPOSE_HURT = { hips:[-.2, 0, 0], torso:[-.55, .2, .1], head:[-.55, 0, .25], armL:[-.7, 0, -1.1], foreL:[-.4, 0, 0], armR:[-1.1, 0, 1.1], foreR:[-.5, 0, 0], legL:[-.3, 0, 0], shinL:[.5, 0, 0], legR:[.3, 0, 0], shinR:[.6, 0, 0] };
 const MPOSE_TMP = {};
 function monLook(m, g){
-  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, y = m.y + 3*lg, ps = g.userData, base = ps.s || 1;
+  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, y = m.y + 3*lg, ps = g.userData, base = (ps.s || 1)*CK;
   at3(g, m.x, y, BZ); g.rotation.y = Math.PI/4;
-  if (m.type === 'slime'){ const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
+  if (m.type === 'slime'){ g.scale.setScalar(base); const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
   else {
     const B = ps.B, w = Math.sin(t*9), f = Math.sin(t*3), big = m.type === 'brute' || m.type === 'boss';
     const hop = m.fight ? 0 : Math.abs(w), lean = big ? 1.25 : 1;
@@ -1126,7 +1133,7 @@ function applyPose(B, pose, k){   // k：向目標姿勢靠近的速度，讓切
   for (const n in pose){ if (!B[n]) continue; const r = B[n].rotation, p = pose[n]; r.x += (p[0] - r.x)*k; r.y += (p[1] - r.y)*k; r.z += (p[2] - r.z)*k; }
 }
 function heroLook(g){
-  const h = G.h, t = G.time, ps = g.userData, B = ps.B, sw = h.swingT >= 0 ? tClamp(h.swingT/.3) : -1, SC = .85;
+  const h = G.h, t = G.time, ps = g.userData, B = ps.B, sw = h.swingT >= 0 ? tClamp(h.swingT/.3) : -1, SC = .85*CK;
   let pose, k = .5, hop = 0, st = 1;
   if (sw >= 0){   // 蓄力（0 到 .3）、劈砍（.3 到 .55）、停頓後收招
     if (sw < .3) pose = poseMix(POSE_IDLE, POSE_WIND, ease(sw/.3));
@@ -1164,8 +1171,8 @@ function updateFx(){
 function overlay(){
   const k = pxu(); let s = '';
   const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z), W2 = w*k*.8, H2 = 1.5*k; return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
-  if (G.h.dead <= 0) s += bar(HX, HY, BZ + 36, 9, G.h.hp/G.st.life, '#ff6a8a');
-  for (const m of G.mons) if (!m.dead) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 40 : m.type === 'brute' ? 32 : 28), 8, m.hp/m.hpMax, '#ff6a8a');
+  if (G.h.dead <= 0) s += bar(HX, HY, BZ + 36*CK, 9, G.h.hp/G.st.life, '#ff6a8a');
+  for (const m of G.mons) if (!m.dead) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 40 : m.type === 'brute' ? 32 : 28)*CK, 8, m.hp/m.hpMax, '#ff6a8a');
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + fl.t*9);
     s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" font-size="${(fl.size*1.5*k*.62).toFixed(1)}" fill="${fl.col}" style="stroke:#f2f7ff;stroke-width:${(1.8*k*.5).toFixed(1)}px;paint-order:stroke" font-family="ui-monospace,Menlo,monospace" font-weight="800" opacity="${(1 - fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
   return s;
@@ -1180,9 +1187,9 @@ function scene(){
     R3.bi = bi;
     for (const o of [R3.gnd, R3.portal, ...R3.decor]) o && R3.world.remove(o);
     R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];
-    DECO[bi].forEach(([kind, x, y, k]) => { for (const [dx, dy] of [[0, 0], [x < 15 ? -9 : 9, (y*7) % 11 - 5]]){ const o = buildDeco(kind, k); at3(o, x + dx, Math.max(4, Math.min(BYW - 4, y + dy)), BZ); R3.world.add(o); R3.decor.push(o); } });
-    [[3.5, 15], [26.5, 15]].forEach(([x, y]) => { const o = buildTorch(); at3(o, x, y, BZ); R3.world.add(o); R3.decor.push(o); });
-    R3.sign = buildSign(); at3(R3.sign, 4, 66, BZ); R3.world.add(R3.sign); R3.decor.push(R3.sign);
+    DECO[bi].forEach(([kind, x, y, k]) => { for (const [dx, dy] of [[0, 0], [x < 15 ? -9 : 9, (y*7) % 11 - 5]]){ const o = buildDeco(kind, k); o.scale.multiplyScalar(CK); at3(o, x + dx, Math.max(4, Math.min(BYW - 4, y + dy)), BZ); R3.world.add(o); R3.decor.push(o); } });
+    [[3.5, 15], [26.5, 15]].forEach(([x, y]) => { const o = buildTorch(); o.scale.multiplyScalar(CK); at3(o, x, y, BZ); R3.world.add(o); R3.decor.push(o); });
+    R3.sign = buildSign(); R3.sign.scale.multiplyScalar(CK); at3(R3.sign, 4, 66, BZ); R3.world.add(R3.sign); R3.decor.push(R3.sign);
     for (const [k, e] of R3.ent){ R3.world.remove(e); R3.ent.delete(k); }   // 換生態時怪物與掉落物重建（顏色隨生態）
   }
   const t = G.time;
@@ -1408,10 +1415,11 @@ function setupPanel(){
     .tfoot .start{background:linear-gradient(180deg,#5fd07a,#2f9f4a);border:1px solid #1f7a35;border-radius:0 10px 10px 0;padding:5px 12px 5px 8px;font-style:italic;text-shadow:0 1px 0 #00000050}
     .tfoot .task{background:#ffffff30;border:1px solid #ffffff60;border-radius:3px;padding:4px 10px;font-weight:600}
     .tfoot .clk{margin-left:auto;background:#1f3fb040;border-left:1px solid #ffffff50;padding:6px 10px}
-    @media (max-width:560px){.stats{position:relative !important}}
+    .stat .v{font-size:24px !important} .stat.small .v{font-size:17px !important} .stats{min-width:120px}
+    @media (max-width:560px){.stats{position:relative !important;display:grid !important;grid-template-columns:1.2fr 1.4fr .8fr .8fr;align-items:end;gap:4px 10px !important;text-align:center !important}.stats .stat{display:flex;flex-direction:column;align-items:center}.stats .hbar{margin:4px auto 0 !important;width:64px !important}
+      body .rpg{grid-template-columns:repeat(2,minmax(0,1fr)) !important}body .rpg .rc.wide{grid-column:1/-1}.stats .stat{width:100%}.rc{font-size:11.5px}}
     header,.stage,#fig,.rpg{max-width:1040px !important} .rpg{grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) !important}
     .actions .cap{display:none !important}
-    #cv3{border-radius:6px;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--wbd),6px 8px 0 #5a6bb855}
     body{padding-bottom:44px !important}`;
   { const tb = document.createElement('div'); tb.className = 'tfoot'; tb.innerHTML = '<span class="start">★ Start</span><span class="task">Idle Hero</span><span class="clk" id="clk"></span>'; document.body.appendChild(tb);
     const tick = () => { const d = new Date(); $('clk').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }; tick(); setInterval(tick, 20000); }   // the engine's wobble slider and colour swatches are not part of the game
