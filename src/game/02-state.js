@@ -23,7 +23,7 @@ const TREE = (() => {
 /* ---------- game state ---------- */
 const G = {
   time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:24, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
-  equip:{ weapon:null, armor:null, ring:null }, gems:{ HEAVY:1, AREA:1 }, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[] },
+  equip:{ weapon:null, armor:null, ring:null }, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[] },
   pass:[], maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2 },
   h:{ hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
   mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
@@ -37,6 +37,7 @@ function syncBoard(){
   const res = GridLab.resolve(G.board), actives = G.board.pieces.filter(p => p.kind === 'active').sort((a, b) => a.y - b.y || a.x - b.x);
   const supOf = id => (res.find(r => r.id === id) || { linked:[] }).linked.map(i => G.board.pieces.find(p => p.id === i).key);
   G.slots = actives.map(p => p.key);
+  G.modeOf = {}; for (const p of actives) if (p.mode && MODES[p.mode] && MODES[p.mode].sk === p.key) G.modeOf[p.key] = p.mode;
   G.supp = {}; for (const id of Object.keys(SKILLS)) G.supp[id] = [];
   for (const p of actives) G.supp[p.key] = supOf(p.id);
   for (const id of G.slots) if (G.cds[id] == null) G.cds[id] = 1;
@@ -51,6 +52,8 @@ function boardFromLegacy(slots, supp){
       const q = GridLab.findSpot(b, 'support', g, a.id); if (q) GridLab.place(b, 'support', g, q.x, q.y, q.rot); } }
 }
 const gemUsed = id => G.board ? G.board.pieces.filter(p => p.kind === 'support' && p.key === id).length : 0;
+const cartUsed = id => G.board ? G.board.pieces.filter(p => p.mode === id).length : 0;
+const cartFree = id => (G.carts[id] || 0) - cartUsed(id);
 const gemFree = id => (G.gems[id] || 0) - gemUsed(id);
 const passPoints = () => Math.max(0, G.lvl - 1) + Math.floor((G.maxDepth - 1)/4) - G.pass.length;
 const nodeOpen = id => !G.pass.includes(id) && id !== 'S' && TREE[id].links.some(l => l === 'S' || G.pass.includes(l));
@@ -98,9 +101,9 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
   for (const id of slots){ if (!id) continue;
     const K = SKILLS[id], sp = supp[id] || [], has = x => sp.includes(x), n = x => sp.filter(y => y === x).length;
     const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (1 + .45*n('HEAVY')) * (has('AREA') && id === 'FIRE' ? .85 : 1);
-    const cd = K.cd * (1 - Math.min(.6, (s.haste + 30*n('HASTE'))/100)), crit = Math.min(100, s.crit + 30*n('CRITS'));
+    const cd = K.cd * (G.modeOf[id] === 'CHAIN_OVERLOAD' ? 1.8 : 1) * (1 - Math.min(.6, (s.haste + 30*n('HASTE'))/100)), crit = Math.min(100, s.crit + 30*n('CRITS'));
     const ca = 1 + crit/100*(s.cm/100 - 1);
-    s.sk[id] = { hit, cd, crit, has:sp.filter(Boolean), area:has('AREA'), twin:n('TWIN'), leech:has('LEECH') };
+    s.sk[id] = { mode:G.modeOf[id] || null, hit, cd, crit, has:sp.filter(Boolean), area:has('AREA'), twin:n('TWIN'), leech:has('LEECH') };
     dps2 += hit * ca * K.tg * (has('AREA') && id === 'FIRE' ? 1.5 : 1) * (1 + .6*n('TWIN')) / cd;
   }
   s.dps = s.hit * s.critAvg * s.aps + dps2;
@@ -116,10 +119,10 @@ function addFx(e){ if (!G.offline) G.fx.push(e); }
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
 function serialize(){ return { v:2, t:Date.now(), lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
-  equip:G.equip, gems:G.gems, board:G.board, pass:G.pass, maps:G.maps, run:G.run, hp:G.h.hp, log:G.log.slice(0, 5) }; }
+  equip:G.equip, gems:G.gems, carts:G.carts, seen:G.seen, board:G.board, pass:G.pass, maps:G.maps, run:G.run, hp:G.h.hp, log:G.log.slice(0, 5) }; }
 function applySave(o){
   if (!o || o.v !== 2) return false;
-  for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','pass','maps','run']) if (o[k] !== undefined) G[k] = o[k];
+  for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','carts','seen','pass','maps','run']) if (o[k] !== undefined) G[k] = o[k];
   G.pass = G.pass.filter(id => TREE[id]); G.mons = []; G.drops = []; G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
   if (o.board && o.board.pieces) G.board = o.board; else boardFromLegacy(o.slots || ['FIRE'], o.supp);
   recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;

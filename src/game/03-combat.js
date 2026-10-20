@@ -30,6 +30,7 @@ function killMon(m){
   gainXp(xp); if (R) R.kills++; else G.kills++;
   const nItems = m.boss ? 2 + (Math.random() < .5 ? 1 : 0) : Math.random() < HORDE.drop*(1 + q) ? 1 : 0;
   for (let i = 0; i < nItems; i++) dropItem(m, makeItem(tPick(['weapon','armor','ring']), rarityRoll(m.boss), d));
+  if (Math.random() < (m.boss ? .3 : .012)) G.drops.push({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'cart', id:tPick(Object.keys(MODES)), t:0 });
   if (Math.random() < (m.boss ? .35 : .025)) G.drops.push({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'gem', id:tPick(Object.keys(SUPPS)), t:0 });
   if (Math.random() < (m.boss && !R ? 1 : .03)) G.drops.push({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'map', map:makeMap(d + (Math.random() < .3 ? 1 : 0)), t:0 });
   if (m.boss){
@@ -53,6 +54,7 @@ function gainXp(xp){
 /* ---------- loot handling ---------- */
 function pickup(d){
   if (d.kind === 'gem'){ G.gems[d.id] = (G.gems[d.id] || 0) + 1; logLine(`獲得輔助寶石：${SUPPS[d.id].n}`, '#8e3fd1'); if (G.off) G.off.gems++; G.dirty = true; return; }
+  if (d.kind === 'cart'){ G.carts[d.id] = (G.carts[d.id] || 0) + 1; logLine(`獲得卡匣：${G.seen[d.id] ? MODES[d.id].n : '未鑑定的' + SKILLS[MODES[d.id].sk].n + '卡匣'}`, '#1f9bbf'); G.dirty = true; return; }
   if (d.kind === 'map'){ if (G.maps.length < 15) { G.maps.push(d.map); logLine(`獲得地圖：${BIOMES[d.map.biome].n} Lv. ${d.map.lvl}`, '#2f7fc4'); if (G.off) G.off.maps++; } else G.gold += 30*d.map.lvl; G.dirty = true; return; }
   const it = d.it, rc = RAR[it.r].c;
   if (it.r < G.filter){ G.gold += itemValue(it); return; }
@@ -94,19 +96,25 @@ function applySkillHit(id, m, mult=1, chainIdx=0){
 function castSkill(id, repeat=1){
   const k = G.st.sk[id], s = G.st, h = G.h; let total = 0; if (!k) return;
   const al = aliveMons(); if (!al.length) return;
-  const prim = nearestMon(false) || al[0];
+  const prim = nearestMon(false) || al[0], mode = k.mode;
+  const near = (m0, n, ex) => G.mons.filter(m => !m.dead && m !== m0 && !(ex && ex.has(m))).sort((a, b) => Math.hypot(a.x - m0.x, a.y - m0.y) - Math.hypot(b.x - m0.x, b.y - m0.y)).slice(0, n);
   if (id === 'FIRE'){ const tg = prim; G.proj.push({ k:'fire', tg, t:0, dur:.4, mul:repeat }); return; }
   if (id === 'FROST'){
     addFx({ k:'nova', t:0, dur:.55 });
-    for (const m of al){ total += applySkillHit(id, m, repeat); if (!m.dead) m.frozen = 1.4; }
+    if (mode === 'FROST_STORM' && repeat === 1) G.timers.push({ t:.6, id });
+    for (const m of al){ total += applySkillHit(id, m, repeat); if (!m.dead) m.frozen = 1.4;
+      else if (mode === 'FROST_SHATTER') for (const o of G.mons) if (!o.dead && o !== m && Math.hypot(o.x - m.x, o.y - m.y) < 14){ total += applySkillHit(id, o, repeat*.5); addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 5, t:0, dur:.35 }); } }
   }
   if (id === 'CHAIN'){
-    const hops = 3 + (k.area ? 2 : 0), pts = [[HX + 3.4, HY - 3.6, BZ + 9.2]], hit = new Set(); let cur = prim, mul = 1;
-    for (let i = 0; i < hops && cur; i++){ hit.add(cur); pts.push([cur.x, cur.y, BZ + 8]); total += applySkillHit(id, cur, repeat*mul); mul *= .7;
+    const hops = (mode === 'CHAIN_OVERLOAD' ? 5 : 3) + (k.area ? 2 : 0), pts = [[HX + 3.4, HY - 3.6, BZ + 9.2]], hit = new Set(); let cur = prim, mul = 1;
+    for (let i = 0; i < hops && cur; i++){ hit.add(cur); pts.push([cur.x, cur.y, BZ + 8]); total += applySkillHit(id, cur, repeat*mul); if (mode !== 'CHAIN_OVERLOAD') mul *= .7;
+      if (mode === 'CHAIN_FORK'){ const f = near(cur, 1, hit)[0]; if (f){ total += applySkillHit(id, f, repeat*.5); pts.push([f.x, f.y, BZ + 8], [cur.x, cur.y, BZ + 8]); } }
       let nx = null, bd = 1e9; for (const m of G.mons){ if (m.dead || hit.has(m)) continue; const dd = Math.hypot(m.x - cur.x, m.y - cur.y); if (dd < bd && dd < 28){ bd = dd; nx = m; } } cur = nx; }
     addFx({ k:'bolt', pts, t:0, dur:.3 });
   }
-  if (id === 'METEOR'){ const tx2 = prim.x, ty2 = prim.y; G.proj.push({ k:'meteor', x:tx2, y:ty2, t:0, dur:.9, mul:repeat }); return; }
+  if (id === 'METEOR'){
+    if (mode === 'METEOR_TWIN'){ const o = near(prim, 1)[0] || prim; G.proj.push({ k:'meteor', x:prim.x, y:prim.y, t:0, dur:.9, mul:repeat*.6 }, { k:'meteor', x:o.x, y:o.y, t:-.15, dur:.9, mul:repeat*.6 }); return; }
+    G.proj.push({ k:'meteor', x:prim.x, y:prim.y, t:0, dur:.9, mul:repeat }); return; }
   if (k.leech && total) h.hp = Math.min(s.life, h.hp + total*.12);
   h.hp = Math.min(s.life, h.hp + total*s.leech/100);
 }
@@ -115,12 +123,16 @@ function resolveProj(p){
   if (p.k === 'fire'){
     const k = s.sk.FIRE, m = p.tg; if (!k) return; if (m.dead && !G.mons.includes(m)) return;
     const targets = k.area ? aliveMons() : (m.dead ? [] : [m]); let total = 0;
-    for (const q of targets){ total += applySkillHit('FIRE', q, p.mul); addFx({ k:'boom', x:q.x, y:q.y, z:BZ + 6, t:0, dur:.4 }); }
+    for (const q of targets){ total += applySkillHit('FIRE', q, p.mul); addFx({ k:'boom', x:q.x, y:q.y, z:BZ + 6, t:0, dur:.4 });
+      if (k.mode === 'FIRE_BLAST'){ for (const o of G.mons) if (!o.dead && o !== q && Math.hypot(o.x - q.x, o.y - q.y) < 14) total += applySkillHit('FIRE', o, p.mul*.6); }
+      if (k.mode === 'FIRE_SPLIT'){ const t2 = G.mons.filter(o => !o.dead && o !== q).sort((a, b) => Math.hypot(a.x - q.x, a.y - q.y) - Math.hypot(b.x - q.x, b.y - q.y)).slice(0, 2);
+        for (const o of t2){ total += applySkillHit('FIRE', o, p.mul*.5); addFx({ k:'boom', x:o.x, y:o.y, z:BZ + 6, t:0, dur:.4 }); } } }
     if (k.leech) h.hp = Math.min(s.life, h.hp + total*.12); h.hp = Math.min(s.life, h.hp + total*s.leech/100);
   } else if (p.k === 'meteor'){
     const k = s.sk.METEOR; if (!k) return; let total = 0;
     addFx({ k:'boom', x:p.x, y:p.y, z:BZ + 4, t:0, dur:.6, big:true });
-    for (const q of aliveMons()) total += applySkillHit('METEOR', q, p.mul);
+    const al = aliveMons(), top = k.mode === 'METEOR_COMET' ? al.slice().sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y))[0] : null;
+    for (const q of al) total += applySkillHit('METEOR', q, p.mul*(k.mode === 'METEOR_COMET' ? (q === top ? 2.2 : .5) : 1));
     if (k.leech) h.hp = Math.min(s.life, h.hp + total*.12); h.hp = Math.min(s.life, h.hp + total*s.leech/100);
   }
 }
