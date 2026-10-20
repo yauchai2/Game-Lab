@@ -1,26 +1,33 @@
 /* ---------- monsters ---------- */
+// 刷怪模式：小怪又多又脆（血量、傷害、經驗、金幣都打折），一次湧出一群，持續補充到上限
+const HORDE = { hp:.45, dmg:.28, xp:.5, gold:.5, drop:.15 };
+const hordeCap = () => Math.min(SLOTS.length, 5 + Math.floor(lvlNow()/2));
 const MTYPES = { slime:{ hp:1, dmg:.8, xp:1, g:1, spd:15, atk:1.5 }, skel:{ hp:1.25, dmg:1.1, xp:1.3, g:1.2, spd:17, atk:1.35 }, brute:{ hp:2.7, dmg:1.7, xp:2.4, g:2.2, spd:11, atk:1.8 }, boss:{ hp:15, dmg:2.3, xp:14, g:12, spd:9, atk:1.9 } };
 function spawnPack(){
   const R = G.run, d = lvlNow(), mods = R ? R.map.mods : [], kills = R ? R.kills : G.kills, need = R ? R.need : G.need, bossOut = R ? R.bossOut : G.bossOut;
+  if (!R && G.need < 24) G.need = 24;   // 舊存檔的門檻是 8，刷怪模式改成 24
   const bossNow = (R || G.push) && kills >= need && !bossOut;
   let types;
   if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的守關者出現了！`, '#8e3fd1'); }
-  else { const n = [1,1,1,2,2,2,2,3,3][Math.floor(Math.random()*9)] + (mods.includes('more') ? 1 : 0); types = Array.from({ length:Math.min(n, 4) }, () => { const r = Math.random(); return d >= 3 && r < .2 ? 'brute' : r < .55 ? 'slime' : 'skel'; }); }
+  else { const n = 2 + Math.floor(Math.random()*3) + (mods.includes('more') ? 2 : 0); types = Array.from({ length:n }, () => { const r = Math.random(); return d >= 3 && r < .12 ? 'brute' : r < .55 ? 'slime' : 'skel'; }); }
   const hpK = mods.includes('tough') ? 1.4 : 1, dmgK = mods.includes('deadly') ? 1.35 : 1, fastK = mods.includes('fast') ? 1.25 : 1;
+  const used = new Set(G.mons.filter(m => !m.dead).map(m => m.slot));
   types.forEach((t, i) => {
-    const T = MTYPES[t], hp = 24 * Math.pow(1.32, d-1) * T.hp * hpK;
-    G.mons.push({ type:t, boss:t === 'boss', x:SPAWN[0] + tRand(-3,3), y:SPAWN[1] + i*2, hp, hpMax:hp, dmg:4.5 * Math.pow(1.22, d-1) * T.dmg * dmgK, atkInt:T.atk/fastK, spdK:fastK, atkCd:tRand(.3, T.atk),
-      slot:i, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
+    const T = MTYPES[t], trash = t !== 'boss' ? HORDE.hp : 1, hp = 24 * Math.pow(1.32, d-1) * T.hp * hpK * trash;
+    let slot = 0; while (used.has(slot) && slot < SLOTS.length - 1) slot++; used.add(slot);   // 找一個沒人站的圍攻位置
+    const sx = [SPAWN[0], 3, 27][i % 3] + tRand(-3, 3), sy = SPAWN[1] + tRand(-4, 6);   // 從傳送門與兩側湧出
+    G.mons.push({ type:t, boss:t === 'boss', x:sx, y:sy, hp, hpMax:hp, dmg:4.5 * Math.pow(1.22, d-1) * T.dmg * dmgK * (t !== 'boss' ? HORDE.dmg : 1), atkInt:T.atk/fastK, spdK:fastK, atkCd:tRand(.3, T.atk),
+      slot, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
   });
   addFx({ k:'portal', t:0, dur:.5 });
 }
 function dropItem(m, it){ G.drops.push({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'item', it, t:0 }); }
 function killMon(m){
   m.dead = true; m.deadT = 0; const T = MTYPES[m.type], d = lvlNow(), R = G.run, q = runQ(), mods = R ? R.map.mods : [];
-  const xp = Math.round(5 * Math.pow(1.2, d-1) * T.xp), gold = Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1));
+  const hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk)), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
   G.gold += gold; G.totalKills++; addFloat(m.x - 2, m.y, BZ + 20, `+${gold}g`, '#a9780a', 3);
   gainXp(xp); if (R) R.kills++; else G.kills++;
-  const nItems = m.boss ? 2 + (Math.random() < .5 ? 1 : 0) : Math.random() < .3*(1 + q) ? 1 : 0;
+  const nItems = m.boss ? 2 + (Math.random() < .5 ? 1 : 0) : Math.random() < HORDE.drop*(1 + q) ? 1 : 0;
   for (let i = 0; i < nItems; i++) dropItem(m, makeItem(tPick(['weapon','armor','ring']), rarityRoll(m.boss), d));
   if (Math.random() < (m.boss ? .35 : .025)) G.drops.push({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'gem', id:tPick(Object.keys(SUPPS)), t:0 });
   if (Math.random() < (m.boss && !R ? 1 : .03)) G.drops.push({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'map', map:makeMap(d + (Math.random() < .3 ? 1 : 0)), t:0 });
@@ -124,12 +131,12 @@ function update(dt){
   if (h.hurtT > 0) h.hurtT -= dt;
   for (const d of G.drops){ d.t += dt; if (d.t >= 1.7 && !d.done){ d.done = true; pickup(d); } } if (G.drops.length) G.drops = G.drops.filter(d => !d.done);
   if (h.dead > 0){ h.dead -= dt; G.mons = G.mons.filter(m => (m.deadT += dt) < .4); if (h.dead <= 0) revive(); return; }
-  if (!G.mons.some(m => !m.dead)){ G.spawnCd -= dt; if (G.spawnCd <= 0){ spawnPack(); G.spawnCd = .7; } }
+  { const alive = G.mons.filter(m => !m.dead).length, bossUp = G.mons.some(m => m.boss && !m.dead); G.spawnCd -= dt; if (G.spawnCd <= 0 && alive < hordeCap() && !bossUp){ spawnPack(); G.spawnCd = alive ? 1.1 : .5; } }
   for (const m of G.mons){
     if (m.dead){ m.deadT += dt; continue; }
     if (m.hurtT > 0) m.hurtT -= dt;
     if (m.frozen > 0){ m.frozen -= dt; continue; }
-    const tg = SLOTS[m.slot % 3], dx = tg[0] - m.x, dy = tg[1] - m.y, dist = Math.hypot(dx, dy), spd = MTYPES[m.type].spd * m.spdK;
+    const tg = SLOTS[m.slot % SLOTS.length], dx = tg[0] - m.x, dy = tg[1] - m.y, dist = Math.hypot(dx, dy), spd = MTYPES[m.type].spd * m.spdK;
     if (dist > .6){ const st = Math.min(dist, spd*dt); m.x += dx/dist*st; m.y += dy/dist*st; m.fight = false; } else m.fight = true;
     if (m.fight){ m.atkCd -= dt; if (m.atkCd <= 0 && m.lunge < 0){ m.lunge = 0; m.lungeHit = false; m.atkCd = m.atkInt; } }
     if (m.lunge >= 0){
@@ -148,7 +155,8 @@ function update(dt){
   if (h.atkCd <= 0 && tgt && h.swingT < 0){ h.swingT = 0; h.swingHit = false; h.atkCd = 1/s.aps; }
   if (h.swingT >= 0){
     h.swingT += dt;
-    if (!h.swingHit && h.swingT >= .12){ h.swingHit = true; const t2 = nearestMon(true); if (t2){ const r = rollDmg(s.hit); hitMon(t2, r.dmg, r.crit); h.hp = Math.min(s.life, h.hp + r.dmg*s.leech/100); addFx({ k:'slash', x:t2.x, y:t2.y, z:BZ + 7, t:0, dur:.22 }); } }
+    if (!h.swingHit && h.swingT >= .12){ h.swingHit = true; const t2 = nearestMon(true); if (t2){ const r = rollDmg(s.hit); hitMon(t2, r.dmg, r.crit); h.hp = Math.min(s.life, h.hp + r.dmg*s.leech/100); addFx({ k:'slash', x:t2.x, y:t2.y, z:BZ + 7, t:0, dur:.22 });
+      for (const o of G.mons) if (o !== t2 && !o.dead && o.fight && Math.hypot(o.x - t2.x, o.y - t2.y) < 9){ const r2 = rollDmg(s.hit*.5); hitMon(o, r2.dmg, r2.crit); } /* 橫掃：目標附近的怪也吃 50% */ } }
     if (h.swingT >= .3) h.swingT = -1;
   }
   // skills

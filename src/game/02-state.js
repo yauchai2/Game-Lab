@@ -22,7 +22,7 @@ const TREE = (() => {
 
 /* ---------- game state ---------- */
 const G = {
-  time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:8, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
+  time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:24, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
   equip:{ weapon:null, armor:null, ring:null }, gems:{ HEAVY:1, AREA:1 }, slots:['FIRE', null, null], supp:{ FIRE:['HEAVY', null], FROST:[null, null], CHAIN:[null, null], METEOR:[null, null] },
   pass:[], maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2 },
   h:{ hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },

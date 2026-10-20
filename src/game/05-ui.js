@@ -23,7 +23,7 @@ function panelHtml(){
   const s = G.st, h = G.h, R = G.run;
   const sk = G.slots.map((id, i) => id ? `<li><b>${SKILLS[id].n}</b> <span class="mute">${(G.supp[id] || []).filter(Boolean).map(g => SUPPS[g].n).join('、') || '無輔助'}</span></li>` : `<li class="mute">槽 ${i+1}：${G.lvl >= SLOT_LV[i] ? '空' : '等級 ' + SLOT_LV[i] + ' 解鎖'}</li>`).join('');
   const prog = R ? `地圖進度 ${Math.min(R.kills, R.need)} / ${R.need}（${BIOMES[R.map.biome].n} Lv. ${R.map.lvl}）` : `擊殺 ${Math.min(G.kills, G.need)} / ${G.need}${G.push ? '（滿了出守關者）' : '（刷怪模式）'}`;
-  const stats = `<li>生命 ${tFmt(h.hp)} / ${tFmt(s.life)}</li><li>預估 DPS ${tFmt(s.dps)}</li><li>暴擊 ${s.crit.toFixed(0)}% × ${s.cm.toFixed(0)}%</li><li>攻速 ${s.aps.toFixed(2)}/秒　減傷 ${(s.red*100).toFixed(0)}%</li><li>${prog}</li><li>天賦點 ${passPoints()}　地圖 ${G.maps.length}　死亡 ${G.deaths}</li>`;
+  const stats = `<li>生命 ${tFmt(Math.max(0, h.hp))} / ${tFmt(s.life)}</li><li>預估 DPS ${tFmt(s.dps)}</li><li>暴擊 ${s.crit.toFixed(0)}% × ${s.cm.toFixed(0)}%</li><li>攻速 ${s.aps.toFixed(2)}/秒　減傷 ${(s.red*100).toFixed(0)}%</li><li>${prog}</li><li>天賦點 ${passPoints()}　地圖 ${G.maps.length}　死亡 ${G.deaths}</li>`;
   return `${slotHtml('weapon')}${slotHtml('armor')}${slotHtml('ring')}
     <div class="rc"><div class="rh">技能</div><ul>${sk}</ul></div>
     <div class="rc"><div class="rh">狀態</div><ul>${stats}</ul></div>
@@ -32,12 +32,16 @@ function panelHtml(){
 let modalTab = 'skills', resetArm = false;
 const $ = id => document.getElementById(id);
 function openModal(tab){ modalTab = tab || modalTab; resetArm = false; $('modal').hidden = false; renderModal(); }
-function closeModal(){ $('modal').hidden = true; }
+const MOB = () => document.body.classList.contains('m');   // 手機直式：上面戰鬥畫面，下面固定的分頁面板（彈窗變成面板）
+function closeModal(){ if (MOB()){ openModal('char'); return; } $('modal').hidden = true; }
 function renderModal(){
   if ($('modal').hidden) return;
-  const tabs = [['skills','技能'], ['tree','天賦盤'], ['maps','地圖'], ['save','存檔']];
-  $('mtabs').innerHTML = tabs.map(([k, n]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}</button>`).join('') + `<button class="tab x" onclick="closeModal()">✕</button>`;
-  $('mbody').innerHTML = modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : saveHtml();
+  const mob = MOB(), tabs = mob ? [['char','角色','shield'], ['skills','技能','fire'], ['tree','天賦','star'], ['maps','地圖','shoe'], ['menu','選單','headphones']] : [['skills','技能'], ['tree','天賦盤'], ['maps','地圖'], ['save','存檔']];
+  if (!mob && (modalTab === 'char' || modalTab === 'menu')) modalTab = 'skills';
+  if (mob && modalTab === 'save') modalTab = 'menu';
+  $('mtabs').innerHTML = tabs.map(([k, n, ic]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${ic ? spr(ic, 20) : ''}<span>${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}</span></button>`).join('') + (mob ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`);
+  if (mob) $('mmenu').hidden = modalTab !== 'menu';
+  $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : saveHtml();
 }
 let actSlot = 0;   // 技能彈窗裡目前選中的技能槽：點寶石會插進它的空輔助孔
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff' };
@@ -97,7 +101,7 @@ function allocPass(id){ if (passPoints() <= 0 || !nodeOpen(id)) return; G.pass.p
 function respec(){ const cost = 100*G.lvl; if (!G.pass.length || G.gold < cost) return; G.gold -= cost; G.pass = []; recalc(); renderModal(); }
 function enterMap(id){
   if (G.run) return; const i = G.maps.findIndex(m => m.id === id); if (i < 0) return;
-  const map = G.maps.splice(i, 1)[0]; G.run = { map, kills:0, need:10, bossOut:false };
+  const map = G.maps.splice(i, 1)[0]; G.run = { map, kills:0, need:30, bossOut:false };
   G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.spawnCd = .8; G.h.hp = G.st.life; logLine(`進入地圖：${BIOMES[map.biome].n} Lv. ${map.lvl}`, '#2f7fc4'); closeModal();
 }
 function abandonMap(){ if (!G.run) return; G.run = null; G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.spawnCd = .8; logLine('放棄了地圖', '#857d6e'); renderModal(); }
@@ -222,6 +226,23 @@ function setupPanel(){
     .dlg i{position:absolute;left:12px;right:34px;bottom:4px;height:3px;background:repeating-linear-gradient(90deg,#8fb6ff 0 8px,transparent 8px 11px);transform-origin:left;animation:dlgt 2.6s linear forwards}
     @keyframes dlgb{50%{transform:translateY(-2px)}} @keyframes dlgt{from{transform:scaleX(0)}to{transform:scaleX(1)}}
     @media (orientation:portrait){#cv3{-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 94%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 94%,transparent);mask-composite:intersect}}   /* 手機拉近後，四邊裁切處淡出，不留硬邊 */
+    body.m{height:100dvh;overflow:hidden;padding:6px 8px 32px !important;gap:0}
+    body.m header{flex:none} body.m header h1 .wm{width:128px}
+    body.m .stage{flex:none} body.m .stats{padding:18px 8px 4px !important;margin:2px 0 0 !important} body.m .stats::before{font-size:9px}
+    body.m .stat .k{font-size:10px} body.m .stat .v{font-size:17px !important} body.m .stat.small .v{font-size:15px !important}
+    body.m #fig{margin:0}
+    body.m .rpg{display:none}
+    body.m #modal{position:static;display:flex;flex:1 1 0;min-height:0;width:100%;padding:0;background:none !important;backdrop-filter:none;z-index:auto}
+    body.m .mbox{width:100%;max-height:none;height:100%;display:flex;flex-direction:column;overflow:hidden;padding:0 !important}
+    body.m .mbox::before{display:none}
+    body.m .mtabs{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:0;flex:none;background:linear-gradient(90deg,#1f3fb0,#7fb0ff)}
+    body.m .tab{display:flex !important;flex-direction:column;align-items:center;gap:1px;padding:4px 0 3px !important;font-size:11px;border-radius:0 !important;border:0 !important;border-right:1px solid #ffffff55 !important;box-shadow:none !important;background:transparent !important;color:#fff !important;text-shadow:0 1px 0 #00000040}
+    body.m .tab.on{background:var(--win) !important;color:var(--wbd) !important;text-shadow:none}
+    body.m #mbody{flex:1;overflow:auto;padding:8px;-webkit-overflow-scrolling:touch}
+    body.m #mmenu{padding:8px 8px 0} body.m #mmenu .actions{position:static !important;display:flex !important;flex-direction:row !important;flex-wrap:wrap;gap:6px !important;max-width:none}
+    body.m #mmenu .chips{left:0 !important;top:calc(100% + 6px) !important}
+    .rpgm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-size:11.5px} .rpgm .rc.wide{grid-column:1/-1}
+    body.m .mrow{grid-template-columns:1fr} body.m .gems{grid-template-columns:1fr 1fr}
     body{padding-bottom:44px !important}`;
   { const tb = document.createElement('div'); tb.className = 'tfoot'; tb.innerHTML = '<span class="start">★ Start</span><span class="task">Idle Hero</span><span class="clk" id="clk"></span>'; document.body.appendChild(tb);
     const tick = () => { const d = new Date(); $('clk').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }; tick(); setInterval(tick, 20000); }   // the engine's wobble slider and colour swatches are not part of the game
@@ -234,10 +255,14 @@ function setupPanel(){
   }
   const el = document.createElement('div'); el.className = 'rpg'; el.id = 'rpg'; document.querySelector('.stage').after(el);
   const m = document.createElement('div'); m.className = 'modal'; m.id = 'modal'; m.hidden = true; m.innerHTML = `<div class="mbox"><div class="mtabs" id="mtabs"></div><div id="mbody"></div></div>`;
-  m.addEventListener('pointerdown', e => { if (e.target === m) closeModal(); });
+  m.addEventListener('pointerdown', e => { if (e.target === m && !MOB()) closeModal(); });
   const o = document.createElement('div'); o.className = 'modal'; o.id = 'ovl'; o.hidden = true;
   document.body.append(m, o);
-  const draw = () => { el.innerHTML = panelHtml(); };
+  if (matchMedia('(max-width:560px) and (orientation:portrait)').matches){   // 手機：指令按鈕收進「選單」分頁，面板常駐在戰鬥畫面下方
+    document.body.classList.add('m'); const mm = document.createElement('div'); mm.id = 'mmenu'; mm.hidden = true; m.querySelector('.mbox').insertBefore(mm, $('mbody'));
+    const b = $('btns'); if (b){ mm.appendChild(b); b.querySelectorAll('.act').forEach(x => { if (['技能', '天賦盤', '地圖', '存檔'].includes(x.textContent.trim())) (x.closest('.stepwrap') || x).style.display = 'none'; }); }   // 這四個已經是分頁 m.hidden = false; modalTab = 'char';
+  }
+  const draw = () => { if (MOB()){ if (modalTab === 'char' && !document.querySelector('#mbody :focus')) renderModal(); return; } el.innerHTML = panelHtml(); };
   setInterval(draw, 300); draw();
   document.getElementById('lblctl'); const pc = document.getElementById('pals'); if (pc) pc.parentElement.style.display = 'none';
 }
