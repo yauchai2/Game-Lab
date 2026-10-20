@@ -773,10 +773,26 @@ function tEyes(x, y, z, r, o={}){
   return s;
 }
 // a short ink smile / frown on the face of a body centred (x,y), at height z
-function aMouth(x, y, z, r, up=1, w=.8){
-  const dv = norm([1,1,.35]), [X,Y] = P(x + dv[0]*r*.97, y + dv[1]*r*.97, z);
-  return aInkP(`M${f(X - r*.3)} ${f(Y)}Q${f(X)} ${f(Y + r*.32*up)} ${f(X + r*.3)} ${f(Y)}`, w);
+function aMouth(x, y, z, r, f2, up=1, w=.8){
+  const sd = aSide(f2, .3*r), a = [x + f2[0]*r*.97 + sd[0], y + f2[1]*r*.97 + sd[1], z], b = [x + f2[0]*r*.97 - sd[0], y + f2[1]*r*.97 - sd[1], z], m2 = [x + f2[0]*r, y + f2[1]*r, z - .32*r*up];
+  const [A, B, M] = [P(...a), P(...b), P(...m2)];
+  return aInkP(`M${f(A[0])} ${f(A[1])}Q${f(M[0])} ${f(M[1])} ${f(B[0])} ${f(B[1])}`, w);
 }
+// Facing-aware face. f = unit [fx, fy] the character looks toward; s is the sideways axis. A feature is drawn only when its
+// surface normal faces the viewer (vis), so eyes can never end up on the back of a head.
+function aFace(x, y, z, r, f2, o={}){
+  const s2 = [-f2[1], f2[0]], col = o.col || '#fff', sh = P(x + f2[0], y + f2[1], z), c0 = P(x, y, z), dx = sh[0] - c0[0], dy = sh[1] - c0[1]; let s = '';
+  for (const k of [-1, 1]){
+    const n = [f2[0]*.86 + s2[0]*k*.46, f2[1]*.86 + s2[1]*k*.46, .26];
+    if (!vis(n)) continue;
+    const [X,Y] = P(x + n[0]*r, y + n[1]*r, z + n[2]*r);
+    s += `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(r*(o.big || .3))}" fill="${col}" stroke="${INK}" stroke-width=".7"/>`;
+    if (!o.noPupil) s += `<circle cx="${f(X + dx*r*.1)}" cy="${f(Y + dy*r*.1)}" r="${f(r*.14)}" fill="${o.pup || INK}"/><circle cx="${f(X + dx*r*.1 + r*.05)}" cy="${f(Y + dy*r*.1 - r*.05)}" r="${f(r*.05)}" fill="#fff"/>`;
+  }
+  return s;
+}
+const aFwd = (p, f2, d, up=0) => [p[0] + f2[0]*d, p[1] + f2[1]*d, p[2] + up];
+const aSide = (f2, k) => [-f2[1]*k, f2[0]*k];
 function tBar(x, y, z, w, pct, col){
   const [X,Y] = P(x, y, z), W2 = w*1.1, H2 = 2.3, x0 = X - W2/2;
   return `<rect x="${f(x0)}" y="${f(Y)}" width="${f(W2)}" height="${f(H2)}" rx="1" fill="#4a3a30" stroke="${INK}" stroke-width=".8"/>`
@@ -801,6 +817,7 @@ function drawHero(){
   const x = HX + (h.hurtT > 0 ? Math.sin(t*90)*.5 : 0), y = HY, z = BZ + Math.max(0, Math.sin(t*3)*.35);
   const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = aTier(W), wr = W ? W.r : 0;
   const body = matOf(['#4f7fd6', '#5d8ee0', '#d4a93a', '#d8553a'][ar]), dark = matOf('#5a3b28'), trim = matOf(['#8a5a3c', '#c7d4e6', '#fff0b0', '#ffb04a'][ar]), steel = matOf(['#b9c0c6', '#a9c3e8', '#e8d594', '#e59a7a'][ar]);
+  const F = [.7071, -.7071];   // the hero fights toward -y; turned 45 degrees so the near cheek and eye face the viewer
   const swing = h.swingT < 0 ? 72 + Math.sin(t*3)*3 : tLerp(115, -30, ease(h.swingT/.3));
   let s = '';
   // far side first: off arm, off shoulder
@@ -809,7 +826,7 @@ function drawHero(){
   if (at >= 1) s += tSph(x - 3.2, y, z + 10.6, 1.8, steel.m, 1);
   // boots + legs
   for (const sx of [-1.5, 1.5]){
-    s += box(x + sx - 1.1, y - 2.9, BZ, x + sx + 1.1, y - .6, BZ + 1.3, matOf('#3d2a1d'), toneI, .8);
+    s += rod([x + sx, y, BZ + .75], [x + sx + F[0]*2.6, y + F[1]*2.6, BZ + .75], .75, matOf('#3d2a1d'), toneI, .8);
     s += cyl(x + sx, y, BZ, BZ + 2.7, 1.45, matOf('#3d2a1d'), toneI, .9, 10);
     s += cyl(x + sx, y, BZ + 2.5, BZ + 5, 1.25, matOf(at >= 1 ? '#6b7480' : '#6b4a33'), toneI, .9, 10);
   }
@@ -822,18 +839,18 @@ function drawHero(){
   // scarf: ring + a tail that flutters behind (+y)
   s += cyl(x, y, z + 10.1, z + 11.3, 2.7, matOf('#d9483b'), toneI, .9, 12);
   const fl = Math.sin(t*4.5);
-  s += rod([x + .6, y + 1.7, z + 10.7], [x + .6 + fl*.5, y + 5.4, z + 9.2 + fl*.9], .75, matOf('#d9483b'), toneI, .8);
+  s += rod([x - F[0]*.8, y - F[1]*.8, z + 10.7], [x - F[0]*4.6 + fl*.5, y - F[1]*4.6 + fl*.3, z + 9.2 + fl*.9], .75, matOf('#d9483b'), toneI, .8);
   // head: hair or helm, face on top
   const head = [x, y, z + 12.9];
   if (at >= 2) s += tSph(x - .5, y - .5, z + 13.4, 3.15, steel.m, 1.1);
-  else s += tSph(x - 1, y - 1, z + 13.9, 3.2, '#6b4426', 1.1);
-  s += tSph(...head, 2.8, '#f1c9a0', 1.1);
+  else s += tSph(x - F[0]*1.1, y - F[1]*1.1, z + 13.9, 3.2, '#6b4426', 1.1);
+  s += tSph(...head, 2.8, '#f1c9a0', 1.1) + tSph(x + F[0]*3, y + F[1]*3, z + 12.5, .55, '#e0aa80', .6);   // head + nose
   if (at >= 1) {
     s += aBlob(x, y, z + 14.5, [[0,3.2],[.9,3.05],[2,2.3],[2.9,1.2],[3.3,.2]], steel, 1.3, 14);
-    s += rod([x + 2.9, y - .3, z + 14.2], [x + 3.1, y - .3, z + 11.9], .55, steel, toneI, .8);
-    if (ar >= 2) s += rod([x - .3, y + 1.4, z + 17.6], [x - 2.4, y + 4.4, z + 17.3 + fl*.5], 1, matOf(ar === 3 ? '#ff6a3a' : '#d9483b'), toneI, .9, .2);
+    s += rod([x + F[0]*2.9, y + F[1]*2.9, z + 14.2], [x + F[0]*3.1, y + F[1]*3.1, z + 12.1], .55, steel, toneI, .8);
+    if (ar >= 2) s += rod([x - F[0]*.6, y - F[1]*.6, z + 17.6], [x - F[0]*3.6, y - F[1]*3.6, z + 17.3 + fl*.5], 1, matOf(ar === 3 ? '#ff6a3a' : '#d9483b'), toneI, .9, .2);
   } else s += aBlob(x, y, z + 14.5, [[0,3.05],[.9,2.9],[1.9,2.1],[2.6,.9],[2.9,.2]], matOf('#6b4426'), 1.1, 14);
-  s += tEyes(...head, 2.8);
+  s += aFace(...head, 2.8, F);
   // sword arm + sword (blade colour follows rarity, length follows tier)
   const a = swing*Math.PI/180, hand = [x + 3.3, y - .8, z + 7.4], dir = [0, -Math.cos(a), Math.sin(a)], mv = k => hand.map((v, i) => v + dir[i]*k);
   const blade = [METAL, matOf('#b9d6ff'), matOf('#ffe08a'), matOf('#ff9a5a')][wr], len = 8.2 + wt*1.5, gw = .35 + wt*.12;
@@ -858,7 +875,7 @@ function drawSlime(m){
   s += `<ellipse cx="${f(X + r*.1)}" cy="${f(Y + r*.55)}" rx="${f(r*.6)}" ry="${f(r*.35)}" fill="${mat.d}" opacity=".35"/>`   // dark core seen through the jelly
     + aInkP(`M${f(X + r*.55)} ${f(Y - r*1.3)}Q${f(X + r*1.05)} ${f(Y - r*.9)} ${f(X + r*1.1)} ${f(Y - r*.35)}`, 1.6, '#fff', .85)    // shine
     + `<circle cx="${f(X + r*1.1)}" cy="${f(Y + r*.05)}" r="${f(r*.09)}" fill="#fff" opacity=".85"/>`;
-  s += tEyes(m.x, y, BZ + hg*.55, 3.3, { big:.34 }) + aMouth(m.x, y, BZ + hg*.55 - 1.5, 3.4, 1);
+  s += aFace(m.x, y, BZ + hg*.55, 3.3, [0, 1], { big:.34 }) + aMouth(m.x, y, BZ + hg*.55 - 1.2, 3.4, [0, 1], 1);
   const [BX,BY] = P(m.x - 1, y + 1, BZ + hg + .6), dr = Math.sin(t*3)*.6;       // a drip bubble rising off the head
   s += `<circle cx="${f(BX - 1.5)}" cy="${f(BY - 3 - dr)}" r="${f(1.1)}" fill="${mat.l}" stroke="${INK}" stroke-width=".7"/>`;
   s += tBar(m.x, y, BZ + hg + 5, 8, m.hp/m.hpMax, '#e2483d');
@@ -882,8 +899,8 @@ function drawSkel(m){
   s += rod(hand, bl, .5, rust, toneI, .9, .15) + rod([hand[0] - 1.2, hand[1] + .9, hand[2] + .5], [hand[0] + 1.2, hand[1] + .9, hand[2] + .5], .4, wood, toneI, .7);
   s += cylX(x + 3.3, x + 4.2, y - .6, z + 7.4, 2.6, wood, toneI, 1.1, 14) + cylX(x + 4.2, x + 4.6, y - .6, z + 7.4, .9, matOf('#c9a13b'), toneI, .7, 8);   // buckler
   s += tSph(x, y, z + 12, 2.6, '#f1ecda', 1.1) + box(x - 1.2, y - 1.1, z + 9.4, x + 1.2, y + 1.1, z + 10.4, BONE, toneI, .8);   // skull + jaw
-  s += tEyes(x, y, z + 12, 2.6, { col:'#2b2623', noPupil:true, big:.36 });
-  const [NX,NY] = P(x + 2.4, y + 2.4, z + 11.1); s += `<path d="M${f(NX)} ${f(NY)}l-.5 1.1l1 0z" fill="${INK}"/>` + aInkP(`M${f(NX - 1.8)} ${f(NY + 1.9)}l3.6 0`, .7);
+  s += aFace(x, y, z + 12, 2.6, [0, 1], { col:'#2b2623', noPupil:true, big:.36 });
+  const [NX,NY] = P(x, y + 2.55, z + 11.1); s += `<path d="M${f(NX)} ${f(NY)}l-.5 1.1l1 0z" fill="${INK}"/>` + line([[x - .9, y + 2.4, z + 9.9], [x + .9, y + 2.4, z + 9.9]], .7);
   s += tBar(x, y, z + 19, 8, m.hp/m.hpMax, '#e2483d');
   return { s, sh:shadowOf(x, y, 2.6, 13) };
 }
@@ -903,14 +920,17 @@ function drawBrute(m){
   s += tSph(...hand, 1.3*k, skin, .9);
   s += tSph(x + 3.9*k, y, z + 9.2*k, 2*k, fur.l, 1) + tSph(x - 3.9*k, y, z + 9.2*k, 2*k, fur.l, 1);                                    // fur shoulder pads
   for (const sd of [-1, 1]){
-    s += rod([x + sd*1.9*k, y - sd*1.2*k, z + 13.2*k], [x + sd*3.4*k, y - sd*2.3*k, z + 15.2*k], .95*k, BONE, toneI, .8, .6*k);
-    s += rod([x + sd*3.4*k, y - sd*2.3*k, z + 15.2*k], [x + sd*3.1*k, y - sd*2.9*k, z + 17.2*k], .6*k, BONE, toneI, .8, .08);
+    s += rod([x + sd*2*k, y, z + 13.2*k], [x + sd*3.6*k, y - .4*k, z + 15.2*k], .95*k, BONE, toneI, .8, .6*k);
+    s += rod([x + sd*3.6*k, y - .4*k, z + 15.2*k], [x + sd*3.3*k, y - .8*k, z + 17.2*k], .6*k, BONE, toneI, .8, .08);
   }
-  s += tSph(x, y, z + 11.8*k, 3.1*k, skin, 1.2) + tEyes(x, y, z + 11.8*k, 3.1*k, { col:'#fff3c4', pup:'#b0201a' });
-  const [BX,BY] = P(x + 3.1*k, y + 3.1*k, z + 10.2*k);                                                                           // brow + tusks
-  s += aInkP(`M${f(BX - 3.4*k)} ${f(BY - 3.3*k)}l${f(2.7*k)} ${f(.9*k)}M${f(BX + .6*k)} ${f(BY - 2.4*k)}l${f(2.7*k)} ${f(-.9*k)}`, 1.1)
-    + `<path d="M${f(BX - 1.9*k)} ${f(BY + 1.3*k)}l${f(.9*k)} ${f(-2.4*k)}l${f(.9*k)} ${f(2.4*k)}z M${f(BX + 1.4*k)} ${f(BY + 1.3*k)}l${f(.9*k)} ${f(-2.4*k)}l${f(.9*k)} ${f(2.4*k)}z" fill="#fffaea" stroke="${INK}" stroke-width=".6"/>`;
-  if (m.boss) s += aBlob(x, y, z + 14.9*k, [[0,2.3*k],[.8*k,2.5*k],[1.7*k,2.4*k]], matOf('#f2c230'), 1.1, 10) + [-1,0,1].map(i => tSph(x + i*1.6*k, y - i*1.6*k, z + 17.2*k, .5*k, '#ff5a4a', .6)).join('');
+  const FB = [0, 1], hz = z + 11.8*k, hr = 3.1*k;
+  s += tSph(x, y, hz, hr, skin, 1.2) + aFace(x, y, hz, hr, FB, { col:'#fff3c4', pup:'#b0201a' });
+  for (const sd of [-1, 1]){   // brow ridge and tusk on each side of the face
+    s += line([[x + sd*.15*hr, y + hr*.97, hz + .62*hr], [x + sd*.82*hr, y + hr*.7, hz + .5*hr]], 1.1);
+    const b = [x + sd*.38*hr, y + hr*.96, hz - .55*hr];
+    s += shape([[b[0] - sd*.5*k, b[1], b[2]], [b[0] + sd*.5*k, b[1], b[2]], [b[0] + sd*.2*k, b[1] + .6*k, b[2] - 2.8*k]], '#fffaea', .8);
+  }
+  if (m.boss) s += aBlob(x, y, z + 14.9*k, [[0,2.3*k],[.8*k,2.5*k],[1.7*k,2.4*k]], matOf('#f2c230'), 1.1, 10) + [-1,0,1].map(i => tSph(x + i*1.4*k, y, z + 17.2*k, .5*k, '#ff5a4a', .6)).join('');
   s += tBar(x, y, z + 21*k, m.boss ? 15 : 9, m.hp/m.hpMax, m.boss ? '#8e3fd1' : '#e2483d');
   return { s, sh:shadowOf(x, y, 4.4*k, 12*k) };
 }
