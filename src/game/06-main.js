@@ -5,21 +5,22 @@ G.equip.armor = makeItem('armor', 0, 1); G.equip.armor.name = '粗布衣';
 recalc(); G.h.hp = G.st.life;
 let loadedT = 0;
 if (!Q.has('fresh')){ const o = loadGame(); if (o && applySave(o)) loadedT = o.t || 0; }
-if (!loadedT) logLine('冒險開始!英雄會自動戰鬥、撿裝備、換更強的。', '#231e16');
+if (!loadedT) logLine('冒險開始！英雄會自動戰鬥、撿裝備、換更強的。', '#231e16');
 
 let ui;
 const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++) update(.05); G.offline = false; G.floats = []; G.fx = []; };
 ui = mountFigure({
   fig:'06', title:'Idle Hero', hint:'', size:[BXW, BYW, 36], palette:'mint', state:G, credit:false,
   scene, buttonsLabel:'英雄指令',
-  stats: () => [ { label:'等級', value:G.lvl }, { label:G.run ? '地圖' : '深度', value:lvlNow(), small:true }, { label:'金幣', value:tFmt(G.gold), small:true } ],
+  stats: () => { const xp = tClamp(G.xp/xpNeed(G.lvl)), hp = tClamp(G.h.hp/G.st.life), bar = (p, c) => `<span class="hbar"><i style="width:${(p*100).toFixed(0)}%;background:${c}"></i></span>`;
+    return [ { label:'等級', value:G.lvl + bar(xp, '#43c25c') }, { label:'生命', value:tFmt(Math.max(0, G.h.hp)) + bar(hp, '#e2483d'), small:true }, { label:G.run ? '地圖' : '深度', value:lvlNow(), small:true }, { label:'金幣', value:tFmt(G.gold), small:true } ]; },
   buttons:[
     { label:'技能', onClick:() => openModal('skills') },
     { label:'天賦盤', onClick:() => openModal('tree') },
     { label:'地圖', onClick:() => openModal('maps') },
-    { label:'模式', choices: () => [ { label:'推進(打守關者)', current:G.push, onClick:() => { G.push = true; logLine('模式:推進', '#231e16'); } }, { label:'原地刷怪', current:!G.push, onClick:() => { G.push = false; G.bossOut = false; logLine('模式:原地刷怪', '#231e16'); } } ] },
+    { label:'模式', choices: () => [ { label:'推進（打守關者）', current:G.push, onClick:() => { G.push = true; logLine('模式：推進', '#231e16'); } }, { label:'原地刷怪', current:!G.push, onClick:() => { G.push = false; G.bossOut = false; logLine('模式：原地刷怪', '#231e16'); } } ] },
     { label:'戰利品過濾', choices: () => ['全部撿','魔法以上','稀有以上'].map((n, i) => ({ label:n, current:G.filter === i, onClick:() => { G.filter = i; } })) },
-    { label:'混沌重鑄', choices: () => Object.keys(SLOTN).map(k => { const it = G.equip[k], cost = it ? 30*it.il + 20 : 0; return { label:`${SLOTN[k]}${it ? ` ${cost}g` : ''}`, disabled:!it || it.r === 3 || G.gold < cost, why:!it ? '這個欄位是空的' : it.r === 3 ? '暗金裝備不能重鑄' : `金幣不夠(要 ${cost}g)`, onClick:() => reroll(k) }; }) },
+    { label:'混沌重鑄', choices: () => Object.keys(SLOTN).map(k => { const it = G.equip[k], cost = it ? 30*it.il + 20 : 0; return { label:`${SLOTN[k]}${it ? ` ${cost}g` : ''}`, disabled:!it || it.r === 3 || G.gold < cost, why:!it ? '這個欄位是空的' : it.r === 3 ? '暗金裝備不能重鑄' : `金幣不夠（要 ${cost}g）`, onClick:() => reroll(k) }; }) },
     { label:'速度', choices: () => [1, 2, 4].map(n => ({ label:'×' + n, current:G.speed === n, onClick:() => { G.speed = n; } })) },
     { label:'存檔', onClick:() => openModal('save') },
   ],

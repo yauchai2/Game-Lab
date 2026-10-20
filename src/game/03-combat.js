@@ -4,7 +4,7 @@ function spawnPack(){
   const R = G.run, d = lvlNow(), mods = R ? R.map.mods : [], kills = R ? R.kills : G.kills, need = R ? R.need : G.need, bossOut = R ? R.bossOut : G.bossOut;
   const bossNow = (R || G.push) && kills >= need && !bossOut;
   let types;
-  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的守關者出現了!`, '#8e3fd1'); }
+  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的守關者出現了！`, '#8e3fd1'); }
   else { const n = [1,1,1,2,2,2,2,3,3][Math.floor(Math.random()*9)] + (mods.includes('more') ? 1 : 0); types = Array.from({ length:Math.min(n, 4) }, () => { const r = Math.random(); return d >= 3 && r < .2 ? 'brute' : r < .55 ? 'slime' : 'skel'; }); }
   const hpK = mods.includes('tough') ? 1.4 : 1, dmgK = mods.includes('deadly') ? 1.35 : 1, fastK = mods.includes('fast') ? 1.25 : 1;
   types.forEach((t, i) => {
@@ -26,7 +26,7 @@ function killMon(m){
   if (Math.random() < (m.boss && !R ? 1 : .03)) G.drops.push({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'map', map:makeMap(d + (Math.random() < .3 ? 1 : 0)), t:0 });
   if (m.boss){
     if (R){ completeRun(); }
-    else { G.bossOut = false; G.kills = 0; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗守關者!進入深度 ${G.depth}`, '#2f9e4f'); } }
+    else { G.bossOut = false; G.kills = 0; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗守關者！進入深度 ${G.depth}`, '#2f9e4f'); } }
   }
 }
 function completeRun(){
@@ -34,30 +34,30 @@ function completeRun(){
   for (let i = 0; i < extra; i++) G.drops.push({ x:tRand(8, 22), y:tRand(40, 50), kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(true), lvl), t:-i*.15 });
   const bonus = Math.round(40 * Math.pow(1.2, lvl-1) * (1 + q)); G.gold += bonus;
   for (let i = 0; i < 1 + (Math.random() < .5 ? 1 : 0); i++) G.drops.push({ x:tRand(8, 22), y:tRand(40, 50), kind:'map', map:makeMap(lvl + Math.floor(Math.random()*3)), t:-.5 - i*.2 });
-  G.mapsDone = (G.mapsDone || 0) + 1; logLine(`地圖完成!獎勵 +${bonus}g 與 ${extra} 件戰利品`, '#2f9e4f'); G.run = null; G.dirty = true;
+  G.mapsDone = (G.mapsDone || 0) + 1; logLine(`地圖完成！獎勵 +${bonus}g 與 ${extra} 件戰利品`, '#2f9e4f'); G.run = null; G.dirty = true;
 }
 function gainXp(xp){
   G.xp += xp;
-  while (G.xp >= xpNeed(G.lvl)){ G.xp -= xpNeed(G.lvl); G.lvl++; recalc(); G.h.hp = G.st.life; addFloat(HX + 3, HY, BZ + 24, 'LEVEL UP', '#2f9e4f', 4.6); logLine(`升級了!等級 ${G.lvl}(+1 天賦點)`, '#2f9e4f');
+  while (G.xp >= xpNeed(G.lvl)){ G.xp -= xpNeed(G.lvl); G.lvl++; recalc(); G.h.hp = G.st.life; addFloat(HX + 3, HY, BZ + 24, 'LEVEL UP', '#2f9e4f', 4.6); logLine(`升級了！等級 ${G.lvl}（+1 天賦點）`, '#2f9e4f');
     if (G.off) G.off.lvls++; }
 }
 
 /* ---------- loot handling ---------- */
 function pickup(d){
-  if (d.kind === 'gem'){ G.gems[d.id] = (G.gems[d.id] || 0) + 1; logLine(`獲得輔助寶石:${SUPPS[d.id].n}`, '#8e3fd1'); if (G.off) G.off.gems++; G.dirty = true; return; }
-  if (d.kind === 'map'){ if (G.maps.length < 15) { G.maps.push(d.map); logLine(`獲得地圖:${BIOMES[d.map.biome].n} Lv.${d.map.lvl}`, '#2f7fc4'); if (G.off) G.off.maps++; } else G.gold += 30*d.map.lvl; G.dirty = true; return; }
+  if (d.kind === 'gem'){ G.gems[d.id] = (G.gems[d.id] || 0) + 1; logLine(`獲得輔助寶石：${SUPPS[d.id].n}`, '#8e3fd1'); if (G.off) G.off.gems++; G.dirty = true; return; }
+  if (d.kind === 'map'){ if (G.maps.length < 15) { G.maps.push(d.map); logLine(`獲得地圖：${BIOMES[d.map.biome].n} Lv. ${d.map.lvl}`, '#2f7fc4'); if (G.off) G.off.maps++; } else G.gold += 30*d.map.lvl; G.dirty = true; return; }
   const it = d.it, rc = RAR[it.r].c;
   if (it.r < G.filter){ G.gold += itemValue(it); return; }
   const cur = G.equip[it.slot], cand = calc({ ...G.equip, [it.slot]:it });
   if (!cur || cand.power > G.st.power * 1.02){
     if (cur) G.gold += itemValue(cur);
-    G.equip[it.slot] = it; recalc(); logLine(`裝備 ${it.name}`, rc); addFloat(HX + 3, HY, BZ + 22, '升級!', rc, 3.8); if (G.off) G.off.eq++;
-  } else { G.gold += itemValue(it); if (it.r >= 2) logLine(`賣掉 ${it.name}(沒有更強)`, '#9a93a6'); }
+    G.equip[it.slot] = it; recalc(); logLine(`裝備 ${it.name}`, rc); addFloat(HX + 3, HY, BZ + 22, '升級！', rc, 3.8); if (G.off) G.off.eq++;
+  } else { G.gold += itemValue(it); if (it.r >= 2) logLine(`賣掉 ${it.name}（沒有更強）`, '#9a93a6'); }
 }
 function reroll(slot){
   const it = G.equip[slot]; if (!it) return; const cost = 30 * it.il + 20;
   if (G.gold < cost || it.r === 3) return; G.gold -= cost;
-  const n = makeItem(slot, it.r, it.il); G.equip[slot] = n; recalc(); logLine(`混沌重鑄:${n.name}`, RAR[n.r].c);
+  const n = makeItem(slot, it.r, it.il); G.equip[slot] = n; recalc(); logLine(`混沌重鑄：${n.name}`, RAR[n.r].c);
 }
 
 /* ---------- combat ---------- */

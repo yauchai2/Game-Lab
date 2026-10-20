@@ -40,18 +40,18 @@ const RARE_NAMES = { weapon:['烈焰之牙','深淵之刃','寒鴉利爪','雷�
 const UNIQUES = { weapon:{ name:'燼火長劍', aff:['dmg','fire','crit','aps'] }, armor:{ name:'不滅者之軀', aff:['life','armor','regen','leech'] }, ring:{ name:'賭徒的最後一擲', aff:['crit','cm','inc','aps'] } };
 
 const SKILLS = {
-  FIRE:  { n:'火球',     lvl:1,  cd:2.6, mult:2.6, el:'fire',  col:'#ff7a2a', tg:1.4, d:'單體火球,命中時爆炸' },
-  FROST: { n:'冰霜新星', lvl:5,  cd:4.2, mult:1.9, el:'cold',  col:'#7fd3ff', tg:1.8, d:'以自身為中心的冰環,命中全部敵人並凍結 1.4 秒' },
-  CHAIN: { n:'連鎖閃電', lvl:10, cd:3.2, mult:2.3, el:'light', col:'#ffe45c', tg:1.7, d:'閃電在 3 個敵人間跳躍(後續每跳 70%)' },
-  METEOR:{ n:'隕石術',   lvl:18, cd:8.0, mult:6.2, el:'fire',  col:'#ff4a1c', tg:1.9, d:'延遲落下的隕石,轟炸全場' },
+  FIRE:  { n:'火球',     lvl:1,  cd:2.6, mult:2.6, el:'fire',  col:'#ff7a2a', tg:1.4, d:'單體火球，命中時爆炸' },
+  FROST: { n:'冰霜新星', lvl:5,  cd:4.2, mult:1.9, el:'cold',  col:'#7fd3ff', tg:1.8, d:'以自身為中心的冰環，命中全部敵人並凍結 1.4 秒' },
+  CHAIN: { n:'連鎖閃電', lvl:10, cd:3.2, mult:2.3, el:'light', col:'#ffe45c', tg:1.7, d:'閃電在 3 個敵人間跳躍（後續每跳 70%）' },
+  METEOR:{ n:'隕石術',   lvl:18, cd:8.0, mult:6.2, el:'fire',  col:'#ff4a1c', tg:1.9, d:'延遲落下的隕石，轟炸全場' },
 };
 const SLOT_LV = [1, 5, 12];
 const SUPPS = {
-  HEAVY:{ n:'強力', d:'此技能傷害 +45%' }, AREA:{ n:'範圍', d:'火球命中全部敵人(-15%);連鎖多跳 2 次' }, HASTE:{ n:'急速', d:'此技能冷卻 -30%' },
-  LEECH:{ n:'吸血', d:'此技能傷害的 12% 轉為生命' }, TWIN:{ n:'雙子', d:'0.25 秒後重複施放一次(60% 傷害)' }, CRITS:{ n:'致命', d:'此技能暴擊率 +30%' },
+  HEAVY:{ n:'強力', d:'此技能傷害 +45%' }, AREA:{ n:'範圍', d:'火球命中全部敵人（-15%）；連鎖多跳 2 次' }, HASTE:{ n:'急速', d:'此技能冷卻 -30%' },
+  LEECH:{ n:'吸血', d:'此技能傷害的 12% 轉為生命' }, TWIN:{ n:'雙子', d:'0.25 秒後重複施放一次（60% 傷害）' }, CRITS:{ n:'致命', d:'此技能暴擊率 +30%' },
 };
 const MODS = {
-  more:  { n:'怪群更大(+1 隻)', q:.25 }, fast:{ n:'怪物更迅捷', q:.15 }, tough:{ n:'怪物生命 +40%', q:.2 },
+  more:  { n:'怪群更大（+1 隻）', q:.25 }, fast:{ n:'怪物更迅捷', q:.15 }, tough:{ n:'怪物生命 +40%', q:.2 },
   deadly:{ n:'怪物傷害 +35%', q:.2 }, rich:{ n:'金幣 +60%', q:.1 }, lucky:{ n:'稀有度提升', q:.2 },
 };
 
