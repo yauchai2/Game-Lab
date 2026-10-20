@@ -3,12 +3,12 @@
    skills + supports, passive tree, maps, save + offline progress
    ===================================================================== */
 const BXW = 30, BYW = 74, BZ = 3;
-const HX = 15, HY = 63;
+const HX = 15, HY = 36;   // 主角站在島的正中央，怪物從四面八方來
 // 怪物圍住英雄的站位：內外兩圈、四方八面都有，讓一大群怪可以同時圍上來
 const SLOTS = [];
 for (let i = 0; i < 8; i++){ const a = -Math.PI/2 + i*Math.PI/4; SLOTS.push([HX + Math.cos(a)*15, HY + Math.sin(a)*15]); }
 for (let i = 0; i < 8; i++){ const a = -Math.PI/2 + (i + .5)*Math.PI/4; SLOTS.push([HX + Math.cos(a)*21, HY + Math.sin(a)*21]); }
-const SPAWN = [15,9];
+const SPAWN = [15,-6];   // 守關者的傳送門在北邊
 const BONE  = { l:'#f4efde', m:'#d9d2ba', d:'#a39b82' };
 const STONE = { l:'#cfcabc', m:'#aaa598', d:'#7b766a' };
 const BIOMES = [
@@ -63,6 +63,12 @@ const CARDS = {
   V_SHATTER:{ n:'冷凍碎裂', d:'被凍結的怪物受到技能傷害 +40%，每張再 +40%', sk:'FROST', max:3 },
   V_FORK:{ n:'多重頻道', d:'紅外線多跳 2 次，每張再 +2 次', sk:'CHAIN', max:3 },
   V_ECHO:{ n:'雙衛星', d:'衛星墜落後 0.6 秒再落一顆（50% 傷害）', sk:'METEOR', max:1 },
+};
+/* 可選角色：外觀（髮色、褲色、膚色）與被動；用最深深度解鎖 */
+const CHARS = {
+  street:{ n:'阿街', d:'街頭小子。傷害 +10%', eff:{ inc:10 }, need:0, hair:null, pants:null, skin:null },
+  frost: { n:'小冷', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
+  volt:  { n:'電波仔', d:'訊號滿格。暴擊率 +6%，閃電傷害 +30%', eff:{ crit:6, light:30 }, need:12, hair:'#e0b020', pants:'#8a4a8f', skin:'#e2ac86' },
 };
 const MODS = {
   more:  { n:'怪群更大（+1 隻）', q:.25 }, fast:{ n:'怪物更迅捷', q:.15 }, tough:{ n:'怪物生命 +40%', q:.2 },

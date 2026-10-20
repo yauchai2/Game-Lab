@@ -26,7 +26,7 @@ function panelHtml(){
   const stats = `<li>生命 ${tFmt(Math.max(0, h.hp))} / ${tFmt(s.life)}</li><li>預估 DPS ${tFmt(s.dps)}</li><li>暴擊 ${s.crit.toFixed(0)}% × ${s.cm.toFixed(0)}%</li><li>攻速 ${s.aps.toFixed(2)}/秒　減傷 ${(s.red*100).toFixed(0)}%</li><li>${prog}</li><li>天賦點 ${passPoints()}　地圖 ${G.maps.length}　死亡 ${G.deaths}</li>`;
   return `${slotHtml('weapon')}${slotHtml('armor')}${slotHtml('ring')}
     <div class="rc"><div class="rh">技能</div><ul>${sk}</ul></div>
-    <div class="rc"><div class="rh">狀態</div><ul>${stats}</ul></div>${cardsHtml()}
+    <div class="rc"><div class="rh">狀態</div><ul>${stats}</ul></div>${charHtml()}${cardsHtml()}
     <div class="rc wide"><div class="rh">事件</div><ol class="log">${G.log.map(l => `<li style="color:${l.col}">${l.txt}</li>`).join('')}</ol></div>`;
 }
 let modalTab = 'skills', resetArm = false;
@@ -118,6 +118,9 @@ function openCards(){
   showOverlay(`<b>升級了！選一張改裝卡</b><div class="mute">還有 ${G.picks} 次選擇。遊戲不會暫停。</div><div class="cards">${h}</div><button class="mb" onclick="hideOverlay()">稍後再選</button>`);
 }
 function pickCard(id){ SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
+function charHtml(){
+  return `<div class="rc"><div class="rh">角色</div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true">${c.n}${charOk(id) ? '' : `<span class="mute">最深 ${c.need} 層解鎖</span>`}</button>`).join('')}</div><div class="mute">${CHARS[G.char].d}</div></div>`;
+}
 function cardsHtml(){
   const e = Object.entries(G.cards); const pend = G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button>` : '';
   return `<div class="rc"><div class="rh">改裝卡</div>${pend}<ul>${e.length ? e.map(([id, n]) => `<li><b>${CARDS[id].n}</b> ×${n} <span class="mute">${CARDS[id].d.split('，')[0]}</span></li>`).join('') : '<li class="mute">升級時可選擇</li>'}</ul></div>`;
@@ -160,6 +163,7 @@ function setupPanel(){
     .mc ul{margin:4px 0 6px;padding-left:16px} .hint{color:var(--muted);font-size:11.5px;margin:4px 0 8px;line-height:1.5} .hint b{color:var(--ink)}
     .srow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px} select,.sv{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:3px 6px;max-width:100%}
     .mc>select{display:block;margin:6px 0} .tree{width:100%;max-width:520px;display:block;margin:0 auto 6px;background:radial-gradient(circle,rgba(111,196,245,.22) 1.6px,transparent 2px) 0 0/16px 16px,linear-gradient(#ffffff,#e6f1ff);border:3px solid #fff;box-shadow:0 0 0 2px #aab8ee;border-radius:18px} .tn.open circle,.tn.open polygon{animation:tp 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center} @keyframes tp{50%{transform:scale(1.12)}}
+    .chars{display:flex;gap:6px;margin:4px 0}.chr{font:inherit;flex:1;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:4px;cursor:pointer;display:flex;flex-direction:column;font-size:13px}.chr.on{background:#d9e6ff;box-shadow:inset 0 0 0 2px #4a7fdc}.chr[disabled]{opacity:.5;cursor:default}.chr .mute{font-size:10px}
     .cards{display:flex;gap:8px;margin:10px 0}.mbox.small:has(.cards){width:min(470px,94vw)}
     .card{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:8px 10px;flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:4px;text-align:left;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
     .card.var{background:#efe3ff;border-color:#8e3fd1}.card .ct{font-size:11px;opacity:.7}.card .cd{font-size:12px}.card:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
@@ -276,7 +280,7 @@ function setupPanel(){
   document.body.append(m, o);
   if (matchMedia('(max-width:560px) and (orientation:portrait)').matches){   // 手機：指令按鈕收進「選單」分頁，面板常駐在戰鬥畫面下方
     document.body.classList.add('m'); const mm = document.createElement('div'); mm.id = 'mmenu'; mm.hidden = true; m.querySelector('.mbox').insertBefore(mm, $('mbody'));
-    const b = $('btns'); if (b){ mm.appendChild(b); b.querySelectorAll('.act').forEach(x => { if (['技能', '天賦盤', '地圖', '存檔'].includes(x.textContent.trim())) (x.closest('.stepwrap') || x).style.display = 'none'; }); }   // 這四個已經是分頁 m.hidden = false; modalTab = 'char';
+    const b = $('btns'); if (b){ mm.appendChild(b); b.querySelectorAll('.act').forEach(x => { if (['技能', '天賦盤', '地圖', '存檔'].includes(x.textContent.trim())) (x.closest('.stepwrap') || x).style.display = 'none'; }); } m.hidden = false; modalTab = 'char';   // 這四個已經是分頁
   }
   const draw = () => { if (MOB()){ if (modalTab === 'char' && !document.querySelector('#mbody :focus')) renderModal(); return; } el.innerHTML = panelHtml(); };
   setInterval(draw, 300); draw();

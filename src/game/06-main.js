@@ -26,6 +26,7 @@ ui = mountFigure({
     { label:'存檔', onClick:() => openModal('save') },
   ],
   params:(s, q) => {
+    if (q.has('char') && CHARS[q.get('char')]){ G.char = q.get('char'); recalc(); }
     if (q.has('lvl')){ G.lvl = +q.get('lvl'); recalc(); }
     if (q.has('depth')){ G.depth = +q.get('depth'); G.maxDepth = Math.max(G.maxDepth, G.depth); }
     if (q.has('speed')) G.speed = +q.get('speed');

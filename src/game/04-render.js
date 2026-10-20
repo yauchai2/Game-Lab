@@ -77,6 +77,7 @@ function rigModel(def, recolor, mf){   // 依 BONES 的階層組成骨架：子�
 function buildHero(at, ar, wt, wr){
   const g = new T3.Group(), steel = ['#cfd6e0', '#bcd0f0', '#f4e3a8', '#f2b09a'][ar];
   const recolor = { '#e9edf6':['#e8eef5', '#9fb8e8', '#f2d27a', '#f09a8a'][ar], '#6f8f4a':at >= 1 ? '#7d8fb8' : '#6f8f4a', '#2b2552':at >= 2 ? '#3a3f8f' : '#2b2552' };
+  const ch = CHARS[G.char]; if (ch.hair) recolor['#2b2552'] = ch.hair; if (ch.pants){ recolor['#6f8f4a'] = ch.pants; recolor['#5d7a3c'] = ch.pants; } if (ch.skin) recolor['#f4cfb4'] = ch.skin;
   const B = rigModel(HERO_MODEL, recolor), head = B.head; g.add(B.hips); g.userData.B = B; g.userData.head = head;
   head.scale.setScalar(2.0); head.position.y += .5;
   if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 7.4, 0, B.torso); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 4.4, 3.0, B.torso); }
@@ -230,11 +231,18 @@ function buildGround(bi){
   const rows = Math.round(ID/2.5) - 16, cv = document.createElement('canvas'); cv.width = 4; cv.height = rows + 16; const cx = cv.getContext('2d');
   for (let r = 0; r < rows + 16; r++) for (let c = 0; c < 4; c++){ cx.fillStyle = (r + c) % 2 ? '#fff6fb' : ['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]; cx.fillRect(c, r, 1, 1); }
   const tx = new T3.CanvasTexture(cv); tx.magFilter = T3.NearestFilter; tx.minFilter = T3.NearestFilter; tx.colorSpace = T3.SRGBColorSpace;
-  mk(new T3.PlaneGeometry(10, ID).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:tx }), 15, BZ + .08, icy, g);
+  const cvh = document.createElement('canvas'); cvh.width = rows + 16; cvh.height = 4; { const c2 = cvh.getContext('2d'); for (let r = 0; r < rows + 16; r++) for (let c = 0; c < 4; c++){ c2.fillStyle = (r + c) % 2 ? '#fff6fb' : ['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]; c2.fillRect(r, c, 1, 1); } }
+  const txh = new T3.CanvasTexture(cvh); txh.magFilter = txh.minFilter = T3.NearestFilter; txh.colorSpace = T3.SRGBColorSpace;
+  mk(new T3.PlaneGeometry(10, ID).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:tx }), 15, BZ + .08, icy, g);   // 十字步道：連到四個出口
   mk(new T3.BoxGeometry(11, .3, ID), m3(B.board.d), 15, BZ - .1, icy, g);
+  mk(new T3.PlaneGeometry(IW, 10).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:txh }), icx, BZ + .09, 15 + 21, g);
+  mk(new T3.BoxGeometry(IW, .3, 11), m3(B.board.d), icx, BZ - .12, icy, g);
+  // 中央廣場：主角站的圓形平台，外圈粉色
+  mk(cylG(15, 15.6, .5, 28), m3(B.board.d), HX, BZ + .05, HY, g); mk(cylG(14, 14, .6, 28), m3('#fff6fb'), HX, BZ + .1, HY, g);
+  mk(new T3.RingGeometry(9.6, 10.6, 28).rotateX(-Math.PI/2), basic(['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]), HX, BZ + .42, HY, g); mk(new T3.RingGeometry(4.2, 4.8, 24).rotateX(-Math.PI/2), basic(B.glow, .8), HX, BZ + .43, HY, g);
   // 高低台階：離步道越遠越高，一格 6×6，頂面是草（或沙、雪），側面是土
   const top = m3(B.t1), side = m3(B.board.d), lip = m3(B.t2), ub = geo('ubox', () => new T3.BoxGeometry(1, 1, 1)), C = 6;
-  const hAt = (i, j) => { const x = i*C + C/2, fr = x > cx0, d = Math.abs(x - cx0) - (fr ? 26 : 20); if (d < 0) return 0; if (!fr && (j === Y0/C || j === Y1/C - 1) && aRnd(i + j*5) < .5) return 3; const h = Math.max(0, Math.floor(d/9 + aRnd(i*31 + j*17)*1.3 - .2))*3; return fr ? Math.min(3, h) : h; };   // 鏡頭在右前方：右側台階壓低，免得擋住人物
+  const hAt = (i, j) => { const x = i*C + C/2, y = j*C + C/2, dx = x - HX, dy = y - HY, d = Math.hypot(dx, dy); if (d < 40 || Math.abs(dx) < 9 || Math.abs(dy) < 9) return 0; const front = dx > 0 && dy > 0, h = Math.floor((d - 40)/9 + aRnd(i*31 + j*17)*1.4)*3 + 3; return Math.min(front ? 3 : 6, h); };   // 中央是平地戰場，四個角落是高台；鏡頭在右前方，所以前方那個角落壓低
   const tops = [];
   for (let i = X0/C; i < X1/C; i++) for (let j = Y0/C; j < Y1/C; j++){
     const h = hAt(i, j); if (!h) continue; const x = i*C + C/2, z = j*C + C/2;
@@ -242,16 +250,14 @@ function buildGround(bi){
     mk(ub, lip, x, BZ + h + .05, z, g).scale.set(C - .6, .1, C - .6);
     tops.push([x, BZ + h, z, i, j]);
   }
-  // 水道與木橋：步道右側一條小河，橫跨一座木橋
-  const wc = ['#7fd0f5', '#7fd0f5', '#cfefff', '#ff8fb0'][bi], wx = cx0 + 19;
-  mk(new T3.BoxGeometry(6, .5, ID), m3(B.board.d), wx, BZ - .2, icy, g);
-  mk(new T3.PlaneGeometry(5, ID).rotateX(-Math.PI/2), m3(wc, { emissive:bi === 3 ? wc : '#000000', emissiveIntensity:bi === 3 ? .35 : 0, transparent:true, opacity:.88 }), wx, BZ + .1, icy, g);
-  for (let k = 0; k < 14; k++) mk(new T3.BoxGeometry(1.6 + aRnd(k)*2, .06, .25), basic('#ffffff', .8), wx - 1.5 + aRnd(k + 50)*3, BZ + .16, Y0 + 4 + k*7.5 + aRnd(k + 9)*3, g);
-  for (const by of [24, 52]){ for (let k = -3; k <= 3; k++) mk(new T3.BoxGeometry(8, .45, 1.1), m3(k % 2 ? '#c99a62' : '#b5844f'), wx, BZ + .7, by + k*1.25, g); for (const sx of [-1, 1]) for (const sy of [-4, 4]) mk(cylG(.35, .35, 2.6, 5), m3('#8a6040'), wx + sx*3.6, BZ + 1.3, by + sy, g); }
+  // 四個出口：南、西、東各一座發光拱門，北邊是守關者的傳送門
+  const arch = (x, y, rot) => { const a = new T3.Group(); a.position.set(x, BZ, y); a.rotation.y = rot; g.add(a); for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.8, 11, 1.8), m3('#d6d0ea'), sx*6.5, 5.5, 0, a); mk(new T3.BoxGeometry(15, 1.8, 2.2), m3('#d6d0ea'), 0, 11.2, 0, a); mk(new T3.BoxGeometry(11, .7, .5), basic(B.glow), 0, 11.2, 1.2, a); mk(new T3.BoxGeometry(11, .7, .5), basic(B.glow), 0, 11.2, -1.2, a); };
+  arch(15, Y1 - 8, 0); arch(X0 + 8, HY, Math.PI/2); arch(X1 - 8, HY, Math.PI/2);
+  const wx = -999;
   // 樹、樹樁、石頭、花：放在台階頂面與平地邊緣
   tops.forEach(([x, y, z, i, j], n) => {
     const r = aRnd(i*13 + j*7 + 3);
-    if (r < (x > cx0 ? (x > cx0 + 30 ? .22 : 0) : .3)) treeAt(g, bi, x + (aRnd(n)-.5)*2, y, z + (aRnd(n + 1)-.5)*2, .75 + aRnd(n + 2)*.5);
+    if (r < .32) treeAt(g, bi, x + (aRnd(n)-.5)*2, y, z + (aRnd(n + 1)-.5)*2, .75 + aRnd(n + 2)*.5);
     else if (r < .48) mk(cylG(1.2, 1.4, 1.3, 7), m3('#b5844f'), x, y + .65, z, g);
     else if (r < .58) mk(new T3.DodecahedronGeometry(1.2, 0), m3('#c8c2e0'), x, y + .7, z, g).scale.set(1.2, .8, 1);
   });
@@ -263,7 +269,6 @@ function buildGround(bi){
     else if (n % 2) mk(new T3.BoxGeometry(3.4, .12, .5), basic('#ff8fb0'), x, BZ + .15, y, g).rotation.y = aRnd(n)*3;
     else mk(new T3.DodecahedronGeometry(.6, 0), m3(B.board.d), x, BZ + .6, y, g);
   }
-  for (let n = 0; n < 6; n++) treeAt(g, bi, cx0 - 13 - aRnd(n + 70)*4, BZ, -10 + n*15 + aRnd(n)*4, .7 + aRnd(n + 80)*.3);
   return bake(g);
 }
 function bake(g){   // 把靜態場景依材質合併成少數幾個網格，上千個方塊與樹也只要十幾次繪製
@@ -442,9 +447,9 @@ function scene(){
     R3.bi = bi;
     for (const o of [R3.gnd, R3.portal, ...R3.decor]) o && R3.world.remove(o);
     R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];
-    DECO[bi].forEach(([kind, x, y, k]) => { for (const [dx, dy] of [[0, 0], [x < 15 ? -9 : 9, (y*7) % 11 - 5]]){ const o = buildDeco(kind, k); o.scale.multiplyScalar(CK); at3(o, x + dx, Math.max(4, Math.min(BYW - 4, y + dy)), BZ); R3.world.add(o); R3.decor.push(o); } });
-    [[3.5, 15], [26.5, 15]].forEach(([x, y]) => { const o = buildTorch(); o.scale.multiplyScalar(CK); at3(o, x, y, BZ); R3.world.add(o); R3.decor.push(o); });
-    R3.sign = buildSign(); R3.sign.scale.multiplyScalar(CK); at3(R3.sign, 4, 66, BZ); R3.world.add(R3.sign); R3.decor.push(R3.sign);
+    DECO[bi].forEach(([kind, x, y, k], n) => { for (let j = 0; j < 2; j++){ let a = (n*2 + j)*.95 + .5, px, py; for (let t = 0; t < 8; t++){ px = HX + Math.cos(a)*(22 + (n*5 + j*3)%8)*1.15; py = HY + Math.sin(a)*(22 + (n*5 + j*3)%8); if (Math.abs(px - HX) > 8 && Math.abs(py - HY) > 8) break; a += .45; } const o = buildDeco(kind, k); o.scale.multiplyScalar(CK); at3(o, px, py, BZ); R3.world.add(o); R3.decor.push(o); } });
+    [[-9, -9], [9, -9], [-9, 9], [9, 9]].forEach(([dx, dy]) => { const o = buildTorch(); o.scale.multiplyScalar(CK); at3(o, HX + dx*1.3, HY + dy*1.3, BZ); R3.world.add(o); R3.decor.push(o); });
+    R3.sign = buildSign(); R3.sign.scale.multiplyScalar(CK); at3(R3.sign, HX - 13, HY + 10, BZ); R3.world.add(R3.sign); R3.decor.push(R3.sign);
     for (const [k, e] of R3.ent){ R3.world.remove(e); R3.ent.delete(k); }   // 換生態時怪物與掉落物重建（顏色隨生態）
   }
   const t = G.time;
@@ -454,7 +459,7 @@ function scene(){
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
   pu.glow.scale.setScalar((3.2 + (pulse ? 1.2*Math.sin(pulse.t*3.14) : 0))/3.2); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
   // 主角
-  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead > 0].join();
+  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead > 0, G.char].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero) R3.world.remove(R3.hero); R3.hero = G.h.dead > 0 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
   if (G.h.dead > 0){ at3(R3.hero, HX, HY, BZ); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 怪物與掉落物

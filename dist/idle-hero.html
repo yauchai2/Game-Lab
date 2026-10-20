@@ -414,12 +414,12 @@ function mountFigure(cfg){
    skills + supports, passive tree, maps, save + offline progress
    ===================================================================== */
 const BXW = 30, BYW = 74, BZ = 3;
-const HX = 15, HY = 63;
+const HX = 15, HY = 36;   // 主角站在島的正中央，怪物從四面八方來
 // 怪物圍住英雄的站位：內外兩圈、四方八面都有，讓一大群怪可以同時圍上來
 const SLOTS = [];
 for (let i = 0; i < 8; i++){ const a = -Math.PI/2 + i*Math.PI/4; SLOTS.push([HX + Math.cos(a)*15, HY + Math.sin(a)*15]); }
 for (let i = 0; i < 8; i++){ const a = -Math.PI/2 + (i + .5)*Math.PI/4; SLOTS.push([HX + Math.cos(a)*21, HY + Math.sin(a)*21]); }
-const SPAWN = [15,9];
+const SPAWN = [15,-6];   // 守關者的傳送門在北邊
 const BONE  = { l:'#f4efde', m:'#d9d2ba', d:'#a39b82' };
 const STONE = { l:'#cfcabc', m:'#aaa598', d:'#7b766a' };
 const BIOMES = [
@@ -475,6 +475,12 @@ const CARDS = {
   V_FORK:{ n:'多重頻道', d:'紅外線多跳 2 次，每張再 +2 次', sk:'CHAIN', max:3 },
   V_ECHO:{ n:'雙衛星', d:'衛星墜落後 0.6 秒再落一顆（50% 傷害）', sk:'METEOR', max:1 },
 };
+/* 可選角色：外觀（髮色、褲色、膚色）與被動；用最深深度解鎖 */
+const CHARS = {
+  street:{ n:'阿街', d:'街頭小子。傷害 +10%', eff:{ inc:10 }, need:0, hair:null, pants:null, skin:null },
+  frost: { n:'小冷', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
+  volt:  { n:'電波仔', d:'訊號滿格。暴擊率 +6%，閃電傷害 +30%', eff:{ crit:6, light:30 }, need:12, hair:'#e0b020', pants:'#8a4a8f', skin:'#e2ac86' },
+};
 const MODS = {
   more:  { n:'怪群更大（+1 隻）', q:.25 }, fast:{ n:'怪物更迅捷', q:.15 }, tough:{ n:'怪物生命 +40%', q:.2 },
   deadly:{ n:'怪物傷害 +35%', q:.2 }, rich:{ n:'金幣 +60%', q:.1 }, lucky:{ n:'稀有度提升', q:.2 },
@@ -513,7 +519,7 @@ const TREE = (() => {
 const G = {
   time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:24, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
   equip:{ weapon:null, armor:null, ring:null }, gems:{ HEAVY:1, AREA:1 }, slots:['FIRE', null, null], supp:{ FIRE:['HEAVY', null], FROST:[null, null], CHAIN:[null, null], METEOR:[null, null] },
-  pass:[], cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2 },
+  pass:[], char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2 },
   h:{ hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
   mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
 };
@@ -555,6 +561,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
   const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0 };
   const baseLife = 90 + 14*G.lvl;
   for (const k in equip){ const it = equip[k]; if (!it) continue; for (const a of [it.imp, ...it.aff]) s[STAT_KEY[a.k]] += a.v; }
+  for (const [k, v] of Object.entries(CHARS[G.char].eff)) s[k] += v;
   for (const [id, n] of Object.entries(G.cards)){ const c = CARDS[id]; if (c && c.st) s[c.st] += c.v*n; }
   for (const id of pass){ const n = TREE[id]; if (!n) continue; for (const [k, v] of Object.entries(n.eff)) s[k === 'dmgPct' ? 'inc' : k] += v; }
   s.life = (baseLife + s.life) * (1 + s.lifePct/100);
@@ -576,6 +583,8 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
   return s;
 }
 function recalc(){ const old = G.st; G.st = calc(); const h = G.h; h.hp = old ? h.hp * G.st.life / old.life : G.st.life; G.dirty = true; }
+const charOk = id => G.maxDepth >= CHARS[id].need;
+function pickChar(id){ if (!CHARS[id] || !charOk(id)) return; G.char = id; recalc(); logLine(`角色：${CHARS[id].n}`, '#2b6fa8'); SFX('card'); }
 const cardN = id => G.cards[id] || 0;
 function rollCards(n = 3){
   const pool = Object.entries(CARDS).filter(([id, c]) => c.sk ? G.slots.includes(c.sk) && cardN(id) < c.max : true).map(([id, c]) => ({ id, w:c.sk ? 4 : 10 })), out = [];
@@ -591,11 +600,11 @@ function addFx(e){ if (!G.offline) G.fx.push(e); }
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
 function serialize(){ return { v:2, t:Date.now(), lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
-  equip:G.equip, gems:G.gems, slots:G.slots, supp:G.supp, pass:G.pass, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:G.h.hp, log:G.log.slice(0, 5) }; }
+  equip:G.equip, gems:G.gems, slots:G.slots, supp:G.supp, pass:G.pass, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:G.h.hp, log:G.log.slice(0, 5) }; }
 function applySave(o){
   if (!o || o.v !== 2) return false;
-  for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','slots','supp','pass','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
-  G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; G.mons = []; G.drops = []; G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
+  for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','slots','supp','pass','char','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
+  G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!CHARS[G.char]) G.char = 'street'; G.mons = []; G.drops = []; G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
   for (const id of Object.keys(SKILLS)) if (!G.supp[id]) G.supp[id] = [null, null];
   recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
@@ -703,9 +712,9 @@ function killMon(m){
 }
 function completeRun(){
   const R = G.run, q = runQ(), lvl = R.map.lvl, extra = 2 + Math.ceil(q*4);
-  for (let i = 0; i < extra; i++) G.drops.push({ x:tRand(8, 22), y:tRand(40, 50), kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(true), lvl), t:-i*.15 });
+  for (let i = 0; i < extra; i++) G.drops.push({ x:tRand(8, 22), y:tRand(HY + 6, HY + 16), kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(true), lvl), t:-i*.15 });
   const bonus = Math.round(40 * Math.pow(1.2, lvl-1) * (1 + q)); G.gold += bonus;
-  for (let i = 0; i < 1 + (Math.random() < .5 ? 1 : 0); i++) G.drops.push({ x:tRand(8, 22), y:tRand(40, 50), kind:'map', map:makeMap(lvl + Math.floor(Math.random()*3)), t:-.5 - i*.2 });
+  for (let i = 0; i < 1 + (Math.random() < .5 ? 1 : 0); i++) G.drops.push({ x:tRand(8, 22), y:tRand(HY + 6, HY + 16), kind:'map', map:makeMap(lvl + Math.floor(Math.random()*3)), t:-.5 - i*.2 });
   G.mapsDone = (G.mapsDone || 0) + 1; logLine(`地圖完成！獎勵 +${bonus}g 與 ${extra} 件戰利品`, '#2f9e4f'); G.run = null; G.dirty = true;
 }
 function gainXp(xp){
@@ -939,6 +948,7 @@ function rigModel(def, recolor, mf){   // 依 BONES 的階層組成骨架：子�
 function buildHero(at, ar, wt, wr){
   const g = new T3.Group(), steel = ['#cfd6e0', '#bcd0f0', '#f4e3a8', '#f2b09a'][ar];
   const recolor = { '#e9edf6':['#e8eef5', '#9fb8e8', '#f2d27a', '#f09a8a'][ar], '#6f8f4a':at >= 1 ? '#7d8fb8' : '#6f8f4a', '#2b2552':at >= 2 ? '#3a3f8f' : '#2b2552' };
+  const ch = CHARS[G.char]; if (ch.hair) recolor['#2b2552'] = ch.hair; if (ch.pants){ recolor['#6f8f4a'] = ch.pants; recolor['#5d7a3c'] = ch.pants; } if (ch.skin) recolor['#f4cfb4'] = ch.skin;
   const B = rigModel(HERO_MODEL, recolor), head = B.head; g.add(B.hips); g.userData.B = B; g.userData.head = head;
   head.scale.setScalar(2.0); head.position.y += .5;
   if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 7.4, 0, B.torso); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 4.4, 3.0, B.torso); }
@@ -1092,11 +1102,18 @@ function buildGround(bi){
   const rows = Math.round(ID/2.5) - 16, cv = document.createElement('canvas'); cv.width = 4; cv.height = rows + 16; const cx = cv.getContext('2d');
   for (let r = 0; r < rows + 16; r++) for (let c = 0; c < 4; c++){ cx.fillStyle = (r + c) % 2 ? '#fff6fb' : ['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]; cx.fillRect(c, r, 1, 1); }
   const tx = new T3.CanvasTexture(cv); tx.magFilter = T3.NearestFilter; tx.minFilter = T3.NearestFilter; tx.colorSpace = T3.SRGBColorSpace;
-  mk(new T3.PlaneGeometry(10, ID).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:tx }), 15, BZ + .08, icy, g);
+  const cvh = document.createElement('canvas'); cvh.width = rows + 16; cvh.height = 4; { const c2 = cvh.getContext('2d'); for (let r = 0; r < rows + 16; r++) for (let c = 0; c < 4; c++){ c2.fillStyle = (r + c) % 2 ? '#fff6fb' : ['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]; c2.fillRect(r, c, 1, 1); } }
+  const txh = new T3.CanvasTexture(cvh); txh.magFilter = txh.minFilter = T3.NearestFilter; txh.colorSpace = T3.SRGBColorSpace;
+  mk(new T3.PlaneGeometry(10, ID).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:tx }), 15, BZ + .08, icy, g);   // 十字步道：連到四個出口
   mk(new T3.BoxGeometry(11, .3, ID), m3(B.board.d), 15, BZ - .1, icy, g);
+  mk(new T3.PlaneGeometry(IW, 10).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:txh }), icx, BZ + .09, 15 + 21, g);
+  mk(new T3.BoxGeometry(IW, .3, 11), m3(B.board.d), icx, BZ - .12, icy, g);
+  // 中央廣場：主角站的圓形平台，外圈粉色
+  mk(cylG(15, 15.6, .5, 28), m3(B.board.d), HX, BZ + .05, HY, g); mk(cylG(14, 14, .6, 28), m3('#fff6fb'), HX, BZ + .1, HY, g);
+  mk(new T3.RingGeometry(9.6, 10.6, 28).rotateX(-Math.PI/2), basic(['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]), HX, BZ + .42, HY, g); mk(new T3.RingGeometry(4.2, 4.8, 24).rotateX(-Math.PI/2), basic(B.glow, .8), HX, BZ + .43, HY, g);
   // 高低台階：離步道越遠越高，一格 6×6，頂面是草（或沙、雪），側面是土
   const top = m3(B.t1), side = m3(B.board.d), lip = m3(B.t2), ub = geo('ubox', () => new T3.BoxGeometry(1, 1, 1)), C = 6;
-  const hAt = (i, j) => { const x = i*C + C/2, fr = x > cx0, d = Math.abs(x - cx0) - (fr ? 26 : 20); if (d < 0) return 0; if (!fr && (j === Y0/C || j === Y1/C - 1) && aRnd(i + j*5) < .5) return 3; const h = Math.max(0, Math.floor(d/9 + aRnd(i*31 + j*17)*1.3 - .2))*3; return fr ? Math.min(3, h) : h; };   // 鏡頭在右前方：右側台階壓低，免得擋住人物
+  const hAt = (i, j) => { const x = i*C + C/2, y = j*C + C/2, dx = x - HX, dy = y - HY, d = Math.hypot(dx, dy); if (d < 40 || Math.abs(dx) < 9 || Math.abs(dy) < 9) return 0; const front = dx > 0 && dy > 0, h = Math.floor((d - 40)/9 + aRnd(i*31 + j*17)*1.4)*3 + 3; return Math.min(front ? 3 : 6, h); };   // 中央是平地戰場，四個角落是高台；鏡頭在右前方，所以前方那個角落壓低
   const tops = [];
   for (let i = X0/C; i < X1/C; i++) for (let j = Y0/C; j < Y1/C; j++){
     const h = hAt(i, j); if (!h) continue; const x = i*C + C/2, z = j*C + C/2;
@@ -1104,16 +1121,14 @@ function buildGround(bi){
     mk(ub, lip, x, BZ + h + .05, z, g).scale.set(C - .6, .1, C - .6);
     tops.push([x, BZ + h, z, i, j]);
   }
-  // 水道與木橋：步道右側一條小河，橫跨一座木橋
-  const wc = ['#7fd0f5', '#7fd0f5', '#cfefff', '#ff8fb0'][bi], wx = cx0 + 19;
-  mk(new T3.BoxGeometry(6, .5, ID), m3(B.board.d), wx, BZ - .2, icy, g);
-  mk(new T3.PlaneGeometry(5, ID).rotateX(-Math.PI/2), m3(wc, { emissive:bi === 3 ? wc : '#000000', emissiveIntensity:bi === 3 ? .35 : 0, transparent:true, opacity:.88 }), wx, BZ + .1, icy, g);
-  for (let k = 0; k < 14; k++) mk(new T3.BoxGeometry(1.6 + aRnd(k)*2, .06, .25), basic('#ffffff', .8), wx - 1.5 + aRnd(k + 50)*3, BZ + .16, Y0 + 4 + k*7.5 + aRnd(k + 9)*3, g);
-  for (const by of [24, 52]){ for (let k = -3; k <= 3; k++) mk(new T3.BoxGeometry(8, .45, 1.1), m3(k % 2 ? '#c99a62' : '#b5844f'), wx, BZ + .7, by + k*1.25, g); for (const sx of [-1, 1]) for (const sy of [-4, 4]) mk(cylG(.35, .35, 2.6, 5), m3('#8a6040'), wx + sx*3.6, BZ + 1.3, by + sy, g); }
+  // 四個出口：南、西、東各一座發光拱門，北邊是守關者的傳送門
+  const arch = (x, y, rot) => { const a = new T3.Group(); a.position.set(x, BZ, y); a.rotation.y = rot; g.add(a); for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.8, 11, 1.8), m3('#d6d0ea'), sx*6.5, 5.5, 0, a); mk(new T3.BoxGeometry(15, 1.8, 2.2), m3('#d6d0ea'), 0, 11.2, 0, a); mk(new T3.BoxGeometry(11, .7, .5), basic(B.glow), 0, 11.2, 1.2, a); mk(new T3.BoxGeometry(11, .7, .5), basic(B.glow), 0, 11.2, -1.2, a); };
+  arch(15, Y1 - 8, 0); arch(X0 + 8, HY, Math.PI/2); arch(X1 - 8, HY, Math.PI/2);
+  const wx = -999;
   // 樹、樹樁、石頭、花：放在台階頂面與平地邊緣
   tops.forEach(([x, y, z, i, j], n) => {
     const r = aRnd(i*13 + j*7 + 3);
-    if (r < (x > cx0 ? (x > cx0 + 30 ? .22 : 0) : .3)) treeAt(g, bi, x + (aRnd(n)-.5)*2, y, z + (aRnd(n + 1)-.5)*2, .75 + aRnd(n + 2)*.5);
+    if (r < .32) treeAt(g, bi, x + (aRnd(n)-.5)*2, y, z + (aRnd(n + 1)-.5)*2, .75 + aRnd(n + 2)*.5);
     else if (r < .48) mk(cylG(1.2, 1.4, 1.3, 7), m3('#b5844f'), x, y + .65, z, g);
     else if (r < .58) mk(new T3.DodecahedronGeometry(1.2, 0), m3('#c8c2e0'), x, y + .7, z, g).scale.set(1.2, .8, 1);
   });
@@ -1125,7 +1140,6 @@ function buildGround(bi){
     else if (n % 2) mk(new T3.BoxGeometry(3.4, .12, .5), basic('#ff8fb0'), x, BZ + .15, y, g).rotation.y = aRnd(n)*3;
     else mk(new T3.DodecahedronGeometry(.6, 0), m3(B.board.d), x, BZ + .6, y, g);
   }
-  for (let n = 0; n < 6; n++) treeAt(g, bi, cx0 - 13 - aRnd(n + 70)*4, BZ, -10 + n*15 + aRnd(n)*4, .7 + aRnd(n + 80)*.3);
   return bake(g);
 }
 function bake(g){   // 把靜態場景依材質合併成少數幾個網格，上千個方塊與樹也只要十幾次繪製
@@ -1304,9 +1318,9 @@ function scene(){
     R3.bi = bi;
     for (const o of [R3.gnd, R3.portal, ...R3.decor]) o && R3.world.remove(o);
     R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];
-    DECO[bi].forEach(([kind, x, y, k]) => { for (const [dx, dy] of [[0, 0], [x < 15 ? -9 : 9, (y*7) % 11 - 5]]){ const o = buildDeco(kind, k); o.scale.multiplyScalar(CK); at3(o, x + dx, Math.max(4, Math.min(BYW - 4, y + dy)), BZ); R3.world.add(o); R3.decor.push(o); } });
-    [[3.5, 15], [26.5, 15]].forEach(([x, y]) => { const o = buildTorch(); o.scale.multiplyScalar(CK); at3(o, x, y, BZ); R3.world.add(o); R3.decor.push(o); });
-    R3.sign = buildSign(); R3.sign.scale.multiplyScalar(CK); at3(R3.sign, 4, 66, BZ); R3.world.add(R3.sign); R3.decor.push(R3.sign);
+    DECO[bi].forEach(([kind, x, y, k], n) => { for (let j = 0; j < 2; j++){ let a = (n*2 + j)*.95 + .5, px, py; for (let t = 0; t < 8; t++){ px = HX + Math.cos(a)*(22 + (n*5 + j*3)%8)*1.15; py = HY + Math.sin(a)*(22 + (n*5 + j*3)%8); if (Math.abs(px - HX) > 8 && Math.abs(py - HY) > 8) break; a += .45; } const o = buildDeco(kind, k); o.scale.multiplyScalar(CK); at3(o, px, py, BZ); R3.world.add(o); R3.decor.push(o); } });
+    [[-9, -9], [9, -9], [-9, 9], [9, 9]].forEach(([dx, dy]) => { const o = buildTorch(); o.scale.multiplyScalar(CK); at3(o, HX + dx*1.3, HY + dy*1.3, BZ); R3.world.add(o); R3.decor.push(o); });
+    R3.sign = buildSign(); R3.sign.scale.multiplyScalar(CK); at3(R3.sign, HX - 13, HY + 10, BZ); R3.world.add(R3.sign); R3.decor.push(R3.sign);
     for (const [k, e] of R3.ent){ R3.world.remove(e); R3.ent.delete(k); }   // 換生態時怪物與掉落物重建（顏色隨生態）
   }
   const t = G.time;
@@ -1316,7 +1330,7 @@ function scene(){
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
   pu.glow.scale.setScalar((3.2 + (pulse ? 1.2*Math.sin(pulse.t*3.14) : 0))/3.2); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
   // 主角
-  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead > 0].join();
+  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead > 0, G.char].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero) R3.world.remove(R3.hero); R3.hero = G.h.dead > 0 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
   if (G.h.dead > 0){ at3(R3.hero, HX, HY, BZ); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 怪物與掉落物
@@ -1365,7 +1379,7 @@ function panelHtml(){
   const stats = `<li>生命 ${tFmt(Math.max(0, h.hp))} / ${tFmt(s.life)}</li><li>預估 DPS ${tFmt(s.dps)}</li><li>暴擊 ${s.crit.toFixed(0)}% × ${s.cm.toFixed(0)}%</li><li>攻速 ${s.aps.toFixed(2)}/秒　減傷 ${(s.red*100).toFixed(0)}%</li><li>${prog}</li><li>天賦點 ${passPoints()}　地圖 ${G.maps.length}　死亡 ${G.deaths}</li>`;
   return `${slotHtml('weapon')}${slotHtml('armor')}${slotHtml('ring')}
     <div class="rc"><div class="rh">技能</div><ul>${sk}</ul></div>
-    <div class="rc"><div class="rh">狀態</div><ul>${stats}</ul></div>${cardsHtml()}
+    <div class="rc"><div class="rh">狀態</div><ul>${stats}</ul></div>${charHtml()}${cardsHtml()}
     <div class="rc wide"><div class="rh">事件</div><ol class="log">${G.log.map(l => `<li style="color:${l.col}">${l.txt}</li>`).join('')}</ol></div>`;
 }
 let modalTab = 'skills', resetArm = false;
@@ -1457,6 +1471,9 @@ function openCards(){
   showOverlay(`<b>升級了！選一張改裝卡</b><div class="mute">還有 ${G.picks} 次選擇。遊戲不會暫停。</div><div class="cards">${h}</div><button class="mb" onclick="hideOverlay()">稍後再選</button>`);
 }
 function pickCard(id){ SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
+function charHtml(){
+  return `<div class="rc"><div class="rh">角色</div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true">${c.n}${charOk(id) ? '' : `<span class="mute">最深 ${c.need} 層解鎖</span>`}</button>`).join('')}</div><div class="mute">${CHARS[G.char].d}</div></div>`;
+}
 function cardsHtml(){
   const e = Object.entries(G.cards); const pend = G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button>` : '';
   return `<div class="rc"><div class="rh">改裝卡</div>${pend}<ul>${e.length ? e.map(([id, n]) => `<li><b>${CARDS[id].n}</b> ×${n} <span class="mute">${CARDS[id].d.split('，')[0]}</span></li>`).join('') : '<li class="mute">升級時可選擇</li>'}</ul></div>`;
@@ -1499,6 +1516,7 @@ function setupPanel(){
     .mc ul{margin:4px 0 6px;padding-left:16px} .hint{color:var(--muted);font-size:11.5px;margin:4px 0 8px;line-height:1.5} .hint b{color:var(--ink)}
     .srow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px} select,.sv{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:3px 6px;max-width:100%}
     .mc>select{display:block;margin:6px 0} .tree{width:100%;max-width:520px;display:block;margin:0 auto 6px;background:radial-gradient(circle,rgba(111,196,245,.22) 1.6px,transparent 2px) 0 0/16px 16px,linear-gradient(#ffffff,#e6f1ff);border:3px solid #fff;box-shadow:0 0 0 2px #aab8ee;border-radius:18px} .tn.open circle,.tn.open polygon{animation:tp 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center} @keyframes tp{50%{transform:scale(1.12)}}
+    .chars{display:flex;gap:6px;margin:4px 0}.chr{font:inherit;flex:1;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:4px;cursor:pointer;display:flex;flex-direction:column;font-size:13px}.chr.on{background:#d9e6ff;box-shadow:inset 0 0 0 2px #4a7fdc}.chr[disabled]{opacity:.5;cursor:default}.chr .mute{font-size:10px}
     .cards{display:flex;gap:8px;margin:10px 0}.mbox.small:has(.cards){width:min(470px,94vw)}
     .card{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:8px 10px;flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:4px;text-align:left;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
     .card.var{background:#efe3ff;border-color:#8e3fd1}.card .ct{font-size:11px;opacity:.7}.card .cd{font-size:12px}.card:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
@@ -1615,7 +1633,7 @@ function setupPanel(){
   document.body.append(m, o);
   if (matchMedia('(max-width:560px) and (orientation:portrait)').matches){   // 手機：指令按鈕收進「選單」分頁，面板常駐在戰鬥畫面下方
     document.body.classList.add('m'); const mm = document.createElement('div'); mm.id = 'mmenu'; mm.hidden = true; m.querySelector('.mbox').insertBefore(mm, $('mbody'));
-    const b = $('btns'); if (b){ mm.appendChild(b); b.querySelectorAll('.act').forEach(x => { if (['技能', '天賦盤', '地圖', '存檔'].includes(x.textContent.trim())) (x.closest('.stepwrap') || x).style.display = 'none'; }); }   // 這四個已經是分頁 m.hidden = false; modalTab = 'char';
+    const b = $('btns'); if (b){ mm.appendChild(b); b.querySelectorAll('.act').forEach(x => { if (['技能', '天賦盤', '地圖', '存檔'].includes(x.textContent.trim())) (x.closest('.stepwrap') || x).style.display = 'none'; }); } m.hidden = false; modalTab = 'char';   // 這四個已經是分頁
   }
   const draw = () => { if (MOB()){ if (modalTab === 'char' && !document.querySelector('#mbody :focus')) renderModal(); return; } el.innerHTML = panelHtml(); };
   setInterval(draw, 300); draw();
@@ -1653,6 +1671,7 @@ ui = mountFigure({
     { label:'存檔', onClick:() => openModal('save') },
   ],
   params:(s, q) => {
+    if (q.has('char') && CHARS[q.get('char')]){ G.char = q.get('char'); recalc(); }
     if (q.has('lvl')){ G.lvl = +q.get('lvl'); recalc(); }
     if (q.has('depth')){ G.depth = +q.get('depth'); G.maxDepth = Math.max(G.maxDepth, G.depth); }
     if (q.has('speed')) G.speed = +q.get('speed');
