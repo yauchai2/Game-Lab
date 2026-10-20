@@ -120,13 +120,21 @@ finish(box((0, 3.45, 16.15), (1.4, .4, 1.1)), 'body', SILVER, bevel=.1)
 # 寬鬆上衣（下擺外擴、肩寬）
 finish(loft([(15.9, 0, 0, 3.9, 3.0), (18.5, 0, 0, 3.5, 2.7), (21.5, 0, 0, 3.8, 2.8), (23.3, 0, 0, 3.0, 2.3)], n=8, rot=math.pi/8), 'body', CLOTH, jit=.06)
 finish(loft([(22.8, 0, -1.4, 3.0, 2.4), (24.0, 0, -1.4, 2.5, 2.0)], n=8, rot=math.pi/8), 'body', '#cfd6e0', jit=.05)    # 連帽領口
+for sx in (-1, 1):
+    finish(box((sx*.9, 2.9, 20.6), (.25, .25, 2.2)), 'body', '#cfd6e0', bevel=.05)             # 帽繩
+    finish(box((sx*.9, 2.9, 19.4), (.5, .5, .5)), 'body', NAVY, bevel=.08)
+finish(box((0, 3.1, 19.2), (4.6, .6, 2.6)), 'body', '#cfd6e0', bevel=.2)                     # 袋鼠口袋
 finish(loft([(23.4, 0, 0, 1.0, 1.0), (25.2, 0, 0, .9, .9)], n=6), 'body', SKIN)                                    # 脖子
 
 # 手臂（以肩膀為轉軸，建在原位，匯出時再平移）
 for sx, grp in ((-1, 'armL'), (1, 'armR')):
     sh = (sx*4.3, 0, 22.6)
     finish(loft([(22.8, sh[0], 0, 1.6, 1.6), (19.5, sh[0] + sx*.3, .2, 1.4, 1.4), (16.4, sh[0] + sx*.5, .6, 1.9, 1.9)], n=7, rot=0.2), grp, CLOTH, jit=.05)
-    finish(ico((sh[0] + sx*.6, .8, 15.0), 1.0, (1, .8, 1.15), sub=1), grp, SKIN, jit=.03)
+    hx = sh[0] + sx*.6
+    finish(loft([(16.4, sh[0] + sx*.5, .6, 2.15, 2.15), (15.7, sh[0] + sx*.5, .6, 2.2, 2.2)], n=7, rot=0.2), grp, '#cfd6e0', jit=.03)   # 袖口
+    finish(box((hx, .8, 14.7), (1.7, 1.5, 1.5)), grp, SKIN, bevel=.25)                          # 拳頭
+    finish(box((hx, 1.7, 14.9), (1.7, .5, .9)), grp, '#e4b99a', bevel=.1)                       # 指節
+    finish(box((hx - sx*.9, 1.1, 15.2), (.6, .9, .8)), grp, SKIN, bevel=.12)                    # 拇指
 
 # 頭
 head_c = (0, .2, 27.4)
@@ -148,8 +156,9 @@ for v in list(cap.verts):
 finish(cap, 'head', HAIR, jit=.04)
 for sx in (-1, 1):
     finish(box((sx*3.35, .6, 25.6), (1.1, 1.7, 5.6), rz=sx*.12), 'head', HAIR, bevel=.18)
-    finish(box((sx*2.4, 2.8, 28.6), (1.6, 1.2, 2.2)), 'head', HAIR, bevel=.18)
-finish(box((0, 2.9, 29.5), (6.0, 1.0, 1.3)), 'head', HAIR, bevel=.2)
+    finish(box((sx*2.9, 2.2, 28.9), (1.1, 1.0, 2.6), rz=sx*.1), 'head', HAIR, bevel=.18)
+finish(box((-.6, 2.7, 30.0), (4.6, 1.0, 1.0), rz=-.08), 'head', HAIR, bevel=.2)
+finish(box((1.9, 2.6, 29.7), (1.6, .9, 1.2), rz=.2), 'head', HAIR, bevel=.15)
 # 耳機：白色頭帶 + 耳罩 + 小鰭
 arc = [(3.9*math.cos(a), 0.0, 27.5 + 3.9*math.sin(a)) for a in [math.radians(t) for t in range(0, 181, 20)]]
 finish(tube(arc, .32, .32, n=5), 'head', WHITE)
