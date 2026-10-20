@@ -15,7 +15,7 @@ from lib import *
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'src', 'game', 'models.js')
 # 骨架：hips → torso → head／arm → fore，hips → leg → shin；轉軸在關節（髖、腰、頸、肩、肘、膝）
-setup({'hips': (0, 0, 15.5), 'torso': (0, 0, 15.8), 'head': (0, 0.2, 25.0), 'tail': (3.9, 1.8, 15.4),
+setup({'hips': (0, 0, 15.5), 'torso': (0, 0, 15.8), 'head': (0, 0.2, 25.0), 'hair0': (0, 0.2, 25.0), 'hair1': (0, 0.2, 25.0), 'hair2': (0, 0.2, 25.0), 'hair3': (0, 0.2, 25.0), 'hair4': (0, 0.2, 25.0), 'tail': (3.9, 1.8, 15.4),
        'armL': (-4.3, 0, 22.6), 'foreL': (-4.6, .2, 19.5), 'armR': (4.3, 0, 22.6), 'foreR': (4.6, .2, 19.5),
        'legL': (-2.6, 0, 15.5), 'shinL': (-2.6, 0, 9.5), 'legR': (2.6, 0, 15.5), 'shinR': (2.6, 0, 9.5)})
 
@@ -75,17 +75,51 @@ finish(bm, 'head', SKIN, jit=.03)
 back = loft([(30.9, 0, -.6, 2.2, 2.2), (29.6, 0, -.8, 3.4, 3.3), (27.5, 0, -1.5, 4.0, 3.2), (24.0, 0, -1.9, 3.5, 2.0), (21.2, 0, -1.9, 3.3, 1.6)], n=8, rot=math.pi/8)
 for v in back.verts:
     if v.co.z < 22: v.co.z += random.choice((-1.1, 0.0, .5, -.6))
-finish(back, 'head', HAIR, jit=.08)
+finish(back, 'hair0', HAIR, jit=.08)
 cap = ico((0, -.2, 27.9), 3.65, (1, 1.02, 1), sub=2)
 for v in list(cap.verts):   # 前面（瀏海）下緣抬到眼睛上方，兩側與後面才垂到耳朵高度，眼睛不被頭髮蓋住
     lim = 28.7 if v.co.y > .4 else 26.4
     if v.co.z < lim: v.co.z = lim + (v.co.z - lim)*.1
-finish(cap, 'head', HAIR, jit=.04)
+finish(cap, 'hair0', HAIR, jit=.04)
 for sx in (-1, 1):
-    finish(box((sx*3.35, .6, 25.6), (1.1, 1.7, 5.6), rz=sx*.12), 'head', HAIR, bevel=.18)
-    finish(box((sx*2.9, 2.2, 28.9), (1.1, 1.0, 2.6), rz=sx*.1), 'head', HAIR, bevel=.18)
-finish(box((-.6, 2.7, 30.0), (4.6, 1.0, 1.0), rz=-.08), 'head', HAIR, bevel=.2)
-finish(box((1.9, 2.6, 29.7), (1.6, .9, 1.2), rz=.2), 'head', HAIR, bevel=.15)
+    finish(box((sx*3.35, .6, 25.6), (1.1, 1.7, 5.6), rz=sx*.12), 'hair0', HAIR, bevel=.18)
+    finish(box((sx*2.9, 2.2, 28.9), (1.1, 1.0, 2.6), rz=sx*.1), 'hair0', HAIR, bevel=.18)
+finish(box((-.6, 2.7, 30.0), (4.6, 1.0, 1.0), rz=-.08), 'hair0', HAIR, bevel=.2)
+finish(box((1.9, 2.6, 29.7), (1.6, .9, 1.2), rz=.2), 'hair0', HAIR, bevel=.15)
+
+# 其他髮型（hair1 到 hair4）：遊戲裡一次只顯示一款。頭球中心 (0, .2, 27.4)；前面（+y）瀏海下緣要在眼睛上方
+def hair_cap(g, front, side, r=3.65, jit=.04):
+    c = ico((0, -.2, 27.9), r, (1, 1.02, 1), sub=2)
+    for v in list(c.verts):
+        lim = front if v.co.y > .4 else side
+        if v.co.z < lim: v.co.z = lim + (v.co.z - lim)*.1
+    finish(c, g, HAIR, jit=jit)
+# hair1 刺蝟短髮：短帽蓋加一圈朝外的尖刺，瀏海是幾根往上翹的尖
+hair_cap('hair1', 29.0, 27.2, r=3.5)
+for k in range(9):
+    a = k/9*math.tau + .3; x, y = 2.6*math.cos(a), -.3 + 2.6*math.sin(a)
+    finish(cone((x*.9, y*.9, 30.6), .95, 3.0, n=4), 'hair1', HAIR, bevel=.05, jit=.06)
+for x, h in ((-2.0, 2.4), (-.4, 3.0), (1.4, 2.6)):
+    finish(cone((x, 2.1, 30.2), .8, h, n=4), 'hair1', HAIR, jit=.05)
+# hair2 雙馬尾：標準帽蓋加兩束高處綁起的長髮和粉紅髮圈
+hair_cap('hair2', 28.7, 26.8)
+for sx in (-1, 1):
+    finish(tube([(sx*3.4, -.3, 29.6), (sx*5.2, -.7, 28.0), (sx*5.8, -1.0, 25.5), (sx*5.4, -.6, 22.6)], 1.15, .3, n=6), 'hair2', HAIR, jit=.05)
+    finish(ico((sx*3.5, -.3, 29.5), .85, sub=0), 'hair2', '#ff6aa8')
+# hair3 鮑伯頭：後面與兩側垂到下巴，下緣切齊
+bob = loft([(31.0, 0, -.5, 2.4, 2.4), (29.8, 0, -.7, 3.7, 3.6), (27.6, 0, -1.0, 4.2, 3.6), (25.0, 0, -1.0, 4.0, 3.2), (24.2, 0, -1.0, 3.9, 3.0)], n=8, rot=math.pi/8)
+finish(bob, 'hair3', HAIR, jit=.06)
+hair_cap('hair3', 28.6, 25.6)
+for sx in (-1, 1):
+    finish(box((sx*3.7, .9, 25.9), (1.1, 2.4, 4.6), rz=sx*.08), 'hair3', HAIR, bevel=.2)
+finish(box((0, 3.3, 29.5), (4.6, 1.0, 1.0)), 'hair3', HAIR, bevel=.2)
+# hair4 丸子頭：短髮加頭頂一顆大髮髻與髮圈
+hair_cap('hair4', 28.9, 26.6, r=3.55)
+finish(ico((0, -.5, 32.0), 2.0, sub=1), 'hair4', HAIR, jit=.05)
+finish(lofts := loft([(30.4, 0, -.4, 1.1, 1.1), (31.1, 0, -.4, 1.3, 1.3)], n=8), 'hair4', '#ff6aa8')
+for sx in (-1, 1):
+    finish(box((sx*3.3, .5, 26.6), (1.0, 1.6, 3.4), rz=sx*.1), 'hair4', HAIR, bevel=.18)
+
 # 耳機：白色頭帶 + 耳罩 + 小鰭
 arc = [(3.9*math.cos(a), 0.0, 27.5 + 3.9*math.sin(a)) for a in [math.radians(t) for t in range(0, 181, 20)]]
 PHONE = '#f5f6fc'   # 耳機專用色，方便遊戲裝扮單獨換色
