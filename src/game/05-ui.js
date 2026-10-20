@@ -22,7 +22,7 @@ function slotHtml(slot){
 function panelHtml(){
   const s = G.st, h = G.h, R = G.run;
   const sk = G.slots.map((id, i) => id ? `<li><b>${SKILLS[id].n}</b> <span class="mute">${(G.supp[id] || []).filter(Boolean).map(g => SUPPS[g].n).join('、') || '無輔助'}</span></li>` : `<li class="mute">槽 ${i+1}：${G.lvl >= SLOT_LV[i] ? '空' : '等級 ' + SLOT_LV[i] + ' 解鎖'}</li>`).join('');
-  const prog = R ? `地圖進度 ${Math.min(R.kills, R.need)} / ${R.need}（${BIOMES[R.map.biome].n} Lv. ${R.map.lvl}）` : `擊殺 ${Math.min(G.kills, G.need)} / ${G.need}${G.push ? '（滿了出守關者）' : '（刷怪模式）'}`;
+  const prog = R ? `${R.tower ? `無限之塔 第 ${R.floor} 層` : '地圖進度'} ${Math.min(R.kills, R.need)} / ${R.need}${R.tower ? '' : `（${BIOMES[R.map.biome].n} Lv. ${R.map.lvl}）`}` : `擊殺 ${Math.min(G.kills, G.need)} / ${G.need}${G.push ? '（滿了出守關者）' : '（刷怪模式）'}`;
   const stats = `<li>生命 ${tFmt(Math.max(0, h.hp))} / ${tFmt(s.life)}</li><li>預估 DPS ${tFmt(s.dps)}</li><li>暴擊 ${s.crit.toFixed(0)}% × ${s.cm.toFixed(0)}%</li><li>攻速 ${s.aps.toFixed(2)}/秒　減傷 ${(s.red*100).toFixed(0)}%</li><li>${prog}</li><li>天賦點 ${passPoints()}　地圖 ${G.maps.length}　死亡 ${G.deaths}</li>`;
   return `${slotHtml('weapon')}${slotHtml('armor')}${slotHtml('ring')}
     <div class="rc"><div class="rh">技能</div><ul>${sk}</ul></div>
@@ -112,7 +112,8 @@ function goalsHtml(){
 }
 function mapsHtml(){
   const R = G.run; let h = '<div class="hint">地圖由守關者和地圖怪掉落。詞綴讓敵人更強，但戰利品數量與稀有度更好。打贏地圖守關者才算完成；死亡則地圖報廢。</div>';
-  if (R) h += `<div class="mc run"><b>進行中：${BIOMES[R.map.biome].n} Lv. ${R.map.lvl}</b><div class="mute">進度 ${Math.min(R.kills, R.need)} / ${R.need}</div><button class="mb" onclick="abandonMap()">放棄地圖</button></div>`;
+  h += `<div class="mc"><b>無限之塔</b> <span class="mute">最高 ${G.towerBest || 0} 層</span><div class="mute">每層殺滿怪就上樓，每 10 層是守關者，打贏多一條規則、一件遺物和一件戰利品。死亡就結束。${G.maxDepth < 8 ? '（深度 8 解鎖）' : ''}</div><button class="mb" ${R || G.maxDepth < 8 ? 'disabled' : ''} onclick="towerStart()">挑戰</button></div>`;
+  if (R) h += `<div class="mc run"><b>進行中：${R.tower ? `無限之塔 第 ${R.floor} 層` : `${BIOMES[R.map.biome].n} Lv. ${R.map.lvl}`}</b><div class="mute">進度 ${Math.min(R.kills, R.need)} / ${R.need}</div><button class="mb" onclick="abandonMap()">放棄地圖</button></div>`;
   h += '<div class="mrow">' + (G.maps.length ? G.maps.map(m => { const q = m.mods.reduce((a, k) => a + MODS[k].q, 0);
     return `<div class="mc"><b>${BIOMES[m.biome].n}</b> Lv. ${m.lvl}<ul>${m.mods.map(k => `<li>${MODS[k].n}</li>`).join('')}</ul><div class="mute">戰利品 +${Math.round(q*100)}%</div><button class="mb" ${R ? 'disabled' : ''} onclick="enterMap('${m.id}')">進入</button></div>`; }).join('') : '<div class="mute">還沒有地圖。打贏普通深度的守關者會掉落。</div>') + '</div>';
   return h;
