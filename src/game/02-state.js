@@ -87,7 +87,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
 }
 function recalc(){ const old = G.st; G.st = calc(); const h = G.h; h.hp = old ? h.hp * G.st.life / old.life : G.st.life; G.dirty = true; }
 const xpNeed = L => Math.round(30 * Math.pow(1.32, L-1));
-function logLine(txt, col){ if (G.offline) return; G.log.unshift({ txt, col:col || '#231e16' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
+function logLine(txt, col){ if (G.offline) return; G.log.unshift({ txt, col:col || '#2b2552' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
 function addFloat(x, y, z, txt, col, size=3.6){ if (G.offline) return; G.floats.push({ x, y, z, txt, col, size, t:0 }); }
 function addFx(e){ if (!G.offline) G.fx.push(e); }
 

@@ -64,7 +64,7 @@ function reroll(slot){
 function hitMon(m, dmg, crit){
   if (m.dead) return;
   m.hp -= dmg; m.hurtT = .12;
-  addFloat(m.x + 2 + tRand(-1,1), m.y + tRand(-2,2), BZ + 17 + tRand(0,3), tFmt(dmg), crit ? '#e2831b' : '#231e16', crit ? 5.4 : 3.6);
+  addFloat(m.x + 2 + tRand(-1,1), m.y + tRand(-2,2), BZ + 17 + tRand(0,3), tFmt(dmg), crit ? '#e2831b' : '#2b2552', crit ? 5.4 : 3.6);
   if (m.hp <= 0) killMon(m);
 }
 function rollDmg(base, critPct){ const s = G.st, crit = Math.random()*100 < (critPct == null ? s.crit : critPct); return { dmg:base * (crit ? s.cm/100 : 1) * tRand(.9, 1.1), crit }; }

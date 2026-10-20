@@ -1,10 +1,10 @@
 /* ---------- UI: side panel, modal, overlay ---------- */
 // small hand-inked slot icons for the equipment cards (ink outline under a coloured stroke)
 function iconSvg(slot, col){
-  const two = (d, w) => `<path d="${d}" fill="none" stroke="#231e16" stroke-width="${w + 2.2}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const two = (d, w) => `<path d="${d}" fill="none" stroke="#2b2552" stroke-width="${w + 2.2}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
   const g = slot === 'weapon' ? two('M7 23L22 8', 3.2) + two('M5 19L11 25', 2.4) + two('M3.5 26.5L7 23', 2.6)
-    : slot === 'armor' ? `<path d="M8 6L4 11L8 15L9 24H21L22 15L26 11L22 6L18 8H12Z" fill="${col}" stroke="#231e16" stroke-width="2" stroke-linejoin="round"/><path d="M12 8Q15 12 18 8" fill="none" stroke="#231e16" stroke-width="1.6"/>`
-    : `<circle cx="15" cy="18" r="7" fill="none" stroke="#231e16" stroke-width="5.2"/><circle cx="15" cy="18" r="7" fill="none" stroke="#e8c24a" stroke-width="3"/><path d="M15 3L19 8L15 12L11 8Z" fill="${col}" stroke="#231e16" stroke-width="1.8" stroke-linejoin="round"/>`;
+    : slot === 'armor' ? `<path d="M8 6L4 11L8 15L9 24H21L22 15L26 11L22 6L18 8H12Z" fill="${col}" stroke="#2b2552" stroke-width="2" stroke-linejoin="round"/><path d="M12 8Q15 12 18 8" fill="none" stroke="#2b2552" stroke-width="1.6"/>`
+    : `<circle cx="15" cy="18" r="7" fill="none" stroke="#2b2552" stroke-width="5.2"/><circle cx="15" cy="18" r="7" fill="none" stroke="#e8c24a" stroke-width="3"/><path d="M15 3L19 8L15 12L11 8Z" fill="${col}" stroke="#2b2552" stroke-width="1.8" stroke-linejoin="round"/>`;
   return `<svg class="ico" viewBox="0 0 30 30" width="30" height="30">${g}</svg>`;
 }
 function slotHtml(slot){
@@ -57,7 +57,7 @@ function treeHtml(){
   for (const id in TREE){ const n = TREE[id]; for (const l of n.links) if (id < l){ const m = TREE[l], on2 = (id === 'S' || G.pass.includes(id)) && (l === 'S' || G.pass.includes(l));
     lines += `<line x1="${n.x.toFixed(1)}" y1="${n.y.toFixed(1)}" x2="${m.x.toFixed(1)}" y2="${m.y.toFixed(1)}" stroke="${on2 ? n.col === '#e8e2d4' ? m.col : n.col : '#cfc8b8'}" stroke-width="${on2 ? 2.6 : 1.4}" stroke-linecap="round"/>`; } }
   for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = nodeOpen(id) && pts > 0, r = n.big ? 6.6 : 4;
-    nodes += `<g onmouseover="treeInfo('${id}')" onclick="allocPass('${id}')" style="cursor:${open ? 'pointer' : 'default'}"><title>${n.name}</title><circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${r}" fill="${got ? n.col : '#f2efe7'}" stroke="${open ? '#231e16' : got ? '#231e16' : '#b5ad9c'}" stroke-width="${open ? 2 : 1.3}" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>${n.big && id !== 'S' ? `<circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="2.2" fill="${got ? '#fff' : n.col}"/>` : ''}</g>`; }
+    nodes += `<g onmouseover="treeInfo('${id}')" onclick="allocPass('${id}')" style="cursor:${open ? 'pointer' : 'default'}"><title>${n.name}</title><circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${r}" fill="${got ? n.col : '#f2f7ff'}" stroke="${open ? '#2b2552' : got ? '#2b2552' : '#b5ad9c'}" stroke-width="${open ? 2 : 1.3}" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>${n.big && id !== 'S' ? `<circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="2.2" fill="${got ? '#fff' : n.col}"/>` : ''}</g>`; }
   return `<div class="hint">可用天賦點：<b>${pts}</b>（每升一級 +1，每打到更深 4 層 +1）。點亮與已點亮節點相連的點。</div>
     <svg viewBox="-125 -125 250 250" class="tree">${lines}${nodes}</svg>
     <div id="tinfo" class="hint">滑過節點看效果。<span style="color:#e2584d">紅：力量</span> <span style="color:#3f86e6">藍：智慧</span> <span style="color:#3bb552">綠：敏捷</span></div>
@@ -117,20 +117,20 @@ function catchUp(sec, report){
 function setupPanel(){
   const st = document.createElement('style');
   st.textContent = `.rpg{width:100%;max-width:760px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:6px 0 14px;font-size:12px}
-    .rc{border:2px solid var(--ink);border-radius:12px 10px 13px 9px/10px 13px 9px 12px;padding:8px 10px;background:color-mix(in srgb,var(--paper) 88%,#fff);box-shadow:3px 3px 0 var(--ink)} .rc.item:nth-child(even){transform:rotate(.35deg)} .rc.item:nth-child(odd){transform:rotate(-.3deg)} .nm{display:flex;align-items:center;gap:8px;margin:2px 0 4px} .nm b{font-size:13px} .ico{flex:none;overflow:visible} .rc.wide{grid-column:1/-1}
+    .rc{border:1.5px solid var(--ink);border-radius:14px;padding:8px 10px;background:color-mix(in srgb,var(--paper) 88%,#fff);box-shadow:0 3px 0 #b9c6ee}  .nm{display:flex;align-items:center;gap:8px;margin:2px 0 4px} .nm b{font-size:13px} .ico{flex:none;overflow:visible} .rc.wide{grid-column:1/-1}
     .rh{display:flex;justify-content:space-between;gap:8px;font-size:11px;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
     .rc ul,.rc ol{margin:4px 0 0;padding-left:16px} .rc li{margin:1px 0} .rc li.imp{color:var(--muted)} .mute{color:var(--muted);font-size:11px}
     .log{max-height:130px;overflow:auto;list-style:none;padding-left:0 !important} .log li{margin:2px 0}
     .actions{gap:5px !important} .act{padding:3px 12px !important;font-size:12px}
-    .modal{position:fixed;inset:0;background:rgba(35,30,22,.45);display:flex;align-items:center;justify-content:center;z-index:20;padding:12px} .modal[hidden]{display:none}
-    .mbox{background:var(--paper);border:2px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);width:min(720px,100%);max-height:90vh;overflow:auto;padding:14px;font-size:12.5px} .mbox.small{width:min(420px,100%)}
+    .modal{position:fixed;inset:0;background:rgba(43,37,82,.45);display:flex;align-items:center;justify-content:center;z-index:20;padding:12px} .modal[hidden]{display:none}
+    .mbox{background:var(--paper);border:1.5px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 #b9c6ee;width:min(720px,100%);max-height:90vh;overflow:auto;padding:14px;font-size:12.5px} .mbox.small{width:min(420px,100%)}
     .mtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap} .tab{padding:3px 12px;font-size:12px} .tab.on{background:var(--ink);color:var(--paper)} .tab.x{margin-left:auto}
-    .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px} .mc{border:2px solid var(--ink);border-radius:12px 10px 13px 9px/10px 13px 9px 12px;padding:8px 10px;box-shadow:2px 2px 0 var(--ink)} .mc.dim{opacity:.5} .mc.run{margin-bottom:10px;border-style:dashed}
+    .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px} .mc{border:1.5px solid var(--ink);border-radius:14px;padding:8px 10px;box-shadow:0 2px 0 #b9c6ee} .mc.dim{opacity:.5} .mc.run{margin-bottom:10px;border-style:dashed}
     .mc ul{margin:4px 0 6px;padding-left:16px} .hint{color:var(--muted);font-size:11.5px;margin:4px 0 8px;line-height:1.5} .hint b{color:var(--ink)}
     .srow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px} select,.sv{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:3px 6px;max-width:100%}
     .mc>select{display:block;margin:6px 0} .tree{width:100%;max-width:520px;display:block;margin:0 auto 6px;background:color-mix(in srgb,var(--paper) 90%,#fff);border:1.5px solid var(--rule);border-radius:12px}
     .mb{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer} .mb[disabled]{opacity:.4;cursor:default}
-    .sv{width:100%;height:90px;margin-top:8px;resize:vertical} .hbar{display:block;width:96px;height:8px;border:1.5px solid var(--ink);border-radius:5px;margin:4px 0 0 auto;background:#fffb;overflow:hidden;box-shadow:1px 1px 0 var(--ink)} .hbar i{display:block;height:100%;border-right:1.5px solid var(--ink)} .gl{margin:4px 0;padding-left:16px}`;
+    .sv{width:100%;height:90px;margin-top:8px;resize:vertical} .hbar{display:block;width:96px;height:8px;border:1.5px solid var(--ink);border-radius:5px;margin:4px 0 0 auto;background:#fffb;overflow:hidden;box-shadow:0 1px 0 #b9c6ee} .hbar i{display:block;height:100%;border-right:1.5px solid var(--ink)} .gl{margin:4px 0;padding-left:16px}`;
   st.textContent += `.controls{display:none}`;   // the engine's wobble slider and colour swatches are not part of the game
   document.head.appendChild(st);
   const el = document.createElement('div'); el.className = 'rpg'; el.id = 'rpg'; document.querySelector('.stage').after(el);

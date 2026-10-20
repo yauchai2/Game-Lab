@@ -1,376 +1,362 @@
-/* ---------- drawing helpers ---------- */
-// a:  small helpers shared by all the hand-inked art below (prefix "a" = art; core.js owns the short global names)
-const aRnd = i => { const s = Math.sin(i*127.1 + 311.7)*43758.5453; return s - Math.floor(s); };
-const aInkP = (d, w, col=INK, op=1, extra='') => `<path d="${d}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${op}" ${extra}/>`;
-// A rounded solid of stacked circular rings: lv = [[dz, radius, offX, offY], ...] from the bottom up (jelly, rocks, bellies, caps).
-function aBlob(x, y, z0, lv, m, w=1.4, n=14, shade=toneI){
-  const rings = lv.map(([dz, r, ox=0, oy=0]) => on(PZ(z0 + dz), ellUV(x + ox, y + oy, Math.max(.05, r), Math.max(.05, r), n)));
-  let s = '';
-  for (let i = 0; i < rings.length - 1; i++) s += loft(rings[i], rings[i+1], nr => shade(nr, m));
-  return s + fill(pd(rings[rings.length - 1]), shade([0,0,1], m)) + hullInk(rings.flat(), w);
-}
-function tSph(x, y, z, r, hex, w=1.1){
-  const m = matOf(hex), [X,Y] = P(x,y,z), R = r*1.2247;
-  return `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(R)}" fill="${m.d}"/>`
-    + `<circle cx="${f(X + R*.08)}" cy="${f(Y - R*.06)}" r="${f(R*.9)}" fill="${m.m}"/>`
-    + `<circle cx="${f(X + R*.2)}" cy="${f(Y - R*.15)}" r="${f(R*.6)}" fill="${m.l}"/>`
-    + `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(R)}" fill="none" stroke="${INK}" stroke-width="${w}"/>`;
-}
-function tEyes(x, y, z, r, o={}){
-  const dv = norm([1,1,.35]), sd = [.7071,-.7071,0], col = o.col || '#fff'; let s = '';
-  for (const k of [-1,1]){
-    const [X,Y] = P(x + dv[0]*r*.95 + sd[0]*k*r*.38, y + dv[1]*r*.95 + sd[1]*k*r*.38, z + dv[2]*r*.95);
-    s += `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(r*(o.big || .3))}" fill="${col}" stroke="${INK}" stroke-width=".7"/>`;
-    if (!o.noPupil) s += `<circle cx="${f(X + r*.06)}" cy="${f(Y + r*.04)}" r="${f(r*.14)}" fill="${o.pup || INK}"/>`
-      + `<circle cx="${f(X + r*.1)}" cy="${f(Y - r*.02)}" r="${f(r*.05)}" fill="#fff"/>`;
-  }
-  return s;
-}
-// a short ink smile / frown on the face of a body centred (x,y), at height z
-function aMouth(x, y, z, r, f2, up=1, w=.8){
-  const sd = aSide(f2, .3*r), a = [x + f2[0]*r*.97 + sd[0], y + f2[1]*r*.97 + sd[1], z], b = [x + f2[0]*r*.97 - sd[0], y + f2[1]*r*.97 - sd[1], z], m2 = [x + f2[0]*r, y + f2[1]*r, z - .32*r*up];
-  const [A, B, M] = [P(...a), P(...b), P(...m2)];
-  return aInkP(`M${f(A[0])} ${f(A[1])}Q${f(M[0])} ${f(M[1])} ${f(B[0])} ${f(B[1])}`, w);
-}
-// Facing-aware face. f = unit [fx, fy] the character looks toward; s is the sideways axis. A feature is drawn only when its
-// surface normal faces the viewer (vis), so eyes can never end up on the back of a head.
-function aFace(x, y, z, r, f2, o={}){
-  const s2 = [-f2[1], f2[0]], col = o.col || '#fff', sh = P(x + f2[0], y + f2[1], z), c0 = P(x, y, z), dx = sh[0] - c0[0], dy = sh[1] - c0[1]; let s = '';
-  for (const k of [-1, 1]){
-    const n = [f2[0]*.86 + s2[0]*k*.46, f2[1]*.86 + s2[1]*k*.46, .26];
-    if (!vis(n)) continue;
-    const [X,Y] = P(x + n[0]*r, y + n[1]*r, z + n[2]*r);
-    s += `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(r*(o.big || .3))}" fill="${col}" stroke="${INK}" stroke-width=".7"/>`;
-    if (!o.noPupil) s += `<circle cx="${f(X + dx*r*.1)}" cy="${f(Y + dy*r*.1)}" r="${f(r*.14)}" fill="${o.pup || INK}"/><circle cx="${f(X + dx*r*.1 + r*.05)}" cy="${f(Y + dy*r*.1 - r*.05)}" r="${f(r*.05)}" fill="#fff"/>`;
-  }
-  return s;
-}
-const aFwd = (p, f2, d, up=0) => [p[0] + f2[0]*d, p[1] + f2[1]*d, p[2] + up];
-const aSide = (f2, k) => [-f2[1]*k, f2[0]*k];
-function tBar(x, y, z, w, pct, col){
-  const [X,Y] = P(x, y, z), W2 = w*1.1, H2 = 2.3, x0 = X - W2/2;
-  return `<rect x="${f(x0)}" y="${f(Y)}" width="${f(W2)}" height="${f(H2)}" rx="1" fill="#4a3a30" stroke="${INK}" stroke-width=".8"/>`
-    + (pct > 0 ? `<rect x="${f(x0 + .4)}" y="${f(Y + .4)}" width="${f(Math.max(0, (W2 - .8)*tClamp(pct)))}" height="${f(H2 - .8)}" rx=".6" fill="${col}"/>` : '');
-}
-function tRing(x, y, r, z, n=8){ return Array.from({ length:n }, (_, i) => [x + r*Math.cos(i/n*6.2832), y + r*Math.sin(i/n*6.2832), z]); }
-const shadowOf = (x, y, r, hgt) => castShadow([...tRing(x, y, r, BZ), [x, y, BZ + hgt]], BZ);
+/* ============================================================
+   視覺層：Y2K low poly 3D（three.js）。
+   遊戲座標：x 朝右前、y 朝左前、z 向上；three 座標 = (x, z, y)。
+   平塗材質 + 低面數幾何 + 柔和粉彩，畫面由一個透明 canvas 疊在天空背景上；
+   血條與傷害數字仍用 SVG 疊在最上層（座標由同一台相機投影而來）。
+   ============================================================ */
+const T3 = THREE, R3 = { ready:false, cache:{}, ent:new Map(), W:0, H:0 };
 const aTier = it => it ? Math.min(3, Math.floor(it.il/6)) : 0;
+const aRnd = i => { const s = Math.sin(i*127.1 + 311.7)*43758.5453; return s - Math.floor(s); };
+const D2R = Math.PI/180;
 
-/* ---------- characters ---------- */
-function aGrave(){
-  const x = HX, y = HY, prof = rrUV(y - 2.9, BZ, y + 2.9, BZ + 9.4, 2.9, 5);
-  return aBlob(x, y + 4.4, BZ, [[0,2.6],[.9,2.4],[1.5,1.1]], BIOMES[biomeNow()].board, 1.2, 10)
-    + extrude(prof, x - 1.2, x + 1.2, STONE, toneI) + shape(on(PX(x + 1.2), prof), STONE.l, 1.8)
-    + hullInk([...on(PX(x - 1.2), prof), ...on(PX(x + 1.2), prof)], 2)
-    + line(on(PX(x + 1.25), [[y, BZ + 8.2], [y, BZ + 5.4]]), 1.2) + line(on(PX(x + 1.25), [[y - 1.2, BZ + 7.2], [y + 1.2, BZ + 7.2]]), 1.2)
-    + tx(x + 1.3, y, BZ + 3.4, 'RIP', 2.2, INK, 800);
-}
-function drawHero(){
-  const h = G.h, t = G.time;
-  if (h.dead > 0) return aGrave();
-  const x = HX + (h.hurtT > 0 ? Math.sin(t*90)*.5 : 0), y = HY, z = BZ + Math.max(0, Math.sin(t*3)*.35);
-  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = aTier(W), wr = W ? W.r : 0;
-  const body = matOf(['#4f7fd6', '#5d8ee0', '#d4a93a', '#d8553a'][ar]), dark = matOf('#5a3b28'), trim = matOf(['#8a5a3c', '#c7d4e6', '#fff0b0', '#ffb04a'][ar]), steel = matOf(['#b9c0c6', '#a9c3e8', '#e8d594', '#e59a7a'][ar]);
-  const F = [.7071, -.7071];   // the hero fights toward -y; turned 45 degrees so the near cheek and eye face the viewer
-  const swing = h.swingT < 0 ? 72 + Math.sin(t*3)*3 : tLerp(115, -30, ease(h.swingT/.3));
-  let s = '';
-  // far side first: off arm, off shoulder
-  s += rod([x - 2.7, y, z + 9.6], [x - 3.3, y - 1.1, z + 6.8], .9, body, toneI, .9);
-  s += tSph(x - 3.3, y - 1.1, z + 6.6, .95, '#f1c9a0', .8);
-  if (at >= 1) s += tSph(x - 3.2, y, z + 10.6, 1.8, steel.m, 1);
-  // boots + legs
-  for (const sx of [-1.5, 1.5]){
-    s += rod([x + sx, y, BZ + .75], [x + sx + F[0]*2.6, y + F[1]*2.6, BZ + .75], .75, matOf('#3d2a1d'), toneI, .8);
-    s += cyl(x + sx, y, BZ, BZ + 2.7, 1.45, matOf('#3d2a1d'), toneI, .9, 10);
-    s += cyl(x + sx, y, BZ + 2.5, BZ + 5, 1.25, matOf(at >= 1 ? '#6b7480' : '#6b4a33'), toneI, .9, 10);
+/* ---------- 基礎工具 ---------- */
+const m3 = (hex, o={}) => { if (o.own){ const { own, ...rest } = o; return new T3.MeshLambertMaterial({ color:hex, flatShading:true, ...rest }); } const k = hex + JSON.stringify(o); return (R3.cache[k] ||= new T3.MeshLambertMaterial({ color:hex, flatShading:true, ...o })); };
+const basic = (hex, op=1) => new T3.MeshBasicMaterial({ color:hex, transparent:op < 1, opacity:op, depthWrite:op >= 1 });
+const G_ = {};   // 共用幾何
+const geo = (key, fn) => G_[key] ||= fn();
+function mk(geom, mat, x=0, y=0, z=0, parent){ const o = new T3.Mesh(geom, mat); o.position.set(x, y, z); parent && parent.add(o); return o; }
+const ico = (r, d=1) => new T3.IcosahedronGeometry(r, d);
+const cylG = (rt, rb, h, n=7) => new T3.CylinderGeometry(rt, rb, h, n);
+const at3 = (o, x, y, z) => { o.position.set(x, z, y); return o; };
+function addShadow(g, r, ox=0, oz=0){ const s = mk(geo('shadow', () => new T3.CircleGeometry(1, 14).rotateX(-Math.PI/2)), basic('#6f7fd0', .32), ox, .06, oz, g); s.scale.set(r, 1, r*.8); s.renderOrder = 1; g.userData.sh = s; return s; }
+function cone(parent, hex, x, y, z, r, h, n=7, rx=0, rz=0){ const o = mk(new T3.ConeGeometry(r, h, n), m3(hex), x, y, z, parent); o.rotation.x = rx; o.rotation.z = rz; return o; }
+
+/* 動畫眼睛：貼圖畫一次，依虹膜顏色快取 */
+function eyeTex(iris='#46c8f0', style='anime'){
+  const k = 'eye' + iris + style; if (R3.cache[k]) return R3.cache[k];
+  const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+  if (style === 'anime'){
+    x.fillStyle = '#fff'; x.beginPath(); x.ellipse(64, 66, 50, 58, 0, 0, 7); x.fill();
+    const g = x.createLinearGradient(0, 20, 0, 118); g.addColorStop(0, '#2b2552'); g.addColorStop(.35, iris); g.addColorStop(1, '#e8fbff');
+    x.fillStyle = g; x.beginPath(); x.ellipse(64, 70, 36, 46, 0, 0, 7); x.fill();
+    x.fillStyle = '#2b2552'; x.beginPath(); x.ellipse(64, 68, 16, 22, 0, 0, 7); x.fill();
+    x.fillStyle = '#fff'; x.beginPath(); x.arc(78, 46, 11, 0, 7); x.fill(); x.beginPath(); x.arc(52, 92, 6, 0, 7); x.fill();
+    x.strokeStyle = '#2b2552'; x.lineWidth = 7; x.lineCap = 'round'; x.beginPath(); x.ellipse(64, 66, 50, 58, 0, 3.6, 5.8); x.stroke();
+  } else {   // 黑亮圓眼（史萊姆、怪物）
+    x.fillStyle = '#2b2552'; x.beginPath(); x.ellipse(64, 66, 50, 56, 0, 0, 7); x.fill();
+    x.fillStyle = '#fff'; x.beginPath(); x.arc(80, 44, 17, 0, 7); x.fill(); x.beginPath(); x.arc(48, 88, 8, 0, 7); x.fill();
   }
-  // torso, flared tassets, belt
-  s += aBlob(x, y, z + 3.9, [[0,3.25],[1,2.95],[1.7,2.65]], trim, 1.1, 14);
-  s += aBlob(x, y, z + 4.6, [[0,2.7],[1.2,3.1],[3.6,3.5],[5.6,3.0],[6.4,2.2]], body, 1.5, 14);
-  s += cyl(x, y, z + 5.1, z + 6, 3.2, matOf('#4a3324'), toneI, .8, 14);
-  s += box(x + 2.9, y - .7, z + 5.2, x + 3.5, y + .7, z + 5.9, matOf('#e8c24a'), toneI, .7);
-  if (at >= 1) s += aInkP(pd(on(PZ(z + 8.4), arcUV(x, y, 3.55, -25, 115, 8)), false), .9) + aInkP(pd(on(PZ(z + 10.2), arcUV(x, y, 3.1, -25, 115, 8)), false), .8, INK, .7);
-  // scarf: ring + a tail that flutters behind (+y)
-  s += cyl(x, y, z + 10.1, z + 11.3, 2.7, matOf('#d9483b'), toneI, .9, 12);
-  const fl = Math.sin(t*4.5);
-  s += rod([x - F[0]*.8, y - F[1]*.8, z + 10.7], [x - F[0]*4.6 + fl*.5, y - F[1]*4.6 + fl*.3, z + 9.2 + fl*.9], .75, matOf('#d9483b'), toneI, .8);
-  // head: hair or helm, face on top
-  const head = [x, y, z + 12.9];
-  if (at >= 2) s += tSph(x - .5, y - .5, z + 13.4, 3.15, steel.m, 1.1);
-  else s += tSph(x - F[0]*1.1, y - F[1]*1.1, z + 13.9, 3.2, '#6b4426', 1.1);
-  s += tSph(...head, 2.8, '#f1c9a0', 1.1) + tSph(x + F[0]*3, y + F[1]*3, z + 12.5, .55, '#e0aa80', .6);   // head + nose
-  if (at >= 1) {
-    s += aBlob(x, y, z + 14.5, [[0,3.2],[.9,3.05],[2,2.3],[2.9,1.2],[3.3,.2]], steel, 1.3, 14);
-    s += rod([x + F[0]*2.9, y + F[1]*2.9, z + 14.2], [x + F[0]*3.1, y + F[1]*3.1, z + 12.1], .55, steel, toneI, .8);
-    if (ar >= 2) s += rod([x - F[0]*.6, y - F[1]*.6, z + 17.6], [x - F[0]*3.6, y - F[1]*3.6, z + 17.3 + fl*.5], 1, matOf(ar === 3 ? '#ff6a3a' : '#d9483b'), toneI, .9, .2);
-  } else s += aBlob(x, y, z + 14.5, [[0,3.05],[.9,2.9],[1.9,2.1],[2.6,.9],[2.9,.2]], matOf('#6b4426'), 1.1, 14);
-  s += aFace(...head, 2.8, F);
-  // sword arm + sword (blade colour follows rarity, length follows tier)
-  const a = swing*Math.PI/180, hand = [x + 3.3, y - .8, z + 7.4], dir = [0, -Math.cos(a), Math.sin(a)], mv = k => hand.map((v, i) => v + dir[i]*k);
-  const blade = [METAL, matOf('#b9d6ff'), matOf('#ffe08a'), matOf('#ff9a5a')][wr], len = 8.2 + wt*1.5, gw = .35 + wt*.12;
-  s += rod([x + 2.6, y, z + 9.4], hand, .95, body, toneI, .9);
-  if (at >= 1) s += tSph(x + 3.1, y, z + 10.5, 1.8, steel.m, 1);
-  if (wr === 3){ const [X,Y] = P(...mv(len*.6)); s += `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(len*.55)}" fill="#ff9a3c" opacity=".22"/>`; }
-  s += rod(mv(-1.7), mv(.8), .55, matOf('#5a3b28'), toneI, .8) + tSph(...mv(-1.8), .5, '#c9a13b', .7);
-  s += rod(mv(.9), mv(.9 + len), .6 + wt*.07, blade, toneI, .9, .2);
-  const g = mv(1), side = [1.5 + wt*.35, 0, 0];
-  s += rod([g[0] - side[0], g[1], g[2]], [g[0] + side[0], g[1], g[2]], .45, matOf('#c9a13b'), toneI, .8);
-  s += tSph(...hand, 1, '#f1c9a0', .8);
-  if (h.castT >= 0){ const u = ease(tClamp(h.castT/.25)), [X,Y] = P(x + 3.4, y - 3.6, z + 9.2), R = 2.4*u*1.22, sc = (SKILLS[h.castSk] || SKILLS.FIRE).col;
-    s += `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(R*1.8)}" fill="${sc}" opacity=".3"/><circle cx="${f(X)}" cy="${f(Y)}" r="${f(R)}" fill="${sc}" stroke="${INK}" stroke-width=".9"/><circle cx="${f(X + R*.15)}" cy="${f(Y - R*.15)}" r="${f(R*.5)}" fill="#ffe08a"/>`; }
-  s += tBar(x, y, z + 22.5, 9, h.hp / G.st.life, '#e2483d');
-  return s;
+  const t = new T3.CanvasTexture(c); t.colorSpace = T3.SRGBColorSpace; return R3.cache[k] = t;
 }
-function drawSlime(m){
-  const t = G.time + m.ph, sq = 1 + .1*Math.sin(t*5) + (m.lunge >= 0 ? .15*Math.sin(Math.PI*m.lunge/.3) : 0), hg = 6.8/sq, r = 4.9*Math.sqrt(sq), y = m.y + (m.lunge >= 0 ? 3*Math.sin(Math.PI*m.lunge/.3) : 0);
-  const hex = ['#7ed36b', '#e8c24a', '#8fd3f0', '#ef7a4a'][biomeNow()], mat = matOf(hex), k = hg/6.8;
-  let s = aBlob(m.x, y, BZ, [[0,.95*r],[1.5*k,1.06*r],[3.4*k,.99*r],[5.2*k,.68*r],[6.6*k,.26*r]], mat, 1.8, 16);
-  const [X,Y] = P(m.x, y, BZ + hg*.5);
-  s += `<ellipse cx="${f(X + r*.1)}" cy="${f(Y + r*.55)}" rx="${f(r*.6)}" ry="${f(r*.35)}" fill="${mat.d}" opacity=".35"/>`   // dark core seen through the jelly
-    + aInkP(`M${f(X + r*.55)} ${f(Y - r*1.3)}Q${f(X + r*1.05)} ${f(Y - r*.9)} ${f(X + r*1.1)} ${f(Y - r*.35)}`, 1.6, '#fff', .85)    // shine
-    + `<circle cx="${f(X + r*1.1)}" cy="${f(Y + r*.05)}" r="${f(r*.09)}" fill="#fff" opacity=".85"/>`;
-  s += aFace(m.x, y, BZ + hg*.55, 3.3, [0, 1], { big:.34 }) + aMouth(m.x, y, BZ + hg*.55 - 1.2, 3.4, [0, 1], 1);
-  const [BX,BY] = P(m.x - 1, y + 1, BZ + hg + .6), dr = Math.sin(t*3)*.6;       // a drip bubble rising off the head
-  s += `<circle cx="${f(BX - 1.5)}" cy="${f(BY - 3 - dr)}" r="${f(1.1)}" fill="${mat.l}" stroke="${INK}" stroke-width=".7"/>`;
-  s += tBar(m.x, y, BZ + hg + 5, 8, m.hp/m.hpMax, '#e2483d');
-  return { s, sh:shadowOf(m.x, y, r, hg) };
+const onSphere = (R, ang, elev) => [Math.sin(ang)*Math.cos(elev)*R, Math.sin(elev)*R, Math.cos(ang)*Math.cos(elev)*R];
+function eye(parent, R, ang, elev, size, iris, style){   // 貼在半徑 R 的頭部表面，朝外
+  const o = new T3.Mesh(geo('eyeP', () => new T3.PlaneGeometry(1, 1)), new T3.MeshBasicMaterial({ map:eyeTex(iris, style), transparent:true }));
+  const [x, y, z] = onSphere(R + .08, ang, elev); o.position.set(x, y, z); o.lookAt(o.position.clone().multiplyScalar(2)); o.scale.set(size, size*1.1, 1); parent.add(o); return o;
 }
-function drawSkel(m){
-  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, x = m.x, y = m.y + 3*lg, bob = m.fight ? 0 : Math.abs(Math.sin(t*9))*.8, z = BZ + bob;
-  const rust = { l:'#c98a5a', m:'#a56d42', d:'#6b4426' }, wood = matOf('#a8693f'), dk = matOf('#2b2623');
-  let s = '';
-  for (const sx of [-1.2, 1.2]){
-    s += rod([x + sx, y, BZ], [x + sx, y, z + 2.8], .65, BONE, toneI, .8) + tSph(x + sx, y, z + 2.9, .8, '#f1ecda', .7) + rod([x + sx, y, z + 2.9], [x + sx, y, z + 5.2], .6, BONE, toneI, .8);
-    s += box(x + sx - 1, y - 1.9, BZ, x + sx + 1, y - .3, BZ + .9, BONE, toneI, .7);
-  }
-  s += box(x - 2, y - 1.1, z + 4.4, x + 2, y + 1.1, z + 5.8, BONE, toneI, .9);                      // pelvis
-  s += cyl(x, y, z + 5.7, z + 10, 2.05, dk, toneI, 1.2, 12);                                           // dark chest cavity
-  for (const zz of [6.4, 7.6, 8.8]) s += aInkP(pd(on(PZ(z + zz), arcUV(x, y, 2.15, -35, 125, 8)), false), 1.5, BONE.l) + aInkP(pd(on(PZ(z + zz), arcUV(x, y, 2.15, -35, 125, 8)), false), .55, INK, .8);
-  s += rod([x, y, z + 5.8], [x, y, z + 10], .35, BONE, toneI, .6);                                    // spine
-  s += rod([x + 2.1, y, z + 9.3], [x + 3.2, y + 1.2, z + 7.5], .55, BONE, toneI, .8) + rod([x - 2.1, y, z + 9.3], [x - 2.5, y + 1.8, z + 7.6], .55, BONE, toneI, .8);
-  s += tSph(x + 2.2, y, z + 9.6, 1, '#f1ecda', .8) + tSph(x - 2.2, y, z + 9.6, 1, '#f1ecda', .8);
-  const hand = [x + 3.2, y + 1.2, z + 7.5], a = tLerp(65, 5, lg)*Math.PI/180, bl = [hand[0], hand[1] + Math.cos(a)*8, hand[2] + Math.sin(a)*8];
-  s += rod(hand, bl, .5, rust, toneI, .9, .15) + rod([hand[0] - 1.2, hand[1] + .9, hand[2] + .5], [hand[0] + 1.2, hand[1] + .9, hand[2] + .5], .4, wood, toneI, .7);
-  s += cylX(x + 3.3, x + 4.2, y - .6, z + 7.4, 2.6, wood, toneI, 1.1, 14) + cylX(x + 4.2, x + 4.6, y - .6, z + 7.4, .9, matOf('#c9a13b'), toneI, .7, 8);   // buckler
-  s += tSph(x, y, z + 12, 2.6, '#f1ecda', 1.1) + box(x - 1.2, y - 1.1, z + 9.4, x + 1.2, y + 1.1, z + 10.4, BONE, toneI, .8);   // skull + jaw
-  s += aFace(x, y, z + 12, 2.6, [0, 1], { col:'#2b2623', noPupil:true, big:.36 });
-  const [NX,NY] = P(x, y + 2.55, z + 11.1); s += `<path d="M${f(NX)} ${f(NY)}l-.5 1.1l1 0z" fill="${INK}"/>` + line([[x - .9, y + 2.4, z + 9.9], [x + .9, y + 2.4, z + 9.9]], .7);
-  s += tBar(x, y, z + 19, 8, m.hp/m.hpMax, '#e2483d');
-  return { s, sh:shadowOf(x, y, 2.6, 13) };
-}
-function drawBrute(m){
-  const k = m.boss ? 1.55 : 1, t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, x = m.x, y = m.y + 3.5*lg, bob = m.fight ? 0 : Math.abs(Math.sin(t*6))*.6;
-  const z = BZ + bob, body = matOf(m.boss ? '#8e5fd1' : '#e0644a'), skin = m.boss ? '#b79af0' : '#f0a07f', club = { l:'#a8693f', m:'#8a5a3c', d:'#5a3a26' }, fur = matOf('#5a4636');
-  let s = '';
-  for (const sx of [-1.9, 1.9]){ s += cyl(x + sx*k, y, BZ, BZ + 3.6*k, 1.8*k, matOf('#4a3a30'), toneI, 1, 10) + box(x + (sx - 1.5)*k, y - 3*k, BZ, x + (sx + 1.5)*k, y - .4*k, BZ + 1.3*k, matOf('#3a2c24'), toneI, .8); }
-  s += aBlob(x, y, z + 3*k, [[0,3.6*k],[1.8*k,4.4*k],[4.8*k,4.8*k],[6.6*k,4.3*k],[7.2*k,3.3*k]], body, 1.8, 16);              // body with a round belly
-  s += box(x + 3.5*k, y - 1.8*k, z + 2.4*k, x + 4.1*k, y + 1.8*k, z + 5.4*k, fur, toneI, .8);                                         // loincloth
-  s += aInkP(pd(on(PZ(z + 7*k), arcUV(x, y, 4.5*k, -25, 115, 8)), false), .9);
-  const hand = [x + 4.6*k, y + 3.6*k, z + 6.4*k], a = tLerp(75, -10, lg)*Math.PI/180, tip = [hand[0], hand[1] + Math.cos(a)*8*k, hand[2] + Math.sin(a)*8*k];
-  s += rod([x - 3.8*k, y, z + 8.4*k], [x - 4.2*k, y + 2.2*k, z + 6.2*k], 1.3*k, body, toneI, 1) + tSph(x - 4.2*k, y + 2.2*k, z + 6.2*k, 1.2*k, skin, .9);
-  s += rod([x + 3.8*k, y, z + 8.4*k], hand, 1.3*k, body, toneI, 1);
-  s += rod(hand, tip, 1.1*k, club, toneI, 1.1, 2.1*k);
-  for (const u of [.45, .75]) s += tSph(hand[0] + (tip[0] - hand[0])*u + 1.2*k, hand[1] + (tip[1] - hand[1])*u, hand[2] + (tip[2] - hand[2])*u, .55*k, '#c6c6c0', .7);   // club studs
-  s += tSph(...hand, 1.3*k, skin, .9);
-  s += tSph(x + 3.9*k, y, z + 9.2*k, 2*k, fur.l, 1) + tSph(x - 3.9*k, y, z + 9.2*k, 2*k, fur.l, 1);                                    // fur shoulder pads
-  for (const sd of [-1, 1]){
-    s += rod([x + sd*2*k, y, z + 13.2*k], [x + sd*3.6*k, y - .4*k, z + 15.2*k], .95*k, BONE, toneI, .8, .6*k);
-    s += rod([x + sd*3.6*k, y - .4*k, z + 15.2*k], [x + sd*3.3*k, y - .8*k, z + 17.2*k], .6*k, BONE, toneI, .8, .08);
-  }
-  const FB = [0, 1], hz = z + 11.8*k, hr = 3.1*k;
-  s += tSph(x, y, hz, hr, skin, 1.2) + aFace(x, y, hz, hr, FB, { col:'#fff3c4', pup:'#b0201a' });
-  for (const sd of [-1, 1]){   // brow ridge and tusk on each side of the face
-    s += line([[x + sd*.15*hr, y + hr*.97, hz + .62*hr], [x + sd*.82*hr, y + hr*.7, hz + .5*hr]], 1.1);
-    const b = [x + sd*.38*hr, y + hr*.96, hz - .55*hr];
-    s += shape([[b[0] - sd*.5*k, b[1], b[2]], [b[0] + sd*.5*k, b[1], b[2]], [b[0] + sd*.2*k, b[1] + .6*k, b[2] - 2.8*k]], '#fffaea', .8);
-  }
-  if (m.boss) s += aBlob(x, y, z + 14.9*k, [[0,2.3*k],[.8*k,2.5*k],[1.7*k,2.4*k]], matOf('#f2c230'), 1.1, 10) + [-1,0,1].map(i => tSph(x + i*1.4*k, y, z + 17.2*k, .5*k, '#ff5a4a', .6)).join('');
-  s += tBar(x, y, z + 21*k, m.boss ? 15 : 9, m.hp/m.hpMax, m.boss ? '#8e3fd1' : '#e2483d');
-  return { s, sh:shadowOf(x, y, 4.4*k, 12*k) };
-}
-function drawMon(m){
-  const r = m.type === 'slime' ? drawSlime(m) : m.type === 'skel' ? drawSkel(m) : drawBrute(m);
-  let s = r.s;
-  if (m.dead) s = `<g opacity="${(1 - m.deadT/.4).toFixed(2)}">${s}</g>`;
-  else if (m.frozen > 0) s = `<g style="filter:hue-rotate(160deg) saturate(.7) brightness(1.25)">${s}</g>`;
-  else if (m.hurtT > 0) s = `<g style="filter:brightness(1.7)">${s}</g>`;
-  return { s, sh: m.dead ? '' : r.sh };
+function blush(parent, R, ang, elev){ const b = mk(geo('blush', () => new T3.CircleGeometry(.62, 8)), basic('#ff9ab8', .55), 0, 0, 0, parent); const [x, y, z] = onSphere(R + .06, ang, elev); b.position.set(x, y, z); b.lookAt(b.position.clone().multiplyScalar(2)); }
+function mouth(parent, R, elev, w, col='#2b2552', up=1){
+  const o = new T3.Mesh(new T3.TorusGeometry(w, .13, 4, 8, Math.PI), basic(col)), [, y, z] = onSphere(R + .08, 0, elev);
+  o.position.set(0, y, z); o.rotation.z = up > 0 ? Math.PI : 0; parent.add(o); return o;
 }
 
-/* ---------- props: biome decoration ---------- */
-function aPine(x, y, k, snow){
-  const B = BIOMES[biomeNow()], g1 = matOf(B.t1), g2 = matOf(B.t2), tiers = [[2.2, 8, 4.9], [5.6, 11.6, 4.0], [9, 15.2, 3.0]];
-  let s = cyl(x, y, BZ, BZ + 4*k, 1.2*k, matOf('#8a5a3c'), toneI, 1, 10);
-  tiers.forEach(([z0, z1, r], i) => {
-    s += rod([x, y, BZ + z0*k], [x, y, BZ + z1*k], r*k, i % 2 ? g2 : g1, toneI, 1.3, .25);
-    if (snow){ const c = 2.7, rr = r*c/(z1 - z0); s += rod([x, y, BZ + (z1 - c)*k], [x, y, BZ + z1*k], rr*k, matOf('#f4f9fc'), toneI, .9, .2); }
-  });
-  return s;
+/* ---------- 主角 ---------- */
+const HAIR = ['#8fe3f0', '#8fe3f0', '#ffb5dd', '#ffd27a'];
+function buildHero(at, ar, wt, wr){
+  const g = new T3.Group(), body = ['#6fa0f0', '#8aa2ff', '#ffd27a', '#ff8a7a'][ar], steel = ['#cfd6e0', '#bcd0f0', '#f4e3a8', '#f2b09a'][ar];
+  const pants = at >= 1 ? '#9aa7c8' : '#9bd0a4', hair = HAIR[at >= 2 ? 3 : 0];
+  g.userData.parts = {};
+  for (const sx of [-1.9, 1.9]){   // 厚底鞋 + 寬鬆工作褲
+    mk(new T3.BoxGeometry(3.3, 1.5, 5.2), m3('#ffffff'), sx, .75, .6, g);
+    mk(new T3.BoxGeometry(3.1, 1.5, 3.4), m3('#c3b0ff'), sx, 2.1, 1.3, g);
+    mk(cylG(2.2, 2.6, 6.4, 7), m3(pants), sx, 5.7, 0, g);
+    mk(new T3.BoxGeometry(.9, 2.2, 2.2), m3(at >= 1 ? '#8591b4' : '#82bd8e'), sx + (sx < 0 ? -2.3 : 2.3), 5.3, .2, g);
+  }
+  mk(cylG(4.1, 4.1, .9, 8), m3('#3a3466'), 0, 9.3, 0, g);                         // 腰帶
+  mk(new T3.BoxGeometry(1.1, 1.1, .5), m3('#ffe27a'), 0, 9.3, 4.1, g);
+  mk(cylG(3.0, 3.9, 5.6, 8), m3(body), 0, 12.6, 0, g);                            // 上衣
+  mk(cylG(3.1, 3.1, 1.2, 8), m3('#ffffff'), 0, 15.1, 0, g);
+  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(2.1, 1), m3(steel), sx*4.2, 15.2, 0, g); mk(new T3.BoxGeometry(2.6, 3, .6), m3(steel), 0, 12.6, 3.3, g); }
+  const scarf = mk(new T3.TorusGeometry(3, .85, 5, 8), m3('#ff8fb8'), 0, 15.8, 0, g); scarf.rotation.x = Math.PI/2;
+  g.userData.tail = mk(new T3.BoxGeometry(1.2, .5, 5), m3('#ff8fb8'), -1.6, 14.5, -3.4, g);
+  const head = new T3.Group(); head.position.set(0, 19.6, 0); g.add(head); g.userData.head = head;
+  mk(ico(4.5, 1), m3('#ffe0c8'), 0, 0, 0, head);                                  // 頭
+  const cap = mk(new T3.SphereGeometry(4.95, 9, 6, 0, Math.PI*2, 0, Math.PI*.56), m3(hair), 0, .3, -.35, head); cap.rotation.x = -.28;
+  for (const sx of [-2.4, 0, 2.4]) cone(head, hair, sx, 3.1, 4.1, 1.35, 2.8, 4, 2.25);   // 瀏海
+  for (const sx of [-1, 1]){   // 雙馬尾
+    mk(ico(1.4, 0), m3('#ffb5dd'), sx*5.1, 2.8, -2.4, head);
+    const tl = mk(new T3.ConeGeometry(1.6, 7, 5), m3(hair), sx*5.8, -1.4, -2.6, head); tl.rotation.x = Math.PI; tl.rotation.z = sx*.18;
+    mk(ico(1.1, 0), m3('#ffb5dd'), sx*6.3, -4.6, -2.7, head);
+  }
+  if (at < 2){   // 耳機
+    mk(new T3.TorusGeometry(5.2, .42, 5, 12, Math.PI), m3('#ffffff'), 0, 0, 0, head);
+    for (const sx of [-1, 1]){ const cup = mk(cylG(1.9, 1.9, 1.5, 8), m3('#ff9bd0'), sx*5.2, .2, 0, head); cup.rotation.z = Math.PI/2; const dot = mk(cylG(1, 1, .3, 8), m3('#ffffff'), sx*6, .2, 0, head); dot.rotation.z = Math.PI/2; }
+  } else {   // 頭盔角
+    cone(head, steel, 0, 5.6, -1.5, .9, 4, 5);
+    for (const sx of [-1, 1]) cone(head, steel, sx*4.6, 4.2, -1.5, .9, 3.4, 5, 0, -sx*.7);
+  }
+  eye(head, 4.5, -.43, .05, 2.5, '#46c8f0'); eye(head, 4.5, .43, .05, 2.5, '#46c8f0');
+  blush(head, 4.5, -.78, -.2); blush(head, 4.5, .78, -.2);
+  mouth(head, 4.5, -.38, .42, '#c0405e', 1);
+  const armL = new T3.Group(); armL.position.set(-4.3, 14.8, 0); g.add(armL);   // 左臂（垂下）
+  mk(cylG(1.1, 1.0, 5.4, 6), m3(body), 0, -2.7, 0, armL); mk(ico(1.2, 0), m3('#ffe0c8'), 0, -5.7, 0, armL); armL.rotation.z = .12;
+  const armR = new T3.Group(); armR.position.set(4.3, 14.8, 0); g.add(armR); g.userData.armR = armR;   // 右臂（持劍）
+  mk(cylG(1.1, 1.0, 4.6, 6), m3(body), 0, -2.0, 0, armR);
+  const hand = new T3.Group(); hand.position.set(0, -4.4, 0); armR.add(hand); mk(ico(1.25, 0), m3('#ffe0c8'), 0, 0, 0, hand);
+  const sw = new T3.Group(); hand.add(sw); g.userData.sword = sw;
+  const blade = [['#e8eef5', '#cfdcf0'], ['#b9d6ff', '#8fb6ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff6a3a']][wr], len = 8.2 + wt*1.5;
+  mk(cylG(.38, .38, 2.8, 5), m3('#7a5a8a'), 0, 0, 0, sw); mk(new T3.BoxGeometry(2.6 + wt*.4, .5, .9), m3('#ffd35a'), 0, 1.5, 0, sw);
+  mk(new T3.BoxGeometry(.9 + wt*.2, len, .35), m3(blade[0], { emissive:wr >= 2 ? blade[1] : '#000000', emissiveIntensity:wr >= 2 ? .35 : 0 }), 0, 1.8 + len/2, 0, sw);
+  cone(sw, blade[0], 0, 1.8 + len + .9, 0, .55 + wt*.1, 1.8, 4);
+  if (wr === 3) mk(ico(len*.6, 1), basic('#ff9a3c', .2), 0, len/2, 0, sw);
+  const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 5.5, 11, 3.6, g); orb.visible = false; g.userData.orb = orb;
+  addShadow(g, 5);
+  return g;
 }
-function aBush(x, y, k){
-  const B = BIOMES[biomeNow()];
-  return tSph(x - 1.4*k, y + 1*k, BZ + 1.8*k, 2.2*k, B.t1, 1) + tSph(x + 1.2*k, y - .8*k, BZ + 2*k, 2.5*k, B.t2, 1) + tSph(x + .2*k, y + .4*k, BZ + 3.1*k, 2.1*k, B.t2, 1)
-    + [[1.6, -1.2, 4], [-.4, .5, 5.1]].map(([dx, dy, dz]) => tSph(x + dx*k, y + dy*k, BZ + dz*k, .55*k, '#e2483d', .6)).join('');
+function buildGrave(){
+  const g = new T3.Group();
+  mk(new T3.BoxGeometry(7, 1.4, 5), m3('#c8cce0'), 0, .7, 0, g); mk(new T3.BoxGeometry(5, 7, 1.6), m3('#d8dcf0'), 0, 4.6, 0, g);
+  mk(cylG(2.5, 2.5, 1.6, 8), m3('#d8dcf0'), 0, 8.1, 0, g).rotation.x = Math.PI/2;
+  mk(new T3.BoxGeometry(.8, 3, .3), m3('#9aa0c8'), 0, 5.2, .95, g); mk(new T3.BoxGeometry(2.2, .8, .3), m3('#9aa0c8'), 0, 5.8, .95, g);
+  addShadow(g, 5); return g;
 }
-function aMush(x, y, k){
-  const [X,Y] = P(x + 1.5*k, y + 1.5*k, BZ + 2.5*k);
-  return cyl(x, y, BZ, BZ + 2.2*k, .75*k, matOf('#f4ecd0'), toneI, .9, 8)
-    + aBlob(x, y, BZ + 1.8*k, [[0,2.5*k],[.7*k,2.6*k],[1.5*k,1.9*k],[2.1*k,.7*k]], matOf('#e0483d'), 1.2, 12)
-    + `<circle cx="${f(X)}" cy="${f(Y - .6*k)}" r="${f(.5*k)}" fill="#fff"/><circle cx="${f(X - 1.6*k)}" cy="${f(Y - 1.2*k)}" r="${f(.4*k)}" fill="#fff"/>`;
+
+/* ---------- 怪物 ---------- */
+const SLIME_HEX = ['#9be07d', '#ffd36a', '#8fd8ff', '#ff9a8a'];
+function flash(g, c, k){ for (const m of g.userData.mats || []){ m.emissive.set(c); m.emissiveIntensity = k; } }
+function ownMat(g, hex, o={}){ const m = m3(hex, { own:true, ...o }); (g.userData.mats ||= []).push(m); return m; }
+function buildSlime(){
+  const g = new T3.Group(), hex = SLIME_HEX[biomeNow()], jelly = new T3.Group(); g.add(jelly); g.userData.jelly = jelly;
+  const body = mk(ico(1, 2), ownMat(g, hex, { transparent:true, opacity:.94 }), 0, 4.1, 0, jelly); body.scale.set(5.2, 4.4, 5.2);
+  mk(ico(1, 1), ownMat(g, '#5fbf6a', { transparent:true, opacity:.55 }), 0, 3.2, -.6, jelly).scale.set(2.4, 2, 2.4);
+  mk(ico(.9, 0), basic('#ffffff', .85), 2.2, 6.6, 2.4, jelly).scale.set(1, .7, .7);
+  const fc = new T3.Group(); fc.position.set(0, 4.3, 0); jelly.add(fc);
+  eye(fc, 5.1, -.4, .05, 2.3, '', 'dark'); eye(fc, 5.1, .4, .05, 2.3, '', 'dark'); mouth(fc, 5.1, -.3, .7, '#2b2552', 1);
+  blush(fc, 5.1, -.78, -.18); blush(fc, 5.1, .78, -.18);
+  addShadow(g, 5.6); return g;
 }
-function aCactus(x, y, k){
-  const gm = matOf('#6fb26a'), arm = (sx, z0, z1) => rod([x, y + sx*1.2*k, BZ + z0*k], [x, y + sx*3.3*k, BZ + z0*k], .85*k, gm, toneI, .9) + rod([x, y + sx*3.3*k, BZ + z0*k], [x, y + sx*3.3*k, BZ + z1*k], .85*k, gm, toneI, .9) + tSph(x, y + sx*3.3*k, BZ + z1*k, .85*k, '#6fb26a', .8);
-  return arm(-1, 4.2, 7.6) + cyl(x, y, BZ, BZ + 9*k, 1.55*k, gm, toneI, 1.1, 12) + tSph(x, y, BZ + 9*k, 1.55*k, '#6fb26a', 1) + arm(1, 5.6, 9.2)
-    + tSph(x + .6*k, y + .4*k, BZ + 10.4*k, .6*k, '#f08aa8', .6) + [0, 1, 2].map(i => line([[x + 1.5*k, y - .9*k + i*.9*k, BZ + (2 + i*2.2)*k], [x + 1.5*k, y - .9*k + i*.9*k, BZ + (3 + i*2.2)*k]], .5)).join('');
+function buildSkel(){
+  const g = new T3.Group(), bone = ownMat(g, '#fbf6ea'), rust = ownMat(g, '#e0a070'), dk = '#2b2552';
+  for (const sx of [-1.3, 1.3]){ mk(cylG(.7, .7, 4.5, 5), bone, sx, 2.4, 0, g); mk(new T3.BoxGeometry(1.5, .8, 2.4), bone, sx, .4, .6, g); }
+  mk(cylG(2.4, 2.8, 4.2, 7), ownMat(g, '#e8dcc8'), 0, 6.6, 0, g);
+  for (const yy of [5.6, 6.8, 8.0]) mk(new T3.BoxGeometry(5.2, .45, .5), ownMat(g, '#9a8f86'), 0, yy, 2.2, g);
+  const head = new T3.Group(); head.position.set(0, 12.6, 0); g.add(head); g.userData.head = head;
+  mk(ico(4.3, 1), bone, 0, 0, 0, head); mk(new T3.BoxGeometry(3.4, 1.9, 3), bone, 0, -3.6, 1.3, head);
+  for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(1, 10)), basic(dk), sx*1.8, .5, 4.15, head).scale.set(1.35, 1.6, 1); mk(geo('sock2', () => new T3.CircleGeometry(.32, 6)), basic('#7ef0ff'), sx*1.8 + .35, 1.1, 4.2, head); }
+  mk(new T3.BoxGeometry(.7, 1, .4), basic(dk), 0, -1.1, 4.2, head);
+  for (let i = -1; i <= 1; i++) mk(new T3.BoxGeometry(.4, .9, .3), basic(dk), i*.9, -3.7, 3.2, head);
+  const armR = new T3.Group(); armR.position.set(3.2, 8.8, 0); g.add(armR); g.userData.armR = armR;
+  mk(cylG(.5, .5, 4, 5), bone, 0, -1.8, 0, armR);
+  const sw = new T3.Group(); sw.position.set(0, -3.8, 0); armR.add(sw); mk(new T3.BoxGeometry(.8, 7, .3), rust, 0, 3.6, 0, sw); mk(new T3.BoxGeometry(2, .4, .6), ownMat(g, '#7a5a3a'), 0, .2, 0, sw);
+  const sh = mk(cylG(2.6, 2.6, .7, 8), ownMat(g, '#e0a070'), -3.9, 6.8, 1.2, g); sh.rotation.z = Math.PI/2; sh.rotation.y = .4; mk(ico(.9, 0), ownMat(g, '#ffd35a'), -4.4, 6.8, 1.2, g);
+  mk(cylG(.5, .5, 4, 5), bone, -3.2, 7.6, -.2, g).rotation.z = .25;
+  addShadow(g, 4.6); return g;
 }
-function aRock(x, y, k, hex){
-  const m = matOf(hex || '#b4ada0');
-  return aBlob(x + 1.7*k, y - 1.4*k, BZ, [[0,1.7*k],[.9*k,1.8*k],[1.8*k,1.1*k],[2.2*k,.5*k]], m, 1.1, 8) + aBlob(x, y, BZ, [[0,3.3*k],[1.5*k,3.6*k],[3*k,2.5*k],[3.9*k,1*k]], m, 1.4, 9);
+function buildBrute(boss){
+  const g = new T3.Group(), skin = ownMat(g, boss ? '#b79af0' : '#ffa686'), clothes = ownMat(g, boss ? '#8e5fd1' : '#e8707a'), dark = ownMat(g, '#6a4a7a');
+  for (const sx of [-2.2, 2.2]){ mk(cylG(1.8, 2, 3.4, 7), dark, sx, 1.7, 0, g); mk(new T3.BoxGeometry(3.6, 1.4, 4), ownMat(g, '#4a3560'), sx, .7, .8, g); }
+  mk(ico(1, 1), clothes, 0, 7.4, 0, g).scale.set(5.4, 4.8, 4.4);
+  mk(cylG(5.3, 5.3, .9, 8), ownMat(g, '#4a3560'), 0, 5.2, 0, g); mk(new T3.BoxGeometry(1.4, 1.2, .5), ownMat(g, '#ffd35a'), 0, 5.2, 4.9, g);
+  const head = new T3.Group(); head.position.set(0, 13.2, .8); g.add(head); g.userData.head = head;
+  mk(ico(3.8, 1), skin, 0, 0, 0, head);
+  for (const sx of [-1, 1]){ cone(head, '#fff6e0', sx*3.2, 3.2, -.2, .9, 3.6, 5, 0, -sx*.55); cone(head, '#fffbe8', sx*1.1, -2.1, 3.3, .45, 1.8, 4, Math.PI*.8);
+    mk(new T3.BoxGeometry(1.9, .45, .5), basic('#2b2552'), sx*1.55, 1.5, 3.65, head).rotation.z = sx*.35; }
+  eye(head, 3.8, -.44, -.05, 1.5, '', 'dark'); eye(head, 3.8, .44, -.05, 1.5, '', 'dark'); mouth(head, 3.8, -.45, .8, '#2b2552', -1);
+  if (boss){ mk(cylG(3, 3.3, 1.6, 8), m3('#ffd35a'), 0, 4.2, 0, head); for (let i = 0; i < 5; i++){ const a = i/5*6.283; cone(head, '#ffd35a', Math.cos(a)*3.1, 6, Math.sin(a)*3.1, .7, 2.2, 4); } mk(ico(.6, 0), basic('#ff6aa8'), 0, 4.2, 3.3, head); }
+  const armR = new T3.Group(); armR.position.set(5.6, 9.8, 0); g.add(armR); g.userData.armR = armR;
+  mk(cylG(1.5, 1.6, 4.4, 6), skin, 0, -2, 0, armR); mk(ico(1.7, 0), skin, 0, -4.6, 0, armR);
+  const club = new T3.Group(); club.position.set(0, -4.6, 0); armR.add(club); mk(cylG(.7, 1.1, 7, 6), ownMat(g, '#c58a5a'), 0, 3.5, 0, club); mk(ico(2.2, 1), ownMat(g, '#a56d42'), 0, 8, 0, club);
+  mk(cylG(1.5, 1.6, 4.4, 6), skin, -5.6, 8, 0, g).rotation.z = .3; mk(ico(1.7, 0), skin, -6.4, 5.7, 0, g);
+  addShadow(g, boss ? 7.2 : 5.6); if (boss) g.scale.setScalar(1.25); return g;
 }
-function aSkull(x, y, k){
-  return tSph(x, y, BZ + 2.2*k, 2.3*k, '#f1ecda', 1) + tEyes(x, y, BZ + 2.2*k, 2.3*k, { col:'#2b2623', noPupil:true, big:.34 })
-    + rod([x - 1.6*k, y + 1.6*k, BZ + 3*k], [x - 4*k, y + 3.2*k, BZ + 4.6*k], .5*k, BONE, toneI, .8, .12) + rod([x + 1.6*k, y - 1.6*k, BZ + 3*k], [x + 3.4*k, y - 4*k, BZ + 4.8*k], .5*k, BONE, toneI, .8, .12);
+
+/* ---------- 裝飾 ---------- */
+function buildDeco(kind, k){
+  const g = new T3.Group();
+  const pine = snow => { mk(cylG(.9, 1.1, 3, 6), m3('#b88a6a'), 0, 1.5, 0, g); [['#7fdcae', 4.6, 3.8, 5.2], ['#92e6bd', 3.7, 7.2, 4.6], ['#a8f0cc', 2.8, 10.4, 4.2]].forEach(([c, r, y, h]) => { cone(g, c, 0, y, 0, r, h, 7); if (snow) cone(g, '#ffffff', 0, y + h*.18, 0, r*.72, h*.7, 7); }); };
+  switch (kind){
+    case 'pine': pine(false); break; case 'snowpine': pine(true); break;
+    case 'bush': for (const [x, y, z, r] of [[-1.6, 1.8, 0, 2.2], [1.2, 2.2, .6, 2.6], [.2, 1.6, -1.6, 2]]) mk(ico(r, 1), m3('#86dca4'), x, y, z, g); for (const [x, y, z] of [[1.8, 4, 1.6], [-.4, 3.4, 1.6], [2.6, 2.6, -.4]]) mk(ico(.45, 0), m3('#ff6a8a'), x, y, z, g); break;
+    case 'mush': mk(cylG(.9, 1.2, 2.6, 6), m3('#fff0e0'), 0, 1.3, 0, g); mk(new T3.SphereGeometry(2.6, 8, 5, 0, 6.283, 0, 1.55), m3('#ff7a9a'), 0, 2.4, 0, g); for (const [x, z] of [[-1, 1], [1.1, .4], [0, -1.3]]) mk(ico(.38, 0), m3('#ffffff'), x, 4.5 - (x*x + z*z)*.12, z, g); break;
+    case 'cactus': mk(cylG(1.5, 1.7, 8, 7), m3('#86dca4'), 0, 4, 0, g); mk(ico(1.5, 1), m3('#86dca4'), 0, 8, 0, g); for (const sx of [-1, 1]){ mk(cylG(.8, .8, 2.4, 6), m3('#86dca4'), sx*2.6, 6.2, 0, g); mk(new T3.BoxGeometry(1.8, .8, .8), m3('#86dca4'), sx*1.7, 4.2, 0, g); } mk(ico(.5, 0), m3('#ff8fb8'), 0, 9.3, 0, g); break;
+    case 'rock': mk(new T3.DodecahedronGeometry(2.8, 0), m3('#b9b3d6'), 0, 2, 0, g).scale.set(1.2, .9, 1); mk(new T3.DodecahedronGeometry(1.5, 0), m3('#cdc8e8'), 2.4, 1, 1.2, g); break;
+    case 'skull': mk(ico(1.8, 1), m3('#fbf6ea'), 0, 2, 0, g).scale.set(1.2, 1, 1.3); mk(new T3.BoxGeometry(2, 1, 1.6), m3('#fbf6ea'), 0, 1, 1.8, g); for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(1, 10)), basic('#2b2552'), sx*.8, 2.4, 2.1, g).scale.set(.55, .6, 1); cone(g, '#fff0d0', sx*2.4, 3.2, 0, .5, 3.4, 5, 0, -sx*1.0); } break;
+    case 'crystal': for (const [x, z, h, c] of [[0, 0, 9, '#8fe0ff'], [-2, 1, 5.5, '#b9a8ff'], [2, .6, 6.5, '#ffb0dd'], [.6, -2, 4, '#c8f2ff']]) mk(new T3.OctahedronGeometry(1.3, 0), m3(c, { emissive:c, emissiveIntensity:.18, transparent:true, opacity:.92 }), x, h/2, z, g).scale.set(.9, h/2.6, .9); break;
+    case 'snowman': mk(ico(3.1, 1), m3('#ffffff'), 0, 3, 0, g); mk(ico(2.3, 1), m3('#ffffff'), 0, 7, 0, g); mk(ico(1.8, 1), m3('#ffffff'), 0, 10, 0, g); cone(g, '#ff9a5a', 0, 10, 2, .35, 1.8, 5, Math.PI/2); mk(new T3.TorusGeometry(1.7, .45, 4, 8), m3('#ff8fb8'), 0, 8.3, 0, g).rotation.x = Math.PI/2; for (const sx of [-.6, .6]) mk(ico(.2, 0), basic('#2b2552'), sx, 10.4, 1.65, g); break;
+    case 'spike': for (const [x, z, h, r] of [[0, 0, 9, 1.8], [-2, 1, 5.5, 1.3], [2, .8, 6.5, 1.4]]) cone(g, '#a8587a', x, h/2, z, r, h, 5); break;
+    case 'vent': mk(cylG(3.4, 4, 1.2, 8), m3('#9a7a90'), 0, .6, 0, g); g.userData.glow = mk(new T3.CircleGeometry(2.4, 10).rotateX(-Math.PI/2), basic('#ff9ab0'), 0, 1.25, 0, g); break;
+  }
+  g.scale.setScalar(k); addShadow(g, 3.6); return g;
 }
-function aCrystal(x, y, k){
-  const cm = matOf('#9fd8ef'), cm2 = matOf('#c9ecf8');
-  return rod([x - 1.2*k, y + 1.2*k, BZ], [x - 2.2*k, y + 2.4*k, BZ + 6*k], 1.3*k, cm2, toneI, 1, 0, 6) + rod([x, y, BZ], [x + .4*k, y - .4*k, BZ + 10*k], 1.8*k, cm, toneI, 1.1, 0, 6) + rod([x + 1.6*k, y - 1.2*k, BZ], [x + 3*k, y - 2.2*k, BZ + 5*k], 1.2*k, cm2, toneI, 1, 0, 6);
-}
-function aSnowman(x, y, k){
-  const [X,Y] = P(x + 2.8*k, y + 2.8*k, BZ + 6.6*k);
-  return tSph(x, y, BZ + 2.4*k, 2.6*k, '#f4f9fc', 1.1) + tSph(x, y, BZ + 5.6*k, 1.9*k, '#f4f9fc', 1.1) + tSph(x, y, BZ + 8*k, 1.4*k, '#f4f9fc', 1)
-    + rod([x + 1, y + 1, BZ + 8*k], [x + 3.4*k, y + 3.4*k, BZ + 7.6*k], .35*k, matOf('#f08a3a'), toneI, .6, .05) + cyl(x, y, BZ + 9.4*k, BZ + 11*k, 1.1*k, matOf('#3d3935'), toneI, .8, 8)
-    + rod([x + 1.6*k, y - 1.6*k, BZ + 5.8*k], [x + 4.4*k, y - 4.2*k, BZ + 7.4*k], .3*k, matOf('#8a5a3c'), toneI, .6);
-}
-function aSpike(x, y, k){
-  const dm = matOf('#4a3a4f'), [X,Y] = P(x, y, BZ + .2);
-  return `<ellipse cx="${f(X)}" cy="${f(Y)}" rx="${f(5.4*k)}" ry="${f(3*k)}" fill="#ff7a2a" opacity=".3"/>`
-    + rod([x - 1.6*k, y + 1.4*k, BZ], [x - 2.6*k, y + 2.4*k, BZ + 6*k], 1.5*k, dm, toneI, 1, 0, 5) + rod([x, y, BZ], [x + .4*k, y, BZ + 11*k], 2.1*k, dm, toneI, 1.2, 0, 5) + rod([x + 1.8*k, y - 1.4*k, BZ], [x + 3.4*k, y - 2.4*k, BZ + 5*k], 1.4*k, dm, toneI, 1, 0, 5);
-}
-function aVent(x, y, k, t){
-  const A = on(PZ(BZ + 1.7*k), ellUV(x, y, 2.6*k, 2.6*k, 16));
-  return cyl(x, y, BZ, BZ + 1.7*k, 3.6*k, matOf('#6b5651'), toneI, 1.3, 16) + fill(pd(A), '#ff7a2a') + fill(pd(on(PZ(BZ + 1.75*k), ellUV(x, y, 1.5*k + .3*Math.sin(t*3), 1.5*k + .3*Math.sin(t*3), 12))), '#ffd27a') + ink(pd(A), .9);
-}
-function aTorch(x, y){
-  const t = G.time, [X,Y] = P(x, y, BZ + 10.6), fl = Math.sin(t*13 + x)*.5, B = BIOMES[biomeNow()];
-  return rod([x, y, BZ], [x, y, BZ + 8.6], .65, WOOD, toneI, .9) + cyl(x, y, BZ + 8.2, BZ + 9.6, 1.5, matOf('#5a3b28'), toneI, .8, 8)
-    + `<circle cx="${f(X)}" cy="${f(Y - 1)}" r="${f(5)}" fill="#ffb347" opacity=".2"/>`
-    + `<path d="M${f(X - 1.5)} ${f(Y + 1.2)}Q${f(X - 2)} ${f(Y - 2)} ${f(X + fl*.4)} ${f(Y - 4.6 - fl)}Q${f(X + 2)} ${f(Y - 2)} ${f(X + 1.5)} ${f(Y + 1.2)}Z" fill="#ff9a3c" stroke="${INK}" stroke-width=".8" stroke-linejoin="round"/>`
-    + `<path d="M${f(X - .7)} ${f(Y + 1)}Q${f(X - .8)} ${f(Y - 1)} ${f(X + fl*.2)} ${f(Y - 2.4)}Q${f(X + .9)} ${f(Y - 1)} ${f(X + .7)} ${f(Y + 1)}Z" fill="#ffe08a"/>`;
-}
-const DECO = [   // per biome: [kind, x, y, scale]
+const DECO = [   // 每個生態：[種類, x, y, 縮放]
   [['pine',4,22,1.1], ['pine',27,25,.9], ['bush',5,44,1], ['bush',26,52,.9], ['mush',25,38,1], ['mush',5,58,.8]],
   [['cactus',4,22,1.1], ['cactus',27,26,.9], ['rock',5,45,1], ['rock',26,50,.8], ['skull',25,38,1], ['cactus',4,56,.7]],
   [['snowpine',4,22,1.1], ['snowpine',27,25,.9], ['crystal',5,45,1], ['crystal',26,51,.8], ['snowman',25,38,1], ['snowpine',4,57,.7]],
   [['spike',4,22,1.1], ['spike',27,25,.9], ['rock',5,45,1], ['rock',26,50,.8], ['vent',25,38,1], ['spike',4,56,.7]],
 ];
-function aDeco(kind, x, y, k){
-  switch (kind){
-    case 'pine': return aPine(x, y, k, false); case 'snowpine': return aPine(x, y, k, true); case 'bush': return aBush(x, y, k); case 'mush': return aMush(x, y, k);
-    case 'cactus': return aCactus(x, y, k); case 'rock': return aRock(x, y, k, ['#b4ada0', '#cfb98a', '#aebccb', '#6b5651'][biomeNow()]); case 'skull': return aSkull(x, y, k);
-    case 'crystal': return aCrystal(x, y, k); case 'snowman': return aSnowman(x, y, k); case 'spike': return aSpike(x, y, k); case 'vent': return aVent(x, y, k, G.time);
+function buildTorch(){
+  const g = new T3.Group(); mk(cylG(.5, .7, 9, 6), m3('#d9a97a'), 0, 4.5, 0, g); mk(cylG(1.4, .9, 1.6, 6), m3('#b88a6a'), 0, 9.6, 0, g);
+  const fl = mk(new T3.ConeGeometry(1.2, 3.6, 6), basic('#ffb347'), 0, 12, 0, g), in2 = mk(new T3.ConeGeometry(.7, 2.2, 6), basic('#fff0a0'), 0, 11.4, 0, g);
+  const halo = mk(ico(2.8, 1), basic('#ffd9a0', .22), 0, 11.5, 0, g); g.userData.fl = [fl, in2, halo]; addShadow(g, 1.8); return g;
+}
+function signTex(txt){
+  const c = document.createElement('canvas'); c.width = 256; c.height = 96; const x = c.getContext('2d');
+  x.fillStyle = '#ffe9c4'; x.fillRect(0, 0, 256, 96); x.strokeStyle = '#c99a6a'; x.lineWidth = 8; x.strokeRect(4, 4, 248, 88);
+  x.fillStyle = '#2b2552'; x.font = '800 44px ui-monospace,Menlo,monospace'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt, 128, 52);
+  const t = new T3.CanvasTexture(c); t.colorSpace = T3.SRGBColorSpace; return t;
+}
+function buildSign(){
+  const g = new T3.Group(); mk(cylG(.6, .7, 11, 6), m3('#d9a97a'), 0, 5.5, 0, g);
+  const b = mk(new T3.BoxGeometry(14, 5, .9), m3('#c99a6a'), 0, 8, 0, g); b.rotation.y = Math.PI/2;
+  g.userData.board = b; g.userData.txt = ''; addShadow(g, 2.4); return g;
+}
+
+/* ---------- 地面、傳送池 ---------- */
+function buildGround(bi){
+  const B = BIOMES[bi], g = new T3.Group();
+  mk(new T3.BoxGeometry(BXW, 4.2, BYW), [m3(B.board.m), m3(B.board.d), m3(B.board.l), m3(B.board.d), m3(B.board.m), m3(B.board.d)], BXW/2, BZ - 2.1, BYW/2, g);
+  mk(new T3.BoxGeometry(BXW - 1, .3, BYW - 1), m3(B.board.l), BXW/2, BZ + .15, BYW/2, g);
+  mk(new T3.BoxGeometry(9, .2, BYW - 6), m3(B.board.m), 15, BZ + .35, BYW/2, g);
+  for (let y = 18; y <= 64; y += 9) mk(cylG(1.8, 1.8, .22, 7), m3(B.board.l), 15 + Math.sin(y*2)*1.6, BZ + .5, y + 1.5, g);
+  for (let i = 0; i < 26; i++){
+    const x = 2 + aRnd(i*3 + 1)*(BXW - 4), y = 3 + aRnd(i*3 + 2)*(BYW - 6); if (Math.abs(x - 15) < 5.5) continue;
+    if (bi === 0){ if (i % 3 === 0){ mk(ico(.7, 0), m3(['#ffd1e6', '#fff3a8', '#ffffff'][(i/3|0) % 3]), x, BZ + 1.3, y, g); mk(cylG(.08, .08, 1.2, 3), m3('#6aa27a'), x, BZ + .7, y, g); } else cone(g, '#79c98c', x, BZ + .9, y, .55, 1.8, 4); }
+    else if (bi === 1) mk(new T3.DodecahedronGeometry(.5 + aRnd(i)*.5, 0), m3(i % 2 ? B.board.d : '#fff0c8'), x, BZ + .6, y, g);
+    else if (bi === 2) mk(cylG(1.3 + aRnd(i), 1.5 + aRnd(i), .25, 6), m3(i % 2 ? '#ffffff' : '#bfe3f5'), x, BZ + .5, y, g);
+    else if (i % 2) mk(new T3.BoxGeometry(3.4, .12, .5), basic('#ff8fb0'), x, BZ + .45, y, g).rotation.y = aRnd(i)*3;
+    else mk(new T3.DodecahedronGeometry(.6, 0), m3(B.board.d), x, BZ + .6, y, g);
   }
-  return '';
+  return g;
 }
-const aDecoTop = { pine:15.5, snowpine:15.5, bush:5, mush:4.5, cactus:10.5, rock:4, skull:5, crystal:10, snowman:11, spike:11, vent:2 };
-function drawSign(){
-  return rod([4, 66, BZ], [4, 66, BZ + 11], .8, WOOD, toneI, 1) + rod([4, 59, BZ + 10], [4, 73, BZ + 10], .45, WOOD, toneI, .8)
-    + shape(on(PX(4.8), rrUV(59, BZ + 5.6, 73, BZ + 10.6, 1.2, 3)), WOOD.l, 1.2)
-    + tx(4.9, 66, BZ + 7.2, G.run ? 'MAP ' + G.run.map.lvl : 'DEPTH ' + G.depth, 2.3, INK, 800);
-}
-// a pool of light ringed by standing stones: the pool is flat (drawn early), the stones sort in with the actors
-function drawPortalPool(){
-  const [sx, sy] = SPAWN, t = G.time, pulse = G.fx.find(e => e.k === 'portal'), B = BIOMES[biomeNow()], pr = 3.2 + (pulse ? 1.2*Math.sin(pulse.t*3.14) : 0);
-  let s = cyl(sx, sy, BZ, BZ + 1.2, 7, STONE, toneI, 1.4, 20);
-  s += fill(pd(on(PZ(BZ + 1.25), ellUV(sx, sy, 5.2, 5.2, 20))), B.portal) + ink(pd(on(PZ(BZ + 1.25), ellUV(sx, sy, 5.2, 5.2, 20))), 1);
-  s += fill(pd(on(PZ(BZ + 1.3), ellUV(sx, sy, pr, pr, 16))), B.glow);
-  for (let i = 0; i < 3; i++){ const a0 = t*70 + i*120; s += `<path d="${pd(on(PZ(BZ + 1.35), arcUV(sx, sy, 3.8, a0, a0 + 70, 6)), false)}" stroke="#ffffff" stroke-width="1.2" fill="none" stroke-linecap="round"/>`; }
-  return s;
-}
-function portalStones(){
-  const [sx, sy] = SPAWN, B = BIOMES[biomeNow()], out = [];
-  [[-1, 0, 7.6], [0, -1, 6.4], [-.7, .7, 6.8], [1, 0, 7.4], [.7, -.7, 6.2]].forEach(([dx, dy, h], i) => {     // five of the six stand; the sixth is the gap monsters walk through
-    const px = sx + dx*8.4, py = sy + dy*8.4, hw = .95;
-    out.push({ at:[px, py, BZ], svg: box(px - hw, py - hw, BZ, px + hw, py + hw, BZ + h, STONE, toneI, 1.1) + box(px - hw - .25, py - hw - .25, BZ + h, px + hw + .25, py + hw + .25, BZ + h + .8, STONE, toneI, .9)
-      + shape(on(PX(px + hw), rectUV(py - .35, BZ + h*.45, py + .35, BZ + h*.45 + 2.2)), B.glow, .7) });
+const stoneM = () => m3('#d6d0ea');
+function buildPortal(){
+  const g = new T3.Group(), [sx, sy] = SPAWN, B = BIOMES[biomeNow()]; at3(g, sx, sy, BZ);
+  mk(cylG(7, 7.4, 1.3, 9), stoneM(), 0, .65, 0, g);
+  mk(new T3.CircleGeometry(5.2, 14).rotateX(-Math.PI/2), basic(B.portal), 0, 1.35, 0, g);
+  const glow = mk(new T3.CircleGeometry(3.2, 12).rotateX(-Math.PI/2), basic(B.glow), 0, 1.4, 0, g);
+  const rings = []; for (let i = 0; i < 3; i++){ const r = mk(new T3.TorusGeometry(3.8, .16, 4, 8, 1.2), basic('#ffffff'), 0, 1.5, 0, g); r.rotation.x = Math.PI/2; rings.push(r); }
+  [[-1, 0, 7.6], [0, -1, 6.4], [-.7, .7, 6.8], [1, 0, 7.4], [.7, -.7, 6.2]].forEach(([dx, dy, h]) => {
+    const st = new T3.Group(); st.position.set(dx*8.4, 0, dy*8.4); g.add(st);
+    mk(new T3.BoxGeometry(1.9, h, 1.9), stoneM(), 0, h/2, 0, st); mk(new T3.BoxGeometry(2.5, .8, 2.5), stoneM(), 0, h + .4, 0, st);
+    const rune = mk(new T3.PlaneGeometry(.8, 2.2), basic(B.glow), (dx > 0 ? -1 : 1)*.97, h*.5, 0, st); rune.rotation.y = (dx > 0 ? -1 : 1)*Math.PI/2;   // 符文面向傳送池
   });
-  return out;
+  g.userData = { glow, rings }; return g;
 }
 
-/* ---------- ground: path, tufts, flowers, pebbles ---------- */
-function drawGround(){
-  const B = BIOMES[biomeNow()], bi = biomeNow(), z = BZ + .04, pm = mix(B.board.m, '#7a5a38', .22);
-  const wob = i => Math.sin(i*1.7)*.9, L = [], R = [];
-  for (let y = 14; y <= 70; y += 4){ L.push([15 - 5 + wob(y), y, z]); R.push([15 + 5 + wob(y + 9), y, z]); }
-  let s = `<path d="${pd([...L, ...R.reverse()])}" fill="${pm}" opacity=".75"/>`;
-  s += aInkP(pd(L, false), .8, B.board.d, .8, 'stroke-dasharray="2 2"') + aInkP(pd(R.reverse(), false), .8, B.board.d, .8, 'stroke-dasharray="2 2"');
-  for (let i = 0; i < 22; i++){            // scattered ground details, kept off the fighting lane
-    const x = 2.5 + aRnd(i)*25, y = 4 + aRnd(i + 50)*68; if (Math.abs(x - 15) < 6.2 || y < 4.5) continue;
-    if (bi === 0) s += aInkP(pd([[x - .9, y, z], [x - .4, y - .2, z + 1.5]], false) + pd([[x, y, z], [x, y - .2, z + 2]], false) + pd([[x + .9, y, z], [x + .5, y + .2, z + 1.5]], false), .8, B.board.d)
-      + (i % 5 === 0 ? tSph(x + 1.6, y + 1, z + .9, .55, ['#f08aa8', '#fff0b0', '#ffffff'][i % 3], .6) : '');
-    else if (bi === 1) s += i % 2 ? aInkP(pd(on(PZ(z), arcUV(x, y, 2.6, 20, 160, 5)), false), .8, B.board.d, .9) : shape(on(PZ(z), ellUV(x, y, 1, .7, 8)), B.board.m, .7);
-    else if (bi === 2) s += i % 2 ? fill(pd(on(PZ(z), ellUV(x, y, 2.4, 1.6, 12))), '#ffffff', 'opacity=".8"') : fill(pd(on(PZ(z), ellUV(x, y, 1.9, 1.3, 12))), '#bfe3f5', 'opacity=".7"') + aInkP(pd(on(PZ(z), ellUV(x, y, 1.9, 1.3, 12))), .6, B.board.d, .7);
-    else s += i % 2 ? aInkP(pd([[x - 2, y - .8, z], [x - .5, y + .3, z], [x + .6, y - .4, z], [x + 2, y + .9, z]], false), 1.7, '#ff7a2a', .9) + aInkP(pd([[x - 2, y - .8, z], [x - .5, y + .3, z], [x + .6, y - .4, z], [x + 2, y + .9, z]], false), .6, INK, .7) : shape(on(PZ(z), ellUV(x, y, .9, .7, 8)), B.board.d, .7);
-  }
-  for (let y = 18; y <= 64; y += 9) s += shape(on(PZ(z + .02), ellUV(15 + wob(y*2)*1.6, y + 1.5, 1.7, 1.2, 10)), B.board.l, .7);   // stepping stones
-  return s;
+/* ---------- 掉落物 ---------- */
+function buildDrop(d){
+  const g = new T3.Group(), col = d.kind === 'gem' ? '#a87bf0' : d.kind === 'map' ? BIOMES[d.map.biome].glow : RAR[d.it.r].g, rare = d.kind !== 'item' || d.it.r >= 2, item = new T3.Group(); g.add(item); g.userData.item = item;
+  if (d.kind === 'gem') mk(new T3.OctahedronGeometry(1.7, 0), m3(col, { emissive:col, emissiveIntensity:.25 }), 0, 2.2, 0, item);
+  else if (d.kind === 'map'){ mk(cylG(.9, .9, 4.4, 6), m3('#fff0c0'), 0, 1.6, 0, item).rotation.z = Math.PI/2; for (const sx of [-2.3, 2.3]) mk(ico(.7, 0), m3('#ffd35a'), sx, 1.6, 0, item); mk(ico(.7, 0), m3(BIOMES[d.map.biome].portal, { emissive:col, emissiveIntensity:.4 }), 0, 2.6, 0, item); }
+  else if (d.it.slot === 'weapon'){ const w = new T3.Group(); item.add(w); mk(new T3.BoxGeometry(.9, 5.6, .35), m3(col, { emissive:col, emissiveIntensity:.15 }), 0, 3.8, 0, w); mk(cylG(.35, .35, 2, 5), m3('#7a5a8a'), 0, 0, 0, w); mk(new T3.BoxGeometry(2.4, .5, .8), m3('#ffd35a'), 0, 1, 0, w); w.rotation.z = Math.PI/3; w.position.y = 1.6; }
+  else if (d.it.slot === 'armor'){ mk(cylG(1.5, 2.1, 3.2, 7), m3(col, { emissive:col, emissiveIntensity:.15 }), 0, 2, 0, item); for (const sx of [-1, 1]) mk(ico(1, 0), m3(col), sx*2, 3.3, 0, item); }
+  else { mk(new T3.TorusGeometry(1.4, .45, 5, 8), m3('#ffe27a'), 0, 2, 0, item).rotation.x = Math.PI/2.6; mk(ico(.75, 0), m3(col, { emissive:col, emissiveIntensity:.35 }), 0, 3.5, 0, item); }
+  const disc = mk(geo('shadow', () => new T3.CircleGeometry(1, 14).rotateX(-Math.PI/2)), basic(col, .4), 0, .08, 0, g); disc.scale.set(4, 1, 3); g.userData.disc = disc;
+  if (rare) g.userData.beam = mk(cylG(1, 1, 17, 8), basic(col, .25), 0, 8.5, 0, g);
+  return g;
 }
 
-/* ---------- loot: each kind has its own little model ---------- */
-function drawDrop(d){
-  const kind = d.kind, col = kind === 'gem' ? '#a87bf0' : kind === 'map' ? BIOMES[d.map.biome].glow : RAR[d.it.r].g, rare = kind !== 'item' || d.it.r >= 2;
-  if (d.t < 0) return { at:[HX, HY, 0], svg:'' };
-  let x = d.x, y = d.y, z = BZ;
-  if (d.t < .6) z += Math.abs(Math.sin(d.t/.6*Math.PI*1.5))*5*(1 - d.t/.6) + .3;
-  else if (d.t >= 1.2){ const u = ease(tClamp((d.t - 1.2)/.5)); x = tLerp(d.x, HX, u); y = tLerp(d.y, HY, u); z = BZ + .3 + Math.sin(u*Math.PI)*8 + u*7; } else z += .3 + Math.sin(d.t*6)*.25;
-  let s = '';
-  if (d.t < 1.2){ const [X,Y] = P(x, y, BZ + .1); s += `<ellipse cx="${f(X)}" cy="${f(Y)}" rx="${f(4.2)}" ry="${f(2.4)}" fill="${col}" opacity="${(.3 + .12*Math.sin(d.t*8)).toFixed(2)}"/>`; }
-  if (rare && d.t < 1.2) s += fill(pd([[x - .9, y - .9, BZ], [x + .9, y + .9, BZ], [x + .9, y + .9, BZ + 17], [x - .9, y - .9, BZ + 17]]), col, 'opacity=".3"');
-  const m = matOf(col);
-  if (kind === 'gem') s += rod([x, y, z + .2], [x, y, z + 1.8], .05, m, toneI, .8, 1.5, 4) + rod([x, y, z + 1.8], [x, y, z + 3.4], 1.5, m, toneI, .8, .05, 4);
-  else if (kind === 'map') s += rod([x - 2.2, y + 2.2, z + .9], [x + 2.2, y - 2.2, z + .9], .95, matOf('#efe0b0'), toneI, .9) + tSph(x - 2.2, y + 2.2, z + .9, .6, '#c9a13b', .6) + tSph(x + 2.2, y - 2.2, z + .9, .6, '#c9a13b', .6) + tSph(x, y, z + 1.8, .55, BIOMES[d.map.biome].portal, .6);
-  else if (d.it.slot === 'weapon') s += rod([x - 2.6, y + 2.6, z + 1], [x + 1.8, y - 1.8, z + 1], .45, m, toneI, .8, .15) + rod([x - 3.4, y + 3.4, z + 1], [x - 2.4, y + 2.4, z + 1], .4, matOf('#5a3b28'), toneI, .7) + rod([x - 2.2, y + 1.7, z + 1], [x - 2.2 - .8, y + 3.5, z + 1], .35, matOf('#c9a13b'), toneI, .7);
-  else if (d.it.slot === 'armor') s += aBlob(x, y, z + .2, [[0,1.7],[1.3,1.9],[2.4,1.6],[2.9,1.0]], m, .9, 10) + tSph(x + 1.6, y - 1.1, z + 2.5, .8, col, .6) + tSph(x - 1.6, y + 1.1, z + 2.5, .8, col, .6);
-  else { const rg = on(PZ(z + 1.2), ellUV(x, y, 1.6, 1.6, 10)); s += aInkP(pd(rg), 2.8, INK) + aInkP(pd(rg), 1.5, col) + tSph(x - 1.2, y - 1.2, z + 1.4, .7, '#ffffff', .6); }
-  return { at:[x, y, z], svg:s };
+/* ---------- 場景管理 ---------- */
+function r3init(){
+  const cv = document.createElement('canvas'); cv.id = 'cv3'; cv.style.cssText = 'position:absolute;pointer-events:none;z-index:-1;left:0;top:0';
+  document.body.appendChild(cv);
+  const rd = R3.rd = new T3.WebGLRenderer({ canvas:cv, antialias:true, alpha:true, preserveDrawingBuffer:true });
+  rd.setClearColor(0x000000, 0); rd.outputColorSpace = T3.SRGBColorSpace;
+  const sc = R3.sc = new T3.Scene();
+  sc.add(new T3.HemisphereLight(0xeaf5ff, 0xd8c8f0, 1.55));
+  const sun = new T3.DirectionalLight(0xfff6ea, 1.5); sun.position.set(30, 60, 50); sc.add(sun);
+  sc.add(new T3.AmbientLight(0xffffff, .25));
+  R3.cam = new T3.OrthographicCamera(-1, 1, 1, -1, -400, 600);
+  R3.world = new T3.Group(); sc.add(R3.world); R3.fx = new T3.Group(); sc.add(R3.fx);
+  R3.hero = null; R3.gnd = null; R3.portal = null; R3.decor = []; R3.bi = -1; R3.ready = true;
 }
-function drawFx(){
-  let s = '';
+function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相機視野
+  const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
+  const cv = R3.rd.domElement; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  if (W !== R3.W || H !== R3.H || dpr !== R3.dpr){ R3.W = W; R3.H = H; R3.dpr = dpr; R3.rd.setPixelRatio(dpr); R3.rd.setSize(W, H, false); }
+  const cam = R3.cam, tgt = new T3.Vector3(BXW/2, BZ + 6, BYW/2); cam.position.copy(tgt).add(new T3.Vector3(1, .86, 1).normalize().multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  for (const x of [0, BXW]) for (const y of [0, BYW]) for (const z of [BZ - 4, BZ + 24]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
+  const bw = x1 - x0, bh = y1 - y0, ar = W/H, cx = (x0 + x1)/2 + bw*.04, cy = (y0 + y1)/2 + bh*.02;
+  let vw = bw/.78, vh = bh/.92; if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;
+  cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2; cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
+  const vb = fig.viewBox.baseVal; R3.vbW = vb.width; R3.vbH = vb.height;
+}
+const pj = (x, y, z) => { const v = new T3.Vector3(x, z, y).project(R3.cam); return [(v.x + 1)/2*R3.vbW, (1 - v.y)/2*R3.vbH]; };
+const pxu = () => { const a = new T3.Vector3(0, 0, 0).project(R3.cam), b = new T3.Vector3(1, 0, -1).normalize().project(R3.cam); return Math.abs(b.x - a.x)/2*R3.vbW; };   // 一個遊戲單位約等於幾個 SVG 單位
+
+function entFor(key, build){ let e = R3.ent.get(key); if (!e){ e = build(); R3.world.add(e); R3.ent.set(key, e); } e.userData.seen = true; return e; }
+function monLook(m, g){
+  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, y = m.y + 3*lg;
+  at3(g, m.x, y, BZ); g.rotation.y = Math.PI/4;
+  if (m.type === 'slime'){ const sq = 1 + .1*Math.sin(t*5) + (m.lunge >= 0 ? .15*Math.sin(Math.PI*m.lunge/.3) : 0); g.userData.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); }
+  else { g.position.y += m.fight ? 0 : Math.abs(Math.sin(t*9))*.8; if (g.userData.head) g.userData.head.rotation.z = Math.sin(t*2)*.05; if (g.userData.armR) g.userData.armR.rotation.x = m.lunge >= 0 ? -1.9*lg : (m.fight ? -.4 + Math.sin(t*3)*.15 : Math.sin(t*9)*.3); }
+  if (m.dead){ const u = m.deadT/.4; g.scale.setScalar(Math.max(.01, (m.boss ? 1.25 : 1)*(1 - u*.4))); for (const mt of g.userData.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u); } if (g.userData.sh) g.userData.sh.visible = false; }
+  else if (m.frozen > 0) flash(g, '#9fe0ff', .55); else if (m.hurtT > 0) flash(g, '#ffffff', .7); else flash(g, '#000000', 0);
+}
+function heroLook(g){
+  const h = G.h, t = G.time, ps = g.userData;
+  at3(g, HX + (h.hurtT > 0 ? Math.sin(t*90)*.5 : 0), HY, BZ + Math.max(0, Math.sin(t*3)*.35)); g.rotation.y = 100*D2R;
+  const a = h.swingT < 0 ? 72 + Math.sin(t*3)*3 : tLerp(115, -30, ease(h.swingT/.3));
+  ps.armR.rotation.x = (90 - a)*D2R*.9 + 1.2; ps.sword.rotation.x = (90 - a)*D2R*.35 + .1;
+  ps.tail.rotation.x = Math.sin(t*4.5)*.25; ps.tail.position.y = 14.5 + Math.sin(t*4.5)*.3; ps.head.rotation.z = Math.sin(t*1.5)*.03;
+  if (h.castT >= 0){ const u = ease(tClamp(h.castT/.25)); ps.orb.visible = true; ps.orb.material.color.set((SKILLS[h.castSk] || SKILLS.FIRE).col); ps.orb.scale.setScalar(Math.max(.01, u)); } else ps.orb.visible = false;
+}
+
+function updateFx(){
+  const fx = R3.fx; while (fx.children.length){ const c = fx.children.pop(); c.material && c.material.dispose(); }
+  const add = (geom, mat, x, y, z, s=1) => { const o = new T3.Mesh(geom, mat); o.position.set(x, z, y); o.scale.setScalar(s); fx.add(o); return o; };
+  const sph = geo('fxs', () => ico(1, 1)), disc = geo('fxd', () => new T3.CircleGeometry(1, 28).rotateX(-Math.PI/2));
   for (const e of G.fx){
-    if (e.k === 'boom'){ const [X,Y] = P(e.x, e.y, e.z), R = tLerp(2, e.big ? 16 : 9, ease(e.t))*1.22; s += `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(R)}" fill="#ff9a3c" opacity="${((1 - e.t)*.8).toFixed(2)}" stroke="${INK}" stroke-width=".9"/><circle cx="${f(X)}" cy="${f(Y)}" r="${f(R*.55)}" fill="#ffe08a" opacity="${(1 - e.t).toFixed(2)}"/>`; }
-    if (e.k === 'slash'){ const [X,Y] = P(e.x + 2, e.y, e.z), R = tLerp(3, 7, e.t); s += [0,1,2,3,4].map(i => { const a = i*1.2566 + .4; return `<path d="M${f(X + Math.cos(a)*R*.4)} ${f(Y + Math.sin(a)*R*.4)}L${f(X + Math.cos(a)*R)} ${f(Y + Math.sin(a)*R)}" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity="${(1 - e.t).toFixed(2)}"/>`; }).join(''); }
-    if (e.k === 'nova'){ const r = tLerp(3, 46, ease(e.t)); s += `<path d="${pd(on(PZ(BZ + .2), ellUV(HX, HY, r, r, 28)))}" fill="#9fe0ff" opacity="${((1 - e.t)*.45).toFixed(2)}" stroke="#e8f8ff" stroke-width="1.6"/>`; }
-    if (e.k === 'bolt'){ const pts = []; e.pts.forEach((p, i) => { if (i) pts.push([(e.pts[i-1][0] + p[0])/2 + tRand(-2, 2), (e.pts[i-1][1] + p[1])/2 + tRand(-2, 2), (e.pts[i-1][2] + p[2])/2 + tRand(1, 3)]); pts.push(p); });
-      const d2 = pd(pts, false); s += `<path d="${d2}" fill="none" stroke="#ffe45c" stroke-width="4" opacity="${((1 - e.t)*.5).toFixed(2)}" stroke-linejoin="round"/><path d="${d2}" fill="none" stroke="#fffbd0" stroke-width="1.5" opacity="${(1 - e.t).toFixed(2)}" stroke-linejoin="round"/>`; }
+    if (e.k === 'boom'){ const R = tLerp(2, e.big ? 16 : 9, ease(e.t)); add(sph, basic('#ff9a3c', (1 - e.t)*.8), e.x, e.y, e.z, R); add(sph, basic('#ffe08a', 1 - e.t), e.x, e.y, e.z, R*.55); }
+    if (e.k === 'slash'){ const R = tLerp(3, 7, e.t); for (let i = 0; i < 5; i++){ const a = i*1.2566 + .4, o = add(geo('fxb', () => new T3.BoxGeometry(1, .22, .22)), basic('#ffffff', 1 - e.t), e.x + 2 + Math.cos(a)*R*.7, e.y, e.z + Math.sin(a)*R*.7, R*.5); o.rotation.z = a; } }
+    if (e.k === 'nova'){ const r = tLerp(3, 46, ease(e.t)), o = add(geo('fxr', () => new T3.RingGeometry(.88, 1, 36).rotateX(-Math.PI/2)), basic('#9fe0ff', (1 - e.t)*.7), HX, HY, BZ + .6, r); o.material.side = T3.DoubleSide; add(disc, basic('#9fe0ff', (1 - e.t)*.25), HX, HY, BZ + .5, r); }
+    if (e.k === 'bolt'){ const pts = []; e.pts.forEach((p, i) => { if (i) pts.push([(e.pts[i-1][0] + p[0])/2 + aRnd(i + e.t*9)*4 - 2, (e.pts[i-1][1] + p[1])/2 + aRnd(i*3 + e.t*7)*4 - 2, (e.pts[i-1][2] + p[2])/2 + 2]); pts.push(p); });
+      for (let i = 1; i < pts.length; i++){ const a = pts[i-1], b = pts[i], len = Math.hypot(b[0]-a[0], b[1]-a[1], b[2]-a[2]), o = add(geo('fxc', () => new T3.CylinderGeometry(.5, .5, 1, 4)), basic('#ffe45c', 1 - e.t), (a[0]+b[0])/2, (a[1]+b[1])/2, (a[2]+b[2])/2); o.scale.set(1, len, 1); o.quaternion.setFromUnitVectors(new T3.Vector3(0, 1, 0), new T3.Vector3(b[0]-a[0], b[2]-a[2], b[1]-a[1]).normalize()); } }
   }
   for (const p of G.proj){
-    if (p.k === 'meteor'){ const u = tClamp(p.t), z = tLerp(70, BZ + 2, u*u), rr = tLerp(2, 7, u);
-      s += `<path d="${pd(on(PZ(BZ + .2), ellUV(p.x, p.y, rr, rr, 14)))}" fill="#e2483d" opacity="${(.15 + .3*u).toFixed(2)}"/>`;
-      const [X,Y] = P(p.x, p.y, z), R = 3.4*1.22; s += `<circle cx="${f(X)}" cy="${f(Y - 6)}" r="${f(R*2)}" fill="#ffb347" opacity=".3"/><circle cx="${f(X)}" cy="${f(Y)}" r="${f(R)}" fill="#8a4c36" stroke="${INK}" stroke-width="1"/><circle cx="${f(X + R*.2)}" cy="${f(Y - R*.2)}" r="${f(R*.5)}" fill="#ff7a2a"/>`; continue; }
+    if (p.k === 'meteor'){ const u = tClamp(p.t), z = tLerp(70, BZ + 2, u*u), rr = tLerp(2, 7, u); add(disc, basic('#e2483d', .15 + .3*u), p.x, p.y, BZ + .3, rr);
+      add(sph, basic('#ffb347', .35), p.x, p.y, z + 2, 6.5); add(geo('rock', () => new T3.DodecahedronGeometry(1, 0)), m3('#d77a6a', { emissive:'#ff7a2a', emissiveIntensity:.5 }), p.x, p.y, z, 3.4); continue; }
     if (p.t < 0 || !p.tg) continue; const u = tClamp(p.t), a = [HX + 3.4, HY - 3.6, BZ + 9.2], b = [p.tg.x, p.tg.y, BZ + 6];
-    for (let k = 3; k >= 0; k--){ const uu = Math.max(0, u - k*.05), q = [tLerp(a[0], b[0], uu), tLerp(a[1], b[1], uu), tLerp(a[2], b[2], uu) + Math.sin(uu*Math.PI)*4], [X,Y] = P(...q), R = (k ? 1.4 - k*.25 : 2.2)*1.22;
-      s += k ? `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(R)}" fill="#ff9a3c" opacity=".5"/>` : `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(R*1.8)}" fill="#ffb347" opacity=".35"/><circle cx="${f(X)}" cy="${f(Y)}" r="${f(R)}" fill="#ff7a2a" stroke="${INK}" stroke-width=".9"/><circle cx="${f(X + R*.15)}" cy="${f(Y - R*.15)}" r="${f(R*.5)}" fill="#ffe08a"/>`; }
+    for (let k = 3; k >= 0; k--){ const uu = Math.max(0, u - k*.05); add(sph, k ? basic('#ff9a3c', .5) : basic('#ff7a2a'), tLerp(a[0], b[0], uu), tLerp(a[1], b[1], uu), tLerp(a[2], b[2], uu) + Math.sin(uu*Math.PI)*4, k ? 1.4 - k*.25 : 2.2); }
   }
-  return s;
-}
-function drawFloats(){
-  return G.floats.map(fl => { const [X,Y] = P(fl.x + 3, fl.y, fl.z + fl.t*9);
-    return `<text x="${f(X)}" y="${f(Y)}" text-anchor="middle" font-size="${f(fl.size*1.5)}" fill="${fl.col}" stroke="#f2efe7" stroke-width="1.6" paint-order="stroke" font-family="ui-monospace,Menlo,monospace" font-weight="800" opacity="${(1 - fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }).join('');
 }
 
-/* ---------- scene ---------- */
-function scene(){
-  const B = BIOMES[biomeNow()], bi = biomeNow();
-  let s = board(0, 0, BXW, BYW, BZ, 4, B.board) + drawGround() + drawPortalPool();
-  const ents = [...portalStones()];
-  portalStones().forEach(o => s += castShadow([[o.at[0] - 1, o.at[1] - 1, BZ], [o.at[0] + 1, o.at[1] + 1, BZ], [o.at[0], o.at[1], BZ + 7]], BZ));
-  DECO[bi].forEach(([kind, x, y, k]) => { s += castShadow([...tRing(x, y, 3.4*k, BZ), [x, y, BZ + (aDecoTop[kind] || 6)*k]], BZ); ents.push({ at:[x, y, BZ], svg:aDeco(kind, x, y, k) }); });
-  [[3.5, 15], [26.5, 15]].forEach(([x, y]) => s += castShadow([...tRing(x, y, 1, BZ, 6), [x, y, BZ + 10]], BZ));
-  [[3.5, 15], [26.5, 15]].forEach(([x, y]) => ents.push({ at:[x, y, BZ], svg:aTorch(x, y) }));
-  ents.push({ at:[4, 66, BZ], svg:drawSign() });
-  if (G.h.dead <= 0) s += shadowOf(HX, HY, 3.4, 16);
-  ents.push({ at:[HX, HY, BZ + 1], svg:drawHero() });
-  for (const m of G.mons){ const r = drawMon(m); s += r.sh; ents.push({ at:[m.x, m.y, BZ + 2], svg:r.s }); }
-  for (const dd of G.drops) ents.push(drawDrop(dd));
-  s += byDepth(ents) + drawFx() + drawFloats();
+function overlay(){
+  const k = pxu(); let s = '';
+  const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z), W2 = w*k*.8, H2 = 1.5*k; return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
+  if (G.h.dead <= 0) s += bar(HX, HY, BZ + 26, 9, G.h.hp/G.st.life, '#ff6a8a');
+  for (const m of G.mons) if (!m.dead) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 25 : m.type === 'brute' ? 19 : 18), 8, m.hp/m.hpMax, '#ff6a8a');
+  for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + fl.t*9);
+    s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" font-size="${(fl.size*1.5*k*.62).toFixed(1)}" fill="${fl.col}" style="stroke:#f2f7ff;stroke-width:${(1.8*k*.5).toFixed(1)}px;paint-order:stroke" font-family="ui-monospace,Menlo,monospace" font-weight="800" opacity="${(1 - fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
   return s;
+}
+
+/* ---------- scene：每一幀同步遊戲狀態到 three 場景，再畫出來 ---------- */
+function scene(){
+  if (!R3.ready) r3init();
+  r3frame();
+  const bi = biomeNow();
+  if (R3.bi !== bi){
+    R3.bi = bi;
+    for (const o of [R3.gnd, R3.portal, ...R3.decor]) o && R3.world.remove(o);
+    R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];
+    DECO[bi].forEach(([kind, x, y, k]) => { const o = buildDeco(kind, k); at3(o, x, y, BZ); R3.world.add(o); R3.decor.push(o); });
+    [[3.5, 15], [26.5, 15]].forEach(([x, y]) => { const o = buildTorch(); at3(o, x, y, BZ); R3.world.add(o); R3.decor.push(o); });
+    R3.sign = buildSign(); at3(R3.sign, 4, 66, BZ); R3.world.add(R3.sign); R3.decor.push(R3.sign);
+    for (const [k, e] of R3.ent){ R3.world.remove(e); R3.ent.delete(k); }   // 換生態時怪物與掉落物重建（顏色隨生態）
+  }
+  const t = G.time;
+  for (const o of R3.decor){ const u = o.userData; if (u.fl){ const f2 = 1 + Math.sin(t*14 + o.position.x)*.08; u.fl[0].scale.set(f2, 1 + Math.sin(t*11)*.1, f2); u.fl[2].scale.setScalar(1 + Math.sin(t*7)*.1); } if (u.glow) u.glow.material.color.set(Math.sin(t*3) > 0 ? '#ff9ab0' : '#ffc2d2'); }
+  const sg = R3.sign, txt = G.run ? 'MAP ' + G.run.map.lvl : 'DEPTH ' + G.depth;
+  if (sg.userData.txt !== txt){ sg.userData.txt = txt; const mt = new T3.MeshBasicMaterial({ map:signTex(txt) }), wd = m3('#c99a6a'); sg.userData.board.material = [wd, wd, wd, wd, mt, mt]; }
+  const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
+  pu.glow.scale.setScalar((3.2 + (pulse ? 1.2*Math.sin(pulse.t*3.14) : 0))/3.2); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
+  // 主角
+  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = aTier(W), wr = W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead > 0].join();
+  if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero) R3.world.remove(R3.hero); R3.hero = G.h.dead > 0 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
+  if (G.h.dead > 0){ at3(R3.hero, HX, HY, BZ); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
+  // 怪物與掉落物
+  for (const e of R3.ent.values()) e.userData.seen = false;
+  for (const m of G.mons){ const g = entFor(m, () => m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : buildBrute(m.boss)); monLook(m, g); }
+  for (const d of G.drops){
+    if (d.t < 0) continue;
+    const g = entFor(d, () => buildDrop(d)), u = g.userData; let x = d.x, y = d.y, z = BZ;
+    if (d.t < .6) z += Math.abs(Math.sin(d.t/.6*Math.PI*1.5))*5*(1 - d.t/.6) + .3;
+    else if (d.t >= 1.2){ const k = ease(tClamp((d.t - 1.2)/.5)); x = tLerp(d.x, HX, k); y = tLerp(d.y, HY, k); z = BZ + .3 + Math.sin(k*Math.PI)*8 + k*7; } else z += .3 + Math.sin(d.t*6)*.25;
+    at3(g, x, y, z); u.item.rotation.y = d.t*2.4; u.disc.visible = d.t < 1.2; if (u.beam) u.beam.visible = d.t < 1.2;
+  }
+  for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); R3.ent.delete(k); }
+  updateFx();
+  R3.rd.render(R3.sc, R3.cam);
+  return overlay();
 }

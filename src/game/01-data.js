@@ -9,10 +9,10 @@ const SPAWN = [15,9];
 const BONE  = { l:'#f4efde', m:'#d9d2ba', d:'#a39b82' };
 const STONE = { l:'#cfcabc', m:'#aaa598', d:'#7b766a' };
 const BIOMES = [
-  { n:'幽暗森林', board:{ l:'#a9d48c', m:'#88bb72', d:'#5b8460' }, t1:'#5fae6b', t2:'#74c47a', portal:'#5b3bb0', glow:'#8a63e6' },
-  { n:'荒蕪沙漠', board:{ l:'#f0d08a', m:'#d8b36a', d:'#a98648' }, t1:'#b9a44a', t2:'#d4bf5c', portal:'#c8622a', glow:'#ffb36b' },
-  { n:'凍結雪原', board:{ l:'#e6f0f7', m:'#c4d6e4', d:'#8fa6ba' }, t1:'#9fc4dc', t2:'#c7e2f2', portal:'#2f7fc4', glow:'#8fd0ff' },
-  { n:'熔岩深淵', board:{ l:'#a8948e', m:'#85716c', d:'#5a4744' }, t1:'#6a3b2e', t2:'#8a4c36', portal:'#c43a2f', glow:'#ff9a6b' },
+  { n:'幽暗森林', board:{ l:'#b8e6a8', m:'#97d28c', d:'#6aa27a' }, t1:'#6fcf9a', t2:'#8fe0b0', portal:'#7a5fe0', glow:'#b79cff' },
+  { n:'荒蕪沙漠', board:{ l:'#ffe4a8', m:'#f2cb86', d:'#c9a064' }, t1:'#d8c468', t2:'#ecdc88', portal:'#ff8a5c', glow:'#ffc9a0' },
+  { n:'凍結雪原', board:{ l:'#eef7ff', m:'#cfe3f6', d:'#9ab4d6' }, t1:'#a8d0ee', t2:'#d2ecfb', portal:'#4a9cf0', glow:'#a8e0ff' },
+  { n:'熔岩深淵', board:{ l:'#c9aebc', m:'#a98ea0', d:'#7a6078' }, t1:'#a8587a', t2:'#c8708a', portal:'#ff5a8a', glow:'#ffb0c8' },
 ];
 const RAR = [ { n:'普通', c:'#6b665b', g:'#d9d3c2', w:55 }, { n:'魔法', c:'#2f6fd6', g:'#6a9cf0', w:32 },
               { n:'稀有', c:'#a9780a', g:'#f4c542', w:11 }, { n:'暗金', c:'#c4501f', g:'#ff7a3d', w:2 } ];
