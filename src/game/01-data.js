@@ -4,8 +4,10 @@
    ===================================================================== */
 const BXW = 30, BYW = 74, BZ = 3;
 const HX = 15, HY = 63;
-// 怪物圍住英雄的站位：前三個是舊的位置，其後一圈圈往外排，讓一大群怪可以同時圍上來
-const SLOTS = [[15,42],[24,39],[7,38],[11,44],[19,44],[3,41],[27,41],[15,36],[9,34],[21,34],[4,32],[26,32],[13,29],[18,29],[8,27],[23,27]];
+// 怪物圍住英雄的站位：內外兩圈、四方八面都有，讓一大群怪可以同時圍上來
+const SLOTS = [];
+for (let i = 0; i < 8; i++){ const a = -Math.PI/2 + i*Math.PI/4; SLOTS.push([HX + Math.cos(a)*15, HY + Math.sin(a)*15]); }
+for (let i = 0; i < 8; i++){ const a = -Math.PI/2 + (i + .5)*Math.PI/4; SLOTS.push([HX + Math.cos(a)*21, HY + Math.sin(a)*21]); }
 const SPAWN = [15,9];
 const BONE  = { l:'#f4efde', m:'#d9d2ba', d:'#a39b82' };
 const STONE = { l:'#cfcabc', m:'#aaa598', d:'#7b766a' };

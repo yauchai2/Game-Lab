@@ -226,13 +226,13 @@ function setupPanel(){
     .dlg i{position:absolute;left:12px;right:34px;bottom:4px;height:3px;background:repeating-linear-gradient(90deg,#8fb6ff 0 8px,transparent 8px 11px);transform-origin:left;animation:dlgt 2.6s linear forwards}
     @keyframes dlgb{50%{transform:translateY(-2px)}} @keyframes dlgt{from{transform:scaleX(0)}to{transform:scaleX(1)}}
     @media (orientation:portrait){#cv3{-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 94%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 94%,transparent);mask-composite:intersect}}   /* 手機拉近後，四邊裁切處淡出，不留硬邊 */
-    body.m{height:100dvh;overflow:hidden;padding:6px 8px 32px !important;gap:0}
+    body.m{min-height:100dvh;padding:6px 8px 36px !important;gap:0}   /* 不鎖高度：嵌在別的頁面（例如 claude.ai）時高度可能不可靠，面板至少保留 360px */
     body.m header{flex:none} body.m header h1 .wm{width:128px}
     body.m .stage{flex:none} body.m .stats{padding:18px 8px 4px !important;margin:2px 0 0 !important} body.m .stats::before{font-size:9px}
     body.m .stat .k{font-size:10px} body.m .stat .v{font-size:17px !important} body.m .stat.small .v{font-size:15px !important}
     body.m #fig{margin:0}
     body.m .rpg{display:none}
-    body.m #modal{position:static;display:flex;flex:1 1 0;min-height:0;width:100%;padding:0;background:none !important;backdrop-filter:none;z-index:auto}
+    body.m #modal{position:static;display:flex;flex:1 0 auto;height:max(360px,calc(100dvh - 470px));width:100%;padding:0;background:none !important;backdrop-filter:none;z-index:auto}
     body.m .mbox{width:100%;max-height:none;height:100%;display:flex;flex-direction:column;overflow:hidden;padding:0 !important}
     body.m .mbox::before{display:none}
     body.m .mtabs{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:0;flex:none;background:linear-gradient(90deg,#1f3fb0,#7fb0ff)}

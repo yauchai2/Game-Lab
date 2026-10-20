@@ -15,7 +15,8 @@ function spawnPack(){
   types.forEach((t, i) => {
     const T = MTYPES[t], trash = t !== 'boss' ? HORDE.hp : 1, hp = 24 * Math.pow(1.32, d-1) * T.hp * hpK * trash;
     let slot = 0; while (used.has(slot) && slot < SLOTS.length - 1) slot++; used.add(slot);   // 找一個沒人站的圍攻位置
-    const sx = [SPAWN[0], 3, 27][i % 3] + tRand(-3, 3), sy = SPAWN[1] + tRand(-4, 6);   // 從傳送門與兩側湧出
+    const ang = t === 'boss' ? -Math.PI/2 : Math.random()*Math.PI*2, rr = t === 'boss' ? 0 : tRand(40, 50);   // 守關者從傳送門出來，小怪從島的四面八方湧入
+    const sx = t === 'boss' ? SPAWN[0] : tClamp(HX + Math.cos(ang)*rr, -30, 60), sy = t === 'boss' ? SPAWN[1] : tClamp(HY + Math.sin(ang)*rr, -12, 86);
     G.mons.push({ type:t, boss:t === 'boss', x:sx, y:sy, hp, hpMax:hp, dmg:4.5 * Math.pow(1.22, d-1) * T.dmg * dmgK * (t !== 'boss' ? HORDE.dmg : 1), atkInt:T.atk/fastK, spdK:fastK, atkCd:tRand(.3, T.atk),
       slot, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
   });

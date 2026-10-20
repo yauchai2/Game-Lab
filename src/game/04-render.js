@@ -88,14 +88,35 @@ function buildHero(at, ar, wt, wr){
   const mo = new T3.Mesh(new T3.PlaneGeometry(.7, .13), basic('#7a3a4a')); mo.position.set(0, -1.25, 3.2); mo.rotation.x = -.25; head.add(mo);
   const hand = new T3.Group(); hand.position.set(.6, -4.5, .8); B.foreR.add(hand);
   const sw = new T3.Group(); sw.rotation.x = 2.1; hand.add(sw); g.userData.sword = sw;
-  const blade = [['#e8eef5', '#cfdcf0'], ['#b9d6ff', '#8fb6ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff6a3a']][wr], len = 8.2 + wt*1.5;
-  mk(cylG(.35, .35, 2.8, 5), m3('#2b2552'), 0, 0, 0, sw); mk(new T3.BoxGeometry(2.2 + wt*.4, .45, .8), m3('#e8eef5'), 0, 1.5, 0, sw);
-  mk(new T3.BoxGeometry(.8 + wt*.2, len, .3), m3(blade[0], { emissive:wr >= 2 ? blade[1] : '#000000', emissiveIntensity:wr >= 2 ? .35 : 0 }), 0, 1.8 + len/2, 0, sw);
-  cone(sw, blade[0], 0, 1.8 + len + .9, 0, .5 + wt*.1, 1.8, 4);
-  if (wr === 3) mk(ico(len*.6, 1), basic('#ff9a3c', .2), 0, len/2, 0, sw);
+  buildWeapon(sw, wt, wr);
   const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 13, 5.5, g); orb.visible = false; g.userData.orb = orb;
   g.scale.setScalar(.85*CK); g.rotation.order = 'YXZ'; addShadow(g, 5.5);
   return g;
+}
+// Y2K 城市武器（依武器階級）：0 摺疊傘、1 鋁製球棒、2 霓虹光管、3 雷射光劍；稀有度決定主色與發光
+const WOV = new URLSearchParams(location.search);   // 測試用：?wt=0..3&wr=0..3 直接指定武器外觀
+function buildWeapon(sw, wt, wr){
+  const C = [['#e8eef5', '#cfdcf0'], ['#8fd0ff', '#4aa8ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff5a8a']][wr], glow = wr >= 2;
+  const lit = (c, k = .5) => m3(c, { emissive:c, emissiveIntensity:k });
+  if (wt === 0){   // 摺疊傘：J 形手柄、細傘桿、收起的傘面
+    mk(new T3.TorusGeometry(.9, .28, 4, 8, Math.PI), m3('#2b2552'), .9, -1.2, 0, sw).rotation.z = Math.PI;
+    mk(cylG(.28, .28, 3.2, 5), m3('#2b2552'), 0, .4, 0, sw); mk(cylG(.12, .12, 9.5, 4), m3('#cfd6e0'), 0, 6, 0, sw);
+    mk(cylG(.25, 1.1, 6.5, 8), glow ? lit(C[1], .3) : m3(C[1]), 0, 6.6, 0, sw); for (let i = 0; i < 4; i++) mk(new T3.BoxGeometry(.08, 6, .08), m3('#ffffff'), Math.cos(i*1.57)*.7, 6.4, Math.sin(i*1.57)*.7, sw).rotation.z = Math.cos(i*1.57)*.12;
+    cone(sw, '#cfd6e0', 0, 10.5, 0, .2, 1.2, 4);
+  } else if (wt === 1){   // 鋁製球棒：握把纏膠布，往前變粗
+    mk(cylG(.45, .45, .4, 7), m3('#2b2552'), 0, -1.6, 0, sw); mk(cylG(.38, .38, 3.2, 7), m3('#2b2552'), 0, 0, 0, sw);
+    mk(cylG(1.0, .42, 8.5, 8), glow ? lit(C[0], .3) : m3(C[0]), 0, 5.8, 0, sw); mk(cylG(.85, 1.0, .5, 8), m3('#2b2552'), 0, 10.3, 0, sw);
+    mk(cylG(1.03, 1.03, .7, 8), m3('#ff6aa8'), 0, 7.5, 0, sw);
+  } else if (wt === 2){   // 霓虹光管：黑握把、兩端金屬頭、整支發光
+    mk(cylG(.5, .5, 3, 6), m3('#2b2552'), 0, 0, 0, sw); mk(cylG(.62, .62, .6, 6), m3('#cfd6e0'), 0, 1.7, 0, sw);
+    mk(cylG(.45, .45, 9.5, 6), lit(C[1], .9), 0, 6.8, 0, sw); mk(cylG(.62, .62, .6, 6), m3('#cfd6e0'), 0, 11.8, 0, sw);
+    mk(cylG(1.1, 1.1, 9.5, 6), basic(C[0], .25), 0, 6.8, 0, sw);
+  } else {   // 雷射光劍：銀色劍柄加按鈕，光刃外圈有光暈
+    mk(cylG(.55, .5, 3.4, 8), m3('#e8eef5'), 0, 0, 0, sw); for (const y of [-.8, .2]) mk(new T3.BoxGeometry(.5, .35, .3), m3('#ff6aa8'), 0, y, .55, sw);
+    mk(cylG(.7, .7, .4, 8), m3('#2b2552'), 0, 1.8, 0, sw);
+    mk(cylG(.4, .5, 11, 8), lit('#ffffff', .8), 0, 7.6, 0, sw); mk(cylG(.9, 1.0, 11.5, 8), basic(C[1], .45), 0, 7.6, 0, sw);
+  }
+  if (wr === 3) mk(ico(5, 1), basic('#ff9a3c', .15), 0, 6, 0, sw);
 }
 function buildGrave(){
   const g = new T3.Group();
@@ -328,8 +349,8 @@ const MPOSE_ATK = { hips:[.25, 0, 0], torso:[.65, 0, 0], head:[.35, 0, 0], armL:
 const MPOSE_HURT = { hips:[-.2, 0, 0], torso:[-.55, .2, .1], head:[-.55, 0, .25], armL:[-.7, 0, -1.1], foreL:[-.4, 0, 0], armR:[-1.1, 0, 1.1], foreR:[-.5, 0, 0], legL:[-.3, 0, 0], shinL:[.5, 0, 0], legR:[.3, 0, 0], shinR:[.6, 0, 0] };
 const MPOSE_TMP = {};
 function monLook(m, g){
-  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, y = m.y + 3*lg, ps = g.userData, base = (ps.s || 1)*CK;
-  at3(g, m.x, y, BZ); g.rotation.y = Math.PI/4;
+  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, dl = Math.hypot(HX - m.x, HY - m.y) || 1, y = m.y + 3*lg*(HY - m.y)/dl, lx = m.x + 3*lg*(HX - m.x)/dl, ps = g.userData, base = (ps.s || 1)*CK;
+  at3(g, lx, y, BZ); g.rotation.y = Math.atan2(HX - m.x, HY - m.y);   // 面向主角
   if (m.type === 'slime'){ g.scale.setScalar(base); const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
   else {
     const B = ps.B, w = Math.sin(t*9), f = Math.sin(t*3), big = m.type === 'brute' || m.type === 'boss';
@@ -370,7 +391,7 @@ function heroLook(g){
   else if (h.castT >= 0){ pose = poseMix(POSE_IDLE, POSE_CAST, ease(tClamp(h.castT/.25))); }
   else { pose = poseMix(POSE_IDLE, POSE_IDLE, 0); pose.torso = [.04 + Math.sin(t*3)*.04, Math.sin(t*1.5)*.08, 0]; pose.armL = [.15 + Math.sin(t*3)*.12, 0, -.12]; pose.head = [Math.sin(t*3 + 1)*.05, Math.sin(t*1.5)*.1, 0]; pose.tail = [Math.sin(t*3.5)*.4, 0, 0]; pose.foreR = [-1 + Math.sin(t*3)*.08, 0, 0]; st = 1 + .025*Math.sin(t*3); hop = Math.max(0, Math.sin(t*3)*.5); }
   applyPose(B, pose, k);
-  at3(g, HX + (h.hurtT > 0 ? Math.sin(t*90)*.8 : 0), HY, BZ + hop); g.rotation.y = 50*D2R; g.rotation.x = 0;
+  at3(g, HX + (h.hurtT > 0 ? Math.sin(t*90)*.8 : 0), HY, BZ + hop); { const tg = nearestMon(false); if (tg) ps.face = Math.atan2(tg.x - HX, tg.y - HY); let d = (ps.face ?? Math.PI) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d*.25; }   // 轉身面向最近的怪 g.rotation.x = 0;
   g.scale.set(SC/Math.sqrt(st), SC*st, SC/Math.sqrt(st));
   if (h.castT >= 0){ const u = ease(tClamp(h.castT/.25)); ps.orb.visible = true; ps.orb.material.color.set((SKILLS[h.castSk] || SKILLS.FIRE).col); ps.orb.scale.setScalar(Math.max(.01, u)); } else ps.orb.visible = false;
 }
@@ -382,15 +403,23 @@ function updateFx(){
   for (const e of G.fx){
     if (e.k === 'boom'){ const R = tLerp(2, e.big ? 16 : 9, ease(e.t)); add(sph, basic('#ff9a3c', (1 - e.t)*.8), e.x, e.y, e.z, R); add(sph, basic('#ffe08a', 1 - e.t), e.x, e.y, e.z, R*.55); }
     if (e.k === 'slash'){ const R = tLerp(3, 7, e.t); for (let i = 0; i < 5; i++){ const a = i*1.2566 + .4, o = add(geo('fxb', () => new T3.BoxGeometry(1, .22, .22)), basic('#ffffff', 1 - e.t), e.x + 2 + Math.cos(a)*R*.7, e.y, e.z + Math.sin(a)*R*.7, R*.5); o.rotation.z = a; } }
-    if (e.k === 'nova'){ const r = tLerp(3, 46, ease(e.t)), o = add(geo('fxr', () => new T3.RingGeometry(.88, 1, 36).rotateX(-Math.PI/2)), basic('#9fe0ff', (1 - e.t)*.7), HX, HY, BZ + .6, r); o.material.side = T3.DoubleSide; add(disc, basic('#9fe0ff', (1 - e.t)*.25), HX, HY, BZ + .5, r); }
+    if (e.k === 'nova'){ const r = tLerp(3, 46, ease(e.t)), o = add(geo('fxr', () => new T3.RingGeometry(.88, 1, 36).rotateX(-Math.PI/2)), basic('#9fe0ff', (1 - e.t)*.7), HX, HY, BZ + .6, r); o.material.side = T3.DoubleSide; add(disc, basic('#9fe0ff', (1 - e.t)*.25), HX, HY, BZ + .5, r);
+      for (let i = 0; i < 14; i++){ const aa = i*.449 + e.t*2, o2 = add(geo('fxf', () => new T3.BoxGeometry(1.2, .25, 1.2)), basic('#ffffff', 1 - e.t), HX + Math.cos(aa)*r*.9, HY + Math.sin(aa)*r*.9, BZ + 2 + (i % 3)*1.5); o2.rotation.y = aa; }   // 冷氣吹出的雪花片
+    }
     if (e.k === 'bolt'){ const pts = []; e.pts.forEach((p, i) => { if (i) pts.push([(e.pts[i-1][0] + p[0])/2 + aRnd(i + e.t*9)*4 - 2, (e.pts[i-1][1] + p[1])/2 + aRnd(i*3 + e.t*7)*4 - 2, (e.pts[i-1][2] + p[2])/2 + 2]); pts.push(p); });
-      for (let i = 1; i < pts.length; i++){ const a = pts[i-1], b = pts[i], len = Math.hypot(b[0]-a[0], b[1]-a[1], b[2]-a[2]), o = add(geo('fxc', () => new T3.CylinderGeometry(.5, .5, 1, 4)), basic('#ffe45c', 1 - e.t), (a[0]+b[0])/2, (a[1]+b[1])/2, (a[2]+b[2])/2); o.scale.set(1, len, 1); o.quaternion.setFromUnitVectors(new T3.Vector3(0, 1, 0), new T3.Vector3(b[0]-a[0], b[2]-a[2], b[1]-a[1]).normalize()); } }
+      for (let i = 1; i < pts.length; i++){ const a = pts[i-1], b = pts[i], len = Math.hypot(b[0]-a[0], b[1]-a[1], b[2]-a[2]), o = add(geo('fxc', () => new T3.CylinderGeometry(.5, .5, 1, 4)), basic('#ff3a5a', 1 - e.t), (a[0]+b[0])/2, (a[1]+b[1])/2, (a[2]+b[2])/2); o.scale.set(1, len, 1); o.quaternion.setFromUnitVectors(new T3.Vector3(0, 1, 0), new T3.Vector3(b[0]-a[0], b[2]-a[2], b[1]-a[1]).normalize()); } }
   }
   for (const p of G.proj){
     if (p.k === 'meteor'){ const u = tClamp(p.t), z = tLerp(70, BZ + 2, u*u), rr = tLerp(2, 7, u); add(disc, basic('#e2483d', .15 + .3*u), p.x, p.y, BZ + .3, rr);
-      add(sph, basic('#ffb347', .35), p.x, p.y, z + 2, 6.5); add(geo('rock', () => new T3.DodecahedronGeometry(1, 0)), m3('#d77a6a', { emissive:'#ff7a2a', emissiveIntensity:.5 }), p.x, p.y, z, 3.4); continue; }
-    if (p.t < 0 || !p.tg) continue; const u = tClamp(p.t), a = [HX + 3.4, HY - 3.6, BZ + 9.2], b = [p.tg.x, p.tg.y, BZ + 6];
-    for (let k = 3; k >= 0; k--){ const uu = Math.max(0, u - k*.05); add(sph, k ? basic('#ff9a3c', .5) : basic('#ff7a2a'), tLerp(a[0], b[0], uu), tLerp(a[1], b[1], uu), tLerp(a[2], b[2], uu) + Math.sin(uu*Math.PI)*4, k ? 1.4 - k*.25 : 2.2); }
+      add(sph, basic('#ffb347', .3), p.x, p.y, z + 3, 6);
+      const sat = new T3.Group(); sat.position.set(p.x, z, p.y); sat.rotation.set(u*3, u*5, .4); fx.add(sat);   // 衛星墜落：金箔機身、兩片太陽能板、白色天線碟
+      mk(geo('satB', () => new T3.BoxGeometry(3, 3, 3)), m3('#ffd35a', { emissive:'#ff9a3c', emissiveIntensity:.3 }), 0, 0, 0, sat);
+      for (const sx of [-1, 1]){ mk(geo('satP', () => new T3.BoxGeometry(5, .25, 2.6)), m3('#3a5fd0'), sx*4.4, 0, 0, sat); mk(geo('satR', () => new T3.BoxGeometry(1.4, .3, .3)), m3('#cfd6e0'), sx*2.1, 0, 0, sat); }
+      mk(geo('satD', () => new T3.ConeGeometry(1.6, 1, 10, 1, true)), m3('#ffffff'), 0, 2.1, 0, sat); continue; }
+    if (p.t < 0 || !p.tg) continue; const u = tClamp(p.t), a = [HX + 3.4, HY - 3.6, BZ + 9.2*CK], b = [p.tg.x, p.tg.y, BZ + 6*CK], at = uu => [tLerp(a[0], b[0], uu), tLerp(a[1], b[1], uu), tLerp(a[2], b[2], uu) + Math.sin(uu*Math.PI)*5];
+    for (let k = 3; k >= 1; k--){ const q = at(Math.max(0, u - k*.06)); add(sph, basic(k % 2 ? '#ffe08a' : '#ff9a3c', .55 - k*.12), q[0], q[1], q[2], .9 - k*.15); }   // 火花拖尾
+    const q = at(u), bat = new T3.Group(); bat.position.set(q[0], q[2], q[1]); bat.rotation.set(u*14, 0, u*9); fx.add(bat);   // 過熱電池：深色筒身、橘色電量條、銀色正極
+    mk(geo('batB', () => cylG(1, 1, 3, 8)), m3('#2b2552'), 0, 0, 0, bat); mk(geo('batS', () => cylG(1.04, 1.04, 1, 8)), m3('#ff7a2a', { emissive:'#ff7a2a', emissiveIntensity:.6 }), 0, .4, 0, bat); mk(geo('batT', () => cylG(.4, .4, .5, 6)), m3('#e8eef5'), 0, 1.75, 0, bat);
   }
 }
 
@@ -425,7 +454,7 @@ function scene(){
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
   pu.glow.scale.setScalar((3.2 + (pulse ? 1.2*Math.sin(pulse.t*3.14) : 0))/3.2); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
   // 主角
-  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = aTier(W), wr = W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead > 0].join();
+  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead > 0].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero) R3.world.remove(R3.hero); R3.hero = G.h.dead > 0 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
   if (G.h.dead > 0){ at3(R3.hero, HX, HY, BZ); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 怪物與掉落物
