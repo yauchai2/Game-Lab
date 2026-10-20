@@ -68,7 +68,23 @@ function shapeIcon(kind, key, rot = 0, col){
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) o += cs.some(q => q[0] === x && q[1] === y) ? `<i style="background:${c}"></i>` : '<i class="e"></i>';
   return o + '</span>';
 }
+function buildBar(){
+  return '<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>構築</b>' + [0, 1, 2].map(i => `<button class="mb" style="${(G.bi || 0) === i ? 'background:#1f3fb0;color:#fff;' : ''}" onclick="switchBuild(${i})">${i + 1}</button>`).join('') + '<span class="mute">各存一套技能拼圖與天賦，免費切換；裝備共用</span></div>';
+}
+function switchBuild(i){
+  if (i === (G.bi || 0)) return; if (!G.builds) G.builds = [null, null, null];
+  G.builds[G.bi || 0] = JSON.parse(JSON.stringify({ board:G.board, pass:G.pass }));
+  const t = G.builds[i]; G.bi = i; selPiece = null; held = null;
+  if (t){ G.board = JSON.parse(JSON.stringify(t.board)); G.pass = t.pass.slice(); } else { boardFromLegacy(['FIRE'], {}); G.pass = []; }
+  const use = {}, cu = {};   // 配件與卡匣只有一份庫存：超出的從這套拿掉
+  G.board.pieces = G.board.pieces.filter(p => { if (p.kind !== 'support') return true; use[p.key] = (use[p.key] || 0) + 1; return use[p.key] <= (G.gems[p.key] || 0); });
+  for (const p of G.board.pieces) if (p.mode){ cu[p.mode] = (cu[p.mode] || 0) + 1; if (cu[p.mode] > (G.carts[p.mode] || 0)) p.mode = null; }
+  recalc(); logLine(`切換到構築 ${i + 1}`, '#2f7fc4'); renderModal();
+}
 function skillsHtml(){
+  return buildBar() + skillsHtml0();
+}
+function skillsHtml0(){
   const B = G.board, at = {}, linked = new Set(GridLab.resolve(B).flatMap(r => r.linked));
   for (const p of B.pieces) GridLab.cellsOf(p).forEach((c, i) => { at[c[0] + ',' + c[1]] = { p, first:i === 0 }; });
   let h = '<div class="hint">像俄羅斯方塊：把下方的機件拖到面板上放下（手機請按住機件的方塊圖示再拖），也可以拖面板上的機件換位置。也能先點選，按「旋轉」（或 R 鍵）轉方向，再點格子放下；放不下的位置會顯示紅色。<b>輔助配件只強化上下左右相鄰</b>的技能（廣播只對投射物）。</div>'
@@ -91,6 +107,9 @@ function skillsHtml(){
   return h;
 }
 function treeHtml(){
+  return buildBar() + treeHtml0();
+}
+function treeHtml0(){
   const pts = passPoints(); let lines = '', nodes = '';
   for (const id in TREE){ const n = TREE[id]; for (const l of n.links) if (id < l){ const m = TREE[l], on2 = (id === 'S' || G.pass.includes(id)) && (l === 'S' || G.pass.includes(l));
     lines += `<line x1="${n.x.toFixed(1)}" y1="${n.y.toFixed(1)}" x2="${m.x.toFixed(1)}" y2="${m.y.toFixed(1)}" stroke="${on2 ? n.col === '#e8e2d4' ? m.col : n.col : '#d3daf0'}" stroke-width="${on2 ? 3.4 : 1.6}" stroke-linecap="round"/>`; } }
@@ -282,7 +301,7 @@ function setupPanel(){
     .cards{display:flex;gap:8px;margin:10px 0}.mbox.small:has(.cards){width:min(470px,94vw)}
     .card{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:8px 10px;flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:4px;text-align:left;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
     .card.var{background:#efe3ff;border-color:#8e3fd1}.card .ct{font-size:11px;opacity:.7}.card .cd{font-size:12px}.card:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
-    .mb{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer} .mb[disabled]{opacity:.4;cursor:default}
+    .mb.on{background:var(--ink);color:var(--paper)} .mb{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer} .mb[disabled]{opacity:.4;cursor:default}
     .sv{width:100%;height:90px;margin-top:8px;resize:vertical} .hbar{display:block;width:96px;height:8px;border:1.5px solid var(--ink);border-radius:5px;margin:4px 0 0 auto;background:#fffb;overflow:hidden;box-shadow:0 1px 0 #b9c6ee} .hbar i{display:block;height:100%;border-right:1.5px solid var(--ink)} .gl{margin:4px 0;padding-left:16px}`;
 
   /* Y2K 童話風介面：泡泡視窗（白到淡藍漸層、白色內框、粉彩外框）、糖果按鈕、緞帶標題、膠囊血條 */
