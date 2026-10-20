@@ -145,7 +145,6 @@ function drawBrute(m){
   const k = m.boss ? 1.55 : 1, t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, x = m.x, y = m.y + 3.5*lg, bob = m.fight ? 0 : Math.abs(Math.sin(t*6))*.6;
   const z = BZ + bob, body = matOf(m.boss ? '#8e5fd1' : '#e0644a'), skin = m.boss ? '#b79af0' : '#f0a07f', club = { l:'#a8693f', m:'#8a5a3c', d:'#5a3a26' }, fur = matOf('#5a4636');
   let s = '';
-  if (m.boss) s += `<ellipse cx="${f(P(x, y, BZ)[0])}" cy="${f(P(x, y, BZ)[1])}" rx="${f(9*k)}" ry="${f(4.8*k)}" fill="#8e3fd1" opacity="${(.14 + .08*Math.sin(t*4)).toFixed(2)}"/>`;
   for (const sx of [-1.9, 1.9]){ s += cyl(x + sx*k, y, BZ, BZ + 3.6*k, 1.8*k, matOf('#4a3a30'), toneI, 1, 10) + box(x + (sx - 1.5)*k, y - 3*k, BZ, x + (sx + 1.5)*k, y - .4*k, BZ + 1.3*k, matOf('#3a2c24'), toneI, .8); }
   s += aBlob(x, y, z + 3*k, [[0,3.6*k],[1.8*k,4.4*k],[4.8*k,4.8*k],[6.6*k,4.3*k],[7.2*k,3.3*k]], body, 1.8, 16);              // body with a round belly
   s += box(x + 3.5*k, y - 1.8*k, z + 2.4*k, x + 4.1*k, y + 1.8*k, z + 5.4*k, fur, toneI, .8);                                         // loincloth
@@ -284,9 +283,9 @@ function drawGround(){
   for (let y = 14; y <= 70; y += 4){ L.push([15 - 5 + wob(y), y, z]); R.push([15 + 5 + wob(y + 9), y, z]); }
   let s = `<path d="${pd([...L, ...R.reverse()])}" fill="${pm}" opacity=".75"/>`;
   s += aInkP(pd(L, false), .8, B.board.d, .8, 'stroke-dasharray="2 2"') + aInkP(pd(R.reverse(), false), .8, B.board.d, .8, 'stroke-dasharray="2 2"');
-  for (let i = 0; i < 26; i++){            // scattered ground details, kept off the fighting lane
+  for (let i = 0; i < 22; i++){            // scattered ground details, kept off the fighting lane
     const x = 2.5 + aRnd(i)*25, y = 4 + aRnd(i + 50)*68; if (Math.abs(x - 15) < 6.2 || y < 4.5) continue;
-    if (bi === 0) s += aInkP(pd([[x - .9, y, z], [x - .4, y - .2, z + 1.5]], false), .8, B.board.d) + aInkP(pd([[x, y, z], [x, y - .2, z + 2]], false), .8, B.board.d) + aInkP(pd([[x + .9, y, z], [x + .5, y + .2, z + 1.5]], false), .8, B.board.d)
+    if (bi === 0) s += aInkP(pd([[x - .9, y, z], [x - .4, y - .2, z + 1.5]], false) + pd([[x, y, z], [x, y - .2, z + 2]], false) + pd([[x + .9, y, z], [x + .5, y + .2, z + 1.5]], false), .8, B.board.d)
       + (i % 5 === 0 ? tSph(x + 1.6, y + 1, z + .9, .55, ['#f08aa8', '#fff0b0', '#ffffff'][i % 3], .6) : '');
     else if (bi === 1) s += i % 2 ? aInkP(pd(on(PZ(z), arcUV(x, y, 2.6, 20, 160, 5)), false), .8, B.board.d, .9) : shape(on(PZ(z), ellUV(x, y, 1, .7, 8)), B.board.m, .7);
     else if (bi === 2) s += i % 2 ? fill(pd(on(PZ(z), ellUV(x, y, 2.4, 1.6, 12))), '#ffffff', 'opacity=".8"') : fill(pd(on(PZ(z), ellUV(x, y, 1.9, 1.3, 12))), '#bfe3f5', 'opacity=".7"') + aInkP(pd(on(PZ(z), ellUV(x, y, 1.9, 1.3, 12))), .6, B.board.d, .7);
@@ -343,7 +342,9 @@ function scene(){
   const B = BIOMES[biomeNow()], bi = biomeNow();
   let s = board(0, 0, BXW, BYW, BZ, 4, B.board) + drawGround() + drawPortalPool();
   const ents = [...portalStones()];
+  portalStones().forEach(o => s += castShadow([[o.at[0] - 1, o.at[1] - 1, BZ], [o.at[0] + 1, o.at[1] + 1, BZ], [o.at[0], o.at[1], BZ + 7]], BZ));
   DECO[bi].forEach(([kind, x, y, k]) => { s += castShadow([...tRing(x, y, 3.4*k, BZ), [x, y, BZ + (aDecoTop[kind] || 6)*k]], BZ); ents.push({ at:[x, y, BZ], svg:aDeco(kind, x, y, k) }); });
+  [[3.5, 15], [26.5, 15]].forEach(([x, y]) => s += castShadow([...tRing(x, y, 1, BZ, 6), [x, y, BZ + 10]], BZ));
   [[3.5, 15], [26.5, 15]].forEach(([x, y]) => ents.push({ at:[x, y, BZ], svg:aTorch(x, y) }));
   ents.push({ at:[4, 66, BZ], svg:drawSign() });
   if (G.h.dead <= 0) s += shadowOf(HX, HY, 3.4, 16);

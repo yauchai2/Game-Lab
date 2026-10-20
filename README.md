@@ -26,5 +26,8 @@
 ## 測試用網址參數
 `?fresh`（不讀存檔）、`?sim=秒數`（快轉）、`?lvl=`、`?depth=`、`?speed=`、`?give`（給寶石與地圖）、`?pass=節點,…`、`?run`（進地圖）、`?modal=skills|tree|maps|save`、`?away=秒數`（模擬離線）、`?selftest`（存檔來回測試）。
 
+## 美術風格
+畫面風格規範與新增美術的檢查清單見 [docs/art-style.md](docs/art-style.md)。
+
 ## 授權
 引擎部分為 MIT，版權見 `docs/colorfigures-LICENSE`。
