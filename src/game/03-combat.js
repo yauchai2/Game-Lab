@@ -103,7 +103,12 @@ function hitMon(m, dmg, crit){
   m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit');
   if (!G.offline){ const dx = m.x - G.h.x, dy = m.y - G.h.y, dd = Math.hypot(dx, dy) || 1, kb = m.boss ? .2 : crit ? 1.6 : .6; m.x += dx/dd*kb; m.y += dy/dd*kb;   // 被打時往外退一點
     if (crit){ kick(.4, 0, 0, .3); if (G.fx.length < 40) addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 9, t:0, dur:.18 }); } else if (m.boss) kick(.15); }
-  if (crit || G.floats.length < 8 || (G.floats.length < 20 && dmg >= G.st.dps*.12) || m.boss) addFloat(m.x + 2 + tRand(-1,1), m.y + tRand(-2,2), BZ + 17 + tRand(0,3), tFmt(dmg), crit ? '#e2831b' : '#2b2552', crit ? 5.4 : 3.6);
+  { const big = dmg >= (G.maxHit || 0)*.2, mode = G.dmgNum == null ? 1 : G.dmgNum;
+    G.maxHit = Math.max(G.maxHit || 0, dmg*.98); m.fAcc = (m.fAcc || 0) + dmg;
+    const tOk = !m.fT || G.time - m.fT >= .3;
+    if (mode && (crit || big || tOk) && (mode === 2 || crit || big || G.floats.length < 8)){
+      if (G.floats.length >= 12){ const i = G.floats.findIndex(f => f.size < 5); G.floats.splice(i < 0 ? 0 : i, 1); }
+      m.fT = G.time; addFloat(m.x + 2 + tRand(-1,1), m.y + tRand(-2,2), BZ + 17 + tRand(0,3), tFmt(m.fAcc), crit ? '#e2831b' : '#2b2552', crit ? 5.4 : 3.6); m.fAcc = 0; } }
   if (m.hp <= 0) killMon(m);
 }
 function rollDmg(base, critPct){ const s = G.st, crit = Math.random()*100 < (critPct == null ? s.crit : critPct); return { dmg:base * (crit ? s.cm/100 : 1) * tRand(.9, 1.1), crit }; }

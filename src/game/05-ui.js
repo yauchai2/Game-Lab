@@ -58,16 +58,17 @@ function renderModal(){ setTimeout(() => { if (typeof dressMount === 'function' 
   const mob = MOB();
   const groups = [{ k:'dress', n:'角色', t:['dress'] }, { k:'skills', n:'戰鬥', t:['skills'] }, { k:'craft', n:'打造', t:['craft'] }, { k:'tree', n:'成長', t:['tree'] }, { k:'maps', n:'冒險', t:['maps'] }, { k:'col', n:'收藏', t:['goals', 'ach', 'dex'] }, { k:'sys', n:'選單', t:['log', 'save'] }];
   const SUBN = { goals:'目標', ach:'成就', dex:'圖鑑', log:'日誌', save:'存檔' };
-  const tabs = mob ? [['char','角色','shield'], ['skills','技能','fire'], ['tree','天賦','star'], ['maps','地圖','shoe'], ['menu','選單','headphones']] : [];
+  const tabs = mob ? [['char','角色','shield'], ['skills','戰鬥','fire'], ['craft','打造','sword'], ['tree','成長','star'], ['maps','冒險','shoe'], ['menu','更多','headphones']] : [];
   if (!mob && (modalTab === 'char' || modalTab === 'menu')) modalTab = 'dress';
   if (mob && modalTab === 'save') modalTab = 'menu';
   if (!mob && !tabOpen(modalTab)) modalTab = 'skills';
   const cur = groups.find(g => g.t.includes(modalTab)) || groups[1], dot = g => g.k === 'tree' ? (passPoints() > 0 ? ` (${passPoints()})` : '') : g.k === 'sys' ? (logNew() ? ' ●' : '') : dotOn(g.k) ? '<i class="rd"></i>' : '';
-  $('mtabs').innerHTML = mob ? tabs.map(([k, n, ic]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${ic ? spr(ic, 20) : ''}<span>${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}</span></button>`).join('')
+  $('mtabs').innerHTML = mob ? tabs.map(([k, n, ic]) => { const lk = !tabOpen(k), dt = lk ? '' : k === 'menu' ? (dotOn('col') || logNew()) : k === 'skills' ? dotOn('skills') : k === 'craft' ? dotOn('craft') : k === 'tree' ? passPoints() > 0 : false;
+      return `<button class="tab${modalTab === k ? ' on' : ''}${lk ? ' lock' : ''}" onclick="${lk ? `lockTip('${k}')` : `openModal('${k}')`}">${ic ? spr(ic, 24) : ''}<span>${lk ? '🔒' : ''}${n}</span>${dt ? '<i class="rd"></i>' : ''}</button>`; }).join('')
     : groups.filter(g => tabOpen(g.k)).map(g => `<button class="tab${cur === g ? ' on' : ''}" onclick="openModal('${g.t[0]}')"><span>${g.n}${dot(g)}</span></button>`).join('') + (DESK() ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`)
     + (cur.t.length > 1 ? `<div class="subtabs">${cur.t.map(k => `<button class="tab sub${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${SUBN[k]}${k === 'log' && logNew() ? ' ●' : ''}</button>`).join('')}</div>` : '');
   if (mob) $('mmenu').hidden = modalTab !== 'menu';
-  $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? `<div class="mct">改機　零件 ${G.parts || 0}${qm('craft')}</div>` + craftHtml() : modalTab === 'dress' ? `${MOB() ? '<button class="mb" onclick="openModal(\'char\')">‹ 返回</button>' : ''}${dressHtml()}` : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() + `<details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">改機（零件 ${G.parts || 0}）</summary>${craftHtml()}</details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">圖鑑</summary><div class="rpgm">${codexHtml()}</div></details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">更新日誌 v${CHANGELOG[0].v}${logNew() ? ' ●' : ''}</summary>${logHtml()}</details>` : '') + saveHtml();
+  $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? `<div class="mct">改機　零件 ${G.parts || 0}${qm('craft')}</div>` + craftHtml() : modalTab === 'dress' ? `${MOB() ? '<button class="mb" onclick="openModal(\'char\')">‹ 返回</button>' : ''}${dressHtml()}` : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() + `<details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">圖鑑</summary><div class="rpgm">${codexHtml()}</div></details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">更新日誌 v${CHANGELOG[0].v}${logNew() ? ' ●' : ''}</summary>${logHtml()}</details>` : '') + saveHtml();
 }
 let held = null, heldRot = 0, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff' };
@@ -81,6 +82,10 @@ function shapeIcon(kind, key, rot = 0, col){
 function buildBar(){
   return '<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>構築</b>' + [0, 1, 2].map(i => `<button class="mb" style="${(G.bi || 0) === i ? 'background:#1f3fb0;color:#fff;' : ''}" onclick="switchBuild(${i})">${i + 1}</button>`).join('') + '<span class="mute">各存一套技能拼圖與天賦，免費切換；裝備共用</span>' + qm('skills') + '<span id="pzdelta" class="mute"></span></div>';
 }
+function dpsBar(){
+  const sk = G.st.sk || {}, ids = Object.keys(sk), tot = ids.reduce((a, id) => a + sk[id].hit/Math.max(.2, sk[id].cd), 0) || 1;
+  return `<div class="dpsbar"><div>DPS <b>${tFmt(G.st.dps)}</b> <span id="pzdelta" class="mute"></span></div><div class="shares">${ids.map(id => `<span style="flex:${Math.max(1, Math.round(sk[id].hit/Math.max(.2, sk[id].cd)/tot*100))}" title="${SKILLS[id].n}">${SKILLS[id].n}</span>`).join('')}</div></div>`;
+}
 function switchBuild(i){
   if (i === (G.bi || 0)) return; if (!G.builds) G.builds = [null, null, null];
   G.builds[G.bi || 0] = JSON.parse(JSON.stringify({ board:G.board, pass:G.pass }));
@@ -92,7 +97,7 @@ function switchBuild(i){
   recalc(); logLine(`切換到構築 ${i + 1}`, '#2f7fc4'); renderModal();
 }
 function skillsHtml(){
-  return buildBar() + skillsHtml0();
+  return buildBar() + dpsBar() + skillsHtml0();
 }
 function skillsHtml0(){
   const B = G.board, at = {}, linked = new Set(GridLab.resolve(B).flatMap(r => r.linked));
@@ -164,8 +169,10 @@ function mapsHtml(){
     return `<div class="mc"><b>${BIOMES[m.biome].n}</b> Lv. ${m.lvl}<ul>${m.mods.map(k => `<li>${MODS[k].n}</li>`).join('')}</ul><div class="chips"><span class="chip bad">危險 ${m.mods.filter(k => ['more', 'fast', 'tough', 'deadly'].includes(k)).length}</span><span class="chip ok">戰利品 +${Math.round(q*100)}%</span><span class="chip ok">金幣 ${m.mods.includes('rich') ? '+60%' : '+0%'}</span><span class="chip ok">稀有度 ${m.mods.includes('lucky') ? '提升' : '一般'}</span></div><button class="mb" ${R ? 'disabled' : ''} onclick="enterMap('${m.id}')">進入</button></div>`; }).join('') : '<div class="mute">還沒有地圖。打贏普通深度的守關者會掉落。</div>') + '</div>';
   return h;
 }
+function setDmgNum(v){ G.dmgNum = v; G.dirty = true; renderModal(); }
 function saveHtml(){
-  return `<div class="hint">遊戲每 5 秒自動存檔在這個瀏覽器裡。離開頁面後，回來會自動結算離線收益（最多 6 小時）。</div>
+  const dn = G.dmgNum == null ? 1 : G.dmgNum;
+  return `<div class="mct">傷害數字</div><div class="mrow">${[[2, '全部'], [1, '精簡'], [0, '關閉']].map(([v, n]) => `<button class="mb" style="${dn === v ? 'background:#1f3fb0;color:#fff' : ''}" onclick="setDmgNum(${v})">${n}</button>`).join('')}</div>` + `<div class="hint">遊戲每 5 秒自動存檔在這個瀏覽器裡。離開頁面後，回來會自動結算離線收益（最多 6 小時）。</div>
     <div class="mrow"><button class="mb" onclick="doSave()">立即存檔</button><button class="mb" onclick="doExport()">匯出存檔碼</button><button class="mb" onclick="doImport()">匯入存檔碼</button><button class="mb" id="rbtn" onclick="doReset()">${resetArm ? '再按一次確認清除' : '清除存檔'}</button></div>
     <textarea id="sv" class="sv" placeholder="匯出的存檔碼會顯示在這裡；要匯入時把存檔碼貼在這裡再按「匯入」"></textarea><div id="smsg" class="hint"></div>`;
 }
@@ -288,6 +295,7 @@ const HELP = {
   maps:['冒險說明', '地圖詞綴讓敵人更強，但戰利品更好；每張卡下方的標籤是風險與回報彙總。<br>無限之塔每層殺滿怪上樓，每 10 層是守關者，死亡就結束。<br>訓練場用不還手的假人量 30 秒傷害。'],
   goals:['任務與目標', '新手任務一次一個，完成後解鎖新系統。目標達成會自動給獎勵，不用手動領取。']
 };
+function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未開放.txt</div><div style="font-size:13px;line-height:1.7">升到 ${L} 級開放${k === 'craft' ? '改機（拆裝備得零件，重洗與改裝詞綴）' : '天賦盤（升級得到的點數在這裡分配）'}。</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 const qm = k => `<button class="qm" onclick="showHelp('${k}')">?</button>`;
 function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; o.hidden = false; }
@@ -322,7 +330,7 @@ function setupPanel(){
     .actions{gap:5px !important} .act{padding:3px 12px !important;font-size:12px}
     .modal{position:fixed;inset:0;background:rgba(43,37,82,.45);display:flex;align-items:center;justify-content:center;z-index:20;padding:12px} .modal[hidden]{display:none}
     .mbox{background:var(--paper);border:1.5px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 #b9c6ee;width:min(720px,100%);max-height:90vh;overflow:auto;padding:14px;font-size:12.5px} .mbox.small{width:min(420px,100%)}
-    .mtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap} .tab{padding:3px 12px;font-size:12px} .tab.on{background:var(--ink);color:var(--paper)} .tab.x{margin-left:auto} .chips{display:flex;gap:4px;flex-wrap:wrap;margin:4px 0} .chip{font-size:11px;padding:0 8px;border-radius:999px;border:1.5px solid} .chip.ok{color:#1d8a4c;border-color:#1d8a4c} .chip.bad{color:#d03a3a;border-color:#d03a3a} .qm{display:inline-block;width:16px;height:16px;line-height:14px;text-align:center;font-size:11px;border:1.5px solid var(--ink);border-radius:50%;background:var(--paper);cursor:pointer;margin-left:6px;vertical-align:middle;padding:0} .rd{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e2483d;margin-left:4px;vertical-align:middle} #pzdelta b.up{color:#1d8a4c} #pzdelta b.dn{color:#d03a3a} #nexthint{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:30;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;padding:3px 14px;font-size:12px;cursor:pointer;box-shadow:2px 2px 0 rgba(31,63,176,.35);max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #nexthint[hidden]{display:none} .subtabs{flex:1 0 100%;display:flex;gap:4px;padding-top:2px} .tab.sub{font-size:11px;padding:1px 10px;border-style:dashed}
+    .mtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap} .tab{padding:3px 12px;font-size:12px} .tab.on{background:var(--ink);color:var(--paper)} .tab.x{margin-left:auto} .dpsbar{position:sticky;top:-8px;z-index:5;background:var(--paper);border:1.5px solid var(--ink);padding:4px 8px;margin:0 0 8px;font-size:13px} .dpsbar .shares{display:flex;gap:2px;margin-top:3px} .dpsbar .shares span{background:#ffb4d2;font-size:11px;padding:0 4px;overflow:hidden;white-space:nowrap;text-overflow:clip;min-width:0} .chips{display:flex;gap:4px;flex-wrap:wrap;margin:4px 0} .chip{font-size:11px;padding:0 8px;border-radius:999px;border:1.5px solid} .chip.ok{color:#1d8a4c;border-color:#1d8a4c} .chip.bad{color:#d03a3a;border-color:#d03a3a} .qm{display:inline-block;width:16px;height:16px;line-height:14px;text-align:center;font-size:11px;border:1.5px solid var(--ink);border-radius:50%;background:var(--paper);cursor:pointer;margin-left:6px;vertical-align:middle;padding:0} .rd{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e2483d;margin-left:4px;vertical-align:middle} #pzdelta b.up{color:#1d8a4c} #pzdelta b.dn{color:#d03a3a} #nexthint{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:30;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;padding:3px 14px;font-size:12px;cursor:pointer;box-shadow:2px 2px 0 rgba(31,63,176,.35);max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #nexthint[hidden]{display:none} .subtabs{flex:1 0 100%;display:flex;gap:4px;padding-top:2px} .tab.sub{font-size:11px;padding:1px 10px;border-style:dashed}
     .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px} .mc{border:1.5px solid var(--ink);border-radius:14px;padding:8px 10px;box-shadow:0 2px 0 #b9c6ee} .mc.dim{opacity:.5} .mc.run{margin-bottom:10px;border-style:dashed}
     .mc ul{margin:4px 0 6px;padding-left:16px} .hint{color:var(--muted);font-size:11.5px;margin:4px 0 8px;line-height:1.5} .hint b{color:var(--ink)}
     .srow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px} select,.sv{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:3px 6px;max-width:100%}
@@ -428,7 +436,7 @@ function setupPanel(){
     .dlg i{position:absolute;left:12px;right:34px;bottom:4px;height:3px;background:repeating-linear-gradient(90deg,#8fb6ff 0 8px,transparent 8px 11px);transform-origin:left;animation:dlgt 2.6s linear forwards}
     @keyframes dlgb{50%{transform:translateY(-2px)}} @keyframes dlgt{from{transform:scaleX(0)}to{transform:scaleX(1)}}
     @media (orientation:portrait){#cv3{-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 94%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 94%,transparent);mask-composite:intersect}}   /* 手機拉近後，四邊裁切處淡出，不留硬邊 */
-    body.m{min-height:100dvh;padding:6px 8px 36px !important;gap:0}   /* 不鎖高度：嵌在別的頁面（例如 claude.ai）時高度可能不可靠，面板至少保留 360px */
+    body.m{min-height:100dvh;padding:6px 8px calc(64px + env(safe-area-inset-bottom)) !important;gap:0}   /* 不鎖高度：嵌在別的頁面（例如 claude.ai）時高度可能不可靠，面板至少保留 360px */
     body.m header{flex:none} body.m header h1 .wm{width:128px}
     body.m .stage{flex:none} body.m .stats{padding:18px 8px 4px !important;margin:2px 0 0 !important} body.m .stats::before{font-size:9px}
     body.m .stat .k{font-size:10px} body.m .stat .v{font-size:17px !important} body.m .stat.small .v{font-size:15px !important}
@@ -437,9 +445,9 @@ function setupPanel(){
     body.m #modal{position:static;display:flex;flex:1 0 auto;height:max(360px,calc(100dvh - 470px));width:100%;padding:0;background:none !important;backdrop-filter:none;z-index:auto}
     body.m .mbox{width:100%;max-height:none;height:100%;display:flex;flex-direction:column;overflow:hidden;padding:0 !important}
     body.m .mbox::before{display:none}
-    body.m .mtabs{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:0;flex:none;background:linear-gradient(90deg,#1f3fb0,#7fb0ff)}
-    body.m .tab{display:flex !important;flex-direction:column;align-items:center;gap:1px;padding:4px 0 3px !important;font-size:11px;border-radius:0 !important;border:0 !important;border-right:1px solid #ffffff55 !important;box-shadow:none !important;background:transparent !important;color:#fff !important;text-shadow:0 1px 0 #00000040}
-    body.m .tab.on{background:var(--win) !important;color:var(--wbd) !important;text-shadow:none}
+    body.m .mtabs{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin:0;position:fixed;left:0;right:0;bottom:0;z-index:40;height:calc(56px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:linear-gradient(90deg,#1f3fb0,#7fb0ff);box-shadow:0 -2px 0 #0b1f6b} body.m .tab .rd{position:absolute;top:4px;right:calc(50% - 20px);margin:0} body.m .tab{position:relative} body.m .tab.lock{opacity:.55} body.m .tab svg,body.m .tab canvas,body.m .tab .spr{width:24px !important;height:24px !important}
+    body.m .tab{display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 0 3px !important;font-size:12px;min-height:44px;border-radius:0 !important;border:0 !important;border-right:1px solid #ffffff55 !important;box-shadow:none !important;background:transparent !important;color:#fff !important;text-shadow:0 1px 0 #00000040}
+    body.m .tab.on{background:var(--win) !important;color:var(--wbd) !important;text-shadow:none;margin-top:-4px;padding-top:8px !important;border-radius:6px 6px 0 0 !important;box-shadow:0 -2px 0 #fff inset !important}
     body.m #mbody{flex:1;overflow:auto;padding:8px;-webkit-overflow-scrolling:touch}
     body .idc{background:#fff6cf;border:3px solid #2b2552;border-radius:6px;padding:8px 10px 10px;margin-bottom:8px;box-shadow:inset 0 0 0 2px #fff6cf,inset 0 0 0 4px #b8884a;color:#3a2330}
     body .idh{font-size:18px;letter-spacing:.12em;text-align:center;font-weight:700} body .ids{text-align:center;background:#5a2a3a;color:#fff6cf;margin:4px 14px 8px;border-radius:10px;font-size:11px;padding:1px 0}
