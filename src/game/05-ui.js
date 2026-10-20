@@ -29,6 +29,11 @@ function panelHtml(){
     <div class="rc"><div class="rh">狀態</div><ul>${stats}</ul></div>${charHtml()}${cardsHtml()}
     <div class="rc wide"><div class="rh">事件</div><ol class="log">${G.log.map(l => `<li style="color:${l.col}">${l.txt}</li>`).join('')}</ol></div>`;
 }
+function logHtml(){
+  try { localStorage.setItem('ih_log_seen', CHANGELOG[0].v); } catch (e) {}
+  return `<div class="rpgm"><div class="rc wide"><div class="rh">更新日誌</div>${CHANGELOG.map(c => `<div class="lg"><b>v${c.v}</b> <span class="mute">${c.d}</span><ul>${c.t.map(x => `<li>${x}</li>`).join('')}</ul></div>`).join('')}</div></div>`;
+}
+const logNew = () => { try { return +localStorage.getItem('ih_log_seen') !== CHANGELOG[0].v; } catch (e) { return false; } };
 let modalTab = 'skills', resetArm = false;
 const $ = id => document.getElementById(id);
 function openModal(tab){ modalTab = tab || modalTab; resetArm = false; $('modal').hidden = false; renderModal(); }
@@ -37,12 +42,12 @@ const DESK = () => document.body.classList.contains('d');   // 桌機寬螢幕�
 function closeModal(){ if (MOB()){ openModal('char'); return; } if (DESK()){ openModal('skills'); return; } $('modal').hidden = true; }
 function renderModal(){
   if ($('modal').hidden) return;
-  const mob = MOB(), tabs = mob ? [['char','角色','shield'], ['skills','技能','fire'], ['tree','天賦','star'], ['maps','地圖','shoe'], ['menu','選單','headphones']] : [['skills','技能'], ['tree','天賦盤'], ['maps','地圖'], ['goals','目標'], ['ach','成就'], ['save','存檔']];
+  const mob = MOB(), tabs = mob ? [['char','角色','shield'], ['skills','技能','fire'], ['tree','天賦','star'], ['maps','地圖','shoe'], ['menu','選單','headphones']] : [['skills','技能'], ['tree','天賦盤'], ['maps','地圖'], ['goals','目標'], ['ach','成就'], ['log','日誌'], ['save','存檔']];
   if (!mob && (modalTab === 'char' || modalTab === 'menu')) modalTab = 'skills';
   if (mob && modalTab === 'save') modalTab = 'menu';
-  $('mtabs').innerHTML = tabs.map(([k, n, ic]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${ic ? spr(ic, 20) : ''}<span>${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}</span></button>`).join('') + (mob ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`);
+  $('mtabs').innerHTML = tabs.map(([k, n, ic]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${ic ? spr(ic, 20) : ''}<span>${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}${k === 'log' && logNew() ? ' ●' : ''}</span></button>`).join('') + (mob ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`);
   if (mob) $('mmenu').hidden = modalTab !== 'menu';
-  $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() : '') + saveHtml();
+  $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'log' ? logHtml() : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() + `<details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">更新日誌 v${CHANGELOG[0].v}${logNew() ? ' ●' : ''}</summary>${logHtml()}</details>` : '') + saveHtml();
 }
 let held = null, heldRot = 0, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff' };
@@ -361,6 +366,7 @@ function setupPanel(){
     body.m .tab{display:flex !important;flex-direction:column;align-items:center;gap:1px;padding:4px 0 3px !important;font-size:11px;border-radius:0 !important;border:0 !important;border-right:1px solid #ffffff55 !important;box-shadow:none !important;background:transparent !important;color:#fff !important;text-shadow:0 1px 0 #00000040}
     body.m .tab.on{background:var(--win) !important;color:var(--wbd) !important;text-shadow:none}
     body.m #mbody{flex:1;overflow:auto;padding:8px;-webkit-overflow-scrolling:touch}
+    body .lg{margin:6px 0 10px} body .lg ul{margin:3px 0 0 18px;padding:0} body .lg li{margin:2px 0}
     body.m #mmenu{padding:8px 8px 0} body.m #mmenu .actions{position:static !important;display:flex !important;flex-direction:row !important;flex-wrap:wrap;gap:6px !important;max-width:none}
     body.m #mmenu .chips{left:0 !important;top:calc(100% + 6px) !important}
     .rpgm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-size:11.5px} .rpgm .rc.wide{grid-column:1/-1}
