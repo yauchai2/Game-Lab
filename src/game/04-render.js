@@ -70,11 +70,11 @@ function buildHero(at, ar, wt, wr){
   const g = new T3.Group(), steel = ['#cfd6e0', '#bcd0f0', '#f4e3a8', '#f2b09a'][ar];
   const recolor = { '#e9edf6':['#e8eef5', '#9fb8e8', '#f2d27a', '#f09a8a'][ar], '#6f8f4a':at >= 1 ? '#7d8fb8' : '#6f8f4a', '#2b2552':at >= 2 ? '#3a3f8f' : '#2b2552' };
   const body = modelGroup(HERO_MODEL.body, recolor); body.position.set(0, 0, 0); g.add(body);
-  const head = modelGroup(HERO_MODEL.head, recolor); head.scale.setScalar(1.3); head.position.y += .6; g.add(head); g.userData.head = head;
+  const head = modelGroup(HERO_MODEL.head, recolor); head.scale.setScalar(1.65); head.position.y += 1.6; g.add(head); g.userData.head = head;
   const armL = modelGroup(HERO_MODEL.armL, recolor); g.add(armL);
   const armR = modelGroup(HERO_MODEL.armR, recolor); g.add(armR); g.userData.armR = armR;
   const tail = modelGroup(HERO_MODEL.tail, recolor); g.add(tail); g.userData.tail = tail;
-  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 21.2, 0, g); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 18.2, 3.0, g); }
+  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 19.2, 0, g); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 16.2, 3.0, g); }
   if (at >= 2){   // 鴨舌帽
     mk(new T3.SphereGeometry(3.5, 9, 6, 0, Math.PI*2, 0, Math.PI*.5), m3(steel), 0, 1.0, -.2, head);
     mk(new T3.BoxGeometry(4.8, .35, 2.8), m3(steel), 0, 1.6, 3.6, head).rotation.x = .18;
@@ -88,7 +88,7 @@ function buildHero(at, ar, wt, wr){
   mk(new T3.BoxGeometry(.8 + wt*.2, len, .3), m3(blade[0], { emissive:wr >= 2 ? blade[1] : '#000000', emissiveIntensity:wr >= 2 ? .35 : 0 }), 0, 1.8 + len/2, 0, sw);
   cone(sw, blade[0], 0, 1.8 + len + .9, 0, .5 + wt*.1, 1.8, 4);
   if (wr === 3) mk(ico(len*.6, 1), basic('#ff9a3c', .2), 0, len/2, 0, sw);
-  const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 13.4, 3.6, g); orb.visible = false; g.userData.orb = orb;
+  const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 11.4, 3.6, g); orb.visible = false; g.userData.orb = orb;
   g.scale.setScalar(.85); g.rotation.order = 'YXZ'; addShadow(g, 5.5);
   return g;
 }
@@ -115,22 +115,23 @@ function buildSlime(){   // 稜角分明的霓虹凝膠：低面數外殼、發�
   for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.6, .4, .3), basic('#ff6aa8'), sx*1.5, 0, 5.95, fc);
   addShadow(g, 5.8); return g;
 }
-function monModel(g, def, recolor){   // 組合 MON_MODEL 的 body／head／armL／armR，回傳各部位
+function monModel(g, def, recolor, bs = 1){   // 組合 MON_MODEL 的 body／head／armL／armR，回傳各部位
   const mf = hex => ownMat(g, hex), p = {};
   for (const k of ['body', 'head', 'armL', 'armR']){ p[k] = modelGroup(def[k], recolor, mf); g.add(p[k]); }
+  if (bs !== 1){ p.body.scale.y = bs; for (const k of ['head', 'armL', 'armR']) p[k].position.y *= bs; p.armL.scale.y = p.armR.scale.y = Math.sqrt(bs); }
   g.userData.head = p.head; g.userData.armR = p.armR; g.userData.armL = p.armL; return p;
 }
 function buildSkel(){
-  const g = new T3.Group(), p = monModel(g, MON_MODEL.skel, {}), head = p.head;
+  const g = new T3.Group(), p = monModel(g, MON_MODEL.skel, {}, .72), head = p.head;
   for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(.62, 8)), basic('#7ef0ff'), sx*1.85, 3.8, 3.6, head); mk(geo('sock2', () => new T3.CircleGeometry(.22, 6)), basic('#ffffff'), sx*1.85 + .15, 4.0, 3.65, head); }
-  head.scale.setScalar(1.3); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
+  head.scale.setScalar(1.7); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
   addShadow(g, 4.6); return g;
 }
 function buildBrute(boss){
-  const g = new T3.Group(), rc = boss ? { '#ff9a3c':'#9a6ae0', '#e07a24':'#7c52c0', '#3a3560':'#2f2850', '#ff6aa8':'#ffd35a' } : {}, p = monModel(g, MON_MODEL.brute, rc), head = p.head;
+  const g = new T3.Group(), rc = boss ? { '#ff9a3c':'#9a6ae0', '#e07a24':'#7c52c0', '#3a3560':'#2f2850', '#ff6aa8':'#ffd35a' } : {}, p = monModel(g, MON_MODEL.brute, rc, .75), head = p.head;
   for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.7, .8, .3), basic('#7ef0ff'), sx*1.5, 3.0, 3.45, head);
   if (boss){ mk(cylG(3.7, 3.9, 1.2, 8), m3('#ffd35a'), 0, 6.5, -.2, head); for (let i = 0; i < 6; i++){ const a = i/6*6.283; cone(head, '#ffd35a', Math.cos(a)*3.5, 8.0, Math.sin(a)*3.5 - .2, .7, 2.4, 4); } }
-  head.scale.setScalar(1.25); const k = boss ? .88 : .7; g.userData.s = k; g.scale.setScalar(k); g.rotation.order = 'YXZ';
+  head.scale.setScalar(1.55); const k = boss ? .88 : .7; g.userData.s = k; g.scale.setScalar(k); g.rotation.order = 'YXZ';
   addShadow(g, boss ? 8 : 6.4); return g;
 }
 
