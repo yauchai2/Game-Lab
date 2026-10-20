@@ -52,10 +52,17 @@ const DESK = () => document.body.classList.contains('d');   // 桌機寬螢幕�
 function closeModal(){ if (MOB()){ openModal('char'); return; } if (DESK()){ openModal('skills'); return; } $('modal').hidden = true; }
 function renderModal(){ setTimeout(() => { if (typeof dressMount === 'function' && modalTab === 'dress') dressMount(); }, 0);
   if ($('modal').hidden) return;
-  const mob = MOB(), tabs = (mob ? [['char','角色','shield'], ['skills','技能','fire'], ['tree','天賦','star'], ['maps','地圖','shoe'], ['menu','選單','headphones']] : [['dress','角色'], ['skills','技能'], ['craft','改機'], ['tree','天賦盤'], ['maps','地圖'], ['goals','目標'], ['ach','成就'], ['dex','圖鑑'], ['log','日誌'], ['save','存檔']]).filter(t => tabOpen(t[0]));
+  const mob = MOB();
+  const groups = [{ k:'dress', n:'角色', t:['dress'] }, { k:'skills', n:'戰鬥', t:['skills'] }, { k:'craft', n:'打造', t:['craft'] }, { k:'tree', n:'成長', t:['tree'] }, { k:'maps', n:'冒險', t:['maps'] }, { k:'col', n:'收藏', t:['goals', 'ach', 'dex'] }, { k:'sys', n:'選單', t:['log', 'save'] }];
+  const SUBN = { goals:'目標', ach:'成就', dex:'圖鑑', log:'日誌', save:'存檔' };
+  const tabs = mob ? [['char','角色','shield'], ['skills','技能','fire'], ['tree','天賦','star'], ['maps','地圖','shoe'], ['menu','選單','headphones']] : [];
   if (!mob && (modalTab === 'char' || modalTab === 'menu')) modalTab = 'dress';
   if (mob && modalTab === 'save') modalTab = 'menu';
-  $('mtabs').innerHTML = tabs.map(([k, n, ic]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${ic ? spr(ic, 20) : ''}<span>${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}${k === 'log' && logNew() ? ' ●' : ''}</span></button>`).join('') + (mob || DESK() ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`);
+  if (!mob && !tabOpen(modalTab)) modalTab = 'skills';
+  const cur = groups.find(g => g.t.includes(modalTab)) || groups[1], dot = g => g.k === 'tree' ? (passPoints() > 0 ? ` (${passPoints()})` : '') : g.k === 'sys' ? (logNew() ? ' ●' : '') : '';
+  $('mtabs').innerHTML = mob ? tabs.map(([k, n, ic]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${ic ? spr(ic, 20) : ''}<span>${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}</span></button>`).join('')
+    : groups.filter(g => tabOpen(g.k)).map(g => `<button class="tab${cur === g ? ' on' : ''}" onclick="openModal('${g.t[0]}')"><span>${g.n}${dot(g)}</span></button>`).join('') + (DESK() ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`)
+    + (cur.t.length > 1 ? `<div class="subtabs">${cur.t.map(k => `<button class="tab sub${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${SUBN[k]}${k === 'log' && logNew() ? ' ●' : ''}</button>`).join('')}</div>` : '');
   if (mob) $('mmenu').hidden = modalTab !== 'menu';
   $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? `${MOB() ? '<button class="mb" onclick="openModal(\'char\')">‹ 返回</button>' : ''}${dressHtml()}` : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() + `<details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">改機（零件 ${G.parts || 0}）</summary>${craftHtml()}</details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">圖鑑</summary><div class="rpgm">${codexHtml()}</div></details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">更新日誌 v${CHANGELOG[0].v}${logNew() ? ' ●' : ''}</summary>${logHtml()}</details>` : '') + saveHtml();
 }
@@ -124,6 +131,14 @@ function treeHtml0(){
     <button class="mb" onclick="respec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
 }
 function treeInfo(id){ const n = TREE[id], el = $('tinfo'); if (el) el.textContent = id === 'S' ? '起點' : `${n.name}${nodeOpen(id) ? '' : G.pass.includes(id) ? '（已點亮）' : '（未連到）'}`; }
+function nextStep(){
+  const q = QUESTS[G.quest || 0];
+  if (q) return { t:`${q.n}（${q.t}）`, tab:'goals' };
+  if (passPoints() > 0 && tabOpen('tree')) return { t:`有 ${passPoints()} 點天賦可以分配`, tab:'tree' };
+  if ((G.parts || 0) >= 6 && tabOpen('craft')) return { t:`有 ${G.parts} 個零件可以改機`, tab:'craft' };
+  if (!G.run && !G.train && G.maxDepth >= 8 && !(G.towerBest > 0)) return { t:'試試無限之塔', tab:'maps' };
+  return null;
+}
 function questHtml(){
   const q = QUESTS[G.quest || 0];
   if (!q) return '';
@@ -294,7 +309,7 @@ function setupPanel(){
     .actions{gap:5px !important} .act{padding:3px 12px !important;font-size:12px}
     .modal{position:fixed;inset:0;background:rgba(43,37,82,.45);display:flex;align-items:center;justify-content:center;z-index:20;padding:12px} .modal[hidden]{display:none}
     .mbox{background:var(--paper);border:1.5px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 #b9c6ee;width:min(720px,100%);max-height:90vh;overflow:auto;padding:14px;font-size:12.5px} .mbox.small{width:min(420px,100%)}
-    .mtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap} .tab{padding:3px 12px;font-size:12px} .tab.on{background:var(--ink);color:var(--paper)} .tab.x{margin-left:auto}
+    .mtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap} .tab{padding:3px 12px;font-size:12px} .tab.on{background:var(--ink);color:var(--paper)} .tab.x{margin-left:auto} #nexthint{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:30;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;padding:3px 14px;font-size:12px;cursor:pointer;box-shadow:2px 2px 0 rgba(31,63,176,.35);max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #nexthint[hidden]{display:none} .subtabs{flex:1 0 100%;display:flex;gap:4px;padding-top:2px} .tab.sub{font-size:11px;padding:1px 10px;border-style:dashed}
     .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px} .mc{border:1.5px solid var(--ink);border-radius:14px;padding:8px 10px;box-shadow:0 2px 0 #b9c6ee} .mc.dim{opacity:.5} .mc.run{margin-bottom:10px;border-style:dashed}
     .mc ul{margin:4px 0 6px;padding-left:16px} .hint{color:var(--muted);font-size:11.5px;margin:4px 0 8px;line-height:1.5} .hint b{color:var(--ink)}
     .srow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px} select,.sv{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:3px 6px;max-width:100%}
@@ -458,7 +473,10 @@ function setupPanel(){
   const deskMq = matchMedia('(min-width:1100px) and (orientation:landscape)');
   if (deskMq.matches && !document.body.classList.contains('m')){ document.body.classList.add('d'); document.querySelectorAll('#btns .act').forEach(x => { if (['技能', '天賦盤', '地圖', '存檔'].includes(x.textContent.trim())) (x.closest('.stepwrap') || x).style.display = 'none'; }); m.hidden = false; modalTab = 'skills'; renderModal(); }
   deskMq.addEventListener('change', () => { saveGame(); location.reload(); });
-  const draw = () => { if (MOB()){ if (modalTab === 'char' && !document.querySelector('#mbody :focus')) renderModal(); return; } el.innerHTML = panelHtml(); };
+  const hint = () => { let h = $('nexthint'); if (MOB()){ if (h) h.hidden = true; return; }
+    if (!h){ h = document.createElement('div'); h.id = 'nexthint'; h.onclick = () => { if (h.dataset.tab) openModal(h.dataset.tab); }; document.body.appendChild(h); }
+    const n = nextStep(); h.hidden = !n; if (n){ h.textContent = '下一步：' + n.t; h.dataset.tab = n.tab || ''; } };
+  const draw = () => { hint(); if (MOB()){ if (modalTab === 'char' && !document.querySelector('#mbody :focus')) renderModal(); return; } el.innerHTML = panelHtml(); };
   setInterval(draw, 300); draw();
   document.getElementById('lblctl'); const pc = document.getElementById('pals'); if (pc) pc.parentElement.style.display = 'none';
 }
