@@ -32,7 +32,14 @@ ui = mountFigure({
   },
 });
 setupPanel();
-{ const h = document.querySelector('header h1'); if (h) h.innerHTML = [...'Idle Hero'].map(c => c === ' ' ? '<i class="gap"></i>' : `<span class="lg">${c}</span>`).join(''); }
+{ const h = document.querySelector('header h1'); if (h) h.innerHTML = `<svg class="wm" viewBox="0 0 400 86" aria-label="Idle Hero"><defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9efff"/><stop offset=".45" stop-color="#7fb8ff"/><stop offset="1" stop-color="#3f6fe0"/></linearGradient></defs>
+  <g transform="skewX(-12) translate(14 0)" font-family="'Hiragino Sans','Noto Sans CJK JP','Noto Sans JP','Yu Gothic','Microsoft JhengHei',sans-serif" font-weight="900">
+    <text x="22" y="52" font-size="44" textLength="330" lengthAdjust="spacingAndGlyphs" fill="none" stroke="#1d1a3a" stroke-width="11" stroke-linejoin="round">アイドルヒーロー</text>
+    <text x="22" y="52" font-size="44" textLength="330" lengthAdjust="spacingAndGlyphs" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round">アイドルヒーロー</text>
+    <text x="22" y="52" font-size="44" textLength="330" lengthAdjust="spacingAndGlyphs" fill="url(#wg)">アイドルヒーロー</text>
+    <text x="24" y="78" font-size="19" font-style="italic" font-family="Arial Black,Impact,sans-serif" letter-spacing="1.5" fill="#fff" stroke="#1d1a3a" stroke-width="4.5" stroke-linejoin="round" paint-order="stroke">IDLE HERO · DIGITAL FUTURE</text>
+  </g>
+  <g stroke="#1d1a3a" stroke-width="3" stroke-linejoin="round" fill="#7fb8ff"><polygon points="12,6 16,16 27,16 18,22 22,33 12,26 3,33 6,22 -3,16 8,16"/><polygon points="30,30 32,35 37,35 33,38 35,43 30,40 25,43 27,38 23,35 28,35" fill="#d9efff"/></g></svg>`; }
 if (Q.has('give')){ // testing helpers
   for (const id of Object.keys(SUPPS)) G.gems[id] = 2;
   for (let i = 0; i < 3; i++) G.maps.push(makeMap(Math.max(1, G.depth)));
