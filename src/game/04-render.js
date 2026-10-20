@@ -70,8 +70,8 @@ const VM = 12;   // 戰場左右各多出 12 單位的純視覺地面，讓人�
 const BONES = { hips:null, torso:'hips', head:'torso', tail:'torso', armL:'torso', foreL:'armL', armR:'torso', foreR:'armR', legL:'hips', shinL:'legL', legR:'hips', shinR:'legR' };
 function rigModel(def, recolor, mf){   // 依 BONES 的階層組成骨架：子骨骼的位置是相對父骨骼的轉軸
   const b = {};
-  for (const k in BONES) b[k] = modelGroup(def[k], recolor, mf);
-  for (const k in BONES){ const par = BONES[k]; if (par){ b[k].position.set(...def[k].at.map((v, i) => v - def[par].at[i])); b[par].add(b[k]); } }
+  for (const k in BONES) if (def[k]) b[k] = modelGroup(def[k], recolor, mf);
+  for (const k in BONES){ const par = BONES[k]; if (par && b[k]){ b[k].position.set(...def[k].at.map((v, i) => v - def[par].at[i])); b[par].add(b[k]); } }
   return b;
 }
 function buildHero(at, ar, wt, wr){
@@ -120,20 +120,18 @@ function buildSlime(){   // 稜角分明的霓虹凝膠：低面數外殼、發�
   for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.6, .4, .3), basic('#ff6aa8'), sx*1.5, 0, 5.95, fc);
   addShadow(g, 5.8); return g;
 }
-function monModel(g, def, recolor, bs = 1){   // 組合 MON_MODEL 的 body／head／armL／armR，回傳各部位
-  const mf = hex => ownMat(g, hex), p = {};
-  for (const k of ['body', 'head', 'armL', 'armR']){ p[k] = modelGroup(def[k], recolor, mf); g.add(p[k]); }
-  if (bs !== 1){ p.body.scale.y = bs; for (const k of ['head', 'armL', 'armR']) p[k].position.y *= bs; p.armL.scale.y = p.armR.scale.y = Math.sqrt(bs); }
-  g.userData.head = p.head; g.userData.armR = p.armR; g.userData.armL = p.armL; return p;
+function monModel(g, def, recolor){   // 組合 MON_MODEL 的 11 根骨骼（沒有 tail），每隻怪物用自己的材質，回傳骨架
+  const B = rigModel(def, recolor, hex => ownMat(g, hex)); g.add(B.hips);
+  g.userData.B = B; g.userData.head = B.head; return B;
 }
 function buildSkel(){
-  const g = new T3.Group(), p = monModel(g, MON_MODEL.skel, {}, .72), head = p.head;
+  const g = new T3.Group(), B = monModel(g, MON_MODEL.skel, {}), head = B.head;
   for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(.62, 8)), basic('#7ef0ff'), sx*1.85, 3.8, 3.6, head); mk(geo('sock2', () => new T3.CircleGeometry(.22, 6)), basic('#ffffff'), sx*1.85 + .15, 4.0, 3.65, head); }
   head.scale.setScalar(1.7); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
   addShadow(g, 4.6); return g;
 }
 function buildBrute(boss){
-  const g = new T3.Group(), rc = boss ? { '#ff9a3c':'#9a6ae0', '#e07a24':'#7c52c0', '#3a3560':'#2f2850', '#ff6aa8':'#ffd35a' } : {}, p = monModel(g, MON_MODEL.brute, rc, .75), head = p.head;
+  const g = new T3.Group(), rc = boss ? { '#ff9a3c':'#9a6ae0', '#e07a24':'#7c52c0', '#3a3560':'#2f2850', '#ff6aa8':'#ffd35a' } : {}, B = monModel(g, MON_MODEL.brute, rc), head = B.head;
   for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.7, .8, .3), basic('#7ef0ff'), sx*1.5, 3.0, 3.45, head);
   if (boss){ mk(cylG(3.7, 3.9, 1.2, 8), m3('#ffd35a'), 0, 6.5, -.2, head); for (let i = 0; i < 6; i++){ const a = i/6*6.283; cone(head, '#ffd35a', Math.cos(a)*3.5, 8.0, Math.sin(a)*3.5 - .2, .7, 2.4, 4); } }
   head.scale.setScalar(1.55); const k = boss ? .88 : .7; g.userData.s = k; g.scale.setScalar(k); g.rotation.order = 'YXZ';
@@ -262,19 +260,28 @@ const pj = (x, y, z) => { const v = new T3.Vector3(x, z, y).project(R3.cam); ret
 const pxu = () => { const a = new T3.Vector3(0, 0, 0).project(R3.cam), b = new T3.Vector3(1, 0, -1).normalize().project(R3.cam); return Math.abs(b.x - a.x)/2*R3.vbW; };   // 一個遊戲單位約等於幾個 SVG 單位
 
 function entFor(key, build){ let e = R3.ent.get(key); if (!e){ e = build(); R3.world.add(e); R3.ent.set(key, e); } e.userData.seen = true; return e; }
+const MPOSE_WALK = { hips:[0, 0, 0], torso:[.15, 0, 0], head:[0, 0, 0], armL:[0, 0, -.15], foreL:[-.4, 0, 0], armR:[0, 0, .15], foreR:[-.7, 0, 0], legL:[0, 0, 0], shinL:[.2, 0, 0], legR:[0, 0, 0], shinR:[.2, 0, 0] };
+const MPOSE_FIGHT = { hips:[0, 0, 0], torso:[.15, 0, 0], head:[0, 0, 0], armL:[-.6, 0, -.3], foreL:[-.9, 0, 0], armR:[-1.2, 0, .2], foreR:[-.8, 0, 0], legL:[.35, 0, 0], shinL:[.5, 0, 0], legR:[-.3, 0, 0], shinR:[.4, 0, 0] };
+const MPOSE_ATK = { hips:[.25, 0, 0], torso:[.65, 0, 0], head:[.35, 0, 0], armL:[-1.5, 0, -.5], foreL:[-.6, 0, 0], armR:[-2.9, 0, .1], foreR:[-.3, 0, 0], legL:[.9, 0, 0], shinL:[.4, 0, 0], legR:[-.9, 0, 0], shinR:[.9, 0, 0] };
+const MPOSE_HURT = { hips:[-.2, 0, 0], torso:[-.55, .2, .1], head:[-.55, 0, .25], armL:[-.7, 0, -1.1], foreL:[-.4, 0, 0], armR:[-1.1, 0, 1.1], foreR:[-.5, 0, 0], legL:[-.3, 0, 0], shinL:[.5, 0, 0], legR:[.3, 0, 0], shinR:[.6, 0, 0] };
+const MPOSE_TMP = {};
 function monLook(m, g){
   const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, y = m.y + 3*lg, ps = g.userData, base = ps.s || 1;
   at3(g, m.x, y, BZ); g.rotation.y = Math.PI/4;
   if (m.type === 'slime'){ const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
   else {
-    const hop = m.fight ? 0 : Math.abs(Math.sin(t*9)), land = 1 - hop;   // 落地時壓扁，空中拉長
-    g.position.y += hop*1.6 + lg*4;
-    const tilt = m.hurtT > 0 ? -.5 : lg*.7 + (m.fight ? Math.sin(t*3)*.08 : hop*.12);   // 前傾、受擊後仰
+    const B = ps.B, w = Math.sin(t*9), f = Math.sin(t*3), big = m.type === 'brute' || m.type === 'boss';
+    const hop = m.fight ? 0 : Math.abs(w), lean = big ? 1.25 : 1;
+    g.position.y += hop*(big ? 1.1 : 1.6) + lg*4;
+    let pose;
+    if (m.hurtT > 0) pose = MPOSE_HURT;
+    else if (m.lunge >= 0) pose = poseMix(MPOSE_FIGHT, MPOSE_ATK, lg);   // 蓄勢後大幅前撲、手臂掄過頭
+    else if (m.fight) pose = poseMix(MPOSE_FIGHT, MPOSE_FIGHT, 0, MPOSE_TMP), pose.torso = [.15 + f*.06, f*.1, 0], pose.armR = [-1.2 + f*.35, 0, .2], pose.foreR = [-.8, 0, 0], pose.armL = [-.6 - f*.3, 0, -.3], pose.head = [f*.05, Math.sin(t*1.5)*.15, 0];
+    else pose = poseMix(MPOSE_WALK, MPOSE_WALK, 0, MPOSE_TMP), pose.legL = [-w*.95, 0, 0], pose.legR = [w*.95, 0, 0], pose.shinL = [.2 + Math.max(0, w)*.9, 0, 0], pose.shinR = [.2 + Math.max(0, -w)*.9, 0, 0], pose.armL = [w*.9, 0, -.15], pose.armR = [-w*.9 - .2, 0, .15], pose.foreR = [-.7, 0, 0], pose.torso = [.16*lean, w*.12, 0], pose.hips = [0, -w*.1, 0], pose.head = [-.1 + Math.abs(w)*.1, Math.sin(t*2)*.1, 0];
+    applyPose(B, pose, m.lunge >= 0 ? .8 : .5);
+    const tilt = m.hurtT > 0 ? -.35 : lg*.35;   // 整體前傾、受擊後仰（細節由骨架負責）
     ps.tilt = (ps.tilt || 0) + (tilt - (ps.tilt || 0))*.4; g.rotation.x = ps.tilt;
     const st = m.fight ? 1 : 1 + (hop - .5)*.1 + lg*.15; g.scale.set(base/Math.sqrt(st), base*st, base/Math.sqrt(st));
-    if (ps.head) ps.head.rotation.z = Math.sin(t*2)*.1 + (m.hurtT > 0 ? .4 : 0);
-    if (ps.armR) ps.armR.rotation.x = m.lunge >= 0 ? -2.7*lg : (m.fight ? -.8 + Math.sin(t*3)*.4 : Math.sin(t*9)*.7);
-    if (ps.armL) ps.armL.rotation.x = m.lunge >= 0 ? -1.4*lg : (m.fight ? -.5 - Math.sin(t*3)*.3 : -Math.sin(t*9)*.7);
   }
   if (m.dead){ const u = Math.min(1, m.deadT/.4); g.scale.setScalar(Math.max(.01, base*(1 - u*.4))); g.rotation.x = -1.3*u; g.position.y += Math.sin(u*Math.PI)*6; for (const mt of ps.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u); } if (ps.sh) ps.sh.visible = false; }
   else if (m.frozen > 0) flash(g, '#9fe0ff', .55); else if (m.hurtT > 0) flash(g, '#ffffff', .7); else flash(g, '#000000', 0);
@@ -287,7 +294,7 @@ const POSE_HURT = { hips:[-.2, 0, 0], torso:[-.5, .2, .1], head:[-.5, 0, .2], ta
 const POSE_CAST = { hips:[0, 0, 0], torso:[-.2, 0, 0], head:[-.4, 0, 0], tail:[.3, 0, 0], armL:[-2.3, 0, -.4], foreL:[-.3, 0, 0], armR:[-2.3, 0, .4], foreR:[-.3, 0, 0], legL:[.2, 0, 0], shinL:[.3, 0, 0], legR:[-.2, 0, 0], shinR:[.3, 0, 0] };
 const poseMix = (A, B, u, out = {}) => { for (const k in A){ const a = A[k], b = B[k]; out[k] = [a[0] + (b[0] - a[0])*u, a[1] + (b[1] - a[1])*u, a[2] + (b[2] - a[2])*u]; } return out; };
 function applyPose(B, pose, k){   // k：向目標姿勢靠近的速度，讓切換有緩衝
-  for (const n in pose){ const r = B[n].rotation, p = pose[n]; r.x += (p[0] - r.x)*k; r.y += (p[1] - r.y)*k; r.z += (p[2] - r.z)*k; }
+  for (const n in pose){ if (!B[n]) continue; const r = B[n].rotation, p = pose[n]; r.x += (p[0] - r.x)*k; r.y += (p[1] - r.y)*k; r.z += (p[2] - r.z)*k; }
 }
 function heroLook(g){
   const h = G.h, t = G.time, ps = g.userData, B = ps.B, sw = h.swingT >= 0 ? tClamp(h.swingT/.3) : -1, SC = .85;
