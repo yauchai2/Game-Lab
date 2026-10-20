@@ -70,11 +70,11 @@ function buildHero(at, ar, wt, wr){
   const g = new T3.Group(), steel = ['#cfd6e0', '#bcd0f0', '#f4e3a8', '#f2b09a'][ar];
   const recolor = { '#e9edf6':['#e8eef5', '#9fb8e8', '#f2d27a', '#f09a8a'][ar], '#6f8f4a':at >= 1 ? '#7d8fb8' : '#6f8f4a', '#2b2552':at >= 2 ? '#3a3f8f' : '#2b2552' };
   const body = modelGroup(HERO_MODEL.body, recolor); body.position.set(0, 0, 0); g.add(body);
-  const head = modelGroup(HERO_MODEL.head, recolor); g.add(head); g.userData.head = head;
+  const head = modelGroup(HERO_MODEL.head, recolor); head.scale.setScalar(1.3); head.position.y += .6; g.add(head); g.userData.head = head;
   const armL = modelGroup(HERO_MODEL.armL, recolor); g.add(armL);
   const armR = modelGroup(HERO_MODEL.armR, recolor); g.add(armR); g.userData.armR = armR;
   const tail = modelGroup(HERO_MODEL.tail, recolor); g.add(tail); g.userData.tail = tail;
-  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 25.7, 0, g); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 22.5, 3.0, g); }
+  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 21.2, 0, g); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 18.2, 3.0, g); }
   if (at >= 2){   // 鴨舌帽
     mk(new T3.SphereGeometry(3.5, 9, 6, 0, Math.PI*2, 0, Math.PI*.5), m3(steel), 0, 1.0, -.2, head);
     mk(new T3.BoxGeometry(4.8, .35, 2.8), m3(steel), 0, 1.6, 3.6, head).rotation.x = .18;
@@ -88,8 +88,8 @@ function buildHero(at, ar, wt, wr){
   mk(new T3.BoxGeometry(.8 + wt*.2, len, .3), m3(blade[0], { emissive:wr >= 2 ? blade[1] : '#000000', emissiveIntensity:wr >= 2 ? .35 : 0 }), 0, 1.8 + len/2, 0, sw);
   cone(sw, blade[0], 0, 1.8 + len + .9, 0, .5 + wt*.1, 1.8, 4);
   if (wr === 3) mk(ico(len*.6, 1), basic('#ff9a3c', .2), 0, len/2, 0, sw);
-  const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 17.4, 3.6, g); orb.visible = false; g.userData.orb = orb;
-  addShadow(g, 5.5);
+  const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 13.4, 3.6, g); orb.visible = false; g.userData.orb = orb;
+  g.scale.setScalar(.85); g.rotation.order = 'YXZ'; addShadow(g, 5.5);
   return g;
 }
 function buildGrave(){
@@ -118,19 +118,19 @@ function buildSlime(){   // 稜角分明的霓虹凝膠：低面數外殼、發�
 function monModel(g, def, recolor){   // 組合 MON_MODEL 的 body／head／armL／armR，回傳各部位
   const mf = hex => ownMat(g, hex), p = {};
   for (const k of ['body', 'head', 'armL', 'armR']){ p[k] = modelGroup(def[k], recolor, mf); g.add(p[k]); }
-  g.userData.head = p.head; g.userData.armR = p.armR; return p;
+  g.userData.head = p.head; g.userData.armR = p.armR; g.userData.armL = p.armL; return p;
 }
 function buildSkel(){
   const g = new T3.Group(), p = monModel(g, MON_MODEL.skel, {}), head = p.head;
   for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(.62, 8)), basic('#7ef0ff'), sx*1.85, 3.8, 3.6, head); mk(geo('sock2', () => new T3.CircleGeometry(.22, 6)), basic('#ffffff'), sx*1.85 + .15, 4.0, 3.65, head); }
-  g.userData.s = .95; g.scale.setScalar(.95);
+  head.scale.setScalar(1.3); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
   addShadow(g, 4.6); return g;
 }
 function buildBrute(boss){
   const g = new T3.Group(), rc = boss ? { '#ff9a3c':'#9a6ae0', '#e07a24':'#7c52c0', '#3a3560':'#2f2850', '#ff6aa8':'#ffd35a' } : {}, p = monModel(g, MON_MODEL.brute, rc), head = p.head;
   for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.7, .8, .3), basic('#7ef0ff'), sx*1.5, 3.0, 3.45, head);
   if (boss){ mk(cylG(3.7, 3.9, 1.2, 8), m3('#ffd35a'), 0, 6.5, -.2, head); for (let i = 0; i < 6; i++){ const a = i/6*6.283; cone(head, '#ffd35a', Math.cos(a)*3.5, 8.0, Math.sin(a)*3.5 - .2, .7, 2.4, 4); } }
-  const k = boss ? 1.0 : .8; g.userData.s = k; g.scale.setScalar(k);
+  head.scale.setScalar(1.25); const k = boss ? .88 : .7; g.userData.s = k; g.scale.setScalar(k); g.rotation.order = 'YXZ';
   addShadow(g, boss ? 8 : 6.4); return g;
 }
 
@@ -154,7 +154,7 @@ function buildDeco(kind, k){
     case 'spike': for (const [x, z, h, r] of [[0, 0, 9, 1.8], [-2, 1, 5.5, 1.3], [2, .8, 6.5, 1.4]]) cone(g, '#a8587a', x, h/2, z, r, h, 5); break;
     case 'vent': mk(cylG(3.4, 4, 1.2, 8), m3('#9a7a90'), 0, .6, 0, g); g.userData.glow = mk(new T3.CircleGeometry(2.4, 10).rotateX(-Math.PI/2), basic('#ff9ab0'), 0, 1.25, 0, g); break;
   }
-  g.scale.setScalar(k); addShadow(g, 3.6); return g;
+  g.scale.setScalar(k*({ vend:1.45, lamp:1.4, rail:1.3, cone:1.5, rock:1.2 }[kind] || 1)); addShadow(g, 3.6); return g;
 }
 const DECO = [   // 每個生態：[種類, x, y, 縮放]
   [['pine',4,22,1.1], ['pine',27,25,.9], ['bush',5,44,1], ['rail',27,52,1], ['vend',26,38,1], ['cone',5,58,1]],
@@ -165,7 +165,7 @@ const DECO = [   // 每個生態：[種類, x, y, 縮放]
 function buildTorch(){   // 路燈：灰白燈桿、斜臂、暖白燈罩加光暈
   const g = new T3.Group(); mk(cylG(.45, .6, 12, 6), m3('#cfd6e0'), 0, 6, 0, g); mk(new T3.BoxGeometry(.5, .5, 4), m3('#cfd6e0'), 0, 12, 1.6, g);
   const lamp = mk(new T3.BoxGeometry(1.6, .5, 2.4), basic('#fff6c8'), 0, 11.6, 3.2, g), halo = mk(ico(3, 1), basic('#fff0b0', .2), 0, 11, 3.2, g);
-  g.userData.fl = [lamp, lamp, halo]; addShadow(g, 1.8); return g;
+  g.userData.fl = [lamp, lamp, halo]; g.scale.setScalar(1.4); addShadow(g, 1.8); return g;
 }
 function signTex(txt){
   const c = document.createElement('canvas'); c.width = 256; c.height = 96; const x = c.getContext('2d');
@@ -257,19 +257,34 @@ const pxu = () => { const a = new T3.Vector3(0, 0, 0).project(R3.cam), b = new T
 
 function entFor(key, build){ let e = R3.ent.get(key); if (!e){ e = build(); R3.world.add(e); R3.ent.set(key, e); } e.userData.seen = true; return e; }
 function monLook(m, g){
-  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, y = m.y + 3*lg;
+  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, y = m.y + 3*lg, ps = g.userData, base = ps.s || 1;
   at3(g, m.x, y, BZ); g.rotation.y = Math.PI/4;
-  if (m.type === 'slime'){ const sq = 1 + .1*Math.sin(t*5) + (m.lunge >= 0 ? .15*Math.sin(Math.PI*m.lunge/.3) : 0); g.userData.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); }
-  else { g.position.y += m.fight ? 0 : Math.abs(Math.sin(t*9))*.8; if (g.userData.head) g.userData.head.rotation.z = Math.sin(t*2)*.05; if (g.userData.armR) g.userData.armR.rotation.x = m.lunge >= 0 ? -1.9*lg : (m.fight ? -.4 + Math.sin(t*3)*.15 : Math.sin(t*9)*.3); }
-  if (m.dead){ const u = m.deadT/.4; g.scale.setScalar(Math.max(.01, (g.userData.s || 1)*(1 - u*.4))); for (const mt of g.userData.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u); } if (g.userData.sh) g.userData.sh.visible = false; }
+  if (m.type === 'slime'){ const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
+  else {
+    const hop = m.fight ? 0 : Math.abs(Math.sin(t*9)), land = 1 - hop;   // 落地時壓扁，空中拉長
+    g.position.y += hop*1.6 + lg*4;
+    const tilt = m.hurtT > 0 ? -.5 : lg*.7 + (m.fight ? Math.sin(t*3)*.08 : hop*.12);   // 前傾、受擊後仰
+    ps.tilt = (ps.tilt || 0) + (tilt - (ps.tilt || 0))*.4; g.rotation.x = ps.tilt;
+    const st = m.fight ? 1 : 1 + (hop - .5)*.1 + lg*.15; g.scale.set(base/Math.sqrt(st), base*st, base/Math.sqrt(st));
+    if (ps.head) ps.head.rotation.z = Math.sin(t*2)*.1 + (m.hurtT > 0 ? .4 : 0);
+    if (ps.armR) ps.armR.rotation.x = m.lunge >= 0 ? -2.7*lg : (m.fight ? -.8 + Math.sin(t*3)*.4 : Math.sin(t*9)*.7);
+    if (ps.armL) ps.armL.rotation.x = m.lunge >= 0 ? -1.4*lg : (m.fight ? -.5 - Math.sin(t*3)*.3 : -Math.sin(t*9)*.7);
+  }
+  if (m.dead){ const u = Math.min(1, m.deadT/.4); g.scale.setScalar(Math.max(.01, base*(1 - u*.4))); g.rotation.x = -1.3*u; g.position.y += Math.sin(u*Math.PI)*6; for (const mt of ps.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u); } if (ps.sh) ps.sh.visible = false; }
   else if (m.frozen > 0) flash(g, '#9fe0ff', .55); else if (m.hurtT > 0) flash(g, '#ffffff', .7); else flash(g, '#000000', 0);
 }
 function heroLook(g){
-  const h = G.h, t = G.time, ps = g.userData;
-  at3(g, HX + (h.hurtT > 0 ? Math.sin(t*90)*.5 : 0), HY, BZ + Math.max(0, Math.sin(t*3)*.35)); g.rotation.y = 50*D2R;
-  const a = h.swingT < 0 ? 72 + Math.sin(t*3)*3 : tLerp(115, -30, ease(h.swingT/.3));
-  ps.armR.rotation.x = (90 - a)*D2R*.9 + 1.2; ps.sword.rotation.x = (90 - a)*D2R*.35 + .1;
-  ps.tail.rotation.x = Math.sin(t*3.5)*.18; ps.head.rotation.z = Math.sin(t*1.5)*.03;
+  const h = G.h, t = G.time, ps = g.userData, sw = h.swingT >= 0 ? tClamp(h.swingT/.3) : -1, SC = .85;
+  const wind = sw >= 0 && sw < .25 ? sw/.25 : 0, hit = sw >= .25 ? ease((sw - .25)/.75) : 0;   // 蓄力後仰，再猛力前劈
+  const lean = h.hurtT > 0 ? -.4 : sw < 0 ? Math.sin(t*2)*.05 : tLerp(-.3*wind, .6, hit);
+  ps.lean = (ps.lean || 0) + (lean - (ps.lean || 0))*.45;
+  const hop = sw >= 0 ? Math.sin(Math.PI*sw)*3.5 : Math.max(0, Math.sin(t*3)*.6);
+  at3(g, HX + (h.hurtT > 0 ? Math.sin(t*90)*.8 : 0), HY, BZ + hop);
+  g.rotation.x = ps.lean; g.rotation.y = 50*D2R - (sw >= 0 ? hit*.7 - wind*.3 : 0);
+  const st = 1 + (sw >= 0 ? .14*Math.sin(Math.PI*sw) : .025*Math.sin(t*4)); g.scale.set(SC/Math.sqrt(st), SC*st, SC/Math.sqrt(st));
+  const a = sw < 0 ? 72 + Math.sin(t*3)*5 : sw < .25 ? tLerp(72, 160, wind) : tLerp(160, -55, hit);
+  ps.armR.rotation.x = (90 - a)*D2R*.9 + 1.2; ps.sword.rotation.x = (90 - a)*D2R*.4 + .1;
+  ps.tail.rotation.x = Math.sin(t*3.5)*.3 + (sw >= 0 ? -hit*.8 : 0); ps.head.rotation.z = Math.sin(t*1.5)*.05 + (h.hurtT > 0 ? -.3 : 0);
   if (h.castT >= 0){ const u = ease(tClamp(h.castT/.25)); ps.orb.visible = true; ps.orb.material.color.set((SKILLS[h.castSk] || SKILLS.FIRE).col); ps.orb.scale.setScalar(Math.max(.01, u)); } else ps.orb.visible = false;
 }
 
@@ -295,8 +310,8 @@ function updateFx(){
 function overlay(){
   const k = pxu(); let s = '';
   const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z), W2 = w*k*.8, H2 = 1.5*k; return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
-  if (G.h.dead <= 0) s += bar(HX, HY, BZ + 39, 9, G.h.hp/G.st.life, '#ff6a8a');
-  for (const m of G.mons) if (!m.dead) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 42 : m.type === 'brute' ? 34 : 30), 8, m.hp/m.hpMax, '#ff6a8a');
+  if (G.h.dead <= 0) s += bar(HX, HY, BZ + 36, 9, G.h.hp/G.st.life, '#ff6a8a');
+  for (const m of G.mons) if (!m.dead) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 40 : m.type === 'brute' ? 32 : 28), 8, m.hp/m.hpMax, '#ff6a8a');
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + fl.t*9);
     s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" font-size="${(fl.size*1.5*k*.62).toFixed(1)}" fill="${fl.col}" style="stroke:#f2f7ff;stroke-width:${(1.8*k*.5).toFixed(1)}px;paint-order:stroke" font-family="ui-monospace,Menlo,monospace" font-weight="800" opacity="${(1 - fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
   return s;
