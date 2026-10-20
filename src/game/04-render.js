@@ -58,11 +58,11 @@ function mouth(parent, R, elev, w, col='#2b2552', up=1){
 
 /* ---------- 主角 ---------- */
 const HAIR = ['#2b2552', '#2b2552', '#3a3f8f', '#d9dff2'];   // 藍黑、深藍、銀白
-function modelGroup(def, recolor){   // 把 Blender 匯出的零件組成 three.js 群組（平塗、flat shading）
+function modelGroup(def, recolor, mf){   // 把 Blender 匯出的零件組成 three.js 群組（平塗、flat shading）；mf 可換成每隻怪物自己的材質
   const g = new T3.Group(); g.position.set(...def.at.map(v => v/1)); 
   for (const m of def.m){
     const geom = new T3.BufferGeometry(); geom.setAttribute('position', new T3.Float32BufferAttribute(m.p.map(v => v/100), 3)); geom.setIndex(m.i);
-    g.add(new T3.Mesh(geom, m3(recolor[m.c] || m.c)));
+    g.add(new T3.Mesh(geom, (mf || m3)(recolor[m.c] || m.c)));
   }
   return g;
 }
@@ -113,39 +113,23 @@ function buildSlime(){
   eye(fc, 5.1, -.42, .05, 1.5, '', 'dark'); eye(fc, 5.1, .42, .05, 1.5, '', 'dark');
   addShadow(g, 5.6); return g;
 }
+function monModel(g, def, recolor){   // 組合 MON_MODEL 的 body／head／armL／armR，回傳各部位
+  const mf = hex => ownMat(g, hex), p = {};
+  for (const k of ['body', 'head', 'armL', 'armR']){ p[k] = modelGroup(def[k], recolor, mf); g.add(p[k]); }
+  g.userData.head = p.head; g.userData.armR = p.armR; return p;
+}
 function buildSkel(){
-  const g = new T3.Group(), bone = ownMat(g, '#fbf6ea'), rust = ownMat(g, '#e0a070'), dk = '#2b2552';
-  for (const sx of [-1.3, 1.3]){ mk(cylG(.7, .7, 4.5, 5), bone, sx, 2.4, 0, g); mk(new T3.BoxGeometry(1.5, .8, 2.4), bone, sx, .4, .6, g); }
-  mk(cylG(2.4, 2.8, 4.2, 7), ownMat(g, '#e8dcc8'), 0, 6.6, 0, g);
-  for (const yy of [5.6, 6.8, 8.0]) mk(new T3.BoxGeometry(5.2, .45, .5), ownMat(g, '#9a8f86'), 0, yy, 2.2, g);
-  const head = new T3.Group(); head.position.set(0, 12.6, 0); g.add(head); g.userData.head = head;
-  mk(ico(4.3, 1), bone, 0, 0, 0, head); mk(new T3.BoxGeometry(3.4, 1.9, 3), bone, 0, -3.6, 1.3, head);
-  for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(1, 10)), basic(dk), sx*1.8, .5, 4.15, head).scale.set(1.35, 1.6, 1); mk(geo('sock2', () => new T3.CircleGeometry(.32, 6)), basic('#7ef0ff'), sx*1.8 + .35, 1.1, 4.2, head); }
-  mk(new T3.BoxGeometry(.7, 1, .4), basic(dk), 0, -1.1, 4.2, head);
-  for (let i = -1; i <= 1; i++) mk(new T3.BoxGeometry(.4, .9, .3), basic(dk), i*.9, -3.7, 3.2, head);
-  const armR = new T3.Group(); armR.position.set(3.2, 8.8, 0); g.add(armR); g.userData.armR = armR;
-  mk(cylG(.5, .5, 4, 5), bone, 0, -1.8, 0, armR);
-  const sw = new T3.Group(); sw.position.set(0, -3.8, 0); armR.add(sw); mk(new T3.BoxGeometry(.8, 7, .3), rust, 0, 3.6, 0, sw); mk(new T3.BoxGeometry(2, .4, .6), ownMat(g, '#7a5a3a'), 0, .2, 0, sw);
-  const sh = mk(cylG(2.6, 2.6, .7, 8), ownMat(g, '#e0a070'), -3.9, 6.8, 1.2, g); sh.rotation.z = Math.PI/2; sh.rotation.y = .4; mk(ico(.9, 0), ownMat(g, '#ffd35a'), -4.4, 6.8, 1.2, g);
-  mk(cylG(.5, .5, 4, 5), bone, -3.2, 7.6, -.2, g).rotation.z = .25;
+  const g = new T3.Group(), p = monModel(g, MON_MODEL.skel, {}), head = p.head;
+  for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(.62, 8)), basic('#7ef0ff'), sx*1.85, 3.8, 3.6, head); mk(geo('sock2', () => new T3.CircleGeometry(.22, 6)), basic('#ffffff'), sx*1.85 + .15, 4.0, 3.65, head); }
+  g.userData.s = .95; g.scale.setScalar(.95);
   addShadow(g, 4.6); return g;
 }
 function buildBrute(boss){
-  const g = new T3.Group(), skin = ownMat(g, boss ? '#b79af0' : '#ffa686'), clothes = ownMat(g, boss ? '#8e5fd1' : '#e8707a'), dark = ownMat(g, '#6a4a7a');
-  for (const sx of [-2.2, 2.2]){ mk(cylG(1.8, 2, 3.4, 7), dark, sx, 1.7, 0, g); mk(new T3.BoxGeometry(3.6, 1.4, 4), ownMat(g, '#4a3560'), sx, .7, .8, g); }
-  mk(ico(1, 1), clothes, 0, 7.4, 0, g).scale.set(5.4, 4.8, 4.4);
-  mk(cylG(5.3, 5.3, .9, 8), ownMat(g, '#4a3560'), 0, 5.2, 0, g); mk(new T3.BoxGeometry(1.4, 1.2, .5), ownMat(g, '#ffd35a'), 0, 5.2, 4.9, g);
-  const head = new T3.Group(); head.position.set(0, 13.2, .8); g.add(head); g.userData.head = head;
-  mk(ico(3.8, 1), skin, 0, 0, 0, head);
-  for (const sx of [-1, 1]){ cone(head, '#fff6e0', sx*3.2, 3.2, -.2, .9, 3.6, 5, 0, -sx*.55); cone(head, '#fffbe8', sx*1.1, -2.1, 3.3, .45, 1.8, 4, Math.PI*.8);
-    mk(new T3.BoxGeometry(1.9, .45, .5), basic('#2b2552'), sx*1.55, 1.5, 3.65, head).rotation.z = sx*.35; }
-  eye(head, 3.8, -.44, -.05, 1.5, '', 'dark'); eye(head, 3.8, .44, -.05, 1.5, '', 'dark'); mouth(head, 3.8, -.45, .6, '#2b2552', -1);
-  if (boss){ mk(cylG(3, 3.3, 1.6, 8), m3('#ffd35a'), 0, 4.2, 0, head); for (let i = 0; i < 5; i++){ const a = i/5*6.283; cone(head, '#ffd35a', Math.cos(a)*3.1, 6, Math.sin(a)*3.1, .7, 2.2, 4); } mk(ico(.6, 0), basic('#ff6aa8'), 0, 4.2, 3.3, head); }
-  const armR = new T3.Group(); armR.position.set(5.6, 9.8, 0); g.add(armR); g.userData.armR = armR;
-  mk(cylG(1.5, 1.6, 4.4, 6), skin, 0, -2, 0, armR); mk(ico(1.7, 0), skin, 0, -4.6, 0, armR);
-  const club = new T3.Group(); club.position.set(0, -4.6, 0); armR.add(club); mk(cylG(.7, 1.1, 7, 6), ownMat(g, '#c58a5a'), 0, 3.5, 0, club); mk(ico(2.2, 1), ownMat(g, '#a56d42'), 0, 8, 0, club);
-  mk(cylG(1.5, 1.6, 4.4, 6), skin, -5.6, 8, 0, g).rotation.z = .3; mk(ico(1.7, 0), skin, -6.4, 5.7, 0, g);
-  addShadow(g, boss ? 7.2 : 5.6); if (boss) g.scale.setScalar(1.25); return g;
+  const g = new T3.Group(), rc = boss ? { '#ff9a3c':'#9a6ae0', '#e07a24':'#7c52c0', '#3a3560':'#2f2850', '#ff6aa8':'#ffd35a' } : {}, p = monModel(g, MON_MODEL.brute, rc), head = p.head;
+  for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.7, .8, .3), basic('#7ef0ff'), sx*1.5, 3.0, 3.45, head);
+  if (boss){ mk(cylG(3.7, 3.9, 1.2, 8), m3('#ffd35a'), 0, 6.5, -.2, head); for (let i = 0; i < 6; i++){ const a = i/6*6.283; cone(head, '#ffd35a', Math.cos(a)*3.5, 8.0, Math.sin(a)*3.5 - .2, .7, 2.4, 4); } }
+  const k = boss ? 1.0 : .8; g.userData.s = k; g.scale.setScalar(k);
+  addShadow(g, boss ? 8 : 6.4); return g;
 }
 
 /* ---------- 裝飾 ---------- */
@@ -259,7 +243,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   if (W !== R3.W || H !== R3.H || dpr !== R3.dpr){ R3.W = W; R3.H = H; R3.dpr = dpr; R3.rd.setPixelRatio(dpr*R3.res); R3.rd.setSize(W, H, false); }
   const cam = R3.cam, tgt = new T3.Vector3(BXW/2, BZ + 6, BYW/2); cam.position.copy(tgt).add(new T3.Vector3(1, .86, 1).normalize().multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-  for (const x of [0, BXW]) for (const y of [0, BYW]) for (const z of [BZ - 4, BZ + 34]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
+  for (const x of [0, BXW]) for (const y of [0, BYW]) for (const z of [BZ - 4, BZ + 44]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
   const bw = x1 - x0, bh = y1 - y0, ar = W/H, cx = (x0 + x1)/2 + bw*.04, cy = (y0 + y1)/2 + bh*.02;
   let vw = bw/.9, vh = bh/1.0; if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;
   cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2; cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
@@ -274,7 +258,7 @@ function monLook(m, g){
   at3(g, m.x, y, BZ); g.rotation.y = Math.PI/4;
   if (m.type === 'slime'){ const sq = 1 + .1*Math.sin(t*5) + (m.lunge >= 0 ? .15*Math.sin(Math.PI*m.lunge/.3) : 0); g.userData.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); }
   else { g.position.y += m.fight ? 0 : Math.abs(Math.sin(t*9))*.8; if (g.userData.head) g.userData.head.rotation.z = Math.sin(t*2)*.05; if (g.userData.armR) g.userData.armR.rotation.x = m.lunge >= 0 ? -1.9*lg : (m.fight ? -.4 + Math.sin(t*3)*.15 : Math.sin(t*9)*.3); }
-  if (m.dead){ const u = m.deadT/.4; g.scale.setScalar(Math.max(.01, (m.boss ? 1.25 : 1)*(1 - u*.4))); for (const mt of g.userData.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u); } if (g.userData.sh) g.userData.sh.visible = false; }
+  if (m.dead){ const u = m.deadT/.4; g.scale.setScalar(Math.max(.01, (g.userData.s || 1)*(1 - u*.4))); for (const mt of g.userData.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u); } if (g.userData.sh) g.userData.sh.visible = false; }
   else if (m.frozen > 0) flash(g, '#9fe0ff', .55); else if (m.hurtT > 0) flash(g, '#ffffff', .7); else flash(g, '#000000', 0);
 }
 function heroLook(g){
@@ -309,7 +293,7 @@ function overlay(){
   const k = pxu(); let s = '';
   const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z), W2 = w*k*.8, H2 = 1.5*k; return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
   if (G.h.dead <= 0) s += bar(HX, HY, BZ + 36, 9, G.h.hp/G.st.life, '#ff6a8a');
-  for (const m of G.mons) if (!m.dead) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 25 : m.type === 'brute' ? 19 : 18), 8, m.hp/m.hpMax, '#ff6a8a');
+  for (const m of G.mons) if (!m.dead) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 42 : m.type === 'brute' ? 34 : 30), 8, m.hp/m.hpMax, '#ff6a8a');
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + fl.t*9);
     s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" font-size="${(fl.size*1.5*k*.62).toFixed(1)}" fill="${fl.col}" style="stroke:#f2f7ff;stroke-width:${(1.8*k*.5).toFixed(1)}px;paint-order:stroke" font-family="ui-monospace,Menlo,monospace" font-weight="800" opacity="${(1 - fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
   return s;
