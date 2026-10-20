@@ -14,7 +14,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import *
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'src', 'game', 'models.js')
-setup({'head': (0, 0.2, 27.4), 'armL': (-4.3, 0, 22.6), 'armR': (4.3, 0, 22.6), 'tail': (3.9, 1.8, 15.4), 'body': (0, 0, 0)})
+# 骨架：hips → torso → head／arm → fore，hips → leg → shin；轉軸在關節（髖、腰、頸、肩、肘、膝）
+setup({'hips': (0, 0, 15.5), 'torso': (0, 0, 15.8), 'head': (0, 0.2, 25.0), 'tail': (3.9, 1.8, 15.4),
+       'armL': (-4.3, 0, 22.6), 'foreL': (-4.6, .2, 19.5), 'armR': (4.3, 0, 22.6), 'foreR': (4.6, .2, 19.5),
+       'legL': (-2.6, 0, 15.5), 'shinL': (-2.6, 0, 9.5), 'legR': (2.6, 0, 15.5), 'shinR': (2.6, 0, 9.5)})
 
 # ---------------------------------------------------------------- 建模
 fresh()
@@ -24,35 +27,40 @@ PANTS = '#6f8f4a'; PANTS_D = '#5d7a3c'; CLOTH = '#e9edf6'; HAIR = '#2b2552'; NAV
 for sx in (-1, 1):
     x0 = sx*2.6
     # 大鞋：圓鈍、厚底
-    finish(loft_y([(-3.4, x0, 1.0, 1.2, .8), (-2.6, x0, 2.0, 1.7, 1.7), (-.5, x0, 2.4, 1.9, 1.9), (2.0, x0, 2.0, 1.85, 1.5), (3.8, x0, 1.5, 1.5, 1.1), (4.6, x0, 1.1, .9, .7)], n=8, rot=math.pi/8), 'body', SILVER, jit=.04)
-    finish(box((x0, .6, .55), (4.0, 8.4, 1.1)), 'body', WHITE, bevel=.28)
-    finish(box((x0, 3.2, 1.0), (3.2, 1.6, .5)), 'body', '#8fb6ff', bevel=.1)
+    lo, up = ('shinL', 'legL') if sx < 0 else ('shinR', 'legR')
+    finish(loft_y([(-3.4, x0, 1.0, 1.2, .8), (-2.6, x0, 2.0, 1.7, 1.7), (-.5, x0, 2.4, 1.9, 1.9), (2.0, x0, 2.0, 1.85, 1.5), (3.8, x0, 1.5, 1.5, 1.1), (4.6, x0, 1.1, .9, .7)], n=8, rot=math.pi/8), lo, SILVER, jit=.04)
+    finish(box((x0, .6, .55), (4.0, 8.4, 1.1)), lo, WHITE, bevel=.28)
+    finish(box((x0, 3.2, 1.0), (3.2, 1.6, .5)), lo, '#8fb6ff', bevel=.1)
     # 超寬工作褲：褲口蓋住鞋面，往上收
-    finish(loft([(2.2, x0, .3, 3.8, 4.1), (5.5, x0, .1, 3.5, 3.7), (9.5, x0, .5, 3.1, 3.3), (13.0, x0, .2, 3.0, 3.2), (16.0, x0, 0, 2.9, 3.1)], n=8, rot=math.pi/8), 'body', PANTS, jit=.07)
-    finish(box((x0 + sx*3.35, .4, 9.8), (.9, 3.2, 3.6)), 'body', PANTS_D, bevel=.2)           # 側邊大口袋
-    finish(box((x0 + sx*3.55, .4, 10.9), (.5, 3.4, .5)), 'body', PANTS_D, bevel=.1)           # 口袋蓋
-    finish(loft([(2.4, x0, .3, 3.95, 4.25), (3.4, x0, .3, 3.85, 4.15)], n=8, rot=math.pi/8), 'body', PANTS_D, jit=.03)   # 褲口反折
+    finish(loft([(2.2, x0, .3, 3.8, 4.1), (5.5, x0, .1, 3.5, 3.7), (9.9, x0, .5, 3.1, 3.3)], n=8, rot=math.pi/8), lo, PANTS, jit=.07)
+    finish(loft([(9.3, x0, .5, 3.1, 3.3), (13.0, x0, .2, 3.0, 3.2), (16.0, x0, 0, 2.9, 3.1)], n=8, rot=math.pi/8), up, PANTS, jit=.07)
+    finish(box((x0 + sx*3.35, .4, 11.2), (.9, 3.2, 3.6)), up, PANTS_D, bevel=.2)           # 側邊大口袋
+    finish(box((x0 + sx*3.55, .4, 12.3), (.5, 3.4, .5)), up, PANTS_D, bevel=.1)           # 口袋蓋
+    finish(loft([(2.4, x0, .3, 3.95, 4.25), (3.4, x0, .3, 3.85, 4.15)], n=8, rot=math.pi/8), lo, PANTS_D, jit=.03)   # 褲口反折
 
-finish(loft([(15.6, 0, 0, 4.4, 3.4), (16.7, 0, 0, 4.4, 3.4)], n=8, rot=math.pi/8), 'body', NAVY)                     # 腰帶
-finish(box((0, 3.45, 16.15), (1.4, .4, 1.1)), 'body', SILVER, bevel=.1)
+finish(loft([(15.6, 0, 0, 4.4, 3.4), (16.7, 0, 0, 4.4, 3.4)], n=8, rot=math.pi/8), 'torso', NAVY)                     # 腰帶
+finish(box((0, 3.45, 16.15), (1.4, .4, 1.1)), 'torso', SILVER, bevel=.1)
 # 寬鬆上衣（下擺外擴、肩寬）
-finish(loft([(15.9, 0, 0, 3.9, 3.0), (18.5, 0, 0, 3.5, 2.7), (21.5, 0, 0, 3.8, 2.8), (23.3, 0, 0, 3.0, 2.3)], n=8, rot=math.pi/8), 'body', CLOTH, jit=.06)
-finish(loft([(22.8, 0, -1.4, 3.0, 2.4), (24.0, 0, -1.4, 2.5, 2.0)], n=8, rot=math.pi/8), 'body', '#cfd6e0', jit=.05)    # 連帽領口
+finish(loft([(15.9, 0, 0, 3.9, 3.0), (18.5, 0, 0, 3.5, 2.7), (21.5, 0, 0, 3.8, 2.8), (23.3, 0, 0, 3.0, 2.3)], n=8, rot=math.pi/8), 'torso', CLOTH, jit=.06)
+finish(loft([(22.8, 0, -1.4, 3.0, 2.4), (24.0, 0, -1.4, 2.5, 2.0)], n=8, rot=math.pi/8), 'torso', '#cfd6e0', jit=.05)    # 連帽領口
 for sx in (-1, 1):
-    finish(box((sx*.9, 2.9, 20.6), (.25, .25, 2.2)), 'body', '#cfd6e0', bevel=.05)             # 帽繩
-    finish(box((sx*.9, 2.9, 19.4), (.5, .5, .5)), 'body', NAVY, bevel=.08)
-finish(box((0, 3.1, 19.2), (4.6, .6, 2.6)), 'body', '#cfd6e0', bevel=.2)                     # 袋鼠口袋
-finish(loft([(23.4, 0, 0, 1.0, 1.0), (25.2, 0, 0, .9, .9)], n=6), 'body', SKIN)                                    # 脖子
+    finish(box((sx*.9, 2.9, 20.6), (.25, .25, 2.2)), 'torso', '#cfd6e0', bevel=.05)             # 帽繩
+    finish(box((sx*.9, 2.9, 19.4), (.5, .5, .5)), 'torso', NAVY, bevel=.08)
+finish(box((0, 3.1, 19.2), (4.6, .6, 2.6)), 'torso', '#cfd6e0', bevel=.2)                     # 袋鼠口袋
+finish(loft([(23.4, 0, 0, 1.0, 1.0), (25.2, 0, 0, .9, .9)], n=6), 'torso', SKIN)                                    # 脖子
 
 # 手臂（以肩膀為轉軸，建在原位，匯出時再平移）
 for sx, grp in ((-1, 'armL'), (1, 'armR')):
     sh = (sx*4.3, 0, 22.6)
-    finish(loft([(22.8, sh[0], 0, 1.6, 1.6), (19.5, sh[0] + sx*.3, .2, 1.4, 1.4), (16.4, sh[0] + sx*.5, .6, 1.9, 1.9)], n=7, rot=0.2), grp, CLOTH, jit=.05)
+    fg = 'foreL' if sx < 0 else 'foreR'
+    finish(loft([(22.8, sh[0], 0, 1.6, 1.6), (19.7, sh[0] + sx*.3, .2, 1.4, 1.4)], n=7, rot=0.2), grp, CLOTH, jit=.05)
+    finish(ico((sh[0] + sx*.3, .2, 19.5), 1.45, sub=0), grp, CLOTH, jit=.03)                      # 肘
     hx = sh[0] + sx*.6
-    finish(loft([(16.4, sh[0] + sx*.5, .6, 2.15, 2.15), (15.7, sh[0] + sx*.5, .6, 2.2, 2.2)], n=7, rot=0.2), grp, '#cfd6e0', jit=.03)   # 袖口
-    finish(box((hx, .8, 14.7), (1.7, 1.5, 1.5)), grp, SKIN, bevel=.25)                          # 拳頭
-    finish(box((hx, 1.7, 14.9), (1.7, .5, .9)), grp, '#e4b99a', bevel=.1)                       # 指節
-    finish(box((hx - sx*.9, 1.1, 15.2), (.6, .9, .8)), grp, SKIN, bevel=.12)                    # 拇指
+    finish(loft([(19.5, sh[0] + sx*.3, .2, 1.4, 1.4), (16.4, sh[0] + sx*.5, .6, 1.9, 1.9)], n=7, rot=0.2), fg, CLOTH, jit=.05)
+    finish(loft([(16.4, sh[0] + sx*.5, .6, 2.15, 2.15), (15.7, sh[0] + sx*.5, .6, 2.2, 2.2)], n=7, rot=0.2), fg, '#cfd6e0', jit=.03)   # 袖口
+    finish(box((hx, .8, 14.7), (1.7, 1.5, 1.5)), fg, SKIN, bevel=.25)                          # 拳頭
+    finish(box((hx, 1.7, 14.9), (1.7, .5, .9)), fg, '#e4b99a', bevel=.1)                       # 指節
+    finish(box((hx - sx*.9, 1.1, 15.2), (.6, .9, .8)), fg, SKIN, bevel=.12)                    # 拇指
 
 # 頭
 head_c = (0, .2, 27.4)

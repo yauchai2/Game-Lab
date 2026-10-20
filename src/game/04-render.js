@@ -66,29 +66,33 @@ function modelGroup(def, recolor, mf){   // 把 Blender 匯出的零件組成 th
   }
   return g;
 }
+const BONES = { hips:null, torso:'hips', head:'torso', tail:'torso', armL:'torso', foreL:'armL', armR:'torso', foreR:'armR', legL:'hips', shinL:'legL', legR:'hips', shinR:'legR' };
+function rigModel(def, recolor, mf){   // 依 BONES 的階層組成骨架：子骨骼的位置是相對父骨骼的轉軸
+  const b = {};
+  for (const k in BONES) b[k] = modelGroup(def[k], recolor, mf);
+  for (const k in BONES){ const par = BONES[k]; if (par){ b[k].position.set(...def[k].at.map((v, i) => v - def[par].at[i])); b[par].add(b[k]); } }
+  return b;
+}
 function buildHero(at, ar, wt, wr){
   const g = new T3.Group(), steel = ['#cfd6e0', '#bcd0f0', '#f4e3a8', '#f2b09a'][ar];
   const recolor = { '#e9edf6':['#e8eef5', '#9fb8e8', '#f2d27a', '#f09a8a'][ar], '#6f8f4a':at >= 1 ? '#7d8fb8' : '#6f8f4a', '#2b2552':at >= 2 ? '#3a3f8f' : '#2b2552' };
-  const body = modelGroup(HERO_MODEL.body, recolor); body.position.set(0, 0, 0); g.add(body);
-  const head = modelGroup(HERO_MODEL.head, recolor); head.scale.setScalar(1.65); head.position.y += 1.6; g.add(head); g.userData.head = head;
-  const armL = modelGroup(HERO_MODEL.armL, recolor); g.add(armL);
-  const armR = modelGroup(HERO_MODEL.armR, recolor); g.add(armR); g.userData.armR = armR;
-  const tail = modelGroup(HERO_MODEL.tail, recolor); g.add(tail); g.userData.tail = tail;
-  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 19.2, 0, g); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 16.2, 3.0, g); }
+  const B = rigModel(HERO_MODEL, recolor), head = B.head; g.add(B.hips); g.userData.B = B; g.userData.head = head;
+  head.scale.setScalar(1.65); head.position.y += .4;
+  if (at >= 1){ for (const sx of [-1, 1]) mk(ico(1.9, 1), m3(steel), sx*4.3, 7.4, 0, B.torso); mk(new T3.BoxGeometry(2.4, 3, .6), m3(steel), 0, 4.4, 3.0, B.torso); }
   if (at >= 2){   // 鴨舌帽
     mk(new T3.SphereGeometry(3.5, 9, 6, 0, Math.PI*2, 0, Math.PI*.5), m3(steel), 0, 1.0, -.2, head);
     mk(new T3.BoxGeometry(4.8, .35, 2.8), m3(steel), 0, 1.6, 3.6, head).rotation.x = .18;
   }
   eye(head, 3.25, -.42, -.02, 2.0, '#46c8f0', 'cool'); eye(head, 3.25, .42, -.02, 2.0, '#46c8f0', 'cool');
   const mo = new T3.Mesh(new T3.PlaneGeometry(.7, .13), basic('#7a3a4a')); mo.position.set(0, -1.25, 3.2); mo.rotation.x = -.25; head.add(mo);
-  const hand = new T3.Group(); hand.position.set(.6, -7.6, .8); armR.add(hand);
-  const sw = new T3.Group(); hand.add(sw); g.userData.sword = sw;
+  const hand = new T3.Group(); hand.position.set(.6, -4.5, .8); B.foreR.add(hand);
+  const sw = new T3.Group(); sw.rotation.x = 2.1; hand.add(sw); g.userData.sword = sw;
   const blade = [['#e8eef5', '#cfdcf0'], ['#b9d6ff', '#8fb6ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff6a3a']][wr], len = 8.2 + wt*1.5;
   mk(cylG(.35, .35, 2.8, 5), m3('#2b2552'), 0, 0, 0, sw); mk(new T3.BoxGeometry(2.2 + wt*.4, .45, .8), m3('#e8eef5'), 0, 1.5, 0, sw);
   mk(new T3.BoxGeometry(.8 + wt*.2, len, .3), m3(blade[0], { emissive:wr >= 2 ? blade[1] : '#000000', emissiveIntensity:wr >= 2 ? .35 : 0 }), 0, 1.8 + len/2, 0, sw);
   cone(sw, blade[0], 0, 1.8 + len + .9, 0, .5 + wt*.1, 1.8, 4);
   if (wr === 3) mk(ico(len*.6, 1), basic('#ff9a3c', .2), 0, len/2, 0, sw);
-  const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 11.4, 3.6, g); orb.visible = false; g.userData.orb = orb;
+  const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 13, 5.5, g); orb.visible = false; g.userData.orb = orb;
   g.scale.setScalar(.85); g.rotation.order = 'YXZ'; addShadow(g, 5.5);
   return g;
 }
@@ -274,18 +278,30 @@ function monLook(m, g){
   if (m.dead){ const u = Math.min(1, m.deadT/.4); g.scale.setScalar(Math.max(.01, base*(1 - u*.4))); g.rotation.x = -1.3*u; g.position.y += Math.sin(u*Math.PI)*6; for (const mt of ps.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u); } if (ps.sh) ps.sh.visible = false; }
   else if (m.frozen > 0) flash(g, '#9fe0ff', .55); else if (m.hurtT > 0) flash(g, '#ffffff', .7); else flash(g, '#000000', 0);
 }
+/* 骨架動作：每個姿勢是 {骨骼: [x, y, z 旋轉（弧度）]}。手臂與腿的 x 為負 = 向前；小腿 x 為正 = 膝蓋彎曲。 */
+const POSE_IDLE = { hips:[0, 0, 0], torso:[.04, 0, 0], head:[0, 0, 0], tail:[0, 0, 0], armL:[.15, 0, -.12], foreL:[-.3, 0, 0], armR:[-.3, 0, .1], foreR:[-1, 0, 0], legL:[.1, 0, 0], shinL:[.15, 0, 0], legR:[-.15, 0, 0], shinR:[.2, 0, 0] };
+const POSE_WIND = { hips:[0, .7, 0], torso:[-.35, .7, -.1], head:[-.2, -.3, 0], tail:[.5, 0, 0], armL:[.7, 0, -.7], foreL:[-.6, 0, 0], armR:[-2.7, 0, .3], foreR:[-.5, 0, 0], legL:[.5, 0, 0], shinL:[.6, 0, 0], legR:[-.4, 0, 0], shinR:[.5, 0, 0] };
+const POSE_HIT = { hips:[.1, -.6, 0], torso:[.6, -.9, .1], head:[.3, .5, 0], tail:[-.9, 0, 0], armL:[-1.2, 0, -.9], foreL:[-.7, 0, 0], armR:[-.5, 0, .1], foreR:[-.25, 0, 0], legL:[-.9, 0, 0], shinL:[.3, 0, 0], legR:[.7, 0, 0], shinR:[.9, 0, 0] };
+const POSE_HURT = { hips:[-.2, 0, 0], torso:[-.5, .2, .1], head:[-.5, 0, .2], tail:[.8, 0, 0], armL:[-.6, 0, -1], foreL:[-.4, 0, 0], armR:[-1.1, 0, 1], foreR:[-.6, 0, 0], legL:[-.2, 0, 0], shinL:[.5, 0, 0], legR:[.3, 0, 0], shinR:[.6, 0, 0] };
+const POSE_CAST = { hips:[0, 0, 0], torso:[-.2, 0, 0], head:[-.4, 0, 0], tail:[.3, 0, 0], armL:[-2.3, 0, -.4], foreL:[-.3, 0, 0], armR:[-2.3, 0, .4], foreR:[-.3, 0, 0], legL:[.2, 0, 0], shinL:[.3, 0, 0], legR:[-.2, 0, 0], shinR:[.3, 0, 0] };
+const poseMix = (A, B, u, out = {}) => { for (const k in A){ const a = A[k], b = B[k]; out[k] = [a[0] + (b[0] - a[0])*u, a[1] + (b[1] - a[1])*u, a[2] + (b[2] - a[2])*u]; } return out; };
+function applyPose(B, pose, k){   // k：向目標姿勢靠近的速度，讓切換有緩衝
+  for (const n in pose){ const r = B[n].rotation, p = pose[n]; r.x += (p[0] - r.x)*k; r.y += (p[1] - r.y)*k; r.z += (p[2] - r.z)*k; }
+}
 function heroLook(g){
-  const h = G.h, t = G.time, ps = g.userData, sw = h.swingT >= 0 ? tClamp(h.swingT/.3) : -1, SC = .85;
-  const wind = sw >= 0 && sw < .25 ? sw/.25 : 0, hit = sw >= .25 ? ease((sw - .25)/.75) : 0;   // 蓄力後仰，再猛力前劈
-  const lean = h.hurtT > 0 ? -.4 : sw < 0 ? Math.sin(t*2)*.05 : tLerp(-.3*wind, .6, hit);
-  ps.lean = (ps.lean || 0) + (lean - (ps.lean || 0))*.45;
-  const hop = sw >= 0 ? Math.sin(Math.PI*sw)*3.5 : Math.max(0, Math.sin(t*3)*.6);
-  at3(g, HX + (h.hurtT > 0 ? Math.sin(t*90)*.8 : 0), HY, BZ + hop);
-  g.rotation.x = ps.lean; g.rotation.y = 50*D2R - (sw >= 0 ? hit*.7 - wind*.3 : 0);
-  const st = 1 + (sw >= 0 ? .14*Math.sin(Math.PI*sw) : .025*Math.sin(t*4)); g.scale.set(SC/Math.sqrt(st), SC*st, SC/Math.sqrt(st));
-  const a = sw < 0 ? 72 + Math.sin(t*3)*5 : sw < .25 ? tLerp(72, 160, wind) : tLerp(160, -55, hit);
-  ps.armR.rotation.x = (90 - a)*D2R*.9 + 1.2; ps.sword.rotation.x = (90 - a)*D2R*.4 + .1;
-  ps.tail.rotation.x = Math.sin(t*3.5)*.3 + (sw >= 0 ? -hit*.8 : 0); ps.head.rotation.z = Math.sin(t*1.5)*.05 + (h.hurtT > 0 ? -.3 : 0);
+  const h = G.h, t = G.time, ps = g.userData, B = ps.B, sw = h.swingT >= 0 ? tClamp(h.swingT/.3) : -1, SC = .85;
+  let pose, k = .5, hop = 0, st = 1;
+  if (sw >= 0){   // 蓄力（0 到 .3）、劈砍（.3 到 .55）、停頓後收招
+    if (sw < .3) pose = poseMix(POSE_IDLE, POSE_WIND, ease(sw/.3));
+    else if (sw < .55) pose = poseMix(POSE_WIND, POSE_HIT, ease((sw - .3)/.25)), k = .8;
+    else pose = POSE_HIT;
+    hop = Math.sin(Math.PI*sw)*3.2; st = 1 + .16*Math.sin(Math.PI*Math.min(1, sw*1.4));
+  } else if (h.hurtT > 0){ pose = POSE_HURT; k = .7; }
+  else if (h.castT >= 0){ pose = poseMix(POSE_IDLE, POSE_CAST, ease(tClamp(h.castT/.25))); }
+  else { pose = poseMix(POSE_IDLE, POSE_IDLE, 0); pose.torso = [.04 + Math.sin(t*3)*.04, Math.sin(t*1.5)*.08, 0]; pose.armL = [.15 + Math.sin(t*3)*.12, 0, -.12]; pose.head = [Math.sin(t*3 + 1)*.05, Math.sin(t*1.5)*.1, 0]; pose.tail = [Math.sin(t*3.5)*.4, 0, 0]; pose.foreR = [-1 + Math.sin(t*3)*.08, 0, 0]; st = 1 + .025*Math.sin(t*3); hop = Math.max(0, Math.sin(t*3)*.5); }
+  applyPose(B, pose, k);
+  at3(g, HX + (h.hurtT > 0 ? Math.sin(t*90)*.8 : 0), HY, BZ + hop); g.rotation.y = 50*D2R; g.rotation.x = 0;
+  g.scale.set(SC/Math.sqrt(st), SC*st, SC/Math.sqrt(st));
   if (h.castT >= 0){ const u = ease(tClamp(h.castT/.25)); ps.orb.visible = true; ps.orb.material.color.set((SKILLS[h.castSk] || SKILLS.FIRE).col); ps.orb.scale.setScalar(Math.max(.01, u)); } else ps.orb.visible = false;
 }
 
