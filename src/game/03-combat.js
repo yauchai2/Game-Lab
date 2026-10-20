@@ -62,12 +62,12 @@ function pickup(d){
   if (d.kind === 'cart'){ G.carts[d.id] = (G.carts[d.id] || 0) + 1; logLine(`獲得卡匣：${G.seen[d.id] ? MODES[d.id].n : '未鑑定的' + SKILLS[MODES[d.id].sk].n + '卡匣'}`, '#1f9bbf'); G.dirty = true; return; }
   if (d.kind === 'map'){ if (G.maps.length < 15) { G.maps.push(d.map); logLine(`獲得地圖：${BIOMES[d.map.biome].n} Lv. ${d.map.lvl}`, '#2f7fc4'); if (G.off) G.off.maps++; } else G.gold += 30*d.map.lvl; G.dirty = true; return; }
   const it = d.it, rc = RAR[it.r].c;
-  if (it.r < G.filter){ G.gold += itemValue(it); return; }
+  if (it.r < G.filter){ G.gold += itemValue(it); salvage(it); return; }
   const cur = G.equip[it.slot], cand = calc({ ...G.equip, [it.slot]:it });
   if (!cur || cand.power > G.st.power * 1.02){
-    if (cur) G.gold += itemValue(cur);
+    if (cur){ G.gold += itemValue(cur); salvage(cur); }
     G.equip[it.slot] = it; recalc(); logLine(`裝備 ${it.name}`, rc); addFloat(G.h.x + 3, G.h.y, BZ + 22, '升級！', rc, 3.8); SFX(it.r >= 2 ? 'rare' : 'pick'); if (G.off) G.off.eq++;
-  } else { G.gold += itemValue(it); if (it.r >= 2) logLine(`賣掉 ${it.name}（沒有更強）`, '#9a93a6'); }
+  } else { G.gold += itemValue(it); salvage(it); if (it.r >= 2) logLine(`賣掉 ${it.name}（沒有更強）`, '#9a93a6'); }
 }
 function reroll(slot){
   const it = G.equip[slot]; if (!it) return; const cost = 30 * it.il + 20;
