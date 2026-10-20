@@ -239,7 +239,7 @@ function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.fl
 function catchUp(sec, report){
   if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
   const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths };
-  G.off = { lvls:0, eq:0, maps:0, gems:0, cards:[] }; G.offline = true; G.paused = true; G.floats = []; G.fx = [];
+  G.off = { lvls:0, eq:0, maps:0, gems:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   let left = sec; const total = sec;
   if (report) showOverlay(`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
