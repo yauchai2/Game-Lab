@@ -77,8 +77,9 @@ for v in back.verts:
     if v.co.z < 22: v.co.z += random.choice((-1.1, 0.0, .5, -.6))
 finish(back, 'head', HAIR, jit=.08)
 cap = ico((0, -.2, 27.9), 3.65, (1, 1.02, 1), sub=2)
-for v in list(cap.verts):
-    if v.co.z < 27.0: v.co.z = 27.0 + (v.co.z - 27.0)*.1
+for v in list(cap.verts):   # 前面（瀏海）下緣抬到眼睛上方，兩側與後面才垂到耳朵高度，眼睛不被頭髮蓋住
+    lim = 28.7 if v.co.y > .4 else 26.4
+    if v.co.z < lim: v.co.z = lim + (v.co.z - lim)*.1
 finish(cap, 'head', HAIR, jit=.04)
 for sx in (-1, 1):
     finish(box((sx*3.35, .6, 25.6), (1.1, 1.7, 5.6), rz=sx*.12), 'head', HAIR, bevel=.18)

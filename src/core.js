@@ -266,7 +266,7 @@ const filterFor = k => `<filter id="hand" x="-3%" y="-3%" width="106%" height="1
      params(st, q){}               // optional: read URLSearchParams for screenshot states
    })  -> ui = { st, render, animate(stepFn), flash(text,ms) }
    animate(step): calls step(dt seconds) every frame and re-renders until step returns false. */
-addEventListener('error', e => { document.documentElement.dataset.errors = (document.documentElement.dataset.errors || '') + ' ' + e.message + ';'; });
+addEventListener('error', e => { document.documentElement.dataset.errors = (document.documentElement.dataset.errors || '') + ' ' + e.message + ' @' + ((e.error && e.error.stack) || '').split('\n').slice(1, 4).join('|') + ';'; });
 function mountFigure(cfg){
   document.title = cfg.title;
   const style = document.createElement('style'); style.textContent = CORE_CSS; document.head.appendChild(style);
