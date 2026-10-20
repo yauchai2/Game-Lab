@@ -91,33 +91,23 @@ function buildHero(at, ar, wt, wr){
   const hand = new T3.Group(); hand.position.set(.6, -4.5, .8); B.foreR.add(hand);
   const sw = new T3.Group(); sw.rotation.x = 2.1; hand.add(sw); g.userData.sword = sw;
   buildWeapon(sw, wt, wr);
+  mk(new T3.RingGeometry(9, 11, 28).rotateX(-Math.PI/2), basic('#7ef0ff', .85), 0, .35, 0, g); mk(new T3.CircleGeometry(9, 24).rotateX(-Math.PI/2), basic('#7ef0ff', .18), 0, .3, 0, g);   /* 腳下的青色光圈，人多時一眼找到主角 */
   const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 13, 5.5, g); orb.visible = false; g.userData.orb = orb;
   g.scale.setScalar(.85*CK); g.rotation.order = 'YXZ'; addShadow(g, 5.5);
   return g;
 }
 // Y2K 城市武器（依武器階級）：0 摺疊傘、1 鋁製球棒、2 霓虹光管、3 雷射光劍；稀有度決定主色與發光
 const WOV = new URLSearchParams(location.search);   // 測試用：?wt=0..3&wr=0..3 直接指定武器外觀
-function buildWeapon(sw, wt, wr){
+function buildWeapon(sw, wt, wr){   // 模型來自 Blender（tools/model/gen_weapons.py）；這裡只負責依稀有度換色與發光
   const C = [['#e8eef5', '#cfdcf0'], ['#8fd0ff', '#4aa8ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff5a8a']][wr], glow = wr >= 2;
   const lit = (c, k = .5) => m3(c, { emissive:c, emissiveIntensity:k });
-  if (wt === 0){   // 摺疊傘：J 形手柄、細傘桿、收起的傘面
-    mk(new T3.TorusGeometry(.9, .28, 4, 8, Math.PI), m3('#2b2552'), .9, -1.2, 0, sw).rotation.z = Math.PI;
-    mk(cylG(.28, .28, 3.2, 5), m3('#2b2552'), 0, .4, 0, sw); mk(cylG(.12, .12, 9.5, 4), m3('#cfd6e0'), 0, 6, 0, sw);
-    mk(cylG(.25, 1.1, 6.5, 8), glow ? lit(C[1], .3) : m3(C[1]), 0, 6.6, 0, sw); for (let i = 0; i < 4; i++) mk(new T3.BoxGeometry(.08, 6, .08), m3('#ffffff'), Math.cos(i*1.57)*.7, 6.4, Math.sin(i*1.57)*.7, sw).rotation.z = Math.cos(i*1.57)*.12;
-    cone(sw, '#cfd6e0', 0, 10.5, 0, .2, 1.2, 4);
-  } else if (wt === 1){   // 鋁製球棒：握把纏膠布，往前變粗
-    mk(cylG(.45, .45, .4, 7), m3('#2b2552'), 0, -1.6, 0, sw); mk(cylG(.38, .38, 3.2, 7), m3('#2b2552'), 0, 0, 0, sw);
-    mk(cylG(1.0, .42, 8.5, 8), glow ? lit(C[0], .3) : m3(C[0]), 0, 5.8, 0, sw); mk(cylG(.85, 1.0, .5, 8), m3('#2b2552'), 0, 10.3, 0, sw);
-    mk(cylG(1.03, 1.03, .7, 8), m3('#ff6aa8'), 0, 7.5, 0, sw);
-  } else if (wt === 2){   // 霓虹光管：黑握把、兩端金屬頭、整支發光
-    mk(cylG(.5, .5, 3, 6), m3('#2b2552'), 0, 0, 0, sw); mk(cylG(.62, .62, .6, 6), m3('#cfd6e0'), 0, 1.7, 0, sw);
-    mk(cylG(.45, .45, 9.5, 6), lit(C[1], .9), 0, 6.8, 0, sw); mk(cylG(.62, .62, .6, 6), m3('#cfd6e0'), 0, 11.8, 0, sw);
-    mk(cylG(1.1, 1.1, 9.5, 6), basic(C[0], .25), 0, 6.8, 0, sw);
-  } else {   // 雷射光劍：銀色劍柄加按鈕，光刃外圈有光暈
-    mk(cylG(.55, .5, 3.4, 8), m3('#e8eef5'), 0, 0, 0, sw); for (const y of [-.8, .2]) mk(new T3.BoxGeometry(.5, .35, .3), m3('#ff6aa8'), 0, y, .55, sw);
-    mk(cylG(.7, .7, .4, 8), m3('#2b2552'), 0, 1.8, 0, sw);
-    mk(cylG(.4, .5, 11, 8), lit('#ffffff', .8), 0, 7.6, 0, sw); mk(cylG(.9, 1.0, 11.5, 8), basic(C[1], .45), 0, 7.6, 0, sw);
-  }
+  const mf = hex => {
+    if (wt === 2) return hex === C[1] ? lit(C[1], .9) : hex === C[0] ? basic(C[0], .25) : m3(hex);
+    if (wt === 3) return hex === C[1] ? basic(C[1], .45) : hex === '#ffffff' ? lit('#ffffff', .8) : m3(hex);
+    if (glow && ((wt === 0 && hex === C[1]) || (wt === 1 && hex === C[0]))) return lit(hex, .3);
+    return m3(hex);
+  };
+  sw.add(modelGroup(WEAPON_MODEL['w' + wt], { '#c0':C[0], '#c1':C[1], '#g0':C[1] }, mf));
   if (wr === 3) mk(ico(5, 1), basic('#ff9a3c', .15), 0, 6, 0, sw);
 }
 function buildGrave(){
@@ -207,8 +197,8 @@ function buildSign(){
 }
 
 /* ---------- 地面、傳送池 ---------- */
-const CK = .62;   // 角色整體縮放：浮島變大後人物相對縮小
-const ISL = [-36, 66, -18, 90];   // 浮島範圍（x0, x1, y0, y1）：比戰場大很多，台階、樹林、小河都在島上
+const CK = .52;   // 角色整體縮放：浮島變大後人物相對縮小
+const ISL = [-50, 80, -29, 101];   // 浮島範圍（x0, x1, y0, y1）：比戰場大很多，台階、樹林、小河都在島上
 function treeAt(g, bi, x, y, z, k){   // 依生態放一棵低面數樹：森林圓冠樹、沙漠椰子樹、雪原雪松、熔岩水晶
   const t = new T3.Group(); t.position.set(x, y, z); t.scale.setScalar(k); t.rotation.y = aRnd(x*7 + z)*6; g.add(t);
   if (bi === 0){ mk(cylG(.9, 1.3, 6, 6), m3('#a8785a'), 0, 3, 0, t); for (const [cx, cy, cz, r, c] of [[0, 8.6, 0, 4.2, '#5fbf7a'], [2.2, 7.2, 1.2, 3, '#79d18e'], [-1.8, 10.4, -.6, 2.8, '#8fe0a0']]) mk(ico(r, 0), m3(c), cx, cy, cz, t); }
@@ -243,7 +233,7 @@ function buildGround(bi){
   mk(new T3.RingGeometry(9.6, 10.6, 28).rotateX(-Math.PI/2), basic(['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]), HX, BZ + .42, HY, g); mk(new T3.RingGeometry(4.2, 4.8, 24).rotateX(-Math.PI/2), basic(B.glow, .8), HX, BZ + .43, HY, g);
   // 高低台階：離步道越遠越高，一格 6×6，頂面是草（或沙、雪），側面是土
   const top = m3(B.t1), side = m3(B.board.d), lip = m3(B.t2), ub = geo('ubox', () => new T3.BoxGeometry(1, 1, 1)), C = 6;
-  const hAt = (i, j) => { const x = i*C + C/2, y = j*C + C/2, dx = x - HX, dy = y - HY, d = Math.hypot(dx, dy); if (d < 40 || Math.abs(dx) < 9 || Math.abs(dy) < 9) return 0; const front = dx > 0 && dy > 0, h = Math.floor((d - 40)/9 + aRnd(i*31 + j*17)*1.4)*3 + 3; return Math.min(front ? 3 : 6, h); };   // 中央是平地戰場，四個角落是高台；鏡頭在右前方，所以前方那個角落壓低
+  const hAt = (i, j) => { const x = i*C + C/2, y = j*C + C/2, dx = x - HX, dy = y - HY, d = Math.hypot(dx, dy); if (d < 56 || Math.abs(dx) < 9 || Math.abs(dy) < 9) return 0; const front = dx > 0 && dy > 0, h = Math.floor((d - 56)/10 + aRnd(i*31 + j*17)*1.4)*3 + 3; return Math.min(front ? 3 : 6, h); };   // 中央是平地戰場，四個角落是高台；鏡頭在右前方，所以前方那個角落壓低
   const tops = [];
   for (let i = X0/C; i < X1/C; i++) for (let j = Y0/C; j < Y1/C; j++){
     const h = hAt(i, j); if (!h) continue; const x = i*C + C/2, z = j*C + C/2;
@@ -253,7 +243,7 @@ function buildGround(bi){
   }
   // 四個出口：南、西、東各一座發光拱門，北邊是守關者的傳送門
   const arch = (x, y, rot) => { const a = new T3.Group(); a.position.set(x, BZ, y); a.rotation.y = rot; g.add(a); for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.8, 11, 1.8), m3('#d6d0ea'), sx*6.5, 5.5, 0, a); mk(new T3.BoxGeometry(15, 1.8, 2.2), m3('#d6d0ea'), 0, 11.2, 0, a); mk(new T3.BoxGeometry(11, .7, .5), basic(B.glow), 0, 11.2, 1.2, a); mk(new T3.BoxGeometry(11, .7, .5), basic(B.glow), 0, 11.2, -1.2, a); };
-  arch(15, Y1 - 8, 0); arch(X0 + 8, HY, Math.PI/2); arch(X1 - 8, HY, Math.PI/2);
+  
   const wx = -999;
   // 樹、樹樁、石頭、花：放在台階頂面與平地邊緣
   tops.forEach(([x, y, z, i, j], n) => {
@@ -290,18 +280,17 @@ function bake(g){   // 把靜態場景依材質合併成少數幾個網格，上
   return out;
 }
 const stoneM = () => m3('#d6d0ea');
-function buildPortal(){
-  const g = new T3.Group(), [sx, sy] = SPAWN, B = BIOMES[biomeNow()]; at3(g, sx, sy, BZ);
-  mk(cylG(7, 7.4, 1.3, 9), stoneM(), 0, .65, 0, g);
-  mk(new T3.CircleGeometry(5.2, 14).rotateX(-Math.PI/2), basic(B.portal), 0, 1.35, 0, g);
-  const glow = mk(new T3.CircleGeometry(3.2, 12).rotateX(-Math.PI/2), basic(B.glow), 0, 1.4, 0, g);
-  const rings = []; for (let i = 0; i < 3; i++){ const r = mk(new T3.TorusGeometry(3.8, .16, 4, 8, 1.2), basic('#ffffff'), 0, 1.5, 0, g); r.rotation.x = Math.PI/2; rings.push(r); }
-  [[-1, 0, 7.6], [0, -1, 6.4], [-.7, .7, 6.8], [1, 0, 7.4], [.7, -.7, 6.2]].forEach(([dx, dy, h]) => {
-    const st = new T3.Group(); st.position.set(dx*8.4, 0, dy*8.4); g.add(st);
-    mk(new T3.BoxGeometry(1.9, h, 1.9), stoneM(), 0, h/2, 0, st); mk(new T3.BoxGeometry(2.5, .8, 2.5), stoneM(), 0, h + .4, 0, st);
-    const rune = mk(new T3.PlaneGeometry(.8, 2.2), basic(B.glow), (dx > 0 ? -1 : 1)*.97, h*.5, 0, st); rune.rotation.y = (dx > 0 ? -1 : 1)*Math.PI/2;   // 符文面向傳送池
+function buildPortal(){   // 八道「裂縫」：發光的地面裂口，小怪從這裡鑽出來（守關者則從天上掉下來）
+  const g = new T3.Group(), B = BIOMES[biomeNow()], glows = [], rings = [];
+  RIFTS.forEach(([sx, sy], k) => {
+    const r = new T3.Group(); r.position.set(sx, BZ, sy); g.add(r);
+    mk(cylG(7.5, 8, .5, 10), stoneM(), 0, .25, 0, r);
+    mk(new T3.CircleGeometry(6, 12).rotateX(-Math.PI/2), basic(B.portal), 0, .6, 0, r);
+    const glow = mk(new T3.CircleGeometry(3.6, 10).rotateX(-Math.PI/2), basic(B.glow), 0, .7, 0, r); glows.push(glow);
+    for (let i = 0; i < 2; i++){ const t = mk(new T3.TorusGeometry(4.6, .2, 4, 8, 1.3), basic('#ffffff'), 0, .8, 0, r); t.rotation.x = Math.PI/2; rings.push(t); }
+    for (let i = 0; i < 5; i++){ const a = i*1.26 + k, c = mk(new T3.BoxGeometry(1.1, .3, 5 + (i%2)*2.5), basic('#2b2552'), Math.cos(a)*7.5, .35, Math.sin(a)*7.5, r); c.rotation.y = -a; }   /* 放射狀裂紋 */
   });
-  g.userData = { glow, rings }; return g;
+  g.userData = { glows, rings }; return g;
 }
 
 /* ---------- 掉落物 ---------- */
@@ -343,7 +332,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   for (const x of [ISL[0], ISL[1]]) for (const y of [ISL[2], ISL[3]]) for (const z of [BZ - 14, BZ + 14]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
   let bw = x1 - x0, bh = y1 - y0, ar = W/H, cx = (x0 + x1)/2, cy = (y0 + y1)/2 - bh*.03;   // 整座浮島放進畫框，留一點天空
   let vw = bw*(ptv ? .8 : 1.03), vh = bh*(ptv ? .84 : 1.05); if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;   // 手機直式拉近、裁掉島的左右，裁切處用 CSS 淡出
-  if (WOV.has('zoom')){ const z = +WOV.get('zoom'), p = new T3.Vector3(HX, BZ + 10, HY).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; cx = p.x; cy = p.y; }   // 測試用：?zoom=6 把鏡頭拉近到主角
+  if (WOV.has('zoom')){ const z = +WOV.get('zoom'), p = new T3.Vector3(G.h.x, BZ + 10, G.h.y).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; cx = p.x; cy = p.y; }   // 測試用：?zoom=6 把鏡頭拉近到主角
   cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2; cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
   const vb = fig.viewBox.baseVal; R3.vbW = vb.width; R3.vbH = vb.height;
 }
@@ -357,8 +346,8 @@ const MPOSE_ATK = { hips:[.25, 0, 0], torso:[.65, 0, 0], head:[.35, 0, 0], armL:
 const MPOSE_HURT = { hips:[-.2, 0, 0], torso:[-.55, .2, .1], head:[-.55, 0, .25], armL:[-.7, 0, -1.1], foreL:[-.4, 0, 0], armR:[-1.1, 0, 1.1], foreR:[-.5, 0, 0], legL:[-.3, 0, 0], shinL:[.5, 0, 0], legR:[.3, 0, 0], shinR:[.6, 0, 0] };
 const MPOSE_TMP = {};
 function monLook(m, g){
-  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, dl = Math.hypot(HX - m.x, HY - m.y) || 1, y = m.y + 3*lg*(HY - m.y)/dl, lx = m.x + 3*lg*(HX - m.x)/dl, ps = g.userData, base = (ps.s || 1)*CK;
-  at3(g, lx, y, BZ); g.rotation.y = Math.atan2(HX - m.x, HY - m.y);   // 面向主角
+  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, dl = Math.hypot(G.h.x - m.x, G.h.y - m.y) || 1, y = m.y + 3*lg*(G.h.y - m.y)/dl, lx = m.x + 3*lg*(G.h.x - m.x)/dl, ps = g.userData, base = (ps.s || 1)*CK;
+  at3(g, lx, y, BZ + (m.fall > 0 ? 70*Math.pow(m.fall/.9, 2) : 0)); g.rotation.y = Math.atan2(G.h.x - m.x, G.h.y - m.y);   // 面向主角
   if (m.type === 'slime'){ g.scale.setScalar(base); const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
   else {
     const B = ps.B, w = Math.sin(t*9), f = Math.sin(t*3), big = m.type === 'brute' || m.type === 'boss';
@@ -399,7 +388,9 @@ function heroLook(g){
   else if (h.castT >= 0){ pose = poseMix(POSE_IDLE, POSE_CAST, ease(tClamp(h.castT/.25))); }
   else { pose = poseMix(POSE_IDLE, POSE_IDLE, 0); pose.torso = [.04 + Math.sin(t*3)*.04, Math.sin(t*1.5)*.08, 0]; pose.armL = [.15 + Math.sin(t*3)*.12, 0, -.12]; pose.head = [Math.sin(t*3 + 1)*.05, Math.sin(t*1.5)*.1, 0]; pose.tail = [Math.sin(t*3.5)*.4, 0, 0]; pose.foreR = [-1 + Math.sin(t*3)*.08, 0, 0]; st = 1 + .025*Math.sin(t*3); hop = Math.max(0, Math.sin(t*3)*.5); }
   applyPose(B, pose, k);
-  at3(g, HX + (h.hurtT > 0 ? Math.sin(t*90)*.8 : 0), HY, BZ + hop); { const tg = nearestMon(false); if (tg) ps.face = Math.atan2(tg.x - HX, tg.y - HY); let d = (ps.face ?? Math.PI) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d*.25; }   // 轉身面向最近的怪 g.rotation.x = 0;
+  if (h.mv > 1){ const wv = Math.sin(t*14)*.9*Math.min(1, h.mv/12); pose.legL = [-wv, 0, 0]; pose.legR = [wv, 0, 0]; pose.shinL = [.2 + Math.max(0, wv)*.9, 0, 0]; pose.shinR = [.2 + Math.max(0, -wv)*.9, 0, 0]; hop += Math.abs(wv)*.9; applyPose(B, pose, k); }   /* 走路：腿擺動，招式動作保留在上半身 */
+  const dd = h.dash ? Math.sin(Math.PI*h.dash.t/.3)*7 : 0;
+  at3(g, h.x + (h.dash ? Math.cos(h.dash.a)*dd : 0) + (h.hurtT > 0 ? Math.sin(t*90)*.8 : 0), h.y + (h.dash ? Math.sin(h.dash.a)*dd : 0), BZ + hop); { const tg = nearestMon(false); if (tg) ps.face = Math.atan2(tg.x - h.x, tg.y - h.y); let d = (ps.face ?? (WOV.has('face') ? +WOV.get('face') : Math.PI)) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d*.25; }   // 轉身面向最近的怪 g.rotation.x = 0;
   g.scale.set(SC/Math.sqrt(st), SC*st, SC/Math.sqrt(st));
   if (h.castT >= 0){ const u = ease(tClamp(h.castT/.25)); ps.orb.visible = true; ps.orb.material.color.set((SKILLS[h.castSk] || SKILLS.FIRE).col); ps.orb.scale.setScalar(Math.max(.01, u)); } else ps.orb.visible = false;
 }
@@ -411,8 +402,8 @@ function updateFx(){
   for (const e of G.fx){
     if (e.k === 'boom'){ const R = tLerp(2, e.big ? 16 : 9, ease(e.t)); add(sph, basic('#ff9a3c', (1 - e.t)*.8), e.x, e.y, e.z, R); add(sph, basic('#ffe08a', 1 - e.t), e.x, e.y, e.z, R*.55); }
     if (e.k === 'slash'){ const R = tLerp(3, 7, e.t); for (let i = 0; i < 5; i++){ const a = i*1.2566 + .4, o = add(geo('fxb', () => new T3.BoxGeometry(1, .22, .22)), basic('#ffffff', 1 - e.t), e.x + 2 + Math.cos(a)*R*.7, e.y, e.z + Math.sin(a)*R*.7, R*.5); o.rotation.z = a; } }
-    if (e.k === 'nova'){ const r = tLerp(3, 46, ease(e.t)), o = add(geo('fxr', () => new T3.RingGeometry(.88, 1, 36).rotateX(-Math.PI/2)), basic('#9fe0ff', (1 - e.t)*.7), HX, HY, BZ + .6, r); o.material.side = T3.DoubleSide; add(disc, basic('#9fe0ff', (1 - e.t)*.25), HX, HY, BZ + .5, r);
-      for (let i = 0; i < 14; i++){ const aa = i*.449 + e.t*2, o2 = add(geo('fxf', () => new T3.BoxGeometry(1.2, .25, 1.2)), basic('#ffffff', 1 - e.t), HX + Math.cos(aa)*r*.9, HY + Math.sin(aa)*r*.9, BZ + 2 + (i % 3)*1.5); o2.rotation.y = aa; }   // 冷氣吹出的雪花片
+    if (e.k === 'nova'){ const r = tLerp(3, 46, ease(e.t)), o = add(geo('fxr', () => new T3.RingGeometry(.88, 1, 36).rotateX(-Math.PI/2)), basic('#9fe0ff', (1 - e.t)*.7), G.h.x, G.h.y, BZ + .6, r); o.material.side = T3.DoubleSide; add(disc, basic('#9fe0ff', (1 - e.t)*.25), G.h.x, G.h.y, BZ + .5, r);
+      for (let i = 0; i < 14; i++){ const aa = i*.449 + e.t*2, o2 = add(geo('fxf', () => new T3.BoxGeometry(1.2, .25, 1.2)), basic('#ffffff', 1 - e.t), G.h.x + Math.cos(aa)*r*.9, G.h.y + Math.sin(aa)*r*.9, BZ + 2 + (i % 3)*1.5); o2.rotation.y = aa; }   // 冷氣吹出的雪花片
     }
     if (e.k === 'bolt'){ const pts = []; e.pts.forEach((p, i) => { if (i) pts.push([(e.pts[i-1][0] + p[0])/2 + aRnd(i + e.t*9)*4 - 2, (e.pts[i-1][1] + p[1])/2 + aRnd(i*3 + e.t*7)*4 - 2, (e.pts[i-1][2] + p[2])/2 + 2]); pts.push(p); });
       for (let i = 1; i < pts.length; i++){ const a = pts[i-1], b = pts[i], len = Math.hypot(b[0]-a[0], b[1]-a[1], b[2]-a[2]), o = add(geo('fxc', () => new T3.CylinderGeometry(.5, .5, 1, 4)), basic('#ff3a5a', 1 - e.t), (a[0]+b[0])/2, (a[1]+b[1])/2, (a[2]+b[2])/2); o.scale.set(1, len, 1); o.quaternion.setFromUnitVectors(new T3.Vector3(0, 1, 0), new T3.Vector3(b[0]-a[0], b[2]-a[2], b[1]-a[1]).normalize()); } }
@@ -424,7 +415,7 @@ function updateFx(){
       mk(geo('satB', () => new T3.BoxGeometry(3, 3, 3)), m3('#ffd35a', { emissive:'#ff9a3c', emissiveIntensity:.3 }), 0, 0, 0, sat);
       for (const sx of [-1, 1]){ mk(geo('satP', () => new T3.BoxGeometry(5, .25, 2.6)), m3('#3a5fd0'), sx*4.4, 0, 0, sat); mk(geo('satR', () => new T3.BoxGeometry(1.4, .3, .3)), m3('#cfd6e0'), sx*2.1, 0, 0, sat); }
       mk(geo('satD', () => new T3.ConeGeometry(1.6, 1, 10, 1, true)), m3('#ffffff'), 0, 2.1, 0, sat); continue; }
-    if (p.t < 0 || !p.tg) continue; const u = tClamp(p.t), a = [HX + 3.4, HY - 3.6, BZ + 9.2*CK], b = [p.tg.x, p.tg.y, BZ + 6*CK], at = uu => [tLerp(a[0], b[0], uu), tLerp(a[1], b[1], uu), tLerp(a[2], b[2], uu) + Math.sin(uu*Math.PI)*5];
+    if (p.t < 0 || !p.tg) continue; const u = tClamp(p.t), a = [G.h.x + 3.4, G.h.y - 3.6, BZ + 9.2*CK], b = [p.tg.x, p.tg.y, BZ + 6*CK], at = uu => [tLerp(a[0], b[0], uu), tLerp(a[1], b[1], uu), tLerp(a[2], b[2], uu) + Math.sin(uu*Math.PI)*5];
     for (let k = 3; k >= 1; k--){ const q = at(Math.max(0, u - k*.06)); add(sph, basic(k % 2 ? '#ffe08a' : '#ff9a3c', .55 - k*.12), q[0], q[1], q[2], .9 - k*.15); }   // 火花拖尾
     const q = at(u), bat = new T3.Group(); bat.position.set(q[0], q[2], q[1]); bat.rotation.set(u*14, 0, u*9); fx.add(bat);   // 過熱電池：深色筒身、橘色電量條、銀色正極
     mk(geo('batB', () => cylG(1, 1, 3, 8)), m3('#2b2552'), 0, 0, 0, bat); mk(geo('batS', () => cylG(1.04, 1.04, 1, 8)), m3('#ff7a2a', { emissive:'#ff7a2a', emissiveIntensity:.6 }), 0, .4, 0, bat); mk(geo('batT', () => cylG(.4, .4, .5, 6)), m3('#e8eef5'), 0, 1.75, 0, bat);
@@ -434,7 +425,7 @@ function updateFx(){
 function overlay(){
   const k = pxu(); let s = '';
   const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z), W2 = w*k*.8, H2 = 1.5*k; return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
-  if (G.h.dead <= 0) s += bar(HX, HY, BZ + 36*CK, 9, G.h.hp/G.st.life, '#ff6a8a');
+  if (G.h.dead <= 0) s += bar(G.h.x, G.h.y, BZ + 36*CK, 9, G.h.hp/G.st.life, '#ff6a8a');
   for (const m of G.mons) if (!m.dead) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 40 : m.type === 'brute' ? 32 : 28)*CK, 8, m.hp/m.hpMax, '#ff6a8a');
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + fl.t*9);
     s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" font-size="${(fl.size*1.5*k*.62).toFixed(1)}" fill="${fl.col}" style="stroke:#f2f7ff;stroke-width:${(1.8*k*.5).toFixed(1)}px;paint-order:stroke" font-family="ui-monospace,Menlo,monospace" font-weight="800" opacity="${(1 - fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
@@ -450,7 +441,7 @@ function scene(){
     R3.bi = bi;
     for (const o of [R3.gnd, R3.portal, ...R3.decor]) o && R3.world.remove(o);
     R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];
-    DECO[bi].forEach(([kind, x, y, k], n) => { for (let j = 0; j < 2; j++){ let a = (n*2 + j)*.95 + .5, px, py; for (let t = 0; t < 8; t++){ px = HX + Math.cos(a)*(22 + (n*5 + j*3)%8)*1.15; py = HY + Math.sin(a)*(22 + (n*5 + j*3)%8); if (Math.abs(px - HX) > 8 && Math.abs(py - HY) > 8) break; a += .45; } const o = buildDeco(kind, k); o.scale.multiplyScalar(CK); at3(o, px, py, BZ); R3.world.add(o); R3.decor.push(o); } });
+    DECO[bi].forEach(([kind, x, y, k], n) => { for (let j = 0; j < 2; j++){ let a = (n*2 + j)*.95 + .5, px, py; for (let t = 0; t < 8; t++){ px = HX + Math.cos(a)*(30 + (n*5 + j*3)%14)*1.15; py = HY + Math.sin(a)*(30 + (n*5 + j*3)%14); if (Math.abs(px - HX) > 8 && Math.abs(py - HY) > 8) break; a += .45; } const o = buildDeco(kind, k); o.scale.multiplyScalar(CK); at3(o, px, py, BZ); R3.world.add(o); R3.decor.push(o); } });
     [[-9, -9], [9, -9], [-9, 9], [9, 9]].forEach(([dx, dy]) => { const o = buildTorch(); o.scale.multiplyScalar(CK); at3(o, HX + dx*1.3, HY + dy*1.3, BZ); R3.world.add(o); R3.decor.push(o); });
     R3.sign = buildSign(); R3.sign.scale.multiplyScalar(CK); at3(R3.sign, HX - 13, HY + 10, BZ); R3.world.add(R3.sign); R3.decor.push(R3.sign);
     for (const [k, e] of R3.ent){ R3.world.remove(e); R3.ent.delete(k); }   // 換生態時怪物與掉落物重建（顏色隨生態）
@@ -460,11 +451,11 @@ function scene(){
   const sg = R3.sign, txt = G.run ? 'MAP ' + G.run.map.lvl : 'DEPTH ' + G.depth;
   if (sg.userData.txt !== txt){ sg.userData.txt = txt; const mt = new T3.MeshBasicMaterial({ map:signTex(txt) }), wd = m3('#c99a6a'); sg.userData.board.material = [wd, wd, wd, wd, mt, mt]; }
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
-  pu.glow.scale.setScalar((3.2 + (pulse ? 1.2*Math.sin(pulse.t*3.14) : 0))/3.2); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
+  pu.glows.forEach(gl => gl.scale.setScalar(1 + (pulse ? .35*Math.sin(pulse.t*3.14) : 0))); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
   // 主角
   const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead > 0, G.char].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero) R3.world.remove(R3.hero); R3.hero = G.h.dead > 0 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
-  if (G.h.dead > 0){ at3(R3.hero, HX, HY, BZ); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
+  if (G.h.dead > 0){ at3(R3.hero, G.h.x, G.h.y, BZ); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 怪物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
   for (const m of G.mons){ const g = entFor(m, () => m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : buildBrute(m.boss)); monLook(m, g); }
@@ -472,7 +463,7 @@ function scene(){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; let x = d.x, y = d.y, z = BZ;
     if (d.t < .6) z += Math.abs(Math.sin(d.t/.6*Math.PI*1.5))*5*(1 - d.t/.6) + .3;
-    else if (d.t >= 1.2){ const k = ease(tClamp((d.t - 1.2)/.5)); x = tLerp(d.x, HX, k); y = tLerp(d.y, HY, k); z = BZ + .3 + Math.sin(k*Math.PI)*8 + k*7; } else z += .3 + Math.sin(d.t*6)*.25;
+    else if (d.t >= 1.2){ const k = ease(tClamp((d.t - 1.2)/.5)); x = tLerp(d.x, G.h.x, k); y = tLerp(d.y, G.h.y, k); z = BZ + .3 + Math.sin(k*Math.PI)*8 + k*7; } else z += .3 + Math.sin(d.t*6)*.25;
     at3(g, x, y, z); u.item.rotation.y = d.t*2.4; u.disc.visible = d.t < 1.2; if (u.beam) u.beam.visible = d.t < 1.2;
   }
   for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); R3.ent.delete(k); }

@@ -179,7 +179,7 @@ function allocPass(id){ if (passPoints() <= 0 || !nodeOpen(id)) return; G.pass.p
 function respec(){ const cost = 100*G.lvl; if (!G.pass.length || G.gold < cost) return; G.gold -= cost; G.pass = []; recalc(); renderModal(); }
 function enterMap(id){
   if (G.run) return; const i = G.maps.findIndex(m => m.id === id); if (i < 0) return;
-  const map = G.maps.splice(i, 1)[0]; G.run = { map, kills:0, need:30, bossOut:false };
+  const map = G.maps.splice(i, 1)[0]; G.run = { map, kills:0, need:80, bossOut:false };
   G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.spawnCd = .8; G.h.hp = G.st.life; logLine(`進入地圖：${BIOMES[map.biome].n} Lv. ${map.lvl}`, '#2f7fc4'); closeModal();
 }
 function abandonMap(){ if (!G.run) return; G.run = null; G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.spawnCd = .8; logLine('放棄了地圖', '#857d6e'); renderModal(); }
