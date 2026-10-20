@@ -8,7 +8,7 @@ if (!Q.has('fresh')){ const o = loadGame(); if (o && applySave(o)) loadedT = o.t
 if (!loadedT) logLine('冒險開始！英雄會自動戰鬥、撿裝備、換更強的。', '#2b2552');
 
 let ui;
-const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++) update(.05); G.offline = false; G.floats = []; G.fx = []; };
+const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++){ while (G.picks > 0){ const c = rollCards(1)[0]; if (!c) break; takeCard(c); } update(.05); } G.offline = false; G.floats = []; G.fx = []; };
 ui = mountFigure({
   fig:'06', title:'Idle Hero', hint:'', size:[BXW, BYW, 36], palette:'mint', state:G, credit:false,
   scene, buttonsLabel:'英雄指令',
@@ -22,6 +22,7 @@ ui = mountFigure({
     { label:'戰利品過濾', choices: () => ['全部撿','魔法以上','稀有以上'].map((n, i) => ({ label:n, current:G.filter === i, onClick:() => { G.filter = i; } })) },
     { label:'混沌重鑄', choices: () => Object.keys(SLOTN).map(k => { const it = G.equip[k], cost = it ? 30*it.il + 20 : 0; return { label:`${SLOTN[k]}${it ? ` ${cost}g` : ''}`, disabled:!it || it.r === 3 || G.gold < cost, why:!it ? '這個欄位是空的' : it.r === 3 ? '暗金裝備不能重鑄' : `金幣不夠（要 ${cost}g）`, onClick:() => reroll(k) }; }) },
     { label:'速度', choices: () => [1, 2, 4].map(n => ({ label:'×' + n, current:G.speed === n, onClick:() => { G.speed = n; } })) },
+    { label:'音效', choices: () => [['all', '音樂＋音效'], ['sfx', '只有音效'], ['off', '靜音']].map(([m, n]) => ({ label:n, current:AUD.mode === m, onClick:() => { audInit(); audMode(m); } })) },
     { label:'存檔', onClick:() => openModal('save') },
   ],
   params:(s, q) => {
@@ -47,12 +48,14 @@ if (Q.has('mons')){   // testing: ?mons=slime,skel,brute,boss&at=48 lines up fro
   Q.get('mons').split(',').forEach((t, i) => G.mons.push({ type:t, boss:t === 'boss', x:15 + (i % 2 ? 4 : -2), y:(+Q.get('at') || 48) - i*9, hp:80, hpMax:100, dmg:1, atkInt:2, spdK:1, atkCd:1, slot:i,
     fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:i*1.7 }));
 }
+if (Q.has('picks')) G.picks = +Q.get('picks');
 if (Q.has('modal')) openModal(Q.get('modal'));
 const gap0 = Q.has('away') ? +Q.get('away') : loadedT ? (Date.now() - loadedT)/1000 : 0;
 if (gap0 > 20) catchUp(gap0, true);
 ui.animate(dt => {
   const now = Date.now(), gap = (now - G.lastWall)/1000; G.lastWall = now;
   if (G.paused) return true;
+  if (G.picks > 0 && !G.offer && $('ovl').hidden && !G.offline) openCards();
   if (gap > 3){ catchUp(gap, gap > 20); return true; }
   stepSim(dt); return true;
 });
