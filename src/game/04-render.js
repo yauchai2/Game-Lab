@@ -104,14 +104,16 @@ function buildGrave(){
 const SLIME_HEX = ['#9be07d', '#ffd36a', '#8fd8ff', '#ff9a8a'];
 function flash(g, c, k){ for (const m of g.userData.mats || []){ m.emissive.set(c); m.emissiveIntensity = k; } }
 function ownMat(g, hex, o={}){ const m = m3(hex, { own:true, ...o }); (g.userData.mats ||= []).push(m); return m; }
-function buildSlime(){
+function buildSlime(){   // 稜角分明的霓虹凝膠：低面數外殼、發光核心、細長護目鏡眼
   const g = new T3.Group(), hex = SLIME_HEX[biomeNow()], jelly = new T3.Group(); g.add(jelly); g.userData.jelly = jelly;
-  const body = mk(ico(1, 2), ownMat(g, hex, { transparent:true, opacity:.94 }), 0, 4.1, 0, jelly); body.scale.set(5.2, 4.4, 5.2);
-  mk(ico(1, 1), ownMat(g, '#5fbf6a', { transparent:true, opacity:.55 }), 0, 3.2, -.6, jelly).scale.set(2.4, 2, 2.4);
-  mk(ico(.9, 0), basic('#ffffff', .85), 2.2, 6.6, 2.4, jelly).scale.set(1, .7, .7);
-  const fc = new T3.Group(); fc.position.set(0, 4.3, 0); jelly.add(fc);
-  eye(fc, 5.1, -.42, .05, 1.5, '', 'dark'); eye(fc, 5.1, .42, .05, 1.5, '', 'dark');
-  addShadow(g, 5.6); return g;
+  mk(ico(1, 1), ownMat(g, hex, { transparent:true, opacity:.9 }), 0, 3.4, 0, jelly).scale.set(5.6, 3.7, 5.6);
+  mk(ico(1, 0), ownMat(g, '#ffffff', { transparent:true, opacity:.9 }), 0, 3.0, -.4, jelly).scale.set(2.2, 1.9, 2.2);
+  for (const [x, z, r] of [[-4.2, 1.8, 1.1], [3.9, 2.6, .9], [.6, 4.9, 1.0], [-1.8, -4.4, .9]]) mk(ico(r, 0), ownMat(g, hex, { transparent:true, opacity:.9 }), x, .8, z, jelly).scale.set(1, .6, 1);
+  mk(ico(.9, 0), basic('#ffffff', .85), 2.6, 5.6, 1.8, jelly).scale.set(1, .6, .6);
+  const fc = new T3.Group(); fc.position.set(0, 3.8, 0); jelly.add(fc);
+  mk(new T3.BoxGeometry(5.6, .9, .3), basic('#2b2552'), 0, 0, 5.75, fc);
+  for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.6, .4, .3), basic('#ff6aa8'), sx*1.5, 0, 5.95, fc);
+  addShadow(g, 5.8); return g;
 }
 function monModel(g, def, recolor){   // 組合 MON_MODEL 的 body／head／armL／armR，回傳各部位
   const mf = hex => ownMat(g, hex), p = {};
