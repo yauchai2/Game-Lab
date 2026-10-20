@@ -87,7 +87,7 @@ function pickup(d){
   const cur = G.equip[it.slot], cand = calc({ ...G.equip, [it.slot]:it });
   if (!cur || cand.power > G.st.power * 1.02){
     if (cur){ G.gold += itemValue(cur); salvage(cur); }
-    G.equip[it.slot] = it; recalc(); logLine(`裝備 ${it.name}`, rc); addFloat(G.h.x + 3, G.h.y, BZ + 22, '升級！', rc, 3.8); SFX(it.r >= 2 ? 'rare' : 'pick'); if (G.off) G.off.eq++;
+    const d0 = G.st.dps; G.equip[it.slot] = it; recalc(); const dd = d0 > 0 ? Math.round((G.st.dps/d0 - 1)*100) : 0; logLine(`裝備 ${it.name}（傷害 ${dd >= 0 ? '+' : ''}${dd}%）`, rc); addFloat(G.h.x + 3, G.h.y, BZ + 22, '升級！', rc, 3.8); SFX(it.r >= 2 ? 'rare' : 'pick'); if (G.off) G.off.eq++;
   } else { G.gold += itemValue(it); salvage(it); if (it.r >= 2) logLine(`賣掉 ${it.name}（沒有更強）`, '#9a93a6'); }
 }
 function reroll(slot){
@@ -103,7 +103,7 @@ function hitMon(m, dmg, crit){
   m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit');
   if (!G.offline){ const dx = m.x - G.h.x, dy = m.y - G.h.y, dd = Math.hypot(dx, dy) || 1, kb = m.boss ? .2 : crit ? 1.6 : .6; m.x += dx/dd*kb; m.y += dy/dd*kb;   // 被打時往外退一點
     if (crit){ kick(.4, 0, 0, .3); if (G.fx.length < 40) addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 9, t:0, dur:.18 }); } else if (m.boss) kick(.15); }
-  addFloat(m.x + 2 + tRand(-1,1), m.y + tRand(-2,2), BZ + 17 + tRand(0,3), tFmt(dmg), crit ? '#e2831b' : '#2b2552', crit ? 5.4 : 3.6);
+  if (crit || G.floats.length < 8 || (G.floats.length < 20 && dmg >= G.st.dps*.12) || m.boss) addFloat(m.x + 2 + tRand(-1,1), m.y + tRand(-2,2), BZ + 17 + tRand(0,3), tFmt(dmg), crit ? '#e2831b' : '#2b2552', crit ? 5.4 : 3.6);
   if (m.hp <= 0) killMon(m);
 }
 function rollDmg(base, critPct){ const s = G.st, crit = Math.random()*100 < (critPct == null ? s.crit : critPct); return { dmg:base * (crit ? s.cm/100 : 1) * tRand(.9, 1.1), crit }; }

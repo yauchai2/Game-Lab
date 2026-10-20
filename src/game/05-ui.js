@@ -46,7 +46,10 @@ function logHtml(){
 const logNew = () => { try { return localStorage.getItem('ih_log_seen') !== CHANGELOG[0].v; } catch (e) { return false; } };
 let modalTab = 'skills', resetArm = false;
 const $ = id => document.getElementById(id);
-function openModal(tab){ modalTab = tab || modalTab; resetArm = false; $('modal').hidden = false; renderModal(); }
+const invN = () => Object.values(G.gems).reduce((a, b) => a + b, 0) + Object.values(G.carts).reduce((a, b) => a + b, 0);
+const dotOn = k => k === 'skills' ? invN() > (G.seenInv || 0) : k === 'craft' ? (G.parts || 0) >= 6 && G.parts > (G.seenParts || 0) : k === 'col' ? Object.keys(G.goals).length > (G.seenGoals || 0) : false;
+function markSeen(t){ if (t === 'skills') G.seenInv = invN(); else if (t === 'craft') G.seenParts = G.parts || 0; else if (['goals', 'ach', 'dex'].includes(t)) G.seenGoals = Object.keys(G.goals).length; }
+function openModal(tab){ modalTab = tab || modalTab; markSeen(modalTab); resetArm = false; $('modal').hidden = false; renderModal(); }
 const MOB = () => document.body.classList.contains('m');   // 手機直式：上面戰鬥畫面，下面固定的分頁面板（彈窗變成面板）
 const DESK = () => document.body.classList.contains('d');   // 桌機寬螢幕：左邊角色與紀錄、中間戰鬥、右邊常駐分頁面板
 function closeModal(){ if (MOB()){ openModal('char'); return; } if (DESK()){ openModal('skills'); return; } $('modal').hidden = true; }
@@ -59,12 +62,12 @@ function renderModal(){ setTimeout(() => { if (typeof dressMount === 'function' 
   if (!mob && (modalTab === 'char' || modalTab === 'menu')) modalTab = 'dress';
   if (mob && modalTab === 'save') modalTab = 'menu';
   if (!mob && !tabOpen(modalTab)) modalTab = 'skills';
-  const cur = groups.find(g => g.t.includes(modalTab)) || groups[1], dot = g => g.k === 'tree' ? (passPoints() > 0 ? ` (${passPoints()})` : '') : g.k === 'sys' ? (logNew() ? ' ●' : '') : '';
+  const cur = groups.find(g => g.t.includes(modalTab)) || groups[1], dot = g => g.k === 'tree' ? (passPoints() > 0 ? ` (${passPoints()})` : '') : g.k === 'sys' ? (logNew() ? ' ●' : '') : dotOn(g.k) ? '<i class="rd"></i>' : '';
   $('mtabs').innerHTML = mob ? tabs.map(([k, n, ic]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${ic ? spr(ic, 20) : ''}<span>${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}</span></button>`).join('')
     : groups.filter(g => tabOpen(g.k)).map(g => `<button class="tab${cur === g ? ' on' : ''}" onclick="openModal('${g.t[0]}')"><span>${g.n}${dot(g)}</span></button>`).join('') + (DESK() ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`)
     + (cur.t.length > 1 ? `<div class="subtabs">${cur.t.map(k => `<button class="tab sub${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${SUBN[k]}${k === 'log' && logNew() ? ' ●' : ''}</button>`).join('')}</div>` : '');
   if (mob) $('mmenu').hidden = modalTab !== 'menu';
-  $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? `${MOB() ? '<button class="mb" onclick="openModal(\'char\')">‹ 返回</button>' : ''}${dressHtml()}` : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() + `<details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">改機（零件 ${G.parts || 0}）</summary>${craftHtml()}</details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">圖鑑</summary><div class="rpgm">${codexHtml()}</div></details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">更新日誌 v${CHANGELOG[0].v}${logNew() ? ' ●' : ''}</summary>${logHtml()}</details>` : '') + saveHtml();
+  $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? `<div class="mct">改機　零件 ${G.parts || 0}${qm('craft')}</div>` + craftHtml() : modalTab === 'dress' ? `${MOB() ? '<button class="mb" onclick="openModal(\'char\')">‹ 返回</button>' : ''}${dressHtml()}` : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() + `<details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">改機（零件 ${G.parts || 0}）</summary>${craftHtml()}</details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">圖鑑</summary><div class="rpgm">${codexHtml()}</div></details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">更新日誌 v${CHANGELOG[0].v}${logNew() ? ' ●' : ''}</summary>${logHtml()}</details>` : '') + saveHtml();
 }
 let held = null, heldRot = 0, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff' };
@@ -76,7 +79,7 @@ function shapeIcon(kind, key, rot = 0, col){
   return o + '</span>';
 }
 function buildBar(){
-  return '<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>構築</b>' + [0, 1, 2].map(i => `<button class="mb" style="${(G.bi || 0) === i ? 'background:#1f3fb0;color:#fff;' : ''}" onclick="switchBuild(${i})">${i + 1}</button>`).join('') + '<span class="mute">各存一套技能拼圖與天賦，免費切換；裝備共用</span></div>';
+  return '<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>構築</b>' + [0, 1, 2].map(i => `<button class="mb" style="${(G.bi || 0) === i ? 'background:#1f3fb0;color:#fff;' : ''}" onclick="switchBuild(${i})">${i + 1}</button>`).join('') + '<span class="mute">各存一套技能拼圖與天賦，免費切換；裝備共用</span>' + qm('skills') + '<span id="pzdelta" class="mute"></span></div>';
 }
 function switchBuild(i){
   if (i === (G.bi || 0)) return; if (!G.builds) G.builds = [null, null, null];
@@ -147,18 +150,18 @@ function questHtml(){
 }
 function goalsHtml(){
   const done = GOALS.filter(a => G.goals[a.id]).length;
-  return questHtml() + `<div class="mct">目標　${done}/${GOALS.length}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
+  return questHtml() + `<div class="mct">目標　${done}${qm('goals')}/${GOALS.length}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
     return `<div class="gl${ok ? ' ok' : ''}"><b>${ok ? '★ ' : ''}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
 }
 function mapsHtml(){
   const R = G.run; let h = '<div class="hint">地圖由守關者和地圖怪掉落。詞綴讓敵人更強，但戰利品數量與稀有度更好。打贏地圖守關者才算完成；死亡則地圖報廢。</div>';
-  h += `<div class="mc"><b>無限之塔</b> <span class="mute">最高 ${G.towerBest || 0} 層</span><div class="mute">每層殺滿怪就上樓，每 10 層是守關者，打贏多一條規則、一件遺物和一件戰利品。死亡就結束。${G.maxDepth < 8 ? '（深度 8 解鎖）' : ''}</div><button class="mb" ${R || G.maxDepth < 8 ? 'disabled' : ''} onclick="towerStart()">挑戰</button></div>`;
+  h += `<div class="mc"><b>無限之塔</b>${qm('maps')} <span class="mute">最高 ${G.towerBest || 0} 層</span><div class="mute">每層殺滿怪就上樓，每 10 層是守關者，打贏多一條規則、一件遺物和一件戰利品。死亡就結束。${G.maxDepth < 8 ? '（深度 8 解鎖）' : ''}</div><button class="mb" ${R || G.maxDepth < 8 ? 'disabled' : ''} onclick="towerStart()">挑戰</button></div>`;
   { const L = G.trainLast, mx = L && L.rows.length ? L.rows[0][1] : 1;
     h += `<div class="mc"><b>訓練場</b> <span class="mute">5 隻不還手的假人，量 30 秒傷害</span>${G.train ? `<div class="mute">測量中，剩 ${Math.ceil(G.train.t)} 秒</div><button class="mb" onclick="trainEnd(true)">取消</button>` : `<button class="mb" ${R ? 'disabled' : ''} onclick="trainStart()">開始測量</button>`}`
       + (L ? `<div class="mute" style="margin-top:6px">上次結果：每秒約 <b>${tFmt(L.dps)}</b>（5 隻合計）</div>` + L.rows.map(([k, v]) => `<div class="gl" style="min-height:0"><b>${k}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${Math.round(v/L.total*100)}%　${tFmt(v/30)}/秒</em></div>`).join('') : '') + '</div>'; }
   if (R) h += `<div class="mc run"><b>進行中：${R.tower ? `無限之塔 第 ${R.floor} 層` : `${BIOMES[R.map.biome].n} Lv. ${R.map.lvl}`}</b><div class="mute">進度 ${Math.min(R.kills, R.need)} / ${R.need}</div><button class="mb" onclick="abandonMap()">放棄地圖</button></div>`;
   h += '<div class="mrow">' + (G.maps.length ? G.maps.map(m => { const q = m.mods.reduce((a, k) => a + MODS[k].q, 0);
-    return `<div class="mc"><b>${BIOMES[m.biome].n}</b> Lv. ${m.lvl}<ul>${m.mods.map(k => `<li>${MODS[k].n}</li>`).join('')}</ul><div class="mute">戰利品 +${Math.round(q*100)}%</div><button class="mb" ${R ? 'disabled' : ''} onclick="enterMap('${m.id}')">進入</button></div>`; }).join('') : '<div class="mute">還沒有地圖。打贏普通深度的守關者會掉落。</div>') + '</div>';
+    return `<div class="mc"><b>${BIOMES[m.biome].n}</b> Lv. ${m.lvl}<ul>${m.mods.map(k => `<li>${MODS[k].n}</li>`).join('')}</ul><div class="chips"><span class="chip bad">危險 ${m.mods.filter(k => ['more', 'fast', 'tough', 'deadly'].includes(k)).length}</span><span class="chip ok">戰利品 +${Math.round(q*100)}%</span><span class="chip ok">金幣 ${m.mods.includes('rich') ? '+60%' : '+0%'}</span><span class="chip ok">稀有度 ${m.mods.includes('lucky') ? '提升' : '一般'}</span></div><button class="mb" ${R ? 'disabled' : ''} onclick="enterMap('${m.id}')">進入</button></div>`; }).join('') : '<div class="mute">還沒有地圖。打贏普通深度的守關者會掉落。</div>') + '</div>';
   return h;
 }
 function saveHtml(){
@@ -231,7 +234,9 @@ function pzHover(x, y){
   if (!held || x < 0) return;
   const cs = GridLab.shapeOf(held.kind, held.key, heldRot).map(([dx, dy]) => [x + dx, y + dy]), ok = GridLab.canPlace(G.board, held.kind, held.key, x, y, heldRot);
   for (const [cx, cy] of cs){ const e = document.querySelector(`.pc[data-x="${cx}"][data-y="${cy}"]`); if (e) e.classList.add('pv', ok ? 'ok' : 'bad'); }
+  const el = $('pzdelta'); if (el){ el.innerHTML = ''; if (ok){ const B = JSON.parse(JSON.stringify(G.board)); if (GridLab.place(B, held.kind, held.key, x, y, heldRot)){ const d = dpsWith(B) - G.st.dps, pc = G.st.dps > 0 ? Math.round(d/G.st.dps*100) : 0; el.innerHTML = `放這裡：傷害 <b class="${d >= 0 ? 'up' : 'dn'}">${d >= 0 ? '+' : ''}${pc}%</b>`; } } }
 }
+function dpsWith(B){ const keep = G.board; G.board = B; syncBoard(); const d = calc().dps; G.board = keep; syncBoard(); return d; }
 function pzRot(){ if (held){ heldRot = (heldRot + 1) % 4; if (drag && drag.ghost) drag.ghost.innerHTML = shapeIcon(held.kind, held.key, heldRot); else renderModal(); return; } if (selPiece == null) return; const ok = GridLab.rotate(G.board, selPiece); recalc(); pzMsg(ok ? '' : '旋轉後放不下'); }
 function pzDel(){ if (selPiece != null) GridLab.remove(G.board, selPiece); selPiece = null; recalc(); renderModal(); }
 function allocPass(id){ if (passPoints() <= 0 || !nodeOpen(id)) return; G.pass.push(id); recalc(); logLine(`天賦：${TREE[id].name}`, '#2f7fc4'); renderModal(); }
@@ -277,6 +282,14 @@ function cardsHtml(){
 }
 
 /* offline progress */
+const HELP = {
+  skills:['拼圖說明', '主動技能自己施放，輔助配件只強化上下左右相鄰、標籤相符的主動技能。<br>把機件拖到格子上，放不下會顯示紅色；按「旋轉」換方向。<br>放下前，下方會顯示放上去之後傷害的變化。<br>構築 1 至 3 各存一套拼圖與天賦。'],
+  craft:['改機說明', '用不到的裝備會自動拆成零件。零件可以重新校準數值、改裝詞綴、升級稀有度，或賭一把腐化。<br>鎖定一條詞綴可以保住它；已腐化的裝備不能再改。'],
+  maps:['冒險說明', '地圖詞綴讓敵人更強，但戰利品更好；每張卡下方的標籤是風險與回報彙總。<br>無限之塔每層殺滿怪上樓，每 10 層是守關者，死亡就結束。<br>訓練場用不還手的假人量 30 秒傷害。'],
+  goals:['任務與目標', '新手任務一次一個，完成後解鎖新系統。目標達成會自動給獎勵，不用手動領取。']
+};
+function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
+const qm = k => `<button class="qm" onclick="showHelp('${k}')">?</button>`;
 function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; o.hidden = false; }
 function hideOverlay(){ $('ovl').hidden = true; }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
@@ -309,7 +322,7 @@ function setupPanel(){
     .actions{gap:5px !important} .act{padding:3px 12px !important;font-size:12px}
     .modal{position:fixed;inset:0;background:rgba(43,37,82,.45);display:flex;align-items:center;justify-content:center;z-index:20;padding:12px} .modal[hidden]{display:none}
     .mbox{background:var(--paper);border:1.5px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 #b9c6ee;width:min(720px,100%);max-height:90vh;overflow:auto;padding:14px;font-size:12.5px} .mbox.small{width:min(420px,100%)}
-    .mtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap} .tab{padding:3px 12px;font-size:12px} .tab.on{background:var(--ink);color:var(--paper)} .tab.x{margin-left:auto} #nexthint{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:30;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;padding:3px 14px;font-size:12px;cursor:pointer;box-shadow:2px 2px 0 rgba(31,63,176,.35);max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #nexthint[hidden]{display:none} .subtabs{flex:1 0 100%;display:flex;gap:4px;padding-top:2px} .tab.sub{font-size:11px;padding:1px 10px;border-style:dashed}
+    .mtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap} .tab{padding:3px 12px;font-size:12px} .tab.on{background:var(--ink);color:var(--paper)} .tab.x{margin-left:auto} .chips{display:flex;gap:4px;flex-wrap:wrap;margin:4px 0} .chip{font-size:11px;padding:0 8px;border-radius:999px;border:1.5px solid} .chip.ok{color:#1d8a4c;border-color:#1d8a4c} .chip.bad{color:#d03a3a;border-color:#d03a3a} .qm{display:inline-block;width:16px;height:16px;line-height:14px;text-align:center;font-size:11px;border:1.5px solid var(--ink);border-radius:50%;background:var(--paper);cursor:pointer;margin-left:6px;vertical-align:middle;padding:0} .rd{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e2483d;margin-left:4px;vertical-align:middle} #pzdelta b.up{color:#1d8a4c} #pzdelta b.dn{color:#d03a3a} #nexthint{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:30;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;padding:3px 14px;font-size:12px;cursor:pointer;box-shadow:2px 2px 0 rgba(31,63,176,.35);max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #nexthint[hidden]{display:none} .subtabs{flex:1 0 100%;display:flex;gap:4px;padding-top:2px} .tab.sub{font-size:11px;padding:1px 10px;border-style:dashed}
     .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px} .mc{border:1.5px solid var(--ink);border-radius:14px;padding:8px 10px;box-shadow:0 2px 0 #b9c6ee} .mc.dim{opacity:.5} .mc.run{margin-bottom:10px;border-style:dashed}
     .mc ul{margin:4px 0 6px;padding-left:16px} .hint{color:var(--muted);font-size:11.5px;margin:4px 0 8px;line-height:1.5} .hint b{color:var(--ink)}
     .srow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px} select,.sv{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:3px 6px;max-width:100%}
