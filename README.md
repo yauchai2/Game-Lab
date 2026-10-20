@@ -10,6 +10,9 @@
 - 開發：直接開 `index.html`（逐檔載入 `src/`）
 - 重新打包單檔：`python3 tools/build.py`
 
+## 線上試玩連結（Artifact）
+試玩與 review 連結：https://claude.ai/artifact/HufzcEfT1TWJBi6D5pQQRb（僅限本人開啟）。更新步驟：改完程式後跟 Claude 說「更新試玩連結」即可；手動則執行 `python3 tools/build.py && python3 tools/make-artifact.py`，再把 `dist/idle-hero.artifact.html` 以同一個網址重新發佈。
+
 ## 結構
 | 檔案 | 內容 |
 |---|---|
