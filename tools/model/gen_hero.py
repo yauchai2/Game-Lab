@@ -88,12 +88,13 @@ finish(box((-.6, 2.7, 30.0), (4.6, 1.0, 1.0), rz=-.08), 'head', HAIR, bevel=.2)
 finish(box((1.9, 2.6, 29.7), (1.6, .9, 1.2), rz=.2), 'head', HAIR, bevel=.15)
 # 耳機：白色頭帶 + 耳罩 + 小鰭
 arc = [(3.9*math.cos(a), 0.0, 27.5 + 3.9*math.sin(a)) for a in [math.radians(t) for t in range(0, 181, 20)]]
-finish(tube(arc, .32, .32, n=5), 'head', WHITE)
+PHONE = '#f5f6fc'   # 耳機專用色，方便遊戲裝扮單獨換色
+finish(tube(arc, .32, .32, n=5), 'head', PHONE)
 for sx in (-1, 1):
     bm = bmesh.new(); bmesh.ops.create_cone(bm, cap_ends=True, segments=8, radius1=1.6, radius2=1.6, depth=1.2)
     for v in bm.verts: v.co = Vector((v.co.z + sx*3.8, v.co.y + .1, v.co.x + 27.2))
-    finish(bm, 'head', WHITE, bevel=.15)
-    finish(cone((sx*4.3, -.6, 28.6), .4, 2.0, n=4), 'head', WHITE)
+    finish(bm, 'head', PHONE, bevel=.15)
+    finish(cone((sx*4.3, -.6, 28.6), .4, 2.0, n=4), 'head', PHONE)
 
 # 腰鍊與尖刺吊飾（轉軸在腰帶側邊）
 tp = [(3.9, 1.8, 15.4), (3.95, 1.9, 14.2), (4.0, 2.0, 13.0)]
