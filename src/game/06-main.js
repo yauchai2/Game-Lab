@@ -32,7 +32,7 @@ ui = mountFigure({
   },
 });
 setupPanel();
-{ const h = document.querySelector('header h1'); if (h) h.textContent = '✦ Idle Hero ✦'; }
+{ const h = document.querySelector('header h1'); if (h) h.innerHTML = [...'Idle Hero'].map(c => c === ' ' ? '<i class="gap"></i>' : `<span class="lg">${c}</span>`).join(''); }
 if (Q.has('give')){ // testing helpers
   for (const id of Object.keys(SUPPS)) G.gems[id] = 2;
   for (let i = 0; i < 3; i++) G.maps.push(makeMap(Math.max(1, G.depth)));
