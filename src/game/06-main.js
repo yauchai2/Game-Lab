@@ -9,7 +9,7 @@ G.speed = 1;   // 已拿掉遊戲速度選項
 if (!loadedT) logLine('冒險開始！英雄會自動戰鬥、撿裝備、換更強的。', '#2b2552');
 
 let ui;
-const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++){ while (G.picks > 0){ const c = rollCards(1)[0]; if (!c) break; takeCard(c); } update(.05); } G.offline = false; G.floats = []; G.fx = []; };
+const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++){ while (G.picks > 0){ const c = rollCards(1)[0]; if (!c) break; takeCard(c); } while (G.relicPicks > 0){ const r = rollRelics(1)[0]; if (!r){ G.relicPicks = 0; break; } takeRelic(r); } update(.05); } G.offline = false; G.floats = []; G.fx = []; };
 ui = mountFigure({
   fig:'06', title:'Idle Hero', hint:'', size:[BXW, BYW, 36], palette:'mint', state:G, credit:false,
   scene, buttonsLabel:'英雄指令',
@@ -59,7 +59,8 @@ if (gap0 > 20) catchUp(gap0, true);
 ui.animate(dt => {
   const now = Date.now(), gap = (now - G.lastWall)/1000; G.lastWall = now;
   if (G.paused) return true;
-  if (G.picks > 0 && !G.offline && (G.autoCard || (!G.offer && $('ovl').hidden))) openCards();
+  if (G.relicPicks > 0 && !G.offline && (G.autoCard || (!G.offerR && $('ovl').hidden))) openRelics();
+  else if (G.picks > 0 && !G.offline && (G.autoCard || (!G.offer && $('ovl').hidden))) openCards();
   if (gap > 3){ catchUp(gap, gap > 20); return true; }
   stepSim(dt); return true;
 });
