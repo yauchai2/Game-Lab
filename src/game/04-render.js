@@ -4,7 +4,7 @@
    平塗材質 + 低面數幾何 + 柔和粉彩，畫面由一個透明 canvas 疊在天空背景上；
    血條與傷害數字仍用 SVG 疊在最上層（座標由同一台相機投影而來）。
    ============================================================ */
-const T3 = THREE, R3 = { ready:false, cache:{}, ent:new Map(), W:0, H:0 };
+const T3 = THREE, R3 = { res:new URLSearchParams(location.search).has('clean') ? 1 : .5, ready:false, cache:{}, ent:new Map(), W:0, H:0 };
 const aTier = it => it ? Math.min(3, Math.floor(it.il/6)) : 0;
 const aRnd = i => { const s = Math.sin(i*127.1 + 311.7)*43758.5453; return s - Math.floor(s); };
 const D2R = Math.PI/180;
@@ -249,7 +249,7 @@ function buildDrop(d){
 function r3init(){
   const cv = document.createElement('canvas'); cv.id = 'cv3'; cv.style.cssText = 'position:absolute;pointer-events:none;z-index:-1;left:0;top:0';
   document.body.appendChild(cv);
-  const rd = R3.rd = new T3.WebGLRenderer({ canvas:cv, antialias:true, alpha:true, preserveDrawingBuffer:true });
+  const rd = R3.rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true, preserveDrawingBuffer:true });
   rd.setClearColor(0x000000, 0); rd.outputColorSpace = T3.SRGBColorSpace;
   const sc = R3.sc = new T3.Scene();
   sc.add(new T3.HemisphereLight(0xeaf5ff, 0xd8c8f0, 1.55));
@@ -261,8 +261,8 @@ function r3init(){
 }
 function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相機視野
   const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
-  const cv = R3.rd.domElement; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
-  if (W !== R3.W || H !== R3.H || dpr !== R3.dpr){ R3.W = W; R3.H = H; R3.dpr = dpr; R3.rd.setPixelRatio(dpr); R3.rd.setSize(W, H, false); }
+  const cv = R3.rd.domElement; cv.style.imageRendering = R3.res < 1 ? 'pixelated' : 'auto'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  if (W !== R3.W || H !== R3.H || dpr !== R3.dpr){ R3.W = W; R3.H = H; R3.dpr = dpr; R3.rd.setPixelRatio(dpr*R3.res); R3.rd.setSize(W, H, false); }
   const cam = R3.cam, tgt = new T3.Vector3(BXW/2, BZ + 6, BYW/2); cam.position.copy(tgt).add(new T3.Vector3(1, .86, 1).normalize().multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
   for (const x of [0, BXW]) for (const y of [0, BYW]) for (const z of [BZ - 4, BZ + 24]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
