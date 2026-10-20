@@ -30,5 +30,8 @@ Y2K low poly 3D 美學（three.js 平塗低面數、粉彩、藍天白雲、等�
 ## 美術風格
 Y2K low poly 風格規範與新增美術的檢查清單見 [docs/art-style.md](docs/art-style.md)；詳細風格細則與開發計劃見 [docs/art-direction-and-roadmap.md](docs/art-direction-and-roadmap.md)。
 
+## 配件拼圖原型
+獨立於遊戲本體的實驗：開 `lab/grid.html` 試放機件，邏輯在 `src/lab/grid.js`，測試用 `node tools/test_grid.js`。設計見 `docs/prototype-grid-and-mod-design.md`。
+
 ## 授權
 Colorfigures 部分為 MIT，版權見 `docs/colorfigures-LICENSE`。three.js 為 MIT，見 `src/vendor/three.LICENSE`。
