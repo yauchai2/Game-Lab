@@ -36,7 +36,7 @@ setupPanel();
 if (Q.has('give')){ // testing helpers
   for (const id of Object.keys(SUPPS)) G.gems[id] = 2;
   for (let i = 0; i < 3; i++) G.maps.push(makeMap(Math.max(1, G.depth)));
-  if (Q.has('slots')){ G.slots = Q.get('slots').split(',').map(x => x || null); G.slots.forEach(id => { if (id && G.cds[id] == null) G.cds[id] = 0; }); }
+  if (Q.has('slots')){ boardFromLegacy(Q.get('slots').split(',').map(x => x || null), {}); G.slots.forEach(id => { if (id && G.cds[id] == null) G.cds[id] = 0; }); }
   recalc();
 }
 if (Q.has('pass')) for (const id of Q.get('pass').split(',')) if (TREE[id] && !G.pass.includes(id)) G.pass.push(id);

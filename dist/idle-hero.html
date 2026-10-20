@@ -409,6 +409,141 @@ function mountFigure(cfg){
 
 </script>
 <script>
+// 配件拼圖原型：純邏輯，不依賴遊戲其他檔案。設計見 docs/prototype-grid-and-mod-design.md
+// 主動機件自動出手；輔助配件只強化上下左右相鄰、標籤相符的主動機件。
+(function (root) {
+  // 主動機件：shape 是相對格座標 [x, y]；tags 供輔助比對
+  const ACTIVES = {
+    // mult、cd 與 src/game/01-data.js 的 SKILLS 相同；原型獨立，所以在這裡複製一份
+    FIRE:   { n: '過熱電池',   shape: [[0, 0]],                 tags: ['proj', 'fire'],  mult: 2.6, cd: 2.6 },
+    FROST:  { n: '冷氣爆發',   shape: [[0, 0], [1, 0]],         tags: ['area', 'cold'],  mult: 1.9, cd: 4.2 },
+    CHAIN:  { n: '紅外線連鎖', shape: [[0, 0], [0, 1]],         tags: ['proj', 'light'], mult: 2.3, cd: 3.2 },
+    METEOR: { n: '衛星墜落',   shape: [[0, 0], [1, 0], [0, 1]], tags: ['area', 'fire'],  mult: 6.2, cd: 8.0 },
+  };
+  // 輔助配件：needs 為空代表任何主動機件都適用；否則至少符合其中一個標籤
+  const SUPPORTS = {
+    HEAVY: { n: '超頻',     shape: [[0, 0]], needs: [],        mod: { dmg: 0.45 } },
+    AREA:  { n: '廣播',     shape: [[0, 0]], needs: ['proj'],  mod: { area: 1, dmg: -0.15 } },
+    HASTE: { n: '寬頻',     shape: [[0, 0]], needs: [],        mod: { cd: -0.3 } },
+    TWIN:  { n: '雙卡雙待', shape: [[0, 0]], needs: [],        mod: { repeat: 1 } },
+    CRITS: { n: '爆機',     shape: [[0, 0]], needs: [],        mod: { crit: 0.3 } },
+    LEECH: { n: '無線充電', shape: [[0, 0]], needs: [],        mod: { leech: 0.12 } },
+  };
+  const CD_FLOOR = -0.7; // 冷卻縮減上限 70%
+
+  const defOf = (kind, key) => (kind === 'active' ? ACTIVES : SUPPORTS)[key];
+  const rotCell = ([x, y]) => [-y, x];
+  const norm = cells => {
+    const mx = Math.min(...cells.map(c => c[0])), my = Math.min(...cells.map(c => c[1]));
+    return cells.map(([x, y]) => [x - mx, y - my]);
+  };
+  // 旋轉 r 次（每次 90 度）後的形狀
+  function shapeOf(kind, key, rot) {
+    let s = defOf(kind, key).shape;
+    for (let i = 0; i < (rot || 0) % 4; i++) s = norm(s.map(rotCell));
+    return s;
+  }
+  const cellsOf = p => shapeOf(p.kind, p.key, p.rot).map(([x, y]) => [p.x + x, p.y + y]);
+
+  function createBoard(w = 3, h = 3) { return { w, h, pieces: [], nextId: 1 }; }
+
+  function occupied(b, ignoreId) {
+    const m = new Map();
+    for (const p of b.pieces) if (p.id !== ignoreId) for (const [x, y] of cellsOf(p)) m.set(x + ',' + y, p.id);
+    return m;
+  }
+  function canPlace(b, kind, key, x, y, rot, ignoreId) {
+    const occ = occupied(b, ignoreId);
+    return shapeOf(kind, key, rot).every(([dx, dy]) => {
+      const cx = x + dx, cy = y + dy;
+      return cx >= 0 && cy >= 0 && cx < b.w && cy < b.h && !occ.has(cx + ',' + cy);
+    });
+  }
+  function place(b, kind, key, x, y, rot = 0) {
+    if (!defOf(kind, key) || !canPlace(b, kind, key, x, y, rot)) return null;
+    const p = { id: b.nextId++, kind, key, x, y, rot };
+    b.pieces.push(p);
+    return p;
+  }
+  function remove(b, id) {
+    const i = b.pieces.findIndex(p => p.id === id);
+    if (i < 0) return false;
+    b.pieces.splice(i, 1);
+    return true;
+  }
+  // 原地旋轉，放不下就維持原樣
+  function rotate(b, id) {
+    const p = b.pieces.find(q => q.id === id);
+    if (!p) return false;
+    const r = ((p.rot || 0) + 1) % 4;
+    if (!canPlace(b, p.kind, p.key, p.x, p.y, r, id)) return false;
+    p.rot = r;
+    return true;
+  }
+
+  const fits = (sup, act) => {
+    const need = SUPPORTS[sup.key].needs;
+    return !need.length || need.some(t => ACTIVES[act.key].tags.includes(t));
+  };
+
+  // 每個主動機件的結算：相鄰且標籤相符的輔助，數值加總（冷卻有下限）
+  function resolve(b) {
+    const occ = occupied(b);
+    const byId = new Map(b.pieces.map(p => [p.id, p]));
+    const out = [];
+    for (const a of b.pieces.filter(p => p.kind === 'active')) {
+      const adj = new Set();
+      for (const [x, y] of cellsOf(a))
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const id = occ.get((x + dx) + ',' + (y + dy));
+          if (id && id !== a.id && byId.get(id).kind === 'support') adj.add(id);
+        }
+      const linked = [...adj].map(id => byId.get(id)).filter(s => fits(s, a));
+      const stat = { dmg: 0, area: 0, cd: 0, crit: 0, repeat: 0, leech: 0 };
+      for (const s of linked) for (const [k, v] of Object.entries(SUPPORTS[s.key].mod)) stat[k] += v;
+      stat.cd = Math.max(stat.cd, CD_FLOOR);
+      out.push({ id: a.id, key: a.key, linked: linked.map(s => s.id), stat });
+    }
+    return out;
+  }
+
+  // 在不動既有機件的前提下找一個位置：輔助要求能連到指定主動機件（activeId），找不到回傳 null
+  function findSpot(b, kind, key, activeId) {
+    for (let rot = 0; rot < 4; rot++)
+      for (let y = 0; y < b.h; y++)
+        for (let x = 0; x < b.w; x++) {
+          if (!canPlace(b, kind, key, x, y, rot)) continue;
+          if (kind === 'support') {
+            const p = place(b, kind, key, x, y, rot), linked = resolve(b).find(r => r.id === activeId).linked.includes(p.id);
+            remove(b, p.id);
+            if (!linked) continue;
+          }
+          return { x, y, rot };
+        }
+    return null;
+  }
+
+  const REPEAT_K = 0.6; // 重複施放的傷害係數（雙卡雙待）
+
+  // 預期 DPS（單一目標）：每次命中 = 武器傷害 × 技能倍率 × (1 + 傷害加成) × 期望暴擊倍率
+  // hero：{ hit 武器傷害, crit 暴擊率 %, cm 暴擊傷害 % }
+  function dps(b, hero) {
+    return resolve(b).map(r => {
+      const d = ACTIVES[r.key], st = r.stat;
+      const crit = Math.min(1, Math.max(0, (hero.crit + st.crit * 100) / 100));
+      const hit = hero.hit * d.mult * Math.max(0, 1 + st.dmg) * (1 + crit * (hero.cm / 100 - 1));
+      const interval = d.cd * (1 + st.cd);
+      const perCast = hit * (1 + st.repeat * REPEAT_K);
+      return { id: r.id, key: r.key, hit, interval, dps: perCast / interval };
+    });
+  }
+
+  const api = { findSpot, dps, ACTIVES, SUPPORTS, createBoard, shapeOf, cellsOf, canPlace, place, remove, rotate, resolve };
+  if (typeof module !== 'undefined') module.exports = api; else root.GridLab = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* =====================================================================
    Idle Hero v2: dark, hand-inked isometric idle ARPG
    skills + supports, passive tree, maps, save + offline progress
@@ -502,12 +637,34 @@ const TREE = (() => {
 /* ---------- game state ---------- */
 const G = {
   time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:24, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
-  equip:{ weapon:null, armor:null, ring:null }, gems:{ HEAVY:1, AREA:1 }, slots:['FIRE', null, null], supp:{ FIRE:['HEAVY', null], FROST:[null, null], CHAIN:[null, null], METEOR:[null, null] },
+  equip:{ weapon:null, armor:null, ring:null }, gems:{ HEAVY:1, AREA:1 }, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[] },
   pass:[], maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2 },
   h:{ hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
   mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
 };
-const gemUsed = id => Object.values(G.supp).reduce((n, a) => n + a.filter(x => x === id).length, 0);
+/* 配件拼圖：玩家擺的是 G.board；G.slots / G.supp 由它推導出來，戰鬥與屬性計算照舊讀這兩個 */
+const boardRows = (lvl = G.lvl) => Math.max(1, SLOT_LV.filter(l => lvl >= l).length);
+function newBoard(){ G.board = GridLab.createBoard(3, boardRows()); }
+function syncBoard(){
+  if (!G.board) boardFromLegacy(['FIRE'], { FIRE:['HEAVY'] });
+  G.board.h = Math.max(G.board.h, boardRows());   // 等級提高才會多開一列
+  const res = GridLab.resolve(G.board), actives = G.board.pieces.filter(p => p.kind === 'active').sort((a, b) => a.y - b.y || a.x - b.x);
+  const supOf = id => (res.find(r => r.id === id) || { linked:[] }).linked.map(i => G.board.pieces.find(p => p.id === i).key);
+  G.slots = actives.map(p => p.key);
+  G.supp = {}; for (const id of Object.keys(SKILLS)) G.supp[id] = [];
+  for (const p of actives) G.supp[p.key] = supOf(p.id);
+  for (const id of G.slots) if (G.cds[id] == null) G.cds[id] = 1;
+}
+// 舊存檔（技能槽加輔助孔）搬到拼圖：主動機件依序放，輔助盡量貼著它放；放不下的留在庫存
+function boardFromLegacy(slots, supp){
+  newBoard(); const b = G.board;
+  for (const id of slots){ if (!id || !GridLab.ACTIVES[id]) continue;
+    const sp = GridLab.findSpot(b, 'active', id); if (!sp) continue;
+    const a = GridLab.place(b, 'active', id, sp.x, sp.y, sp.rot);
+    for (const g of (supp && supp[id]) || []){ if (!g || !GridLab.SUPPORTS[g]) continue;
+      const q = GridLab.findSpot(b, 'support', g, a.id); if (q) GridLab.place(b, 'support', g, q.x, q.y, q.rot); } }
+}
+const gemUsed = id => G.board ? G.board.pieces.filter(p => p.kind === 'support' && p.key === id).length : 0;
 const gemFree = id => (G.gems[id] || 0) - gemUsed(id);
 const passPoints = () => Math.max(0, G.lvl - 1) + Math.floor((G.maxDepth - 1)/4) - G.pass.length;
 const nodeOpen = id => !G.pass.includes(id) && id !== 'S' && TREE[id].links.some(l => l === 'S' || G.pass.includes(l));
@@ -553,18 +710,18 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
   s.hit = s.dmg * (1 + s.inc/100);
   s.sk = {}; let dps2 = 0;
   for (const id of slots){ if (!id) continue;
-    const K = SKILLS[id], sp = supp[id] || [], has = x => sp.includes(x);
-    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (has('HEAVY') ? 1.45 : 1) * (has('AREA') && id === 'FIRE' ? .85 : 1);
-    const cd = K.cd * (1 - Math.min(.6, (s.haste + (has('HASTE') ? 30 : 0))/100)), crit = Math.min(100, s.crit + (has('CRITS') ? 30 : 0));
+    const K = SKILLS[id], sp = supp[id] || [], has = x => sp.includes(x), n = x => sp.filter(y => y === x).length;
+    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (1 + .45*n('HEAVY')) * (has('AREA') && id === 'FIRE' ? .85 : 1);
+    const cd = K.cd * (1 - Math.min(.6, (s.haste + 30*n('HASTE'))/100)), crit = Math.min(100, s.crit + 30*n('CRITS'));
     const ca = 1 + crit/100*(s.cm/100 - 1);
-    s.sk[id] = { hit, cd, crit, has:sp.filter(Boolean), area:has('AREA'), twin:has('TWIN'), leech:has('LEECH') };
-    dps2 += hit * ca * K.tg * (has('AREA') && id === 'FIRE' ? 1.5 : 1) * (has('TWIN') ? 1.6 : 1) / cd;
+    s.sk[id] = { hit, cd, crit, has:sp.filter(Boolean), area:has('AREA'), twin:n('TWIN'), leech:has('LEECH') };
+    dps2 += hit * ca * K.tg * (has('AREA') && id === 'FIRE' ? 1.5 : 1) * (1 + .6*n('TWIN')) / cd;
   }
   s.dps = s.hit * s.critAvg * s.aps + dps2;
   s.power = s.dps * Math.sqrt(s.life / (1 - s.red));
   return s;
 }
-function recalc(){ const old = G.st; G.st = calc(); const h = G.h; h.hp = old ? h.hp * G.st.life / old.life : G.st.life; G.dirty = true; }
+function recalc(){ syncBoard(); const old = G.st; G.st = calc(); const h = G.h; h.hp = old ? h.hp * G.st.life / old.life : G.st.life; G.dirty = true; }
 const xpNeed = L => Math.round(30 * Math.pow(1.32, L-1));
 function logLine(txt, col){ if (G.offline) return; G.log.unshift({ txt, col:col || '#2b2552' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
 function addFloat(x, y, z, txt, col, size=3.6){ if (G.offline) return; G.floats.push({ x, y, z, txt, col, size, t:0 }); }
@@ -573,12 +730,12 @@ function addFx(e){ if (!G.offline) G.fx.push(e); }
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
 function serialize(){ return { v:2, t:Date.now(), lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
-  equip:G.equip, gems:G.gems, slots:G.slots, supp:G.supp, pass:G.pass, maps:G.maps, run:G.run, hp:G.h.hp, log:G.log.slice(0, 5) }; }
+  equip:G.equip, gems:G.gems, board:G.board, pass:G.pass, maps:G.maps, run:G.run, hp:G.h.hp, log:G.log.slice(0, 5) }; }
 function applySave(o){
   if (!o || o.v !== 2) return false;
-  for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','slots','supp','pass','maps','run']) if (o[k] !== undefined) G[k] = o[k];
+  for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','pass','maps','run']) if (o[k] !== undefined) G[k] = o[k];
   G.pass = G.pass.filter(id => TREE[id]); G.mons = []; G.drops = []; G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
-  for (const id of Object.keys(SKILLS)) if (!G.supp[id]) G.supp[id] = [null, null];
+  if (o.board && o.board.pieces) G.board = o.board; else boardFromLegacy(o.slots || ['FIRE'], o.supp);
   recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
 function saveGame(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(serialize())); return true; } catch (e) { return false; } }
@@ -756,7 +913,7 @@ function update(dt){
   if (h.castT < 0 && aliveMons().length){ const id = G.slots.find(x => x && s.sk[x] && G.cds[x] <= 0); if (id){ h.castT = 0; h.castFired = false; h.castSk = id; G.cds[id] = s.sk[id].cd; } }
   if (h.castT >= 0){
     h.castT += dt;
-    if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk, 1); if (s.sk[h.castSk] && s.sk[h.castSk].twin) G.timers.push({ t:.25, id:h.castSk }); }
+    if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk, 1); if (s.sk[h.castSk] && s.sk[h.castSk].twin) for (let i = 0; i < s.sk[h.castSk].twin; i++) G.timers.push({ t:.25*(i + 1), id:h.castSk }); }
     if (h.castT >= .4) h.castT = -1;
   }
   if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (s.sk[t.id]) castSkill(t.id, .6); } } G.timers = G.timers.filter(t => !t.done); }
@@ -1307,30 +1464,28 @@ function renderModal(){
   if (mob) $('mmenu').hidden = modalTab !== 'menu';
   $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : saveHtml();
 }
-let actSlot = 0;   // 技能彈窗裡目前選中的技能槽：點寶石會插進它的空輔助孔
+let held = null, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff' };
 const gemIco = (g, s = 22) => `<i class="gem" style="--gc:${GEM_COL[g] || '#a87bf0'};width:${s}px;height:${s}px"></i>`;
 function skillsHtml(){
-  if (!G.slots[actSlot] && G.slots.some(Boolean)) actSlot = G.slots.findIndex(Boolean);
-  let h = '<div class="hint">點技能圖示裝上技能；點下方寶石，會插進<b>選中的技能槽</b>的空孔；點已插的寶石可拔下。</div><div class="mrow">';
-  for (let i = 0; i < 3; i++){
-    if (G.lvl < SLOT_LV[i]){ h += `<div class="mc dim"><div class="mct">技能槽 ${i+1}</div><div class="mute">等級 ${SLOT_LV[i]} 解鎖</div></div>`; continue; }
-    const cur = G.slots[i];
-    const picks = Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, taken = G.slots.includes(id) && cur !== id;
-      return `<button class="skb${cur === id ? ' on' : ''}" ${(!un || taken) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : taken ? '（已裝在別的槽）' : ''}" onclick="event.stopPropagation();setSlot(${i}, '${cur === id ? '' : id}');actSlot=${i};renderModal()">${spr(SKILL_ICON[id], 26)}</button>`; }).join('');
-    h += `<div class="mc slot${actSlot === i && cur ? ' act' : ''}" onclick="actSlot=${i};renderModal()"><div class="mct">技能槽 ${i+1}${cur ? `：${SKILLS[cur].n}` : '（空）'}</div><div class="skrow">${picks}</div>`;
-    if (cur){ const sp = G.supp[cur];
-      h += `<div class="mute">${SKILLS[cur].d}</div><div class="socks">` + [0, 1].map(j => sp[j]
-        ? `<button class="sock full" title="拔下 ${SUPPS[sp[j]].n}" onclick="event.stopPropagation();setSupp('${cur}', ${j}, '')">${gemIco(sp[j])}<span>${SUPPS[sp[j]].n}</span></button>`
-        : `<div class="sock">空孔</div>`).join('') + '</div>';
-      const k = G.st.sk[cur]; if (k) h += `<div class="mute">單次傷害約 ${tFmt(k.hit)}，冷卻 ${k.cd.toFixed(1)} 秒</div>`; }
-    h += '</div>';
+  const B = G.board, at = {}, linked = new Set(GridLab.resolve(B).flatMap(r => r.linked));
+  for (const p of B.pieces) GridLab.cellsOf(p).forEach((c, i) => { at[c[0] + ',' + c[1]] = { p, first:i === 0 }; });
+  let h = '<div class="hint">先從下方選一個機件，再點面板格子放下。點面板上的機件可選取，再按旋轉或移除。<b>輔助配件只強化上下左右相鄰</b>的技能（廣播只對投射物）。</div><div class="pz" style="grid-template-columns:repeat(' + B.w + ',1fr)">';
+  for (let y = 0; y < 3; y++) for (let x = 0; x < B.w; x++){
+    if (y >= B.h){ h += `<div class="pc lock">Lv. ${SLOT_LV[y]}</div>`; continue; }
+    const c = at[x + ',' + y];
+    if (!c){ h += `<div class="pc" onclick="pzCell(${x},${y})"></div>`; continue; }
+    const act = c.p.kind === 'active', col = act ? '#ff9ec7' : GEM_COL[c.p.key] || '#a87bf0';
+    h += `<div class="pc fill${c.p.id === selPiece ? ' sel' : ''}${linked.has(c.p.id) ? ' lnk' : ''}" style="--pc:${col}" onclick="pzCell(${x},${y})">${c.first ? (act ? spr(SKILL_ICON[c.p.key], 24) : gemIco(c.p.key, 20)) + `<span>${act ? SKILLS[c.p.key].n : SUPPS[c.p.key].n}</span>` : ''}</div>`;
   }
-  h += '</div><div class="mct" style="margin:12px 0 6px">輔助寶石庫存</div><div class="gems">' + Object.keys(SUPPS).map(g => { const f = gemFree(g), n = G.gems[g] || 0;
-    return `<button class="gt" ${f > 0 && G.slots[actSlot] ? '' : 'disabled'} onclick="putGem('${g}')" title="${SUPPS[g].d}">${gemIco(g, 28)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em><small>${SUPPS[g].d}</small></button>`; }).join('') + '</div>';
+  h += `</div><div class="pzbar"><button ${selPiece == null ? 'disabled' : ''} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button><span id="pzmsg" class="mute"></span></div>`;
+  h += '<div class="mct" style="margin:10px 0 6px">技能</div><div class="skrow">' + Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, used = G.slots.includes(id);
+    return `<button class="skb${held && held.key === id ? ' on' : ''}" ${(!un || used) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : used ? '（已放在面板上）' : '：' + K.d}" onclick="pzHold('active','${id}')">${spr(SKILL_ICON[id], 26)}</button>`; }).join('') + '</div>';
+  for (const id of G.slots){ const k = G.st.sk[id], n = k && k.has.length; if (k) h += `<div class="mute"><b>${SKILLS[id].n}</b>：單次傷害約 ${tFmt(k.hit)}，冷卻 ${k.cd.toFixed(1)} 秒${n ? `，連結 ${n} 個輔助` : ''}</div>`; }
+  h += '<div class="mct" style="margin:12px 0 6px">輔助配件庫存</div><div class="gems">' + Object.keys(SUPPS).map(g => { const f = gemFree(g), n = G.gems[g] || 0;
+    return `<button class="gt${held && held.key === g ? ' on' : ''}" ${f > 0 ? '' : 'disabled'} onclick="pzHold('support','${g}')" title="${SUPPS[g].d}">${gemIco(g, 28)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em><small>${SUPPS[g].d}</small></button>`; }).join('') + '</div>';
   return h;
 }
-function putGem(g){ const id = G.slots[actSlot]; if (!id || gemFree(g) <= 0) return; const sp = G.supp[id], j = !sp[0] ? 0 : !sp[1] ? 1 : -1; if (j >= 0) setSupp(id, j, g); }   // 兩個孔都滿了就不動作
 function treeHtml(){
   const pts = passPoints(); let lines = '', nodes = '';
   for (const id in TREE){ const n = TREE[id]; for (const l of n.links) if (id < l){ const m = TREE[l], on2 = (id === 'S' || G.pass.includes(id)) && (l === 'S' || G.pass.includes(l));
@@ -1359,8 +1514,19 @@ function saveHtml(){
     <textarea id="sv" class="sv" placeholder="匯出的存檔碼會顯示在這裡；要匯入時把存檔碼貼在這裡再按「匯入」"></textarea><div id="smsg" class="hint"></div>`;
 }
 /* modal actions */
-function setSlot(i, v){ const old = G.slots[i]; G.slots[i] = v || null; if (v && G.cds[v] == null) G.cds[v] = 1; if (v) G.cds[v] = Math.min(G.cds[v] || 0, 1.5); recalc(); renderModal(); }
-function setSupp(id, j, v){ G.supp[id][j] = v || null; recalc(); renderModal(); }
+function pzMsg(t){ renderModal(); const e = $('pzmsg'); if (e) e.textContent = t || ''; }
+function pzHold(kind, key){ held = held && held.key === key ? null : { kind, key }; selPiece = null; renderModal(); }
+function pzCell(x, y){
+  const hit = G.board.pieces.find(p => GridLab.cellsOf(p).some(c => c[0] === x && c[1] === y));
+  if (hit){ selPiece = hit.id; held = null; return renderModal(); }
+  if (!held) return;
+  const p = GridLab.place(G.board, held.kind, held.key, x, y, 0);
+  if (!p){ pzMsg('這裡放不下（重疊或超出面板）'); return; }
+  if (held.kind === 'active') held = null; else if (gemFree(held.key) <= 0) held = null;
+  recalc(); renderModal();
+}
+function pzRot(){ if (selPiece == null) return; const ok = GridLab.rotate(G.board, selPiece); recalc(); pzMsg(ok ? '' : '旋轉後放不下'); }
+function pzDel(){ if (selPiece != null) GridLab.remove(G.board, selPiece); selPiece = null; recalc(); renderModal(); }
 function allocPass(id){ if (passPoints() <= 0 || !nodeOpen(id)) return; G.pass.push(id); recalc(); logLine(`天賦：${TREE[id].name}`, '#2f7fc4'); renderModal(); }
 function respec(){ const cost = 100*G.lvl; if (!G.pass.length || G.gold < cost) return; G.gold -= cost; G.pass = []; recalc(); renderModal(); }
 function enterMap(id){
@@ -1473,6 +1639,11 @@ function setupPanel(){
     .actions .cap{display:none !important}
     .mct{font-weight:800;font-size:12.5px;color:var(--wbd)}
     .mc.slot{cursor:pointer} .mc.slot.act{box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk),0 0 0 2px #ff8fb8,3px 4px 0 #5a6bb855 !important}
+    .pz{display:grid;gap:5px;margin:8px 0;max-width:240px}
+    .pc{aspect-ratio:1;max-height:84px;background:#fff;border:1px dashed var(--wdk);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:700;text-align:center;cursor:pointer;color:var(--ink);padding:2px}
+    .pc.lock{background:#0002;border-style:solid;color:var(--muted);cursor:default;font-weight:400}
+    .pc.fill{background:var(--pc);border:2px solid #fff} .pc.sel{box-shadow:0 0 0 3px #2f7fc4} .pc.lnk{box-shadow:inset 0 0 0 3px #3fd88a} .pc.sel.lnk{box-shadow:0 0 0 3px #2f7fc4,inset 0 0 0 3px #3fd88a}
+    .pzbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap} .gt.on{box-shadow:0 0 0 2px #ff8fb8 !important}
     .skrow{display:flex;gap:6px;margin:8px 0 6px;flex-wrap:wrap}
     .skb{width:40px;height:40px;padding:0 !important;border-radius:4px !important;display:grid;place-items:center;background:var(--win) !important;border:1px solid var(--wbd) !important;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk) !important}
     .skb.on{background:#fff !important;box-shadow:inset 1px 1px 0 var(--wdk),inset -1px -1px 0 #fff,0 0 0 2px #ff8fb8 !important} .skb[disabled]{opacity:.35;filter:grayscale(1)}
@@ -1572,7 +1743,7 @@ setupPanel();
 if (Q.has('give')){ // testing helpers
   for (const id of Object.keys(SUPPS)) G.gems[id] = 2;
   for (let i = 0; i < 3; i++) G.maps.push(makeMap(Math.max(1, G.depth)));
-  if (Q.has('slots')){ G.slots = Q.get('slots').split(',').map(x => x || null); G.slots.forEach(id => { if (id && G.cds[id] == null) G.cds[id] = 0; }); }
+  if (Q.has('slots')){ boardFromLegacy(Q.get('slots').split(',').map(x => x || null), {}); G.slots.forEach(id => { if (id && G.cds[id] == null) G.cds[id] = 0; }); }
   recalc();
 }
 if (Q.has('pass')) for (const id of Q.get('pass').split(',')) if (TREE[id] && !G.pass.includes(id)) G.pass.push(id);

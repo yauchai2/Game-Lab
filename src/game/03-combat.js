@@ -165,7 +165,7 @@ function update(dt){
   if (h.castT < 0 && aliveMons().length){ const id = G.slots.find(x => x && s.sk[x] && G.cds[x] <= 0); if (id){ h.castT = 0; h.castFired = false; h.castSk = id; G.cds[id] = s.sk[id].cd; } }
   if (h.castT >= 0){
     h.castT += dt;
-    if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk, 1); if (s.sk[h.castSk] && s.sk[h.castSk].twin) G.timers.push({ t:.25, id:h.castSk }); }
+    if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk, 1); if (s.sk[h.castSk] && s.sk[h.castSk].twin) for (let i = 0; i < s.sk[h.castSk].twin; i++) G.timers.push({ t:.25*(i + 1), id:h.castSk }); }
     if (h.castT >= .4) h.castT = -1;
   }
   if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (s.sk[t.id]) castSkill(t.id, .6); } } G.timers = G.timers.filter(t => !t.done); }

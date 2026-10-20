@@ -11,11 +11,12 @@
   };
   // 輔助配件：needs 為空代表任何主動機件都適用；否則至少符合其中一個標籤
   const SUPPORTS = {
-    HEAVY: { n: '超頻',     shape: [[0, 0]], needs: [],               mod: { dmg: 0.45 } },
-    AREA:  { n: '廣播',     shape: [[0, 0]], needs: ['area', 'proj'],  mod: { area: 0.3, dmg: -0.15 } },
-    HASTE: { n: '寬頻',     shape: [[0, 0]], needs: [],               mod: { cd: -0.3 } },
-    TWIN:  { n: '雙卡雙待', shape: [[0, 0], [1, 0]], needs: ['proj'], mod: { repeat: 1 } },
-    CRITS: { n: '爆機',     shape: [[0, 0]], needs: [],               mod: { crit: 0.3 } },
+    HEAVY: { n: '超頻',     shape: [[0, 0]], needs: [],        mod: { dmg: 0.45 } },
+    AREA:  { n: '廣播',     shape: [[0, 0]], needs: ['proj'],  mod: { area: 1, dmg: -0.15 } },
+    HASTE: { n: '寬頻',     shape: [[0, 0]], needs: [],        mod: { cd: -0.3 } },
+    TWIN:  { n: '雙卡雙待', shape: [[0, 0]], needs: [],        mod: { repeat: 1 } },
+    CRITS: { n: '爆機',     shape: [[0, 0]], needs: [],        mod: { crit: 0.3 } },
+    LEECH: { n: '無線充電', shape: [[0, 0]], needs: [],        mod: { leech: 0.12 } },
   };
   const CD_FLOOR = -0.7; // 冷卻縮減上限 70%
 
@@ -87,12 +88,28 @@
           if (id && id !== a.id && byId.get(id).kind === 'support') adj.add(id);
         }
       const linked = [...adj].map(id => byId.get(id)).filter(s => fits(s, a));
-      const stat = { dmg: 0, area: 0, cd: 0, crit: 0, repeat: 0 };
+      const stat = { dmg: 0, area: 0, cd: 0, crit: 0, repeat: 0, leech: 0 };
       for (const s of linked) for (const [k, v] of Object.entries(SUPPORTS[s.key].mod)) stat[k] += v;
       stat.cd = Math.max(stat.cd, CD_FLOOR);
       out.push({ id: a.id, key: a.key, linked: linked.map(s => s.id), stat });
     }
     return out;
+  }
+
+  // 在不動既有機件的前提下找一個位置：輔助要求能連到指定主動機件（activeId），找不到回傳 null
+  function findSpot(b, kind, key, activeId) {
+    for (let rot = 0; rot < 4; rot++)
+      for (let y = 0; y < b.h; y++)
+        for (let x = 0; x < b.w; x++) {
+          if (!canPlace(b, kind, key, x, y, rot)) continue;
+          if (kind === 'support') {
+            const p = place(b, kind, key, x, y, rot), linked = resolve(b).find(r => r.id === activeId).linked.includes(p.id);
+            remove(b, p.id);
+            if (!linked) continue;
+          }
+          return { x, y, rot };
+        }
+    return null;
   }
 
   const REPEAT_K = 0.6; // 重複施放的傷害係數（雙卡雙待）
@@ -110,6 +127,6 @@
     });
   }
 
-  const api = { dps, ACTIVES, SUPPORTS, createBoard, shapeOf, cellsOf, canPlace, place, remove, rotate, resolve };
+  const api = { findSpot, dps, ACTIVES, SUPPORTS, createBoard, shapeOf, cellsOf, canPlace, place, remove, rotate, resolve };
   if (typeof module !== 'undefined') module.exports = api; else root.GridLab = api;
 })(typeof window !== 'undefined' ? window : globalThis);

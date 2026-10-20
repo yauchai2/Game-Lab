@@ -48,7 +48,7 @@
     <div class="row" style="margin-top:8px"><button id="hit">打 10 秒</button><span id="dres" style="align-self:center;color:var(--muted);font-size:13px"></span></div>
   </div>
 </main>
-<script src="../src/lab/grid.js"></script>
+<script src="../src/game/00-grid.js"></script>
 <script>
 const G = window.GridLab, b = G.createBoard(3, 3);
 let pick = null, sel = null; // pick: {kind,key} 準備放置；sel: 已選取的 piece id
@@ -101,7 +101,7 @@ function draw() {
     const s = r.stat, parts = [];
     if (s.dmg) parts.push('傷害 ' + (s.dmg > 0 ? '+' : '') + Math.round(s.dmg * 100) + '%');
     if (s.cd) parts.push('冷卻 ' + Math.round(s.cd * 100) + '%');
-    if (s.area) parts.push('範圍 +' + Math.round(s.area * 100) + '%');
+    if (s.area) parts.push('命中全部敵人');
     if (s.crit) parts.push('暴擊率 +' + Math.round(s.crit * 100) + '%');
     if (s.repeat) parts.push('重複施放 ×' + s.repeat);
     return '<div><b>' + G.ACTIVES[r.key].n + '</b>（' + G.ACTIVES[r.key].tags.map(t => TAG[t]).join('、') + '）：' + (parts.join('，') || '沒有加成') + '</div>';

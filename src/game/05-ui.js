@@ -43,30 +43,28 @@ function renderModal(){
   if (mob) $('mmenu').hidden = modalTab !== 'menu';
   $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : saveHtml();
 }
-let actSlot = 0;   // 技能彈窗裡目前選中的技能槽：點寶石會插進它的空輔助孔
+let held = null, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff' };
 const gemIco = (g, s = 22) => `<i class="gem" style="--gc:${GEM_COL[g] || '#a87bf0'};width:${s}px;height:${s}px"></i>`;
 function skillsHtml(){
-  if (!G.slots[actSlot] && G.slots.some(Boolean)) actSlot = G.slots.findIndex(Boolean);
-  let h = '<div class="hint">點技能圖示裝上技能；點下方寶石，會插進<b>選中的技能槽</b>的空孔；點已插的寶石可拔下。</div><div class="mrow">';
-  for (let i = 0; i < 3; i++){
-    if (G.lvl < SLOT_LV[i]){ h += `<div class="mc dim"><div class="mct">技能槽 ${i+1}</div><div class="mute">等級 ${SLOT_LV[i]} 解鎖</div></div>`; continue; }
-    const cur = G.slots[i];
-    const picks = Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, taken = G.slots.includes(id) && cur !== id;
-      return `<button class="skb${cur === id ? ' on' : ''}" ${(!un || taken) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : taken ? '（已裝在別的槽）' : ''}" onclick="event.stopPropagation();setSlot(${i}, '${cur === id ? '' : id}');actSlot=${i};renderModal()">${spr(SKILL_ICON[id], 26)}</button>`; }).join('');
-    h += `<div class="mc slot${actSlot === i && cur ? ' act' : ''}" onclick="actSlot=${i};renderModal()"><div class="mct">技能槽 ${i+1}${cur ? `：${SKILLS[cur].n}` : '（空）'}</div><div class="skrow">${picks}</div>`;
-    if (cur){ const sp = G.supp[cur];
-      h += `<div class="mute">${SKILLS[cur].d}</div><div class="socks">` + [0, 1].map(j => sp[j]
-        ? `<button class="sock full" title="拔下 ${SUPPS[sp[j]].n}" onclick="event.stopPropagation();setSupp('${cur}', ${j}, '')">${gemIco(sp[j])}<span>${SUPPS[sp[j]].n}</span></button>`
-        : `<div class="sock">空孔</div>`).join('') + '</div>';
-      const k = G.st.sk[cur]; if (k) h += `<div class="mute">單次傷害約 ${tFmt(k.hit)}，冷卻 ${k.cd.toFixed(1)} 秒</div>`; }
-    h += '</div>';
+  const B = G.board, at = {}, linked = new Set(GridLab.resolve(B).flatMap(r => r.linked));
+  for (const p of B.pieces) GridLab.cellsOf(p).forEach((c, i) => { at[c[0] + ',' + c[1]] = { p, first:i === 0 }; });
+  let h = '<div class="hint">先從下方選一個機件，再點面板格子放下。點面板上的機件可選取，再按旋轉或移除。<b>輔助配件只強化上下左右相鄰</b>的技能（廣播只對投射物）。</div><div class="pz" style="grid-template-columns:repeat(' + B.w + ',1fr)">';
+  for (let y = 0; y < 3; y++) for (let x = 0; x < B.w; x++){
+    if (y >= B.h){ h += `<div class="pc lock">Lv. ${SLOT_LV[y]}</div>`; continue; }
+    const c = at[x + ',' + y];
+    if (!c){ h += `<div class="pc" onclick="pzCell(${x},${y})"></div>`; continue; }
+    const act = c.p.kind === 'active', col = act ? '#ff9ec7' : GEM_COL[c.p.key] || '#a87bf0';
+    h += `<div class="pc fill${c.p.id === selPiece ? ' sel' : ''}${linked.has(c.p.id) ? ' lnk' : ''}" style="--pc:${col}" onclick="pzCell(${x},${y})">${c.first ? (act ? spr(SKILL_ICON[c.p.key], 24) : gemIco(c.p.key, 20)) + `<span>${act ? SKILLS[c.p.key].n : SUPPS[c.p.key].n}</span>` : ''}</div>`;
   }
-  h += '</div><div class="mct" style="margin:12px 0 6px">輔助寶石庫存</div><div class="gems">' + Object.keys(SUPPS).map(g => { const f = gemFree(g), n = G.gems[g] || 0;
-    return `<button class="gt" ${f > 0 && G.slots[actSlot] ? '' : 'disabled'} onclick="putGem('${g}')" title="${SUPPS[g].d}">${gemIco(g, 28)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em><small>${SUPPS[g].d}</small></button>`; }).join('') + '</div>';
+  h += `</div><div class="pzbar"><button ${selPiece == null ? 'disabled' : ''} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button><span id="pzmsg" class="mute"></span></div>`;
+  h += '<div class="mct" style="margin:10px 0 6px">技能</div><div class="skrow">' + Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, used = G.slots.includes(id);
+    return `<button class="skb${held && held.key === id ? ' on' : ''}" ${(!un || used) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : used ? '（已放在面板上）' : '：' + K.d}" onclick="pzHold('active','${id}')">${spr(SKILL_ICON[id], 26)}</button>`; }).join('') + '</div>';
+  for (const id of G.slots){ const k = G.st.sk[id], n = k && k.has.length; if (k) h += `<div class="mute"><b>${SKILLS[id].n}</b>：單次傷害約 ${tFmt(k.hit)}，冷卻 ${k.cd.toFixed(1)} 秒${n ? `，連結 ${n} 個輔助` : ''}</div>`; }
+  h += '<div class="mct" style="margin:12px 0 6px">輔助配件庫存</div><div class="gems">' + Object.keys(SUPPS).map(g => { const f = gemFree(g), n = G.gems[g] || 0;
+    return `<button class="gt${held && held.key === g ? ' on' : ''}" ${f > 0 ? '' : 'disabled'} onclick="pzHold('support','${g}')" title="${SUPPS[g].d}">${gemIco(g, 28)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em><small>${SUPPS[g].d}</small></button>`; }).join('') + '</div>';
   return h;
 }
-function putGem(g){ const id = G.slots[actSlot]; if (!id || gemFree(g) <= 0) return; const sp = G.supp[id], j = !sp[0] ? 0 : !sp[1] ? 1 : -1; if (j >= 0) setSupp(id, j, g); }   // 兩個孔都滿了就不動作
 function treeHtml(){
   const pts = passPoints(); let lines = '', nodes = '';
   for (const id in TREE){ const n = TREE[id]; for (const l of n.links) if (id < l){ const m = TREE[l], on2 = (id === 'S' || G.pass.includes(id)) && (l === 'S' || G.pass.includes(l));
@@ -95,8 +93,19 @@ function saveHtml(){
     <textarea id="sv" class="sv" placeholder="匯出的存檔碼會顯示在這裡；要匯入時把存檔碼貼在這裡再按「匯入」"></textarea><div id="smsg" class="hint"></div>`;
 }
 /* modal actions */
-function setSlot(i, v){ const old = G.slots[i]; G.slots[i] = v || null; if (v && G.cds[v] == null) G.cds[v] = 1; if (v) G.cds[v] = Math.min(G.cds[v] || 0, 1.5); recalc(); renderModal(); }
-function setSupp(id, j, v){ G.supp[id][j] = v || null; recalc(); renderModal(); }
+function pzMsg(t){ renderModal(); const e = $('pzmsg'); if (e) e.textContent = t || ''; }
+function pzHold(kind, key){ held = held && held.key === key ? null : { kind, key }; selPiece = null; renderModal(); }
+function pzCell(x, y){
+  const hit = G.board.pieces.find(p => GridLab.cellsOf(p).some(c => c[0] === x && c[1] === y));
+  if (hit){ selPiece = hit.id; held = null; return renderModal(); }
+  if (!held) return;
+  const p = GridLab.place(G.board, held.kind, held.key, x, y, 0);
+  if (!p){ pzMsg('這裡放不下（重疊或超出面板）'); return; }
+  if (held.kind === 'active') held = null; else if (gemFree(held.key) <= 0) held = null;
+  recalc(); renderModal();
+}
+function pzRot(){ if (selPiece == null) return; const ok = GridLab.rotate(G.board, selPiece); recalc(); pzMsg(ok ? '' : '旋轉後放不下'); }
+function pzDel(){ if (selPiece != null) GridLab.remove(G.board, selPiece); selPiece = null; recalc(); renderModal(); }
 function allocPass(id){ if (passPoints() <= 0 || !nodeOpen(id)) return; G.pass.push(id); recalc(); logLine(`天賦：${TREE[id].name}`, '#2f7fc4'); renderModal(); }
 function respec(){ const cost = 100*G.lvl; if (!G.pass.length || G.gold < cost) return; G.gold -= cost; G.pass = []; recalc(); renderModal(); }
 function enterMap(id){
@@ -209,6 +218,11 @@ function setupPanel(){
     .actions .cap{display:none !important}
     .mct{font-weight:800;font-size:12.5px;color:var(--wbd)}
     .mc.slot{cursor:pointer} .mc.slot.act{box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk),0 0 0 2px #ff8fb8,3px 4px 0 #5a6bb855 !important}
+    .pz{display:grid;gap:5px;margin:8px 0;max-width:240px}
+    .pc{aspect-ratio:1;max-height:84px;background:#fff;border:1px dashed var(--wdk);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:700;text-align:center;cursor:pointer;color:var(--ink);padding:2px}
+    .pc.lock{background:#0002;border-style:solid;color:var(--muted);cursor:default;font-weight:400}
+    .pc.fill{background:var(--pc);border:2px solid #fff} .pc.sel{box-shadow:0 0 0 3px #2f7fc4} .pc.lnk{box-shadow:inset 0 0 0 3px #3fd88a} .pc.sel.lnk{box-shadow:0 0 0 3px #2f7fc4,inset 0 0 0 3px #3fd88a}
+    .pzbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap} .gt.on{box-shadow:0 0 0 2px #ff8fb8 !important}
     .skrow{display:flex;gap:6px;margin:8px 0 6px;flex-wrap:wrap}
     .skb{width:40px;height:40px;padding:0 !important;border-radius:4px !important;display:grid;place-items:center;background:var(--win) !important;border:1px solid var(--wbd) !important;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk) !important}
     .skb.on{background:#fff !important;box-shadow:inset 1px 1px 0 var(--wdk),inset -1px -1px 0 #fff,0 0 0 2px #ff8fb8 !important} .skb[disabled]{opacity:.35;filter:grayscale(1)}
