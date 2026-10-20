@@ -184,23 +184,78 @@ function buildSign(){
 }
 
 /* ---------- 地面、傳送池 ---------- */
+const FIELD = 150;   // 地面往四周延伸到鏡頭外，畫面裡看不到浮島邊緣
+function treeAt(g, bi, x, y, z, k){   // 依生態放一棵低面數樹：森林圓冠樹、沙漠椰子樹、雪原雪松、熔岩水晶
+  const t = new T3.Group(); t.position.set(x, y, z); t.scale.setScalar(k); t.rotation.y = aRnd(x*7 + z)*6; g.add(t);
+  if (bi === 0){ mk(cylG(.9, 1.3, 6, 6), m3('#a8785a'), 0, 3, 0, t); for (const [cx, cy, cz, r, c] of [[0, 8.6, 0, 4.2, '#5fbf7a'], [2.2, 7.2, 1.2, 3, '#79d18e'], [-1.8, 10.4, -.6, 2.8, '#8fe0a0']]) mk(ico(r, 0), m3(c), cx, cy, cz, t); }
+  else if (bi === 1){ for (let i = 0; i < 5; i++) mk(cylG(.7, .85, 2.2, 6), m3(i % 2 ? '#c99a62' : '#b5844f'), i*.35, 1.1 + i*2.1, 0, t).rotation.z = -.07; for (let i = 0; i < 6; i++){ const a = i/6*6.283; cone(t, i % 2 ? '#6fcf8a' : '#4fb070', Math.cos(a)*2.4 + 1.6, 10.4, Math.sin(a)*2.4, .9, 5.2, 4, Math.sin(a)*1.9, -Math.cos(a)*1.9); } }
+  else if (bi === 2){ mk(cylG(.7, .9, 2.5, 6), m3('#a8785a'), 0, 1.2, 0, t); [[4.4, 3.4, 5], [3.5, 6.6, 4.4], [2.6, 9.6, 4]].forEach(([r, yy, h]) => { cone(t, '#7fcfae', 0, yy, 0, r, h, 7); cone(t, '#ffffff', 0, yy + h*.2, 0, r*.7, h*.66, 7); }); }
+  else { for (const [cx, cz, h, c] of [[0, 0, 9, '#ff9ac0'], [-1.8, 1, 5, '#c8a0ff'], [1.8, .4, 6, '#ffd0e8']]) mk(new T3.OctahedronGeometry(1.2, 0), m3(c, { emissive:c, emissiveIntensity:.25 }), cx, h/2, cz, t).scale.set(.9, h/2.4, .9); }
+  return t;
+}
 function buildGround(bi){
-  const B = BIOMES[bi], g = new T3.Group(), M = VM;
-  mk(new T3.BoxGeometry(BXW + 2*M, 4.2, BYW), [m3(B.board.m), m3(B.board.d), m3(B.board.l), m3(B.board.d), m3(B.board.m), m3(B.board.d)], BXW/2, BZ - 2.1, BYW/2, g);
-  mk(new T3.BoxGeometry(BXW + 2*M - 1, .3, BYW - 1), m3(B.board.l), BXW/2, BZ + .15, BYW/2, g);
-  const rows = Math.round((BYW - 4)/2.5), cv = document.createElement('canvas'); cv.width = 4; cv.height = rows; const cx = cv.getContext('2d');   // 棋盤格步道：每格一個像素，用最近鄰放大
-  for (let r = 0; r < rows; r++) for (let c = 0; c < 4; c++){ cx.fillStyle = (r + c) % 2 ? '#fff6fb' : ['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]; cx.fillRect(c, r, 1, 1); }
+  const B = BIOMES[bi], g = new T3.Group(), cx0 = BXW/2, cy0 = BYW/2;
+  // 大片地面：兩色方格（像參考圖的地磚），畫在一張小貼圖上再放大
+  const N = 50, fc = document.createElement('canvas'); fc.width = fc.height = N; const fx = fc.getContext('2d');
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++){ fx.fillStyle = (r + c) % 2 ? B.board.l : B.board.m; fx.fillRect(c, r, 1, 1); }
+  const ft = new T3.CanvasTexture(fc); ft.magFilter = ft.minFilter = T3.NearestFilter; ft.colorSpace = T3.SRGBColorSpace;
+  mk(new T3.PlaneGeometry(FIELD*2, FIELD*2).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:ft }), cx0, BZ, cy0, g);
+  // 棋盤格步道
+  const rows = Math.round((BYW - 4)/2.5), cv = document.createElement('canvas'); cv.width = 4; cv.height = rows + 16; const cx = cv.getContext('2d');
+  for (let r = 0; r < rows + 16; r++) for (let c = 0; c < 4; c++){ cx.fillStyle = (r + c) % 2 ? '#fff6fb' : ['#ffb8d6', '#ffd48a', '#9fd8f5', '#e2a8cc'][bi]; cx.fillRect(c, r, 1, 1); }
   const tx = new T3.CanvasTexture(cv); tx.magFilter = T3.NearestFilter; tx.minFilter = T3.NearestFilter; tx.colorSpace = T3.SRGBColorSpace;
-  mk(new T3.PlaneGeometry(10, BYW - 4).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:tx }), 15, BZ + .5, BYW/2, g);
-  for (let i = 0; i < 40; i++){
-    const x = 2 - M + aRnd(i*3 + 1)*(BXW + 2*M - 4), y = 3 + aRnd(i*3 + 2)*(BYW - 6); if (Math.abs(x - 15) < 5.5) continue;
-    if (bi === 0){ if (i % 3 === 0){ mk(ico(.7, 0), m3(['#ffd1e6', '#fff3a8', '#ffffff'][(i/3|0) % 3]), x, BZ + 1.3, y, g); mk(cylG(.08, .08, 1.2, 3), m3('#6aa27a'), x, BZ + .7, y, g); } else cone(g, '#79c98c', x, BZ + .9, y, .55, 1.8, 4); }
-    else if (bi === 1) mk(new T3.DodecahedronGeometry(.5 + aRnd(i)*.5, 0), m3(i % 2 ? B.board.d : '#fff0c8'), x, BZ + .6, y, g);
-    else if (bi === 2) mk(cylG(1.3 + aRnd(i), 1.5 + aRnd(i), .25, 6), m3(i % 2 ? '#ffffff' : '#bfe3f5'), x, BZ + .5, y, g);
-    else if (i % 2) mk(new T3.BoxGeometry(3.4, .12, .5), basic('#ff8fb0'), x, BZ + .45, y, g).rotation.y = aRnd(i)*3;
+  mk(new T3.PlaneGeometry(10, (rows + 16)*2.5).rotateX(-Math.PI/2), new T3.MeshLambertMaterial({ map:tx }), 15, BZ + .08, BYW/2 - 2, g);
+  mk(new T3.BoxGeometry(11, .3, (rows + 16)*2.5), m3(B.board.d), 15, BZ - .1, BYW/2 - 2, g);
+  // 高低台階：離步道越遠越高，一格 6×6，頂面是草（或沙、雪），側面是土
+  const top = m3(B.t1), side = m3(B.board.d), lip = m3(B.t2), ub = geo('ubox', () => new T3.BoxGeometry(1, 1, 1)), C = 6;
+  const hAt = (i, j) => { const x = i*C + C/2, fr = x > cx0, d = Math.abs(x - cx0) - (fr ? 26 : 20); if (d < 0) return 0; const h = Math.max(0, Math.floor(d/9 + aRnd(i*31 + j*17)*1.3 - .2))*3; return fr ? Math.min(3, h) : h; };   // 鏡頭在右前方：右側台階壓低，免得擋住人物
+  const tops = [];
+  for (let i = -9; i < 14; i++) for (let j = -8; j < 22; j++){
+    const h = hAt(i, j); if (!h) continue; const x = i*C + C/2, z = j*C + C/2;
+    mk(ub, side, x, BZ + h/2 - .2, z, g).scale.set(C, h - .4, C); mk(ub, top, x, BZ + h - .2, z, g).scale.set(C, .4, C);
+    mk(ub, lip, x, BZ + h + .05, z, g).scale.set(C - .6, .1, C - .6);
+    tops.push([x, BZ + h, z, i, j]);
+  }
+  // 水道與木橋：步道右側一條小河，橫跨一座木橋
+  const wc = ['#7fd0f5', '#7fd0f5', '#cfefff', '#ff8fb0'][bi], wx = cx0 + 19;
+  mk(new T3.BoxGeometry(6, .5, FIELD*2), m3(B.board.d), wx, BZ - .2, cy0, g);
+  mk(new T3.PlaneGeometry(5, FIELD*2).rotateX(-Math.PI/2), m3(wc, { emissive:bi === 3 ? wc : '#000000', emissiveIntensity:bi === 3 ? .35 : 0, transparent:true, opacity:.88 }), wx, BZ + .1, cy0, g);
+  for (let k = 0; k < 18; k++) mk(new T3.BoxGeometry(1.6 + aRnd(k)*2, .06, .25), basic('#ffffff', .8), wx - 1.5 + aRnd(k + 50)*3, BZ + .16, 2 + k*7 + aRnd(k + 9)*3, g);
+  for (const by of [24, 52]){ for (let k = -3; k <= 3; k++) mk(new T3.BoxGeometry(8, .45, 1.1), m3(k % 2 ? '#c99a62' : '#b5844f'), wx, BZ + .7, by + k*1.25, g); for (const sx of [-1, 1]) for (const sy of [-4, 4]) mk(cylG(.35, .35, 2.6, 5), m3('#8a6040'), wx + sx*3.6, BZ + 1.3, by + sy, g); }
+  // 樹、樹樁、石頭、花：放在台階頂面與平地邊緣
+  tops.forEach(([x, y, z, i, j], n) => {
+    const r = aRnd(i*13 + j*7 + 3);
+    if (r < (x > cx0 ? (x > cx0 + 44 ? .3 : 0) : .26)) treeAt(g, bi, x + (aRnd(n)-.5)*2, y, z + (aRnd(n + 1)-.5)*2, .75 + aRnd(n + 2)*.5);
+    else if (r < .48) mk(cylG(1.2, 1.4, 1.3, 7), m3('#b5844f'), x, y + .65, z, g);
+    else if (r < .58) mk(new T3.DodecahedronGeometry(1.2, 0), m3('#c8c2e0'), x, y + .7, z, g).scale.set(1.2, .8, 1);
+  });
+  for (let n = 0; n < 70; n++){
+    const x = cx0 + (aRnd(n*3 + 1) < .5 ? -1 : 1)*(6 + aRnd(n*3 + 2)*16), y = -20 + aRnd(n*3 + 3)*(BYW + 40); if (Math.abs(x - wx) < 4) continue;
+    if (bi === 0){ if (n % 3 === 0){ mk(ico(.7, 0), m3(['#ffd1e6', '#fff3a8', '#ffffff'][(n/3|0) % 3]), x, BZ + 1.3, y, g); mk(cylG(.08, .08, 1.2, 3), m3('#6aa27a'), x, BZ + .7, y, g); } else cone(g, '#79c98c', x, BZ + .9, y, .55, 1.8, 4); }
+    else if (bi === 1) mk(new T3.DodecahedronGeometry(.5 + aRnd(n)*.5, 0), m3(n % 2 ? B.board.d : '#fff0c8'), x, BZ + .6, y, g);
+    else if (bi === 2) mk(cylG(1.3 + aRnd(n), 1.5 + aRnd(n), .25, 6), m3(n % 2 ? '#ffffff' : '#bfe3f5'), x, BZ + .2, y, g);
+    else if (n % 2) mk(new T3.BoxGeometry(3.4, .12, .5), basic('#ff8fb0'), x, BZ + .15, y, g).rotation.y = aRnd(n)*3;
     else mk(new T3.DodecahedronGeometry(.6, 0), m3(B.board.d), x, BZ + .6, y, g);
   }
-  return g;
+  for (let n = 0; n < 6; n++) treeAt(g, bi, cx0 - 13 - aRnd(n + 70)*4, BZ, -10 + n*15 + aRnd(n)*4, .7 + aRnd(n + 80)*.3);
+  return bake(g);
+}
+function bake(g){   // 把靜態場景依材質合併成少數幾個網格，上千個方塊與樹也只要十幾次繪製
+  g.updateMatrixWorld(true); const groups = new Map(), keep = [];
+  g.traverse(o => {
+    if (!o.isMesh) return; const m = o.material; if (m.map){ keep.push(o); return; }
+    const k = m.type + m.color.getHexString() + m.opacity + (m.emissive ? m.emissive.getHexString() + m.emissiveIntensity : '');
+    const geom = (o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone()).applyMatrix4(o.matrixWorld);
+    if (!groups.has(k)) groups.set(k, { m, list:[] }); groups.get(k).list.push(geom);
+  });
+  const out = new T3.Group(); keep.forEach(o => out.add(o));
+  for (const { m, list } of groups.values()){
+    const n = list.reduce((a, q) => a + q.attributes.position.count, 0), P = new Float32Array(n*3), Nn = new Float32Array(n*3); let off = 0;
+    for (const q of list){ P.set(q.attributes.position.array, off*3); Nn.set(q.attributes.normal.array, off*3); off += q.attributes.position.count; q.dispose(); }
+    const bg = new T3.BufferGeometry(); bg.setAttribute('position', new T3.BufferAttribute(P, 3)); bg.setAttribute('normal', new T3.BufferAttribute(Nn, 3));
+    out.add(new T3.Mesh(bg, m));
+  }
+  return out;
 }
 const stoneM = () => m3('#d6d0ea');
 function buildPortal(){
@@ -250,9 +305,9 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   if (W !== R3.W || H !== R3.H || dpr !== R3.dpr){ R3.W = W; R3.H = H; R3.dpr = dpr; R3.rd.setPixelRatio(dpr*R3.res); R3.rd.setSize(W, H, false); }
   const cam = R3.cam, tgt = new T3.Vector3(BXW/2, BZ + 6, BYW/2); cam.position.copy(tgt).add((innerHeight > innerWidth ? new T3.Vector3(.34, .8, 1) : new T3.Vector3(1, .86, 1)).normalize().multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-  for (const x of [-VM, BXW + VM]) for (const y of [0, BYW]) for (const z of [BZ - 4, BZ + 44]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
+  for (const x of [-10, BXW + 10]) for (const y of [0, BYW]) for (const z of [BZ - 4, BZ + 40]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
   const bw = x1 - x0, bh = y1 - y0, ar = W/H, cx = (x0 + x1)/2 + bw*.04; let cy = (y0 + y1)/2 + bh*.02;
-  const pt = innerHeight > innerWidth; let vw = bw/(pt ? 1.3 : .97), vh = bh/1.0; if (pt){ vh = bh/1.25; cy -= bh*.07; } if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;
+  const pt = innerHeight > innerWidth; let vw = bw/(pt ? 1.3 : .97), vh = bh/1.0; if (pt){ vh = bh/1.25; cy -= bh*.07; } if (vw/vh < ar) vw = vh*ar; else vh = vw/ar; if (!pt){ vw *= 1.25; vh *= 1.25; }   // 桌機拉遠一點，多看到周圍地形
   cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2; cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
   const vb = fig.viewBox.baseVal; R3.vbW = vb.width; R3.vbH = vb.height;
 }
