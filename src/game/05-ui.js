@@ -7,11 +7,17 @@ function iconSvg(slot, col){
     : `<circle cx="15" cy="18" r="7" fill="none" stroke="#2b2552" stroke-width="5.2"/><circle cx="15" cy="18" r="7" fill="none" stroke="#e8c24a" stroke-width="3"/><path d="M15 3L19 8L15 12L11 8Z" fill="${col}" stroke="#2b2552" stroke-width="1.8" stroke-linejoin="round"/>`;
   return `<svg class="ico" viewBox="0 0 30 30" width="30" height="30">${g}</svg>`;
 }
+const ICON_IDX = ['fire', 'ice', 'bolt', 'meteor', 'shield', 'sword', 'shoe', 'headphones', 'coin', 'star', 'heart', 'potion'];
+function spr(name, size = 30, glow = ''){   // 取 GPT Image 生成的圖示集（4 欄 3 列，每格 128）中的一格
+  const i = ICON_IDX.indexOf(name), c = i % 4, r = (i/4) | 0, k = size/128;
+  return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET.icons}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(512*k).toFixed(1)}px ${(384*k).toFixed(1)}px no-repeat;${glow ? `filter:drop-shadow(0 0 3px ${glow})` : ''}"></span>`;
+}
+const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor' };
 function slotHtml(slot){
   const it = G.equip[slot];
-  if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${iconSvg(slot, '#d9d3c2')}<div class="mute">空</div></div></div>`;
+  if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${spr(SLOT_ICON[slot], 32)}<div class="mute">空</div></div></div>`;
   const lines = itemLines(it).map(l => `<li class="${l.imp ? 'imp' : ''}">${l.t}</li>`).join('');
-  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${iconSvg(slot, RAR[it.r].g)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
+  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${spr(SLOT_ICON[slot], 32, RAR[it.r].c)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
 }
 function panelHtml(){
   const s = G.st, h = G.h, R = G.run;
@@ -41,7 +47,7 @@ function skillsHtml(){
     const opts = Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, taken = G.slots.includes(id) && G.slots[i] !== id; return `<option value="${id}" ${cur === id ? 'selected' : ''} ${(!un || taken) ? 'disabled' : ''}>${K.n}${!un ? `（Lv. ${K.lvl}）` : taken ? '（已裝備）' : ''}</option>`; }).join('');
     h += `<div class="mc"><b>技能槽 ${i+1}</b><select onchange="setSlot(${i}, this.value)"><option value="">（空）</option>${opts}</select>`;
     if (cur){ const sp = G.supp[cur];
-      h += `<div class="mute">${SKILLS[cur].d}</div>`;
+      h += `<div class="mute">${spr(SKILL_ICON[cur], 28)} ${SKILLS[cur].d}</div>`;
       for (let j = 0; j < 2; j++){
         const o = Object.keys(SUPPS).filter(g => gemFree(g) > 0 || sp[j] === g).map(g => `<option value="${g}" ${sp[j] === g ? 'selected' : ''}>${SUPPS[g].n}</option>`).join('');
         h += `<div class="srow">輔助 ${j+1}<select onchange="setSupp('${cur}', ${j}, this.value)"><option value="">（空）</option>${o}</select></div>`;
@@ -161,10 +167,11 @@ function setupPanel(){
   `;
   st.textContent += `
     body::before{content:'';position:fixed;left:0;right:0;top:0;height:45%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(255,255,255,.4) 3px,transparent 3.5px) 0 0/28px 28px;-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)}
-    header h1{display:block;margin:0;line-height:0} header h1 .wm{width:min(300px,52vw);height:auto;overflow:visible;filter:drop-shadow(0 2px 0 rgba(43,37,82,.25))}
+    header h1{display:block;margin:0;line-height:0} header h1 .wm{width:min(230px,42vw);height:auto;overflow:visible;filter:drop-shadow(0 2px 0 rgba(43,37,82,.25))}
     header h1 .lg{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:3px solid #fff;color:#fff;font:900 16px/1 'Arial Rounded MT Bold','Nunito',system-ui,sans-serif;text-shadow:0 1px 0 rgba(43,37,82,.35);box-shadow:0 2px 0 rgba(43,37,82,.25);letter-spacing:0}
     header h1 .lg:nth-child(4n+1){background:#ff8fc4}header h1 .lg:nth-child(4n+2){background:#ffd35a}header h1 .lg:nth-child(4n+3){background:#6fc4f5}header h1 .lg:nth-child(4n){background:#7fdcae}
     header h1 .gap{width:8px}
+    .spr{display:inline-block;vertical-align:middle;flex:none;image-rendering:auto}
     .controls{display:none}`;   // the engine's wobble slider and colour swatches are not part of the game
   document.head.appendChild(st);
   const el = document.createElement('div'); el.className = 'rpg'; el.id = 'rpg'; document.querySelector('.stage').after(el);
