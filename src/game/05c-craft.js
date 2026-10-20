@@ -11,7 +11,7 @@ function craftDo(slot, act){
   const it = G.equip[slot], C = CRAFT[act]; if (!it || !C.ok(it) || it.cr && act !== 'corrupt' && false) return;
   if (it.cr){ logLine('已腐化的裝備不能再改機', '#e2483d'); return; }
   const cost = C.cost(it); if ((G.parts || 0) < cost){ logLine('零件不夠', '#e2483d'); return; }
-  G.parts -= cost; const have = new Set(it.aff.map(a => a.k)), free = () => POOL[slot].filter(k => !have.has(k)), add = () => { const f = free(); if (!f.length) return false; const k = tPick(f); have.add(k); it.aff.push(rollAff(k, it.il)); return true; };
+  G.parts -= cost; G.craftN = (G.craftN || 0) + 1; checkQuest(); const have = new Set(it.aff.map(a => a.k)), free = () => POOL[slot].filter(k => !have.has(k)), add = () => { const f = free(); if (!f.length) return false; const k = tPick(f); have.add(k); it.aff.push(rollAff(k, it.il)); return true; };
   let msg = '';
   if (act === 'recal'){ it.aff = it.aff.map((a, i) => i === it.lk ? a : rollAff(a.k, it.il, it.r === 3 ? 1.35 : 1)); msg = '數值重洗完成'; }
   else if (act === 'swap'){ const idx = it.aff.map((a, i) => i).filter(i => i !== it.lk); const i = tPick(idx); const f = free(); if (f.length){ const k = tPick(f); it.aff[i] = rollAff(k, it.il); msg = `詞綴換成：${AFF[k].t(it.aff[i].v)}`; } else msg = '沒有可替換的詞綴'; }

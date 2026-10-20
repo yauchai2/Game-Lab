@@ -52,7 +52,7 @@ const DESK = () => document.body.classList.contains('d');   // 桌機寬螢幕�
 function closeModal(){ if (MOB()){ openModal('char'); return; } if (DESK()){ openModal('skills'); return; } $('modal').hidden = true; }
 function renderModal(){ setTimeout(() => { if (typeof dressMount === 'function' && modalTab === 'dress') dressMount(); }, 0);
   if ($('modal').hidden) return;
-  const mob = MOB(), tabs = mob ? [['char','角色','shield'], ['skills','技能','fire'], ['tree','天賦','star'], ['maps','地圖','shoe'], ['menu','選單','headphones']] : [['dress','角色'], ['skills','技能'], ['craft','改機'], ['tree','天賦盤'], ['maps','地圖'], ['goals','目標'], ['ach','成就'], ['dex','圖鑑'], ['log','日誌'], ['save','存檔']];
+  const mob = MOB(), tabs = (mob ? [['char','角色','shield'], ['skills','技能','fire'], ['tree','天賦','star'], ['maps','地圖','shoe'], ['menu','選單','headphones']] : [['dress','角色'], ['skills','技能'], ['craft','改機'], ['tree','天賦盤'], ['maps','地圖'], ['goals','目標'], ['ach','成就'], ['dex','圖鑑'], ['log','日誌'], ['save','存檔']]).filter(t => tabOpen(t[0]));
   if (!mob && (modalTab === 'char' || modalTab === 'menu')) modalTab = 'dress';
   if (mob && modalTab === 'save') modalTab = 'menu';
   $('mtabs').innerHTML = tabs.map(([k, n, ic]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${ic ? spr(ic, 20) : ''}<span>${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}${k === 'log' && logNew() ? ' ●' : ''}</span></button>`).join('') + (mob || DESK() ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`);
@@ -105,9 +105,15 @@ function treeHtml(){
     <button class="mb" onclick="respec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
 }
 function treeInfo(id){ const n = TREE[id], el = $('tinfo'); if (el) el.textContent = id === 'S' ? '起點' : `${n.name}${nodeOpen(id) ? '' : G.pass.includes(id) ? '（已點亮）' : '（未連到）'}`; }
+function questHtml(){
+  const q = QUESTS[G.quest || 0];
+  if (!q) return '';
+  const v = Math.min(q.goal, GOAL_STAT[q.k]());
+  return `<div class="mct">新手任務　${G.quest || 0}/${QUESTS.length}</div><div class="gls"><div class="gl"><b>${q.n}</b><span class="mute">${q.t}　獎勵：${goalRewardText(q.rw)}${q.un ? '　（完成後開放：' + (q.un === 'craft' ? '改機' : '天賦盤') + '）' : ''}</span><i style="--p:${Math.round(v/q.goal*100)}%"></i><em>${v} / ${q.goal}</em></div></div>`;
+}
 function goalsHtml(){
   const done = GOALS.filter(a => G.goals[a.id]).length;
-  return `<div class="mct">目標　${done}/${GOALS.length}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
+  return questHtml() + `<div class="mct">目標　${done}/${GOALS.length}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
     return `<div class="gl${ok ? ' ok' : ''}"><b>${ok ? '★ ' : ''}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
 }
 function mapsHtml(){
