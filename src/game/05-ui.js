@@ -16,7 +16,7 @@ const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = 
 function slotHtml(slot){
   const it = G.equip[slot];
   if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${spr(SLOT_ICON[slot], 32)}<div class="mute">空</div></div></div>`;
-  const lines = itemLines(it).map(l => `<li class="${l.imp ? 'imp' : ''}">${l.t}</li>`).join('');
+  const lines = itemLines(it).map(l => `<li class="${l.imp ? 'imp' : l.lg ? 'lgd' : ''}">${l.t}</li>`).join('');
   return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${spr(SLOT_ICON[slot], 32, RAR[it.r].c)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
 }
 function panelHtml(){
@@ -366,7 +366,7 @@ function setupPanel(){
     body.m .tab{display:flex !important;flex-direction:column;align-items:center;gap:1px;padding:4px 0 3px !important;font-size:11px;border-radius:0 !important;border:0 !important;border-right:1px solid #ffffff55 !important;box-shadow:none !important;background:transparent !important;color:#fff !important;text-shadow:0 1px 0 #00000040}
     body.m .tab.on{background:var(--win) !important;color:var(--wbd) !important;text-shadow:none}
     body.m #mbody{flex:1;overflow:auto;padding:8px;-webkit-overflow-scrolling:touch}
-    body .lg{margin:6px 0 10px} body .lg ul{margin:3px 0 0 18px;padding:0} body .lg li{margin:2px 0}
+    body .rc li.lgd{color:#c4501f;font-weight:bold} body .lg{margin:6px 0 10px} body .lg ul{margin:3px 0 0 18px;padding:0} body .lg li{margin:2px 0}
     body.m #mmenu{padding:8px 8px 0} body.m #mmenu .actions{position:static !important;display:flex !important;flex-direction:row !important;flex-wrap:wrap;gap:6px !important;max-width:none}
     body.m #mmenu .chips{left:0 !important;top:calc(100% + 6px) !important}
     .rpgm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-size:11.5px} .rpgm .rc.wide{grid-column:1/-1}

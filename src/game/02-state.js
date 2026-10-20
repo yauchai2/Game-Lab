@@ -26,7 +26,7 @@ const G = {
   equip:{ weapon:null, armor:null, ring:null }, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
   pass:[], autoCard:false, ach:{}, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
   h:{ x:HX, y:HY, vx:0, vy:0, gx:HX, gy:HY, aiT:0, mv:0, hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
-  mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
+  lgK:0, lgC:0, mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
 };
 /* 配件拼圖：玩家擺的是 G.board；G.slots / G.supp 由它推導出來，戰鬥與屬性計算照舊讀這兩個 */
 const boardRows = (lvl = G.lvl) => Math.max(1, SLOT_LV.filter(l => lvl >= l).length);
@@ -76,13 +76,13 @@ const runQ = () => G.run ? G.run.map.mods.reduce((a, m) => a + MODS[m].q, 0) : 0
 function rollAff(k, il, boost=1){ const v = AFF[k].b(il) * (.6 + Math.random()*.7) * boost; return { k, v: k === 'leech' ? Math.round(v*10)/10 : Math.max(1, Math.round(v)) }; }
 function makeItem(slot, rar, il){
   const n = rar === 0 ? 0 : rar === 1 ? (Math.random() < .5 ? 1 : 2) : rar === 2 ? (Math.random() < .5 ? 3 : 4) : 4;
-  const keys = rar === 3 ? UNIQUES[slot].aff.slice() : POOL[slot].slice().sort(() => Math.random() - .5).slice(0, n);
+  const LG = rar === 3 ? tPick(LEGENDS[slot]) : null, keys = rar === 3 ? LG.aff.slice() : POOL[slot].slice().sort(() => Math.random() - .5).slice(0, n);
   const aff = keys.map(k => rollAff(k, il, rar === 3 ? 1.35 : 1));
   const tier = Math.min(3, Math.floor(il/6));
   const imp = slot === 'weapon' ? { k:'dmg', v:Math.round(4 + il*1.5) } : slot === 'armor' ? { k:'armor', v:Math.round(5 + il*3) } : { k:'crit', v:2 };
   let name = BASES[slot][tier];
-  if (rar === 1) name = PREF[aff[0].k] + name; else if (rar === 2) name = tPick(RARE_NAMES[slot]); else if (rar === 3) name = UNIQUES[slot].name;
-  return { slot, r:rar, il, name, imp, aff };
+  if (rar === 1) name = PREF[aff[0].k] + name; else if (rar === 2) name = tPick(RARE_NAMES[slot]); else if (rar === 3) name = LG.name;
+  return LG ? { slot, r:rar, il, name, imp, aff, lg:LG.id } : { slot, r:rar, il, name, imp, aff };
 }
 function rarityRoll(boss){
   const bonus = Math.min(8, lvlNow()*.25) + runQ()*6 + (G.run && G.run.map.mods.includes('lucky') ? 4 : 0), w = [RAR[0].w - bonus*2, RAR[1].w, RAR[2].w + bonus, RAR[3].w + bonus*.3];
@@ -91,7 +91,8 @@ function rarityRoll(boss){
   return i;
 }
 const itemValue = it => Math.round((1 + it.r*2.2) * (4 + it.il*2.4));
-const itemLines = it => [it.imp, ...it.aff].map((a, i) => ({ t:AFF[a.k].t(a.v), imp:i === 0 }));
+const itemLines = it => [it.imp, ...it.aff].map((a, i) => ({ t:AFF[a.k].t(a.v), imp:i === 0 })).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
+const lgOn = id => Object.values(G.equip).some(it => it && it.lg === id);
 function makeMap(lvl){
   const keys = Object.keys(MODS).sort(() => Math.random() - .5).slice(0, 2 + Math.floor(Math.random()*3));
   return { id:Math.random().toString(36).slice(2, 8), lvl, biome:Math.floor(Math.random()*4), mods:keys };
@@ -126,7 +127,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
   s.sk = {}; let dps2 = 0;
   for (const id of slots){ if (!id) continue;
     const K = SKILLS[id], sp = supp[id] || [], has = x => sp.includes(x), n = x => sp.filter(y => y === x).length;
-    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (1 + .45*n('HEAVY')) * (has('AREA') && id === 'FIRE' ? .85 : 1);
+    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (Object.values(equip).some(it => it && it.lg === 'W_MULTI') ? 1 + .15*slots.filter(Boolean).length : 1) * (1 + .45*n('HEAVY')) * (has('AREA') && id === 'FIRE' ? .85 : 1);
     const cd = K.cd * (G.modeOf[id] === 'CHAIN_OVERLOAD' ? 1.8 : 1) * (1 - Math.min(.6, (s.haste + 30*n('HASTE'))/100)), crit = Math.min(100, s.crit + 30*n('CRITS'));
     const ca = 1 + crit/100*(s.cm/100 - 1);
     s.sk[id] = { mode:G.modeOf[id] || null, hit, cd, crit, has:sp.filter(Boolean), area:has('AREA'), twin:n('TWIN'), leech:has('LEECH') };

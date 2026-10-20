@@ -27,6 +27,8 @@ function killMon(m){
   const hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk)), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
   G.gold += gold; G.totalKills++; if (m.boss) G.bossKills = (G.bossKills || 0) + 1; addFloat(m.x - 2, m.y, BZ + 20, `+${gold}g`, '#a9780a', 3);
   gainXp(xp); if (R) R.kills++; else G.kills++; checkGoals();
+  if (lgOn('A_RESET') && ++G.lgK % 25 === 0){ for (const id of G.slots) G.cds[id] = 0; addFloat(G.h.x, G.h.y, BZ + 24, '冷卻完畢', '#4a8fe0', 3.6); }
+  if (lgOn('R_LINK')){ const o = G.mons.filter(x => !x.dead && x !== m && !(x.fall > 0)).sort((a, b) => Math.hypot(a.x - m.x, a.y - m.y) - Math.hypot(b.x - m.x, b.y - m.y))[0]; if (o){ addFx({ k:'bolt', pts:[[m.x, m.y, BZ + 8], [o.x, o.y, BZ + 8]], t:0, dur:.2 }); hitMon(o, m.hpMax*.5, false); } }
   const nItems = m.boss ? 2 + (Math.random() < .5 ? 1 : 0) : Math.random() < HORDE.drop*(1 + q) ? 1 : 0;
   for (let i = 0; i < nItems; i++) dropItem(m, makeItem(tPick(['weapon','armor','ring']), rarityRoll(m.boss), d));
   if (Math.random() < (m.boss ? .3 : .012)) G.drops.push({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'cart', id:tPick(Object.keys(MODES)), t:0 });
@@ -83,7 +85,8 @@ function nearestMon(fightOnly, from){ let best = null, bd = 1e9; const [fx, fy] 
 
 function revive(){ const h = G.h; h.dead = 0; h.x = HX; h.y = HY; h.vx = h.vy = 0; h.hp = G.st.life; G.spawnCd = 1; }
 function heroDie(){
-  const h = G.h; h.dead = 3; G.deaths++; SFX('die'); G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.timers.length = 0;
+  const h = G.h;
+  if (lgOn('A_PHOENIX') && !(h.phx > 0)){ h.phx = 90; h.hp = G.st.life*.5; for (const id of G.slots) G.cds[id] = 0; addFx({ k:'nova', t:0, dur:.55 }); addFloat(h.x, h.y, BZ + 24, '不滅', '#ff7a3d', 5); SFX('boom'); return; } h.dead = 3; G.deaths++; SFX('die'); G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.timers.length = 0;
   if (G.run){ logLine('你倒下了……地圖失敗', '#e2483d'); G.run = null; }
   else { if (G.push && G.depth > 1) G.depth--; G.kills = 0; G.bossOut = false; logLine('你倒下了……退回較淺的深度', '#e2483d'); }
   G.dirty = true;
@@ -92,7 +95,11 @@ function skillDmg(id){ const k = G.st.sk[id]; return k; }
 function applySkillHit(id, m, mult=1, chainIdx=0){
   const k = G.st.sk[id]; if (!m || m.dead) return 0;
   if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
-  const r = rollDmg(k.hit * mult, k.crit); hitMon(m, r.dmg, r.crit); return r.dmg;
+  if (lgOn('R_LAST') && G.h.hp < G.st.life*.35) mult *= 1.4;
+  const r = rollDmg(k.hit * mult, k.crit); hitMon(m, r.dmg, r.crit);
+  if (r.crit && !G.inFork && lgOn('W_FORK')){ G.inFork = true; const near = G.mons.filter(o => !o.dead && o !== m && !(o.fall > 0)).sort((a, b) => Math.hypot(a.x - m.x, a.y - m.y) - Math.hypot(b.x - m.x, b.y - m.y)).slice(0, 2);
+    for (const o of near){ addFx({ k:'boom', x:o.x, y:o.y, z:BZ + 6, t:0, dur:.3 }); applySkillHit(id, o, mult*.5); } G.inFork = false; }
+  return r.dmg;
 }
 function castSkill(id, repeat=1){
   const k = G.st.sk[id], s = G.st, h = G.h; let total = 0; if (!k) return;
@@ -200,7 +207,7 @@ function update(dt){
     if (m.fight){ m.atkCd -= dt; if (m.atkCd <= 0 && m.lunge < 0){ m.lunge = 0; m.lungeHit = false; m.atkCd = m.atkInt; } }
     if (m.lunge >= 0){
       m.lunge += dt;
-      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ h.dash = { a:Math.random()*6.28, t:0 }; addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); continue; } const dmg = Math.max(1, m.dmg * (1 - s.red) * tRand(.9, 1.1)); h.hp -= dmg; h.hurtT = .15; addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#e2483d', 3.6); }
+      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ h.dash = { a:Math.random()*6.28, t:0 }; addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); if (lgOn('A_RIPOSTE')){ const sid = tPick(G.slots.filter(Boolean)); if (sid) castSkill(sid, .8); } continue; } const dmg = Math.max(1, m.dmg * (1 - s.red) * tRand(.9, 1.1)); h.hp -= dmg; h.hurtT = .15; addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#e2483d', 3.6); }
       if (m.lunge >= .3) m.lunge = -1;
     }
   }
@@ -219,14 +226,15 @@ function update(dt){
     if (h.swingT >= .3) h.swingT = -1;
   }
   // skills
-  for (const id of G.slots){ if (id && G.cds[id] > 0) G.cds[id] -= dt; }
+  for (const id of G.slots){ if (id && G.cds[id] > 0) G.cds[id] -= dt*(lgOn('R_LAST') && h.hp < s.life*.35 ? 2.5 : 1); }
+  if (h.phx > 0) h.phx -= dt;
   if (h.castT < 0 && aliveMons().length){ const id = G.slots.find(x => x && s.sk[x] && G.cds[x] <= 0); if (id){ h.castT = 0; h.castFired = false; h.castSk = id; G.cds[id] = s.sk[id].cd; } }
   if (h.castT >= 0){
     h.castT += dt;
-    if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk, 1); if (s.sk[h.castSk] && s.sk[h.castSk].twin) for (let i = 0; i < s.sk[h.castSk].twin; i++) G.timers.push({ t:.25*(i + 1), id:h.castSk }); }
+    if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk, 1); G.lgC = (G.lgC || 0) + 1; if ((lgOn('W_ECHO') && G.lgC % 4 === 0) || (lgOn('R_DIAL') && Math.random() < .2)) G.timers.push({ t:.3, id:h.castSk, rep:1 }); if (s.sk[h.castSk] && s.sk[h.castSk].twin) for (let i = 0; i < s.sk[h.castSk].twin; i++) G.timers.push({ t:.25*(i + 1), id:h.castSk }); }
     if (h.castT >= .4) h.castT = -1;
   }
-  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = aliveMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({ k:'meteor', x:q.x, y:q.y, t:0, dur:.9, mul:t.mul }); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id, m, 2); } } else if (s.sk[t.id]) castSkill(t.id, .6); } } G.timers = G.timers.filter(t => !t.done); }
+  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = aliveMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({ k:'meteor', x:q.x, y:q.y, t:0, dur:.9, mul:t.mul }); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id, m, 2); } } else if (s.sk[t.id]) castSkill(t.id, t.rep || .6); } } G.timers = G.timers.filter(t => !t.done); }
   for (const p of G.proj){ p.t += dt/p.dur; if (p.t >= 1 && !p.done){ p.done = true; resolveProj(p); } }
   if (G.proj.length) G.proj = G.proj.filter(p => !p.done);
 }
