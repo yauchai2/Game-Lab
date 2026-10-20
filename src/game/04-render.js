@@ -306,7 +306,7 @@ function r3init(){
 }
 function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相機視野
   const fig0 = document.getElementById('fig'), vb0 = fig0.viewBox.baseVal, ptv = innerHeight > innerWidth;   // 手機直式改成 4:5 的高畫框，桌機維持 4:3
-  if (vb0.width && Math.abs(vb0.height/vb0.width - (ptv ? .9 : .75)) > .01) fig0.setAttribute('viewBox', `0 0 ${vb0.width} ${vb0.width*(ptv ? .9 : .75)}`);
+  if (vb0.width && Math.abs(vb0.height/vb0.width - (ptv ? .68 : .75)) > .01) fig0.setAttribute('viewBox', `0 0 ${vb0.width} ${vb0.width*(ptv ? .68 : .75)}`);
   const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
   const cv = R3.rd.domElement; cv.style.imageRendering = R3.res < 1 ? 'pixelated' : 'auto'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
   if (W !== R3.W || H !== R3.H || dpr !== R3.dpr){ R3.W = W; R3.H = H; R3.dpr = dpr; R3.rd.setPixelRatio(dpr*R3.res); R3.rd.setSize(W, H, false); }
@@ -314,7 +314,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
   for (const x of [ISL[0], ISL[1]]) for (const y of [ISL[2], ISL[3]]) for (const z of [BZ - 14, BZ + 14]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
   const bw = x1 - x0, bh = y1 - y0, ar = W/H, cx = (x0 + x1)/2, cy = (y0 + y1)/2 - bh*.03;   // 整座浮島放進畫框，留一點天空
-  let vw = bw*(ptv ? .8 : 1.04), vh = bh*(ptv ? .84 : 1.08); if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;   // 手機直式裁掉島的左右邊緣，人物不會太小
+  let vw = bw*1.03, vh = bh*1.05; if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;   // 整座島完整放進畫框（手機也不裁邊）
   cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2; cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
   const vb = fig.viewBox.baseVal; R3.vbW = vb.width; R3.vbH = vb.height;
 }

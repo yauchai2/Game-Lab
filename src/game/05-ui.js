@@ -39,25 +39,30 @@ function renderModal(){
   $('mtabs').innerHTML = tabs.map(([k, n]) => `<button class="tab${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${n}${k === 'tree' && passPoints() > 0 ? ` (${passPoints()})` : ''}</button>`).join('') + `<button class="tab x" onclick="closeModal()">✕</button>`;
   $('mbody').innerHTML = modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : saveHtml();
 }
+let actSlot = 0;   // 技能彈窗裡目前選中的技能槽：點寶石會插進它的空輔助孔
+const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff' };
+const gemIco = (g, s = 22) => `<i class="gem" style="--gc:${GEM_COL[g] || '#a87bf0'};width:${s}px;height:${s}px"></i>`;
 function skillsHtml(){
-  let h = '<div class="hint">每個技能有自己的 2 個輔助寶石槽。寶石是有數量的：同一顆不能同時裝在兩個技能上。</div><div class="mrow">';
+  if (!G.slots[actSlot] && G.slots.some(Boolean)) actSlot = G.slots.findIndex(Boolean);
+  let h = '<div class="hint">點技能圖示裝上技能；點下方寶石，會插進<b>選中的技能槽</b>的空孔；點已插的寶石可拔下。</div><div class="mrow">';
   for (let i = 0; i < 3; i++){
-    if (G.lvl < SLOT_LV[i]){ h += `<div class="mc dim"><b>技能槽 ${i+1}</b><div class="mute">等級 ${SLOT_LV[i]} 解鎖</div></div>`; continue; }
+    if (G.lvl < SLOT_LV[i]){ h += `<div class="mc dim"><div class="mct">技能槽 ${i+1}</div><div class="mute">等級 ${SLOT_LV[i]} 解鎖</div></div>`; continue; }
     const cur = G.slots[i];
-    const opts = Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, taken = G.slots.includes(id) && G.slots[i] !== id; return `<option value="${id}" ${cur === id ? 'selected' : ''} ${(!un || taken) ? 'disabled' : ''}>${K.n}${!un ? `（Lv. ${K.lvl}）` : taken ? '（已裝備）' : ''}</option>`; }).join('');
-    h += `<div class="mc"><b>技能槽 ${i+1}</b><select onchange="setSlot(${i}, this.value)"><option value="">（空）</option>${opts}</select>`;
+    const picks = Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, taken = G.slots.includes(id) && cur !== id;
+      return `<button class="skb${cur === id ? ' on' : ''}" ${(!un || taken) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : taken ? '（已裝在別的槽）' : ''}" onclick="event.stopPropagation();setSlot(${i}, '${cur === id ? '' : id}');actSlot=${i};renderModal()">${spr(SKILL_ICON[id], 26)}</button>`; }).join('');
+    h += `<div class="mc slot${actSlot === i && cur ? ' act' : ''}" onclick="actSlot=${i};renderModal()"><div class="mct">技能槽 ${i+1}${cur ? `：${SKILLS[cur].n}` : '（空）'}</div><div class="skrow">${picks}</div>`;
     if (cur){ const sp = G.supp[cur];
-      h += `<div class="mute">${spr(SKILL_ICON[cur], 28)} ${SKILLS[cur].d}</div>`;
-      for (let j = 0; j < 2; j++){
-        const o = Object.keys(SUPPS).filter(g => gemFree(g) > 0 || sp[j] === g).map(g => `<option value="${g}" ${sp[j] === g ? 'selected' : ''}>${SUPPS[g].n}</option>`).join('');
-        h += `<div class="srow">輔助 ${j+1}<select onchange="setSupp('${cur}', ${j}, this.value)"><option value="">（空）</option>${o}</select></div>`;
-      }
+      h += `<div class="mute">${SKILLS[cur].d}</div><div class="socks">` + [0, 1].map(j => sp[j]
+        ? `<button class="sock full" title="拔下 ${SUPPS[sp[j]].n}" onclick="event.stopPropagation();setSupp('${cur}', ${j}, '')">${gemIco(sp[j])}<span>${SUPPS[sp[j]].n}</span></button>`
+        : `<div class="sock">空孔</div>`).join('') + '</div>';
       const k = G.st.sk[cur]; if (k) h += `<div class="mute">單次傷害約 ${tFmt(k.hit)}，冷卻 ${k.cd.toFixed(1)} 秒</div>`; }
     h += '</div>';
   }
-  h += '</div><div class="hint" style="margin-top:10px"><b>輔助寶石庫存</b></div><ul class="gl">' + Object.keys(SUPPS).map(g => `<li><b>${SUPPS[g].n}</b> × ${G.gems[g] || 0}（可用 ${gemFree(g)}）<span class="mute"> ${SUPPS[g].d}</span></li>`).join('') + '</ul>';
+  h += '</div><div class="mct" style="margin:12px 0 6px">輔助寶石庫存</div><div class="gems">' + Object.keys(SUPPS).map(g => { const f = gemFree(g), n = G.gems[g] || 0;
+    return `<button class="gt" ${f > 0 && G.slots[actSlot] ? '' : 'disabled'} onclick="putGem('${g}')" title="${SUPPS[g].d}">${gemIco(g, 28)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em><small>${SUPPS[g].d}</small></button>`; }).join('') + '</div>';
   return h;
 }
+function putGem(g){ const id = G.slots[actSlot]; if (!id || gemFree(g) <= 0) return; const sp = G.supp[id], j = !sp[0] ? 0 : !sp[1] ? 1 : -1; if (j >= 0) setSupp(id, j, g); }   // 兩個孔都滿了就不動作
 function treeHtml(){
   const pts = passPoints(); let lines = '', nodes = '';
   for (const id in TREE){ const n = TREE[id]; for (const l of n.links) if (id < l){ const m = TREE[l], on2 = (id === 'S' || G.pass.includes(id)) && (l === 'S' || G.pass.includes(l));
@@ -198,6 +203,20 @@ function setupPanel(){
       body .rpg{grid-template-columns:repeat(2,minmax(0,1fr)) !important}body .rpg .rc.wide{grid-column:1/-1}.stats .stat{width:100%}.rc{font-size:11.5px}}
     header,.stage,#fig,.rpg{max-width:1040px !important} .rpg{grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) !important}
     .actions .cap{display:none !important}
+    .mct{font-weight:800;font-size:12.5px;color:var(--wbd)}
+    .mc.slot{cursor:pointer} .mc.slot.act{box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk),0 0 0 2px #ff8fb8,3px 4px 0 #5a6bb855 !important}
+    .skrow{display:flex;gap:6px;margin:8px 0 6px;flex-wrap:wrap}
+    .skb{width:40px;height:40px;padding:0 !important;border-radius:4px !important;display:grid;place-items:center;background:var(--win) !important;border:1px solid var(--wbd) !important;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk) !important}
+    .skb.on{background:#fff !important;box-shadow:inset 1px 1px 0 var(--wdk),inset -1px -1px 0 #fff,0 0 0 2px #ff8fb8 !important} .skb[disabled]{opacity:.35;filter:grayscale(1)}
+    .socks{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 6px}
+    .sock{min-height:34px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--wdk);border-right-color:#fff;border-bottom-color:#fff;border-radius:3px;padding:2px 4px !important}
+    button.sock{box-shadow:none !important;background:#fff !important;border-radius:3px !important;font-weight:700;color:var(--ink) !important}
+    .gem{display:inline-block;flex:none;background:linear-gradient(135deg,#fff 0 18%,var(--gc) 19% 60%,color-mix(in srgb,var(--gc) 60%,#000) 61%);clip-path:polygon(50% 0,100% 38%,80% 100%,20% 100%,0 38%)}
+    .gems{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+    .gt{display:grid !important;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;gap:0 8px;align-items:center;text-align:left;border-radius:4px !important;padding:6px 8px !important;background:var(--win) !important;border:1px solid var(--wbd) !important;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk) !important}
+    .gt .gem{grid-row:1/3} .gt em{font-style:normal;font-size:11px;background:#14123a;color:#fff;border-radius:3px;padding:0 5px} .gt small{grid-column:2/4;font-size:10.5px;color:var(--muted);font-weight:500;line-height:1.35}
+    .gt[disabled]{opacity:.45}
+    select{appearance:none;-webkit-appearance:none;background:#fff linear-gradient(var(--win),var(--win)) no-repeat right/22px 100% !important;border-radius:3px !important;border:1px solid var(--wdk) !important;padding:3px 26px 3px 6px !important}
     body{padding-bottom:44px !important}`;
   { const tb = document.createElement('div'); tb.className = 'tfoot'; tb.innerHTML = '<span class="start">★ Start</span><span class="task">Idle Hero</span><span class="clk" id="clk"></span>'; document.body.appendChild(tb);
     const tick = () => { const d = new Date(); $('clk').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }; tick(); setInterval(tick, 20000); }   // the engine's wobble slider and colour swatches are not part of the game
