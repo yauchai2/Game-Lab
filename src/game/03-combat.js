@@ -116,6 +116,28 @@ function castSkill(id, repeat=1){
   if (id === 'METEOR'){
     if (mode === 'METEOR_TWIN'){ const o = near(prim, 1)[0] || prim; G.proj.push({ k:'meteor', x:prim.x, y:prim.y, t:0, dur:.9, mul:repeat*.6 }, { k:'meteor', x:o.x, y:o.y, t:-.15, dur:.9, mul:repeat*.6 }); if (cardN('V_ECHO')) G.timers.push({ t:.6, echo:'METEOR', mul:repeat*.5 }); return; }
     G.proj.push({ k:'meteor', x:prim.x, y:prim.y, t:0, dur:.9, mul:repeat }); if (cardN('V_ECHO')) G.timers.push({ t:.6, echo:'METEOR', mul:repeat*.5 }); return; }
+  if (id === 'PULSE'){
+    const R = mode === 'PULSE_SONIC' ? 38 : 24, sm = mode === 'PULSE_SONIC' ? .75 : 1, wave = (r, mu) => { addFx({ k:'nova', t:0, dur:.45 });
+      for (const m of al){ const dx = m.x - h.x, dy = m.y - h.y, d = Math.hypot(dx, dy) || 1; if (d > r) continue; total += applySkillHit(id, m, repeat*mu); if (!m.dead){ m.x += dx/d*7; m.y += dy/d*7; } } };
+    wave(R, sm); if (mode === 'PULSE_ECHO' && repeat === 1) G.timers.push({ t:.5, id, echoMul:.6 }); SFX('boom');
+  }
+  if (id === 'MAGNET'){
+    const caught = al.filter(m => Math.hypot(m.x - h.x, m.y - h.y) < 40); SFX('boom');
+    for (const m of caught){ const a = Math.random()*6.283, d = 6 + Math.random()*4; m.x = h.x + Math.cos(a)*d; m.y = h.y + Math.sin(a)*d; total += applySkillHit(id, m, repeat); if (!m.dead && mode === 'MAGNET_STICKY') m.frozen = 2; addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 4, t:0, dur:.3 }); }
+    if (mode === 'MAGNET_CRUSH' && repeat === 1) G.timers.push({ t:.5, id, crush:true });
+  }
+  if (id === 'SPAM'){
+    const n = mode === 'SPAM_FLOOD' ? 14 : mode === 'SPAM_PHISH' ? 3 : 6, pool = mode === 'SPAM_PHISH' ? al.slice().sort((a, b) => b.hp - a.hp) : al; SFX('chain');
+    for (let i = 0; i < n; i++){ const m = mode === 'SPAM_PHISH' ? pool[i % pool.length] : tPick(pool); if (!m || m.dead) continue;
+      total += applySkillHit(id, m, repeat*(mode === 'SPAM_FLOOD' ? .45 : mode === 'SPAM_PHISH' ? 3 : 1)); addFx({ k:'bolt', pts:[[h.x + 3.4, h.y - 3.6, BZ + 9.2], [m.x, m.y, BZ + 8]], t:-i*.02, dur:.2 }); }
+  }
+  if (id === 'BEAM'){
+    SFX('fire'); const base = Math.atan2(prim.y - h.y, prim.x - h.x), w = mode === 'BEAM_FOCUS' ? 2.2 : 4.5, mu = repeat*(mode === 'BEAM_FOCUS' ? 2.5 : 1);
+    const shoot = (ang, m2) => { const ux = Math.cos(ang), uy = Math.sin(ang);
+      for (const m of al){ const dx = m.x - h.x, dy = m.y - h.y, al2 = dx*ux + dy*uy; if (al2 > 0 && al2 < 90 && Math.abs(dx*uy - dy*ux) < w) total += applySkillHit(id, m, mu*m2); }
+      addFx({ k:'bolt', pts:[[h.x + 3.4, h.y - 3.6, BZ + 9.2], [h.x + ux*90, h.y + uy*90, BZ + 8]], t:0, dur:.35 }); };
+    if (mode === 'BEAM_SWEEP'){ for (const d of [-.61, 0, .61]) shoot(base + d, .65); } else shoot(base, 1);
+  }
   if (k.leech && total) h.hp = Math.min(s.life, h.hp + total*.12);
   h.hp = Math.min(s.life, h.hp + total*s.leech/100);
 }
@@ -204,7 +226,7 @@ function update(dt){
     if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk, 1); if (s.sk[h.castSk] && s.sk[h.castSk].twin) for (let i = 0; i < s.sk[h.castSk].twin; i++) G.timers.push({ t:.25*(i + 1), id:h.castSk }); }
     if (h.castT >= .4) h.castT = -1;
   }
-  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = aliveMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({ k:'meteor', x:q.x, y:q.y, t:0, dur:.9, mul:t.mul }); } } else if (s.sk[t.id]) castSkill(t.id, .6); } } G.timers = G.timers.filter(t => !t.done); }
+  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = aliveMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({ k:'meteor', x:q.x, y:q.y, t:0, dur:.9, mul:t.mul }); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id, m, 2); } } else if (s.sk[t.id]) castSkill(t.id, .6); } } G.timers = G.timers.filter(t => !t.done); }
   for (const p of G.proj){ p.t += dt/p.dur; if (p.t >= 1 && !p.done){ p.done = true; resolveProj(p); } }
   if (G.proj.length) G.proj = G.proj.filter(p => !p.done);
 }
