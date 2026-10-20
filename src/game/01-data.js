@@ -3,12 +3,12 @@
    skills + supports, passive tree, maps, save + offline progress
    ===================================================================== */
 const BXW = 30, BYW = 74, BZ = 3;
-const HX = 15, HY = 63;
+const HX = 15, HY = 36;   // 主角站在島的正中央，怪物從四面八方來
 // 怪物圍住英雄的站位：內外兩圈、四方八面都有，讓一大群怪可以同時圍上來
 const SLOTS = [];
 for (let i = 0; i < 8; i++){ const a = -Math.PI/2 + i*Math.PI/4; SLOTS.push([HX + Math.cos(a)*15, HY + Math.sin(a)*15]); }
 for (let i = 0; i < 8; i++){ const a = -Math.PI/2 + (i + .5)*Math.PI/4; SLOTS.push([HX + Math.cos(a)*21, HY + Math.sin(a)*21]); }
-const SPAWN = [15,9];
+const SPAWN = [15,-6];   // 守關者的傳送門在北邊
 const BONE  = { l:'#f4efde', m:'#d9d2ba', d:'#a39b82' };
 const STONE = { l:'#cfcabc', m:'#aaa598', d:'#7b766a' };
 const BIOMES = [
@@ -64,6 +64,22 @@ const MODES = {
 const SUPPS = {
   HEAVY:{ n:'超頻', d:'此技能傷害 +45%' }, AREA:{ n:'廣播', d:'電池命中全部敵人（-15%）；連鎖多跳 2 次' }, HASTE:{ n:'寬頻', d:'此技能冷卻 -30%' },
   LEECH:{ n:'無線充電', d:'此技能傷害的 12% 轉為生命' }, TWIN:{ n:'雙卡雙待', d:'0.25 秒後重複施放一次（60% 傷害）' }, CRITS:{ n:'爆機', d:'此技能暴擊率 +30%' },
+};
+/* 升級三選一的「改裝卡」：數值卡常見，技能變體卡只在該技能裝備時出現，會改變技能行為 */
+const CARDS = {
+  C_DMG:{ n:'超頻電路', d:'傷害 +15%', st:'inc', v:15 }, C_CRIT:{ n:'高感度麥克風', d:'暴擊率 +6%', st:'crit', v:6 }, C_CM:{ n:'重低音', d:'暴擊傷害 +20%', st:'cm', v:20 },
+  C_APS:{ n:'快速充電', d:'攻速 +10%', st:'apsInc', v:10 }, C_LIFE:{ n:'大容量電池', d:'生命 +12%', st:'lifePct', v:12 }, C_HASTE:{ n:'寬頻升級', d:'技能冷卻 -8%', st:'haste', v:8 },
+  C_REGEN:{ n:'太陽能板', d:'生命回復 +2/秒', st:'regen', v:2 }, C_ARMOR:{ n:'防水外殼', d:'護甲 +20', st:'armor', v:20 }, C_LEECH:{ n:'無線充電座', d:'吸血 +1.5%', st:'leech', v:1.5 },
+  V_SPLIT:{ n:'分裂電池', d:'過熱電池爆炸時，另外炸向 2 隻附近怪物（60% 傷害），每張 +2 隻', sk:'FIRE', max:3 },
+  V_SHATTER:{ n:'冷凍碎裂', d:'被凍結的怪物受到技能傷害 +40%，每張再 +40%', sk:'FROST', max:3 },
+  V_FORK:{ n:'多重頻道', d:'紅外線多跳 2 次，每張再 +2 次', sk:'CHAIN', max:3 },
+  V_ECHO:{ n:'雙衛星', d:'衛星墜落後 0.6 秒再落一顆（50% 傷害）', sk:'METEOR', max:1 },
+};
+/* 可選角色：外觀（髮色、褲色、膚色）與被動；用最深深度解鎖 */
+const CHARS = {
+  street:{ n:'阿街', d:'街頭小子。傷害 +10%', eff:{ inc:10 }, need:0, hair:null, pants:null, skin:null },
+  frost: { n:'小冷', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
+  volt:  { n:'電波仔', d:'訊號滿格。暴擊率 +6%，閃電傷害 +30%', eff:{ crit:6, light:30 }, need:12, hair:'#e0b020', pants:'#8a4a8f', skin:'#e2ac86' },
 };
 const MODS = {
   more:  { n:'怪群更大（+1 隻）', q:.25 }, fast:{ n:'怪物更迅捷', q:.15 }, tough:{ n:'怪物生命 +40%', q:.2 },

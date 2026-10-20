@@ -24,7 +24,7 @@ function spawnPack(){
 }
 function dropItem(m, it){ G.drops.push({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'item', it, t:0 }); }
 function killMon(m){
-  m.dead = true; m.deadT = 0; const T = MTYPES[m.type], d = lvlNow(), R = G.run, q = runQ(), mods = R ? R.map.mods : [];
+  m.dead = true; m.deadT = 0; SFX('kill'); const T = MTYPES[m.type], d = lvlNow(), R = G.run, q = runQ(), mods = R ? R.map.mods : [];
   const hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk)), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
   G.gold += gold; G.totalKills++; addFloat(m.x - 2, m.y, BZ + 20, `+${gold}g`, '#a9780a', 3);
   gainXp(xp); if (R) R.kills++; else G.kills++; checkAchs();
@@ -41,14 +41,14 @@ function killMon(m){
 function completeRun(){
   G.mapsDone++; checkAchs();
   const R = G.run, q = runQ(), lvl = R.map.lvl, extra = 2 + Math.ceil(q*4);
-  for (let i = 0; i < extra; i++) G.drops.push({ x:tRand(8, 22), y:tRand(40, 50), kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(true), lvl), t:-i*.15 });
+  for (let i = 0; i < extra; i++) G.drops.push({ x:tRand(8, 22), y:tRand(HY + 6, HY + 16), kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(true), lvl), t:-i*.15 });
   const bonus = Math.round(40 * Math.pow(1.2, lvl-1) * (1 + q)); G.gold += bonus;
-  for (let i = 0; i < 1 + (Math.random() < .5 ? 1 : 0); i++) G.drops.push({ x:tRand(8, 22), y:tRand(40, 50), kind:'map', map:makeMap(lvl + Math.floor(Math.random()*3)), t:-.5 - i*.2 });
+  for (let i = 0; i < 1 + (Math.random() < .5 ? 1 : 0); i++) G.drops.push({ x:tRand(8, 22), y:tRand(HY + 6, HY + 16), kind:'map', map:makeMap(lvl + Math.floor(Math.random()*3)), t:-.5 - i*.2 });
   G.mapsDone = (G.mapsDone || 0) + 1; logLine(`地圖完成！獎勵 +${bonus}g 與 ${extra} 件戰利品`, '#2f9e4f'); G.run = null; G.dirty = true;
 }
 function gainXp(xp){
   G.xp += xp;
-  while (G.xp >= xpNeed(G.lvl)){ G.xp -= xpNeed(G.lvl); G.lvl++; recalc(); G.h.hp = G.st.life; addFloat(HX + 3, HY, BZ + 24, 'LEVEL UP', '#2f9e4f', 4.6); logLine(`升級了！等級 ${G.lvl}（+1 天賦點）`, '#2f9e4f');
+  while (G.xp >= xpNeed(G.lvl)){ G.xp -= xpNeed(G.lvl); G.lvl++; G.picks++; SFX('lvl'); recalc(); G.h.hp = G.st.life; addFloat(HX + 3, HY, BZ + 24, 'LEVEL UP', '#2f9e4f', 4.6); logLine(`升級了！等級 ${G.lvl}（+1 天賦點）`, '#2f9e4f');
     if (G.off) G.off.lvls++; }
 }
 
@@ -62,7 +62,7 @@ function pickup(d){
   const cur = G.equip[it.slot], cand = calc({ ...G.equip, [it.slot]:it });
   if (!cur || cand.power > G.st.power * 1.02){
     if (cur) G.gold += itemValue(cur);
-    G.equip[it.slot] = it; recalc(); logLine(`裝備 ${it.name}`, rc); addFloat(HX + 3, HY, BZ + 22, '升級！', rc, 3.8); if (G.off) G.off.eq++;
+    G.equip[it.slot] = it; recalc(); logLine(`裝備 ${it.name}`, rc); addFloat(HX + 3, HY, BZ + 22, '升級！', rc, 3.8); SFX(it.r >= 2 ? 'rare' : 'pick'); if (G.off) G.off.eq++;
   } else { G.gold += itemValue(it); if (it.r >= 2) logLine(`賣掉 ${it.name}（沒有更強）`, '#9a93a6'); }
 }
 function reroll(slot){
@@ -74,7 +74,7 @@ function reroll(slot){
 /* ---------- combat ---------- */
 function hitMon(m, dmg, crit){
   if (m.dead) return;
-  m.hp -= dmg; m.hurtT = .12;
+  m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit');
   addFloat(m.x + 2 + tRand(-1,1), m.y + tRand(-2,2), BZ + 17 + tRand(0,3), tFmt(dmg), crit ? '#e2831b' : '#2b2552', crit ? 5.4 : 3.6);
   if (m.hp <= 0) killMon(m);
 }
@@ -84,7 +84,7 @@ function nearestMon(fightOnly, from){ let best = null, bd = 1e9; const [fx, fy] 
 
 function revive(){ const h = G.h; h.dead = 0; h.hp = G.st.life; G.spawnCd = 1; }
 function heroDie(){
-  const h = G.h; h.dead = 3; G.deaths++; G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.timers.length = 0;
+  const h = G.h; h.dead = 3; G.deaths++; SFX('die'); G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.timers.length = 0;
   if (G.run){ logLine('你倒下了……地圖失敗', '#e2483d'); G.run = null; }
   else { if (G.push && G.depth > 1) G.depth--; G.kills = 0; G.bossOut = false; logLine('你倒下了……退回較淺的深度', '#e2483d'); }
   G.dirty = true;
@@ -92,12 +92,13 @@ function heroDie(){
 function skillDmg(id){ const k = G.st.sk[id]; return k; }
 function applySkillHit(id, m, mult=1, chainIdx=0){
   const k = G.st.sk[id]; if (!m || m.dead) return 0;
+  if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
   const r = rollDmg(k.hit * mult, k.crit); hitMon(m, r.dmg, r.crit); return r.dmg;
 }
 function castSkill(id, repeat=1){
   const k = G.st.sk[id], s = G.st, h = G.h; let total = 0; if (!k) return;
   const al = aliveMons(); if (!al.length) return;
-  const prim = nearestMon(false) || al[0], mode = k.mode;
+  const prim = nearestMon(false) || al[0], mode = k.mode; SFX(id.toLowerCase());
   const near = (m0, n, ex) => G.mons.filter(m => !m.dead && m !== m0 && !(ex && ex.has(m))).sort((a, b) => Math.hypot(a.x - m0.x, a.y - m0.y) - Math.hypot(b.x - m0.x, b.y - m0.y)).slice(0, n);
   if (id === 'FIRE'){ const tg = prim; G.proj.push({ k:'fire', tg, t:0, dur:.4, mul:repeat }); return; }
   if (id === 'FROST'){
@@ -107,30 +108,31 @@ function castSkill(id, repeat=1){
       else if (mode === 'FROST_SHATTER') for (const o of G.mons) if (!o.dead && o !== m && Math.hypot(o.x - m.x, o.y - m.y) < 14){ total += applySkillHit(id, o, repeat*.5); addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 5, t:0, dur:.35 }); } }
   }
   if (id === 'CHAIN'){
-    const hops = (mode === 'CHAIN_OVERLOAD' ? 5 : 3) + (k.area ? 2 : 0), pts = [[HX + 3.4, HY - 3.6, BZ + 9.2]], hit = new Set(); let cur = prim, mul = 1;
+    const hops = (mode === 'CHAIN_OVERLOAD' ? 5 : 3) + (k.area ? 2 : 0) + 2*cardN('V_FORK'), pts = [[HX + 3.4, HY - 3.6, BZ + 9.2]], hit = new Set(); let cur = prim, mul = 1;
     for (let i = 0; i < hops && cur; i++){ hit.add(cur); pts.push([cur.x, cur.y, BZ + 8]); total += applySkillHit(id, cur, repeat*mul); if (mode !== 'CHAIN_OVERLOAD') mul *= .7;
       if (mode === 'CHAIN_FORK'){ const f = near(cur, 1, hit)[0]; if (f){ total += applySkillHit(id, f, repeat*.5); pts.push([f.x, f.y, BZ + 8], [cur.x, cur.y, BZ + 8]); } }
       let nx = null, bd = 1e9; for (const m of G.mons){ if (m.dead || hit.has(m)) continue; const dd = Math.hypot(m.x - cur.x, m.y - cur.y); if (dd < bd && dd < 28){ bd = dd; nx = m; } } cur = nx; }
     addFx({ k:'bolt', pts, t:0, dur:.3 });
   }
   if (id === 'METEOR'){
-    if (mode === 'METEOR_TWIN'){ const o = near(prim, 1)[0] || prim; G.proj.push({ k:'meteor', x:prim.x, y:prim.y, t:0, dur:.9, mul:repeat*.6 }, { k:'meteor', x:o.x, y:o.y, t:-.15, dur:.9, mul:repeat*.6 }); return; }
-    G.proj.push({ k:'meteor', x:prim.x, y:prim.y, t:0, dur:.9, mul:repeat }); return; }
+    if (mode === 'METEOR_TWIN'){ const o = near(prim, 1)[0] || prim; G.proj.push({ k:'meteor', x:prim.x, y:prim.y, t:0, dur:.9, mul:repeat*.6 }, { k:'meteor', x:o.x, y:o.y, t:-.15, dur:.9, mul:repeat*.6 }); if (cardN('V_ECHO')) G.timers.push({ t:.6, echo:'METEOR', mul:repeat*.5 }); return; }
+    G.proj.push({ k:'meteor', x:prim.x, y:prim.y, t:0, dur:.9, mul:repeat }); if (cardN('V_ECHO')) G.timers.push({ t:.6, echo:'METEOR', mul:repeat*.5 }); return; }
   if (k.leech && total) h.hp = Math.min(s.life, h.hp + total*.12);
   h.hp = Math.min(s.life, h.hp + total*s.leech/100);
 }
 function resolveProj(p){
   const s = G.st, h = G.h;
   if (p.k === 'fire'){
-    const k = s.sk.FIRE, m = p.tg; if (!k) return; if (m.dead && !G.mons.includes(m)) return;
+    SFX('boom'); const k = s.sk.FIRE, m = p.tg; if (!k) return; if (m.dead && !G.mons.includes(m)) return;
     const targets = k.area ? aliveMons() : (m.dead ? [] : [m]); let total = 0;
     for (const q of targets){ total += applySkillHit('FIRE', q, p.mul); addFx({ k:'boom', x:q.x, y:q.y, z:BZ + 6, t:0, dur:.4 });
       if (k.mode === 'FIRE_BLAST'){ for (const o of G.mons) if (!o.dead && o !== q && Math.hypot(o.x - q.x, o.y - q.y) < 14) total += applySkillHit('FIRE', o, p.mul*.6); }
       if (k.mode === 'FIRE_SPLIT'){ const t2 = G.mons.filter(o => !o.dead && o !== q).sort((a, b) => Math.hypot(a.x - q.x, a.y - q.y) - Math.hypot(b.x - q.x, b.y - q.y)).slice(0, 2);
         for (const o of t2){ total += applySkillHit('FIRE', o, p.mul*.5); addFx({ k:'boom', x:o.x, y:o.y, z:BZ + 6, t:0, dur:.4 }); } } }
+    if (cardN('V_SPLIT') && !k.area) for (const q of aliveMons().filter(x => x !== m).sort((a, b) => Math.hypot(a.x - m.x, a.y - m.y) - Math.hypot(b.x - m.x, b.y - m.y)).slice(0, 2*cardN('V_SPLIT'))){ total += applySkillHit('FIRE', q, p.mul*.6); addFx({ k:'boom', x:q.x, y:q.y, z:BZ + 6, t:0, dur:.4 }); }
     if (k.leech) h.hp = Math.min(s.life, h.hp + total*.12); h.hp = Math.min(s.life, h.hp + total*s.leech/100);
   } else if (p.k === 'meteor'){
-    const k = s.sk.METEOR; if (!k) return; let total = 0;
+    SFX('boom'); const k = s.sk.METEOR; if (!k) return; let total = 0;
     addFx({ k:'boom', x:p.x, y:p.y, z:BZ + 4, t:0, dur:.6, big:true });
     const al = aliveMons(), top = k.mode === 'METEOR_COMET' ? al.slice().sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y))[0] : null;
     for (const q of al) total += applySkillHit('METEOR', q, p.mul*(k.mode === 'METEOR_COMET' ? (q === top ? 2.2 : .5) : 1));
@@ -181,7 +183,7 @@ function update(dt){
     if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk, 1); if (s.sk[h.castSk] && s.sk[h.castSk].twin) for (let i = 0; i < s.sk[h.castSk].twin; i++) G.timers.push({ t:.25*(i + 1), id:h.castSk }); }
     if (h.castT >= .4) h.castT = -1;
   }
-  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (s.sk[t.id]) castSkill(t.id, .6); } } G.timers = G.timers.filter(t => !t.done); }
+  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = aliveMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({ k:'meteor', x:q.x, y:q.y, t:0, dur:.9, mul:t.mul }); } } else if (s.sk[t.id]) castSkill(t.id, .6); } } G.timers = G.timers.filter(t => !t.done); }
   for (const p of G.proj){ p.t += dt/p.dur; if (p.t >= 1 && !p.done){ p.done = true; resolveProj(p); } }
   if (G.proj.length) G.proj = G.proj.filter(p => !p.done);
 }
