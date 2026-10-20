@@ -11,12 +11,12 @@
   };
   // 輔助配件：needs 為空代表任何主動機件都適用；否則至少符合其中一個標籤
   const SUPPORTS = {
-    HEAVY: { n: '超頻',     shape: [[0, 0]], needs: [],        mod: { dmg: 0.45 } },
+    HEAVY: { n: '超頻',     shape: [[0, 0], [1, 0]], needs: [],        mod: { dmg: 0.45 } },
     AREA:  { n: '廣播',     shape: [[0, 0]], needs: ['proj'],  mod: { area: 1, dmg: -0.15 } },
-    HASTE: { n: '寬頻',     shape: [[0, 0]], needs: [],        mod: { cd: -0.3 } },
-    TWIN:  { n: '雙卡雙待', shape: [[0, 0]], needs: [],        mod: { repeat: 1 } },
+    HASTE: { n: '寬頻',     shape: [[0, 0], [1, 0], [2, 0]], needs: [],        mod: { cd: -0.3 } },
+    TWIN:  { n: '雙卡雙待', shape: [[0, 0], [1, 0], [0, 1]], needs: [],        mod: { repeat: 1 } },
     CRITS: { n: '爆機',     shape: [[0, 0]], needs: [],        mod: { crit: 0.3 } },
-    LEECH: { n: '無線充電', shape: [[0, 0]], needs: [],        mod: { leech: 0.12 } },
+    LEECH: { n: '無線充電', shape: [[0, 0], [1, 0]], needs: [],        mod: { leech: 0.12 } },
   };
   const CD_FLOOR = -0.7; // 冷卻縮減上限 70%
 
@@ -34,7 +34,7 @@
   }
   const cellsOf = p => shapeOf(p.kind, p.key, p.rot).map(([x, y]) => [p.x + x, p.y + y]);
 
-  function createBoard(w = 3, h = 3) { return { w, h, pieces: [], nextId: 1 }; }
+  function createBoard(w = 4, h = 3) { return { w, h, v: 2, pieces: [], nextId: 1 }; }
 
   function occupied(b, ignoreId) {
     const m = new Map();

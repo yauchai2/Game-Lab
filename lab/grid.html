@@ -50,7 +50,7 @@
 </main>
 <script src="../src/game/00-grid.js"></script>
 <script>
-const G = window.GridLab, b = G.createBoard(3, 3);
+const G = window.GridLab, b = G.createBoard();
 let pick = null, sel = null; // pick: {kind,key} 準備放置；sel: 已選取的 piece id
 const $ = id => document.getElementById(id), name = (k, key) => (k === 'active' ? G.ACTIVES : G.SUPPORTS)[key].n;
 const TAG = { proj:'投射物', area:'範圍', fire:'熱', cold:'冷', light:'電' };
