@@ -3,10 +3,11 @@
 (function (root) {
   // 主動機件：shape 是相對格座標 [x, y]；tags 供輔助比對
   const ACTIVES = {
-    FIRE:   { n: '過熱電池',   shape: [[0, 0]],                 tags: ['proj', 'fire'] },
-    FROST:  { n: '冷氣爆發',   shape: [[0, 0], [1, 0]],         tags: ['area', 'cold'] },
-    CHAIN:  { n: '紅外線連鎖', shape: [[0, 0], [0, 1]],         tags: ['proj', 'light'] },
-    METEOR: { n: '衛星墜落',   shape: [[0, 0], [1, 0], [0, 1]], tags: ['area', 'fire'] },
+    // mult、cd 與 src/game/01-data.js 的 SKILLS 相同；原型獨立，所以在這裡複製一份
+    FIRE:   { n: '過熱電池',   shape: [[0, 0]],                 tags: ['proj', 'fire'],  mult: 2.6, cd: 2.6 },
+    FROST:  { n: '冷氣爆發',   shape: [[0, 0], [1, 0]],         tags: ['area', 'cold'],  mult: 1.9, cd: 4.2 },
+    CHAIN:  { n: '紅外線連鎖', shape: [[0, 0], [0, 1]],         tags: ['proj', 'light'], mult: 2.3, cd: 3.2 },
+    METEOR: { n: '衛星墜落',   shape: [[0, 0], [1, 0], [0, 1]], tags: ['area', 'fire'],  mult: 6.2, cd: 8.0 },
   };
   // 輔助配件：needs 為空代表任何主動機件都適用；否則至少符合其中一個標籤
   const SUPPORTS = {
@@ -94,6 +95,21 @@
     return out;
   }
 
-  const api = { ACTIVES, SUPPORTS, createBoard, shapeOf, cellsOf, canPlace, place, remove, rotate, resolve };
+  const REPEAT_K = 0.6; // 重複施放的傷害係數（雙卡雙待）
+
+  // 預期 DPS（單一目標）：每次命中 = 武器傷害 × 技能倍率 × (1 + 傷害加成) × 期望暴擊倍率
+  // hero：{ hit 武器傷害, crit 暴擊率 %, cm 暴擊傷害 % }
+  function dps(b, hero) {
+    return resolve(b).map(r => {
+      const d = ACTIVES[r.key], st = r.stat;
+      const crit = Math.min(1, Math.max(0, (hero.crit + st.crit * 100) / 100));
+      const hit = hero.hit * d.mult * Math.max(0, 1 + st.dmg) * (1 + crit * (hero.cm / 100 - 1));
+      const interval = d.cd * (1 + st.cd);
+      const perCast = hit * (1 + st.repeat * REPEAT_K);
+      return { id: r.id, key: r.key, hit, interval, dps: perCast / interval };
+    });
+  }
+
+  const api = { dps, ACTIVES, SUPPORTS, createBoard, shapeOf, cellsOf, canPlace, place, remove, rotate, resolve };
   if (typeof module !== 'undefined') module.exports = api; else root.GridLab = api;
 })(typeof window !== 'undefined' ? window : globalThis);

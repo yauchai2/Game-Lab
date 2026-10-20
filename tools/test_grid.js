@@ -37,4 +37,19 @@ const bar = G.place(b, 'active', 'CHAIN', 2, 0);
 assert(bar, '直條放在右側');
 assert.strictEqual(G.rotate(b, bar.id), false, '貼牆旋轉會超出，維持原樣');
 assert(G.remove(b, bar.id));
+// DPS：無輔助 = 武器傷害 × 倍率 ÷ 冷卻；暴擊用期望值
+b = G.createBoard(3, 3);
+G.place(b, 'active', 'FIRE', 1, 1);
+const hero = { hit: 100, crit: 0, cm: 150 };
+let d = G.dps(b, hero)[0];
+assert(Math.abs(d.dps - 100 * 2.6 / 2.6) < 1e-9, '基礎 DPS');
+G.place(b, 'support', 'HEAVY', 1, 0);   // +45% 傷害
+G.place(b, 'support', 'HASTE', 0, 1);   // 冷卻 -30%
+d = G.dps(b, hero)[0];
+assert(Math.abs(d.dps - (100 * 2.6 * 1.45) / (2.6 * 0.7)) < 1e-9, '加成後 DPS');
+assert(G.place(b, 'support', 'TWIN', 2, 1, 1));    // 直放兩格，重複施放一次，60% 傷害
+d = G.dps(b, hero)[0];
+assert(Math.abs(d.dps - (100 * 2.6 * 1.45 * 1.6) / (2.6 * 0.7)) < 1e-9, '重複施放');
+const hc = G.dps(b, { hit: 100, crit: 50, cm: 200 })[0];
+assert(Math.abs(hc.hit / d.hit - 1.5) < 1e-9, '50% 暴擊、暴傷 200% 的期望倍率 1.5');
 console.log('grid tests ok');

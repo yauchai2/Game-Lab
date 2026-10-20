@@ -43,6 +43,10 @@
     <div id="msg"></div>
   </div>
   <div class="win" id="info"><h2>結算</h2><div id="out">尚未放置機件</div></div>
+  <div class="win"><h2>訓練假人（英雄：武器傷害 100，暴擊率 5%，暴擊傷害 150%）</h2>
+    <div id="dum" style="height:14px;background:#10163f;border:2px solid var(--edge);border-radius:4px;overflow:hidden"><div id="dhp" style="height:100%;width:100%;background:#ff6b8b"></div></div>
+    <div class="row" style="margin-top:8px"><button id="hit">打 10 秒</button><span id="dres" style="align-self:center;color:var(--muted);font-size:13px"></span></div>
+  </div>
 </main>
 <script src="../src/lab/grid.js"></script>
 <script>
@@ -102,8 +106,24 @@ function draw() {
     if (s.repeat) parts.push('重複施放 ×' + s.repeat);
     return '<div><b>' + G.ACTIVES[r.key].n + '</b>（' + G.ACTIVES[r.key].tags.map(t => TAG[t]).join('、') + '）：' + (parts.join('，') || '沒有加成') + '</div>';
   });
+  const HERO = { hit: 100, crit: 5, cm: 150 }, ds = G.dps(b, HERO);
+  window._dps = ds.reduce((a, r) => a + r.dps, 0);
+  const dpsOf = id => (ds.find(r => r.id === id) || {}).dps || 0;
+  for (let i = 0; i < out.length; i++) out[i] = out[i].replace('</div>', '，DPS ' + Math.round(dpsOf(res[i].id)) + '</div>');
   $('out').innerHTML = out.length ? out.join('') : '尚未放置機件';
 }
+let timer = null;
+$('hit').onclick = () => {
+  clearInterval(timer); const total = window._dps * 10 || 0, max = 3000; let t = 0;
+  $('dres').textContent = total ? '' : '先放一個主動機件';
+  if (!total) return;
+  timer = setInterval(() => {
+    t += 0.5; const dealt = window._dps * t;
+    $('dhp').style.width = Math.max(0, 100 - dealt / max * 100) + '%';
+    $('dres').textContent = t + ' 秒：累計 ' + Math.round(dealt) + '，總 DPS ' + Math.round(window._dps);
+    if (t >= 10) clearInterval(timer);
+  }, 100);
+};
 draw();
 </script>
 </body>
