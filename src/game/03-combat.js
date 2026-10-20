@@ -99,6 +99,7 @@ function reroll(slot){
 /* ---------- combat ---------- */
 function hitMon(m, dmg, crit){
   if (m.dead || m.fall > 0) return;
+  if (G.train) trainAdd(G.src || '其他', dmg);
   m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit');
   if (!G.offline){ const dx = m.x - G.h.x, dy = m.y - G.h.y, dd = Math.hypot(dx, dy) || 1, kb = m.boss ? .2 : crit ? 1.6 : .6; m.x += dx/dd*kb; m.y += dy/dd*kb;   // 被打時往外退一點
     if (crit){ kick(.4, 0, 0, .3); if (G.fx.length < 40) addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 9, t:0, dur:.18 }); } else if (m.boss) kick(.15); }
@@ -121,6 +122,7 @@ function heroDie(){
 function skillDmg(id){ const k = G.st.sk[id]; return k; }
 function applySkillHit(id, m, mult=1, chainIdx=0){
   const k = G.st.sk[id]; if (!m || m.dead) return 0;
+  G.src = SKILLS[id].n;
   if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
   const el = SKILLS[id].el; let rx = null;   /* 元素反應：火燒、閃電標記，加上冰凍，三者互相放大 */
   if (m.frozen > 0 && el === 'fire'){ mult *= 1.4; m.frozen = 0; rx = '融化'; } else if (m.frozen > 0 && el === 'light'){ mult *= 1.3; rx = '超導'; } else if (m.burn > 0 && el === 'cold') rx = '蒸氣';
@@ -221,21 +223,38 @@ function moveHero(dt){
   h.x += h.vx*dt; h.y += h.vy*dt; h.mv = Math.hypot(h.vx, h.vy);
   if (h.dash){ h.dash.t += dt; if (h.dash.t >= .3) h.dash = null; }
 }
+/* 訓練場：5 隻打不死也不還手的假人站在身邊，量 30 秒的傷害與各來源佔比 */
+function trainAdd(k, d){ const T = G.train; T.dmg[k] = (T.dmg[k] || 0) + d; T.total += d; }
+function trainStart(){
+  if (G.run || G.train) return;
+  G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.h.hp = G.st.life; G.spawnCd = 99;
+  G.train = { t:30, dmg:{}, total:0 };
+  for (let i = 0; i < 5; i++) G.mons.push({ type:'slime', boss:false, x:G.h.x + tRand(-10, 10), y:G.h.y + tRand(-10, 10), hp:1e15, hpMax:1e15, dmg:0, atkInt:1e9, spdK:1, atkCd:1e9, slot:i, fall:0, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
+  logLine('進入訓練場，測量 30 秒', '#1f9bbf'); closeModal();
+}
+function trainEnd(abort){
+  const T = G.train; if (!T) return; G.train = null;
+  G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.spawnCd = .8;
+  if (!abort){ G.trainLast = { dps:T.total/30, rows:Object.entries(T.dmg).sort((a, b) => b[1] - a[1]), total:T.total, n:5 }; logLine(`訓練結果：每秒傷害約 ${tFmt(G.trainLast.dps)}`, '#1f9bbf'); }
+  G.dirty = true;
+}
 function update(dt){
+  G.src = '其他';
+  if (G.train){ G.train.t -= dt; for (const m of G.mons) if (!m.dead){ m.hp = m.hpMax; } if (G.train.t <= 0) trainEnd(); }
   G.time += dt; if ((G.time*2 | 0) !== G._ac){ G._ac = G.time*2 | 0; checkAch(); } const h = G.h, s = G.st;
   for (const f of G.floats) f.t += dt/1.1; if (G.floats.length) G.floats = G.floats.filter(f => f.t < 1);
   for (const e of G.fx) e.t += dt/e.dur; if (G.fx.length) G.fx = G.fx.filter(e => e.t < 1);
   if (h.hurtT > 0) h.hurtT -= dt;
   for (const d of G.drops){ d.t += dt; if (d.t >= 1.7 && !d.done){ d.done = true; pickup(d); } } if (G.drops.length) G.drops = G.drops.filter(d => !d.done);
   if (h.dead > 0){ h.dead -= dt; G.mons = G.mons.filter(m => (m.deadT += dt) < .4); if (h.dead <= 0) revive(); return; }
-  { const alive = G.mons.filter(m => !m.dead).length, bossUp = G.mons.some(m => m.boss && !m.dead); G.spawnCd -= dt; if (G.spawnCd <= 0 && alive < hordeCap() && !bossUp){ spawnPack(); G.spawnCd = alive < hordeCap()*.5 ? .35 : .8; } }
+  { const alive = G.mons.filter(m => !m.dead).length, bossUp = G.mons.some(m => m.boss && !m.dead); G.spawnCd -= dt; if (G.spawnCd <= 0 && alive < hordeCap() && !bossUp && !G.train){ spawnPack(); G.spawnCd = alive < hordeCap()*.5 ? .35 : .8; } }
   moveHero(dt);
   for (const m of G.mons){
     if (m.dead){ m.deadT += dt; continue; }
     if (m.fall > 0){ m.fall -= dt; if (m.fall <= 0){ addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 4, t:0, dur:.6, big:true }); SFX('boom'); kick(2.4, .5, '#ffffff', 1); } continue; }
     if (m.hurtT > 0) m.hurtT -= dt;
     if (m.shock > 0) m.shock -= dt;
-    if (m.burn > 0){ m.burn -= dt; m.bt = (m.bt || 0) + dt; if (m.bt >= .5){ m.bt = 0; m.hp -= m.burnD*.5; if (m.hp <= 0){ killMon(m); continue; } } }
+    if (m.burn > 0){ m.burn -= dt; m.bt = (m.bt || 0) + dt; if (m.bt >= .5){ m.bt = 0; m.hp -= m.burnD*.5; if (G.train) trainAdd('燃燒', m.burnD*.5); if (m.hp <= 0){ killMon(m); continue; } } }
     if (m.frozen > 0){ m.frozen -= dt; continue; }
     const so = SLOTS[m.slot % SLOTS.length], dx = h.x + so[0] - m.x, dy = h.y + so[1] - m.y, dist = Math.hypot(dx, dy), spd = MTYPES[m.type].spd * m.spdK;
     if (dist > .6){ const st = Math.min(dist, spd*dt); m.x += dx/dist*st; m.y += dy/dist*st; m.fight = false; } else m.fight = true;
@@ -256,7 +275,7 @@ function update(dt){
   if (h.atkCd <= 0 && tgt && h.swingT < 0){ h.swingT = 0; h.swingHit = false; h.atkCd = 1/s.aps; }
   if (h.swingT >= 0){
     h.swingT += dt;
-    if (!h.swingHit && h.swingT >= .12){ h.swingHit = true; const t2 = nearestMon(true); if (t2){ const r = rollDmg(s.hit); hitMon(t2, r.dmg, r.crit); h.hp = Math.min(s.life, h.hp + r.dmg*s.leech/100); addFx({ k:'slash', x:t2.x, y:t2.y, z:BZ + 7, t:0, dur:.22 });
+    if (!h.swingHit && h.swingT >= .12){ h.swingHit = true; G.src = '普通攻擊'; const t2 = nearestMon(true); if (t2){ const r = rollDmg(s.hit); hitMon(t2, r.dmg, r.crit); h.hp = Math.min(s.life, h.hp + r.dmg*s.leech/100); addFx({ k:'slash', x:t2.x, y:t2.y, z:BZ + 7, t:0, dur:.22 });
       for (const o of G.mons) if (o !== t2 && !o.dead && o.fight && Math.hypot(o.x - t2.x, o.y - t2.y) < 9){ const r2 = rollDmg(s.hit*.5); hitMon(o, r2.dmg, r2.crit); } /* 橫掃：目標附近的怪也吃 50% */ } }
     if (h.swingT >= .3) h.swingT = -1;
   }

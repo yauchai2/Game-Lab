@@ -138,6 +138,9 @@ function goalsHtml(){
 function mapsHtml(){
   const R = G.run; let h = '<div class="hint">地圖由守關者和地圖怪掉落。詞綴讓敵人更強，但戰利品數量與稀有度更好。打贏地圖守關者才算完成；死亡則地圖報廢。</div>';
   h += `<div class="mc"><b>無限之塔</b> <span class="mute">最高 ${G.towerBest || 0} 層</span><div class="mute">每層殺滿怪就上樓，每 10 層是守關者，打贏多一條規則、一件遺物和一件戰利品。死亡就結束。${G.maxDepth < 8 ? '（深度 8 解鎖）' : ''}</div><button class="mb" ${R || G.maxDepth < 8 ? 'disabled' : ''} onclick="towerStart()">挑戰</button></div>`;
+  { const L = G.trainLast, mx = L && L.rows.length ? L.rows[0][1] : 1;
+    h += `<div class="mc"><b>訓練場</b> <span class="mute">5 隻不還手的假人，量 30 秒傷害</span>${G.train ? `<div class="mute">測量中，剩 ${Math.ceil(G.train.t)} 秒</div><button class="mb" onclick="trainEnd(true)">取消</button>` : `<button class="mb" ${R ? 'disabled' : ''} onclick="trainStart()">開始測量</button>`}`
+      + (L ? `<div class="mute" style="margin-top:6px">上次結果：每秒約 <b>${tFmt(L.dps)}</b>（5 隻合計）</div>` + L.rows.map(([k, v]) => `<div class="gl" style="min-height:0"><b>${k}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${Math.round(v/L.total*100)}%　${tFmt(v/30)}/秒</em></div>`).join('') : '') + '</div>'; }
   if (R) h += `<div class="mc run"><b>進行中：${R.tower ? `無限之塔 第 ${R.floor} 層` : `${BIOMES[R.map.biome].n} Lv. ${R.map.lvl}`}</b><div class="mute">進度 ${Math.min(R.kills, R.need)} / ${R.need}</div><button class="mb" onclick="abandonMap()">放棄地圖</button></div>`;
   h += '<div class="mrow">' + (G.maps.length ? G.maps.map(m => { const q = m.mods.reduce((a, k) => a + MODS[k].q, 0);
     return `<div class="mc"><b>${BIOMES[m.biome].n}</b> Lv. ${m.lvl}<ul>${m.mods.map(k => `<li>${MODS[k].n}</li>`).join('')}</ul><div class="mute">戰利品 +${Math.round(q*100)}%</div><button class="mb" ${R ? 'disabled' : ''} onclick="enterMap('${m.id}')">進入</button></div>`; }).join('') : '<div class="mute">還沒有地圖。打贏普通深度的守關者會掉落。</div>') + '</div>';
