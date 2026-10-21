@@ -27,7 +27,7 @@ function wikiRender(keep){
   const el = document.getElementById('wiki'); if (!el) return; el.innerHTML = wikiHtml();
   if (keep){ const i = document.getElementById('wkq'); if (i){ i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
 }
-function wikiOpen(){
+function wikiOverlay(){
   let el = document.getElementById('wiki');
   if (!el){ el = document.createElement('div'); el.id = 'wiki'; document.body.appendChild(el);
     const st = document.createElement('style'); st.textContent = `#wiki{position:fixed;inset:0;z-index:60;background:rgba(40,50,110,.45);display:flex;align-items:center;justify-content:center;padding:12px}#wiki[hidden]{display:none}
@@ -42,3 +42,32 @@ function wikiOpen(){
 }
 function wikiClose(){ const el = document.getElementById('wiki'); if (el) el.hidden = true; }
 addEventListener('keydown', e => { if (e.key === 'Escape') wikiClose(); });
+
+/* 新分頁版：把目前進度做成一份獨立的資料庫頁面（Blob 網址），圖示共用同一批圖集 */
+function wikiPage(){
+  const cats = Object.keys(WIKI), esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const vars = Object.keys(ASSET).filter(k => k !== 'wordmark').map(k => `--a-${k}:url("${ASSET[k]}")`).join(';');
+  const sec = cats.map(c => { const rs = WIKI[c].rows(), n = rs.filter(r => r.got).length;
+    return `<section id="c-${c}"><h2>${WIKI[c].n}<em>${n} / ${rs.length}</em></h2><table>${rs.map(r => `<tr class="${r.got ? '' : 'dim'}"><td class="n">${r.ico || ''}<b>${r.t}</b>${r.tag ? `<span class="tg">${r.tag}</span>` : ''}</td><td>${r.d}${r.s ? `<div class="s">${r.s}</div>` : ''}${(r.mods || []).map(m => `<div class="m">${m}</div>`).join('')}</td><td class="g">${r.got ? '✓' : '未取得'}</td></tr>`).join('')}</table></section>`; }).join('');
+  const nav = cats.map(c => `<a href="#c-${c}">${WIKI[c].n}</a>`).join('');
+  let html = `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>編年史 · Idle Hero</title><style>:root{${vars}}
+  *{box-sizing:border-box}body{margin:0;font:14px/1.55 system-ui,'Noto Sans TC',sans-serif;background:#d9e6fb;color:#1c2140}
+  header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;padding:8px 16px;background:linear-gradient(180deg,#5b86f0,#2b4fd0);color:#fff;box-shadow:0 2px 8px rgba(20,30,90,.4)}
+  header h1{margin:0;font-size:18px}header input{margin-left:auto;width:min(320px,50vw);padding:5px 12px;border-radius:14px;border:1px solid #fff;font-size:14px}
+  .w{display:flex;max-width:1200px;margin:0 auto;gap:16px;padding:16px}nav{position:sticky;top:60px;align-self:flex-start;display:flex;flex-direction:column;gap:4px;width:130px;flex:none}
+  nav a{padding:5px 10px;border:1px solid #8c9bd0;border-radius:8px;background:linear-gradient(180deg,#fff,#dbe6fb);color:#1c2140;text-decoration:none;font-size:13px}nav a:hover{background:#bcd0ff}
+  main{flex:1;min-width:0}section{background:linear-gradient(180deg,#f8faff,#e6eefc);border:2px solid #fff;outline:1px solid #7d8bbd;border-radius:12px;margin-bottom:16px;overflow:hidden}
+  h2{margin:0;padding:6px 14px;background:linear-gradient(180deg,#5b86f0,#2b4fd0);color:#fff;font-size:15px}h2 em{font-style:normal;font-size:12px;margin-left:10px;opacity:.8}
+  table{width:100%;border-collapse:collapse}td{padding:6px 12px;border-top:1px solid #c5d0ec;vertical-align:top}td.n{width:32%;white-space:nowrap}td.n b{margin-left:4px}.tg{margin-left:8px;font-size:11px;background:#e1eafc;border-radius:6px;padding:0 6px}td.g{width:70px;text-align:right;color:#2f9e4f;font-size:12px}
+  tr.dim{opacity:.55}tr.dim td.g{color:#a33}tr.dim .spr{filter:grayscale(1)}.s{font-size:12px;color:#5a6490}.m{font-size:12px;color:#1f3fb0}.spr{display:inline-block;vertical-align:middle}tr.hide{display:none}section.hide{display:none}
+  @media(max-width:700px){.w{flex-direction:column;padding:8px}nav{position:static;flex-direction:row;flex-wrap:wrap;width:auto}td.n{white-space:normal}}</style></head><body>
+  <header><h1>▣ 編年史</h1><span style="font-size:12px;opacity:.85">依你目前的進度顯示（開啟當下的快照）</span><input id="q" placeholder="搜尋名稱或說明"></header>
+  <div class="w"><nav>${nav}</nav><main>${sec}</main></div>
+  <script>const q=document.getElementById('q');q.addEventListener('input',()=>{const v=q.value.trim();document.querySelectorAll('section').forEach(s=>{let n=0;s.querySelectorAll('tr').forEach(r=>{const ok=!v||r.textContent.includes(v);r.classList.toggle('hide',!ok);if(ok)n++});s.classList.toggle('hide',!n)})})<\/script></body></html>`;
+  for (const k of Object.keys(ASSET)) html = html.split(`url(${ASSET[k]})`).join(`var(--a-${k})`);
+  return html;
+}
+function wikiOpen(){
+  try { const url = URL.createObjectURL(new Blob([wikiPage()], { type:'text/html;charset=utf-8' })), w = window.open(url, '_blank'); if (w){ setTimeout(() => URL.revokeObjectURL(url), 60000); return; } } catch (e) {}
+  wikiOverlay();   // 瀏覽器擋住新分頁時，退回遊戲內的全螢幕版
+}
