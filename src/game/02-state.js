@@ -29,7 +29,7 @@ const G = {
   lgK:0, lgC:0, mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
 };
 /* 打擊感：畫面震動、縮放衝擊、邊緣閃光；視角旋轉（yaw）也放這裡 */
-const FXO = { shake:0, flash:0, fc:'#fff', punch:0, yaw:0, yawT:0 };
+const FXO = { shake:0, flash:0, fc:'#fff', punch:0, yaw:0, yawT:0, zoom:1, zoomT:1 };
 function kick(s, f, c, p){ if (G.offline) return; FXO.shake = Math.max(FXO.shake, s); if (f){ FXO.flash = Math.max(FXO.flash, f); FXO.fc = c || '#fff'; } if (p) FXO.punch = Math.max(FXO.punch, p); }
 /* 配件拼圖：玩家擺的是 G.board；G.slots / G.supp 由它推導出來，戰鬥與屬性計算照舊讀這兩個 */
 const boardRows = (lvl = G.lvl) => Math.max(1, SLOT_LV.filter(l => lvl >= l).length);
@@ -64,6 +64,18 @@ function boardFromLegacy(slots, supp){
     const a = GridLab.place(b, 'active', id, sp.x, sp.y, sp.rot);
     for (const g of (supp && supp[id]) || []){ if (!g || !GridLab.SUPPORTS[g]) continue;
       const q = GridLab.findSpot(b, 'support', g, a.id); if (q) GridLab.place(b, 'support', g, q.x, q.y, q.rot); } }
+}
+/* 6×6 共鳴：整列／整欄塞滿、同元素技能緊貼 */
+const ELT = { fire:1, cold:1, light:1 };
+function boardBonus(){
+  const b = G.board, r = { rows:0, cols:0, pair:{} }; if (!b) return r;
+  const at = {}; for (const p of b.pieces) for (const [x, y] of GridLab.cellsOf(p)) at[x + ',' + y] = p;
+  for (let y = 0; y < b.h; y++){ let f = true; for (let x = 0; x < b.w; x++) if (!at[x + ',' + y]) f = false; if (f) r.rows++; }
+  for (let x = 0; x < b.w; x++){ let f = true; for (let y = 0; y < b.h; y++) if (!at[x + ',' + y]) f = false; if (f && b.h > 1) r.cols++; }
+  const el = p => GridLab.ACTIVES[p.key].tags.filter(t => ELT[t]);
+  for (const k of Object.keys(at)){ const [x, y] = k.split(',').map(Number), p = at[k]; if (p.kind !== 'active') continue;
+    for (const [dx, dy] of [[1, 0], [0, 1]]){ const q = at[(x + dx) + ',' + (y + dy)]; if (q && q !== p && q.kind === 'active' && el(p).some(t => el(q).includes(t))) r.pair[p.key] = r.pair[q.key] = 1; } }
+  return r;
 }
 const gemUsed = id => G.board ? G.board.pieces.filter(p => p.kind === 'support' && p.key === id).length : 0;
 const cartUsed = id => G.board ? G.board.pieces.filter(p => p.mode === id).length : 0;
@@ -142,13 +154,14 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
   s.life = (baseLife + s.life) * (1 + s.lifePct/100);
   s.aps = Math.min(4, 1 + s.apsInc/100);
   s.red = Math.min(.7, s.armor / (s.armor + 60 + 12*G.lvl));
+  const bb = boardBonus(); s.crit += 5*bb.cols; s.bb = bb;
   s.critAvg = 1 + Math.min(s.crit, 100)/100 * (s.cm/100 - 1);
   s.hit = s.dmg * (1 + s.inc/100);
   s.sk = {}; let dps2 = 0;
   for (const id of slots){ if (!id) continue;
     const K = SKILLS[id], sp = supp[id] || [], has = x => sp.includes(x), n = x => sp.filter(y => y === x).length;
-    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (Object.values(equip).some(it => it && it.lg === 'W_MULTI') ? 1 + .15*slots.filter(Boolean).length : 1) * (1 + .45*n('HEAVY')) * (1 + .08*Math.max(0, Math.min(5, sp.length) - 2)) * (has('AREA') && id === 'FIRE' ? .85 : 1);
-    const cd = K.cd * (G.modeOf[id] === 'CHAIN_OVERLOAD' ? 1.8 : 1) * (1 - Math.min(.6, (s.haste + 30*n('HASTE'))/100)), crit = Math.min(100, s.crit + 30*n('CRITS'));
+    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (Object.values(equip).some(it => it && it.lg === 'W_MULTI') ? 1 + .15*slots.filter(Boolean).length : 1) * (1 + .45*n('HEAVY')) * (1 + .08*Math.max(0, Math.min(5, sp.length) - 2)) * (1 + .2*n('COOL') + .1*n('CRYSTAL')) * (1 + .12*bb.rows) * (bb.pair[id] ? 1.15 : 1) * (has('AREA') && id === 'FIRE' ? .85 : 1);
+    const cd = K.cd * (G.modeOf[id] === 'CHAIN_OVERLOAD' ? 1.8 : 1) * (1 - Math.min(.6, (s.haste + 30*n('HASTE') + 15*n('COOL'))/100)), crit = Math.min(100, s.crit + 30*n('CRITS') + 15*n('CRYSTAL'));
     const ca = 1 + crit/100*(s.cm/100 - 1);
     s.sk[id] = { mode:G.modeOf[id] || null, hit, cd, crit, has:sp.filter(Boolean), area:has('AREA'), twin:n('TWIN'), leech:has('LEECH') };
     dps2 += hit * ca * K.tg * (has('AREA') && id === 'FIRE' ? 1.5 : 1) * (1 + .6*n('TWIN')) / cd;

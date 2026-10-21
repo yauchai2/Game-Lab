@@ -72,7 +72,7 @@ function renderModal(){ setTimeout(() => { if (typeof dressMount === 'function' 
   $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? rulesBar() + craftHtml() : modalTab === 'dress' ? `${MOB() ? '<button class="mb" onclick="openModal(\'char\')">‹ 返回</button>' : ''}${dressHtml()}` : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() + `<details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">圖鑑</summary><div class="rpgm">${codexHtml()}</div></details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">更新日誌 v${CHANGELOG[0].v}${logNew() ? ' ●' : ''}</summary>${logHtml()}</details>` : '') + saveHtml();
 }
 let held = null, heldRot = 0, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
-const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff' };
+const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff', COOL:'#6fd6e8', CRYSTAL:'#d99bff' };
 const gemIco = (g, s = 22) => `<i class="gem" style="--gc:${GEM_COL[g] || '#a87bf0'};width:${s}px;height:${s}px"></i>`;
 function shapeIcon(kind, key, rot = 0, col){
   const cs = GridLab.shapeOf(kind, key, rot), w = Math.max(...cs.map(c => c[0])) + 1, h = Math.max(...cs.map(c => c[1])) + 1, c = col || (kind === 'active' ? '#ff9ec7' : GEM_COL[key] || '#a87bf0');
@@ -103,7 +103,7 @@ function skillsHtml(){
 function skillsHtml0(){
   const B = G.board, at = {}, linked = new Set(GridLab.resolve(B).flatMap(r => r.linked));
   for (const p of B.pieces) GridLab.cellsOf(p).forEach((c, i) => { at[c[0] + ',' + c[1]] = { p, first:i === 0 }; });
-  let h = '<div class="hint">像俄羅斯方塊：把下方的機件拖到面板上放下（手機請按住機件的方塊圖示再拖），也可以拖面板上的機件換位置。也能先點選，按「旋轉」（或 R 鍵）轉方向，再點格子放下；放不下的位置會顯示紅色。<b>輔助配件只強化上下左右相鄰</b>的技能（廣播只對投射物）。一個技能連到 3 個以上輔助會「滿載」，每多一個傷害 +8%。面板是 6×6，隨等級逐列解鎖。</div>'
+  let h = '<div class="hint">像俄羅斯方塊：把下方的機件拖到面板上放下（手機請按住機件的方塊圖示再拖），也可以拖面板上的機件換位置。也能先點選，按「旋轉」（或 R 鍵）轉方向，再點格子放下；放不下的位置會顯示紅色。<b>輔助配件只強化上下左右相鄰</b>的技能（廣播只對投射物）。一個技能連到 3 個以上輔助會「滿載」，每多一個傷害 +8%。面板是 6×6，隨等級逐列解鎖。<b>共鳴</b>：整列塞滿，全隊傷害 +12%；整欄塞滿，暴擊率 +5%；元素相同的兩個技能緊貼，各自傷害 +15%。</div>'
     + `<div class="pz" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">`;
   for (let y = 0; y < SLOT_LV.length; y++) for (let x = 0; x < B.w; x++){
     if (y >= B.h){ h += `<div class="pc lock">${x === 0 ? 'Lv. ' + SLOT_LV[y] : ''}</div>`; continue; }
@@ -112,8 +112,10 @@ function skillsHtml0(){
     const act = c.p.kind === 'active', col = act ? '#ff9ec7' : GEM_COL[c.p.key] || '#a87bf0', same = (dx, dy) => (at[(x + dx) + ',' + (y + dy)] || {}).p === c.p;
     h += `<div class="pc fill${c.p.id === selPiece ? ' sel' : ''}${linked.has(c.p.id) ? ' lnk' : ''}${same(1, 0) ? ' jr' : ''}${same(0, 1) ? ' jb' : ''}" style="--pc:${col}" ${ev} onpointerdown="pzDown(event,null,null,${c.p.id})">${c.first ? (act ? spr(SKILL_ICON[c.p.key], 22) : gemIco(c.p.key, 16)) + `<span>${act ? SKILLS[c.p.key].n : SUPPS[c.p.key].n}</span>` : ''}</div>`;
   }
+  const bb = boardBonus(), rz = [bb.rows && `整列滿 ×${bb.rows}：全隊傷害 +${12*bb.rows}%`, bb.cols && `整欄滿 ×${bb.cols}：暴擊率 +${5*bb.cols}%`, Object.keys(bb.pair).length && `${Object.keys(bb.pair).map(k => SKILLS[k].n).join('、')}：同元素緊貼 +15%`].filter(Boolean);
+  h += `</div><div class="rz">${rz.length ? '共鳴　' + rz.join('　') : '共鳴　整列塞滿、整欄塞滿、同元素技能緊貼，都有額外加成'}</div>`;
   const hd = held ? (held.kind === 'active' ? SKILLS[held.key].n : SUPPS[held.key].n) : '';
-  h += `</div><div class="pzbar"><button ${held || selPiece != null ? '' : 'disabled'} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button>${held ? `<span class="mute">手上：${hd} ${shapeIcon(held.kind, held.key, heldRot)}</span>` : ''}<span id="pzmsg" class="mute"></span></div>`;
+  h += `<div class="pzbar"><button ${held || selPiece != null ? '' : 'disabled'} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button>${held ? `<span class="mute">手上：${hd} ${shapeIcon(held.kind, held.key, heldRot)}</span>` : ''}<span id="pzmsg" class="mute"></span></div>`;
   h += '<div class="mct" style="margin:10px 0 6px">技能</div><div class="skrow">' + Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, used = G.slots.includes(id);
     return `<button class="skb${held && held.key === id ? ' on' : ''}" ${(!un || used) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : used ? '（已放在面板上）' : '：' + K.d}" onclick="pzHold('active','${id}')" onpointerdown="pzDown(event,'active','${id}')">${spr(SKILL_ICON[id], 22)}${shapeIcon('active', id)}</button>`; }).join('') + '</div>';
   for (const id of G.slots){ const k = G.st.sk[id], n = k && k.has.length; if (k) h += `<div class="mute"><b>${SKILLS[id].n}</b>：單次傷害約 ${tFmt(k.hit)}，冷卻 ${k.cd.toFixed(1)} 秒${n ? `，連結 ${n} 個輔助${n >= 3 ? '（滿載 +' + 8*(Math.min(5, n) - 2) + '%）' : ''}` : ''}</div>`; }
@@ -535,6 +537,10 @@ function setupPanel(){
     body.m .mtabs{background:linear-gradient(180deg,#eef2fa 0%,#b9c3dc 50%,#cfd7ea 52%,#a3afcf 100%) !important;border-top:2px solid #fff;box-shadow:0 -3px 8px rgba(43,37,82,.3) !important}
     body.m .tab{margin:4px 3px !important;min-height:46px;border-radius:14px !important;color:#2b2552 !important;text-shadow:0 1px 0 #fff !important;background:linear-gradient(180deg,#fff 0%,#e9f0ff 46%,#c0d0f2 52%,#dfe9ff 100%) !important;border:1.5px solid #6f82c8 !important;box-shadow:0 2px 0 #7d8bbd,inset 0 1px 0 #fff !important}
     body.m .tab.on{margin-top:0 !important;color:#fff !important;text-shadow:0 1px 0 #1a3a99 !important;background:linear-gradient(180deg,#b9d2ff 0%,#6f9cf0 48%,#3f74dc 52%,#6f9cf0 100%) !important;border-radius:14px !important;box-shadow:0 1px 0 #1a3a99,inset 0 1px 0 #fff !important}
+    .pz{padding:6px;background:linear-gradient(180deg,#9fb0d8,#c6d2ee);border:2px solid #fff;outline:1px solid #7d8bbd;border-radius:12px;box-shadow:inset 0 3px 6px rgba(30,40,100,.35),0 2px 0 #8c9bd0}
+    .pc:not(.fill):not(.lock){background:radial-gradient(circle at 50% 50%,#8294c4 0 18%,#b4c2e6 20%);border-radius:7px;border:1px solid #7d8bbd;box-shadow:inset 0 2px 3px rgba(30,40,100,.4),0 1px 0 #fff}
+    .pc.fill{border-radius:8px;box-shadow:inset 0 2px 0 rgba(255,255,255,.85),inset 0 -3px 0 rgba(0,0,60,.28),0 2px 0 rgba(30,40,100,.4) !important;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+    .rz{font-size:11.5px;margin:2px 0 4px;color:#1f3fb0;background:#eaf1ff;border:1px solid #9fb2e8;border-radius:6px;padding:2px 8px}
     .stage #loot{position:absolute;left:8px;bottom:8px;top:auto;transform:none;align-items:flex-start;width:min(240px,60%);z-index:5;flex-direction:column-reverse}
     body.m .stage #loot{left:auto;right:6px;bottom:auto;top:52px;align-items:flex-end;width:min(190px,54%);flex-direction:column}
     .lt{padding:1px 8px !important;border-radius:8px;font-size:11px !important;background:rgba(255,255,255,.72) !important;border:0 !important;border-left:3px solid var(--rc) !important;box-shadow:none !important;animation:none !important} .lt.r3{animation:none !important;background:rgba(255,245,220,.88) !important} .lt .lh b{font-size:13px !important} .lt.r3{padding:2px 9px !important;font-size:12px !important} .lt.r3 .lh b{font-size:13px !important}
