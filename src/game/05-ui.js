@@ -23,12 +23,16 @@ function xico(kind, id, size = 24){   // 遺物、傳奇裝備、成就徽章的
   const c = i % cols, r = (i/cols) | 0, k = size/128;
   return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET[a]}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(cols*128*k).toFixed(1)}px ${(rows*128*k).toFixed(1)}px no-repeat;vertical-align:middle;margin-right:4px"></span>`;
 }
+function eqico(slot, r, size = 32){   // 裝備圖示：列＝部位，欄＝稀有度
+  const rows = ['weapon','armor','ring'], c = Math.min(r|0, 3), rw = rows.indexOf(slot), k = size/128;
+  return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET.equips}) -${(c*128*k).toFixed(1)}px -${(rw*128*k).toFixed(1)}px/${(512*k).toFixed(1)}px ${(384*k).toFixed(1)}px no-repeat;vertical-align:middle;margin-right:4px"></span>`;
+}
 const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
 function slotHtml(slot){
   const it = G.equip[slot];
   if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${spr(SLOT_ICON[slot], 32)}<div class="mute">空</div></div></div>`;
   const lines = itemLines(it).slice(0, 3).map(l => `<li class="${l.imp ? 'imp' : l.lg ? 'lgd' : ''}">${l.t}</li>`).join('');
-  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${it.lg && xico('legend', it.lg, 34) ? xico('legend', it.lg, 34) : spr(SLOT_ICON[slot], 32, RAR[it.r].c)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
+  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${it.lg && xico('legend', it.lg, 34) ? xico('legend', it.lg, 34) : eqico(slot, it.r, 34)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
 }
 function panelHtml(){
   const s = G.st, h = G.h, R = G.run;
@@ -189,7 +193,7 @@ function lootToast(it){
   let box = $('loot'); const host = document.querySelector('.stage') || document.body; if (!box){ box = document.createElement('div'); box.id = 'loot'; } if (box.parentNode !== host) host.appendChild(box);
   const R = RAR[it.r], ls = itemLines(it).filter(l => l.lg).slice(0, 1).concat(itemLines(it).filter(l => !l.lg).slice(0, 1)).slice(0, it.lg ? 2 : 1), d = document.createElement('div');
   d.className = 'lt r' + it.r; d.style.setProperty('--rc', R.c); d.style.setProperty('--rg', R.g);
-  d.innerHTML = `<div class="lh"><b>${it.name}</b></div>`;
+  d.innerHTML = `<div class="lh">${it.lg && xico('legend', it.lg, 24) ? xico('legend', it.lg, 24) : eqico(it.slot || it.sl, it.r, 24)}<b>${it.name}</b></div>`;
   box.prepend(d); while (box.children.length > 2) box.lastChild.remove();
   setTimeout(() => d.classList.add('out'), it.r >= 3 ? 3200 : 1800); setTimeout(() => d.remove(), it.r >= 3 ? 3800 : 2400);
 }
