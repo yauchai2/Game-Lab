@@ -4,11 +4,10 @@ const GAME_VIEW={prefs:{idle:60,pixels:true,glitch:true,uiFx:2},atlases:{},ready
 const UI_FX_NAMES=['關閉','輕微','標準','強烈'];
 const UI_FX_CSS=`
 :root{--ui-fx-cyan:#57efff;--ui-fx-magenta:#ff73be}
-body[data-ui-fx="1"]{--ui-poster-filter:url("#ui-pixel-1");--ui-grain:.18}
-body[data-ui-fx="2"]{--ui-poster-filter:url("#ui-pixel-2");--ui-grain:.28}
-body[data-ui-fx="3"]{--ui-poster-filter:url("#ui-pixel-3");--ui-grain:.45}
-/* 同一靜態後製套用所有介面區域；不濾鏡 body 或場景，不改 fixed 容器的座標系。 */
-body.ui-pixelfx :where(#mbody,#mttl,#mtabs,#uisettings,#ovl>.mbox,#wiki .wkt,#wiki .wkn,#wiki .wkcontent,header,.tfoot,#nexthint,#ctxbtn,#loot,.battle-hud,#watch-return>span),body.ui-pixelfx.ui-fx-document :where(nav,main>section,#count,#empty){filter:var(--ui-poster-filter)}
+body[data-ui-fx="1"]{--ui-grain:.18}
+body[data-ui-fx="2"]{--ui-grain:.28}
+body[data-ui-fx="3"]{--ui-grain:.45}
+/* 色彩由材質與預先量化圖集提供；文字、捲動區及 HUD 不做整面 SVG 合成。 */
 body.ui-pixelfx :where(#modal>.mbox,#ovl>.mbox,#wiki>.wkb),body.ui-pixelfx.ui-fx-document main>section{position:relative}
 body.ui-pixelfx :where(#modal>.mbox,#ovl>.mbox,#wiki>.wkb)::after,body.ui-pixelfx.ui-fx-document header::after{content:"";position:absolute;inset:0;z-index:40;pointer-events:none;opacity:var(--ui-grain);background-image:repeating-linear-gradient(0deg,#13264d40 0 1px,transparent 1px 4px),linear-gradient(90deg,transparent 8%,var(--ui-fx-cyan) 8% 29%,transparent 29% 62%,var(--ui-fx-magenta) 62% 77%,transparent 77%);background-size:100% var(--ui-band-height,40px),100% 2px;background-position:0 var(--ui-band-top,0px),0 -10px;background-repeat:no-repeat;mix-blend-mode:multiply}
 body.d #modal>.mbox{--ui-band-top:70px;--ui-band-height:52px}body.m #modal>.mbox{--ui-band-height:44px}#ovl>.mbox{--ui-band-height:26px}
@@ -20,13 +19,7 @@ body #uisettings input#ui-fx-level{display:block;box-sizing:border-box;width:100
 @media(prefers-reduced-motion:reduce){body.ui-pixelfx.signal-fx.ui-fx-pulse :where(#modal>.mbox,#ovl>.mbox,#wiki>.wkb)::after{animation:none!important}}
 @media(forced-colors:active){body.ui-pixelfx :where(#mbody,#mttl,#mtabs,#uisettings,#ovl>.mbox,#wiki .wkt,#wiki .wkn,#wiki .wkcontent,header,.tfoot,#nexthint,#ctxbtn,#loot,.battle-hud,#watch-return>span),body.ui-pixelfx.ui-fx-document :where(nav,main>section,#count,#empty){filter:none!important}body.ui-pixelfx :where(#modal>.mbox,#ovl>.mbox,#wiki>.wkb)::after,body.ui-pixelfx.ui-fx-document :where(header,main>section)::after{display:none}}
 `;
-function viewFxDefs(){
-  // 共用靜態色階處理，不移動畫素座標，不重新擷取 DOM。
-  return '<svg id="ui-fx-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none;overflow:hidden"><defs>'+[32,16,8].map((steps,i)=>{
-    const values=Array.from({length:steps},(_,n)=>(n/(steps-1)).toFixed(4)).join(' ');
-    return `<filter id="ui-pixel-${i+1}" color-interpolation-filters="sRGB" x="-2%" y="-2%" width="104%" height="104%"><feComponentTransfer><feFuncR type="discrete" tableValues="${values}"/><feFuncG type="discrete" tableValues="${values}"/><feFuncB type="discrete" tableValues="${values}"/></feComponentTransfer></filter>`;
-  }).join('')+'</defs></svg>';
-}
+function viewFxDefs(){return '';}
 function viewFxSnapshot(){
   const level=GAME_VIEW.prefs.uiFx,pixels=GAME_VIEW.prefs.pixels;
   const fontCSS=[...document.querySelectorAll('style')].map(s=>s.textContent).find(css=>css.trim().startsWith('@font-face')&&css.includes('Cubic 11'))||'';

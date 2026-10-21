@@ -20,5 +20,5 @@ buf = io.BytesIO(); f.flavor = 'woff2'; f.save(buf)
 b = base64.b64encode(buf.getvalue()).decode()
 open(os.path.join(ROOT, 'src', 'game', 'font.js'), 'w').write(
   "/* 由 tools/pack_font.py 產生：Cubic 11 像素字體（SIL OFL 1.1）的子集 */\n"
-  "(function(){ const s = document.createElement('style'); s.textContent = '@font-face{font-family:\"Cubic 11\";src:url(data:font/woff2;base64," + b + ") format(\"woff2\");font-display:block}'; document.head.appendChild(s); })();\n")
+  "(function(){ const s = document.createElement('style'); s.textContent = '@font-face{font-family:\"Cubic 11\";src:url(data:font/woff2;base64," + b + ") format(\"woff2\");font-weight:400;font-style:normal;font-display:swap}'; document.head.appendChild(s); })();\n")
 print(len(chars), 'chars,', len(b)//1024, 'KB base64')

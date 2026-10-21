@@ -59,6 +59,7 @@ if (Q.has('picks')) G.picks = +Q.get('picks');
 if (Q.has('modal')) openModal(Q.get('modal'));
 const gap0 = Q.has('away') ? +Q.get('away') : loadedT ? (Date.now() - loadedT)/1000 : 0;
 if (gap0 > 20) catchUp(gap0, true);
+ui.suspendRender=()=>G.offline||document.hidden;
 ui.animate(dt => {
   const now = Date.now(), gap = (now - G.lastWall)/1000; G.lastWall = now;
   if (G.paused) return true;
@@ -71,4 +72,5 @@ ui.animate(dt => {
 setInterval(() => { if (!G.paused) saveGame(); }, 5000);
 addEventListener('pagehide', () => { if (!G.paused) saveGame(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && !G.paused) saveGame(); });
+document.getElementById('boot')?.remove();
 

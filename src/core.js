@@ -325,7 +325,7 @@ function mountFigure(cfg){
     clearTimeout(flashT); flashT = setTimeout(() => { ui._flash = false; toast.classList.remove('show'); ui.render(); }, ms); };
   // animations run on a ~60 fps timer rather than requestAnimationFrame, so they also run in headless test shots
   ui.animate = step => { let last = performance.now();
-    const loop = () => { const now = performance.now(), dt = Math.max(0, Math.min(.05,(now-last)/1000)); last = now; const more = step(dt) !== false; ui.render(); if (more) (navigator.webdriver || document.hidden ? setTimeout(loop, 16) : requestAnimationFrame(loop)); };
+    const loop = () => { const now = performance.now(), dt = Math.max(0, Math.min(.05,(now-last)/1000)); last = now; const more = step(dt) !== false; if (!ui.suspendRender || !ui.suspendRender()) ui.render(); if (more) (navigator.webdriver || document.hidden ? setTimeout(loop, 16) : requestAnimationFrame(loop)); };
     setTimeout(loop, 16); };
 
   // clickable parts react on press, not on click: while something animates, the scene is redrawn every frame, so the

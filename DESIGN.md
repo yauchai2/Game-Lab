@@ -11,7 +11,7 @@ typography:
   display:
     fontFamily: '"Cubic 11", system-ui, sans-serif'
   body:
-    fontFamily: 'system-ui, "Microsoft JhengHei", sans-serif'
+    fontFamily: '"Cubic 11", system-ui, sans-serif'
 rounded:
   panel: "10px"
   control: "4px"
@@ -33,7 +33,7 @@ ink → --ux-ink，muted → --ux-muted，screen → --ux-screen，primary → -
 
 ## Typography
 
-標題與數字沿用現有 Cubic 11。配件效果、改機原因、長說明與編年史使用系統繁中字體，必要資訊約 14px，行高 1.5 至 1.6。精簡不是刪除決策資訊；名稱、效果、不可逆後果不能只在 title 裡。
+全介面、表單、配件效果與兩種編年史統一使用 Cubic 11 常規 400 字重，禁止合成粗體。文字子集涵蓋目前介面；玩家自訂名稱未收字形時才退回系統字體。必要資訊約 14px，行高 1.5 至 1.6。精簡不是刪除決策資訊；名稱、效果、不可逆後果不能只在 title 裡。
 
 ## Layout
 
@@ -105,7 +105,7 @@ Canonical owner 為 tools/draw_icons.mjs 的幾何、字模與 C 色票：ink #2
 
 本節記錄上一輪方案；Alan 指出材質流失後，外殼／按鍵及色票已由下節重做規則取代，連續閱讀與搜尋語意仍保留。材質唯一 owner 是 05f-ux.js 的 UX_MATERIAL_CSS；05g-layout.js 擁有幾何，05h-view.js 的 UI_FX_CSS 擁有色階及短暫訊號，三者不另建平行主題。ui-material 不依賴 uiFx 開關。
 
-保留藍色標題、像素功能字、24px 符號、盤面格槽；移除卡片套卡片、白色高光、資料列左側裝飾條、膠囊標籤及常駐內容網格。外框 2px、硬陰影 2px；一般按鍵僅底邊。標題與控制用 Cubic 11，長文／搜尋用系統繁中字體。中性 screen #e6e8f7 避免色階後偏亮青，其他表面由 UX_THEME 的 face／key／lcd／frame／rule 管理。
+保留藍色標題、像素功能字、24px 符號、盤面格槽；移除卡片套卡片、白色高光、資料列左側裝飾條、膠囊標籤及常駐內容網格。外框 2px、硬陰影 2px；一般按鍵僅底邊。所有介面文字與搜尋統一 Cubic 11 常規字重。中性 screen #e6e8f7 避免色階後偏亮青，其他表面由 UX_THEME 的 face／key／lcd／frame／rule 管理。
 
 編年史兩種呈現共用平整分類、內縮搜尋、連續列表與同源材質。viewFxSnapshot 同時帶入現有 Cubic 11 font-face，使獨立文件保有相同字形。搜尋全部分類時清除分類選中，清除查詢後恢復先前分類。驗證與截圖見 docs/ui-refinement-2026-10-21.md。
 
