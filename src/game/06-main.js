@@ -17,6 +17,7 @@ ui = mountFigure({
     return [ { label:'等級', value:G.lvl + bar(xp, '#43c25c') }, { label:'生命', value:tFmt(Math.max(0, G.h.hp)) + bar(hp, '#e2483d'), small:true }, { label:G.run ? '地圖' : '深度', value:lvlNow(), small:true }, { label:'金幣', value:tFmt(G.gold), small:true }, MOB() ? { label:'DPS', value:tFmt(G.st.dps), small:true } : null ]; },
   buttons:[
     { label:'技能', onClick:() => openModal('skills') },
+    { label:'編年史', onClick:() => wikiOpen() },
     { label:'扮工模式 ( ` )', onClick:() => toggleBoss(true) },
     { label:'天賦盤', onClick:() => openModal('tree') },
     { label:'地圖', onClick:() => openModal('maps') },
@@ -62,6 +63,7 @@ if (gap0 > 20) catchUp(gap0, true);
 ui.animate(dt => {
   const now = Date.now(), gap = (now - G.lastWall)/1000; G.lastWall = now;
   if (G.paused) return true;
+  if (FXO.stop > 0){ FXO.stop -= dt; dt *= .1; }
   if (G.relicPicks > 0 && !G.offline && (G.autoCard || (!G.offerR && $('ovl').hidden))) openRelics();
   else if (G.picks > 0 && !G.offline && (G.autoCard || (!G.offer && $('ovl').hidden))) openCards();
   if (gap > 3){ catchUp(gap, gap > 20); return true; }
