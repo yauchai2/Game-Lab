@@ -1,0 +1,47 @@
+/* 全介面效果回歸：確認後製不改變操作位置、存檔或互動；以 Chromium 實測。 */
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const url=process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8767/dist/idle-hero.html';
+const out=process.env.GAME_LAB_FX_OUTPUT||'/tmp/game-lab-fx-validation';fs.mkdirSync(out,{recursive:true});
+(async()=>{
+ const browser=await chromium.launch({executablePath:process.env.GAME_LAB_CHROMIUM||'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});
+ const context=await browser.newContext({viewport:{width:1440,height:900}}),p=await context.newPage(),errors=[],passed=[];
+ p.on('pageerror',e=>errors.push(e.message));await p.goto(url+'?fresh&lvl=12&give&static');await p.evaluate(()=>GAME_VIEW.ready);await p.evaluate(()=>document.fonts.ready);
+ async function check(name,fn){await fn();passed.push(name);console.log('PASS',name)}
+ async function shot(name){await p.waitForTimeout(380);await p.screenshot({path:path.join(out,name+'.png')})}
+ async function level(n){const r=p.getByRole('slider',{name:'介面像素質感',exact:true});await r.focus();await r.press('Home');for(let i=0;i<n;i++)await r.press('ArrowRight');assert.equal(await r.getAttribute('aria-valuetext'),['關閉','輕微','標準','強烈'][n]);}
+ await check('shared default applies to UI with world and body unfiltered',async()=>{
+  assert.equal(await p.evaluate(()=>GAME_VIEW.prefs.uiFx),2);assert.equal(await p.locator('#ui-fx-defs').count(),1);
+  for(const selector of ['#mbody','#mttl','#mtabs','#stats','header','.tfoot'])assert((await p.locator(selector).evaluate(e=>getComputedStyle(e).filter)).includes('ui-pixel-2'),selector);
+  for(const selector of ['body','#fig','#cv3'])assert.equal(await p.locator(selector).evaluate(e=>getComputedStyle(e).filter),'none',selector);
+  await shot('01-standard-desktop');
+ });
+ await check('native intensity slider changes all UI without moving controls or changing game state',async()=>{
+  await p.evaluate(()=>openModal('settings'));const before=await p.evaluate(()=>JSON.stringify({board:G.board,gold:G.gold,equip:G.equip,parts:G.parts,yaw:FXO.yawT}));const rect=await p.locator('#ui-fx-level').boundingBox();
+  for(const n of [0,1,2,3]){await level(n);const current=await p.locator('#ui-fx-level').boundingBox();assert.deepEqual(current,rect);assert.equal(await p.evaluate(()=>document.activeElement.id),'ui-fx-level');assert.equal(await p.locator('#uisettings').evaluate(e=>getComputedStyle(e).filter),n?`url("#ui-pixel-${n}")`:'none');assert.equal(await p.locator('#ui-fx-name').innerText(),['關閉','輕微','標準','強烈'][n]);}
+  assert.equal(await p.evaluate(()=>JSON.stringify({board:G.board,gold:G.gold,equip:G.equip,parts:G.parts,yaw:FXO.yawT})),before);await shot('02-strong-settings');await level(0);await shot('03-off-settings');await level(2);
+ });
+ await check('intensity persists, legacy preferences migrate and invalid saved values recover',async()=>{
+  await level(1);await p.reload();assert.equal(await p.evaluate(()=>GAME_VIEW.prefs.uiFx),1);await p.evaluate(()=>{localStorage.setItem(VIEW_KEY,JSON.stringify({idle:30,pixels:false,glitch:false}));});await p.reload();assert.deepEqual(await p.evaluate(()=>GAME_VIEW.prefs),{idle:30,pixels:false,glitch:false,uiFx:2});
+  await p.evaluate(()=>localStorage.setItem(VIEW_KEY,JSON.stringify({uiFx:999})));await p.reload();assert.equal(await p.evaluate(()=>GAME_VIEW.prefs.uiFx),2);
+ });
+ await check('modal, text input and engine dropdown remain operable through the global layer',async()=>{
+  await p.evaluate(()=>{openModal('save');document.getElementById('sv').value='未匯入的文字草稿';document.querySelector('[data-focus="nav-menu"]').focus();showHelp('skills')});assert(await p.getByRole('dialog').isVisible());assert((await p.locator('#ovl>.mbox').evaluate(e=>getComputedStyle(e).filter)).includes('ui-pixel-2'));await shot('04-dialog');await p.keyboard.press('Escape');assert.equal(await p.locator('#sv').inputValue(),'未匯入的文字草稿');assert.equal(await p.evaluate(()=>document.activeElement.dataset.focus),'nav-menu');
+  await p.evaluate(()=>openModal('settings'));await p.getByRole('button',{name:/^戰利品過濾/}).click();await p.getByRole('button',{name:'稀有以上',exact:true}).click();assert.equal(await p.evaluate(()=>G.filter),2);await p.getByRole('slider',{name:'介面像素質感'}).focus();assert.equal(await p.evaluate(()=>document.activeElement.id),'ui-fx-level');
+ });
+ await check('reduced motion, independent animation switch and forced colors disable appropriate effects',async()=>{
+  await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>!document.body.classList.contains('signal-fx'));await p.evaluate(()=>{GAME_VIEW.pulseAt=-1000;viewFxPulse()});assert.equal(await p.evaluate(()=>document.body.classList.contains('ui-fx-pulse')),false);assert.equal(await p.locator('#modal>.mbox').evaluate(e=>getComputedStyle(e,'::after').animationName),'none');assert((await p.locator('#uisettings').evaluate(e=>getComputedStyle(e).filter)).includes('ui-pixel-2'));
+  await p.emulateMedia({reducedMotion:'no-preference'});await p.waitForFunction(()=>document.body.classList.contains('signal-fx'));await p.locator('[data-view-setting="glitch"]').click();assert.equal(await p.evaluate(()=>document.body.classList.contains('signal-fx')),false);assert((await p.locator('#uisettings').evaluate(e=>getComputedStyle(e).filter)).includes('ui-pixel-2'));await p.locator('[data-view-setting="glitch"]').click();await p.evaluate(()=>{GAME_VIEW.pulseAt=-1000;viewFxPulse()});assert.equal(await p.locator('#modal>.mbox').evaluate(e=>getComputedStyle(e,'::after').animationName),'ui-signal-burst');await p.emulateMedia({forcedColors:'active'});assert.equal(await p.locator('#uisettings').evaluate(e=>getComputedStyle(e).filter),'none');assert.equal(await p.locator('#modal>.mbox').evaluate(e=>getComputedStyle(e,'::after').display),'none');await p.emulateMedia({forcedColors:'none'});
+ });
+ await check('every workflow shares effects and reflows at narrow and short viewport sizes',async()=>{
+  await p.evaluate(()=>{G.lvl=30;recalc();renderModal()});
+  for(const size of [{width:360,height:800},{width:844,height:390},{width:1440,height:900}]){await p.setViewportSize(size);await p.waitForTimeout(100);for(const tab of ['char','skills','craft','tree','maps','menu']){await p.locator(`[data-focus="nav-${tab}"]`).click();assert.equal(await p.evaluate(()=>modalTab),tab);assert((await p.locator('#mbody').evaluate(e=>getComputedStyle(e).filter)).includes('ui-pixel-2'));assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth),size.width);}await p.locator('[data-focus="nav-skills"]').click();await p.locator('[data-focus="cell-5-5"]').focus();await p.locator('[data-focus="cell-5-5"]').scrollIntoViewIfNeeded();const last=await p.locator('[data-focus="cell-5-5"]').boundingBox(),nav=await p.locator('#mtabs').boundingBox(),body=await p.locator('#mbody').boundingBox(),desktop=await p.evaluate(()=>DESK());const bottom=desktop?body.y+body.height:nav.y;assert(last.y>=Math.max(0,body.y)&&last.y+last.height<=bottom+1,JSON.stringify({size,last,body,nav}));await p.locator('#mbody').evaluate(e=>e.scrollTop=0);await shot(`05-battle-${size.width}x${size.height}`);}
+ });
+ await check('fallback chronicle and independent snapshot use the same effect and remain searchable',async()=>{
+  await p.evaluate(()=>wikiOverlay());assert((await p.locator('#wiki .wkcontent').evaluate(e=>getComputedStyle(e).filter)).includes('ui-pixel-2'));await p.locator('#wkq').fill('不存在的術語');assert(await p.getByText('找不到符合',{exact:false}).isVisible());await p.keyboard.press('Escape');
+  const popupPromise=p.waitForEvent('popup');await p.evaluate(()=>wikiOpen());const popup=await popupPromise;popup.on('pageerror',e=>errors.push(e.message));await popup.waitForLoadState();assert.equal(await popup.locator('body').getAttribute('data-ui-fx'),'2');assert.equal(await popup.locator('#ui-fx-defs').count(),1);assert((await popup.locator('main>section').first().evaluate(e=>getComputedStyle(e).filter)).includes('ui-pixel-2'));await popup.locator('#q').fill('不存在的術語');assert(await popup.locator('#empty').isVisible());await popup.locator('#clear').click();await popup.getByRole('link',{name:'輔助配件',exact:true}).click();assert(await popup.locator('#c-supp').isVisible());await popup.screenshot({path:path.join(out,'06-chronicle-snapshot.png')});await popup.close();
+ });
+ await check('watch mode preserves HUD, canvas size and first-click consumption with effects enabled',async()=>{
+  await p.setViewportSize({width:390,height:844});await p.evaluate(()=>{openModal('skills');document.querySelector('[data-focus="nav-skills"]').focus();viewEnterWatch()});assert.equal(await p.evaluate(()=>GAME_VIEW.watch),true);await shot('07-watch-mobile');const r=await p.locator('#cv3').boundingBox();assert.equal(r.height,844);assert.equal(r.width,390);assert((await p.locator('#stats').evaluate(e=>getComputedStyle(e).filter)).includes('ui-pixel-2'));await p.mouse.click(200,300);assert.equal(await p.evaluate(()=>GAME_VIEW.watch),false);assert.equal(await p.evaluate(()=>modalTab),'skills');await p.locator('[data-focus="nav-char"]').click();assert.equal(await p.evaluate(()=>modalTab),'char');
+ });
+ assert.deepEqual(errors,[]);fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({url,passed,errors},null,2));console.log(`${passed.length} global effect checks passed; no page errors`);await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});

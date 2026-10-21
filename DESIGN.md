@@ -1,0 +1,122 @@
+---
+version: alpha
+colors:
+  ink: "#172751"
+  muted: "#475778"
+  screen: "#e6e8f7"
+  primary: "#303d9b"
+  edge: "#9ca9c8"
+  accent: "#b94732"
+typography:
+  display:
+    fontFamily: '"Cubic 11", system-ui, sans-serif'
+  body:
+    fontFamily: 'system-ui, "Microsoft JhengHei", sans-serif'
+rounded:
+  panel: "10px"
+  control: "4px"
+omitted:
+  - section: spacing
+    reason: "Shell geometry is owned by UI_LAYOUT_CSS; existing scene geometry remains in the renderer. No global spacing token migration."
+---
+# Idle Hero
+
+## Overview
+
+繁體中文的掛機 RPG。視覺是青年街頭酷感 Y2K：低面數場景、浮島、寬褲厚鞋、耳機與數位物件。介面使用成形銀灰外殼、藍紫液晶區與短鍵程按鍵；深度集中於外沿及控制，資料閱讀面保持簡潔。避免幼兒 Q 版、大片糖果粉色與遮住資訊的鏡面裝飾。
+
+## Colors
+
+新增 UX 元件的 canonical runtime source 為 src/game/05f-ux.js 的 UX_THEME，透過 UX_CSS 注入遊戲、透過 wikiPage 注入獨立文件；WIKI_CSS 也使用相同變數。以上 frontmatter 為其文件映射，無獨立生成層。舊場景色票保留；setupPanel 的歷史皮膚在操作台與編年史由 UX_MATERIAL_CSS 統一覆蓋。
+
+ink → --ux-ink，muted → --ux-muted，screen → --ux-screen，primary → --ux-blue，edge → --ux-edge，accent → --ux-accent。焦點 --ux-focus 為 #1f3fb0；捲軸 --ux-scroll／--ux-track 為 #8297c6／#e3ebfa。藍色表示操作與選取，橘紅保留主要執行動作；危險須有文字。
+
+## Typography
+
+標題與數字沿用現有 Cubic 11。配件效果、改機原因、長說明與編年史使用系統繁中字體，必要資訊約 14px，行高 1.5 至 1.6。精簡不是刪除決策資訊；名稱、效果、不可逆後果不能只在 title 裡。
+
+## Layout
+
+桌機是左側戰場＋右側操作台，取消常駐第三欄；面板寬度 clamp(440px, 34vw, 520px)，1180px 以下採上下排列。桌機與手機共用六入口：角色、戰鬥、打造、成長、冒險、更多。詳細角色資料在角色頁，手機保留底部導覽與工作適配戰場高度。跨尺寸只重排，不 reload、不清空輸入或選取。新增 shell 的 canonical source 是 src/game/05g-layout.js 的 UI_LAYOUT_CSS，覆蓋 setupPanel 的舊外框；盤面、場景與既有皮膚仍延伸原有來源。
+
+主要工作區只有一個內容捲動容器；選中詳情與盤面都在正常流中，不使用大型 sticky 摘要。選取後可返回盤面。盤面保留六欄，手機最大約 300px；詳情、工具列及固定導覽不可蓋住最後一列。編年史手機單欄內容。
+
+## Elevation & Depth
+
+深度集中於銀灰外殼的雙層亮暗邊、按鍵的短鍵程凸面、選中的凹槽與液晶輸入內沿；閱讀內容不疊亮面卡片。保留物件圖示，不新增裝飾素材或覆在戰場上的反光。
+
+## Shapes
+
+銀灰外殼半徑 10px，手機頂部 8px，短鍵程控制 4px；這些曲面取自參考裝置，不做藥丸形現代控制。內層區塊以留白及單線分組。分類共用銀色鍵座，選中呈藍紫壓入面；導覽選中為較亮液晶鍵及藍色底槽。盤面保留格槽與連接／放置狀態。焦點框獨立顯示。
+
+## Components
+
+共用導覽由 UI_NAV 定義，頁標題由 UI_TITLE 呈現，工作分類暫存於 UI_WORK。構築、打造與地圖延伸既有計算及執行函式；UI_LAYOUT_CSS 是新增工作頁外觀來源。新增決策資訊共用 uxPieceDetails，模態視窗共用 uxOpenDialog／uxCloseDialog。輸入與回復契約見 UX-CONTRACT.md。既有浮島動畫保留，新增介面尊重 prefers-reduced-motion，捲軸全域可見。
+
+## Do's and Don'ts
+
+保持繁中全形標點及玩家功能文案。公開文字不帶研究來源或帳號資訊。不要用亮色或動畫取代文字回饋，不把挑戰詞綴數稱作難度分數，不因查詢或預覽改動遊戲存檔。
+
+
+## 戰場像素與觀戰（2026-10-21）
+
+Alan 新提供的場景／HUD 圖是呈現要求；保留既有低面數街頭角色，不改成幼兒 Q 版。最新全局效果要求已取代先前只處理標題短線的方案。介面區域共用靜態像素色階、細掃描線與數位邊緣；切頁與操作時做一次 320ms 裝飾訊號掃過。文字、數值、血條不位移；尊重 prefers-reduced-motion，也可獨立關閉動畫。body 與戰場畫布不套 UI 濾鏡。
+
+新增呈現 owner 為 src/game/05h-view.js 的 VIEW_CSS。它擁有 HUD、像素面板外角、像素圖示、畫面偏好及觀戰外框；原有 UX_THEME 仍擁有色彩、文字、焦點及共用互動。frontmatter panel／control 映射 UX_MATERIAL_CSS 的裝置外殼及按鍵半徑；最新參考圖重做規則取代中途的全面方角方案。焦點外框不以 clip-path 裁切。舊場景材質不在本輪重新設計。
+
+HUD 由 viewRenderHUD 直接讀取遊戲狀態，取代 STATUS 櫃體：左側 LV／HP／XP／關卡擊殺，右側金幣與 DPS。生命玫紅、經驗淡金、深海軍藍讀數底。色彩搭配數字及標籤，不單以顏色表示危險。螢幕窄至 320px 時仍保留兩組資訊。HUD 不做 live region，不逐幀宣讀。
+
+圖示使用下述 Signal 24 重繪的七份 SVG 圖集，啟動時建立每格 24 邏輯像素、16 階 RGB 分量（步長 17）的快取。像素與向量模式共用取格定位；取樣失敗仍可讀新向量圖。數字、漢字及機件形狀不做此轉換，3D 角色不在圖集重繪範圍。
+
+全視窗觀戰預設 60 秒，可選關閉／30 秒／60 秒／2 分鐘。填滿遊戲視窗，保留 HUD 與返回提示；不呼叫需要手勢授權的 Fullscreen API。遊戲照常模擬及存檔，返回不重新載入。編輯、拖曳、手持機件、獎勵選擇、模態視窗、離線補算、背景分頁與扮工模式會阻止自動進入。
+
+驗證：tools/test_view_browser.cjs，含原生觸控事件、返回不誤觸、焦點／捲動／草稿、偏好保存、減少動態效果及不同 viewport。這是 Chromium 雲端檢查，不代表 Safari、真機、完整報讀器及 200% 縮放驗收。
+
+
+## 全介面共用效果（2026-10-21）
+
+Alan 以 Colorfigures 的共用效果控制為例，明確要求把像素／Glitch 擴及全 UI。本輪變更視覺系統決策，沿用 frontend-design 與 frontend-design-premium：共用 owner 是 05h-view.js 的 UI_FX_CSS、viewFxDefs、viewApplyPrefs、viewFxPulse；不是逐頁手動複製效果。VIEW_CSS 繼續擁有 HUD 與觀戰外框。
+
+色階共用 SVG feComponentTransfer：輕微 32 階、標準 16 階、強烈 8 階，僅 RGB，alpha 不改。掃描線以 4px 間距靜態繪製，強度為 0.18／0.28／0.45；不擷取 DOM、不以低解析畫布覆蓋文字，不使用位移或噪聲濾鏡。新增 --ui-fx-cyan #57efff 與 --ui-fx-magenta #ff73be 為數位裝飾色，定義在 UI_FX_CSS，不取代原有成功、警告、危險語意。
+
+body 的 ui-pixelfx 與 data-ui-fx 是唯一全局入口；uiFx 偏好預設 2，範圍 0–3。設定頁提供原生滑桿、文字強度、鍵盤與觸控操作。關閉色階與訊號紋理，保留共用的簡化硬體材質，不影響獨立的像素圖示偏好。標準是預設；強烈是可選視覺，長篇閱讀可切輕微或關閉。
+
+共用色階覆蓋工作內容、頁標題、導覽、設定、HUD、提示、確認、遊戲內編年史及獨立編年史快照。紋理限於外殼標題帶，閱讀區沒有常駐網格，pointer-events:none；不裁掉內容與焦點。不能把 filter 加在 body 或整個 modal shell，避免改變 fixed 子元件的定位；選擇獨立內容與標題區域作合成。
+
+訊號動畫只作用裝飾表面：短線跳至不同掃描位置，單次 320ms，700ms 內不重複觸發；沒有常駐快速閃爍、控制位移或文字 RGB 重影。減少動態效果保留靜態質感，停用動畫；forced-colors 停用濾鏡與裝飾覆層。觀戰僅保留 HUD 的靜態色階與提示。
+
+獨立編年史透過 viewFxSnapshot 共用同一份 CSS、SVG 定義及像素圖集，保存開啟時的設定快照；不宣稱與遊戲視窗即時同步。
+
+
+## 全套圖像重繪：Signal 24（2026-10-21）
+
+Alan 要求重做全部圖示與圖片且簡約，八組靜態 UI 素材全部改為新繪 SVG；不以縮小舊高光圖片當作完成。美術仍是低面數街頭 Y2K，介面圖示採簡化數位物件剪影，不做寫實紋理、大面積漸層或裝飾光暈。
+
+Canonical owner 為 tools/draw_icons.mjs 的幾何、字模與 C 色票：ink #223149、paper #edf3f5、slate #8c9bac、cyan #81cbd1、gold #e4c379、hot #df917e、blue #89a8d0、violet #aa98c5。每圖最多四色，基本描邊 2 邏輯像素，24px 網格與內縮邊距；額外標籤、稀有度及語意仍沿用遊戲資料。這些是素材色票，不覆寫 UX_THEME 的介面語意色。
+
+幾何與色票 → 生成的 SVG／icon-manifest.json → pack_assets.py 生成 ART_SHEETS／ASSET → uiSprite／viewPreparePixels／viewFxSnapshot，是唯一來源路徑。新增圖片不得再維護第二份欄列或 id 陣列。角色、交叉武器、扳手、成長節點、地圖、四格符號為六入口，維持繁中文字標與 aria 名稱。
+
+共用 uiSprite 產生 aria-hidden 裝飾圖；意義由文字、狀態與原生按鈕提供，不能只靠顏色。所有技能、配件、遺物、傳奇、成就及四稀有度裝備都涵蓋在 82 個圖示中；獨立字標亦重新繪製。透明背景支援淺色面板、選中藍與鎖定灰階。原始模式指新向量圖，沒有舊 PNG 的執行期路徑。
+
+圖示重繪不改全局效果強度與訊號節奏。全套總覽由 tools/preview_icons.cjs 讀取實際遊戲像素快取生成，不保有另一份美術。原有場景、角色及程序式 3D 物件屬場景渲染，不在這八組靜態 UI 資產中。
+
+
+## 全介面減法收斂（2026-10-21，歷史方案）
+
+本節記錄上一輪方案；Alan 指出材質流失後，外殼／按鍵及色票已由下節重做規則取代，連續閱讀與搜尋語意仍保留。材質唯一 owner 是 05f-ux.js 的 UX_MATERIAL_CSS；05g-layout.js 擁有幾何，05h-view.js 的 UI_FX_CSS 擁有色階及短暫訊號，三者不另建平行主題。ui-material 不依賴 uiFx 開關。
+
+保留藍色標題、像素功能字、24px 符號、盤面格槽；移除卡片套卡片、白色高光、資料列左側裝飾條、膠囊標籤及常駐內容網格。外框 2px、硬陰影 2px；一般按鍵僅底邊。標題與控制用 Cubic 11，長文／搜尋用系統繁中字體。中性 screen #e6e8f7 避免色階後偏亮青，其他表面由 UX_THEME 的 face／key／lcd／frame／rule 管理。
+
+編年史兩種呈現共用平整分類、內縮搜尋、連續列表與同源材質。viewFxSnapshot 同時帶入現有 Cubic 11 font-face，使獨立文件保有相同字形。搜尋全部分類時清除分類選中，清除查詢後恢復先前分類。驗證與截圖見 docs/ui-refinement-2026-10-21.md。
+
+
+## 依主要參考圖重做材質（2026-10-21，現行）
+
+Alan 明確指出過度平面化後不像主要參考圖，要求整體重做。視覺北極星是「銀色掌機／播放器操作台」：取 UI 視窗及播放器的工具列、藍紫手機訊息介面的壓入式選中、銀色控制套件的短鍵程按鍵。Main 的青年街頭、低面數場景與簡約符號維持主次，不加幼兒貼紙或大片糖果粉色。參考映射、重做前後截圖見 docs/reference-ui-rebuild-2026-10-21.md。
+
+UX_THEME 是色彩及材質參數唯一來源，含 --ux-metal、--ux-key-face／hover、--ux-blue-face、--ux-title-face、--ux-key-shadow、--ux-inset 與 --ux-shell-radius／key-radius。UX_MATERIAL_CSS 仍是所有遊戲工作頁、確認、編年史及獨立文件的共用 owner。導覽、分類與主要動作延用原生狀態；新增天賦節點 got／open／locked 及連線 connected／inactive 僅標示既有資料狀態，不另算解鎖或分配規則。
+
+外殼銀灰 #c8cedc，螢幕淡藍紫 #e6e8f7，墨色 #172751，藍紫 #303d9b，主要動作氧化橘紅 #b94732；額外邊沿色由 UX_THEME 管理。共用色階產生有限色階的硬體表面，標題帶保留短訊號。內層長文、裝備詞綴與收藏列表不加常駐網格或一項一張亮面卡。DPS 與盤面用凹槽，天賦盤用深藍螢幕，裝扮資料卡改銀灰外殼；地圖用深藍面及局部地區色邊，移除大片糖果色面積。按鍵不位移、不因狀態改尺寸，文字與焦點保持原位。
+
+
+次級頁補正：收藏／更新標題使用共用深色字，圖鑑長文不以低對比金色整段呈現，日誌取消內層亮面框。存檔的傷害數字按鍵以原有 dn 值提供 aria-pressed，沿用同一選中材質。這些補正不改計算及持久化規則。

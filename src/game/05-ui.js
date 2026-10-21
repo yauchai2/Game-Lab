@@ -1,32 +1,16 @@
 /* ---------- UI: side panel, modal, overlay ---------- */
-// small hand-inked slot icons for the equipment cards (ink outline under a coloured stroke)
-function iconSvg(slot, col){
-  const two = (d, w) => `<path d="${d}" fill="none" stroke="#2b2552" stroke-width="${w + 2.2}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
-  const g = slot === 'weapon' ? two('M7 23L22 8', 3.2) + two('M5 19L11 25', 2.4) + two('M3.5 26.5L7 23', 2.6)
-    : slot === 'armor' ? `<path d="M8 6L4 11L8 15L9 24H21L22 15L26 11L22 6L18 8H12Z" fill="${col}" stroke="#2b2552" stroke-width="2" stroke-linejoin="round"/><path d="M12 8Q15 12 18 8" fill="none" stroke="#2b2552" stroke-width="1.6"/>`
-    : `<circle cx="15" cy="18" r="7" fill="none" stroke="#2b2552" stroke-width="5.2"/><circle cx="15" cy="18" r="7" fill="none" stroke="#e8c24a" stroke-width="3"/><path d="M15 3L19 8L15 12L11 8Z" fill="${col}" stroke="#2b2552" stroke-width="1.8" stroke-linejoin="round"/>`;
-  return `<svg class="ico" viewBox="0 0 30 30" width="30" height="30">${g}</svg>`;
+// 全介面共用 Signal 24 圖集，座標及順序只讀取產生器的索引。
+function uiSprite(sheet,id,size=24,extra='',tag='span'){
+  const S=ART_SHEETS[sheet],index=S?.ids.indexOf(id);if(index==null||index<0)return '';
+  const x=index%S.cols*size,y=Math.floor(index/S.cols)*size;
+  return `<${tag} class="spr${tag==='i'?' gem':''}" aria-hidden="true" data-icon="${sheet}:${id}" style="width:${size}px;height:${size}px;background:var(--pixel-${sheet},url(${ASSET[sheet]})) -${x}px -${y}px/${S.cols*size}px ${S.rows*size}px no-repeat;${extra}"></${tag}>`;
 }
-const ICON_IDX = ['fire', 'ice', 'bolt', 'meteor', 'shield', 'sword', 'shoe', 'headphones', 'coin', 'star', 'heart', 'potion'];
-function spr(name, size = 30, glow = ''){   // 取 GPT Image 生成的圖示集（4 欄 3 列，每格 128）中的一格
-  const i = ICON_IDX.indexOf(name), c = i % 4, r = (i/4) | 0, k = size/128;
-  return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET.icons}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(512*k).toFixed(1)}px ${(384*k).toFixed(1)}px no-repeat;${glow ? `filter:drop-shadow(0 0 3px ${glow})` : ''}"></span>`;
-}
-const SK_IDX = ['FIRE', 'FROST', 'CHAIN', 'METEOR', 'PULSE', 'MAGNET', 'SPAM', 'FLICKER', 'BEAM'];
-function sico(id, size = 30){   // 技能專屬圖示（3 欄 3 列，每格 128）
-  const i = Math.max(0, SK_IDX.indexOf(id)), c = i % 3, r = (i/3) | 0, k = size/128;
-  return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET.skills}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(384*k).toFixed(1)}px ${(384*k).toFixed(1)}px no-repeat"></span>`;
-}
-const SHEETS = { relic:['relics', 4, 3, ['FAN', 'LENS', 'CHARM', 'DRINK', 'BATT', 'VEST', 'CALC', 'PIG', 'LUCK', 'FOOD', 'BOMB', 'SUN']], legend:['legends', 3, 3, ['W_ECHO', 'W_FORK', 'W_MULTI', 'A_PHOENIX', 'A_RIPOSTE', 'A_RESET', 'R_LAST', 'R_LINK', 'R_DIAL']], badge:['badges', 4, 3, ['k100', 'k2000', 'boss1', 'boss10', 'd10', 'd20', 'l20', 'l30', 'map5', 'legend', 'card10', 'survive']] };
-function xico(kind, id, size = 24){   // 遺物、傳奇裝備、成就徽章的圖集圖示（每格 128）
-  const [a, cols, rows, ids] = SHEETS[kind], i = ids.indexOf(id); if (i < 0) return '';
-  const c = i % cols, r = (i/cols) | 0, k = size/128;
-  return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET[a]}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(cols*128*k).toFixed(1)}px ${(rows*128*k).toFixed(1)}px no-repeat;vertical-align:middle;margin-right:4px"></span>`;
-}
-function eqico(slot, r, size = 32){   // 裝備圖示：列＝部位，欄＝稀有度
-  const rows = ['weapon','armor','ring'], c = Math.min(r|0, 3), rw = rows.indexOf(slot), k = size/128;
-  return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET.equips}) -${(c*128*k).toFixed(1)}px -${(rw*128*k).toFixed(1)}px/${(512*k).toFixed(1)}px ${(384*k).toFixed(1)}px no-repeat;vertical-align:middle;margin-right:4px"></span>`;
-}
+const ICON_IDX=ART_SHEETS.icons.ids,SK_IDX=ART_SHEETS.skills.ids;
+function spr(name,size=30){return uiSprite('icons',name,size);}
+function sico(id,size=30){return uiSprite('skills',id,size);}
+const SHEETS={relic:['relics'],legend:['legends'],badge:['badges']};
+function xico(kind,id,size=24){return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
+function eqico(slot,r,size=32){return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
 const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
 function slotHtml(slot){
   const it = G.equip[slot];
@@ -65,33 +49,24 @@ let modalTab = 'skills', resetArm = false;
 const $ = id => document.getElementById(id);
 const invN = () => Object.values(G.gems).reduce((a, b) => a + b, 0) + Object.values(G.carts).reduce((a, b) => a + b, 0);
 const dotOn = k => k === 'skills' ? invN() > (G.seenInv || 0) : k === 'craft' ? (G.parts || 0) >= 6 && G.parts > (G.seenParts || 0) : k === 'col' ? Object.keys(G.goals).length > (G.seenGoals || 0) : false;
-function markSeen(t){ if (t === 'skills'){ if (!G.newSnap || modalTabPrev !== 'skills') G.newSnap = { g:{ ...(G.seenG || {}) } }; G.seenG = { ...G.gems }; G.seenInv = invN(); } else if (t === 'craft') G.seenParts = G.parts || 0; else if (['goals', 'ach', 'dex'].includes(t)) G.seenGoals = Object.keys(G.goals).length; }
+function markSeen(t){ if (t === 'skills'){ if (!G.newSnap || modalTabPrev !== 'skills') G.newSnap = { g:{ ...(G.seenG || {}) }, c:{ ...(G.seenC || {}) } }; G.seenG = { ...G.gems }; G.seenC = { ...G.carts }; G.seenInv = invN(); } else if (t === 'craft') G.seenParts = G.parts || 0; else if (['goals', 'ach', 'dex'].includes(t)) G.seenGoals = Object.keys(G.goals).length; }
 let modalTabPrev = '';
-function openModal(tab){ modalTabPrev = modalTab; modalTab = tab || modalTab; markSeen(modalTab); resetArm = false; $('modal').hidden = false; renderModal(); }
+function openModal(tab){ modalTabPrev = modalTab; modalTab = tab || modalTab; markSeen(modalTab); resetArm = false; $('modal').hidden = false; renderModal(true); }
 const MOB = () => document.body.classList.contains('m');   // 手機直式：上面戰鬥畫面，下面固定的分頁面板（彈窗變成面板）
 const DESK = () => document.body.classList.contains('d');   // 桌機寬螢幕：左邊角色與紀錄、中間戰鬥、右邊常駐分頁面板
-function closeModal(){ if (MOB()){ openModal('char'); return; } if (DESK()){ openModal('skills'); return; } $('modal').hidden = true; }
-function renderModal(){ setTimeout(() => { if (typeof dressMount === 'function' && modalTab === 'dress') dressMount(); }, 0);
+function closeModal(){ if(MOB()||DESK()){renderModal(true);return;} $('modal').hidden=true; }
+function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); setTimeout(() => { if (typeof dressMount === 'function' && modalTab === 'dress') dressMount(); }, 0);
   if ($('modal').hidden) return;
-  const mob = MOB();
-  const groups = [{ k:'dress', n:'角色', t:['dress'] }, { k:'skills', n:'戰鬥', t:['skills'] }, { k:'craft', n:'打造', t:['craft'] }, { k:'tree', n:'成長', t:['tree'] }, { k:'maps', n:'冒險', t:['maps'] }, { k:'col', n:'收藏', t:['goals', 'ach', 'dex'] }, { k:'sys', n:'選單', t:['log', 'save'] }];
-  const SUBN = { goals:'目標', ach:'成就', dex:'圖鑑', log:'日誌', save:'存檔' };
-  const tabs = mob ? [['char','角色','shield'], ['skills','戰鬥','fire'], ['craft','打造','sword'], ['tree','成長','star'], ['maps','冒險','shoe'], ['menu','更多','headphones']] : [];
-  if (!mob && (modalTab === 'char' || modalTab === 'menu')) modalTab = 'dress';
-  if (mob && modalTab === 'save') modalTab = 'menu';
-  if (!mob && !tabOpen(modalTab)) modalTab = 'skills';
-  const cur = groups.find(g => g.t.includes(modalTab)) || groups[1], dot = g => g.k === 'tree' ? (passPoints() > 0 ? ` (${passPoints()})` : '') : g.k === 'sys' ? (logNew() ? ' ●' : '') : dotOn(g.k) ? '<i class="rd"></i>' : '';
-  $('mtabs').innerHTML = mob ? tabs.map(([k, n, ic]) => { const lk = !tabOpen(k), dt = lk ? '' : k === 'menu' ? (dotOn('col') || logNew()) : k === 'skills' ? dotOn('skills') : k === 'craft' ? dotOn('craft') : k === 'tree' ? passPoints() > 0 : false;
-      return `<button class="tab${modalTab === k ? ' on' : ''}${lk ? ' lock' : ''}" onclick="${lk ? `lockTip('${k}')` : `openModal('${k}')`}">${ic ? spr(ic, 24) : ''}<span>${lk ? '🔒' : ''}${n}</span>${dt ? '<i class="rd"></i>' : ''}</button>`; }).join('')
-    : groups.filter(g => tabOpen(g.k)).map(g => `<button class="tab${cur === g ? ' on' : ''}" onclick="openModal('${g.t[0]}')"><span>${g.n}${dot(g)}</span></button>`).join('') + (DESK() ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`)
-    + (cur.t.length > 1 ? `<div class="subtabs">${cur.t.map(k => `<button class="tab sub${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${SUBN[k]}${k === 'log' && logNew() ? ' ●' : ''}</button>`).join('')}</div>` : '');
-  if (mob){ $('mmenu').hidden = modalTab !== 'menu'; mobTitle(); }
-  $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? rulesBar() + craftHtml() : modalTab === 'dress' ? `${MOB() ? '<button class="mb" onclick="openModal(\'char\')">‹ 返回</button>' : ''}${dressHtml()}` : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() + `<details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">圖鑑</summary><div class="rpgm">${codexHtml()}</div></details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">更新日誌 v${CHANGELOG[0].v}${logNew() ? ' ●' : ''}</summary>${logHtml()}</details>` : '') + saveHtml();
+  $('mtabs').innerHTML=uiNavHtml(); uiTitle();
+  const settings=modalTab==='settings'; $('uisettings').hidden=!settings; $('mmenu').hidden=false; $('mbody').hidden=settings;
+  if(!settings) $('mbody').innerHTML = modalTab === 'char' ? uiCharacterHtml() : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? dressHtml() : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : modalTab === 'save' ? saveHtml() : uiMenuHtml();
+  uxRestorePanel(uxPanel,resetScroll);
+  UI_LIVE_SIGNATURE=uiLiveSignature();
 }
 let held = null, heldRot = 0, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff', COOL:'#6fd6e8', CRYSTAL:'#d99bff' };
-const GEM_IDX = ['HEAVY', 'AREA', 'HASTE', 'TWIN', 'CRITS', 'LEECH', 'COOL', 'CRYSTAL'];
-const gemIco = (g, s = 22) => { const i = Math.max(0, GEM_IDX.indexOf(g)), c = i % 4, r = (i/4) | 0, k = s/128; return `<i class="gem" style="width:${s}px;height:${s}px;background:url(${ASSET.gems}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(512*k).toFixed(1)}px ${(256*k).toFixed(1)}px no-repeat"></i>`; };
+const GEM_IDX=ART_SHEETS.gems.ids;
+const gemIco=(id,size=22)=>uiSprite('gems',id,size,'','i');
 function shapeIcon(kind, key, rot = 0, col){
   const cs = GridLab.shapeOf(kind, key, rot), w = Math.max(...cs.map(c => c[0])) + 1, h = Math.max(...cs.map(c => c[1])) + 1, c = col || (kind === 'active' ? '#ff9ec7' : GEM_COL[key] || '#a87bf0');
   let o = `<span class="shp" style="grid-template-columns:repeat(${w},9px)">`;
@@ -99,11 +74,11 @@ function shapeIcon(kind, key, rot = 0, col){
   return o + '</span>';
 }
 function buildBar(){
-  return '<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>構築</b>' + [0, 1, 2].map(i => `<button class="mb" style="${(G.bi || 0) === i ? 'background:#1f3fb0;color:#fff;' : ''}" onclick="switchBuild(${i})">${i + 1}</button>`).join('') + '<span class="mute">各存一套技能拼圖與天賦，免費切換；裝備共用</span>' + qm('skills') + '<span id="pzdelta" class="mute"></span></div>';
+  return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><p class="uxmeta">技能與天賦獨立，裝備共用。</p></section>`;
 }
 function dpsBar(){
   const sk = G.st.sk || {}, ids = Object.keys(sk), tot = ids.reduce((a, id) => a + sk[id].hit/Math.max(.2, sk[id].cd), 0) || 1;
-  return `<div class="dpsbar"><div>DPS <b>${tFmt(G.st.dps)}</b> <span id="pzdelta" class="mute"></span></div><div class="shares">${ids.map(id => `<span style="flex:${Math.max(1, Math.round(sk[id].hit/Math.max(.2, sk[id].cd)/tot*100))}" title="${SKILLS[id].n}">${SKILLS[id].n}</span>`).join('')}</div></div>`;
+  return `<div class="dpsbar"><div>DPS <b>${tFmt(G.st.dps)}</b> <span id="pzdelta" class="mute"></span></div><div class="shares">${ids.map(id => `<span style="flex:${Math.max(1, Math.round(sk[id].hit/Math.max(.2, sk[id].cd)/tot*100))}" title="${SKILLS[id].n}">${SKILLS[id].n}</span>`).join('')}</div>${uxPieceDetails()}</div>`;
 }
 function switchBuild(i){
   if (i === (G.bi || 0)) return; if (!G.builds) G.builds = [null, null, null];
@@ -121,24 +96,20 @@ function skillsHtml(){
 function skillsHtml0(){
   const B = G.board, at = {}, linked = new Set(GridLab.resolve(B).flatMap(r => r.linked));
   for (const p of B.pieces) GridLab.cellsOf(p).forEach((c, i) => { at[c[0] + ',' + c[1]] = { p, first:i === 0 }; });
-  let h = '<div class="hint">把機件拖到面板上（可旋轉）。輔助只強化上下左右相鄰的技能；點右上「?」看完整說明。</div>'
-    + `<div class="pz" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">`;
+  let h = '<p class="uxgrid-help">選機件，再點格子放置。輔助只強化相鄰且標籤相符的技能。</p>'
+    + `<div class="pz" role="group" aria-label="技能拼圖，方向鍵移動，Enter 放置" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">`;
   for (let y = 0; y < SLOT_LV.length; y++) for (let x = 0; x < B.w; x++){
     if (y >= B.h){ h += `<div class="pc lock">${x === 0 ? 'Lv. ' + SLOT_LV[y] : ''}</div>`; continue; }
-    const c = at[x + ',' + y], ev = `data-x="${x}" data-y="${y}" onclick="pzCell(${x},${y})" onmouseenter="pzHover(${x},${y})"`;
-    if (!c){ h += `<div class="pc" ${ev}></div>`; continue; }
+    const c = at[x + ',' + y], ev = `data-x="${x}" data-y="${y}" data-focus="cell-${x}-${y}" tabindex="${UX_GRID.x === x && Math.min(UX_GRID.y,B.h-1) === y ? 0 : -1}" aria-label="${uxEsc(uxGridLabel(x,y))}" onfocus="uxGridFocus(this)" onclick="uxGridActivate(${x},${y})" onmouseenter="pzHover(${x},${y})"`;
+    if (!c){ h += `<button type="button" class="pc" ${ev}></button>`; continue; }
     const act = c.p.kind === 'active', col = act ? '#ff9ec7' : GEM_COL[c.p.key] || '#a87bf0', same = (dx, dy) => (at[(x + dx) + ',' + (y + dy)] || {}).p === c.p;
-    h += `<div class="pc fill${c.p.id === selPiece ? ' sel' : ''}${linked.has(c.p.id) ? ' lnk' : ''}${same(1, 0) ? ' jr' : ''}${same(0, 1) ? ' jb' : ''}" style="--pc:${col}" ${ev} onpointerdown="pzDown(event,null,null,${c.p.id})">${c.first ? (act ? sico(c.p.key, 22) : gemIco(c.p.key, 16)) + `<span>${act ? SKILLS[c.p.key].n : SUPPS[c.p.key].n}</span>` : ''}</div>`;
+    h += `<button type="button" class="pc fill${c.p.id === selPiece ? ' sel' : ''}${linked.has(c.p.id) ? ' lnk' : ''}${same(1, 0) ? ' jr' : ''}${same(0, 1) ? ' jb' : ''}" style="--pc:${col}" ${ev} onpointerdown="pzDown(event,null,null,${c.p.id})">${c.first ? (act ? sico(c.p.key, 22) : gemIco(c.p.key, 16)) + `<span>${act ? SKILLS[c.p.key].n : SUPPS[c.p.key].n}</span>` : ''}</button>`;
   }
   const bb = boardBonus(), rz = [bb.rows && `整列滿 ×${bb.rows}：全隊傷害 +${12*bb.rows}%`, bb.cols && `整欄滿 ×${bb.cols}：暴擊率 +${5*bb.cols}%`, Object.keys(bb.pair).length && `${Object.keys(bb.pair).map(k => SKILLS[k].n).join('、')}：同元素緊貼 +15%`].filter(Boolean);
   h += `</div><div class="rz">${rz.length ? '共鳴　' + rz.join('　') : '共鳴：塞滿整列、整欄，或同元素技能緊貼，有額外加成'}</div>`;
   const hd = held ? (held.kind === 'active' ? SKILLS[held.key].n : SUPPS[held.key].n) : '';
   h += `<div class="pzbar"><button ${held || selPiece != null ? '' : 'disabled'} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button>${held ? `<span class="mute">手上：${hd} ${shapeIcon(held.kind, held.key, heldRot)}</span>` : ''}<span id="pzmsg" class="mute"></span></div>`;
-  h += '<div class="mct" style="margin:10px 0 6px">技能</div><div class="skrow">' + Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, used = G.slots.includes(id);
-    return `<button class="skb${held && held.key === id ? ' on' : ''}" ${(!un || used) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : used ? '（已放在面板上）' : '：' + K.d}" onclick="pzHold('active','${id}')" onpointerdown="pzDown(event,'active','${id}')">${sico(id, 22)}${shapeIcon('active', id)}</button>`; }).join('') + '</div>';
-  h += '<div class="mct" style="margin:12px 0 6px">輔助配件庫存</div><div class="gems">' + Object.keys(SUPPS).map(g => { const f = gemFree(g), n = G.gems[g] || 0;
-    return `<button class="gt${held && held.key === g ? ' on' : ''}" ${f > 0 ? '' : 'disabled'} onclick="pzHold('support','${g}')" onpointerdown="pzDown(event,'support','${g}')" title="${SUPPS[g].d}">${(G.newSnap && n > (G.newSnap.g[g] || 0)) ? '<i class="nw">NEW</i>' : ''}${shapeIcon('support', g)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em></button>`; }).join('') + '</div>';
-  h += '<div class="mct" style="margin:12px 0 6px">模式卡匣</div>' + cartsHtml();
+  h += uiInventoryHtml() + uiResolvedHtml();
   return h;
 }
 function treeHtml(){
@@ -147,16 +118,16 @@ function treeHtml(){
 function treeHtml0(){
   const pts = passPoints(); let lines = '', nodes = '';
   for (const id in TREE){ const n = TREE[id]; for (const l of n.links) if (id < l){ const m = TREE[l], on2 = (id === 'S' || G.pass.includes(id)) && (l === 'S' || G.pass.includes(l));
-    lines += `<line x1="${n.x.toFixed(1)}" y1="${n.y.toFixed(1)}" x2="${m.x.toFixed(1)}" y2="${m.y.toFixed(1)}" stroke="${on2 ? n.col === '#e8e2d4' ? m.col : n.col : '#d3daf0'}" stroke-width="${on2 ? 3.4 : 1.6}" stroke-linecap="round"/>`; } }
+    lines += `<line class="${on2 ? 'connected' : 'inactive'}" x1="${n.x.toFixed(1)}" y1="${n.y.toFixed(1)}" x2="${m.x.toFixed(1)}" y2="${m.y.toFixed(1)}" stroke="${on2 ? n.col === '#e8e2d4' ? m.col : n.col : '#d3daf0'}" stroke-width="${on2 ? 3.4 : 1.6}" stroke-linecap="round"/>`; } }
   const star = (x, y, R, r) => Array.from({ length: 10 }, (_, i) => { const a = -Math.PI/2 + i*Math.PI/5, k = i % 2 ? r : R; return `${(x + Math.cos(a)*k).toFixed(1)},${(y + Math.sin(a)*k).toFixed(1)}`; }).join(' ');
   for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = nodeOpen(id) && pts > 0, x = n.x.toFixed(1), y = n.y.toFixed(1), r = n.big ? 6.6 : 4;
     const fill = got ? n.col : '#eef3ff', stroke = got ? '#ffffff' : open ? '#2b2552' : '#c3cbe8', sw = got ? 2 : open ? 1.8 : 1.2;
     const shape = n.big ? `<polygon points="${star(+x, +y, r + 1.6, r*.55)}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>` : `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>`;
-    nodes += `<g class="${open ? 'tn open' : 'tn'}" onmouseover="treeInfo('${id}')" onclick="allocPass('${id}')" style="cursor:${open ? 'pointer' : 'default'}"><title>${n.name}</title>${got ? `<circle cx="${x}" cy="${y}" r="${r + 2.4}" fill="${n.col}" opacity=".28"/>` : ''}${shape}${got && !n.big ? `<circle cx="${(+x - r*.3).toFixed(1)}" cy="${(+y - r*.35).toFixed(1)}" r="${(r*.28).toFixed(1)}" fill="#fff" opacity=".8"/>` : ''}</g>`; }
+    nodes += `<g class="tn ${got ? 'got' : open ? 'open' : 'locked'}" data-tree="${id}" role="button" tabindex="${open?0:-1}" aria-disabled="${!open}" aria-label="${uxEsc(n.name)}，${got?'已點亮':open?'可點亮':'未連到或點數不足'}" onfocus="treeInfo('${id}')" onmouseover="treeInfo('${id}')" onclick="treeInfo('${id}');allocPass('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();allocPass('${id}')}" style="cursor:${open ? 'pointer' : 'default'}"><title>${n.name}</title>${got ? `<circle cx="${x}" cy="${y}" r="${r + 2.4}" fill="${n.col}" opacity=".28"/>` : ''}${shape}${got && !n.big ? `<circle cx="${(+x - r*.3).toFixed(1)}" cy="${(+y - r*.35).toFixed(1)}" r="${(r*.28).toFixed(1)}" fill="#fff" opacity=".8"/>` : ''}</g>`; }
   return `<div class="hint">可用天賦點：<b>${pts}</b>（每升一級 +1，每打到更深 4 層 +1）。點亮與已點亮節點相連的點。</div>
     <svg viewBox="-125 -125 250 250" class="tree">${lines}${nodes}</svg>
     <div id="tinfo" class="hint">滑過節點看效果。<span style="color:#e2584d">紅：力量</span> <span style="color:#3f86e6">藍：智慧</span> <span style="color:#3bb552">綠：敏捷</span></div>
-    <button class="mb" onclick="respec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
+    <button class="mb" onclick="uiRespec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
 }
 function treeInfo(id){ const n = TREE[id], el = $('tinfo'); if (el) el.textContent = id === 'S' ? '起點' : `${n.name}${nodeOpen(id) ? '' : G.pass.includes(id) ? '（已點亮）' : '（未連到）'}`; }
 function nextStep(){
@@ -178,17 +149,8 @@ function goalsHtml(){
   return questHtml() + `<div class="mct">目標　${done}${qm('goals')}/${GOALS.length}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
     return `<div class="gl${ok ? ' ok' : ''}"><b>${ok ? '★ ' : ''}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
 }
-function mapsHtml(){
-  const R = G.run; let h = '';
-  h += `<div class="mc"><b>無限之塔</b>${qm('maps')} <span class="mute">最高 ${G.towerBest || 0} 層</span>${G.maxDepth < 8 ? '<div class="mute">深度 8 解鎖</div>' : ''}<button class="mb pri" ${R || G.maxDepth < 8 ? 'disabled' : ''} onclick="towerStart()">挑戰</button></div>`;
-  { const L = G.trainLast, mx = L && L.rows.length ? L.rows[0][1] : 1;
-    h += `<div class="mc"><b>訓練場</b> <span class="mute">5 隻不還手的假人，量 30 秒傷害</span>${G.train ? `<div class="mute">測量中，剩 ${Math.ceil(G.train.t)} 秒</div><button class="mb" onclick="trainEnd(true)">取消</button>` : `<button class="mb pri" ${R ? 'disabled' : ''} onclick="trainStart()">開始測量</button>`}`
-      + (L ? `<div class="mute" style="margin-top:6px">上次結果：每秒約 <b>${tFmt(L.dps)}</b>（5 隻合計）</div>` + L.rows.map(([k, v]) => `<div class="gl" style="min-height:0"><b>${k}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${Math.round(v/L.total*100)}%　${tFmt(v/30)}/秒</em></div>`).join('') : '') + '</div>'; }
-  if (R) h += `<div class="mc run"><b>進行中：${R.tower ? `無限之塔 第 ${R.floor} 層` : `${BIOMES[R.map.biome].n} Lv. ${R.map.lvl}`}</b><div class="mute">進度 ${Math.min(R.kills, R.need)} / ${R.need}</div>${runMods(R)}<button class="mb" onclick="abandonMap()">放棄地圖</button></div>`;
-  h += '<div class="mrow">' + (G.maps.length ? G.maps.map(m => { const q = m.mods.reduce((a, k) => a + MODS[k].q, 0);
-    return `<div class="mc"><b>${BIOMES[m.biome].n}</b> Lv. ${m.lvl}<ul>${m.mods.map(k => `<li>${MODS[k].n}</li>`).join('')}</ul><div class="rchips"><span class="chip bad">危險 ${m.mods.filter(k => ['more', 'fast', 'tough', 'deadly'].includes(k)).length}</span><span class="chip ok">戰利品 +${Math.round(q*100)}%</span>${m.mods.includes('rich') ? '<span class="chip ok">金幣 +60%</span>' : ''}${m.mods.includes('lucky') ? '<span class="chip ok">稀有度提升</span>' : ''}</div><button class="mb pri" ${R ? 'disabled' : ''} onclick="enterMap('${m.id}')">進入</button></div>`; }).join('') : '<div class="mute">還沒有地圖。打贏普通深度的守關者會掉落。</div>') + '</div>';
-  return h;
-}
+function mapsHtml(){ return uiAdventureHtml(); }
+
 function lootToast(it){
   let box = $('loot'); const host = document.querySelector('.stage') || document.body; if (!box){ box = document.createElement('div'); box.id = 'loot'; } if (box.parentNode !== host) host.appendChild(box);
   const R = RAR[it.r], ls = itemLines(it).filter(l => l.lg).slice(0, 1).concat(itemLines(it).filter(l => !l.lg).slice(0, 1)).slice(0, it.lg ? 2 : 1), d = document.createElement('div');
@@ -200,7 +162,7 @@ function lootToast(it){
 function setDmgNum(v){ G.dmgNum = v; G.dirty = true; renderModal(); }
 function saveHtml(){
   const dn = G.dmgNum == null ? 1 : G.dmgNum;
-  return `<div class="mrow" style="margin-bottom:8px"><button class="mb pri" onclick="wikiOpen()">編年史（查看所有遊戲資訊）</button></div><div class="mct">傷害數字</div><div class="mrow">${[[2, '全部'], [1, '精簡'], [0, '關閉']].map(([v, n]) => `<button class="mb" style="${dn === v ? 'background:#1f3fb0;color:#fff' : ''}" onclick="setDmgNum(${v})">${n}</button>`).join('')}</div>` + `<div class="hint">遊戲每 5 秒自動存檔在這個瀏覽器裡。離開頁面後，回來會自動結算離線收益（最多 6 小時）。</div>
+  return `<div class="mrow" style="margin-bottom:8px"><button class="mb pri" onclick="wikiOpen()">編年史（查看所有遊戲資訊）</button></div><div class="mct">傷害數字</div><div class="mrow">${[[2, '全部'], [1, '精簡'], [0, '關閉']].map(([v, n]) => `<button class="mb" aria-pressed="${dn === v}" style="${dn === v ? 'background:#1f3fb0;color:#fff' : ''}" onclick="setDmgNum(${v})">${n}</button>`).join('')}</div>` + `<div class="hint">遊戲每 5 秒自動存檔在這個瀏覽器裡。離開頁面後，回來會自動結算離線收益（最多 6 小時）。</div>
     <div class="mrow"><button class="mb" onclick="doSave()">立即存檔</button><button class="mb" onclick="doExport()">匯出存檔碼</button><button class="mb" onclick="doImport()">匯入存檔碼</button><button class="mb" id="rbtn" onclick="doReset()">${resetArm ? '再按一次確認清除' : '清除存檔'}</button></div>
     <textarea id="sv" class="sv" placeholder="匯出的存檔碼會顯示在這裡；要匯入時把存檔碼貼在這裡再按「匯入」"></textarea><div id="smsg" class="hint"></div>`;
 }
@@ -210,7 +172,7 @@ function cartsHtml(){
   let h = sp ? `<div class="mute"><b>${SKILLS[sp.key].n}</b> ${sp.mode ? `目前：${MODES[sp.mode].n}　<button class="skb" style="width:auto;padding:0 8px !important" onclick="equipCart('')">卸下</button>` : '目前：標準模式'}</div>` : '<div class="mute">先點面板上的技能，再選卡匣裝上去。裝上才知道實際效果。</div>';
   if (!ids.length) return h + '<div class="mute">還沒有卡匣。打怪有機會掉落，首領掉得更多。</div>';
   return h + '<div class="gems">' + ids.map(id => { const M = MODES[id], f = cartFree(id), n = G.carts[id], seen = G.seen[id], ok = sp && sp.key === M.sk && f > 0;
-    return `<button class="gt" ${ok ? '' : 'disabled'} onclick="equipCart('${id}')" title="${seen ? M.d : M.hint}"><i class="gem" style="--gc:#3fd0ee;width:28px;height:28px"></i><b>${seen ? M.n : '未鑑定的' + SKILLS[M.sk].n + '卡匣'}</b><em>${f}/${n}</em><small>${seen ? M.d : M.hint}</small></button>`; }).join('') + '</div>';
+    return `<button class="gt" ${ok ? '' : 'disabled'} onclick="equipCart('${id}')" title="${seen ? M.d : M.hint}">${G.newSnap && n > (G.newSnap.c?.[id] || 0) ? '<i class="nw">NEW</i>' : ''}<i class="gem" style="--gc:#3fd0ee;width:28px;height:28px"></i><b>${seen ? M.n : '未鑑定的' + SKILLS[M.sk].n + '卡匣'}</b><em>${f}/${n}</em><small>${seen ? M.d : M.hint}</small></button>`; }).join('') + '</div>';
 }
 function equipCart(id){
   const p = G.board.pieces.find(q => q.id === selPiece && q.kind === 'active'); if (!p) return;
@@ -220,18 +182,19 @@ function equipCart(id){
   if (!G.seen[id]){ G.seen[id] = 1; logLine(`鑑定完成：${MODES[id].n}，${MODES[id].d}`, '#1f9bbf'); checkGoals(); }
   recalc(); renderModal();
 }
-function pzMsg(t){ renderModal(); const e = $('pzmsg'); if (e) e.textContent = t || ''; }
+function pzMsg(t){ renderModal(); const e = $('pzmsg'); if (e) e.textContent = t || ''; uxAnnounce(t || ''); }
 let noClick = false;   // 剛拖曳完的那一下 click 要略過
-function pzHold(kind, key){ if (noClick) return; held = held && held.key === key ? null : { kind, key }; heldRot = 0; selPiece = null; renderModal(); }
+function pzHold(kind, key){ if (noClick) return; UX_LAST_SOURCE = uxFocusToken(); held = held && held.key === key ? null : { kind, key }; heldRot = 0; selPiece = null; renderModal(); if(held)uiRevealSelection(); }
 function pzCell(x, y){
   if (noClick) return;
   const hit = G.board.pieces.find(p => GridLab.cellsOf(p).some(c => c[0] === x && c[1] === y));
-  if (hit){ selPiece = hit.id; held = null; return renderModal(); }
+  if (hit && held){ pzMsg('這格已有機件，請選擇空白位置。'); return; }
+  if (hit){ selPiece = hit.id; held = null; renderModal(); uiRevealSelection(); return; }
   if (!held) return;
   const p = GridLab.place(G.board, held.kind, held.key, x, y, heldRot);
   if (!p){ pzMsg('這裡放不下（重疊或超出面板）'); return; }
   if (held.kind === 'active') held = null; else if (gemFree(held.key) <= 0) held = null;
-  recalc(); renderModal();
+  recalc(); renderModal(); uxAnnounce('已放置機件，目前預估 DPS ' + tFmt(G.st.dps));
 }
 /* 拖曳：從清單拖機件到面板放下，或拖面板上的機件換位置（滑鼠與觸控皆可）。沒有移動超過 6px 就當成點擊 */
 let drag = null;
@@ -240,7 +203,7 @@ function pzDown(ev, kind, key, pieceId){
   if (ev.button > 0 || drag) return;
   let from = null;
   if (pieceId != null){ const p = G.board.pieces.find(q => q.id === pieceId); if (!p) return; from = { ...p }; kind = p.kind; key = p.key; }
-  drag = { kind, key, from, sx:ev.clientX, sy:ev.clientY, moved:false, rot:from ? from.rot || 0 : (held && held.key === key ? heldRot : 0), ghost:null };
+  drag = { kind, key, from, fromIndex:from ? G.board.pieces.findIndex(p => p.id === from.id) : -1, sx:ev.clientX, sy:ev.clientY, moved:false, rot:from ? from.rot || 0 : (held && held.key === key ? heldRot : 0), ghost:null };
   document.addEventListener('pointermove', pzMove); document.addEventListener('pointerup', pzUp); document.addEventListener('pointercancel', pzUp);
 }
 function pzMove(ev){
@@ -253,16 +216,21 @@ function pzMove(ev){
   d.ghost.style.left = ev.clientX + 'px'; d.ghost.style.top = (ev.clientY - 30) + 'px';
   d.at = cellAt(ev.clientX, ev.clientY - 30) || cellAt(ev.clientX, ev.clientY); d.at ? pzHover(d.at[0], d.at[1]) : pzHover(-1, -1);
 }
-function pzUp(){
+function pzUp(ev){
   document.removeEventListener('pointermove', pzMove); document.removeEventListener('pointerup', pzUp); document.removeEventListener('pointercancel', pzUp);
   const d = drag; drag = null; if (!d || !d.moved) return;
   if (d.ghost) d.ghost.remove();
   noClick = true; setTimeout(() => { noClick = false; }, 0);
-  let p = d.at ? GridLab.place(G.board, d.kind, d.key, d.at[0], d.at[1], heldRot) : null;
-  if (!p && d.from) p = GridLab.place(G.board, d.kind, d.key, d.from.x, d.from.y, d.from.rot || 0);   // 放不下：回原位
-  if (p && d.from && d.from.mode) p.mode = d.from.mode;
+  const cancelled = ev && ev.type === 'pointercancel';
+  const valid = !cancelled && d.at && GridLab.canPlace(G.board,d.kind,d.key,d.at[0],d.at[1],heldRot);
+  let p = null;
+  if (d.from){
+    p = { ...d.from };
+    if (valid) Object.assign(p,{ x:d.at[0], y:d.at[1], rot:heldRot });
+    G.board.pieces.splice(d.fromIndex,0,p);   // 保留識別、卡匣及原排序；失敗完整還原。
+  } else if (valid) p = GridLab.place(G.board,d.kind,d.key,d.at[0],d.at[1],heldRot);
   if (d.from) held = null; else if (!p || gemFree(d.key) <= 0 || d.kind === 'active') held = null;
-  recalc(); renderModal(); if (!p && d.at) pzMsg('這裡放不下（重疊或超出面板）');
+  recalc(); renderModal(); if (!valid && d.at && !cancelled) pzMsg('這裡放不下（重疊或超出面板），已還原');
 }
 function pzHover(x, y){
   document.querySelectorAll('.pc.pv').forEach(e => e.classList.remove('pv', 'ok', 'bad'));
@@ -305,7 +273,7 @@ function openRelics(){
 function pickRelic(id){ SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
 function pickCard(id){ SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
 function charHtml(){
-  return `<div class="rc"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true">${c.n}${charOk(id) ? '' : `<span class="mute">${c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖'}</span>`}</button>`).join('')}</div><div class="mute">${CHARS[G.char].d}<br>專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}</div></div>`;
+  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true"><b>${c.n}${G.char === id ? ' ✓' : ''}</b>${charOk(id) ? '' : `<span class="mute">${c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖'}</span>`}</button>`).join('')}</div><div class="char-description">${CHARS[G.char].d}<br>專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}</div></div>`;
 }
 function achHtml(){
   const n = achCount(), tot = Object.keys(ACHS).length;
@@ -320,25 +288,20 @@ function cardsHtml(){
 const HELP = {
   skills:['拼圖說明', '主動技能自己施放，輔助配件只強化上下左右相鄰、標籤相符的主動技能。<br>把機件拖到格子上，放不下會顯示紅色；按「旋轉」換方向。<br>放下前，下方會顯示放上去之後傷害的變化。<br>連到 3 個以上輔助會「滿載」，每多一個傷害 +8%。<br>共鳴：塞滿整列全隊傷害 +12%，塞滿整欄暴擊率 +5%，同元素技能緊貼各自傷害 +15%。<br>面板 6×6，隨等級逐列解鎖。構築 1 至 3 各存一套拼圖與天賦。'],
   craft:['改機說明', '用不到的裝備會自動拆成零件。零件可以重新校準數值、改裝詞綴、升級稀有度，或賭一把腐化。<br>鎖定一條詞綴可以保住它；已腐化的裝備不能再改。'],
-  maps:['冒險說明', '地圖詞綴讓敵人更強，但戰利品更好；每張卡下方的標籤是風險與回報彙總。<br>無限之塔每層殺滿怪上樓，每 10 層是守關者，死亡就結束。<br>訓練場用不還手的假人量 30 秒傷害。'],
+  maps:['冒險說明', '挑戰詞綴只表示敵人強化或取捨詞綴的數量，不是難度評分。<br>地圖詞綴讓敵人更強，但戰利品更好；每張卡下方的標籤是風險與回報彙總。<br>無限之塔每層殺滿怪上樓，每 10 層是守關者，死亡就結束。<br>訓練場用不還手的假人量 30 秒傷害。'],
   goals:['任務與目標', '新手任務一次一個，完成後解鎖新系統。目標達成會自動給獎勵，不用手動領取。']
 };
 const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
-const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals', menu:'goals' };
+const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
 const CZN = ['大', '中', '小'];
-function mobTitle(){
-  const box = document.querySelector('#modal .mbox'); if (!box) return; let t = $('mttl');
-  if (!t){ t = document.createElement('div'); t.id = 'mttl'; box.insertBefore(t, $('mbody')); }
-  const cz = G.cz == null ? 1 : G.cz, hk = MHELP[modalTab];
-  t.innerHTML = `<span>▣ ${MTN[modalTab] || ''}</span>${hk ? `<button onclick="showHelp('${hk}')">?</button>` : ''}<button title="戰鬥畫面大小" onclick="cycleCz()">${CZN[cz]}</button>`;
-}
-function cycleCz(){ G.cz = ((G.cz == null ? 1 : G.cz) + 1) % 3; G.userCz = true; G.dirty = true; mobTitle(); }
-const mobRatio = () => { const auto = (modalTab === 'skills' || modalTab === 'craft') && !G.userCz, i = auto ? 2 : (G.cz == null ? 1 : G.cz); return Math.max(.5, [.5, .4, .25][i]*innerHeight/innerWidth); };
-const RISKM = ['more', 'fast', 'tough', 'deadly', 'elite', 'swarm'];
+function mobTitle(){ uiTitle(); }
+function cycleCz(){ const current = (modalTab === 'skills' || modalTab === 'craft') && !G.userCz ? 2 : (G.cz == null ? 1 : G.cz); G.cz = (current + 1) % 3; G.userCz = true; G.dirty = true; mobTitle(); }
+const mobRatio = () => { const auto=(modalTab==='skills'||modalTab==='craft')&&!G.userCz,i=auto?2:G.cz==null?1:G.cz,h=visualViewport?.height||innerHeight; return Math.min([340,260,168][i],h*[.5,.36,.25][i])/Math.max(1,innerWidth); };
+const RISKM = Object.keys(MODS).filter(k => ['challenge','mixed'].includes(MODS[k].kind));
 function runMods(R){
   const mods = R.map.mods || []; if (!mods.length) return '';
   const q = mods.reduce((a, k) => a + MODS[k].q, 0);
-  return `<ul>${mods.map(k => `<li style="color:${RISKM.includes(k) ? '#d03a3a' : '#1d8a4c'}">${MODS[k].n}</li>`).join('')}</ul><div class="agg"><span>危險度 <b>${mods.filter(k => RISKM.includes(k)).length}</b></span><span>戰利品 <b>+${Math.round(q*100)}%</b></span><span>金幣 <b>${mods.includes('rich') ? '+60%' : '+0%'}</b></span><span>稀有度 <b>${mods.includes('lucky') ? '提升' : '一般'}</b></span></div>`;
+  return `<ul>${mods.map(k => `<li style="color:${RISKM.includes(k) ? '#d03a3a' : '#1d8a4c'}">${MODS[k].n}</li>`).join('')}</ul><div class="agg"><span>挑戰詞綴 <b>${mapChallenge(mods)}</b></span><span>戰利品 <b>+${Math.round(q*100)}%</b></span><span>金幣 <b>${mods.includes('rich') ? '+60%' : '+0%'}</b></span><span>稀有度 <b>${mods.includes('lucky') ? '提升' : '一般'}</b></span></div>`;
 }
 function setFilter(i){ G.filter = i; G.dirty = true; renderModal(); }
 function rulesBar(){
@@ -346,27 +309,26 @@ function rulesBar(){
 }
 function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未開放.txt</div><div style="font-size:13px;line-height:1.7">升到 ${L} 級開放${k === 'craft' ? '改機（拆裝備得零件，重洗與改裝詞綴）' : '天賦盤（升級得到的點數在這裡分配）'}。</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
-const qm = k => `<button class="qm" onclick="showHelp('${k}')">?</button>`;
-function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; o.hidden = false; }
-function hideOverlay(){ $('ovl').hidden = true; }
+const qm = k => `<button aria-label="${HELP[k] ? HELP[k][0] : '說明'}" class="qm" onclick="showHelp('${k}')">?</button>`;
+function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; uxOpenDialog(o, o.querySelector('h2,b,.mct')?.textContent || '遊戲提示', hideOverlay); }
+function hideOverlay(){ craftPending=null;UI_RESPEC=null;uxCloseDialog($('ovl')); }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
 function catchUp(sec, report){
   if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
-  const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths };
-  G.off = { lvls:0, eq:0, maps:0, gems:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
+  const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths, gems:{...G.gems}, carts:{...G.carts} };
+  G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   let left = sec; const total = sec;
   if (report) showOverlay(`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
     const t0 = performance.now();
     while (left > 0 && performance.now() - t0 < 30){ update(.2); left -= .2; }
-    if (left > 0){ if (report) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; setTimeout(chunk, 0); return; }
+    if (left > 0){ if (report && $('oprog')) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; setTimeout(chunk, 0); return; }
     for (const d of G.drops) if (!d.done){ d.done = true; pickup(d); } G.drops = []; G.proj = []; G.timers = []; G.mons = []; G.spawnCd = .5; G.h.swingT = -1; G.h.castT = -1; G.h.dead = 0;
     while (G.picks > 0){ const o2 = rollCards(1)[0]; if (!o2) break; G.off.cards.push(CARDS[o2].n); takeCard(o2); }
     while (G.relicPicks > 0){ const r2 = rollRelics(1)[0]; if (!r2){ G.relicPicks = 0; break; } G.off.cards.push(RELICS[r2].n); takeRelic(r2); }
     if (G.h.hp <= 0) G.h.hp = G.st.life;
-    G.offline = false; G.paused = false; G.lastWall = Date.now(); const o = G.off; G.off = null; G.dirty = true; saveGame();
-    if (report) showOverlay(`<b>歡迎回來！</b><div class="mute">你離開了 ${fmtDur(away)}${away > sec ? `（最多結算 ${fmtDur(sec)}）` : ''}</div><ul>
-      <li>擊殺 ${tFmt(G.totalKills - b.kills)} 隻怪物</li><li>金幣 +${tFmt(G.gold - b.gold)}</li><li>等級 ${b.lvl} → ${G.lvl}</li><li>深度 ${b.depth} → ${G.depth}</li><li>換上 ${o.eq} 件更強的裝備</li><li>獲得 ${o.maps} 張地圖、${o.gems} 顆輔助寶石</li><li>倒下 ${G.deaths - b.deaths} 次</li>${o.cards.length ? `<li>隨機改裝：${o.cards.join('、')}</li>` : ''}</ul><button class="mb" onclick="hideOverlay()">繼續</button>`);
+    G.offline = false; G.paused = false; G.lastWall = Date.now(); const o = G.off; G.off = null; G.dirty = true; const saved = saveGame();
+    if (report) showOverlay(uxOfflineReport(o,b,away,sec,saved));
   })();
 }
 function setupPanel(){
@@ -578,24 +540,19 @@ function setupPanel(){
   m.addEventListener('pointerdown', e => { if (e.target === m && !MOB() && !DESK()) closeModal(); });
   const o = document.createElement('div'); o.className = 'modal'; o.id = 'ovl'; o.hidden = true;
   document.body.append(m, o);
-  if (matchMedia('(max-width:560px) and (orientation:portrait)').matches){   // 手機：指令按鈕收進「選單」分頁，面板常駐在戰鬥畫面下方
-    document.body.classList.add('m'); const mm = document.createElement('div'); mm.id = 'mmenu'; mm.hidden = true; m.querySelector('.mbox').insertBefore(mm, $('mbody'));
-    const b = $('btns'); if (b){ mm.appendChild(b); b.querySelectorAll('.act').forEach(x => { if (['技能', '天賦盤', '地圖', '存檔'].includes(x.textContent.trim())) (x.closest('.stepwrap') || x).style.display = 'none'; }); } m.hidden = false; modalTab = 'char';   // 這四個已經是分頁
-  }
-  const deskMq = matchMedia('(min-width:1100px) and (orientation:landscape)');
-  if (deskMq.matches && !document.body.classList.contains('m')){ document.body.classList.add('d'); document.querySelectorAll('#btns .act').forEach(x => { if (['技能', '天賦盤', '地圖', '存檔'].includes(x.textContent.trim())) (x.closest('.stepwrap') || x).style.display = 'none'; }); m.hidden = false; modalTab = 'skills'; renderModal(); }
-  deskMq.addEventListener('change', () => { saveGame(); location.reload(); });
+  // 跨尺寸使用同一操作台，不重新載入或重建引擎指令。
   const hint = () => { let h = $('nexthint');
-    if (!h){ h = document.createElement('div'); h.id = 'nexthint'; h.onclick = () => { if (h.dataset.tab) openModal(h.dataset.tab); }; document.body.appendChild(h); }
-    let cb = $('ctxbtn'); if (!cb){ cb = document.createElement('button'); cb.id = 'ctxbtn'; cb.onclick = () => abandonMap(); }
-    const stg = document.querySelector('.stage'); if (MOB() && stg){ if (h.parentNode !== stg) stg.appendChild(h); if (cb.parentNode !== stg) stg.appendChild(cb); } else { if (h.parentNode !== document.body) document.body.appendChild(h); }
+    if (!h){ h = document.createElement('button'); h.type = 'button'; h.id = 'nexthint'; h.onclick = () => { if (h.dataset.tab) openModal(h.dataset.tab); }; document.body.appendChild(h); }
+    let cb = $('ctxbtn'); if (!cb){ cb = document.createElement('button'); cb.id = 'ctxbtn'; cb.onclick = () => uiLeaveMap(); }
+    const stg = document.querySelector('.stage'); if (stg){ if (h.parentNode !== stg) stg.appendChild(h); if (cb.parentNode !== stg) stg.appendChild(cb); } else { if (h.parentNode !== document.body) document.body.appendChild(h); }
     cb.hidden = !G.run; cb.textContent = '離開';
     { let mt = $('modtxt'); if (!mt){ mt = document.createElement('div'); mt.id = 'modtxt'; } const R = G.run, ms = R && R.map ? (R.map.mods || []).slice(0, 3).map(k => MODS[k].n) : []; if (R && R.tower) ms.unshift('無限之塔 第 ' + R.floor + ' 層');
       if (stg && mt.parentNode !== stg) stg.appendChild(mt); const t = ms.join('\n'); if (mt._t !== t){ mt._t = t; mt.innerText = t; } }
     const n = nextStep(); h.hidden = !n; if (n){ h.textContent = '下一步：' + n.t; h.dataset.tab = n.tab || ''; } };
-  let lastP = ''; const draw = () => { hint(); const ph = panelHtml(); if (ph === lastP) return; lastP = ph; if (MOB()){ if (modalTab === 'char' && !document.querySelector('#mbody :focus')) renderModal(); return; } el.innerHTML = ph; };
+  const draw=()=>{hint();uiRefreshLive();if(typeof viewTick==='function')viewTick();};
   setInterval(draw, 300); draw();
+  uxInit();
+  uiInitLayout();
+  viewInit();
   document.getElementById('lblctl'); const pc = document.getElementById('pals'); if (pc) pc.parentElement.style.display = 'none';
 }
-
-document.addEventListener('keydown', e => { if ((e.key === 'r' || e.key === 'R') && !$('modal').hidden && modalTab === 'skills' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) pzRot(); });
