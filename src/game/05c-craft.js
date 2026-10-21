@@ -31,5 +31,5 @@ function craftHtml(){
     const btns = Object.entries(CRAFT).map(([act, C]) => { const ok = C.ok(it) && !it.cr; const cost = ok ? C.cost(it) : 0; return `<button class="mb" ${ok && (G.parts || 0) >= cost ? '' : 'disabled'} title="${C.d}" onclick="craftDo('${sl}','${act}')">${C.n} ${ok ? cost : '—'}</button>`; }).join('');
     return `<div class="rc cft"><div class="rh"><span>${SLOTN[sl]}</span><span class="mute">${RAR[it.r].n}${it.cr ? '・已腐化' : ''}</span></div><b style="color:${RAR[it.r].c}">${it.name}</b>${it.lg ? `<div class="mute">傳奇：不能替換或升級</div>` : ''}<ul>${lines.join('')}</ul><div class="cb">${btns}</div></div>`;
   }).join('');
-  return `<div class="rc wide"><div class="rh">改機　<span class="mute">零件 ${G.parts || 0}</span></div><div class="mute">用不到的裝備會自動拆成零件（普通 1、魔法 2、稀有 5、暗金 12）。鎖定一條詞綴就能保住它；腐化是最後一搏，只能一次。</div></div>${cards}`;
+  return `<div class="rc wide"><div class="rh">改機　<span class="mute">零件 ${G.parts || 0}</span></div></div>${cards}`;
 }

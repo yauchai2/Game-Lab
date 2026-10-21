@@ -16,14 +16,14 @@ const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = 
 function slotHtml(slot){
   const it = G.equip[slot];
   if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${spr(SLOT_ICON[slot], 32)}<div class="mute">空</div></div></div>`;
-  const lines = itemLines(it).map(l => `<li class="${l.imp ? 'imp' : l.lg ? 'lgd' : ''}">${l.t}</li>`).join('');
+  const lines = itemLines(it).slice(0, 3).map(l => `<li class="${l.imp ? 'imp' : l.lg ? 'lgd' : ''}">${l.t}</li>`).join('');
   return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${spr(SLOT_ICON[slot], 32, RAR[it.r].c)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
 }
 function panelHtml(){
   const s = G.st, h = G.h, R = G.run;
   const sk = G.slots.map((id, i) => id ? `<li><b>${SKILLS[id].n}</b> <span class="mute">${(G.supp[id] || []).filter(Boolean).map(g => SUPPS[g].n).join('、') || '無輔助'}</span></li>` : `<li class="mute">槽 ${i+1}：${G.lvl >= SLOT_LV[i] ? '空' : '等級 ' + SLOT_LV[i] + ' 解鎖'}</li>`).join('');
   const prog = R ? `${R.tower ? `無限之塔 第 ${R.floor} 層` : '地圖進度'} ${Math.min(R.kills, R.need)} / ${R.need}${R.tower ? '' : `（${BIOMES[R.map.biome].n} Lv. ${R.map.lvl}）`}` : `擊殺 ${Math.min(G.kills, G.need)} / ${G.need}${G.push ? '（滿了出守關者）' : '（刷怪模式）'}`;
-  const stats = `<li>生命 ${tFmt(Math.max(0, h.hp))} / ${tFmt(s.life)}</li><li>預估 DPS ${tFmt(s.dps)}</li><li>暴擊 ${s.crit.toFixed(0)}% × ${s.cm.toFixed(0)}%</li><li>攻速 ${s.aps.toFixed(2)}/秒　減傷 ${(s.red*100).toFixed(0)}%</li><li>${prog}</li><li>天賦點 ${passPoints()}　地圖 ${G.maps.length}　死亡 ${G.deaths}</li>`;
+  const stats = `<li>生命 ${tFmt(Math.max(0, h.hp))} / ${tFmt(s.life)}</li><li>預估 DPS ${tFmt(s.dps)}</li><li>暴擊 ${s.crit.toFixed(0)}%　減傷 ${(s.red*100).toFixed(0)}%</li><li>${prog}</li>`;
   return `${slotHtml('weapon')}${slotHtml('armor')}${slotHtml('ring')}
     <div class="rc"><div class="rh">技能</div><ul>${sk}</ul></div>
     <div class="rc"><div class="rh">狀態</div><ul>${stats}</ul></div>${charHtml()}${cardsHtml()}
@@ -103,7 +103,7 @@ function skillsHtml(){
 function skillsHtml0(){
   const B = G.board, at = {}, linked = new Set(GridLab.resolve(B).flatMap(r => r.linked));
   for (const p of B.pieces) GridLab.cellsOf(p).forEach((c, i) => { at[c[0] + ',' + c[1]] = { p, first:i === 0 }; });
-  let h = '<div class="hint">像俄羅斯方塊：把下方的機件拖到面板上放下（手機請按住機件的方塊圖示再拖），也可以拖面板上的機件換位置。也能先點選，按「旋轉」（或 R 鍵）轉方向，再點格子放下；放不下的位置會顯示紅色。<b>輔助配件只強化上下左右相鄰</b>的技能（廣播只對投射物）。一個技能連到 3 個以上輔助會「滿載」，每多一個傷害 +8%。面板是 6×6，隨等級逐列解鎖。<b>共鳴</b>：整列塞滿，全隊傷害 +12%；整欄塞滿，暴擊率 +5%；元素相同的兩個技能緊貼，各自傷害 +15%。</div>'
+  let h = '<div class="hint">把機件拖到面板上（可旋轉）。輔助只強化上下左右相鄰的技能；點右上「?」看完整說明。</div>'
     + `<div class="pz" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">`;
   for (let y = 0; y < SLOT_LV.length; y++) for (let x = 0; x < B.w; x++){
     if (y >= B.h){ h += `<div class="pc lock">${x === 0 ? 'Lv. ' + SLOT_LV[y] : ''}</div>`; continue; }
@@ -113,14 +113,13 @@ function skillsHtml0(){
     h += `<div class="pc fill${c.p.id === selPiece ? ' sel' : ''}${linked.has(c.p.id) ? ' lnk' : ''}${same(1, 0) ? ' jr' : ''}${same(0, 1) ? ' jb' : ''}" style="--pc:${col}" ${ev} onpointerdown="pzDown(event,null,null,${c.p.id})">${c.first ? (act ? spr(SKILL_ICON[c.p.key], 22) : gemIco(c.p.key, 16)) + `<span>${act ? SKILLS[c.p.key].n : SUPPS[c.p.key].n}</span>` : ''}</div>`;
   }
   const bb = boardBonus(), rz = [bb.rows && `整列滿 ×${bb.rows}：全隊傷害 +${12*bb.rows}%`, bb.cols && `整欄滿 ×${bb.cols}：暴擊率 +${5*bb.cols}%`, Object.keys(bb.pair).length && `${Object.keys(bb.pair).map(k => SKILLS[k].n).join('、')}：同元素緊貼 +15%`].filter(Boolean);
-  h += `</div><div class="rz">${rz.length ? '共鳴　' + rz.join('　') : '共鳴　整列塞滿、整欄塞滿、同元素技能緊貼，都有額外加成'}</div>`;
+  h += `</div><div class="rz">${rz.length ? '共鳴　' + rz.join('　') : '共鳴：塞滿整列、整欄，或同元素技能緊貼，有額外加成'}</div>`;
   const hd = held ? (held.kind === 'active' ? SKILLS[held.key].n : SUPPS[held.key].n) : '';
   h += `<div class="pzbar"><button ${held || selPiece != null ? '' : 'disabled'} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button>${held ? `<span class="mute">手上：${hd} ${shapeIcon(held.kind, held.key, heldRot)}</span>` : ''}<span id="pzmsg" class="mute"></span></div>`;
   h += '<div class="mct" style="margin:10px 0 6px">技能</div><div class="skrow">' + Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, used = G.slots.includes(id);
     return `<button class="skb${held && held.key === id ? ' on' : ''}" ${(!un || used) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : used ? '（已放在面板上）' : '：' + K.d}" onclick="pzHold('active','${id}')" onpointerdown="pzDown(event,'active','${id}')">${spr(SKILL_ICON[id], 22)}${shapeIcon('active', id)}</button>`; }).join('') + '</div>';
-  for (const id of G.slots){ const k = G.st.sk[id], n = k && k.has.length; if (k) h += `<div class="mute"><b>${SKILLS[id].n}</b>：單次傷害約 ${tFmt(k.hit)}，冷卻 ${k.cd.toFixed(1)} 秒${n ? `，連結 ${n} 個輔助${n >= 3 ? '（滿載 +' + 8*(Math.min(5, n) - 2) + '%）' : ''}` : ''}</div>`; }
   h += '<div class="mct" style="margin:12px 0 6px">輔助配件庫存</div><div class="gems">' + Object.keys(SUPPS).map(g => { const f = gemFree(g), n = G.gems[g] || 0;
-    return `<button class="gt${held && held.key === g ? ' on' : ''}" ${f > 0 ? '' : 'disabled'} onclick="pzHold('support','${g}')" onpointerdown="pzDown(event,'support','${g}')" title="${SUPPS[g].d}">${(G.newSnap && n > (G.newSnap.g[g] || 0)) ? '<i class="nw">NEW</i>' : ''}${shapeIcon('support', g)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em><small>${SUPPS[g].d}</small></button>`; }).join('') + '</div>';
+    return `<button class="gt${held && held.key === g ? ' on' : ''}" ${f > 0 ? '' : 'disabled'} onclick="pzHold('support','${g}')" onpointerdown="pzDown(event,'support','${g}')" title="${SUPPS[g].d}">${(G.newSnap && n > (G.newSnap.g[g] || 0)) ? '<i class="nw">NEW</i>' : ''}${shapeIcon('support', g)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em></button>`; }).join('') + '</div>';
   h += '<div class="mct" style="margin:12px 0 6px">模式卡匣</div>' + cartsHtml();
   return h;
 }
@@ -162,8 +161,8 @@ function goalsHtml(){
     return `<div class="gl${ok ? ' ok' : ''}"><b>${ok ? '★ ' : ''}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
 }
 function mapsHtml(){
-  const R = G.run; let h = '<div class="hint">地圖由守關者和地圖怪掉落。詞綴讓敵人更強，但戰利品數量與稀有度更好。打贏地圖守關者才算完成；死亡則地圖報廢。</div>';
-  h += `<div class="mc"><b>無限之塔</b>${qm('maps')} <span class="mute">最高 ${G.towerBest || 0} 層</span><div class="mute">每層殺滿怪就上樓，每 10 層是守關者，打贏多一條規則、一件遺物和一件戰利品。死亡就結束。${G.maxDepth < 8 ? '（深度 8 解鎖）' : ''}</div><button class="mb pri" ${R || G.maxDepth < 8 ? 'disabled' : ''} onclick="towerStart()">挑戰</button></div>`;
+  const R = G.run; let h = '';
+  h += `<div class="mc"><b>無限之塔</b>${qm('maps')} <span class="mute">最高 ${G.towerBest || 0} 層</span>${G.maxDepth < 8 ? '<div class="mute">深度 8 解鎖</div>' : ''}<button class="mb pri" ${R || G.maxDepth < 8 ? 'disabled' : ''} onclick="towerStart()">挑戰</button></div>`;
   { const L = G.trainLast, mx = L && L.rows.length ? L.rows[0][1] : 1;
     h += `<div class="mc"><b>訓練場</b> <span class="mute">5 隻不還手的假人，量 30 秒傷害</span>${G.train ? `<div class="mute">測量中，剩 ${Math.ceil(G.train.t)} 秒</div><button class="mb" onclick="trainEnd(true)">取消</button>` : `<button class="mb pri" ${R ? 'disabled' : ''} onclick="trainStart()">開始測量</button>`}`
       + (L ? `<div class="mute" style="margin-top:6px">上次結果：每秒約 <b>${tFmt(L.dps)}</b>（5 隻合計）</div>` + L.rows.map(([k, v]) => `<div class="gl" style="min-height:0"><b>${k}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${Math.round(v/L.total*100)}%　${tFmt(v/30)}/秒</em></div>`).join('') : '') + '</div>'; }
@@ -301,7 +300,7 @@ function cardsHtml(){
 
 /* offline progress */
 const HELP = {
-  skills:['拼圖說明', '主動技能自己施放，輔助配件只強化上下左右相鄰、標籤相符的主動技能。<br>把機件拖到格子上，放不下會顯示紅色；按「旋轉」換方向。<br>放下前，下方會顯示放上去之後傷害的變化。<br>構築 1 至 3 各存一套拼圖與天賦。'],
+  skills:['拼圖說明', '主動技能自己施放，輔助配件只強化上下左右相鄰、標籤相符的主動技能。<br>把機件拖到格子上，放不下會顯示紅色；按「旋轉」換方向。<br>放下前，下方會顯示放上去之後傷害的變化。<br>連到 3 個以上輔助會「滿載」，每多一個傷害 +8%。<br>共鳴：塞滿整列全隊傷害 +12%，塞滿整欄暴擊率 +5%，同元素技能緊貼各自傷害 +15%。<br>面板 6×6，隨等級逐列解鎖。構築 1 至 3 各存一套拼圖與天賦。'],
   craft:['改機說明', '用不到的裝備會自動拆成零件。零件可以重新校準數值、改裝詞綴、升級稀有度，或賭一把腐化。<br>鎖定一條詞綴可以保住它；已腐化的裝備不能再改。'],
   maps:['冒險說明', '地圖詞綴讓敵人更強，但戰利品更好；每張卡下方的標籤是風險與回報彙總。<br>無限之塔每層殺滿怪上樓，每 10 層是守關者，死亡就結束。<br>訓練場用不還手的假人量 30 秒傷害。'],
   goals:['任務與目標', '新手任務一次一個，完成後解鎖新系統。目標達成會自動給獎勵，不用手動領取。']
@@ -325,7 +324,7 @@ function runMods(R){
 }
 function setFilter(i){ G.filter = i; G.dirty = true; renderModal(); }
 function rulesBar(){
-  return `<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>拾取規則</b>${['全部撿', '魔法以上', '稀有以上'].map((n, i) => `<button class="mb" style="${G.filter === i ? 'background:#1f3fb0;color:#fff;' : ''}" onclick="setFilter(${i})">${n}</button>`).join('')}<span class="mute">低於規則的掉落自動拆成零件</span>${qm('craft')}</div>`;
+  return `<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>拾取規則</b>${['全部撿', '魔法以上', '稀有以上'].map((n, i) => `<button class="mb" style="${G.filter === i ? 'background:#1f3fb0;color:#fff;' : ''}" onclick="setFilter(${i})">${n}</button>`).join('')}${qm('craft')}</div>`;
 }
 function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未開放.txt</div><div style="font-size:13px;line-height:1.7">升到 ${L} 級開放${k === 'craft' ? '改機（拆裝備得零件，重洗與改裝詞綴）' : '天賦盤（升級得到的點數在這裡分配）'}。</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
