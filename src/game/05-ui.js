@@ -103,7 +103,7 @@ function skillsHtml(){
 function skillsHtml0(){
   const B = G.board, at = {}, linked = new Set(GridLab.resolve(B).flatMap(r => r.linked));
   for (const p of B.pieces) GridLab.cellsOf(p).forEach((c, i) => { at[c[0] + ',' + c[1]] = { p, first:i === 0 }; });
-  let h = '<div class="hint">像俄羅斯方塊：把下方的機件拖到面板上放下（手機請按住機件的方塊圖示再拖），也可以拖面板上的機件換位置。也能先點選，按「旋轉」（或 R 鍵）轉方向，再點格子放下；放不下的位置會顯示紅色。<b>輔助配件只強化上下左右相鄰</b>的技能（廣播只對投射物）。</div>'
+  let h = '<div class="hint">像俄羅斯方塊：把下方的機件拖到面板上放下（手機請按住機件的方塊圖示再拖），也可以拖面板上的機件換位置。也能先點選，按「旋轉」（或 R 鍵）轉方向，再點格子放下；放不下的位置會顯示紅色。<b>輔助配件只強化上下左右相鄰</b>的技能（廣播只對投射物）。一個技能連到 3 個以上輔助會「滿載」，每多一個傷害 +8%。面板是 6×6，隨等級逐列解鎖。</div>'
     + `<div class="pz" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">`;
   for (let y = 0; y < SLOT_LV.length; y++) for (let x = 0; x < B.w; x++){
     if (y >= B.h){ h += `<div class="pc lock">${x === 0 ? 'Lv. ' + SLOT_LV[y] : ''}</div>`; continue; }
@@ -116,7 +116,7 @@ function skillsHtml0(){
   h += `</div><div class="pzbar"><button ${held || selPiece != null ? '' : 'disabled'} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button>${held ? `<span class="mute">手上：${hd} ${shapeIcon(held.kind, held.key, heldRot)}</span>` : ''}<span id="pzmsg" class="mute"></span></div>`;
   h += '<div class="mct" style="margin:10px 0 6px">技能</div><div class="skrow">' + Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, used = G.slots.includes(id);
     return `<button class="skb${held && held.key === id ? ' on' : ''}" ${(!un || used) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : used ? '（已放在面板上）' : '：' + K.d}" onclick="pzHold('active','${id}')" onpointerdown="pzDown(event,'active','${id}')">${spr(SKILL_ICON[id], 22)}${shapeIcon('active', id)}</button>`; }).join('') + '</div>';
-  for (const id of G.slots){ const k = G.st.sk[id], n = k && k.has.length; if (k) h += `<div class="mute"><b>${SKILLS[id].n}</b>：單次傷害約 ${tFmt(k.hit)}，冷卻 ${k.cd.toFixed(1)} 秒${n ? `，連結 ${n} 個輔助` : ''}</div>`; }
+  for (const id of G.slots){ const k = G.st.sk[id], n = k && k.has.length; if (k) h += `<div class="mute"><b>${SKILLS[id].n}</b>：單次傷害約 ${tFmt(k.hit)}，冷卻 ${k.cd.toFixed(1)} 秒${n ? `，連結 ${n} 個輔助${n >= 3 ? '（滿載 +' + 8*(Math.min(5, n) - 2) + '%）' : ''}` : ''}</div>`; }
   h += '<div class="mct" style="margin:12px 0 6px">輔助配件庫存</div><div class="gems">' + Object.keys(SUPPS).map(g => { const f = gemFree(g), n = G.gems[g] || 0;
     return `<button class="gt${held && held.key === g ? ' on' : ''}" ${f > 0 ? '' : 'disabled'} onclick="pzHold('support','${g}')" onpointerdown="pzDown(event,'support','${g}')" title="${SUPPS[g].d}">${(G.newSnap && n > (G.newSnap.g[g] || 0)) ? '<i class="nw">NEW</i>' : ''}${shapeIcon('support', g)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em><small>${SUPPS[g].d}</small></button>`; }).join('') + '</div>';
   h += '<div class="mct" style="margin:12px 0 6px">模式卡匣</div>' + cartsHtml();
@@ -171,12 +171,12 @@ function mapsHtml(){
   return h;
 }
 function lootToast(it){
-  let box = $('loot'); if (!box){ box = document.createElement('div'); box.id = 'loot'; document.body.appendChild(box); }
-  const R = RAR[it.r], ls = itemLines(it).slice(0, it.lg ? 4 : 3), d = document.createElement('div');
+  let box = $('loot'); const host = document.querySelector('.stage') || document.body; if (!box){ box = document.createElement('div'); box.id = 'loot'; } if (box.parentNode !== host) host.appendChild(box);
+  const R = RAR[it.r], ls = itemLines(it).filter(l => l.lg).slice(0, 1).concat(itemLines(it).filter(l => !l.lg).slice(0, 1)).slice(0, it.lg ? 2 : 1), d = document.createElement('div');
   d.className = 'lt r' + it.r; d.style.setProperty('--rc', R.c); d.style.setProperty('--rg', R.g);
   d.innerHTML = `<div class="lh"><span>${R.n}</span><b>${it.name}</b><i>ilvl ${it.il}</i></div>` + ls.map(l => `<div class="ll${l.lg ? ' lg' : ''}">${l.t}</div>`).join('');
   box.prepend(d); while (box.children.length > 3) box.lastChild.remove();
-  setTimeout(() => d.classList.add('out'), it.r >= 3 ? 7000 : 4200); setTimeout(() => d.remove(), it.r >= 3 ? 7600 : 4800);
+  setTimeout(() => d.classList.add('out'), it.r >= 3 ? 5200 : 3200); setTimeout(() => d.remove(), it.r >= 3 ? 5800 : 3800);
 }
 function setDmgNum(v){ G.dmgNum = v; G.dirty = true; renderModal(); }
 function saveHtml(){
@@ -362,8 +362,6 @@ function setupPanel(){
     .mbox{background:var(--paper);border:1.5px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 #b9c6ee;width:min(720px,100%);max-height:90vh;overflow:auto;padding:14px;font-size:12.5px} .mbox.small{width:min(420px,100%)}
     .mtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap} .tab{padding:3px 12px;font-size:12px} .tab.on{background:var(--ink);color:var(--paper)} .tab.x{margin-left:auto} .mb.pri{background:#e2583d !important;color:#fff !important;border-color:#8a2a18 !important;font-weight:700} .mct::before{content:'✦ ';color:#e2583d} .nw{position:absolute;top:-6px;right:-4px;background:#e2583d;color:#fff;font-style:normal;font-size:10px;padding:0 4px;z-index:2} .gt{position:relative} #modtxt{position:absolute;left:8px;top:8px;z-index:3;font-size:11px;line-height:1.5;opacity:.5;pointer-events:none;color:#2b2552;text-shadow:0 0 3px #fff,0 0 3px #fff} body.m #modtxt{top:64px} .pzbar{position:sticky;bottom:-8px;background:var(--paper);padding:4px 0;z-index:4} .agg{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;margin-top:4px;font-size:12px}
     /* Y2K 低像素感：階梯狀切角、掃描線標題、方形圓點 */
-    .mb,.tab,.chip,.qm,.sw{border-radius:0 !important;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))}
-    .mc,.gl,.rc{border-radius:0 !important} .lt{clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% 100%,0 100%)}
     body{-webkit-font-smoothing:none;text-rendering:optimizeSpeed} #loot{position:fixed;left:50%;top:44px;transform:translateX(-50%);z-index:35;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:min(300px,86vw)}
     .lt{width:100%;background:var(--paper);border:2px solid var(--rc);box-shadow:3px 3px 0 var(--rc);padding:4px 10px;animation:ltin .35s cubic-bezier(.2,1.6,.4,1);transition:opacity .6s,transform .6s;font-size:12px}
     .lt.out{opacity:0;transform:translateY(-12px)} .lt .lh{display:flex;gap:8px;align-items:baseline} .lt .lh span{background:var(--rc);color:#fff;padding:0 6px;font-size:11px} .lt .lh b{font-size:15px;color:var(--rc);flex:1} .lt .lh i{font-style:normal;color:#8a8a99;font-size:11px} .lt .ll.lg{color:#c4501f}
@@ -443,8 +441,8 @@ function setupPanel(){
     .gls{display:grid;gap:6px;margin-top:6px} .gl{position:relative;display:grid;grid-template-columns:1fr auto;gap:0 8px;padding:6px 8px 10px;background:#fff;border:1px solid var(--wdk);border-radius:4px;font-size:12px}
     .gl span{grid-column:1/2;font-size:11px} .gl em{grid-row:1;grid-column:2;font-style:normal;font-size:11px;color:var(--muted)} .gl.ok{background:#fff6d6} .gl.ok em{color:#a07000;font-weight:700}
     .gl i{position:absolute;left:0;bottom:0;height:4px;width:var(--p);background:#ff8fb8;border-radius:0 2px 0 4px}
-    .pz{display:grid;gap:4px;margin:8px 0;max-width:300px;touch-action:pan-y}
-    .pc{aspect-ratio:1;max-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:700;text-align:center;cursor:pointer;color:var(--ink);padding:2px;border-radius:3px;
+    .pz{display:grid;width:100%;gap:3px;margin:8px 0;max-width:420px;touch-action:pan-y}
+    .pc{aspect-ratio:1;min-width:0;overflow:hidden;max-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:700;text-align:center;cursor:pointer;color:var(--ink);padding:2px;border-radius:3px;
       background:radial-gradient(circle at 50% 50%,#c7d0ee 0 1.5px,transparent 2px) 0 0/10px 10px,#f1f4ff;border:1px solid var(--wdk);border-right-color:#fff;border-bottom-color:#fff;box-shadow:inset 1px 1px 0 #9aa6d6;user-select:none;-webkit-user-select:none}
     .pc.lock{background:repeating-linear-gradient(45deg,#cfd6ef 0 4px,#dfe5f7 4px 8px);color:var(--muted);cursor:default;font-weight:400;box-shadow:none}
     .pc.fill{touch-action:none;background:linear-gradient(135deg,#ffffffaa 0,#ffffff00 45%),var(--pc);border:2px solid #fff;border-right-color:#0003;border-bottom-color:#0003;box-shadow:none}
@@ -519,6 +517,32 @@ function setupPanel(){
     body.d .mtabs{margin-bottom:8px}`;
   { const tb = document.createElement('div'); tb.className = 'tfoot'; tb.innerHTML = '<span class="start">★ Start</span><span class="task">Idle Hero</span><span class="clk" id="clk"></span>'; document.body.appendChild(tb);
     const tick = () => { const d = new Date(); $('clk').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }; tick(); setInterval(tick, 20000); }   // the engine's wobble slider and colour swatches are not part of the game
+
+  st.textContent += `
+    /* 老式擬真 3D 質感：玻璃凝膠按鈕、金屬斜角視窗框、LCD 像素格、螢幕玻璃反光 */
+    .mb,.tab,.chip{background:linear-gradient(180deg,#ffffff 0%,#e6efff 46%,#bccdf0 52%,#dbe7ff 100%) !important;border:1.5px solid #6f82c8 !important;border-radius:999px !important;color:#2b2552;text-shadow:0 1px 0 #fff;
+      box-shadow:0 0 0 2px #fff,0 3px 0 2px #7d8bbd,0 6px 8px rgba(43,37,82,.28),inset 0 1px 0 #fff !important;transition:transform .08s}
+    .mb:hover,.tab:hover{background:linear-gradient(180deg,#ffffff 0%,#f0f6ff 46%,#cddcf7 52%,#e8f0ff 100%) !important} .mb:active,.tab:active{transform:translateY(2px);box-shadow:0 0 0 2px #fff,0 1px 0 2px #7d8bbd,inset 0 2px 3px rgba(43,37,82,.25) !important}
+    .mb[disabled]{opacity:.55;filter:grayscale(.6)} .tab.on{background:linear-gradient(180deg,#b9d2ff 0%,#6f9cf0 48%,#3f74dc 52%,#6f9cf0 100%) !important;color:#fff !important;text-shadow:0 1px 0 #1a3a99}
+    .mb.pri{background:linear-gradient(180deg,#ffd2c2 0%,#ff9a7c 46%,#e2483d 52%,#f2755a 100%) !important;border-color:#8a2a18 !important;color:#fff !important;text-shadow:0 1px 0 #8a2a18}
+    .rc,.mc,.mbox{background:linear-gradient(180deg,#f6f9ff 0%,#dfe8fa 100%) !important;border:2px solid #fff !important;outline:1px solid #7d8bbd;border-radius:10px !important;
+      box-shadow:inset 0 1px 0 #fff,inset 0 -2px 0 #aab6dc,0 4px 0 #8c9bd0,0 8px 14px rgba(43,37,82,.3) !important}
+    .rc ul,.rc ol,.gl,#bosslog{background-image:linear-gradient(rgba(70,100,170,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(70,100,170,.06) 1px,transparent 1px);background-size:3px 3px}
+    .rh,.mbox::before{border-radius:6px 6px 2px 2px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -1px 0 rgba(0,0,60,.25)}
+    .stage::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:16px;
+      background:linear-gradient(118deg,rgba(255,255,255,.26) 0,rgba(255,255,255,.08) 22%,transparent 23%),repeating-linear-gradient(0deg,rgba(10,20,80,.06) 0 1px,transparent 1px 3px);
+      box-shadow:inset 0 0 0 3px #e4ebfa,inset 0 0 0 5px #8c9bd0,inset 0 0 26px rgba(20,30,90,.4)}
+    .stats{background:linear-gradient(180deg,rgba(240,247,255,.92),rgba(196,216,250,.86)) !important;border:2px solid #fff !important;border-radius:12px !important;box-shadow:0 0 0 1px #7d8bbd,0 3px 6px rgba(43,37,82,.3),inset 0 1px 0 #fff !important}
+    body:not(.m) .stats{flex-direction:row !important;align-items:center;gap:12px !important;top:8px !important;right:8px !important;padding:3px 12px !important} body:not(.m) .stats::before{display:none}
+    body:not(.m) .stat{display:flex !important;flex-direction:row;align-items:baseline;gap:5px;width:auto} body:not(.m) .stat .k{font-size:10px} body:not(.m) .stat .v{font-size:15px !important} body:not(.m) .hbar{width:64px !important;height:9px !important;margin-left:4px}
+    body.m .stat .k{font-size:9px;line-height:1} body.m .stat .v{font-size:14px !important;line-height:1.1} body.m .stats{padding:2px 8px !important;top:6px;left:8px;right:8px} body.m .hbar{height:8px !important}
+    body.m .mtabs{background:linear-gradient(180deg,#eef2fa 0%,#b9c3dc 50%,#cfd7ea 52%,#a3afcf 100%) !important;border-top:2px solid #fff;box-shadow:0 -3px 8px rgba(43,37,82,.3) !important}
+    body.m .tab{margin:4px 3px !important;min-height:46px;border-radius:14px !important;color:#2b2552 !important;text-shadow:0 1px 0 #fff !important;background:linear-gradient(180deg,#fff 0%,#e9f0ff 46%,#c0d0f2 52%,#dfe9ff 100%) !important;border:1.5px solid #6f82c8 !important;box-shadow:0 2px 0 #7d8bbd,inset 0 1px 0 #fff !important}
+    body.m .tab.on{margin-top:0 !important;color:#fff !important;text-shadow:0 1px 0 #1a3a99 !important;background:linear-gradient(180deg,#b9d2ff 0%,#6f9cf0 48%,#3f74dc 52%,#6f9cf0 100%) !important;border-radius:14px !important;box-shadow:0 1px 0 #1a3a99,inset 0 1px 0 #fff !important}
+    .stage #loot{position:absolute;left:8px;bottom:8px;top:auto;transform:none;align-items:flex-start;width:min(240px,60%);z-index:5;flex-direction:column-reverse}
+    body.m .stage #loot{left:auto;right:6px;bottom:auto;top:52px;align-items:flex-end;width:min(190px,54%);flex-direction:column}
+    .lt{padding:3px 8px !important;border-radius:8px;font-size:11px !important;box-shadow:0 0 0 1px var(--rc),0 3px 6px rgba(43,37,82,.3) !important} .lt .lh b{font-size:13px !important} .lt.r3{padding:5px 9px !important;font-size:12px !important} .lt.r3 .lh b{font-size:15px !important}
+  `;
   document.head.appendChild(st);
   { // 重要事件用黑底對話框跳出：升級、守關者登場、地圖完成、倒下、撿到暗金
     const dl = document.createElement('div'); dl.className = 'dlg'; document.querySelector('.stage').appendChild(dl);

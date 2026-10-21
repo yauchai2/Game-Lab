@@ -130,6 +130,7 @@ function skillDmg(id){ const k = G.st.sk[id]; return k; }
 function applySkillHit(id, m, mult=1, chainIdx=0){
   const k = G.st.sk[id]; if (!m || m.dead) return 0;
   G.src = SKILLS[id].n;
+  if (G.fx.length < 36) addFx({ k:'shard', x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, t:0, dur:.4 });
   if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
   const el = SKILLS[id].el; let rx = null;   /* 元素反應：火燒、閃電標記，加上冰凍，三者互相放大 */
   if (m.frozen > 0 && el === 'fire'){ mult *= 1.4; m.frozen = 0; rx = '融化'; } else if (m.frozen > 0 && el === 'light'){ mult *= 1.3; rx = '超導'; } else if (m.burn > 0 && el === 'cold') rx = '蒸氣';
@@ -147,6 +148,9 @@ function castSkill(id, repeat=1){
   const k = G.st.sk[id], s = G.st, h = G.h; let total = 0; if (!k) return;
   const al = aliveMons(); if (!al.length) return;
   const prim = nearestMon(false) || al[0], mode = k.mode; SFX(id.toLowerCase());
+  if (repeat === 1 && !G.offline){ const K0 = SKILLS[id]; addFx({ k:'ring', x:h.x, y:h.y, col:K0.col, t:0, dur:.45 }); addFx({ k:'pillar', x:h.x, y:h.y, col:K0.col, t:0, dur:.3 });
+    if (K0.cd >= 2 && (G.fx.length < 30)) addFloat(h.x - 2, h.y, BZ + 40, K0.n, K0.col, 4.4);
+    kick(K0.cd >= 4 ? .55 : .22, K0.cd >= 4 ? .18 : 0, K0.col, 0); }
   const near = (m0, n, ex) => G.mons.filter(m => !m.dead && m !== m0 && !(ex && ex.has(m))).sort((a, b) => Math.hypot(a.x - m0.x, a.y - m0.y) - Math.hypot(b.x - m0.x, b.y - m0.y)).slice(0, n);
   if (id === 'FIRE'){ const tg = prim; G.proj.push({ k:'fire', tg, t:0, dur:.4, mul:repeat }); return; }
   if (id === 'FROST'){
@@ -304,7 +308,7 @@ function update(dt){
     if (h.castT >= .4) h.castT = -1;
   }
   if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = aliveMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({ k:'meteor', x:q.x, y:q.y, t:0, dur:.9, mul:t.mul }); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id, m, 2); } } else if (t.flick){ const k = s.sk[t.id], al = aliveMons().filter(m => !(m.fall > 0)).sort((a, b) => Math.hypot(a.x - G.h.x, a.y - G.h.y) - Math.hypot(b.x - G.h.x, b.y - G.h.y)).slice(0, 5);
-        if (k && al.length){ const q = al[t.flick.i % al.length], a = Math.random()*6.28; addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.2 });
+        if (k && al.length){ const q = al[t.flick.i % al.length], a = Math.random()*6.28; addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.2 }); addFx({ k:'ghost', x:G.h.x, y:G.h.y, x2:q.x, y2:q.y, col:'#ff9ae0', t:0, dur:.35 });
           G.h.x = tClamp(q.x + Math.cos(a)*3.5, HX - ARENA_R, HX + ARENA_R); G.h.y = tClamp(q.y + Math.sin(a)*3.5, HY - ARENA_R, HY + ARENA_R); G.h.vx = G.h.vy = 0; G.h.dash = null; G.h.gx = G.h.x; G.h.gy = G.h.y;
           addFx({ k:'slash', x:q.x, y:q.y, z:BZ + 7, t:0, dur:.22 }); SFX('crit'); kick(.12);
           applySkillHit(t.id, q, t.mul*(t.flick.last ? 1.5 : 1));

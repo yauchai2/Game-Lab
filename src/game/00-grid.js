@@ -39,7 +39,7 @@
   }
   const cellsOf = p => shapeOf(p.kind, p.key, p.rot).map(([x, y]) => [p.x + x, p.y + y]);
 
-  function createBoard(w = 4, h = 3) { return { w, h, v: 2, pieces: [], nextId: 1 }; }
+  function createBoard(w = 6, h = 1) { return { w, h, v: 3, pieces: [], nextId: 1 }; }
 
   function occupied(b, ignoreId) {
     const m = new Map();

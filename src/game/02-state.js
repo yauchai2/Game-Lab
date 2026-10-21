@@ -33,7 +33,7 @@ const FXO = { shake:0, flash:0, fc:'#fff', punch:0, yaw:0, yawT:0 };
 function kick(s, f, c, p){ if (G.offline) return; FXO.shake = Math.max(FXO.shake, s); if (f){ FXO.flash = Math.max(FXO.flash, f); FXO.fc = c || '#fff'; } if (p) FXO.punch = Math.max(FXO.punch, p); }
 /* 配件拼圖：玩家擺的是 G.board；G.slots / G.supp 由它推導出來，戰鬥與屬性計算照舊讀這兩個 */
 const boardRows = (lvl = G.lvl) => Math.max(1, SLOT_LV.filter(l => lvl >= l).length);
-function newBoard(){ G.board = GridLab.createBoard(4, boardRows()); }
+function newBoard(){ G.board = GridLab.createBoard(6, boardRows()); }
 function syncBoard(){
   if (!G.board) boardFromLegacy(['FIRE'], { FIRE:['HEAVY'] });
   G.board.h = Math.max(G.board.h, boardRows());   // 等級提高才會多開一列
@@ -147,7 +147,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
   s.sk = {}; let dps2 = 0;
   for (const id of slots){ if (!id) continue;
     const K = SKILLS[id], sp = supp[id] || [], has = x => sp.includes(x), n = x => sp.filter(y => y === x).length;
-    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (Object.values(equip).some(it => it && it.lg === 'W_MULTI') ? 1 + .15*slots.filter(Boolean).length : 1) * (1 + .45*n('HEAVY')) * (has('AREA') && id === 'FIRE' ? .85 : 1);
+    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (Object.values(equip).some(it => it && it.lg === 'W_MULTI') ? 1 + .15*slots.filter(Boolean).length : 1) * (1 + .45*n('HEAVY')) * (1 + .08*Math.max(0, Math.min(5, sp.length) - 2)) * (has('AREA') && id === 'FIRE' ? .85 : 1);
     const cd = K.cd * (G.modeOf[id] === 'CHAIN_OVERLOAD' ? 1.8 : 1) * (1 - Math.min(.6, (s.haste + 30*n('HASTE'))/100)), crit = Math.min(100, s.crit + 30*n('CRITS'));
     const ca = 1 + crit/100*(s.cm/100 - 1);
     s.sk[id] = { mode:G.modeOf[id] || null, hit, cd, crit, has:sp.filter(Boolean), area:has('AREA'), twin:n('TWIN'), leech:has('LEECH') };
@@ -184,7 +184,7 @@ function applySave(o){
   if (!o || o.v !== 2) return false;
   for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','carts','seen','goals','mapsDone','pass','ach','legSeen','pity','parts','bossHp','towerBest','quest','craftN','seenG','cz','userCz','dmgNum','seenInv','seenParts','seenGoals','builds','bi','relics','relicPicks','cos','own','heroName','born','autoCard','bossKills','char','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
   G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!CHARS[G.char]) G.char = 'street'; if (!G.ach) G.ach = {}; G.mons = []; G.drops = []; G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
-  if (o.board && o.board.pieces){ if (o.board.v === 2) G.board = o.board; else sanitizeBoard(o.board); } else boardFromLegacy(o.slots || ['FIRE'], o.supp);
+  if (o.board && o.board.pieces){ if (o.board.v === 3) G.board = o.board; else sanitizeBoard(o.board); } else boardFromLegacy(o.slots || ['FIRE'], o.supp);
   recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
 function saveGame(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(serialize())); return true; } catch (e) { return false; } }
