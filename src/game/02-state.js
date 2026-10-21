@@ -130,7 +130,7 @@ function checkGoals(){
 
 /* ---------- stats ---------- */
 function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
-  const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:18 };
+  const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:10 };
   const baseLife = 90 + 14*G.lvl;
   for (const k in equip){ const it = equip[k]; if (!it) continue; for (const a of [it.imp, ...it.aff]) s[STAT_KEY[a.k]] += a.v; }
   for (const [k, v] of Object.entries(CHARS[G.char].eff)) s[k] += v;
@@ -141,7 +141,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
   for (const id of pass){ const n = TREE[id]; if (!n) continue; for (const [k, v] of Object.entries(n.eff)) s[k === 'dmgPct' ? 'inc' : k] += v; }
   s.life = (baseLife + s.life) * (1 + s.lifePct/100);
   s.aps = Math.min(4, 1 + s.apsInc/100);
-  s.red = Math.min(.8, s.armor / (s.armor + 40 + 8*G.lvl));
+  s.red = Math.min(.7, s.armor / (s.armor + 60 + 12*G.lvl));
   s.critAvg = 1 + Math.min(s.crit, 100)/100 * (s.cm/100 - 1);
   s.hit = s.dmg * (1 + s.inc/100);
   s.sk = {}; let dps2 = 0;
