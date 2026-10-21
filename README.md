@@ -1,38 +1,64 @@
-# Game-Lab
+# Game Lab：Idle Hero
 
-Y2K low poly 3D 美學（three.js 平塗低面數、粉彩、藍天白雲、等距固定視角）的類暗黑2 / 流放之路2 掛機 ARPG：**Idle Hero**。頁面外殼沿用 [Colorfigures](docs/colorfigures-LICENSE) 小引擎。
+一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。目前版本：**v0.25.2**。
 
 ## 玩法
-英雄自動戰鬥、撿裝備（普通/魔法/稀有/暗金詞綴）、升級；模式卡匣（隨機掉落，裝上才鑑定出改變攻擊方式的效果）、配件拼圖（主動技能與輔助寶石擺在面板上，輔助只強化相鄰技能）、天賦盤、地圖（帶詞綴的刷怪區）、混沌重鑄、戰利品過濾、1/2/4 倍速、存檔與離線進度。
 
-## 執行
-- 單檔：直接開 `dist/idle-hero.html`
-- 開發：直接開 `index.html`（逐檔載入 `src/`）
+- **自動戰鬥**：英雄自動走位、打怪、撿裝備，適合時間不多的上班族；離線回來也有經驗與掉落。
+- **裝備與詞綴**：普通、魔法、稀有、暗金四種稀有度，隨機詞綴，還有改機與重鑄。
+- **模式卡匣**：隨機掉落，裝上才鑑定出會改變攻擊方式的效果，每次都有新驚喜。
+- **配件拼圖**：主動技能與輔助寶石擺在格子上，輔助只強化相鄰技能，組出自己的流派。
+- **天賦盤、遺物、元素反應**：多條成長路線可以互相搭配。
+- **地圖與無限之塔**：帶詞綴的刷怪區、首領戰，多個生態與天空。
+- **圖鑑、成就、角色頁與裝扮**：收集、解鎖角色與道具。
+- **存檔與離線進度**：自動存檔；扮工模式（按 `` ` `` 鍵）可以低調掛機。
+
+## 在本機執行
+
+不需要安裝任何套件。
+
+- 直接玩：用瀏覽器開 `dist/idle-hero.html`（單一檔案）。
+- 開發模式：開 `index.html`，會逐檔載入 `src/`。建議用簡單的本機伺服器，例如：
+
+  ```
+  python3 -m http.server 8000
+  ```
+
+  然後開 `http://localhost:8000/`。
 - 重新打包單檔：`python3 tools/build.py`
+- 拼圖邏輯測試：`node tools/test_grid.js`
 
-## 結構
-| 檔案 | 內容 |
+### 測試用網址參數
+
+`?fresh`（不讀存檔）、`?sim=秒數`（快轉）、`?lvl=`、`?depth=`、`?speed=`、`?give`、`?run`（進地圖）、`?modal=skills|tree|maps|save`、`?away=秒數`（模擬離線）、`?selftest`（存檔來回測試）、`?clean`（關閉復古顆粒）。
+
+## 目錄結構
+
+| 路徑 | 內容 |
 |---|---|
-| `src/vendor/three.min.js` | three.js r160（MIT），負責 3D 渲染 |
-| `src/core.js` | Colorfigures 頁面外殼（已調整色彩與背景）：按鈕、數值欄、天空背景 |
-| `src/game/00-grid.js` | 配件拼圖：形狀、旋轉、相鄰結算（遊戲與 `lab/grid.html` 共用） |
-| `src/game/01-data.js` | 稀有度、詞綴、底材、技能、輔助、地圖詞綴 |
-| `src/game/02-state.js` | 天賦樹、遊戲狀態、裝備生成、屬性計算、存檔 |
-| `src/game/03-combat.js` | 怪物、掉落/撿取、戰鬥與技能結算 |
-| `src/game/04-render.js` | three.js 場景：主角、怪物、裝飾、傳送池、掉落物、特效，另用 SVG 疊血條與傷害數字 |
-| `src/game/05-ui.js` | 側欄、技能/天賦/地圖/存檔視窗、離線進度 |
-| `src/game/06-main.js` | 啟動、按鈕、主迴圈 |
+| `index.html` | 開發入口，逐檔載入 `src/` |
+| `dist/idle-hero.html` | 打包後的單檔版本 |
+| `src/core.js` | 頁面外殼：按鈕、數值欄、天空背景 |
+| `src/game/00-grid.js` | 配件拼圖：形狀、旋轉、相鄰結算 |
+| `src/game/01-data.js` | 稀有度、詞綴、技能、地圖、更新日誌等資料 |
+| `src/game/02-state.js` | 遊戲狀態、天賦、裝備生成、屬性計算、存檔 |
+| `src/game/03-combat.js` | 怪物、掉落、戰鬥與技能結算 |
+| `src/game/04-render.js` | three.js 場景：英雄、怪物、浮島、特效 |
+| `src/game/05*.js` | 介面：側欄、視窗、裝扮、改機、首領、圖鑑 |
+| `src/game/06-main.js` | 啟動與主迴圈 |
+| `src/game/models*.js`, `assets.js`, `audio.js`, `font.js` | 3D 模型資料、圖片資源、音效、像素字體 |
+| `src/assets/` | 手繪圖示與圖片素材 |
+| `src/vendor/` | three.js r160（MIT） |
+| `tools/` | 打包腳本與 Blender 建模腳本（`tools/model/`） |
+| `lab/grid.html` | 配件拼圖的獨立實驗頁 |
+| `docs/` | 設計、美術風格與待辦文件 |
 
-所有檔案共用全域範圍，載入順序即檔名順序。新增變數請避開 `core.js` 與 `THREE` 已有的全域名稱。
-
-## 測試用網址參數
-`?fresh`（不讀存檔）、`?sim=秒數`（快轉）、`?lvl=`、`?depth=`、`?speed=`、`?give`（給寶石與地圖）、`?pass=節點,…`、`?run`（進地圖）、`?modal=skills|tree|maps|save`、`?away=秒數`（模擬離線）、`?selftest`（存檔來回測試）、`?clean`（關閉復古顆粒，用全解析度渲染）。
+所有 `src/game/` 檔案共用全域範圍，載入順序即檔名順序。
 
 ## 美術風格
-Y2K low poly 風格規範與新增美術的檢查清單見 [docs/art-style.md](docs/art-style.md)；詳細風格細則與開發計劃見 [docs/art-direction-and-roadmap.md](docs/art-direction-and-roadmap.md)。
 
-## 配件拼圖原型
-獨立於遊戲本體的實驗：開 `lab/grid.html` 試放機件，邏輯在 `src/game/00-grid.js`（已接進遊戲的技能頁），測試用 `node tools/test_grid.js`。設計見 `docs/prototype-grid-and-mod-design.md`。
+Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機、街景高架橋，介面是作業系統視窗風，字體為 Cubic 11 像素字體。細節見 [docs/art-style.md](docs/art-style.md) 與 [docs/art-direction-and-roadmap.md](docs/art-direction-and-roadmap.md)。
 
 ## 授權
-Colorfigures 部分為 MIT，版權見 `docs/colorfigures-LICENSE`。three.js 為 MIT，見 `src/vendor/three.LICENSE`。
+
+頁面外殼（Colorfigures）為 MIT，見 `docs/colorfigures-LICENSE`。three.js 為 MIT，見 `src/vendor/three.LICENSE`。
