@@ -332,7 +332,7 @@ function r3init(){
 }
 function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相機視野
   const fig0 = document.getElementById('fig'), vb0 = fig0.viewBox.baseVal, ptv = innerHeight > innerWidth;   // 手機直式改成 4:5 的高畫框，桌機維持 4:3
-  if (vb0.width && Math.abs(vb0.height/vb0.width - (ptv ? .9 : document.body.classList.contains('d') ? .85 : .75)) > .01) fig0.setAttribute('viewBox', `0 0 ${vb0.width} ${vb0.width*(ptv ? .9 : document.body.classList.contains('d') ? .85 : .75)}`);
+  if (vb0.width && Math.abs(vb0.height/vb0.width - (ptv ? .78 : document.body.classList.contains('d') ? .85 : .75)) > .01) fig0.setAttribute('viewBox', `0 0 ${vb0.width} ${vb0.width*(ptv ? .78 : document.body.classList.contains('d') ? .85 : .75)}`);
   const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
   const cv = R3.rd.domElement; cv.style.imageRendering = R3.res < 1 ? 'pixelated' : 'auto'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
   if (W !== R3.W || H !== R3.H || dpr !== R3.dpr){ R3.W = W; R3.H = H; R3.dpr = dpr; R3.rd.setPixelRatio(dpr*R3.res); R3.rd.setSize(W, H, false); }
