@@ -2,8 +2,8 @@
 const WK = { cat:'skill', q:'' };
 const wkEl = { cap:'火', fire:'火', cold:'冰', light:'電' };
 const WIKI = {
-  skill:{ n:'技能', rows:() => Object.entries(SKILLS).map(([id, K]) => ({ t:K.n, tag:`Lv. ${K.lvl}　${{ fire:'火', cold:'冰', light:'電' }[K.el]}`, d:K.d, s:`冷卻 ${K.cd} 秒　倍率 ×${K.mult}`, got:G.lvl >= K.lvl, col:K.col, mods:Object.values(MODES).filter(M => M.sk === id).map(M => `${M.n}：${M.d}`) })) },
-  supp:{ n:'輔助配件', rows:() => Object.entries(SUPPS).map(([id, S]) => ({ t:S.n, d:S.d, s:`形狀 ${GridLab.SUPPORTS[id].shape.length} 格${GridLab.SUPPORTS[id].needs.length ? '　限' + GridLab.SUPPORTS[id].needs.join('、') : ''}`, got:(G.gems[id] || 0) > 0 || (G.seenG || {})[id] })) },
+  skill:{ n:'技能', rows:() => Object.entries(SKILLS).map(([id, K]) => ({ t:K.n, tag:`Lv. ${K.lvl}　${{ fire:'火', cold:'冰', light:'電' }[K.el]}`, d:K.d, s:`冷卻 ${K.cd} 秒　倍率 ×${K.mult}`, got:G.lvl >= K.lvl, col:K.col, ico:sico(id, 28), mods:Object.values(MODES).filter(M => M.sk === id).map(M => `${M.n}：${M.d}`) })) },
+  supp:{ n:'輔助配件', rows:() => Object.entries(SUPPS).map(([id, S]) => ({ t:S.n, d:S.d, s:`形狀 ${GridLab.SUPPORTS[id].shape.length} 格${GridLab.SUPPORTS[id].needs.length ? '　限' + GridLab.SUPPORTS[id].needs.join('、') : ''}`, got:(G.gems[id] || 0) > 0 || (G.seenG || {})[id], ico:gemIco(id, 28) })) },
   mode:{ n:'模式卡匣', rows:() => Object.entries(MODES).map(([id, M]) => ({ t:M.n, tag:SKILLS[M.sk].n, d:M.d, s:'', got:!!G.seen[id] })) },
   relic:{ n:'遺物', rows:() => Object.entries(RELICS).map(([id, r]) => ({ t:r.n, d:r.d, s:'', got:!!G.relics[id] })) },
   legend:{ n:'傳奇裝備', rows:() => Object.entries(LEGENDS).flatMap(([slot, arr]) => arr.map(L => ({ t:L.name, tag:'暗金' + SLOTN[slot], d:L.d, s:'', got:!!G.legSeen[L.id] }))) },
@@ -19,7 +19,7 @@ function wikiHtml(){
   const cats = Object.keys(WIKI), q = WK.q.trim(), all = cats.flatMap(c => WIKI[c].rows().map(r => ({ ...r, c })));
   const rows = (q ? all.filter(r => (r.t + r.d + (r.tag || '') + r.s).includes(q)) : WIKI[WK.cat].rows().map(r => ({ ...r, c:WK.cat })));
   const nav = cats.map(c => { const rs = WIKI[c].rows(), n = rs.filter(r => r.got).length; return `<button class="wkc${!q && c === WK.cat ? ' on' : ''}" onclick="WK.cat='${c}';WK.q='';wikiRender()">${WIKI[c].n}<em>${n}/${rs.length}</em></button>`; }).join('');
-  const list = rows.map(r => `<div class="wke${r.got ? '' : ' dim'}"${r.col ? ` style="border-left-color:${r.col}"` : ''}><div class="wkh"><b>${r.t}</b>${r.tag ? `<span>${r.tag}</span>` : ''}${q ? `<span>${WIKI[r.c].n}</span>` : ''}${r.got ? '' : '<i>未取得</i>'}</div><div>${r.d}</div>${r.s ? `<div class="mute">${r.s}</div>` : ''}${(r.mods || []).map(m => `<div class="wkm">${m}</div>`).join('')}</div>`).join('') || '<div class="mute">找不到符合的項目</div>';
+  const list = rows.map(r => `<div class="wke${r.got ? '' : ' dim'}"${r.col ? ` style="border-left-color:${r.col}"` : ''}><div class="wkh">${r.ico || ''}<b>${r.t}</b>${r.tag ? `<span>${r.tag}</span>` : ''}${q ? `<span>${WIKI[r.c].n}</span>` : ''}${r.got ? '' : '<i>未取得</i>'}</div><div>${r.d}</div>${r.s ? `<div class="mute">${r.s}</div>` : ''}${(r.mods || []).map(m => `<div class="wkm">${m}</div>`).join('')}</div>`).join('') || '<div class="mute">找不到符合的項目</div>';
   return `<div class="wkb"><div class="wkt">▣ 編年史<input id="wkq" placeholder="搜尋" value="${q.replace(/"/g, '')}" oninput="WK.q=this.value;wikiRender(true)"><button onclick="wikiClose()">✕</button></div><div class="wkm2"><div class="wkn">${nav}</div><div class="wkl">${list}</div></div></div>`;
 }
 function wikiRender(keep){

@@ -12,6 +12,11 @@ function spr(name, size = 30, glow = ''){   // 取 GPT Image 生成的圖示集�
   const i = ICON_IDX.indexOf(name), c = i % 4, r = (i/4) | 0, k = size/128;
   return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET.icons}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(512*k).toFixed(1)}px ${(384*k).toFixed(1)}px no-repeat;${glow ? `filter:drop-shadow(0 0 3px ${glow})` : ''}"></span>`;
 }
+const SK_IDX = ['FIRE', 'FROST', 'CHAIN', 'METEOR', 'PULSE', 'MAGNET', 'SPAM', 'FLICKER', 'BEAM'];
+function sico(id, size = 30){   // 技能專屬圖示（3 欄 3 列，每格 128）
+  const i = Math.max(0, SK_IDX.indexOf(id)), c = i % 3, r = (i/3) | 0, k = size/128;
+  return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET.skills}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(384*k).toFixed(1)}px ${(384*k).toFixed(1)}px no-repeat"></span>`;
+}
 const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
 function slotHtml(slot){
   const it = G.equip[slot];
@@ -75,7 +80,8 @@ function renderModal(){ setTimeout(() => { if (typeof dressMount === 'function' 
 }
 let held = null, heldRot = 0, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff', COOL:'#6fd6e8', CRYSTAL:'#d99bff' };
-const gemIco = (g, s = 22) => `<i class="gem" style="--gc:${GEM_COL[g] || '#a87bf0'};width:${s}px;height:${s}px"></i>`;
+const GEM_IDX = ['HEAVY', 'AREA', 'HASTE', 'TWIN', 'CRITS', 'LEECH', 'COOL', 'CRYSTAL'];
+const gemIco = (g, s = 22) => { const i = Math.max(0, GEM_IDX.indexOf(g)), c = i % 4, r = (i/4) | 0, k = s/128; return `<i class="gem" style="width:${s}px;height:${s}px;background:url(${ASSET.gems}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(512*k).toFixed(1)}px ${(256*k).toFixed(1)}px no-repeat"></i>`; };
 function shapeIcon(kind, key, rot = 0, col){
   const cs = GridLab.shapeOf(kind, key, rot), w = Math.max(...cs.map(c => c[0])) + 1, h = Math.max(...cs.map(c => c[1])) + 1, c = col || (kind === 'active' ? '#ff9ec7' : GEM_COL[key] || '#a87bf0');
   let o = `<span class="shp" style="grid-template-columns:repeat(${w},9px)">`;
@@ -112,14 +118,14 @@ function skillsHtml0(){
     const c = at[x + ',' + y], ev = `data-x="${x}" data-y="${y}" onclick="pzCell(${x},${y})" onmouseenter="pzHover(${x},${y})"`;
     if (!c){ h += `<div class="pc" ${ev}></div>`; continue; }
     const act = c.p.kind === 'active', col = act ? '#ff9ec7' : GEM_COL[c.p.key] || '#a87bf0', same = (dx, dy) => (at[(x + dx) + ',' + (y + dy)] || {}).p === c.p;
-    h += `<div class="pc fill${c.p.id === selPiece ? ' sel' : ''}${linked.has(c.p.id) ? ' lnk' : ''}${same(1, 0) ? ' jr' : ''}${same(0, 1) ? ' jb' : ''}" style="--pc:${col}" ${ev} onpointerdown="pzDown(event,null,null,${c.p.id})">${c.first ? (act ? spr(SKILL_ICON[c.p.key], 22) : gemIco(c.p.key, 16)) + `<span>${act ? SKILLS[c.p.key].n : SUPPS[c.p.key].n}</span>` : ''}</div>`;
+    h += `<div class="pc fill${c.p.id === selPiece ? ' sel' : ''}${linked.has(c.p.id) ? ' lnk' : ''}${same(1, 0) ? ' jr' : ''}${same(0, 1) ? ' jb' : ''}" style="--pc:${col}" ${ev} onpointerdown="pzDown(event,null,null,${c.p.id})">${c.first ? (act ? sico(c.p.key, 22) : gemIco(c.p.key, 16)) + `<span>${act ? SKILLS[c.p.key].n : SUPPS[c.p.key].n}</span>` : ''}</div>`;
   }
   const bb = boardBonus(), rz = [bb.rows && `整列滿 ×${bb.rows}：全隊傷害 +${12*bb.rows}%`, bb.cols && `整欄滿 ×${bb.cols}：暴擊率 +${5*bb.cols}%`, Object.keys(bb.pair).length && `${Object.keys(bb.pair).map(k => SKILLS[k].n).join('、')}：同元素緊貼 +15%`].filter(Boolean);
   h += `</div><div class="rz">${rz.length ? '共鳴　' + rz.join('　') : '共鳴：塞滿整列、整欄，或同元素技能緊貼，有額外加成'}</div>`;
   const hd = held ? (held.kind === 'active' ? SKILLS[held.key].n : SUPPS[held.key].n) : '';
   h += `<div class="pzbar"><button ${held || selPiece != null ? '' : 'disabled'} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button>${held ? `<span class="mute">手上：${hd} ${shapeIcon(held.kind, held.key, heldRot)}</span>` : ''}<span id="pzmsg" class="mute"></span></div>`;
   h += '<div class="mct" style="margin:10px 0 6px">技能</div><div class="skrow">' + Object.keys(SKILLS).map(id => { const K = SKILLS[id], un = G.lvl >= K.lvl, used = G.slots.includes(id);
-    return `<button class="skb${held && held.key === id ? ' on' : ''}" ${(!un || used) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : used ? '（已放在面板上）' : '：' + K.d}" onclick="pzHold('active','${id}')" onpointerdown="pzDown(event,'active','${id}')">${spr(SKILL_ICON[id], 22)}${shapeIcon('active', id)}</button>`; }).join('') + '</div>';
+    return `<button class="skb${held && held.key === id ? ' on' : ''}" ${(!un || used) ? 'disabled' : ''} title="${K.n}${!un ? `（Lv. ${K.lvl} 解鎖）` : used ? '（已放在面板上）' : '：' + K.d}" onclick="pzHold('active','${id}')" onpointerdown="pzDown(event,'active','${id}')">${sico(id, 22)}${shapeIcon('active', id)}</button>`; }).join('') + '</div>';
   h += '<div class="mct" style="margin:12px 0 6px">輔助配件庫存</div><div class="gems">' + Object.keys(SUPPS).map(g => { const f = gemFree(g), n = G.gems[g] || 0;
     return `<button class="gt${held && held.key === g ? ' on' : ''}" ${f > 0 ? '' : 'disabled'} onclick="pzHold('support','${g}')" onpointerdown="pzDown(event,'support','${g}')" title="${SUPPS[g].d}">${(G.newSnap && n > (G.newSnap.g[g] || 0)) ? '<i class="nw">NEW</i>' : ''}${shapeIcon('support', g)}<b>${SUPPS[g].n}</b><em>${f}/${n}</em></button>`; }).join('') + '</div>';
   h += '<div class="mct" style="margin:12px 0 6px">模式卡匣</div>' + cartsHtml();
@@ -464,7 +470,7 @@ function setupPanel(){
     .socks{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 6px}
     .sock{min-height:34px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--wdk);border-right-color:#fff;border-bottom-color:#fff;border-radius:3px;padding:2px 4px !important}
     button.sock{box-shadow:none !important;background:#fff !important;border-radius:3px !important;font-weight:700;color:var(--ink) !important}
-    .gem{display:inline-block;flex:none;background:linear-gradient(135deg,#fff 0 18%,var(--gc) 19% 60%,color-mix(in srgb,var(--gc) 60%,#000) 61%);clip-path:polygon(50% 0,100% 38%,80% 100%,20% 100%,0 38%)}
+    .gem{display:inline-block;flex:none}
     .gems{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
     .gt{display:grid !important;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;gap:0 8px;align-items:center;text-align:left;border-radius:4px !important;padding:6px 8px !important;background:var(--win) !important;border:1px solid var(--wbd) !important;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk) !important}
     .gt .gem{grid-row:1/3} .gt em{font-style:normal;font-size:11px;background:#14123a;color:#fff;border-radius:3px;padding:0 5px} .gt small{grid-column:2/4;font-size:10.5px;color:var(--muted);font-weight:500;line-height:1.35}
