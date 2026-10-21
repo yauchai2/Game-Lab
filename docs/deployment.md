@@ -26,3 +26,10 @@ GitHub Pages 啟用方式為 Settings → Pages → Deploy from a branch → gh-
 ## 回退
 
 保留所有來源標籤及部署歷史。需要回退時從已驗證的來源提交建立新的回退提交、推送，再發佈該產物；不要刪除分支或覆蓋版本標籤。涉及存檔新欄位的版本，先核對舊版能否讀取及是否會遺失新內容，不以只換 HTML 代表已完成安全回退。
+
+
+## 目前已驗證發佈
+
+v0.26.0，來源提交 56b401ee7d33a9cba13dd1612b96e5e54d19b0a0，部署提交 c904260466a3003cb396d3dcce45bf798e694e27。GitHub Pages 狀態 built，HTTPS 下載的遊戲檔 SHA-256 與本機打包完全一致。版本記錄：[v0.26.0](https://github.com/yauchai2/Game-Lab/releases/tag/v0.26.0)。
+
+[線上核對證據](gameplay-first-pass-2026-10-21/live-verification.json)。雲端 Chromium 直接連外遇到代理憑證信任限制，未關閉 TLS 驗證；線上內容以使用已配置 CA 的 HTTPS 客戶端驗證，遊戲行為以同一份 SHA-256 產物在本機 HTTP 跑瀏覽器回歸。不宣稱直接連外的瀏覽器煙霧測試通過。
