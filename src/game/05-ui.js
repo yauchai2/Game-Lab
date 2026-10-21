@@ -174,9 +174,9 @@ function lootToast(it){
   let box = $('loot'); const host = document.querySelector('.stage') || document.body; if (!box){ box = document.createElement('div'); box.id = 'loot'; } if (box.parentNode !== host) host.appendChild(box);
   const R = RAR[it.r], ls = itemLines(it).filter(l => l.lg).slice(0, 1).concat(itemLines(it).filter(l => !l.lg).slice(0, 1)).slice(0, it.lg ? 2 : 1), d = document.createElement('div');
   d.className = 'lt r' + it.r; d.style.setProperty('--rc', R.c); d.style.setProperty('--rg', R.g);
-  d.innerHTML = `<div class="lh"><span>${R.n}</span><b>${it.name}</b><i>ilvl ${it.il}</i></div>` + ls.map(l => `<div class="ll${l.lg ? ' lg' : ''}">${l.t}</div>`).join('');
-  box.prepend(d); while (box.children.length > 3) box.lastChild.remove();
-  setTimeout(() => d.classList.add('out'), it.r >= 3 ? 5200 : 3200); setTimeout(() => d.remove(), it.r >= 3 ? 5800 : 3800);
+  d.innerHTML = `<div class="lh"><b>${it.name}</b></div>`;
+  box.prepend(d); while (box.children.length > 2) box.lastChild.remove();
+  setTimeout(() => d.classList.add('out'), it.r >= 3 ? 3200 : 1800); setTimeout(() => d.remove(), it.r >= 3 ? 3800 : 2400);
 }
 function setDmgNum(v){ G.dmgNum = v; G.dirty = true; renderModal(); }
 function saveHtml(){
@@ -526,12 +526,8 @@ function setupPanel(){
     .mb[disabled]{opacity:.55;filter:grayscale(.6)} .tab.on{background:linear-gradient(180deg,#b9d2ff 0%,#6f9cf0 48%,#3f74dc 52%,#6f9cf0 100%) !important;color:#fff !important;text-shadow:0 1px 0 #1a3a99}
     .mb.pri{background:linear-gradient(180deg,#ffd2c2 0%,#ff9a7c 46%,#e2483d 52%,#f2755a 100%) !important;border-color:#8a2a18 !important;color:#fff !important;text-shadow:0 1px 0 #8a2a18}
     .rc,.mc,.mbox{background:linear-gradient(180deg,#f6f9ff 0%,#dfe8fa 100%) !important;border:2px solid #fff !important;outline:1px solid #7d8bbd;border-radius:10px !important;
-      box-shadow:inset 0 1px 0 #fff,inset 0 -2px 0 #aab6dc,0 4px 0 #8c9bd0,0 8px 14px rgba(43,37,82,.3) !important}
-    .rc ul,.rc ol,.gl,#bosslog{background-image:linear-gradient(rgba(70,100,170,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(70,100,170,.06) 1px,transparent 1px);background-size:3px 3px}
+      box-shadow:inset 0 1px 0 #fff,0 2px 0 #aab6dc !important}
     .rh,.mbox::before{border-radius:6px 6px 2px 2px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -1px 0 rgba(0,0,60,.25)}
-    .stage::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:16px;
-      background:linear-gradient(118deg,rgba(255,255,255,.26) 0,rgba(255,255,255,.08) 22%,transparent 23%),repeating-linear-gradient(0deg,rgba(10,20,80,.06) 0 1px,transparent 1px 3px);
-      box-shadow:inset 0 0 0 3px #e4ebfa,inset 0 0 0 5px #8c9bd0,inset 0 0 26px rgba(20,30,90,.4)}
     .stats{background:linear-gradient(180deg,rgba(240,247,255,.92),rgba(196,216,250,.86)) !important;border:2px solid #fff !important;border-radius:12px !important;box-shadow:0 0 0 1px #7d8bbd,0 3px 6px rgba(43,37,82,.3),inset 0 1px 0 #fff !important}
     body:not(.m) .stats{flex-direction:row !important;align-items:center;gap:12px !important;top:8px !important;right:8px !important;padding:3px 12px !important} body:not(.m) .stats::before{display:none}
     body:not(.m) .stat{display:flex !important;flex-direction:row;align-items:baseline;gap:5px;width:auto} body:not(.m) .stat .k{font-size:10px} body:not(.m) .stat .v{font-size:15px !important} body:not(.m) .hbar{width:64px !important;height:9px !important;margin-left:4px}
@@ -541,7 +537,7 @@ function setupPanel(){
     body.m .tab.on{margin-top:0 !important;color:#fff !important;text-shadow:0 1px 0 #1a3a99 !important;background:linear-gradient(180deg,#b9d2ff 0%,#6f9cf0 48%,#3f74dc 52%,#6f9cf0 100%) !important;border-radius:14px !important;box-shadow:0 1px 0 #1a3a99,inset 0 1px 0 #fff !important}
     .stage #loot{position:absolute;left:8px;bottom:8px;top:auto;transform:none;align-items:flex-start;width:min(240px,60%);z-index:5;flex-direction:column-reverse}
     body.m .stage #loot{left:auto;right:6px;bottom:auto;top:52px;align-items:flex-end;width:min(190px,54%);flex-direction:column}
-    .lt{padding:3px 8px !important;border-radius:8px;font-size:11px !important;box-shadow:0 0 0 1px var(--rc),0 3px 6px rgba(43,37,82,.3) !important} .lt .lh b{font-size:13px !important} .lt.r3{padding:5px 9px !important;font-size:12px !important} .lt.r3 .lh b{font-size:15px !important}
+    .lt{padding:1px 8px !important;border-radius:8px;font-size:11px !important;background:rgba(255,255,255,.72) !important;border:0 !important;border-left:3px solid var(--rc) !important;box-shadow:none !important;animation:none !important} .lt.r3{animation:none !important;background:rgba(255,245,220,.88) !important} .lt .lh b{font-size:13px !important} .lt.r3{padding:2px 9px !important;font-size:12px !important} .lt.r3 .lh b{font-size:13px !important}
   `;
   document.head.appendChild(st);
   { // 重要事件用黑底對話框跳出：升級、守關者登場、地圖完成、倒下、撿到暗金
