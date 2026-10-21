@@ -67,7 +67,7 @@ function renderModal(){ setTimeout(() => { if (typeof dressMount === 'function' 
       return `<button class="tab${modalTab === k ? ' on' : ''}${lk ? ' lock' : ''}" onclick="${lk ? `lockTip('${k}')` : `openModal('${k}')`}">${ic ? spr(ic, 24) : ''}<span>${lk ? '🔒' : ''}${n}</span>${dt ? '<i class="rd"></i>' : ''}</button>`; }).join('')
     : groups.filter(g => tabOpen(g.k)).map(g => `<button class="tab${cur === g ? ' on' : ''}" onclick="openModal('${g.t[0]}')"><span>${g.n}${dot(g)}</span></button>`).join('') + (DESK() ? '' : `<button class="tab x" onclick="closeModal()">✕</button>`)
     + (cur.t.length > 1 ? `<div class="subtabs">${cur.t.map(k => `<button class="tab sub${modalTab === k ? ' on' : ''}" onclick="openModal('${k}')">${SUBN[k]}${k === 'log' && logNew() ? ' ●' : ''}</button>`).join('')}</div>` : '');
-  if (mob) $('mmenu').hidden = modalTab !== 'menu';
+  if (mob){ $('mmenu').hidden = modalTab !== 'menu'; mobTitle(); }
   $('mbody').innerHTML = modalTab === 'char' ? `<div class="rpgm">${panelHtml()}</div>` : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? `<div style="text-align:right">${qm('craft')}</div>` + craftHtml() : modalTab === 'dress' ? `${MOB() ? '<button class="mb" onclick="openModal(\'char\')">‹ 返回</button>' : ''}${dressHtml()}` : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : (mob ? `<div class="rpgm">${achHtml()}</div>` + goalsHtml() + `<details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">圖鑑</summary><div class="rpgm">${codexHtml()}</div></details><details style="width:100%;flex:1 0 100%;display:block"><summary class="mct">更新日誌 v${CHANGELOG[0].v}${logNew() ? ' ●' : ''}</summary>${logHtml()}</details>` : '') + saveHtml();
 }
 let held = null, heldRot = 0, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
@@ -303,6 +303,17 @@ const HELP = {
   maps:['冒險說明', '地圖詞綴讓敵人更強，但戰利品更好；每張卡下方的標籤是風險與回報彙總。<br>無限之塔每層殺滿怪上樓，每 10 層是守關者，死亡就結束。<br>訓練場用不還手的假人量 30 秒傷害。'],
   goals:['任務與目標', '新手任務一次一個，完成後解鎖新系統。目標達成會自動給獎勵，不用手動領取。']
 };
+const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
+const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals', menu:'goals' };
+const CZN = ['大', '中', '小'];
+function mobTitle(){
+  const box = document.querySelector('#modal .mbox'); if (!box) return; let t = $('mttl');
+  if (!t){ t = document.createElement('div'); t.id = 'mttl'; box.insertBefore(t, $('mbody')); }
+  const cz = G.cz == null ? 1 : G.cz, hk = MHELP[modalTab];
+  t.innerHTML = `<span>▣ ${MTN[modalTab] || ''}</span>${hk ? `<button onclick="showHelp('${hk}')">?</button>` : ''}<button title="戰鬥畫面大小" onclick="cycleCz()">${CZN[cz]}</button>`;
+}
+function cycleCz(){ G.cz = ((G.cz == null ? 1 : G.cz) + 1) % 3; G.userCz = true; G.dirty = true; mobTitle(); }
+const mobRatio = () => { const auto = (modalTab === 'skills' || modalTab === 'craft') && !G.userCz, i = auto ? 2 : (G.cz == null ? 1 : G.cz); return Math.max(.5, [.5, .4, .25][i]*innerHeight/innerWidth); };
 function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未開放.txt</div><div style="font-size:13px;line-height:1.7">升到 ${L} 級開放${k === 'craft' ? '改機（拆裝備得零件，重洗與改裝詞綴）' : '天賦盤（升級得到的點數在這裡分配）'}。</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 const qm = k => `<button class="qm" onclick="showHelp('${k}')">?</button>`;
@@ -452,13 +463,19 @@ function setupPanel(){
     .dlg i{position:absolute;left:12px;right:34px;bottom:4px;height:3px;background:repeating-linear-gradient(90deg,#8fb6ff 0 8px,transparent 8px 11px);transform-origin:left;animation:dlgt 2.6s linear forwards}
     @keyframes dlgb{50%{transform:translateY(-2px)}} @keyframes dlgt{from{transform:scaleX(0)}to{transform:scaleX(1)}}
     @media (orientation:portrait){#cv3{-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 94%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent),linear-gradient(180deg,transparent,#000 8%,#000 94%,transparent);mask-composite:intersect}}   /* 手機拉近後，四邊裁切處淡出，不留硬邊 */
-    body.m{min-height:100dvh;padding:6px 8px calc(64px + env(safe-area-inset-bottom)) !important;gap:0}   /* 不鎖高度：嵌在別的頁面（例如 claude.ai）時高度可能不可靠，面板至少保留 360px */
-    body.m header{flex:none} body.m header h1 .wm{width:128px}
-    body.m .stage{flex:none} body.m .stats{padding:18px 8px 4px !important;margin:2px 0 0 !important} body.m .stats::before{font-size:9px}
-    body.m .stat .k{font-size:10px} body.m .stat .v{font-size:17px !important} body.m .stat.small .v{font-size:15px !important}
-    body.m #fig{margin:0}
+    body.m{height:100vh;height:100dvh;overflow:hidden;padding:env(safe-area-inset-top) 0 calc(56px + env(safe-area-inset-bottom)) !important;gap:0;display:flex;flex-direction:column}   /* 手機：戰鬥區在上、面板在下，分頁列固定在最底 */
+    body.m header,body.m #readout{display:none}
+    body.m .stage{flex:none;position:relative;width:100%} body.m #fig{margin:0;display:block;width:100%}
+    body.m .stats{position:absolute !important;top:4px;left:6px;right:6px;z-index:4;padding:3px 8px !important;margin:0 !important;background:rgba(242,247,255,.82);border:1.5px solid var(--ink);grid-template-columns:1.3fr 1.5fr .8fr .8fr .9fr} body.m .stats::before{display:none}
+    body.m .stat .k{font-size:11px} body.m .stat .v{font-size:16px !important} body.m .stat.small .v{font-size:15px !important}
+    body.m #nexthint{position:absolute;left:6px;bottom:6px;top:auto;transform:none;max-width:62%;z-index:4;font-size:12px;padding:4px 10px;min-height:28px}
+    body.m #ctxbtn{position:absolute;right:8px;bottom:8px;width:56px;height:56px;z-index:4;font:inherit;font-size:13px;background:var(--paper);border:2px solid var(--ink);box-shadow:2px 2px 0 rgba(31,63,176,.4);cursor:pointer;clip-path:none;border-radius:50%}
+    body.m #loot{top:64px}
+    #ctxbtn{display:none} body.m #ctxbtn:not([hidden]){display:block}
+    body.m #mttl{flex:none;height:32px;display:flex;align-items:center;gap:6px;padding:0 6px 0 10px;background:linear-gradient(90deg,#1f3fb0,#7fb0ff);color:#fff;font-size:14px;font-weight:700;border-bottom:2px solid #0b1f6b}
+    body.m #mttl span{flex:1} body.m #mttl button{width:28px;height:28px;padding:0;background:var(--paper);border:1.5px solid var(--ink);font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
     body.m .rpg{display:none}
-    body.m #modal{position:static;display:flex;flex:1 0 auto;height:max(360px,calc(100dvh - 470px));width:100%;padding:0;background:none !important;backdrop-filter:none;z-index:auto}
+    body.m #modal{position:static;display:flex;flex:1 1 0;min-height:0;height:auto;width:100%;padding:0;background:none !important;backdrop-filter:none;z-index:auto}
     body.m .mbox{width:100%;max-height:none;height:100%;display:flex;flex-direction:column;overflow:hidden;padding:0 !important}
     body.m .mbox::before{display:none}
     body.m .mtabs{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin:0;position:fixed;left:0;right:0;bottom:0;z-index:40;height:calc(56px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:linear-gradient(90deg,#1f3fb0,#7fb0ff);box-shadow:0 -2px 0 #0b1f6b} body.m .tab .rd{position:absolute;top:4px;right:calc(50% - 20px);margin:0} body.m .tab{position:relative} body.m .tab.lock{opacity:.55} body.m .tab svg,body.m .tab canvas,body.m .tab .spr{width:24px !important;height:24px !important}
@@ -510,8 +527,11 @@ function setupPanel(){
   const deskMq = matchMedia('(min-width:1100px) and (orientation:landscape)');
   if (deskMq.matches && !document.body.classList.contains('m')){ document.body.classList.add('d'); document.querySelectorAll('#btns .act').forEach(x => { if (['技能', '天賦盤', '地圖', '存檔'].includes(x.textContent.trim())) (x.closest('.stepwrap') || x).style.display = 'none'; }); m.hidden = false; modalTab = 'skills'; renderModal(); }
   deskMq.addEventListener('change', () => { saveGame(); location.reload(); });
-  const hint = () => { let h = $('nexthint'); if (MOB()){ if (h) h.hidden = true; return; }
+  const hint = () => { let h = $('nexthint');
     if (!h){ h = document.createElement('div'); h.id = 'nexthint'; h.onclick = () => { if (h.dataset.tab) openModal(h.dataset.tab); }; document.body.appendChild(h); }
+    let cb = $('ctxbtn'); if (!cb){ cb = document.createElement('button'); cb.id = 'ctxbtn'; cb.onclick = () => abandonMap(); }
+    const stg = document.querySelector('.stage'); if (MOB() && stg){ if (h.parentNode !== stg) stg.appendChild(h); if (cb.parentNode !== stg) stg.appendChild(cb); } else { if (h.parentNode !== document.body) document.body.appendChild(h); }
+    cb.hidden = !G.run; cb.textContent = '離開';
     const n = nextStep(); h.hidden = !n; if (n){ h.textContent = '下一步：' + n.t; h.dataset.tab = n.tab || ''; } };
   let lastP = ''; const draw = () => { hint(); const ph = panelHtml(); if (ph === lastP) return; lastP = ph; if (MOB()){ if (modalTab === 'char' && !document.querySelector('#mbody :focus')) renderModal(); return; } el.innerHTML = ph; };
   setInterval(draw, 300); draw();

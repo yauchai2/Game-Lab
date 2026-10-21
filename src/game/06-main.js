@@ -14,7 +14,7 @@ ui = mountFigure({
   fig:'06', title:'Idle Hero', hint:'', size:[BXW, BYW, 36], palette:'mint', state:G, credit:false,
   scene, buttonsLabel:'英雄指令',
   stats: () => { const xp = tClamp(G.xp/xpNeed(G.lvl)), hp = tClamp(G.h.hp/G.st.life), bar = (p, c) => `<span class="hbar"><i style="width:${(p*100).toFixed(0)}%;background:${c}"></i></span>`;
-    return [ { label:'等級', value:G.lvl + bar(xp, '#43c25c') }, { label:'生命', value:tFmt(Math.max(0, G.h.hp)) + bar(hp, '#e2483d'), small:true }, { label:G.run ? '地圖' : '深度', value:lvlNow(), small:true }, { label:'金幣', value:tFmt(G.gold), small:true } ]; },
+    return [ { label:'等級', value:G.lvl + bar(xp, '#43c25c') }, { label:'生命', value:tFmt(Math.max(0, G.h.hp)) + bar(hp, '#e2483d'), small:true }, { label:G.run ? '地圖' : '深度', value:lvlNow(), small:true }, { label:'金幣', value:tFmt(G.gold), small:true }, MOB() ? { label:'DPS', value:tFmt(G.st.dps), small:true } : null ]; },
   buttons:[
     { label:'技能', onClick:() => openModal('skills') },
     { label:'扮工模式 ( ` )', onClick:() => toggleBoss(true) },
