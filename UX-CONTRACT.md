@@ -100,3 +100,12 @@
 
 
 存檔頁「傷害數字」群組的 aria-pressed 直接對應 G.dmgNum，點擊仍使用 setDmgNum；材質不能蓋掉原先只用 inline style 表達的選中。收藏及更新頁補正文字對比並沿用共用閱讀面。
+
+
+## 第一批玩法：收藏與待選（0.26.0）
+
+- coreSlot／syncCoreCollection 是傳奇持有關係來源；收藏每個傳奇 ID 一件。裝備與收藏同一核心的詞綴修改共用同一物件，applySave 重建對應。uiCoreCollection 僅呈現，換裝仍由 equipCore／restoreEquipment 處理。
+- 傳奇穿著中不自動替換；收藏同款只有未裝備、未鎖定、未腐化且比較後升分才自動更新。一般掉落規則延用 pickup。手動換裝不販賣／拆解、不扣資源；每部位保留上一件作一步還原。
+- resolveOfflineChoices 唯一決定離線待選是否消耗，依既有 autoCard；關閉就保留。deferChoices 保存「稍後再選」，開啟具體選單後恢復原選擇流程。只有已暫緩的排隊不阻止觀戰，實際 dialog 仍阻止。
+- uxOfflineReport 只顯示此次結算，查看待選不重發收益。pending 次數及收藏使用既有 save v2 的可選欄位，匯入舊存檔不繼承其他存檔的新欄位。
+- 驗證：tools/test_gameplay.js、tools/test_gameplay_browser.cjs，另有原 UX／布局／觀戰回歸。詳見 docs/gameplay-first-pass-2026-10-21.md。

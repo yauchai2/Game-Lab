@@ -85,7 +85,7 @@ function viewRenderHUD(){
 }
 function viewBlocked(){
   const active=document.activeElement;
-  return document.hidden||G.offline||BOSS.on||UX_LAYERS.length>0||!!held||!!drag||GAME_VIEW.pointers.size>0||G.picks>0||G.relicPicks>0||
+  return document.hidden||G.offline||BOSS.on||UX_LAYERS.length>0||!!held||!!drag||GAME_VIEW.pointers.size>0||(!G.deferChoices&&(G.picks>0||G.relicPicks>0))||
     !!active?.closest('input,textarea,select,[contenteditable="true"]')||!!document.querySelector('.stepwrap.open');
 }
 function viewEnterWatch(){

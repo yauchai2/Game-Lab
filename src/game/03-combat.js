@@ -67,13 +67,14 @@ function towerNext(){
   addFloat(G.h.x, G.h.y, BZ + 26, `第 ${R.floor} 層`, '#8e3fd1', 4.6); logLine(`無限之塔：第 ${R.floor} 層${R.floor % 10 === 0 ? '（守關者層）' : ''}`, '#8e3fd1'); kick(.5, .25, '#d8c0ff'); G.dirty = true;
 }
 function completeRun(){
+  if (!G.run) return;
   if (G.run && G.run.tower){ G.mapsDone++; towerNext(); return; }
   G.mapsDone++; checkGoals();
   const R = G.run, q = runQ(), lvl = R.map.lvl, extra = 2 + Math.ceil(q*4);
   for (let i = 0; i < extra; i++) G.drops.push({ x:tRand(8, 22), y:tRand(HY + 6, HY + 16), kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(true), lvl), t:-i*.15 });
   const bonus = Math.round(40 * Math.pow(1.2, lvl-1) * (1 + q)); G.gold += bonus;
   for (let i = 0; i < 1 + (Math.random() < .5 ? 1 : 0); i++) G.drops.push({ x:tRand(8, 22), y:tRand(HY + 6, HY + 16), kind:'map', map:makeMap(lvl + Math.floor(Math.random()*3)), t:-.5 - i*.2 });
-  G.mapsDone = (G.mapsDone || 0) + 1; logLine(`地圖完成！獎勵 +${bonus}g 與 ${extra} 件戰利品`, '#2f9e4f'); G.run = null; G.dirty = true;
+  logLine(`地圖完成！獎勵 +${bonus}g 與 ${extra} 件戰利品`, '#2f9e4f'); G.run = null; G.dirty = true;
 }
 function gainXp(xp){
   G.xp += xp;
@@ -89,6 +90,23 @@ function pickup(d){
   const it = d.it, rc = RAR[it.r].c;
   if (it.r < G.filter){ G.gold += itemValue(it); salvage(it); return; }
   const cur = G.equip[it.slot], cand = calc({ ...G.equip, [it.slot]:it });
+  if (it.lg && LEGEND_BY[it.lg]){
+    const old = G.armory[it.lg], active = cur?.lg === it.lg;
+    if (old && (active || old.cr || old.lk != null || cand.power <= calc({...G.equip,[it.slot]:old}).power*1.02)){
+      G.gold += itemValue(it); salvage(it); G.dirty = true; return;
+    }
+    if (old){ G.gold += itemValue(old); salvage(old); }
+    G.armory[it.lg] = it;
+    if (!old && G.off) G.off.cores = (G.off.cores || 0) + 1;
+    logLine(`${old?'更新':'收藏'}傳奇核心：${it.name}`, rc);
+    if (!cur?.lg && (!cur || cand.power > G.st.power*1.02)){
+      // 收藏裝備永不作自動拆解來源；一般裝備仍使用原本的自動比較。
+      if (cur){ G.equipBackup[it.slot] = cur; }
+      G.equip[it.slot] = it; recalc(); if (G.off) G.off.eq++;
+    }
+    G.dirty = true; return;
+  }
+  if (cur?.lg){ G.gold += itemValue(it); salvage(it); G.dirty = true; return; }
   if (!cur || cand.power > G.st.power * 1.02){
     if (cur){ G.gold += itemValue(cur); salvage(cur); }
     const d0 = G.st.dps; G.equip[it.slot] = it; recalc(); const dd = d0 > 0 ? Math.round((G.st.dps/d0 - 1)*100) : 0; logLine(`裝備 ${it.name}（傷害 ${dd >= 0 ? '+' : ''}${dd}%）`, rc); addFloat(G.h.x + 3, G.h.y, BZ + 22, '升級！', rc, 3.8); SFX(it.r >= 2 ? 'rare' : 'pick'); if (G.off) G.off.eq++;

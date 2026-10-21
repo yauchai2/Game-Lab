@@ -260,15 +260,19 @@ function doReset(){ if (!resetArm){ resetArm = true; renderModal(); return; } tr
 function toggleAuto(){ G.autoCard = !G.autoCard; if (G.autoCard) openCards(); else if (G.picks > 0) openCards(); G.dirty = true; renderModal(); }
 function openCards(){
   if (G.picks <= 0 || G.offline) return;
+  G.deferChoices = false;
   if (G.autoCard){ while (G.picks > 0){ const o = rollCards(3); if (!o.length) break; takeCard(tPick(o)); } hideOverlay(); return; }   /* 自動隨機：直接抽一張 */ if (!G.offer || !G.offer.length) G.offer = rollCards();
   const h = G.offer.map(id => { const c = CARDS[id], v = !!c.sk; return `<button class="card${v ? ' var' : ''}" onclick="pickCard('${id}')"><span class="ct">${v ? '技能變體 · ' + SKILLS[c.sk].n : '改裝'}</span><b>${c.n}</b><span class="cd">${c.d}</span>${cardN(id) ? `<span class="mute">已有 ${cardN(id)} 張</span>` : ''}</button>`; }).join('');
-  showOverlay(`<b>升級了！選一張改裝卡</b><div class="mute">還有 ${G.picks} 次選擇。遊戲不會暫停。</div><div class="cards">${h}</div><button class="mb" onclick="hideOverlay()">稍後再選</button> <button class="mb" onclick="toggleAuto()">自動隨機選卡</button>`);
+  showOverlay(`<b>升級了！選一張改裝卡</b><div class="mute">還有 ${G.picks} 次選擇。遊戲不會暫停。</div><div class="cards">${h}</div><button class="mb" onclick="deferChoices()">稍後再選</button> <button class="mb" onclick="toggleAuto()">自動隨機選卡</button>`);
 }
+function deferChoices(){ G.deferChoices = true; G.dirty = true; hideOverlay(); }
+function openPendingChoices(){ hideOverlay(); if (G.relicPicks > 0) openRelics(); else if (G.picks > 0) openCards(); }
 function openRelics(){
   if (G.relicPicks <= 0 || G.offline) return;
+  G.deferChoices = false;
   if (G.autoCard){ while (G.relicPicks > 0){ const o = rollRelics(); if (!o.length){ G.relicPicks = 0; break; } takeRelic(tPick(o)); } hideOverlay(); return; }
   if (!G.offerR || !G.offerR.length) G.offerR = rollRelics(); if (!G.offerR.length){ G.relicPicks = 0; return; }
-  showOverlay(`<b>擊敗守關者！選一件遺物</b><div class="mute">永久生效。還有 ${G.relicPicks} 次選擇。</div><div class="cards">${G.offerR.map(id => `<button class="card var" onclick="pickRelic('${id}')"><span class="ct">遺物</span>${xico('relic', id, 40)}<b>${RELICS[id].n}</b><span class="cd">${RELICS[id].d}</span></button>`).join('')}</div><button class="mb" onclick="hideOverlay()">稍後再選</button>`);
+  showOverlay(`<b>擊敗守關者！選一件遺物</b><div class="mute">永久生效。還有 ${G.relicPicks} 次選擇。</div><div class="cards">${G.offerR.map(id => `<button class="card var" onclick="pickRelic('${id}')"><span class="ct">遺物</span>${xico('relic', id, 40)}<b>${RELICS[id].n}</b><span class="cd">${RELICS[id].d}</span></button>`).join('')}</div><button class="mb" onclick="deferChoices()">稍後再選</button>`);
 }
 function pickRelic(id){ SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
 function pickCard(id){ SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
@@ -280,7 +284,7 @@ function achHtml(){
   return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
 }
 function cardsHtml(){
-  const e = Object.entries(G.cards); const pend = (G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button> ` : '') + `<button class="mb" onclick="toggleAuto()">自動隨機：${G.autoCard ? '開' : '關'}</button>`;
+  const e = Object.entries(G.cards); const pend = (G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button> ` : '') + (G.relicPicks > 0 ? `<button class="mb" onclick="openRelics()">有 ${G.relicPicks} 次遺物待選</button> ` : '') + `<button class="mb" onclick="toggleAuto()">自動隨機：${G.autoCard ? '開' : '關'}</button>`;
   return `<div class="rc"><div class="rh">改裝卡</div>${pend}<ul>${e.length ? e.map(([id, n]) => `<li><b>${CARDS[id].n}</b> ×${n} <span class="mute">${CARDS[id].d.split('，')[0]}</span></li>`).join('') : '<li class="mute">升級時可選擇</li>'}</ul></div>`;
 }
 
@@ -316,7 +320,7 @@ function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.fl
 function catchUp(sec, report){
   if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
   const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths, gems:{...G.gems}, carts:{...G.carts} };
-  G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
+  G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   let left = sec; const total = sec;
   if (report) showOverlay(`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
@@ -324,8 +328,7 @@ function catchUp(sec, report){
     while (left > 0 && performance.now() - t0 < 30){ update(.2); left -= .2; }
     if (left > 0){ if (report && $('oprog')) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; setTimeout(chunk, 0); return; }
     for (const d of G.drops) if (!d.done){ d.done = true; pickup(d); } G.drops = []; G.proj = []; G.timers = []; G.mons = []; G.spawnCd = .5; G.h.swingT = -1; G.h.castT = -1; G.h.dead = 0;
-    while (G.picks > 0){ const o2 = rollCards(1)[0]; if (!o2) break; G.off.cards.push(CARDS[o2].n); takeCard(o2); }
-    while (G.relicPicks > 0){ const r2 = rollRelics(1)[0]; if (!r2){ G.relicPicks = 0; break; } G.off.cards.push(RELICS[r2].n); takeRelic(r2); }
+    resolveOfflineChoices(G.off);
     if (G.h.hp <= 0) G.h.hp = G.st.life;
     G.offline = false; G.paused = false; G.lastWall = Date.now(); const o = G.off; G.off = null; G.dirty = true; const saved = saveGame();
     if (report) showOverlay(uxOfflineReport(o,b,away,sec,saved));

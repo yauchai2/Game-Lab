@@ -63,8 +63,8 @@ ui.animate(dt => {
   const now = Date.now(), gap = (now - G.lastWall)/1000; G.lastWall = now;
   if (G.paused) return true;
   if (FXO.stop > 0){ FXO.stop -= dt; dt *= .1; }
-  if (G.relicPicks > 0 && !G.offline && (G.autoCard || (!G.offerR && $('ovl').hidden))) openRelics();
-  else if (G.picks > 0 && !G.offline && (G.autoCard || (!G.offer && $('ovl').hidden))) openCards();
+  if (G.relicPicks > 0 && !G.offline && (G.autoCard || (!G.deferChoices && !G.offerR && $('ovl').hidden))) openRelics();
+  else if (G.picks > 0 && !G.offline && (G.autoCard || (!G.deferChoices && !G.offer && $('ovl').hidden))) openCards();
   if (gap > 3){ catchUp(gap, gap > 20); return true; }
   stepSim(dt); return true;
 });
