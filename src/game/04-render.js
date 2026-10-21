@@ -447,6 +447,7 @@ function overlay(){
 
 /* ---------- scene：每一幀同步遊戲狀態到 three 場景，再畫出來 ---------- */
 function scene(){
+  if (window.BOSSON) return '';
   if (!R3.ready) r3init();
   r3frame();
   const bi = biomeNow();

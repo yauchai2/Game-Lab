@@ -17,6 +17,7 @@ ui = mountFigure({
     return [ { label:'等級', value:G.lvl + bar(xp, '#43c25c') }, { label:'生命', value:tFmt(Math.max(0, G.h.hp)) + bar(hp, '#e2483d'), small:true }, { label:G.run ? '地圖' : '深度', value:lvlNow(), small:true }, { label:'金幣', value:tFmt(G.gold), small:true } ]; },
   buttons:[
     { label:'技能', onClick:() => openModal('skills') },
+    { label:'扮公模式', onClick:() => toggleBoss(true) },
     { label:'天賦盤', onClick:() => openModal('tree') },
     { label:'地圖', onClick:() => openModal('maps') },
     { label:'模式', choices: () => [ { label:'推進（打守關者）', current:G.push, onClick:() => { G.push = true; logLine('模式：推進', '#2b2552'); } }, { label:'原地刷怪', current:!G.push, onClick:() => { G.push = false; G.bossOut = false; logLine('模式：原地刷怪', '#2b2552'); } } ] },
