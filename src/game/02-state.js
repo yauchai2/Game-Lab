@@ -84,7 +84,7 @@ const cartFree = id => (G.carts[id] || 0) - cartUsed(id);
 const gemFree = id => (G.gems[id] || 0) - gemUsed(id);
 const passPoints = () => Math.max(0, G.lvl - 1) + Math.floor((G.maxDepth - 1)/4) - G.pass.length;
 const nodeOpen = id => !G.pass.includes(id) && id !== 'S' && TREE[id].links.some(l => l === 'S' || G.pass.includes(l));
-const biomeNow = () => G.run ? G.run.map.biome : Math.floor((G.depth - 1)/8) % 4;
+const biomeNow = () => G.run ? G.run.map.biome : Math.floor((G.depth - 1)/8) % BIOMES.length;
 const lvlNow = () => G.run ? G.run.map.lvl : G.depth;
 const runQ = () => G.run ? G.run.map.mods.reduce((a, m) => a + MODS[m].q, 0) : 0;
 
@@ -116,7 +116,7 @@ const salvage = it => { G.parts = (G.parts || 0) + [1, 2, 5, 12][it.r]; };   // 
 const lgOn = id => Object.values(G.equip).some(it => it && it.lg === id);
 function makeMap(lvl){
   const keys = Object.keys(MODS).sort(() => Math.random() - .5).slice(0, 2 + Math.floor(Math.random()*3));
-  return { id:Math.random().toString(36).slice(2, 8), lvl, biome:Math.floor(Math.random()*4), mods:keys };
+  return { id:Math.random().toString(36).slice(2, 8), lvl, biome:Math.floor(Math.random()*BIOMES.length), mods:keys };
 }
 
 /* ---------- 目標 ---------- */

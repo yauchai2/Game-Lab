@@ -5,7 +5,7 @@
 """
 import base64, os
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-files = {'icons': 'icons.png', 'wordmark': 'wordmark.png', 'skills': 'skills.png', 'gems': 'gems.png'}
+files = {'icons': 'icons.png', 'wordmark': 'wordmark.png', 'skills': 'skills.png', 'gems': 'gems.png', 'relics': 'relics.png', 'legends': 'legends.png', 'badges': 'badges.png'}
 out = ['/* 由 tools/pack_assets.py 產生，請勿手改。圖片來源見 docs/assets-sources.md。 */', 'const ASSET = {']
 for k, f in files.items():
     b = open(os.path.join(root, 'src', 'assets', f), 'rb').read()

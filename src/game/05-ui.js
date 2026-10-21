@@ -17,12 +17,18 @@ function sico(id, size = 30){   // 技能專屬圖示（3 欄 3 列，每格 128
   const i = Math.max(0, SK_IDX.indexOf(id)), c = i % 3, r = (i/3) | 0, k = size/128;
   return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET.skills}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(384*k).toFixed(1)}px ${(384*k).toFixed(1)}px no-repeat"></span>`;
 }
+const SHEETS = { relic:['relics', 4, 3, ['FAN', 'LENS', 'CHARM', 'DRINK', 'BATT', 'VEST', 'CALC', 'PIG', 'LUCK', 'FOOD', 'BOMB', 'SUN']], legend:['legends', 3, 3, ['W_ECHO', 'W_FORK', 'W_MULTI', 'A_PHOENIX', 'A_RIPOSTE', 'A_RESET', 'R_LAST', 'R_LINK', 'R_DIAL']], badge:['badges', 4, 3, ['k100', 'k2000', 'boss1', 'boss10', 'd10', 'd20', 'l20', 'l30', 'map5', 'legend', 'card10', 'survive']] };
+function xico(kind, id, size = 24){   // 遺物、傳奇裝備、成就徽章的圖集圖示（每格 128）
+  const [a, cols, rows, ids] = SHEETS[kind], i = ids.indexOf(id); if (i < 0) return '';
+  const c = i % cols, r = (i/cols) | 0, k = size/128;
+  return `<span class="spr" style="width:${size}px;height:${size}px;background:url(${ASSET[a]}) -${(c*128*k).toFixed(1)}px -${(r*128*k).toFixed(1)}px/${(cols*128*k).toFixed(1)}px ${(rows*128*k).toFixed(1)}px no-repeat;vertical-align:middle;margin-right:4px"></span>`;
+}
 const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
 function slotHtml(slot){
   const it = G.equip[slot];
   if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${spr(SLOT_ICON[slot], 32)}<div class="mute">空</div></div></div>`;
   const lines = itemLines(it).slice(0, 3).map(l => `<li class="${l.imp ? 'imp' : l.lg ? 'lgd' : ''}">${l.t}</li>`).join('');
-  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${spr(SLOT_ICON[slot], 32, RAR[it.r].c)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
+  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${it.lg && xico('legend', it.lg, 34) ? xico('legend', it.lg, 34) : spr(SLOT_ICON[slot], 32, RAR[it.r].c)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
 }
 function panelHtml(){
   const s = G.st, h = G.h, R = G.run;
@@ -39,10 +45,10 @@ function codexHtml(){
   const slotOf = id => Object.keys(LEGENDS).find(k => LEGENDS[k].some(L => L.id === id));
   return `<div class="rc wide"><div class="rh">圖鑑</div><div class="mute">守關者暗金保底：連續 ${G.pity || 0} 件沒出，下一件暗金機率 ${Math.round(Math.min(1, .1 + .06*(G.pity || 0))*100)}%</div>
     <div class="mct" style="margin:8px 0 3px">元素反應</div><ul class="ach"><li class="got"><b>火焰</b> 命中的敵人燃燒 3 秒，持續受到傷害</li><li class="got"><b>閃電</b> 命中的敵人被標記 4 秒</li><li class="got"><b>融化</b> 火焰打到凍結的敵人：傷害 +40%，解除凍結</li><li class="got"><b>超導</b> 閃電打到凍結的敵人：傷害 +30%</li><li class="got"><b>蒸氣</b> 冰霜打到燃燒的敵人：周圍 8 格內敵人受到 40% 傷害，熄滅燃燒</li><li class="got"><b>過載</b> 火焰或冰霜打到被閃電標記的敵人：傷害 +25%</li></ul>
-    <div class="mct" style="margin:8px 0 3px">遺物 ${Object.keys(G.relics).length} / ${Object.keys(RELICS).length}</div><ul class="ach">${Object.entries(RELICS).map(([id, r]) => `<li class="${G.relics[id] ? 'got' : 'mute'}"><b>${G.relics[id] ? r.n : '？？？'}</b> ${G.relics[id] ? r.d : ''}</li>`).join('')}</ul>
-    <div class="mct" style="margin:8px 0 3px">傳奇裝備 ${nl} / ${lg.length}</div><ul class="ach">${lg.map(L => `<li class="${G.legSeen[L.id] ? 'got' : 'mute'}"><b>${G.legSeen[L.id] ? L.name : '？？？'}</b> ${G.legSeen[L.id] ? L.d : `（暗金${SLOTN[slotOf(L.id)]}）`}</li>`).join('')}</ul>
+    <div class="mct" style="margin:8px 0 3px">遺物 ${Object.keys(G.relics).length} / ${Object.keys(RELICS).length}</div><ul class="ach">${Object.entries(RELICS).map(([id, r]) => `<li class="${G.relics[id] ? 'got' : 'mute'}">${xico('relic', id, 22)}<b>${G.relics[id] ? r.n : '？？？'}</b> ${G.relics[id] ? r.d : ''}</li>`).join('')}</ul>
+    <div class="mct" style="margin:8px 0 3px">傳奇裝備 ${nl} / ${lg.length}</div><ul class="ach">${lg.map(L => `<li class="${G.legSeen[L.id] ? 'got' : 'mute'}">${xico('legend', L.id, 24)}<b>${G.legSeen[L.id] ? L.name : '？？？'}</b> ${G.legSeen[L.id] ? L.d : `（暗金${SLOTN[slotOf(L.id)]}）`}</li>`).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">模式卡匣 ${nm} / ${md.length}</div><ul class="ach">${md.map(id => { const M = MODES[id], has = G.seen[id]; return `<li class="${has ? 'got' : 'mute'}"><b>${has ? M.n : '？？？'}</b> ${has ? `（${SKILLS[M.sk].n}）${M.d}` : `（${SKILLS[M.sk].n}）${M.hint}${G.carts[id] ? '　已持有未鑑定' : ''}`}</li>`; }).join('')}</ul>
-    <div class="mct" style="margin:8px 0 3px">怪物</div><ul class="ach">${[['slime', '史萊姆', '成群出現，行動最快的雜兵'], ['skel', '骷髏', '比史萊姆耐打'], ['brute', '蠻牛', '又慢又硬，打人很痛'], ['boss', '守關者', '關底首領，掉落最好的戰利品']].map(([id, n, d]) => { const k = (G.mk || {})[id] || 0; return `<li class="${k ? 'got' : 'mute'}"><b>${k ? n : '？？？'}</b> ${k ? `${d}（擊殺 ${k}）` : '還沒遇到'}</li>`; }).join('')}</ul>
+    <div class="mct" style="margin:8px 0 3px">怪物</div><ul class="ach">${[['slime', '史萊姆', '成群出現，行動最快的雜兵'], ['skel', '骷髏', '比史萊姆耐打'], ['brute', '蠻牛', '又慢又硬，打人很痛'], ['drone', '無人機', '貼著半空飛，速度快但很脆（深度 2 起）'], ['bomb', '自爆機器人', '死亡時爆炸，波及主角與附近的怪（深度 4 起）'], ['boss', '守關者', '關底首領，掉落最好的戰利品']].map(([id, n, d]) => { const k = (G.mk || {})[id] || 0; return `<li class="${k ? 'got' : 'mute'}"><b>${k ? n : '？？？'}</b> ${k ? `${d}（擊殺 ${k}）` : '還沒遇到'}</li>`; }).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">輔助配件</div><ul class="ach">${Object.keys(SUPPS).map(g => { const has = (G.gems[g] || 0) > 0 || (G.seenG || {})[g]; return `<li class="${has ? 'got' : 'mute'}"><b>${has ? SUPPS[g].n : '？？？'}</b> ${has ? SUPPS[g].d : '還沒取得'}</li>`; }).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">技能 ${ns} / ${sk.length}</div><ul class="ach">${sk.map(id => { const K = SKILLS[id], has = G.lvl >= K.lvl; return `<li class="${has ? 'got' : 'mute'}"><b>${has ? K.n : '？？？'}</b> ${has ? K.d : `（Lv. ${K.lvl} 解鎖）`}</li>`; }).join('')}</ul></div>`;
 }
@@ -290,7 +296,7 @@ function openRelics(){
   if (G.relicPicks <= 0 || G.offline) return;
   if (G.autoCard){ while (G.relicPicks > 0){ const o = rollRelics(); if (!o.length){ G.relicPicks = 0; break; } takeRelic(tPick(o)); } hideOverlay(); return; }
   if (!G.offerR || !G.offerR.length) G.offerR = rollRelics(); if (!G.offerR.length){ G.relicPicks = 0; return; }
-  showOverlay(`<b>擊敗守關者！選一件遺物</b><div class="mute">永久生效。還有 ${G.relicPicks} 次選擇。</div><div class="cards">${G.offerR.map(id => `<button class="card var" onclick="pickRelic('${id}')"><span class="ct">遺物</span><b>${RELICS[id].n}</b><span class="cd">${RELICS[id].d}</span></button>`).join('')}</div><button class="mb" onclick="hideOverlay()">稍後再選</button>`);
+  showOverlay(`<b>擊敗守關者！選一件遺物</b><div class="mute">永久生效。還有 ${G.relicPicks} 次選擇。</div><div class="cards">${G.offerR.map(id => `<button class="card var" onclick="pickRelic('${id}')"><span class="ct">遺物</span>${xico('relic', id, 40)}<b>${RELICS[id].n}</b><span class="cd">${RELICS[id].d}</span></button>`).join('')}</div><button class="mb" onclick="hideOverlay()">稍後再選</button>`);
 }
 function pickRelic(id){ SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
 function pickCard(id){ SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
@@ -299,7 +305,7 @@ function charHtml(){
 }
 function achHtml(){
   const n = achCount(), tot = Object.keys(ACHS).length;
-  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${G.ach[id] ? '★' : '☆'} <b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
+  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
 }
 function cardsHtml(){
   const e = Object.entries(G.cards); const pend = (G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button> ` : '') + `<button class="mb" onclick="toggleAuto()">自動隨機：${G.autoCard ? '開' : '關'}</button>`;
@@ -324,7 +330,7 @@ function mobTitle(){
 }
 function cycleCz(){ G.cz = ((G.cz == null ? 1 : G.cz) + 1) % 3; G.userCz = true; G.dirty = true; mobTitle(); }
 const mobRatio = () => { const auto = (modalTab === 'skills' || modalTab === 'craft') && !G.userCz, i = auto ? 2 : (G.cz == null ? 1 : G.cz); return Math.max(.5, [.5, .4, .25][i]*innerHeight/innerWidth); };
-const RISKM = ['more', 'fast', 'tough', 'deadly'];
+const RISKM = ['more', 'fast', 'tough', 'deadly', 'elite', 'swarm'];
 function runMods(R){
   const mods = R.map.mods || []; if (!mods.length) return '';
   const q = mods.reduce((a, k) => a + MODS[k].q, 0);
@@ -550,6 +556,7 @@ function setupPanel(){
     .pz{padding:6px;background:linear-gradient(180deg,#9fb0d8,#c6d2ee);border:2px solid #fff;outline:1px solid #7d8bbd;border-radius:12px;box-shadow:inset 0 3px 6px rgba(30,40,100,.35),0 2px 0 #8c9bd0}
     .pc:not(.fill):not(.lock){background:radial-gradient(circle at 50% 50%,#8294c4 0 18%,#b4c2e6 20%);border-radius:7px;border:1px solid #7d8bbd;box-shadow:inset 0 2px 3px rgba(30,40,100,.4),0 1px 0 #fff}
     .pc.fill{border-radius:8px;box-shadow:inset 0 2px 0 rgba(255,255,255,.85),inset 0 -3px 0 rgba(0,0,60,.28),0 2px 0 rgba(30,40,100,.4) !important;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+    .ach li.mute .spr{filter:grayscale(1);opacity:.45}
     .rz{font-size:11.5px;margin:2px 0 4px;color:#1f3fb0;background:#eaf1ff;border:1px solid #9fb2e8;border-radius:6px;padding:2px 8px}
     .stage #loot{position:absolute;left:8px;bottom:8px;top:auto;transform:none;align-items:flex-start;width:min(240px,60%);z-index:5;flex-direction:column-reverse}
     body.m .stage #loot{left:auto;right:6px;bottom:auto;top:52px;align-items:flex-end;width:min(190px,54%);flex-direction:column}
