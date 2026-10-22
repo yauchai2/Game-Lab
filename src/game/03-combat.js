@@ -102,7 +102,8 @@ function pickup(d){
   const cur = G.equip[it.slot], cand = calc({ ...G.equip, [it.slot]:it });
   if (it.lg && LEGEND_BY[it.lg]){
     const old = G.armory[it.lg], active = cur?.lg === it.lg;
-    if (old && (active || old.cr || old.lk != null || cand.power <= calc({...G.equip,[it.slot]:old}).power*1.02)){
+    if(old){G.coreDust++;if(G.off)G.off.coreDust=(G.off.coreDust||0)+1;}
+    if (old && (active || old.cr || old.lk != null || gearReferenced(old) || cand.power <= calc({...G.equip,[it.slot]:old}).power*1.02)){
       G.gold += itemValue(it); salvage(it); G.dirty = true; return;
     }
     if (old){ G.gold += itemValue(old); salvage(old); }

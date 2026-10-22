@@ -1,0 +1,13 @@
+PASS mobile role cards and no overflow
+PASS touch details, placement, inventory and cancellation
+PASS keyboard grid and failed placement preserve state
+PASS pointercancel restores the original piece and mode
+PASS dialog focus containment and return
+PASS craft state reasons, confirmation and one-time charge
+PASS complete modifier categories and honest summary
+PASS blocked popup fallback, IME-safe search and clear
+PASS new cartridge badges and legacy save migration
+PASS 360px role and full six-row board
+PASS desktop chronicle search, headers, no-results and reset
+PASS offline summary and one-way navigation without duplicate rewards
+12 browser checks passed

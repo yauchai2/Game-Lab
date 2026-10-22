@@ -1,0 +1,24 @@
+[
+  {
+    "width": 390,
+    "errors": [],
+    "snapshots": true,
+    "missing": true,
+    "calibration": true,
+    "tiering": true,
+    "reconstruction": true,
+    "cancellation": true,
+    "reload": true
+  },
+  {
+    "width": 1440,
+    "errors": [],
+    "snapshots": true,
+    "missing": true,
+    "calibration": true,
+    "tiering": true,
+    "reconstruction": true,
+    "cancellation": true,
+    "reload": true
+  }
+]

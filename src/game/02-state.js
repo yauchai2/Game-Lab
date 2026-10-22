@@ -23,7 +23,7 @@ const TREE = (() => {
 /* ---------- game state ---------- */
 const G = {
   city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
-  inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:true, storageRecycled:0, chips:0, equip:{ weapon:null, armor:null, ring:null }, armory:{}, equipBackup:{}, deferChoices:false, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
+  coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:true, storageRecycled:0, chips:0, equip:{ weapon:null, armor:null, ring:null }, armory:{}, equipBackup:{}, deferChoices:false, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
   pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'阿街', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
   h:{ x:HX, y:HY, vx:0, vy:0, gx:HX, gy:HY, aiT:0, mv:0, hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
   lgK:0, lgC:0, mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
@@ -250,23 +250,25 @@ function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
 function serialize(){ return { v:2, progressionVersion:1,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
-  inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
+  coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 function applySave(o){
   if (!o || o.v !== 2) return false;
+  const uidSeen=new Set(),uidConflicts=new Set();for(const it of Array.isArray(o.inventory)?o.inventory:[]){if(uidSeen.has(it.uid))uidConflicts.add(it.uid);uidSeen.add(it.uid);}
   G.castPolicy=o.castPolicy==='combo'?'combo':'balanced';G.signalCharge=0;G.readySince={};G.combat=null;G.castSerial=0;G.signalGainRoot=null;G.h.castT=-1;G.h.swingT=-1;
   for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','carts','seen','goals','mapsDone','pass','ach','legSeen','pity','parts','bossHp','towerBest','quest','craftN','mk','seenG','seenC','cz','userCz','dmgNum','seenInv','seenParts','seenGoals','builds','bi','relics','relicPicks','cos','own','heroName','born','autoCard','bossKills','char','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
+  G.builds=Array.isArray(o.builds)?o.builds.slice(0,3):[null,null,null];G.bi=[0,1,2].includes(o.bi)?o.bi:0;
   if (o.seenC === undefined) G.seenC = { ...G.carts };
   G.armory = Object.fromEntries(Object.entries(o.armory || {}).filter(([id,it]) => coreSlot(id) && it && it.lg === id && it.slot === coreSlot(id) && Array.isArray(it.aff) && it.imp));
   G.equipBackup = Object.fromEntries(Object.entries(o.equipBackup || {}).filter(([slot,it]) => SLOTN[slot] && it?.slot === slot && Array.isArray(it.aff) && it.imp));
   G.deferChoices = o.deferChoices === true;
   G.inventory=(Array.isArray(o.inventory)?o.inventory:[]).filter(validGear).slice(0,200);
   {const used=new Set();let next=1;for(const it of G.inventory){if(!Number.isSafeInteger(it.uid)||it.uid<1||it.uid>1e8||used.has(it.uid)){while(used.has(next))next++;it.uid=next++;}used.add(it.uid);}G.nextGearId=Math.max(1,...used)+1;}G.autoEquip=o.autoEquip!==false;
-  G.storageRecycled=Math.max(0,+o.storageRecycled||0);G.chips=Math.max(0,+o.chips||0);G.inventoryRevision++;
+  G.coreDust=Number.isSafeInteger(o.coreDust)?Math.max(0,o.coreDust):0;G.storageRecycled=Math.max(0,+o.storageRecycled||0);G.chips=Math.max(0,+o.chips||0);G.inventoryRevision++;
   for(const group of [G.equip,G.equipBackup])for(const slot of Object.keys(group)){const it=group[slot];if(validGear(it)&&!it.lg){storeGear(it);group[slot]=G.inventory.find(x=>x.uid===it.uid)||it;}}
 
   G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!CHARS[G.char]) G.char = 'street'; if (!G.ach) G.ach = {}; G.mons = []; G.drops = (Array.isArray(o.groundDrops)?o.groundDrops:[]).filter(validDrop).map(d=>({...d,t:Number.isFinite(d.t)?d.t:0,done:false})); G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
   if (o.board && o.board.pieces){ if (o.board.v === 3) G.board = o.board; else sanitizeBoard(o.board); } else boardFromLegacy(o.slots || ['FIRE'], o.supp);
-  loadProgression(o);recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
+  loadProgression(o);normalizeBuilds(uidConflicts);recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
 function saveGame(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify(serialize())); return true; } catch (e) { return false; } }
 function loadGame(){ try { const raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
@@ -284,11 +286,11 @@ function storeGear(it){
   if(G.inventory.includes(it))return true;
   if(G.inventory.length>=200){
     const protectedItems=[...Object.values(G.equip),...Object.values(G.equipBackup)];
-    const low=G.inventory.filter(x=>!x.kept&&!x.cr&&x.lk==null&&!protectedItems.includes(x)).sort((a,b)=>gearPriority(a)-gearPriority(b))[0];
+    const low=G.inventory.filter(x=>!x.kept&&!x.cr&&x.lk==null&&!protectedItems.includes(x)&&!gearReferenced(x)).sort((a,b)=>gearPriority(a)-gearPriority(b))[0];
     if(!low||gearPriority(it)<=gearPriority(low))return false;
     G.inventory=G.inventory.filter(x=>x!==low);recycleOverflow(low);
   }
-  it.uid=G.nextGearId++;G.inventory.push(it);G.inventoryRevision++;return true;
+  it.uid=allocateGearId();G.inventory.push(it);G.inventoryRevision++;return true;
 }
 function equipStored(uid){
   const it=G.inventory.find(x=>x.uid===uid);if(!it||G.equip[it.slot]===it)return false;
@@ -296,7 +298,7 @@ function equipStored(uid){
   G.equipBackup[it.slot]=old;G.equip[it.slot]=it;G.autoEquip=false;recalc();G.inventoryRevision++;return true;
 }
 function recycleStored(uid){
-  const it=G.inventory.find(x=>x.uid===uid);if(!it||it.kept||it.cr||it.lk!=null||Object.values(G.equip).includes(it)||Object.values(G.equipBackup).includes(it))return false;
+  const it=G.inventory.find(x=>x.uid===uid);if(!it||it.kept||it.cr||it.lk!=null||Object.values(G.equip).includes(it)||Object.values(G.equipBackup).includes(it)||gearReferenced(it))return false;
   G.inventory=G.inventory.filter(x=>x!==it);G.gold+=itemValue(it);salvage(it);G.inventoryRevision++;G.dirty=true;return true;
 }
 function recycleOverflow(it){G.gold+=itemValue(it);salvage(it);G.storageRecycled++;G.dirty=true;}
@@ -423,3 +425,40 @@ function cityIncoming(m,damage){if(!m.cityRoute)return damage;
 function cityTickMonster(m,dt){if(m.shieldMax&&G.time-(m.lastCityHit??G.time)>3&&!(m.frozen>0))m.shield=Math.min(m.shieldMax,(m.shield||0)+m.shieldMax*.3*dt);
  if(m.boss&&G.run?.city){const phase=m.hp/m.hpMax<.3?2:m.hp/m.hpMax<.65?1:0;if(phase>(m.cityPhase||0)){m.cityPhase=phase;m.spdK*=1.12;m.atkInt*=.9;m.skillCd=0;addFx({k:'ring',x:m.x,y:m.y,col:'#ff9966',t:0,dur:.6});}}
 }
+
+/* 構築記住實體裝備，不複製詞綴或創造物品。 */
+function gearReferences(){return [...(Array.isArray(G.builds)?G.builds:[]),...(Array.isArray(G.legacyTalent?.builds)?G.legacyTalent.builds:[])].filter(Boolean).flatMap(b=>Object.values(b.equipment||{})).filter(Boolean);}
+function gearReferenced(it){return gearReferences().some(r=>it.lg?r.kind==='core'&&r.id===it.lg:r.kind==='gear'&&r.uid===it.uid);}
+function allocateGearId(){const held=new Set([...G.inventory.map(it=>it.uid),...gearReferences().filter(r=>Number.isSafeInteger(r.uid)).map(r=>r.uid)]);let id=Number.isSafeInteger(G.nextGearId)&&G.nextGearId>0&&G.nextGearId<=1e8?G.nextGearId:1;while(held.has(id))id=id>=1e8?1:id+1;G.nextGearId=id+1;return id;}
+function captureBuild(){const equipment={};for(const slot of Object.keys(SLOTN)){const it=G.equip[slot];if(!it){equipment[slot]=null;continue;}if(it.lg){equipment[slot]={kind:'core',id:it.lg};continue;}
+ if(!G.inventory.includes(it)){const same=G.inventory.find(x=>x.uid===it.uid);if(same)G.equip[slot]=same;else if(G.inventory.length>=200||!storeGear(it))return null;}
+ equipment[slot]={kind:'gear',uid:G.equip[slot].uid};}
+ return copyState({board:G.board,pass:G.pass,castPolicy:G.castPolicy,legacyMode:G.legacyMode,character:G.char,equipment});
+}
+function inspectBuildGear(build){const equip={...G.equip},missing=[];if(!build?.equipment)return {equip,missing,legacy:true};
+ for(const slot of Object.keys(SLOTN)){const ref=build.equipment[slot];if(ref===null){equip[slot]=null;continue;}const it=ref?.kind==='core'?G.armory[ref.id]:ref?.kind==='gear'?G.inventory.find(x=>x.uid===ref.uid):null;if(it?.slot===slot)equip[slot]=it;else missing.push(slot);}
+ return {equip,missing,legacy:false};
+}
+function saveBuild(){if(G.run?.city||G.train)return false;const b=captureBuild();if(!b)return false;G.builds[G.bi||0]=b;G.dirty=true;return true;}
+function restoreBuild(index,keepMissing=false){if(![0,1,2].includes(index)||index===(G.bi||0)||G.run?.city||G.train)return {ok:false,reason:'目前不能切換構築'};
+ const target=G.builds[index],resolved=inspectBuildGear(target);if(resolved.missing.length&&!keepMissing)return {ok:false,missing:resolved.missing,reason:'部分裝備已不存在'};
+ const current=captureBuild();if(!current)return {ok:false,reason:'倉庫已滿，先整理空間再保存目前裝備'};
+ G.builds[G.bi||0]=current;G.bi=index;
+ if(target){G.board=copyState(target.board);G.pass=target.pass.slice();G.castPolicy=target.castPolicy==='combo'?'combo':'balanced';G.legacyMode=target.legacyMode===true||talentOverLimit(G.pass);if(CHARS[target.character]&&charOk(target.character))G.char=target.character;}
+ else{boardFromLegacy(['FIRE'],{});G.pass=[];G.castPolicy='balanced';G.legacyMode=false;}
+ if(target?.equipment){for(const slot of Object.keys(SLOTN)){const old=G.equip[slot];G.equip[slot]=resolved.equip[slot];if(old!==G.equip[slot])G.equipBackup[slot]=old;}G.autoEquip=false;}
+ const use={},cu={};G.board.pieces=G.board.pieces.filter(p=>p.kind!=='support'||(use[p.key]=(use[p.key]||0)+1)<=(G.gems[p.key]||0));
+ for(const p of G.board.pieces)if(p.mode){cu[p.mode]=(cu[p.mode]||0)+1;if(cu[p.mode]>(G.carts[p.mode]||0))p.mode=null;}
+ G.proj=[];G.timers=[];G.h.castT=-1;G.h.swingT=-1;G.readySince={};G.signalCharge=0;recalc();return {ok:true,missing:resolved.missing,legacy:resolved.legacy};
+}
+function normalizeBuilds(conflicts=new Set()){
+ const clean=build=>{if(!build||!Array.isArray(build.board?.pieces)||!Array.isArray(build.pass))return null;const b=copyState(build);if(b.equipment){const refs={};for(const slot of Object.keys(SLOTN)){const r=b.equipment[slot];refs[slot]=r===null?null:r?.kind==='core'&&coreSlot(r.id)===slot?{kind:'core',id:r.id}:r?.kind==='gear'&&Number.isSafeInteger(r.uid)&&r.uid>0&&r.uid<=1e8&&!conflicts.has(r.uid)?{kind:'gear',uid:r.uid}:{kind:'missing'};}b.equipment=refs;}return b;};
+ G.builds=Array.from({length:3},(_,i)=>clean(G.builds?.[i]));if(G.legacyTalent?.builds)G.legacyTalent.builds=Array.from({length:3},(_,i)=>clean(G.legacyTalent.builds[i]));
+}
+const AFFIX_BANDS=[1.65,1.35,1.1,.88,.65];
+function affValue(k,il,tier,quality,boost=1){const v=AFF[k].b(il)*AFFIX_BANDS[tier]*(.9+.2*quality)*boost;return k==='leech'?Math.round(v*10)/10:Math.max(1,Math.round(v));}
+function affRange(a,it){const tier=affTier(a,it.il),boost=it.r===3?1.35:1;return {tier,min:affValue(a.k,it.il,tier,0,boost),max:affValue(a.k,it.il,tier,1,boost)};}
+function affQuality(a,it){return Math.max(0,Math.min(1,(a.v/(AFF[a.k].b(it.il)*AFFIX_BANDS[affTier(a,it.il)]*(it.r===3?1.35:1))-.9)/.2));}
+function recalibrateAff(a,it){return {...a,tier:affTier(a,it.il),v:affValue(a.k,it.il,affTier(a,it.il),Math.random(),it.r===3?1.35:1)};}
+
+function forgetBuildGear(index){if(![0,1,2].includes(index)||index===(G.bi||0)||G.run?.city||G.train||!G.builds[index]?.equipment)return false;delete G.builds[index].equipment;G.dirty=true;G.inventoryRevision++;return true;}

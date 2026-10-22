@@ -74,22 +74,17 @@ function shapeIcon(kind, key, rot = 0, col){
   return o + '</span>';
 }
 function buildBar(){
-  return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><p class="uxmeta">技能、天賦與出手策略獨立，裝備共用。</p>${uiPolicyHtml()}</section>`;
+  return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><p class="uxmeta">切換時保存目前配置；裝備記住同一實體，改機後各引用同步。</p><button class="mb" data-focus="build-save" onclick="uiSaveBuild()">更新目前構築</button><p class="uxmeta">${G.builds[G.bi||0]?.equipment?'已記住角色與三件裝備，引用物品受回收保護。':'此配置尚未記住裝備；可按更新保存。'}</p>${uiBuildGearHtml()}${uiPolicyHtml()}</section>`;
 }
 function dpsBar(){
   const sk = G.st.sk || {}, ids = Object.keys(sk), tot = ids.reduce((a, id) => a+sk[id].direct*sk[id].estimatedCasts, 0) || 1;
   return `<div class="dpsbar"><div>單體直傷預估 <b>${tFmt(G.st.dps)}</b> <span id="pzdelta" class="mute"></span></div><div class="shares">${ids.map(id => `<span style="flex:${Math.max(1, Math.round(sk[id].direct*sk[id].estimatedCasts/tot*100))}" title="${SKILLS[id].n}">${SKILLS[id].n}</span>`).join('')}</div>${uxPieceDetails()}</div>`;
 }
-function switchBuild(i){
-  if(G.run?.city||G.train){uxAnnounce('先結束城市遠征或訓練，再切換構築。');return;}if (i === (G.bi || 0)) return; if (!G.builds) G.builds = [null, null, null];
-  G.builds[G.bi || 0] = JSON.parse(JSON.stringify({board:G.board,pass:G.pass,castPolicy:G.castPolicy,legacyMode:G.legacyMode}));
-  const t = G.builds[i]; G.bi = i; selPiece = null; held = null;
-  if (t){ G.board = JSON.parse(JSON.stringify(t.board)); G.pass=t.pass.slice();G.castPolicy=t.castPolicy==='combo'?'combo':'balanced';G.legacyMode=t.legacyMode===true||talentOverLimit(G.pass); } else { boardFromLegacy(['FIRE'], {}); G.pass=[];G.castPolicy='balanced';G.legacyMode=false;}
-  const use = {}, cu = {};   // 配件與卡匣只有一份庫存：超出的從這套拿掉
-  G.board.pieces = G.board.pieces.filter(p => { if (p.kind !== 'support') return true; use[p.key] = (use[p.key] || 0) + 1; return use[p.key] <= (G.gems[p.key] || 0); });
-  for (const p of G.board.pieces) if (p.mode){ cu[p.mode] = (cu[p.mode] || 0) + 1; if (cu[p.mode] > (G.carts[p.mode] || 0)) p.mode = null; }
-  recalc(); logLine(`切換到構築 ${i + 1}`, '#2f7fc4'); renderModal();
-}
+let BUILD_PENDING=null;
+function switchBuild(i){if(i===(G.bi||0))return;const result=restoreBuild(i);if(result.missing?.length&&!result.ok){BUILD_PENDING={index:i,target:JSON.stringify(G.builds[i])};showOverlay(`<h2 class="uxdialog-title">構築 ${i+1} 缺少裝備</h2><p>${result.missing.map(slot=>SLOTN[slot]).join('、')}已不存在，尚未切換。可保留缺件部位的目前裝備，載入其餘配置。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="BUILD_PENDING=null;hideOverlay()">保留目前構築</button><button class="mb pri" onclick="uiConfirmBuildFallback()">缺件沿用目前裝備</button></div>`);return;}uiFinishBuild(result,i);}
+function uiFinishBuild(result,i){if(!result.ok){uxAnnounce(result.reason);return;}selPiece=null;held=null;renderModal();uxAnnounce(`已切換構築 ${i+1}${result.legacy?'，舊配置沿用目前裝備':'，已載入裝備並關閉自動換裝'}。`);}
+function uiConfirmBuildFallback(){const p=BUILD_PENDING;BUILD_PENDING=null;hideOverlay();if(!p||JSON.stringify(G.builds[p.index])!==p.target){uxAnnounce('配置已變動，請重新確認。');return;}uiFinishBuild(restoreBuild(p.index,true),p.index);}
+function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、角色、策略及三件裝備；引用裝備受回收保護。');}
 function skillsHtml(){
   return buildBar() + dpsBar() + circuitShopHtml() + skillsHtml0();
 }
@@ -316,7 +311,7 @@ function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未�
 function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 const qm = k => `<button aria-label="${HELP[k] ? HELP[k][0] : '說明'}" class="qm" onclick="showHelp('${k}')">?</button>`;
 function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; uxOpenDialog(o, o.querySelector('h2,b,.mct')?.textContent || '遊戲提示', hideOverlay); }
-function hideOverlay(){ craftPending=null;UI_RESPEC=null;uxCloseDialog($('ovl')); }
+function hideOverlay(){ craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
 function catchUp(sec, report){
   if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
@@ -559,3 +554,8 @@ function setupPanel(){
   viewInit();
   document.getElementById('lblctl'); const pc = document.getElementById('pals'); if (pc) pc.parentElement.style.display = 'none';
 }
+
+function uiBuildGearHtml(){return `<details><summary>管理構築裝備記憶</summary><p class="uxmeta">解除記憶不刪除物品；只取消該配置的回收保護。改版前天賦備份、穿著及上一件的保護仍生效。</p>${G.builds.map((b,i)=>b?.equipment?`<p>構築 ${i+1}：${Object.entries(b.equipment).map(([slot,r])=>{const it=r?.kind==='core'?G.armory[r.id]:r?.kind==='gear'?G.inventory.find(x=>x.uid===r.uid):null;return SLOTN[slot]+' '+(r===null?'空欄位':it?uxEsc(it.name):'缺件');}).join('、')}<button class="mb" ${i===(G.bi||0)||G.run?.city||G.train?'disabled':''} onclick="uiForgetBuild(${i})">解除構築 ${i+1} 裝備記憶</button>${i===(G.bi||0)?'<small>先切換到其他構築，再解除這套記憶。</small>':''}</p>`:'').join('')||'<p>尚未保存裝備。</p>'}</details>`;}
+let FORGET_BUILD_PENDING=null;
+function uiForgetBuild(index){if(index===(G.bi||0)||!G.builds[index]?.equipment)return;FORGET_BUILD_PENDING={index,stamp:JSON.stringify(G.builds[index].equipment)};showOverlay(`<h2 class="uxdialog-title">解除構築 ${index+1} 的裝備記憶？</h2><p>保留物品、技能與天賦；取消這套配置對裝備的回收保護。其他構築、改版備份、穿著與上一件的保護仍有效。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">保留裝備記憶</button><button class="mb pri" onclick="uiConfirmForgetBuild()">解除裝備記憶</button></div>`);}
+function uiConfirmForgetBuild(){const p=FORGET_BUILD_PENDING;FORGET_BUILD_PENDING=null;hideOverlay();if(!p||JSON.stringify(G.builds[p.index]?.equipment)!==p.stamp||!forgetBuildGear(p.index)){uxAnnounce('配置已變動，沒有解除記憶。');return;}renderModal();uxAnnounce('已解除裝備記憶，物品仍在原處。');}

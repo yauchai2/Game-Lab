@@ -1,0 +1,1 @@
+PASS native 12px face preserved; 1298 LCD glyphs, advances and baselines align to the 16px grid

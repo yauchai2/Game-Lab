@@ -163,3 +163,18 @@
 | checkpoint 入口 | uiCityRevealCheckpoint | 新分岔才置頂並聚焦安全選項，保留既有 dialog 的優先焦點；倒數不使用 aria-live 逐秒播報 |
 
 城市路線、八階與九款目標都是固定小目錄，以 render-all 搭配漸進展開；不新增表格選取、原生 select 或遠端分頁。當局配置變動不覆寫永久卡片；存檔保留路段、選路、碎片及出發策略，過期／無效 checkpoint 安全返回。搜尋、存檔草稿、一般地圖及其他兄弟流程保持既有 owner。
+
+## 配裝記憶、詞綴升階及核心重構（0.30.0）
+
+依據 Alan 的延續優化授權與 docs/equipment-v0.30.0.md 的遊戲規則；本節只記錄介面後果，成本由狀態函式計算。
+
+| 能力 | 共用 owner | 介面契約 |
+| --- | --- | --- |
+| 構築保存／切換 | captureBuild、saveBuild、restoreBuild、inspectBuildGear | 保存實際物品引用、角色及空欄位；先保存目前配置，缺件不切換，明確後備確認才沿用現有欄位；物品改動共用的影響明示 |
+| 裝備保護 | gearReferenced、storeGear、recycleStored | 倉庫與核心收藏同樣尊重構築引用；倉庫顯示引用保護，管理對話框解釋不可回收原因 |
+| 解除記憶 | forgetBuildGear、uiForgetBuild | 只解除閒置構築的裝備引用，不刪物品／技能／天賦；共用安全初始焦點、取消與 stale 檢查 |
+| 校準與升階 | recalibrateAff、affRange、affTierState | 校準顯示同階範圍與可能洗低；指定詞綴使用 aria-pressed 按鍵，缺材料或門檻未達顯示原因 |
+| 核心重構 | coreRefineState、gearOperationAsk、gearOperationConfirm | 同時預覽等級、所有材料、上限與引用同步影響；鎖定／腐化／挑戰／目標變動不得扣款 |
+| 確認狀態 | hideOverlay | 所有新增 pending 均在取消／Escape 清除；二次執行不得再次扣款，對話框沿用背景隔離與返回原按鍵焦點 |
+
+新欄位 coreDust 隨原存檔保存；舊檔從零開始，離線結算明示新增殘晶。舊構築保留相容路徑，匯入含糊 UID 的引用顯示缺件。只有本機同步操作，沒有新增遠端交易、搜尋、主題或付款流程。0.28.0 所述三套共用當下裝備行為由本節引用記憶取代。
