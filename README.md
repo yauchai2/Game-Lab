@@ -1,6 +1,6 @@
 # Game Lab：Idle Hero
 
-一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。目前版本：**v0.31.0**。
+一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。目前開發版本：**v0.32.0**。
 
 
 **[直接試玩](https://yauchai2.github.io/Game-Lab/) · [版本紀錄與下載](https://github.com/yauchai2/Game-Lab/releases) · [目前改動 review](https://github.com/yauchai2/Game-Lab/pull/6)**
@@ -69,8 +69,12 @@
 
 ## 美術風格
 
-Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機、街景高架橋，介面是作業系統視窗風，字體為 Cubic 11 像素字體。細節見 [docs/art-style.md](docs/art-style.md) 與 [docs/art-direction-and-roadmap.md](docs/art-direction-and-roadmap.md)。
+Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機、街景高架橋，介面是作業系統視窗風，全介面保留 Cubic 11 像素字體，透過手機／桌機字級、行距及介面比例改善可讀性。細節見 [docs/art-style.md](docs/art-style.md) 與 [docs/art-direction-and-roadmap.md](docs/art-direction-and-roadmap.md)。
 
 ## 授權
 
 頁面外殼（Colorfigures）為 MIT，見 `docs/colorfigures-LICENSE`。three.js 為 MIT，見 `src/vendor/three.LICENSE`。
+
+0.32 地形、選卡暫停及回饋驗證：`node tools/test_update_032.cjs`、`node tools/test_terrain_mesh.cjs`。本次結果及限制見 [docs/update-0.32-validation.md](docs/update-0.32-validation.md)。
+
+0.32 視覺修正版：`node tools/test_world_review.cjs`；完整來源檢查：`python tools/run_review_checks.py`。開發分支可推送，Release／gh-pages 必須先取得版本確認。

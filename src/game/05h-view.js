@@ -79,7 +79,7 @@ function viewRenderHUD(){
 }
 function viewBlocked(){
   const active=document.activeElement;
-  return document.hidden||G.offline||BOSS.on||UX_LAYERS.length>0||!!held||!!drag||GAME_VIEW.pointers.size>0||(!G.deferChoices&&(G.picks>0||G.relicPicks>0))||
+  return document.hidden||G.offline||BOSS.on||UX_LAYERS.length>0||!!held||!!drag||GAME_VIEW.pointers.size>0||(GAME_FEATURES.cardChoices&&!G.deferChoices&&(G.picks>0||G.relicPicks>0))||
     !!active?.closest('input,textarea,select,[contenteditable="true"]')||!!document.querySelector('.stepwrap.open');
 }
 function viewEnterWatch(){
@@ -142,6 +142,13 @@ function viewInit(){
   GAME_VIEW.initialized=true;GAME_VIEW.last=performance.now();viewApplyPrefs();viewRenderHUD();GAME_VIEW.ready=viewPreparePixels();
 }
 const VIEW_CSS=`
+/* Responsive pixel-text metrics also own the surrounding HUD geometry. */
+body.ui-material .battle-hud .hud-level{height:66px}
+body.ui-material .battle-hud .hud-level span{font-size:12px!important;line-height:18px}
+body.ui-material .battle-hud .hud-level b{font-size:24px!important;line-height:32px}
+@media(min-width:1180px){body.ui-material .battle-hud .hud-left{grid-template-columns:72px minmax(100px,280px);max-width:360px}body.ui-material .battle-hud .hud-level{height:82px}body.ui-material .battle-hud .hud-level span{font-size:16px!important;line-height:24px}body.ui-material .battle-hud .hud-level b{font-size:36px!important;line-height:44px}body.ui-material .battle-hud .hud-meter{height:22px}body.ui-material .battle-hud .hud-meter.hud-xp{height:14px}}
+body.ui-material.m .stage{padding-top:92px!important}body.ui-material.m .stage #loot{top:100px!important}
+
 /* 覆蓋原先 STATUS 櫃體。HUD 是世界上方的獨立讀數；共用色階不改變字形與位置。 */
 .stage #stats.battle-hud{position:absolute!important;inset:8px 8px auto!important;display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;min-height:0!important;max-width:none!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;pointer-events:none;z-index:6;color:#f6f9ff;font-family:"Cubic 11",monospace;text-align:left;text-shadow:1px 1px #151c38,-1px 0 #151c38,0 -1px #151c38;line-height:1.1}
 .stage #stats.battle-hud::before,.stage #stats.battle-hud::after{display:none!important}

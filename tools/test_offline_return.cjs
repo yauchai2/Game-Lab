@@ -12,27 +12,26 @@ function progress(saved) {
   return Object.fromEntries(keys.map(key => [key, saved[key]]));
 }
 
-check('manual return keeps old and newly earned choices after real combat and reload', () => {
+check('suspended manual return preserves old choices without creating more after combat and reload', () => {
   const r = createRuntime();
   r.evaluate('G.autoCard=false;G.picks=2;G.relicPicks=1');
   r.settle(120);
   const saved = r.snapshot();
   assert(saved.totalKills > 0);
-  assert(saved.picks >= 2); assert.equal(saved.relicPicks >= 1, true);
-  assert.equal(saved.deferChoices, true); assert.deepEqual(saved.cards, {});
+  assert.equal(saved.picks, 2); assert.equal(saved.relicPicks, 1);
+  assert.equal(saved.deferChoices, false); assert.deepEqual(saved.cards, {});
   assert.deepEqual(saved.relics, {}); assert.equal(r.saves, 1);
   assert(r.reload());
   assert.deepEqual(progress(r.snapshot()), progress(saved));
 });
-check('automatic return resolves exactly the queued and newly earned decisions once', () => {
+check('suspended automatic return preserves queued decisions and previous acquisitions', () => {
   const r = createRuntime();
-  r.evaluate('G.autoCard=true;G.picks=2;G.relicPicks=1');
-  r.settle(120);
+  r.evaluate('G.autoCard=true;G.picks=2;G.relicPicks=1;G.cards[Object.keys(CARDS)[0]]=2;G.relics.FOOD=1');
+  const before=r.snapshot();r.settle(120);
   const saved = r.snapshot(), summary = r.reports[0].summary;
-  assert.equal(saved.picks, 0); assert.equal(saved.relicPicks, 0);
-  assert.equal(saved.deferChoices, false);
-  assert.equal(Object.values(saved.cards).reduce((a, b) => a + b, 0), 2 + summary.lvls);
-  assert.equal(summary.cards.length, Object.values(saved.cards).reduce((a, b) => a + b, 0) + Object.keys(saved.relics).length);
+  assert.equal(saved.picks, 2); assert.equal(saved.relicPicks, 1);
+  assert.deepEqual(saved.cards,before.cards);assert.deepEqual(saved.relics,before.relics);
+  assert.equal(summary.cards.length,0);
   assert(r.reload()); assert.deepEqual(progress(r.snapshot()), progress(saved));
 });
 check('settlement flushes saved ground currency once, then reload cannot grant it again', () => {
@@ -74,7 +73,7 @@ check('unavailable storage is reported without losing earned choices or locking 
   r.settle(120);
   assert.equal(r.reports[0].saved, false);
   assert(r.snapshot().picks >= 2);
-  assert.equal(r.snapshot().deferChoices, true);
+  assert.equal(r.snapshot().deferChoices, false);
   assert.equal(r.evaluate('G.paused || G.offline || G.off !== null'), false);
 });
 console.log(passed + ' source-backed offline return checks passed');

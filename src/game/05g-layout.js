@@ -5,9 +5,9 @@ const UI_NAV = [
   {k:'craft',n:'打造',icon:'craft',pages:['craft']},
   {k:'tree',n:'成長',icon:'growth',pages:['tree']},
   {k:'maps',n:'冒險',icon:'adventure',pages:['maps']},
-  {k:'menu',n:'更多',icon:'more',pages:['menu','goals','ach','dex','log','save','settings']}
+  {k:'menu',n:'更多',icon:'more',pages:['menu','goals','ach','dex','log','save','settings','feedback']}
 ];
-const UI_TITLE = {warehouse:'裝備倉庫',char:'角色總覽',dress:'角色與裝扮',skills:'戰鬥構築',craft:'打造工作台',tree:'天賦成長',maps:'冒險',menu:'更多',goals:'目標',ach:'成就',dex:'圖鑑',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定'};
+const UI_TITLE = {warehouse:'裝備倉庫',char:'角色總覽',dress:'角色與裝扮',skills:'戰鬥構築',craft:'打造工作台',tree:'天賦成長',maps:'冒險',menu:'更多',goals:'目標',ach:'成就',dex:'圖鑑',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定',feedback:'意見回饋'};
 const UI_WORK = {inventory:'support',craftSlot:'weapon',craftAct:'upgrade',adventure:'maps'};
 function uiNavHtml(){
   return UI_NAV.map(g=>{const current=g.pages.includes(modalTab),locked=!tabOpen(g.k),dot=g.k==='menu' ? dotOn('col')||logNew() : g.k==='tree' ? passPoints()>0 : dotOn(g.k);
@@ -28,7 +28,7 @@ function uiWork(key,id){
 }
 function uiMenuHtml(){
   const group=(name,items)=>`<section class="ui-menu-group"><h3>${name}</h3><div class="ui-directory">${items.map(([k,n,d])=>`<button onclick="openModal('${k}')"><b>${n}</b><span>${d}</span><i aria-hidden="true">↗</i></button>`).join('')}</div></section>`;
-  return group('進度與收藏',[['goals','目標','下一個里程碑與獎勵'],['ach','成就','已達成的挑戰'],['dex','圖鑑','技能、卡匣與收藏紀錄']])+group('系統工具',[['log','更新日誌','查看版本與更新'],['save','存檔與備份','本機保存、匯入及匯出'],['settings','遊戲設定','戰鬥規則、拾取與音效']])+`<button class="ui-wiki" aria-label="編年史" onclick="wikiOpen()">${spr('star',24)}<span><b>編年史</b><small>查看所有遊戲資訊</small></span><i aria-hidden="true">↗</i></button>`;
+  return group('進度與收藏',[['goals','目標','下一個里程碑與獎勵'],['ach','成就','已達成的挑戰'],['dex','圖鑑','技能、卡匣與收藏紀錄']])+group('系統工具',[['log','更新日誌','查看版本與更新'],['save','存檔與備份','本機保存、匯入及匯出'],['settings','遊戲設定','戰鬥規則、拾取與音效'],['feedback','意見回饋','回報問題、平衡與玩法建議']])+`<button class="ui-wiki" aria-label="編年史" onclick="wikiOpen()">${spr('star',24)}<span><b>編年史</b><small>查看所有遊戲資訊</small></span><i aria-hidden="true">↗</i></button>`;
 }
 function uiCharacterHtml(){
   const s=G.st;
@@ -83,7 +83,9 @@ function uiInitLayout(){
   addEventListener('resize',()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>uiApplyLayout());});
 }
 const UI_LAYOUT_CSS=`
-body.d{grid-template-columns:minmax(0,1fr) clamp(440px,34vw,520px)!important;grid-template-areas:"hd rt" "st rt"!important;grid-template-rows:48px minmax(0,1fr);height:100dvh;max-width:1920px;overflow:hidden;padding:16px 18px 34px!important;gap:12px 16px}
+.ui-feedback{display:grid;gap:12px;max-width:680px;margin:auto}.ui-feedback label{display:grid;gap:6px}.ui-feedback input,.ui-feedback textarea,.ui-feedback select{width:100%;min-height:44px;padding:10px;border:1px solid var(--ux-frame);background:var(--ux-lcd);color:var(--ux-ink)}.ui-feedback textarea{resize:none;min-height:160px}.ui-feedback .ui-feedback-consent{display:flex;align-items:center;gap:8px}.ui-feedback-consent input{width:24px;min-height:24px}.ui-feedback-error{color:#982b25;min-height:24px}.ui-feedback-preview{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--ux-lcd);padding:12px;border:1px solid var(--ux-edge)}
+
+body.d{grid-template-columns:minmax(0,1fr) clamp(480px,34vw,620px)!important;grid-template-areas:"hd rt" "st rt"!important;grid-template-rows:48px minmax(0,1fr);height:100dvh;max-width:1920px;overflow:hidden;padding:16px 18px 34px!important;gap:12px 16px}
 body.d>.rpg,body.m>.rpg{display:none!important}body.d>header{grid-area:hd;align-self:center;margin:0;padding:0 8px}body.d>header h1 .wm{width:194px!important}body.d .stage{grid-area:st;min-width:0;align-self:start;position:relative;margin:0;padding-bottom:40px}body.d #fig{width:100%;margin:0}
 body.d #modal{grid-area:rt;position:relative;inset:auto;width:100%;height:100%;min-height:0;top:0;align-self:stretch}body.d #modal>.mbox{padding:0!important;display:flex;flex-direction:column;overflow:hidden;height:100%;background:var(--ux-screen)!important}body.d #modal>.mbox::before{display:none}
 body.d #mtabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;flex:none;margin:0;padding:7px;border-bottom:1px solid var(--ux-edge)}
@@ -120,21 +122,21 @@ body.d .stats{position:absolute;left:8px;right:8px;top:4px;margin:0;max-width:no
 @media(min-width:560px) and (max-width:1179px){body.m #mbody{padding:14px 24px}.ui-inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ui-equipment{grid-template-columns:repeat(3,minmax(0,1fr))}.ui-character-head,.ui-menu-group,.ui-wiki{max-width:900px;margin-left:auto;margin-right:auto}}
 @media(max-height:500px){body.m .stats{top:0}body.m #mttl{min-height:40px}body.m .stage{padding-bottom:30px}body.m #fig{max-height:110px}body.m #mbody{padding:8px}body.m #mtabs{height:48px}body.m{padding-bottom:calc(48px + env(safe-area-inset-bottom))!important}}
 body.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:repeat(2,minmax(0,1fr))}
-body.ui-material #mbody .ui-map-grid .ui-item-state{font-size:12px!important}
+body.ui-material #mbody .ui-map-grid .ui-item-state{font-size:var(--ux-small)!important}
 /* Compact inventory cells share the console material and native button semantics. */
 body.ui-material #mbody .ui-item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:6px;margin:8px 0}
 body.ui-material #mbody .ui-equipment{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0}
-body.ui-material #mbody .ui-item-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;gap:4px;min-width:0;min-height:98px;padding:18px 3px 6px!important;white-space:normal;text-align:center;border-bottom:3px solid var(--item-rarity,var(--ux-edge))!important;scroll-margin:8px;font-size:12px!important;line-height:16px!important;overflow-wrap:anywhere}
-body.ui-material #mbody .ui-item-tile b{font-family:"Cubic 11",system-ui!important;font-size:12px!important;line-height:16px!important;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:32px;max-width:100%}
-body.ui-material #mbody .ui-item-tile small,body.ui-material #mbody .ui-item-state{font-family:"Cubic 11",system-ui!important;font-size:12px!important;line-height:16px!important}
+body.ui-material #mbody .ui-item-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;gap:4px;min-width:0;min-height:110px;padding:28px 3px 6px!important;white-space:normal;text-align:center;border-bottom:3px solid var(--item-rarity,var(--ux-edge))!important;scroll-margin:8px;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important;overflow-wrap:anywhere}
+body.ui-material #mbody .ui-item-tile b{font-family:var(--ux-body)!important;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:calc(var(--ux-small-line) * 2);max-width:100%}
+body.ui-material #mbody .ui-item-tile small,body.ui-material #mbody .ui-item-state{font-family:var(--ux-body)!important;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important}
 .ui-item-state{position:absolute;top:2px;left:3px;right:3px;text-align:left;color:var(--ux-muted);pointer-events:none}
 .ui-item-empty{background:var(--ux-screen);border:1px dashed var(--ux-edge);color:var(--ux-muted)}
 .ui-grid-empty{grid-column:1/-1;padding:12px 0}.ui-grid-pagination{justify-content:space-between;align-items:center;flex-wrap:nowrap!important}.ui-grid-pagination span{font-size:12px;white-space:nowrap}
 .ui-warehouse-summary{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.ui-warehouse-summary b{font-size:16px}.ui-warehouse-tools .ui-segments{margin:6px 0}.ui-warehouse-tools .uxmeta{margin:6px 0}
 body.ui-material #mbody .ui-inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 body.ui-material #mbody .ui-cart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:106px;padding:18px 4px 6px!important;white-space:normal;text-align:center;scroll-margin:8px;font-size:12px!important;line-height:16px!important}
-body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt :is(b,small){font-family:"Cubic 11",system-ui!important;font-size:12px!important;line-height:16px!important;max-width:100%;overflow-wrap:anywhere}
+body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:116px;padding:28px 4px 6px!important;white-space:normal;text-align:center;scroll-margin:8px;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important}
+body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt :is(b,small){font-family:var(--ux-body)!important;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important;max-width:100%;overflow-wrap:anywhere}
 body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 body.ui-material #mbody .ui-inventory-grid .gt .shp{margin:2px 0 0;padding:0!important;align-self:center}
 body.ui-material #mbody .gt[data-availability="unavailable"]{background:var(--ux-screen)!important;border-style:dashed!important;color:var(--ux-muted)!important}
@@ -145,14 +147,14 @@ body.ui-material #uisettings{scroll-padding:8px;padding:10px!important}
 body.ui-material #uisettings #btns{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
 #uisettings #btns>.cap{display:none}#uisettings #btns .stepwrap{min-width:0}#uisettings #btns .stepwrap.open{grid-column:1/-1}
 body.ui-material #uisettings #btns .act{gap:4px;min-height:72px;padding:8px!important;white-space:normal;line-height:24px!important}
-.ui-setting-copy{display:flex;flex-direction:column;min-width:0;gap:4px}.ui-setting-copy b{font-size:16px!important}.ui-setting-copy small{font-family:"Cubic 11",system-ui!important;font-size:12px!important;line-height:16px!important;color:var(--ux-muted)}
+.ui-setting-copy{display:flex;flex-direction:column;min-width:0;gap:4px}.ui-setting-copy b{font-size:var(--ux-text)!important}.ui-setting-copy small{font-family:var(--ux-body)!important;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important;color:var(--ux-muted)}
 body.ui-material #uisettings #btns .chips{display:none;margin:6px 0 0;padding:6px;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;box-shadow:none!important;border:1px solid var(--ux-edge)!important;background:var(--ux-screen)!important}
-body.ui-material #uisettings #btns .stepwrap.open .chips{display:grid}body.ui-material #uisettings #btns .chip{white-space:normal;min-width:0;min-height:44px;font-size:16px!important;padding:6px!important}
+body.ui-material #uisettings #btns .stepwrap.open .chips{display:grid}body.ui-material #uisettings #btns .chip{white-space:normal;min-width:0;min-height:44px;font-size:var(--ux-text)!important;padding:6px!important}
 body.ui-material #uisettings .view-settings{margin-top:12px;padding-top:12px!important}
 .ui-setting-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;align-items:start}.ui-setting-grid>.view-options{display:contents}
 body.ui-material #uisettings .ui-setting-grid> :is(button,.ui-setting-block){min-width:0;margin:0;padding:8px!important;box-sizing:border-box}
-body.ui-material #uisettings .ui-setting-grid>button{width:100%;min-height:60px;font-size:16px!important;white-space:normal}
-.ui-setting-block h4{margin:0 0 6px;font-size:16px}.ui-setting-block .view-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.ui-setting-block .view-options button{min-width:0;min-height:44px;padding:4px!important;font-size:12px!important}
+body.ui-material #uisettings .ui-setting-grid>button{width:100%;min-height:60px;font-size:var(--ux-text)!important;white-space:normal}
+.ui-setting-block h4{margin:0 0 6px;font-size:16px}.ui-setting-block .view-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.ui-setting-block .view-options button{min-width:0;min-height:44px;padding:4px!important;font-size:var(--ux-small)!important}
 .ui-setting-grid>.view-fx-control{grid-column:1/-1;border:1px solid var(--ux-edge);background:var(--ux-screen)}.view-fx-control>div:first-child{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ui-setting-grid>.ui-setting-block:not(.view-fx-control){grid-column:1/-1}.ui-setting-grid>.ui-setting-block .view-options{grid-template-columns:repeat(4,minmax(0,1fr))}.ui-setting-grid>#watch-now{grid-column:1/-1;min-height:44px!important}
 #uisettings .ui-rules>summary{min-height:44px;padding:10px 0;box-sizing:border-box}.ui-settings-intro h3{margin:0 0 8px!important}
@@ -168,10 +170,10 @@ function uiAdventureHtml(){
     const L=G.trainLast,mx=L?.rows.length?L.rows[0][1]:1;
     return current+nav+`<section class="ui-section"><h3>訓練場</h3><p>選擇 1 隻或 5 隻不還手的假人，測量 30 秒實際傷害。</p><div class="view-options" role="group" aria-label="訓練目標">${[['single','單體假人'],['crowd','群體假人']].map(([id,name])=>`<button class="mb" aria-pressed="${(G.trainingPreset||'crowd')===id}" ${G.train?'disabled':''} onclick="uiTrainingPreset('${id}')">${name}</button>`).join('')}</div>${G.train?`<p id="ui-train-time">測量中，剩 ${Math.ceil(G.train.t)} 秒</p><button class="mb" onclick="trainEnd(true)">取消測量</button>`:`<button class="mb pri" ${R?'disabled':''} onclick="trainStart()">開始測量</button>`}<p class="uxmeta">測試不掉落獎勵；開始時清空測試電荷，結束或取消後還原原有電荷。單體預估不等同多目標實測。</p>${L?`<p>上次結果：每秒約 <b>${tFmt(L.dps)}</b>（${L.n||5} 隻合計）</p>${L.rows.map(([k,v])=>`<div class="gl"><b>${uxEsc(k)}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${L.total?Math.round(v/L.total*100):0}%　${tFmt(v/(L.duration||30))}／秒</em></div>`).join('')}<details><summary>出手與連動結果</summary>${Object.entries(L.stats||{}).map(([id,row])=>`<p>${SKILLS[id].n}：${row.casts} 次出手／${row.repeats} 次回放，最長等候 ${row.maxWait.toFixed(1)} 秒</p>`).join('')}${uiComboSummary(L.combos)}</details>`:'<p class="uxmeta">完成測量後，保留傷害分布、出手次數與連動結果。</p>'}</section>`;
   }
-  return current+nav+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><p class="uxmeta">點選查看地貌、詞綴與獎勵；確認進入才消耗地圖。</p><div class="ui-item-grid ui-map-grid" role="group" aria-label="地圖庫存">${G.maps.length?G.maps.map(m=>uiItemTile({focus:'map-'+m.id,icon:spr('adventure',28),name:BIOMES[m.biome].n,meta:'Lv. '+m.lvl,state:'挑戰詞綴 '+mapChallenge(m.mods),action:`uiInspectMap('${encodeURIComponent(m.id).replace(/'/g,'%27')}')`,rarity:null})).join(''):'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏守關者便有機會取得。</p>'}</div>`;
+  return uiWorldViewHtml()+current+nav+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><p class="uxmeta">點選查看地貌、詞綴與獎勵；確認進入才消耗地圖。</p><div class="ui-item-grid ui-map-grid" role="group" aria-label="地圖庫存">${G.maps.length?G.maps.map(m=>uiItemTile({focus:'map-'+m.id,icon:spr('adventure',28),name:BIOMES[m.biome].n,meta:'Lv. '+m.lvl,state:'挑戰詞綴 '+mapChallenge(m.mods),action:`uiInspectMap('${encodeURIComponent(m.id).replace(/'/g,'%27')}')`,rarity:null})).join(''):'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏守關者便有機會取得。</p>'}</div>`;
 }
 let UI_MAP_PENDING=null;
-function uiInspectMap(encoded){let id;try{id=decodeURIComponent(encoded);}catch(_){return;}const m=G.maps.find(x=>x.id===id);if(!m)return;UI_MAP_PENDING={id,stamp:JSON.stringify(m)};const biome=BIOMES[m.biome],q=m.mods.reduce((sum,k)=>sum+(MODS[k]?.q||0),0);showOverlay(`<h2 class="uxdialog-title">${biome.n} · Lv. ${m.lvl}</h2><div class="ui-map-banner" style="--land:${biome.board.l};--land2:${biome.board.m}"><span>挑戰詞綴 ${mapChallenge(m.mods)} · 戰利品 +${Math.round(q*100)}%</span></div><ul>${m.mods.length?m.mods.map(k=>`<li>${mapKind(k)} · ${MODS[k].n}</li>`).join(''):'<li>沒有額外詞綴</li>'}</ul>${m.mods.includes('rich')?'<p>金幣 +60%</p>':''}${m.mods.includes('lucky')?'<p>稀有度提升</p>':''}<p>進入會消耗這張地圖，離開不退還。${G.run||G.train?'先結束目前挑戰或訓練。':''}</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回地圖</button><button class="mb pri" ${G.run||G.train?'disabled':''} onclick="uiUseMapPreview()">進入 · 消耗這張地圖</button></div>`);}
+function uiInspectMap(encoded){let id;try{id=decodeURIComponent(encoded);}catch(_){return;}const m=G.maps.find(x=>x.id===id);if(!m)return;UI_MAP_PENDING={id,stamp:JSON.stringify(m)};const biome=BIOMES[m.biome],land=terrainBuild('map:'+m.id+':0'),q=m.mods.reduce((sum,k)=>sum+(MODS[k]?.q||0),0);showOverlay(`<h2 class="uxdialog-title">${biome.n} · Lv. ${m.lvl}</h2><div class="ui-map-banner" style="--land:${biome.board.l};--land2:${biome.board.m}"><span>挑戰詞綴 ${mapChallenge(m.mods)} · 戰利品 +${Math.round(q*100)}%</span></div><p>${land.name} · ${land.bounds[1]-land.bounds[0]} × ${land.bounds[3]-land.bounds[2]} · 起伏最高 ${land.amplitude} 單位</p><ul>${m.mods.length?m.mods.map(k=>`<li>${mapKind(k)} · ${MODS[k].n}</li>`).join(''):'<li>沒有額外詞綴</li>'}</ul>${m.mods.includes('rich')?'<p>金幣 +60%</p>':''}${m.mods.includes('lucky')?'<p>稀有度提升</p>':''}<p>進入會消耗這張地圖，離開不退還。${G.run||G.train?'先結束目前挑戰或訓練。':''}</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回地圖</button><button class="mb pri" ${G.run||G.train?'disabled':''} onclick="uiUseMapPreview()">進入 · 消耗這張地圖</button></div>`);}
 function uiUseMapPreview(){const p=UI_MAP_PENDING;hideOverlay();if(!p||G.run||G.train||JSON.stringify(G.maps.find(x=>x.id===p.id))!==p.stamp){uxAnnounce('地圖或挑戰狀態已變動，沒有消耗地圖。');return;}enterMap(p.id);}
 function uiLeaveMap(){
   if(!G.run)return;
@@ -299,3 +301,23 @@ function uiInstallSettings(){const root=$('uisettings');if(!root||root.dataset.g
  const order=['模式','挑戰守關者','戰利品過濾','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
  uiSyncSettings();}
 function uiSyncSettings(){for(const wrap of document.querySelectorAll('#uisettings [data-setting]')){const [label,value]=UI_SETTING_LABELS[wrap.dataset.setting],button=wrap.querySelector('.act'),text=value(),html=`<span class="ui-setting-copy"><b>${label}</b><small>${uxEsc(text)}</small></span>${wrap.querySelector('.chips')?'<span aria-hidden="true">▾</span>':'<span aria-hidden="true">↗</span>'}`;if(button.innerHTML!==html)button.innerHTML=html;}}
+
+/* 回饋只在玩家預覽後開啟 GitHub；不讀取或傳送遊戲存檔。 */
+const FEEDBACK_DRAFT={category:'錯誤',title:'',details:'',device:false};
+function feedbackHtml(){const d=FEEDBACK_DRAFT;return `<form class="ui-feedback" novalidate onsubmit="event.preventDefault();feedbackPreview()"><p>回報錯誤、平衡問題或玩法建議。預覽後會前往 GitHub，由你登入並按下提交；亦可下載文字自行保留。</p><label for="feedback-category">類別<select id="feedback-category" onchange="FEEDBACK_DRAFT.category=this.value">${['錯誤','平衡','玩法建議','其他'].map(n=>`<option ${d.category===n?'selected':''}>${n}</option>`).join('')}</select></label><label for="feedback-title">標題（必填，最多 60 字）<input id="feedback-title" maxlength="60" required value="${uxEsc(d.title)}" aria-describedby="feedback-error" oninput="FEEDBACK_DRAFT.title=this.value;feedbackClearError(this)"></label><label for="feedback-details">內容（必填，最多 700 字）<textarea id="feedback-details" maxlength="700" required aria-describedby="feedback-help feedback-error" oninput="FEEDBACK_DRAFT.details=this.value;feedbackClearError(this)">${uxEsc(d.details)}</textarea></label><p id="feedback-help" class="uxmeta">請寫發生情況、預期結果，以及重現步驟。請勿填寫密碼、電郵或完整存檔碼。</p><label class="ui-feedback-consent"><input type="checkbox" ${d.device?'checked':''} onchange="FEEDBACK_DRAFT.device=this.checked">附上瀏覽器及畫面尺寸（可選）</label><p class="uxmeta">版本號會附上；不會自動附上存檔、角色名稱或遊戲進度。GitHub 提交後的內容會公開。</p><p id="feedback-error" class="ui-feedback-error" role="alert"></p><button class="mb pri" type="submit">預覽回饋</button></form>`;}
+function feedbackClearError(input){input.removeAttribute('aria-invalid');const e=$('feedback-error');if(e)e.textContent='';}
+function feedbackText(d,device=''){return `類別：${d.category}\n版本：${VERSION()}\n\n${d.details.trim()}${d.device&&device?'\n\n裝置資訊：'+device:''}`;}
+function feedbackPayload(d,device=''){
+  const title=d.title.trim(),details=d.details.trim();if(!title||!details||title.length>60||details.length>700||!['錯誤','平衡','玩法建議','其他'].includes(d.category))return null;
+  const body=feedbackText(d,device);return {title:`[${d.category}] ${title}`,body,url:'https://github.com/yauchai2/Game-Lab/issues/new?title='+encodeURIComponent(`[${d.category}] ${title}`)+'&body='+encodeURIComponent(body)};
+}
+function feedbackPreview(){
+  const d=FEEDBACK_DRAFT,device=d.device?`${navigator.userAgent.slice(0,220)}；${innerWidth} × ${innerHeight}`:'';
+  const payload=feedbackPayload(d,device);if(!payload){const input=!d.title.trim()||d.title.length>60?$('feedback-title'):$('feedback-details');$('feedback-error').textContent='請填寫標題及內容，並遵守字數上限。';input.setAttribute('aria-invalid','true');input.focus();return;}
+  FEEDBACK_PREVIEW=payload;
+  showOverlay(`<h2 class="uxdialog-title">預覽回饋</h2><p>內容會公開於 GitHub。下一步只會開啟填好的表單，尚未提交。</p><h3>${uxEsc(payload.title)}</h3><div class="ui-feedback-preview">${uxEsc(payload.body)}</div><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回修改</button><a class="mb" href="${uxEsc(payload.url)}" target="_blank" rel="noopener noreferrer">前往 GitHub 提交 ↗</a><button class="mb" onclick="feedbackDownload()">下載回饋文字</button></div><p class="uxmeta">GitHub 需要登入。草稿會保留至關閉或重新整理本頁；開啟表單後不會自動清除。</p>`);
+}
+let FEEDBACK_PREVIEW=null;
+function feedbackDownload(){if(!FEEDBACK_PREVIEW)return;const p=FEEDBACK_PREVIEW,url=URL.createObjectURL(new Blob([p.title+'\n\n'+p.body],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='game-lab-feedback.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);uxAnnounce('已下載回饋文字，尚未提交。');}
+
+function uiWorldViewHtml(){const p=terrainNow(),size={regular:'一般地圖',large:'大型地圖',giant:'巨型地圖',training:'訓練場'}[p.sizeClass];return `<section class="ui-section"><h3>${p.name} · ${size}</h3><p class="uxmeta">${p.bounds[1]-p.bounds[0]} × ${p.bounds[3]-p.bounds[2]} · ${FXO.overview?'全景鏡頭':'自動取景'} · 怪物由遠處入場</p><button class="mb" type="button" aria-pressed="${!!FXO.overview}" onclick="toggleWorldOverview()">${FXO.overview?'返回戰鬥鏡頭':'查看全景地圖'}</button></section>`;}

@@ -189,7 +189,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, fo
   s.life = (baseLife + s.life) * (1 + s.lifePct/100);
   if(city)s.regen+=s.life*.01*city.branches.filter(id=>id==='safe').length;
   s.aps = Math.min(4, 1 + s.apsInc/100);
-  s.red = Math.min(.7, s.armor / (s.armor + 60 + 12*G.lvl));
+  s.red = Math.min(.6, s.armor / (s.armor + 80 + 16*G.lvl));
   const bb=modern&&pass.includes('CK')?{rows:0,cols:0,pair:{}}:boardBonus(); s.crit += 5*bb.cols; s.bb = bb;
   s.critAvg = 1 + Math.min(s.crit, 100)/100 * (s.cm/100 - 1);
   s.hit = s.dmg * (1 + s.inc/100);
@@ -221,7 +221,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, fo
 }
 function recalc(){ syncBoard(); syncCoreCollection(); const old = G.st; G.st = calc(); if(old?.sk?.BEAM?.mode!==G.st.sk.BEAM?.mode)G.signalCharge=0; const h=G.h;if(!G.st.firmware.includes('AK'))h.buffer=0;else h.buffer=Math.min(h.buffer||0,G.st.life*.12); h.hp = old ? h.hp * G.st.life / old.life : G.st.life; G.dirty = true; }
 const achCount = () => Object.keys(G.ach).length;
-function checkAch(){ for (const [id, a] of Object.entries(ACHS)) if (!G.ach[id] && a.ok()){ G.ach[id] = 1; recalc(); logLine(`成就解鎖：${a.n}（永久傷害 +1%）`, '#c28a00'); addFloat(HX, HY, BZ + 26 + 2, a.n, '#c28a00', 4); SFX('rare'); G.dirty = true; } }
+function checkAch(){ for (const [id, a] of Object.entries(ACHS)) if ((GAME_FEATURES.cardChoices||id!=='card10') && !G.ach[id] && a.ok()){ G.ach[id] = 1; recalc(); logLine(`成就解鎖：${a.n}（永久傷害 +1%）`, '#c28a00'); addFloat(HX, HY, BZ + 26 + 2, a.n, '#c28a00', 4); SFX('rare'); G.dirty = true; } }
 const charOk = id => CHARS[id].ach ? !!G.ach[CHARS[id].ach] : G.maxDepth >= CHARS[id].need;
 function pickChar(id){ if (!CHARS[id] || !charOk(id)) return; G.char = id; recalc(); logLine(`角色：${CHARS[id].n}`, '#2b6fa8'); SFX('card'); }
 const cardN = id => G.cards[id] || 0;
@@ -231,9 +231,9 @@ function rollCards(n = 3){
   return out;
 }
 function rollRelics(n = 3){ const pool = Object.keys(RELICS).filter(id => !G.relics[id]); const out = []; while (out.length < n && pool.length) out.push(pool.splice(Math.floor(Math.random()*pool.length), 1)[0]); return out; }
-function takeRelic(id){ G.relics[id] = 1; G.relicPicks = Math.max(0, G.relicPicks - 1); G.offerR = null; recalc(); logLine(`獲得遺物：${RELICS[id].n}`, '#c28a00'); }
-function takeCard(id){ G.cards[id] = cardN(id) + 1; G.picks = Math.max(0, G.picks - 1); G.offer = null; recalc(); const c = CARDS[id]; logLine(`改裝：${c.n}`, c.sk ? '#8e3fd1' : '#2b6fa8'); }
-function resolveOfflineChoices(summary){
+function takeRelic(id){ if(!GAME_FEATURES.cardChoices)return; G.relics[id] = 1; G.relicPicks = Math.max(0, G.relicPicks - 1); G.offerR = null; recalc(); logLine(`獲得遺物：${RELICS[id].n}`, '#c28a00'); }
+function takeCard(id){ if(!GAME_FEATURES.cardChoices)return; G.cards[id] = cardN(id) + 1; G.picks = Math.max(0, G.picks - 1); G.offer = null; recalc(); const c = CARDS[id]; logLine(`改裝：${c.n}`, c.sk ? '#8e3fd1' : '#2b6fa8'); }
+function resolveOfflineChoices(summary){ if(!GAME_FEATURES.cardChoices)return;
   if (!G.autoCard){
     if (G.picks > 0 || G.relicPicks > 0) G.deferChoices = true;
     return;
@@ -244,7 +244,7 @@ function resolveOfflineChoices(summary){
 }
 const xpNeed = L => Math.round(30 * Math.pow(1.32, L-1));
 function logLine(txt, col){ if (G.offline) return; if (typeof bossPush === 'function') bossPush(txt, col && col.length === 7 && col.toLowerCase() === '#2b2552' ? null : col, 'INFO'); G.log.unshift({ txt, col:col || '#2b2552' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
-function addFloat(x, y, z, txt, col, size=3.6){ if (G.offline) return; if(G.floats.length>=20)G.floats.shift(); G.floats.push({ x, y, z, txt, col, size, t:0 }); }
+function addFloat(x, y, z, txt, col, size=3.6, kind='event'){ if (G.offline) return; if(G.floats.length>=20)G.floats.shift(); G.floats.push({ x, y, z, txt, col, size, kind, t:0 }); }
 function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
 
 /* ---------- save / load ---------- */
@@ -314,7 +314,7 @@ function collectEquipment(it){
 }
 const validDrop=d=>!!(d&&Number.isFinite(d.x)&&Number.isFinite(d.y)&&(['gold','chip'].includes(d.kind)?Number.isFinite(d.amount)&&d.amount>0:d.kind==='item'?validGear(d.it):d.kind==='gem'?SUPPS[d.id]:d.kind==='cart'?MODES[d.id]:d.kind==='map'?d.map&&BIOMES[d.map.biome]:false));
 function dropGround(d){
-  d.x=tClamp(d.x,HX-38,HX+38);d.y=tClamp(d.y,HY-38,HY+38);
+  [d.x,d.y]=terrainProject(d.x,d.y);
   if(d.kind==='gold'||d.kind==='chip'){
     const near=G.drops.find(x=>!x.done&&x.kind===d.kind&&Math.hypot(x.x-d.x,x.y-d.y)<8);
     if(near){near.amount+=d.amount;return;}
@@ -409,7 +409,7 @@ function forgeTargetCore(id){const C=G.city||(G.city=newCity()),route=cityRouteF
  const it=makeItem(coreSlot(id),3,Math.max(8,G.maxDepth),id);C.fragments[route]-=24;G.armory[id]=it;G.legSeen[id]=1;G.dirty=true;return true;
 }
 function validCityRun(R){const c=R?.city;return !!(c&&CITY_ROUTES[c.route]&&Number.isInteger(c.tier)&&c.tier>=1&&c.tier<=8&&Number.isInteger(c.stage)&&c.stage>=1&&c.stage<=3&&Number.isFinite(c.bank)&&c.bank>=0&&Array.isArray(c.branches)&&c.branches.length===c.stage-1&&c.branches.every(id=>CITY_BRANCHES[id])&&LEGEND_BY[c.target]&&c.settled===false&&Number.isFinite(R.kills)&&Number.isFinite(R.need)&&BIOMES[R.map?.biome]&&Number.isFinite(R.map?.lvl));}
-function heroDamage(damage){if(!Number.isFinite(damage)||damage<=0)return 0;const h=G.h,shield=G.time<(h.bufferUntil||0)?h.buffer||0:0,absorbed=Math.min(shield,damage);h.buffer=shield-absorbed;h.hp-=damage-absorbed;return damage-absorbed;}
+function heroDamage(damage){if(!Number.isFinite(damage)||damage<=0)return 0;const h=G.h,shield=G.time<(h.bufferUntil||0)?h.buffer||0:0,absorbed=Math.min(shield,damage);h.buffer=shield-absorbed;h.hp-=damage-absorbed;if(damage>absorbed)h.lastDamageAt=G.time;return damage-absorbed;}
 function cityMonster(m){const c=G.run?.city;if(!c)return;const branch=c.branches,route=c.nexus?['signal','memory','power'][Math.min(2,c.stage-1)]:c.route;
  m.cityRoute=route;m.hp*=1+.15*(c.tier-1)+(c.nexus?.35:0);m.hpMax=m.hp;
  m.dmg*=Math.pow(.85,branch.filter(x=>x==='safe').length)*Math.pow(1.15,branch.filter(x=>x==='risk').length);
@@ -462,3 +462,108 @@ function affQuality(a,it){return Math.max(0,Math.min(1,(a.v/(AFF[a.k].b(it.il)*A
 function recalibrateAff(a,it){return {...a,tier:affTier(a,it.il),v:affValue(a.k,it.il,affTier(a,it.il),Math.random(),it.r===3?1.35:1)};}
 
 function forgetBuildGear(index){if(![0,1,2].includes(index)||index===(G.bi||0)||G.run?.city||G.train||!G.builds[index]?.equipment)return false;delete G.builds[index].equipment;G.dirty=true;G.inventoryRevision++;return true;}
+
+/* 回復共用額度：多段、範圍、擊殺與吸血共享，不能用命中數繞過。 */
+function heroRecover(amount){
+  const h=G.h,rate=G.st.life*.025;
+  if(!Number.isFinite(amount)||amount<=0||h.hp<=0)return 0;
+  h.recoverCredit=Math.min(rate,(h.recoverCredit??rate)+Math.max(0,G.time-(h.recoverAt??G.time))*rate);
+  h.recoverAt=G.time;const v=Math.min(amount,h.recoverCredit,Math.max(0,G.st.life-h.hp));
+  h.recoverCredit-=v;h.hp+=v;return v;
+}
+function damageFloatSize(amount){return Math.min(26,12+Math.log10(1+Math.max(0,amount))*3);}
+
+/* 地形獨立種子，不消耗戰利品／戰鬥亂數。格網連通、高度連續，角色沿坡行走。 */
+function terrainHash(text){let n=2166136261;for(const c of String(text))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;}
+function terrainKey(){const r=G.run;return G.train?'training':r?.map?'map:'+r.map.id+':'+(r.city?.stage??r.floor??0):'depth:'+G.depth;}
+let TERRAIN_CACHE=null;
+function terrainBuild(key){
+  const seed=terrainHash(key),training=key==='training',profile=training?0:seed%6,cell=6;
+  // Rounded land masses with low-frequency coast variation, never letter-shaped cut-outs.
+  const sizeClass=training?'training':seed%11===0?'giant':seed%4===0?'large':'regular';
+  const span=sizeClass==='giant'?540+(seed>>>5)%19*6:sizeClass==='large'?252+(seed>>>5)%9*6:144+(seed>>>5)%9*6;
+  const nx=training?17:Math.round(span/cell),ny=training?17:Math.round(span*(.78+(seed>>>11)%23/100)/cell);
+  const ox=HX-Math.floor(nx/2)*cell-cell/2,oy=HY-Math.floor(ny/2)*cell-cell/2,w=nx*cell/2,h=ny*cell/2;
+  const names=['林間海岸','起伏山丘','寬闊河灣','高原盆地','海岸台地','城市綠洲'];
+  const groundCells=[],lookup=new Map();
+  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
+    const x=ox+(i+.5)*cell,y=oy+(j+.5)*cell,u=(x-HX)/w,v=(y-HY)/h,angle=Math.atan2(v,u);
+    const coast=.87+.055*Math.sin(angle*3+seed%17)+.035*Math.sin(angle*5+seed%11)+.025*Math.cos(angle*2+profile);
+    const bend=profile===2?.13*Math.sin(v*2.3):profile===4?.1*v:0;
+    if(training||Math.hypot(u-bend,v)<coast){const c={i,j,x,y,k:j*nx+i};groundCells.push(c);lookup.set(c.k,c);}
+  }
+  const groundLookup=new Map(lookup),landmarks=[];
+  const pick=(index)=>groundCells[terrainHash(key+':'+index)%groundCells.length];
+  const count=training?0:Math.min(64,Math.round(groundCells.length/110)+3);
+  for(let n=0;n<count*12&&landmarks.length<count;n++){
+    const c=pick(n),building=profile===5&&landmarks.length<Math.min(4,Math.ceil(count/3)),radius=building?12:3;
+    if(Math.hypot(c.x-HX,c.y-HY)<(building?45:30)||Math.hypot((c.x-HX)/w,(c.y-HY)/h)>.7)continue;
+    if(landmarks.some(o=>Math.hypot(o.x-c.x,o.y-c.y)<o.radius+radius+18))continue;
+    const scale=building?1:2.4+(terrainHash(key+':scale:'+n)%18)/10;
+    landmarks.push({x:c.x,y:c.y,radius,kind:building?'building':'tree',scale,height:building?48+(n%4)*18:14*scale});
+    for(const q of groundCells)if(building?Math.abs(q.x-c.x)<radius&&Math.abs(q.y-c.y)<radius:Math.hypot(q.x-c.x,q.y-c.y)<radius)lookup.delete(q.k);
+  }
+  const center=Math.floor(ny/2)*nx+Math.floor(nx/2),seen=new Set([center]),queue=[lookup.get(center)];
+  for(let n=0;n<queue.length;n++){const c=queue[n];for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const i=c.i+di,j=c.j+dj,k=j*nx+i;if(i>=0&&i<nx&&j>=0&&j<ny&&lookup.has(k)&&!seen.has(k)){seen.add(k);queue.push(lookup.get(k));}}}
+  const cells=groundCells.filter(c=>seen.has(c.k));for(const k of lookup.keys())if(!seen.has(k))lookup.delete(k);
+  const edges=cells.filter(c=>[[1,0],[-1,0],[0,1],[0,-1]].some(([di,dj])=>{const i=c.i+di,j=c.j+dj;return i<0||i>=nx||j<0||j>=ny||!groundLookup.has(j*nx+i);}));
+  const bounds=[Math.min(...groundCells.map(c=>c.x))-3,Math.max(...groundCells.map(c=>c.x))+3,Math.min(...groundCells.map(c=>c.y))-3,Math.max(...groundCells.map(c=>c.y))+3];
+  return {key,seed,profile,sizeClass,name:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:training?0:[8,22,10,28,18,5][profile]};
+}
+
+function terrainNow(){const key=terrainKey();if(TERRAIN_CACHE?.key!==key)TERRAIN_CACHE=terrainBuild(key);return TERRAIN_CACHE;}
+function terrainGroundCell(x,y,p=terrainNow()){const i=Math.floor((x-p.ox)/p.cell),j=Math.floor((y-p.oy)/p.cell);return i>=0&&i<p.nx&&j>=0&&j<p.ny?p.groundLookup.get(j*p.nx+i):undefined;}
+function terrainCell(x,y,p=terrainNow()){const i=Math.floor((x-p.ox)/p.cell),j=Math.floor((y-p.oy)/p.cell);return i>=0&&i<p.nx&&j>=0&&j<p.ny?p.lookup.get(j*p.nx+i):undefined;}
+function terrainHeight(x,y,p=terrainNow()){
+  if(!p.amplitude)return 0;
+  const u=(x-HX)/(p.nx*p.cell/2),v=(y-HY)/(p.ny*p.cell/2),hill=Math.exp(-((u+.3)**2+(v+.25)**2)*5),ridge=Math.exp(-((u-.35)**2+(v-.15)**2)*8);
+  return p.amplitude*(.12+.55*hill+.3*ridge+.03*Math.sin(u*6+v*4+p.seed%7));
+}
+
+function terrainProject(x,y,p=terrainNow()){
+  if(terrainCell(x,y,p))return [x,y];let best=p.cells[0],d=Infinity;
+  for(const c of p.cells){const dd=(c.x-x)**2+(c.y-y)**2;if(dd<d){d=dd;best=c;}}
+  return [Math.max(best.x-2.7,Math.min(best.x+2.7,x)),Math.max(best.y-2.7,Math.min(best.y+2.7,y))];
+}
+function terrainSegment(x,y,tx,ty,p=terrainNow()){
+  const start=terrainCell(x,y,p),end=terrainCell(tx,ty,p);if(!start||!end)return false;
+  let i=start.i,j=start.j;const dx=tx-x,dy=ty-y,sx=Math.sign(dx),sy=Math.sign(dy);
+  const valid=(a,b)=>a>=0&&a<p.nx&&b>=0&&b<p.ny&&p.lookup.has(b*p.nx+a);
+  let bx=dx?((p.ox+(i+(sx>0?1:0))*p.cell)-x)/dx:Infinity,by=dy?((p.oy+(j+(sy>0?1:0))*p.cell)-y)/dy:Infinity;
+  const stepx=dx?p.cell/Math.abs(dx):Infinity,stepy=dy?p.cell/Math.abs(dy):Infinity;
+  for(let guard=0;guard<p.nx+p.ny+4;guard++){
+    if(i===end.i&&j===end.j)return true;
+    if(Math.abs(bx-by)<1e-10){if(!valid(i+sx,j)||!valid(i,j+sy))return false;i+=sx;j+=sy;bx+=stepx;by+=stepy;}
+    else if(bx<by){i+=sx;bx+=stepx;}else{j+=sy;by+=stepy;}
+    if(!valid(i,j))return false;
+  }return false;
+}
+
+function terrainWaypoint(x,y,tx,ty){
+  const p=terrainNow();[tx,ty]=terrainProject(tx,ty,p);if(terrainSegment(x,y,tx,ty,p))return [tx,ty];
+  const from=terrainCell(x,y,p),target=terrainCell(tx,ty,p);if(!from)return terrainProject(x,y,p);
+  let field=p.routes.get(target.k);
+  if(!field){field=new Map([[target.k,0]]);const q=[target];for(let a=0;a<q.length;a++){const c=q[a];for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const i=c.i+di,j=c.j+dj,k=j*p.nx+i;if(i<0||i>=p.nx||j<0||j>=p.ny||field.has(k)||!p.lookup.has(k))continue;field.set(k,field.get(c.k)+1);q.push(p.lookup.get(k));}}if(p.routes.size>=32)p.routes.delete(p.routes.keys().next().value);p.routes.set(target.k,field);}
+  let best=from;for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const c=p.lookup.get((from.j+dj)*p.nx+from.i+di);if(c&&Math.abs(c.i-from.i)+Math.abs(c.j-from.j)===1&&field.get(c.k)<field.get(best.k))best=c;}
+  // First align inside the current cell, then cross its shared edge; no diagonal corner cutting.
+  if(best.i!==from.i&&Math.abs(y-from.y)>1.6)return [from.x,from.y];
+  if(best.j!==from.j&&Math.abs(x-from.x)>1.6)return [from.x,from.y];
+  return [best.x,best.y];
+}
+function terrainMove(entity,x,y){const p=terrainNow();if(terrainSegment(entity.x,entity.y,x,y,p)){entity.x=x;entity.y=y;}else if(terrainSegment(entity.x,entity.y,x,entity.y,p)){entity.x=x;}else if(terrainSegment(entity.x,entity.y,entity.x,y,p)){entity.y=y;}else{[entity.x,entity.y]=terrainProject(entity.x,entity.y,p);}}
+// Normal maps use the coast; huge maps activate distant approaches around the hero.
+function terrainSpawnPoints(){
+  const p=terrainNow(),local=p.sizeClass==='giant'||p.sizeClass==='large',x=local?G.h.x:HX,y=local?G.h.y:HY;
+  const pool=(local?p.cells:p.edges).filter(c=>{const d=Math.hypot(c.x-G.h.x,c.y-G.h.y);return d>=32&&(!local||d<=88);});
+  const candidates=pool.length?pool:p.edges;
+  return Array.from({length:8},(_,n)=>{const a=(n+.5)*Math.PI/4,tx=x+Math.cos(a)*(local?64:Math.max(p.nx,p.ny)*p.cell),ty=y+Math.sin(a)*(local?64:Math.max(p.nx,p.ny)*p.cell);let best=candidates[0],d=Infinity;for(const c of candidates){const q=(c.x-tx)**2+(c.y-ty)**2;if(q<d){d=q;best=c;}}return [best.x,best.y];});
+}
+
+function terrainScenery(p=terrainNow()){
+  if(p.key==='training')return [];const out=p.landmarks.map(o=>({...o})),occupied=(x,y,r)=>p.landmarks.some(o=>Math.hypot(o.x-x,o.y-y)<o.radius+r+4);
+  const count=Math.min(260,Math.round(p.groundCells.length*.15));
+  for(let i=0;i<count;i++){const c=p.cells[terrainHash(p.key+':detail:'+i)%p.cells.length];if(Math.hypot(c.x-HX,c.y-HY)<17||occupied(c.x,c.y,3))continue;
+    const n=terrainHash(p.key+':kind:'+i),kind=p.profile===5?(n%7===0?'bike':n%4===0?'lamp':'grass'):n%9===0?'rock':n%5===0?'bush':'grass';
+    out.push({x:c.x,y:c.y,kind,scale:kind==='grass'?.6:kind==='bike'?1:.5+(n%6)/10,rotation:n%628/100});
+  }return out;
+}

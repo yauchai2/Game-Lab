@@ -59,7 +59,7 @@ function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); set
   if ($('modal').hidden) return;
   $('mtabs').innerHTML=uiNavHtml(); uiTitle();
   const settings=modalTab==='settings';if(settings)uiSyncSettings(); $('uisettings').hidden=!settings; $('mmenu').hidden=false; $('mbody').hidden=settings;
-  if(!settings) $('mbody').innerHTML = modalTab === 'warehouse' ? warehouseHtml() : modalTab === 'char' ? uiCharacterHtml() : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? dressHtml() : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : modalTab === 'save' ? saveHtml() : uiMenuHtml();
+  if(!settings) $('mbody').innerHTML = modalTab === 'warehouse' ? warehouseHtml() : modalTab === 'char' ? uiCharacterHtml() : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? dressHtml() : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : modalTab === 'feedback' ? feedbackHtml() : modalTab === 'save' ? saveHtml() : uiMenuHtml();
   uxRestorePanel(uxPanel,resetScroll);if(resetScroll)uxAnimatePanel();
   UI_LIVE_SIGNATURE=uiLiveSignature();uiCityRevealCheckpoint();
 }
@@ -251,8 +251,8 @@ function doImport(){ const o = decodeSave($('sv').value); if (!o || !applySave(o
 function doReset(){ if (!resetArm){ resetArm = true; renderModal(); return; } try { localStorage.removeItem(SAVE_KEY); } catch (e) {} G.__wipe = true; location.search = '?fresh=1'; }
 
 /* 升級三選一 */
-function toggleAuto(){ G.autoCard = !G.autoCard; if (G.autoCard) openCards(); else if (G.picks > 0) openCards(); G.dirty = true; renderModal(); }
-function openCards(){
+function toggleAuto(){ if(!GAME_FEATURES.cardChoices)return; G.autoCard = !G.autoCard; if (G.autoCard) openCards(); else if (G.picks > 0) openCards(); G.dirty = true; renderModal(); }
+function openCards(){ if(!GAME_FEATURES.cardChoices)return;
   if (G.picks <= 0 || G.offline) return;
   G.deferChoices = false;
   if (G.autoCard){ while (G.picks > 0){ const o = rollCards(3); if (!o.length) break; takeCard(tPick(o)); } hideOverlay(); return; }   /* 自動隨機：直接抽一張 */ if (!G.offer || !G.offer.length) G.offer = rollCards();
@@ -260,25 +260,25 @@ function openCards(){
   showOverlay(`<b>升級了！選一張改裝卡</b><div class="mute">還有 ${G.picks} 次選擇。遊戲不會暫停。</div><div class="cards">${h}</div><button class="mb" onclick="deferChoices()">稍後再選</button> <button class="mb" onclick="toggleAuto()">自動隨機選卡</button>`);
 }
 function deferChoices(){ G.deferChoices = true; G.dirty = true; hideOverlay(); }
-function openPendingChoices(){ hideOverlay(); if (G.relicPicks > 0) openRelics(); else if (G.picks > 0) openCards(); }
-function openRelics(){
+function openPendingChoices(){ if(!GAME_FEATURES.cardChoices)return; hideOverlay(); if (G.relicPicks > 0) openRelics(); else if (G.picks > 0) openCards(); }
+function openRelics(){ if(!GAME_FEATURES.cardChoices)return;
   if (G.relicPicks <= 0 || G.offline) return;
   G.deferChoices = false;
   if (G.autoCard){ while (G.relicPicks > 0){ const o = rollRelics(); if (!o.length){ G.relicPicks = 0; break; } takeRelic(tPick(o)); } hideOverlay(); return; }
   if (!G.offerR || !G.offerR.length) G.offerR = rollRelics(); if (!G.offerR.length){ G.relicPicks = 0; return; }
   showOverlay(`<b>擊敗守關者！選一件遺物</b><div class="mute">永久生效。還有 ${G.relicPicks} 次選擇。</div><div class="cards">${G.offerR.map(id => `<button class="card var" onclick="pickRelic('${id}')"><span class="ct">遺物</span>${xico('relic', id, 40)}<b>${RELICS[id].n}</b><span class="cd">${RELICS[id].d}</span></button>`).join('')}</div><button class="mb" onclick="deferChoices()">稍後再選</button>`);
 }
-function pickRelic(id){ SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
-function pickCard(id){ SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
+function pickRelic(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
+function pickCard(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
 function charHtml(){
   return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true"><b>${c.n}${G.char === id ? ' ✓' : ''}</b>${charOk(id) ? '' : `<span class="mute">${c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖'}</span>`}</button>`).join('')}</div><div class="char-description">${CHARS[G.char].d}<br>專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}</div></div>`;
 }
 function achHtml(){
-  const n = achCount(), tot = Object.keys(ACHS).length;
-  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
+  const n = achCount(), tot = Object.keys(ACHS).filter(id=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).length;
+  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).filter(([id])=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
 }
 function cardsHtml(){
-  const e = Object.entries(G.cards); const pend = (G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button> ` : '') + (G.relicPicks > 0 ? `<button class="mb" onclick="openRelics()">有 ${G.relicPicks} 次遺物待選</button> ` : '') + `<button class="mb" onclick="toggleAuto()">自動隨機：${G.autoCard ? '開' : '關'}</button>`;
+  const e = Object.entries(G.cards);if(!GAME_FEATURES.cardChoices)return e.length?`<section class="ui-section"><h3>既有改裝效果</h3><ul>${e.map(([id,n])=>`<li>${uxEsc(CARDS[id].n)} ×${n} · ${uxEsc(CARDS[id].d)}</li>`).join('')}</ul></section>`:''; const pend = (G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button> ` : '') + (G.relicPicks > 0 ? `<button class="mb" onclick="openRelics()">有 ${G.relicPicks} 次遺物待選</button> ` : '') + `<button class="mb" onclick="toggleAuto()">自動隨機：${G.autoCard ? '開' : '關'}</button>`;
   return `<div class="rc"><div class="rh">改裝卡</div>${pend}<ul>${e.length ? e.map(([id, n]) => `<li><b>${CARDS[id].n}</b> ×${n} <span class="mute">${CARDS[id].d.split('，')[0]}</span></li>`).join('') : '<li class="mute">升級時可選擇</li>'}</ul></div>`;
 }
 
@@ -320,7 +320,9 @@ function catchUp(sec, report){
   if (report) showOverlay(`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
     const t0 = performance.now();
-    while (left > 0 && performance.now() - t0 < 8){ update(.2); left -= .2; }
+    while (left > 0 && performance.now() - t0 < 8){
+      update(.2); left -= .2;
+    }
     if (left > 0){ if (report && $('oprog')) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; setTimeout(chunk, 0); return; }
     for (const d of G.drops) if (!d.done){ d.done = true; pickup(d); } G.drops = []; G.proj = []; G.timers = []; G.mons = []; G.spawnCd = .5; G.h.swingT = -1; G.h.castT = -1; G.h.dead = 0;
     resolveOfflineChoices(G.off);

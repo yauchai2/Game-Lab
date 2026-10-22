@@ -1,0 +1,6 @@
+/* Real Three.js scene construction without a GPU or browser. */
+const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+const c={console,Math,Date,URLSearchParams,location:{search:''},GridLab:require('../src/game/00-grid.js')};vm.createContext(c);
+for(const f of ['src/vendor/three.min.js','src/game/01-data.js','src/game/02-state.js','src/game/models.js','src/game/models-mon.js','src/game/models-weapon.js','src/game/04-render.js'])vm.runInContext(fs.readFileSync(f,'utf8'),c,{filename:f});
+const results=vm.runInContext(`(()=>{const out=[],seen=new Set();for(let i=0;i<80;i++){G.run={map:{id:'mesh-'+i}};const plan=terrainNow();if(seen.has(plan.profile))continue;seen.add(plan.profile);const g=buildGround(i%12);let meshes=0,vertices=0,invalid=false;g.traverse(o=>{if(o.isMesh){meshes++;const pos=o.geometry.attributes.position;vertices+=pos.count;for(const n of pos.array)if(!Number.isFinite(n))invalid=true;}});out.push({profile:plan.profile,meshes,vertices,invalid});}return out;})()`,c);
+assert.equal(results.length,6);for(const r of results){assert(r.meshes<20);assert(r.vertices>500);assert(!r.invalid);}console.log('PASS six real Three.js terrains contain finite merged geometry in fewer than 20 draw meshes each');console.log(JSON.stringify(results));

@@ -21,17 +21,17 @@ run('regular map completes once, reaches the right goal and cannot pay twice',`
   const before=JSON.stringify({gold:G.gold,drops:G.drops,goals:G.goals,carts:G.carts});
   completeRun();assert.equal(G.mapsDone,5);assert.equal(JSON.stringify({gold:G.gold,drops:G.drops,goals:G.goals,carts:G.carts}),before);
 `);
-run('offline manual choices remain pending, deferred and unchanged on a second settlement',`
+run('suspended manual choices remain pending and unchanged on a second settlement',`
   G.picks=3;G.relicPicks=2;G.autoCard=false;const summary={cards:[]};
   resolveOfflineChoices(summary);resolveOfflineChoices(summary);
-  assert.equal(G.picks,3);assert.equal(G.relicPicks,2);assert.equal(G.deferChoices,true);
+  assert.equal(G.picks,3);assert.equal(G.relicPicks,2);assert.equal(G.deferChoices,false);
   assert.equal(Object.keys(G.cards).length,0);assert.equal(Object.keys(G.relics).length,0);assert.equal(summary.cards.length,0);
 `);
-run('explicit offline auto choice consumes exactly the available choices',`
+run('suspension ignores saved auto choice preferences without consuming queued choices',`
   G.picks=3;G.relicPicks=2;G.autoCard=true;G.deferChoices=true;const summary={cards:[]};
-  resolveOfflineChoices(summary);assert.equal(G.picks,0);assert.equal(G.relicPicks,0);assert.equal(G.deferChoices,false);
-  assert.equal(Object.values(G.cards).reduce((a,n)=>a+n,0),3);assert.equal(Object.keys(G.relics).length,2);
-  assert.equal(summary.cards.length,5);resolveOfflineChoices(summary);assert.equal(summary.cards.length,5);
+  resolveOfflineChoices(summary);assert.equal(G.picks,3);assert.equal(G.relicPicks,2);assert.equal(G.deferChoices,true);
+  assert.equal(Object.keys(G.cards).length,0);assert.equal(Object.keys(G.relics).length,0);
+  assert.equal(summary.cards.length,0);
 `);
 run('every distinct legendary is retained and normal high score cannot remove the active core',`
   const a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});

@@ -29,6 +29,7 @@ function createRuntime(seed = 11) {
     },
     setTimeout: callback => { tasks.push(callback); return tasks.length; },
     SFX: () => {},
+    uxEsc: value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
     tPick: values => values[Math.floor(math.random() * values.length)],
     tRand: (min, max) => min + math.random() * (max - min),
     tClamp: (value, min = 0, max = 1) => Math.max(min, Math.min(max, value)),
