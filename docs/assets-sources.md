@@ -66,3 +66,8 @@ Alan 要求所有 icon／image 重做且簡約。目前八組靜態 UI 資產已
 
 ## 裝備圖示（equips.png，0.25.2）
 GPT Image 於 Figma 草稿檔生成 4×3 圖集（列：武器、外套、配件；欄：普通、魔法、稀有、暗金），經 tools/cut_sheet.py 去背切格。商用條款上架前要確認。
+
+
+## 介面字體：Cubic 11 與 LCD 光學子集（0.27.1）
+
+來源：[ACh-K／Cubic-11](https://github.com/ACh-K/Cubic-11)。完整上游授權保存在 tools/font/Cubic-OFL.txt；包含作者及 M+ 衍生來源說明與 SIL OFL 1.1。tools/pack_font.py 從同一份 TTF 生成原字模子集及 LCD 16px 格線對齊版本，字形／字寬／基線的修改只用於 LCD 版本。兩份內嵌 WOFF2 都保留原始版權並內嵌完整授權，可隨單檔遊戲分發。

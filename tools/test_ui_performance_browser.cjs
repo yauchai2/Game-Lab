@@ -17,7 +17,7 @@ const url=process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8767/dist/idle-hero.h
  assert(result.sameNode&&result.expanded&&result.scroll);assert.equal(result.focus,'nav-char');assert(result.progress.includes(result.expected));assert(result.spriteBytes>0&&result.spriteBytes<500);
  for(const tab of ['char','skills','craft','tree','maps','menu','settings']){
   await p.evaluate(tab=>openModal(tab),tab);
-  assert.deepEqual(await p.evaluate(()=>[...document.querySelectorAll('#modal button,#modal b,#modal input,#modal h2,#modal p')].filter(e=>e.getClientRects().length).every(e=>{const s=getComputedStyle(e);return s.fontFamily.startsWith('"Cubic 11"')&&s.fontWeight==='400'&&s.fontSynthesis==='none'})),true,tab);
+  assert.deepEqual(await p.evaluate(()=>[...document.querySelectorAll('#modal button,#modal b,#modal input,#modal h2,#modal p')].filter(e=>e.getClientRects().length).every(e=>{const s=getComputedStyle(e);return /^"Cubic 11(?: LCD)?"/.test(s.fontFamily)&&s.fontWeight==='400'&&s.fontSynthesis==='none'})),true,tab);
  }
  await p.evaluate(()=>{G.spawnCd=.1;G.paused=false;window.__offlineFrames=0;const r=ui.render;ui.render=()=>{if(G.offline)window.__offlineFrames++;return r()};catchUp(3600,true)});
  await p.waitForFunction(()=>!G.offline,{},{timeout:90000});

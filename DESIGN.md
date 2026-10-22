@@ -9,9 +9,9 @@ colors:
   accent: "#b94732"
 typography:
   display:
-    fontFamily: '"Cubic 11", system-ui, sans-serif'
+    fontFamily: '"Cubic 11 LCD", system-ui, sans-serif'
   body:
-    fontFamily: '"Cubic 11", system-ui, sans-serif'
+    fontFamily: '"Cubic 11 LCD", system-ui, sans-serif'
 rounded:
   panel: "10px"
   control: "4px"
@@ -33,7 +33,7 @@ ink → --ux-ink，muted → --ux-muted，screen → --ux-screen，primary → -
 
 ## Typography
 
-全介面、表單、配件效果與兩種編年史統一使用 Cubic 11 常規 400 字重，禁止合成粗體。文字子集涵蓋目前介面；玩家自訂名稱未收字形時才退回系統字體。必要資訊約 14px，行高 1.5 至 1.6。精簡不是刪除決策資訊；名稱、效果、不可逆後果不能只在 title 裡。
+全介面、表單、配件效果與兩種編年史使用 Cubic 11 家族常規 400 字重，禁止合成粗體。正文與輸入採用新增的 Cubic 11 LCD 16px 光學字模，標題／主要讀數使用原字模 24px，輔助標籤使用原字模 12px。正文行高 24px；字寬、字形及基線由建置工具對齊格線。文字子集涵蓋目前介面；玩家自訂名稱未收字形時才退回系統字體。精簡不是刪除決策資訊；名稱、效果、不可逆後果不能只在 title 裡。
 
 ## Layout
 
@@ -145,3 +145,14 @@ Canonical owner 為 src/game/04-render.js 的 r3BufferSize 與 r3frame。scale =
 新地區的天空色與地標由 BIOMES.sky／buildRegionLandmark 擁有：廢訊號站的天線、磁帶海港的碼頭／吊臂、電路神社的發光門、地下機房的伺服器、霓虹高架的橋墩、廢棄商場的樓梯。四種新怪物以蜘蛛、音箱、浮游訊號體、硬碟蟹形成不同輪廓，使用合批低面數幾何；地區首領放大對應原型。不是只換色。
 
 手機 #cv3 移除四邊 mask 漸變，保留硬邊像素地形。場景使用固定 drawing buffer 策略；畫面以約 30Hz 上限排程，UI 事件與遊戲模擬分開，hit stop 不再拖慢模擬時間。特效使用最多 160 個 Mesh／材質物件池；傳送門與靜態裝飾合批。技能的環、光柱、衛星、電池與拖尾更醒目，拾取增加收束粒子。震動／衝擊及短介面動畫受動態偏好與 prefers-reduced-motion 控制；不採高速全屏白閃，邊緣衝擊以時間間隔合併。共享 owner 為 kick／hitStop、updateFx、uxAnimatePanel、uxInit 的按鍵動畫，不逐頁重做。
+
+
+## 全介面 LCD 像素格線（0.27.1，2026-10-22，現行）
+
+Alan 最新要求明確取代 0.26.2 的「HUD、血條與文字保持清晰」範圍：文字、生命／經驗、操作台、提示、確認、兩種編年史都延伸低解析度美學。銀灰掌機與藍紫 LCD 身分保持；不是全改黑底或新增常駐閃爍。前面歷史章節的 SVG 色階濾鏡已在 0.26.1 移除，本輪不恢復。
+
+字模的 canonical owner 是 tools/pack_font.py：保留原生 12px 字模供 12／24px 使用，新增 1600 units/em、座標／advance／基線以 100 units 對齊的 LCD 16px 版本。UX_THEME 的 --ux-display 指向 Cubic 11 LCD，UX_MATERIAL_CSS 集中管理 12／16／24px 字級與兩種文件的共用材質。這是原生文字的預先像素格線化，不宣稱將 DOM 全畫面縮進 Render Texture。文字仍能搜尋、選取及報讀，輸入與 IME 不改成畫布。
+
+像素材質以 ui-pixelfx 作 variant：shell／control 半徑分別 2／0px，外殼、按鍵、選中、主要動作與標題改為硬分段色帶；閱讀區保留乾淨背景。基底 frontmatter 的 10／4px 是效果關閉時的材質，像素 variant 透過相同 UX_THEME token 名稱覆寫，不另建平行頁面。12px 輔助標籤保持原生字格；正文 16px，輸入不小於 16px。
+
+生命及經驗視覺以 2% 步幅向上取格，非零比例不顯示成空條；每格 6px 色塊／2px 間隔。精確生命及 ARIA 數值保持原值，視覺取格不影響遊戲計算。關閉質感後恢復連續血條與平滑基底按鍵，但保留字模及字級，避免操作滑桿時文字重排。所有變更不用逐幀 DOM 截圖、全頁 SVG 濾鏡或文字覆蓋畫布。瀏覽器縮放與未收字形仍可能帶來原生反鋸齒，不宣稱每種縮放均為逐像素完全一致。
