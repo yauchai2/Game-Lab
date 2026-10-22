@@ -1,0 +1,1 @@
+UX logic tests passed: crafting guards, modifier coverage, shared search

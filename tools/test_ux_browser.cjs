@@ -46,7 +46,7 @@ await check('craft state reasons, confirmation and one-time charge',async()=>{
 });
 await p.getByRole('button',{name:'冒險',exact:true}).click();
 await check('complete modifier categories and honest summary',async()=>{
- await p.evaluate(()=>{G.maps=[{id:'ux-map',biome:0,lvl:1,mods:['elite','swarm','wise']}];renderModal();});assert(await p.getByText('挑戰詞綴 2',{exact:true}).isVisible());await shot(p,'04-map-summary');
+ await p.evaluate(()=>{G.maps=[{id:'ux-map',biome:0,lvl:1,mods:['elite','swarm','wise']}];renderModal();});assert(await p.getByText('挑戰詞綴 2',{exact:true}).isVisible());await p.locator('[data-focus="map-ux-map"]').click();await shot(p,'04-map-summary');await p.keyboard.press('Escape');
 });
 await p.getByRole('button',{name:'更多',exact:true}).click();
 await check('blocked popup fallback, IME-safe search and clear',async()=>{

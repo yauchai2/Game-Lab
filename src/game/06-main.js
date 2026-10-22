@@ -13,6 +13,8 @@ const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++){ w
 ui = mountFigure({
   fig:'06', title:'Idle Hero', hint:'', size:[BXW, BYW, 36], palette:'mint', state:G, credit:false,
   scene, buttonsLabel:'英雄指令',
+  onChoiceChange:()=>uiSyncSettings(),
+  choiceMessages:{current:label=>label+'：目前設定。',unavailable:label=>label+'：目前無法使用。'},
   stats: () => [], // HUD 的唯一呈現由 viewRenderHUD 管理。
   buttons:[
     { label:'技能', onClick:() => openModal('skills') },

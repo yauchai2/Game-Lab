@@ -178,3 +178,19 @@
 | 確認狀態 | hideOverlay | 所有新增 pending 均在取消／Escape 清除；二次執行不得再次扣款，對話框沿用背景隔離與返回原按鍵焦點 |
 
 新欄位 coreDust 隨原存檔保存；舊檔從零開始，離線結算明示新增殘晶。舊構築保留相容路徑，匯入含糊 UID 的引用顯示缺件。只有本機同步操作，沒有新增遠端交易、搜尋、主題或付款流程。0.28.0 所述三套共用當下裝備行為由本節引用記憶取代。
+
+## 物品網格與設定控制格（0.31.0）
+
+依據 Alan 本次手機密度及 Grid 要求，幾何決策見 DESIGN.md／docs/grid-ui-v0.31.0.md。持有上限、價格、保護及戰鬥規則仍由既有狀態函式擁有。
+
+| 能力 | 共用 owner | 介面契約 |
+| --- | --- | --- |
+| 物品格／詳情 | uiItemTile、uiGearTile、uiInspectGear、uiInspectCore | 原生 button group，正常 Tab／Enter；不冒充需另寫方向鍵的 ARIA grid；截斷名稱可點擊或鍵盤讀完整，取消返回原格 |
+| 分類／分頁 | WAREHOUSE_UI、uiWarehouseFilter、warehouseMove | 普通裝備每頁 36；核心最多九件完整列出。部位／分類變更回首頁，刪除後夾到有效頁；對話框及 resize 保留篩選、頁碼與工作區捲動 |
+| 機件與卡匣 | uiInventoryPick、uiCartPick、pzHold、equipCart | 可用物品保持原放置操作；不可用格點開原因及說明，不能取得未持有物品；未知卡匣只顯示提示，裝上才鑑定 |
+| 地圖庫存 | uiInspectMap、uiUseMapPreview、enterMap | 網格只預覽；確認顯示消耗後果，重驗地圖內容與挑戰狀態，取消／Escape 清空 pending，重複確認不能再消耗 |
+| 設定群組 | mountFigure 的 choices、uiSyncSettings | 保留原 callback，格內顯示 G／AUD 的目前值；完成即更新摘要，沒有平行狀態。展開以 aria-expanded／controls 標示，Escape 關閉並回觸發按鍵，選項使用原生按鍵群，不冒充 listbox |
+| 畫面／觀戰 | viewApplyPrefs、viewSavePrefs | 既有滑桿、減少動態效果、觀戰及偏好保存維持；兩欄重新排版，長說明可展開 |
+| 戰場尺寸 | uiBattleSize、mobRatio、cycleCz | 未自訂時，倉庫及設定沿用戰鬥／打造的小戰場預設；玩家 userCz 優先，切頁不覆寫偏好 |
+
+所有格子使用既有通用材質與焦點、圖示附有文字。UI_WORK／WAREHOUSE_UI 保持本次遊玩工作狀態，不寫入 URL；遊戲資料在本機且網址含測試／遊戲參數，沒有遠端篩選或可分享物品查詢。倉庫離開再進入保留分類與頁碼，該次進入仍從內容頂端開始；詳情關閉與 resize 則維持原位置。設定是獨立的既有捲動工作區，不套用物品分頁高度。不可使用的重鑄選項仍為原引擎的原因說明按鍵，按下只說明，不扣金幣。

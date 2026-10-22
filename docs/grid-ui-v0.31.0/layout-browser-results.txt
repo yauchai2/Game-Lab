@@ -1,0 +1,11 @@
+PASS six shared entries, same role destination and dress return
+PASS desktop two columns and readable equipment labels
+PASS resize preserves save draft, game state and document identity
+PASS inventory classification preserves held piece and shows real linkage reasons
+PASS map details do not consume, entry and explicit exit keep original rules
+PASS selected craft action, equipment identity and failed target guard
+PASS more directory keeps every tool and original engine settings
+PASS narrow and short reflow keeps full board and navigation reachable
+PASS talent reset confirms cost, cancel and stale target before charging
+PASS locked functionality explains its unchanged level requirement
+10 layout checks passed

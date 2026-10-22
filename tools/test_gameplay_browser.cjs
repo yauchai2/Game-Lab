@@ -12,8 +12,8 @@ const out=process.env.GAME_LAB_GAMEPLAY_OUTPUT||'/tmp/game-lab-gameplay-validati
   await p.evaluate(()=>{for(const id of ['W_ECHO','W_FORK']){const L=LEGEND_BY[id],it={...makeItem('weapon',3,10),lg:id,name:L.name,aff:L.aff.map(k=>rollAff(k,10,1.35))};pickup({kind:'item',it});}openModal('char')});
   await p.locator('.ui-core-collection>summary').click();assert(await p.getByText('回音光劍',{exact:true}).last().isVisible());
   const before=await p.evaluate(()=>({gold:G.gold,parts:G.parts,core:G.equip.weapon.lg}));assert.equal(before.core,'W_ECHO');
-  await p.getByRole('button',{name:'換上碎星球棒',exact:true}).click();assert.equal(await p.evaluate(()=>G.equip.weapon.lg),'W_FORK');
-  assert(await p.getByText('技能暴擊時，另外對 2 個附近敵人造成 50% 傷害',{exact:true}).isVisible());
+  await p.locator('[data-focus="core-W_FORK"]').click();assert(await p.getByText('技能暴擊時，另外對 2 個附近敵人造成 50% 傷害',{exact:true}).isVisible());await p.getByRole('button',{name:'換上碎星球棒',exact:true}).click();assert.equal(await p.evaluate(()=>G.equip.weapon.lg),'W_FORK');
+  assert((await p.locator('[data-focus="core-W_FORK"]').textContent()).includes('穿著'));
   await p.getByRole('button',{name:'切回上一件武器',exact:true}).click();assert.deepEqual(await p.evaluate(()=>({gold:G.gold,parts:G.parts,core:G.equip.weapon.lg})),before);
   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth),390);await p.locator('.ui-core-collection>summary').evaluate(e=>e.scrollIntoView({block:'start'}));await shot('01-core-collection-mobile');
   await p.setViewportSize({width:1440,height:900});await p.locator('.ui-core-collection>summary').evaluate(e=>e.scrollIntoView({block:'start'}));await shot('02-core-collection-desktop');await p.setViewportSize({width:390,height:844});

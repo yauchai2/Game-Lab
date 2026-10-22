@@ -1,0 +1,64 @@
+[
+  {
+    "width": 390,
+    "geometry": {
+      "cols": 4,
+      "min": 84.5,
+      "visible": 8,
+      "overflow": false,
+      "battle": 2
+    },
+    "fullWorkflow": true,
+    "keyboard": true,
+    "protection": true,
+    "cancel": true,
+    "cores": true,
+    "hiddenIdentification": true,
+    "settings": true,
+    "resize": true,
+    "reload": true,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "geometry": {
+      "cols": 6,
+      "min": 70.265625,
+      "visible": 18,
+      "overflow": false,
+      "battle": 2
+    },
+    "fullWorkflow": true,
+    "keyboard": true,
+    "protection": true,
+    "cancel": true,
+    "cores": true,
+    "hiddenIdentification": true,
+    "settings": true,
+    "resize": true,
+    "reload": true,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "geometry": {
+      "cols": 3,
+      "min": 91.328125,
+      "visible": 3,
+      "overflow": false,
+      "battle": 2
+    },
+    "errors": []
+  },
+  {
+    "width": 768,
+    "geometry": {
+      "cols": 9,
+      "min": 73.109375,
+      "visible": 9,
+      "overflow": false,
+      "battle": 2
+    },
+    "errors": []
+  }
+]
