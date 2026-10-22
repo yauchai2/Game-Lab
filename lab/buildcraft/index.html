@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#303d9b">
+  <title>構築試玩室｜Game Lab</title>
+  <link rel="stylesheet" href="style.css?v=1">
+  <script defer src="engine.js?v=1"></script>
+  <script defer src="app.js?v=1"></script>
+</head>
+<body>
+  <main class="device">
+    <header class="masthead"><div><span class="eyebrow">GAME LAB ／ PLAYABLE STUDIES</span><h1>構築試玩室<span class="led" aria-hidden="true"></span></h1></div><span class="stamp">六種玩法<br>每局 30 秒</span></header>
+    <nav id="demo-nav" aria-label="選擇玩法"></nav>
+    <section class="intro" aria-labelledby="demo-title"><span id="demo-code" class="eyebrow"></span><h2 id="demo-title"></h2><p id="demo-desc"></p></section>
+    <div class="workspace">
+      <section class="battle" aria-labelledby="battle-title">
+        <div class="bar"><h3 id="battle-title" tabindex="-1">自動試跑</h3><div class="group" id="scenario" aria-label="試跑對象"></div></div>
+        <div class="screen"><canvas id="arena" width="360" height="180" aria-label="自動戰鬥畫面。實際結果亦顯示於下方文字戰報。"></canvas><div id="end-banner" hidden></div></div>
+        <div class="meters"><label>生命 <output id="hp-text"></output><progress id="hp" max="120" value="120"></progress></label><label><span id="resource-name">電荷</span> <output id="resource-text"></output><progress id="resource" max="100" value="0"></progress></label></div>
+        <div class="readouts"><div><span>擊破</span><output id="kills">0</output></div><div><span>有效傷害</span><output id="damage">0</output></div><div><span id="metric-label">連動</span><output id="combos">0</output></div><div><span>時間</span><output id="clock">0.0／30</output></div></div>
+        <div class="transport"><button id="restart" onclick="BuildcraftLab.transport('restart')" class="primary">重新試跑</button><button id="pause" onclick="BuildcraftLab.transport('pause')">暫停</button><button id="speed" onclick="BuildcraftLab.transport('speed')" aria-pressed="false">速度 ×1</button><button class="mobile-jump" onclick="BuildcraftLab.jump('editor-title')">改裝 ↓</button></div>
+        <p id="run-note" class="caption">改裝會立即重新試跑，方便比較。所有進度只留在本頁。</p>
+        <div id="mechanic-status" class="mechanic-status"></div>
+        <details><summary>即時戰報與上一局</summary><ol id="combat-log" class="combat-log"></ol><div id="previous" class="previous">完成一局後，這裡會留下上一局結果。</div></details>
+      </section>
+      <section class="editor" aria-labelledby="editor-title"><div class="bar"><h3 id="editor-title" tabindex="-1">改裝區</h3><button id="reset" onclick="BuildcraftLab.transport('reset')">還原起始配置</button></div><p id="goal" class="goal"></p><div id="controls"></div><div id="feedback" role="status" aria-live="polite"></div><button class="mobile-jump" onclick="BuildcraftLab.jump('battle-title')">查看戰場 ↑</button><details class="rules"><summary>玩法與取捨</summary><div id="rules"></div></details></section>
+    </div>
+    <footer>小型機制 Demo，數值僅供試玩比較。<a href="../../">回到正式遊戲</a><span>不讀取或改動正式遊戲存檔。</span></footer>
+  </main>
+  <noscript>此試玩需要 JavaScript。請啟用後重新載入。</noscript>
+</body>
+</html>
