@@ -1,0 +1,30 @@
+/* Read-only probes of shipped v0.27.1 mechanics. Run from any working directory. */
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'../..');
+const files=['00-grid.js','01-data.js','02-state.js','03-combat.js'];
+function context(){let seed=2271;const math=Object.create(Math);math.random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296};const c={Math:math,console,Date,GridLab:require(path.join(root,'src/game/00-grid.js')),tPick:a=>a[Math.floor(math.random()*a.length)],tRand:(a,b)=>a+(b-a)*math.random(),tClamp:(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),tFmt:String,SFX:()=>{}};vm.createContext(c);for(const f of files.slice(1))vm.runInContext(fs.readFileSync(path.join(root,'src/game',f),'utf8'),c);vm.runInContext(`G.lvl=30;G.offline=true;G.equip.weapon=makeItem('weapon',0,1);recalc();`,c);return c;}
+function probe(code){return JSON.parse(vm.runInContext('JSON.stringify((()=>{'+code+'})())',context()));}
+const results={version:probe('return VERSION()'),source:Object.fromEntries(files.map(f=>[f,crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'src/game',f))).digest('hex')]))};
+results.talentBudget=probe(`G.lvl=100;G.maxDepth=1;G.pass=[];return {nodes:Object.keys(TREE).length,spendableNodes:Object.keys(TREE).length-1,points:passPoints(),levelHasExplicitCap:false};`);
+results.hasteContracts=probe(`G.board=GridLab.createBoard(6,6);const a=GridLab.place(G.board,'active','FIRE',2,2);GridLab.place(G.board,'support','HASTE',2,1);GridLab.place(G.board,'support','HASTE',0,3);GridLab.place(G.board,'support','HASTE',3,2,1);recalc();return {resolvedReduction:GridLab.resolve(G.board).find(x=>x.id===a.id).stat.cd,actualReduction:1-G.st.sk.FIRE.cd/SKILLS.FIRE.cd};`);
+results.weaponScaling=probe(`const base=calc(G.equip,[],Object.keys(SKILLS),{});const weapon={...G.equip.weapon,aff:[{k:'dmg',v:20}]};const more=calc({...G.equip,weapon},[],Object.keys(SKILLS),{});return Object.fromEntries(Object.keys(SKILLS).map(k=>[k,more.sk[k].hit/base.sk[k].hit]));`);
+results.meteorPreview=probe(`G.modeOf={};G.st=calc(G.equip,[],['METEOR'],{});const paper=G.st.dps;const m={type:'slime',x:HX+4,y:HY,hp:1e10,hpMax:1e10,boss:true,fall:0,dead:false};G.mons=[m];Math.random=()=>.99;resolveProj({k:'meteor',x:m.x,y:m.y,mul:1});const normal=1e10-m.hp;m.hp=1e10;G.modeOf={METEOR:'METEOR_COMET'};G.st=calc(G.equip,[],['METEOR'],{});const cometPaper=G.st.dps;resolveProj({k:'meteor',x:m.x,y:m.y,mul:1});return {paper,cometPaper,actualHit:normal,cometActualHit:1e10-m.hp,actualRatio:(1e10-m.hp)/normal};`);
+results.resistIgnored=probe(`G.slots=['FIRE'];G.st=calc(G.equip,[],['FIRE'],{});const a={type:'slime',x:HX+4,y:HY,hp:1e10,hpMax:1e10,boss:true,fall:0,dead:false,resist:{fire:0}},b={...a,resist:{fire:80}};G.mons=[a,b];Math.random=()=>.99;const d0=applySkillHit('FIRE',a),d80=applySkillHit('FIRE',b);return {resistance0:d0,resistance80:d80};`);
+results.frostThreshold=probe(`G.st=calc(G.equip,[],['FROST'],{});G.st.sk.FROST.hit=.001;const m={type:'slime',x:HX+4,y:HY,hp:1e12,hpMax:1e12,boss:true,fall:0,dead:false};G.mons=[m];castSkill('FROST');return {bossMaximumLife:m.hpMax,hitBeforeCrit:G.st.sk.FROST.hit,frozenSeconds:m.frozen};`);
+results.offlineBossLoot=probe(`let a=0,b=0;G.offPen=false;for(let i=0;i<10000;i++)if(rarityRoll(true)===3)a++;G.pity=0;G.offPen=true;for(let i=0;i<10000;i++)if(rarityRoll(true)===3)b++;return {rollsPerCase:10000,unpenalizedLegendary:a,offlineLegendary:b,offlinePity:G.pity};`);
+function schedule(reverse=false,frost=false){const c=context();c.reverse=reverse;c.frost=frost;return JSON.parse(vm.runInContext(`JSON.stringify((()=>{
+ G.lvl=60;G.equip.ring={slot:'ring',r:2,il:30,imp:{k:'crit',v:2},aff:[{k:'haste',v:60}]};G.board=GridLab.createBoard(6,6);
+ const names=frost?['FROST']:Object.keys(SKILLS);for(const id of names){const s=GridLab.findSpot(G.board,'active',id);if(!s)throw Error('board does not fit');GridLab.place(G.board,'active',id,s.x,s.y,s.rot);}
+ if(frost)G.board.pieces[0].mode='FROST_STORM';if(reverse)for(const p of G.board.pieces){const cells=GridLab.shapeOf(p.kind,p.key,p.rot);const w=Math.max(...cells.map(c=>c[0]))+1,h=Math.max(...cells.map(c=>c[1]))+1;p.x=G.board.w-p.x-w;p.y=G.board.h-p.y-h;p.rot=(p.rot+2)%4;}G.ach=Object.fromEntries(Object.keys(ACHS).map(id=>[id,1]));recalc();
+ G.train={t:1000,total:0,dmg:{}};G.push=false;G.spawnCd=1e8;G.h.dead=0;G.h.hp=G.st.life;moveHero=()=>{};
+ const m={type:'slime',boss:true,x:HX,y:HY-10,hp:1e15,hpMax:1e15,dmg:1,spdK:0,atkInt:1e9,atkCd:1e9,slot:0,ph:0,skillCd:3,fall:0,dead:false,deadT:0,hurtT:0,lunge:-1,frozen:0};G.mons=[m];
+ const counts=Object.fromEntries(names.map(id=>[id,0]));const original=castSkill;castSkill=(id,repeat=1)=>{if(repeat===1)counts[id]++;return original(id,repeat)};
+ let frozenTicks=0,ticks=0;for(let i=0;i<1200;i++){update(.05);if(i>=100){ticks++;if(m.frozen>0)frozenTicks++;}}
+ return {seconds:60,order:G.slots,counts,paperDps:G.st.dps,measuredDamagePerSecond:G.train.total/60,postWarmupFrozenFraction:frozenTicks/ticks,remainingBossSkillCooldown:m.skillCd};})())`,c));}
+results.schedulerForward=schedule();results.schedulerReverse=schedule(true);results.bossControl=schedule(false,true);
+assert.equal(results.version,'0.27.1');assert.equal(results.talentBudget.points,results.talentBudget.spendableNodes);
+assert(results.hasteContracts.resolvedReduction<-.6);assert(Math.abs(results.hasteContracts.actualReduction-.6)<1e-6);
+assert.equal(results.meteorPreview.paper,results.meteorPreview.cometPaper);assert(Math.abs(results.meteorPreview.actualRatio-2.2)<1e-6);
+assert.equal(results.resistIgnored.resistance0,results.resistIgnored.resistance80);assert.equal(results.offlineBossLoot.offlineLegendary,0);
+assert.notDeepEqual(results.schedulerForward.counts,results.schedulerReverse.counts);assert.equal(results.frostThreshold.frozenSeconds,1.4);assert(results.bossControl.postWarmupFrozenFraction>.95);
+console.log(JSON.stringify(results,null,2));

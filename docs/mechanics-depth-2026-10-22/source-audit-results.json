@@ -1,0 +1,123 @@
+{
+  "version": "0.27.1",
+  "source": {
+    "00-grid.js": "bece134762b7785a81794a1b0cffa7cbe51d511161b7dfd61996d1f8869fe350",
+    "01-data.js": "1fee5bbfdf7e048f2194c422039102627790850d3957043ed45777d43bb36773",
+    "02-state.js": "5af4a7ba7b459ef455e81ab176ff5a78d0d861d09dd10612b450b8f3e3ae50ad",
+    "03-combat.js": "4b41156aeeff74df271c032642a111e7d806948fd9322ddee248faf4ca286aed"
+  },
+  "talentBudget": {
+    "nodes": 100,
+    "spendableNodes": 99,
+    "points": 99,
+    "levelHasExplicitCap": false
+  },
+  "hasteContracts": {
+    "resolvedReduction": -0.7,
+    "actualReduction": 0.6
+  },
+  "weaponScaling": {
+    "FIRE": 1.3076923076923077,
+    "FROST": 1.3076923076923075,
+    "CHAIN": 1.3076923076923075,
+    "METEOR": 1.3076923076923077,
+    "PULSE": 1.307692307692308,
+    "MAGNET": 1.3076923076923075,
+    "SPAM": 1.307692307692308,
+    "FLICKER": 1.307692307692308,
+    "BEAM": 1.307692307692308
+  },
+  "meteorPreview": {
+    "paper": 181.20334375,
+    "cometPaper": 181.20334375,
+    "actualHit": 486.74340057373047,
+    "cometActualHit": 1070.8354797363281,
+    "actualRatio": 2.1999999968651265
+  },
+  "resistIgnored": {
+    "resistance0": 204.11820000000003,
+    "resistance80": 204.11820000000003
+  },
+  "frostThreshold": {
+    "bossMaximumLife": 1000000000000,
+    "hitBeforeCrit": 0.001,
+    "frozenSeconds": 1.4
+  },
+  "offlineBossLoot": {
+    "rollsPerCase": 10000,
+    "unpenalizedLegendary": 2429,
+    "offlineLegendary": 0,
+    "offlinePity": 0
+  },
+  "schedulerForward": {
+    "seconds": 60,
+    "order": [
+      "FIRE",
+      "FROST",
+      "CHAIN",
+      "METEOR",
+      "PULSE",
+      "MAGNET",
+      "SPAM",
+      "FLICKER",
+      "BEAM"
+    ],
+    "counts": {
+      "FIRE": 44,
+      "FROST": 29,
+      "CHAIN": 29,
+      "METEOR": 15,
+      "PULSE": 14,
+      "MAGNET": 0,
+      "SPAM": 0,
+      "FLICKER": 0,
+      "BEAM": 0
+    },
+    "paperDps": 5062.661206515112,
+    "measuredDamagePerSecond": 1237.3779114157571,
+    "postWarmupFrozenFraction": 0.4990909090909091,
+    "remainingBossSkillCooldown": 1.900000000000007
+  },
+  "schedulerReverse": {
+    "seconds": 60,
+    "order": [
+      "BEAM",
+      "FLICKER",
+      "SPAM",
+      "MAGNET",
+      "PULSE",
+      "METEOR",
+      "CHAIN",
+      "FROST",
+      "FIRE"
+    ],
+    "counts": {
+      "FIRE": 0,
+      "FROST": 0,
+      "CHAIN": 8,
+      "METEOR": 9,
+      "PULSE": 17,
+      "MAGNET": 18,
+      "SPAM": 26,
+      "FLICKER": 26,
+      "BEAM": 27
+    },
+    "paperDps": 5062.661206515112,
+    "measuredDamagePerSecond": 2231.524138995628,
+    "postWarmupFrozenFraction": 0,
+    "remainingBossSkillCooldown": 1.800000000000007
+  },
+  "bossControl": {
+    "seconds": 60,
+    "order": [
+      "FROST"
+    ],
+    "counts": {
+      "FROST": 35
+    },
+    "paperDps": 456.150375,
+    "measuredDamagePerSecond": 415.50495933382985,
+    "postWarmupFrozenFraction": 1,
+    "remainingBossSkillCooldown": 1.8000000000000034
+  }
+}
