@@ -39,3 +39,5 @@ engine.js 是規則與有效傷害／擊殺來源；app.js 只呈現及操作。
 先將來源提交及 push，再於 repo 根目錄執行 `python3 docs/prototypes/buildcraft/publish.py`。腳本只部署 index.html、style.css、engine.js、app.js 到 gh-pages 的 lab/buildcraft/，保留正式站所有檔案；明確核對根 index.html／version.json 的 blob 不變。正常 push 避免覆寫同時部署。研究、測試、截圖及文件不隨此腳本部署。
 
 tools/publish_pages.py 的既有檔案允許清單新增這四個確切路徑，讓未來正式遊戲部署保留原型；沒有放寬至任意 docs/，也沒有重建或發佈正式遊戲。正式遊戲仍為 v0.31.0。
+
+公開驗證：四檔 HTTPS 下載 SHA-256 與來源一致，正式站 version.json 仍為 0.31.0；見 evidence/live-verification.json。直接連外 Chromium 遇代理 CA 不信任，未關閉 TLS 驗證；互動驗證使用本機 HTTP 的同一份來源，不宣稱直接 HTTPS 瀏覽器測試通過。

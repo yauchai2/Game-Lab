@@ -1,0 +1,19 @@
+{
+  "source": "d7882f0beeaa1665f062f82c2bd7cdcf3adcbdfc",
+  "deployment": "93e6fbf5dad5c52a32231001afa8712c65117c8d",
+  "url": "https://yauchai2.github.io/Game-Lab/lab/buildcraft/",
+  "sha256": {
+    "index.html": "9bb1d6f7c17700f63116f7897c9c526658a53b3fd855373993b5cf9d1d95998f",
+    "style.css": "865695e2540b7572109f11716c4e23ca0769b69ff23bcd98461389120a2fd4a5",
+    "engine.js": "464b76e779e79dfb035b2c7180debda985b8c2cb9435b72a31ae8343cf9ebdd4",
+    "app.js": "766051cc312b9645718584188b9c42f59fb5e58a9391e3d68374c0bf6517f5f9"
+  },
+  "public_sha256_match": true,
+  "main_game_version": "0.31.0",
+  "browser_validation": {
+    "local_chromium": "passed at 320/390/1440",
+    "direct_https_browser": "blocked by managed proxy CA trust (ERR_CERT_AUTHORITY_INVALID)",
+    "tls_verification_disabled": false,
+    "public_https_downloads": "Python HTTPS with configured trust, all four SHA-256 matched"
+  }
+}
