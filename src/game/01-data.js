@@ -59,7 +59,7 @@ const LEGEND_BY = {}; for (const sl in LEGENDS) for (const L of LEGENDS[sl]) LEG
 
 const SKILLS = {
   FIRE:  { n:'過熱電池', lvl:1,  cd:2.6, mult:2.6, el:'fire',  col:'#ff7a2a', tg:1.4, d:'丟出過熱的電池，命中時爆炸' },
-  FROST: { n:'冷氣爆發', lvl:5,  cd:4.2, mult:1.9, el:'cold',  col:'#7fd3ff', tg:1.8, d:'開盡冷氣，冷風掃過全部敵人並凍結 1.4 秒' },
+  FROST: { n:'冷氣爆發', lvl:5,  cd:4.2, mult:1.9, el:'cold',  col:'#7fd3ff', tg:1.8, d:'冷風傷害敵人並凍結 1.4 秒；首領需累積控制，凍結後有適應期' },
   CHAIN: { n:'紅外線連鎖', lvl:10, cd:3.2, mult:2.3, el:'light', col:'#ffe45c', tg:1.7, d:'紅外線在 3 個敵人間傳送（後續每跳 70%）' },
   METEOR:{ n:'衛星墜落', lvl:18, cd:8.0, mult:6.2, el:'fire',  col:'#ff4a1c', tg:1.9, d:'舊衛星從天而降，轟炸全場' },
   PULSE: { n:'重低音喇叭', lvl:8,  cd:5.0, mult:2.2, el:'light', col:'#c28aff', tg:1.6, d:'音浪從身邊炸開，震退並傷害附近敵人' },
@@ -71,6 +71,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.28.0',d:'2026-10-22',t:['技能依就緒時間公平出手，新增均衡與連動優先策略；技能模式與冷卻共用計算，單體直傷預估納入出手容量','新增冷啟動碎星、撥號放電卡匣，可用電路點數定向合成；凍結鋪墊衛星爆發，紅外線累積電荷強化雷射','首領凍結改用傷害累積與適應時窗；新增本段出手戰報及單體／群體訓練，追蹤回放、等待與連動成果']},
   { v:'0.27.1',d:'2026-10-22',t:['全介面延伸像素掌機風格：文字採用對齊格線的新字模，標題、讀數、輸入與編年史共用字體規格','血條與經驗條改成分格顯示，銀灰外殼、藍紫標題與操作按鍵改用階梯色帶及硬邊輪廓','保留原生文字、搜尋、輸入及觸控操作；新增字模於建置時預先生成，無需逐幀擷取介面']},
   { v:'0.27.0',d:'2026-10-22',t:['新增 200 格裝備倉庫：比較、手動換裝、保管鎖定與確認回收；自動換裝保留上一件裝備，滿倉規則明確顯示','裝備詞綴新增 T0 至 T4 階級；金幣、電路點數及道具落地，角色走近才拾取，待拾物隨進度保存','天賦盤擴充至 100 節點，新增三條電路路徑及流派核心；新增鎖頻、分線、備用電池與延遲緩衝配件，可用電路點數指定合成','新增六個地區、四種不同輪廓的怪物及地區首領，加入範圍攻擊預警；提高出怪頻率、中後段與首領強度','特效改用物件池，靜態裝飾合批，畫面與模擬分開排程；移除手機地圖邊緣漸變，加強技能與互動動畫，尊重減少動態設定']},
   { v:'0.26.2', d:'2026-10-22', t:['所有尺寸統一低解析度 3D 場景，再以清晰像素格放大；人物、地形、怪物、特效及裝扮預覽共用同一呈現', '高密度螢幕不再抵銷像素效果；桌機、平板、手機及全視窗觀戰保持原視野比例，文字與操作介面維持清晰'] },
@@ -169,7 +170,7 @@ const MODES = {
   PULSE_ECHO:   { sk:'PULSE',  n:'迴響喇叭', hint:'喇叭好像聽到了自己的聲音。', d:'0.5 秒後再響一次（60% 傷害）' },
   PULSE_SONIC:  { sk:'PULSE',  n:'超音波', hint:'聲音太高，聽不見但是很痛。', d:'範圍 +60%，傷害 -25%' },
   MAGNET_CRUSH: { sk:'MAGNET', n:'黑洞磁鐵', hint:'吸過來之後好像還有下文。', d:'吸過來 0.5 秒後坍縮，近身敵人再受 200% 傷害' },
-  MAGNET_STICKY:{ sk:'MAGNET', n:'黏性磁鐵', hint:'被吸住的東西動不了。', d:'被吸過來的敵人凍結 2 秒' },
+  MAGNET_STICKY:{ sk:'MAGNET', n:'黏性磁鐵', hint:'被吸住的東西動不了。', d:'被吸過來的敵人凍結 2 秒；首領需累積控制並受適應期限制' },
   FLICKER_STORM:{ sk:'FLICKER', n:'閃光風暴', hint:'快門按到停不下來。', d:'一次閃 8 下，每下 50% 傷害，沒有最後一擊加成' },
   FLICKER_REAP: { sk:'FLICKER', n:'收割閃打', hint:'它只對倒下的目標感興趣。', d:'擊殺目標時立刻追加一次閃打，可連續觸發' },
   FLICKER_TRAIL:{ sk:'FLICKER', n:'殘影拖尾', hint:'留下的殘影也會咬人。', d:'每一下命中點留下殘影，0.4 秒後再造成 22% 傷害' },
@@ -177,7 +178,32 @@ const MODES = {
   SPAM_PHISH:   { sk:'SPAM',   n:'釣魚信件', hint:'它專挑最肥的魚。', d:'只寄 3 封，專打生命最多的敵人，每封 +200% 傷害' },
   BEAM_SWEEP:   { sk:'BEAM',   n:'掃射', hint:'指向筆在手裡抖個不停。', d:'同時射出三道雷射（左右各偏 35 度），各 65% 傷害' },
   BEAM_FOCUS:   { sk:'BEAM',   n:'聚焦', hint:'光點縮得很小很小。', d:'雷射變細，傷害 +150%，只打最近一條線上的敵人' },
+  METEOR_COLDSTART:{sk:'METEOR',n:'冷啟動碎星',hint:'冰冷的訊號正在呼叫衛星。',d:'傷害降至 80%、冷卻 +25%；鎖定凍結目標並消耗凍結，該目標承受三倍命中，波及落點 18 格內敵人'},
+  BEAM_CAPACITOR:{sk:'BEAM',n:'撥號放電',hint:'紅外線傳來的電荷，終於有了出口。',d:'紅外線原始命中產生電荷；雷射消耗最多 8 格，每格額外提高 35% 傷害。基礎傷害 65%、冷卻 +25%，光束加寬'},
 };
+const COMBAT_RULES=Object.freeze({freezeSeconds:1.4,bossFreezeGuard:4,bossFreezeLife:.12,freezeDecay:.04,chargeMax:8,chargePerCast:4,comboHold:1.2});
+const SKILL_PATTERNS={
+  FIRE:{each:1},FROST:{each:1},CHAIN:{each:1,hops:3,decay:.7},METEOR:{each:1,count:1},
+  PULSE:{each:1,range:24},MAGNET:{each:1,range:40},SPAM:{each:1,count:6},
+  FLICKER:{each:1,count:4,last:1.5},BEAM:{each:1,width:4.5},
+};
+for(const [id,pattern] of Object.entries({
+  FROST_STORM:{echo:.6},CHAIN_FORK:{fork:.5},CHAIN_OVERLOAD:{hops:5,decay:1,cd:1.8},
+  METEOR_TWIN:{count:2,each:.6},METEOR_COMET:{primary:2.2,splash:.5},
+  PULSE_ECHO:{echo:.6},PULSE_SONIC:{range:38,each:.75},MAGNET_CRUSH:{crush:2},
+  FLICKER_STORM:{count:8,each:.5,last:1},FLICKER_TRAIL:{trail:.22},
+  SPAM_FLOOD:{count:14,each:.45},SPAM_PHISH:{count:3,each:3},
+  BEAM_SWEEP:{each:.65,sweep:true},BEAM_FOCUS:{each:2.5,width:2.2},
+  METEOR_COLDSTART:{each:.8,cd:1.25,coldStart:true,radius:18,coldBonus:3},
+  BEAM_CAPACITOR:{each:.65,cd:1.25,width:8,capacitor:true},
+}))MODES[id].pattern=pattern;
+function skillPattern(id,mode){return {...SKILL_PATTERNS[id],...(MODES[mode]?.sk===id?MODES[mode].pattern:{})};}
+function skillDirectFactor(id,p,repeat=false){
+  if(id==='FLICKER')return p.each*(p.count-1+p.last+p.count*(p.trail||0));
+  if(id==='SPAM')return p.each*p.count;
+  if(id==='METEOR')return p.primary||p.each*p.count;
+  return p.each*(1+(repeat?0:(p.echo||0)+(p.crush||0)));
+}
 const SUPPS = {
   HEAVY:{ n:'超頻', d:'此技能傷害 +45%' }, COOL:{ n:'散熱片', d:'此技能傷害 +20%，冷卻 -15%' }, CRYSTAL:{ n:'水晶振盪', d:'此技能傷害 +10%，暴擊率 +15%' }, AREA:{ n:'廣播', d:'電池命中全部敵人（-15%）；連鎖多跳 2 次' }, HASTE:{ n:'寬頻', d:'此技能冷卻 -30%' },
   LEECH:{ n:'無線充電', d:'此技能傷害的 12% 轉為生命' }, TWIN:{ n:'雙卡雙待', d:'0.25 秒後重複施放一次（60% 傷害）' }, CRITS:{ n:'爆機', d:'此技能暴擊率 +30%' },
@@ -195,7 +221,7 @@ const CARDS = {
 /* 可選角色：外觀（髮色、褲色、膚色）與被動；用最深深度解鎖 */
 const CHARS = {
   street:{ n:'阿街', d:'街頭小子。傷害 +10%', eff:{ inc:10 }, sig:{ n:'街頭衝撞', cd:7, d:'每 7 秒衝撞周圍敵人，傷害 ×7 並擊退' }, need:0, hair:null, pants:null, skin:null },
-  frost: { n:'小冷', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, sig:{ n:'冷氣護罩', cd:9, d:'每 9 秒冷風吹過全場，凍結敵人 1.4 秒' }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
+  frost: { n:'小冷', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, sig:{ n:'冷氣護罩', cd:9, d:'每 9 秒冷風吹過全場，凍結小怪 1.4 秒；首領改累積控制並受適應期限制' }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
   beep:  { n:'傳呼仔', d:'有 Call 必應。攻速 +12%，吸血 +1.5%', eff:{ apsInc:12, leech:1.5 }, sig:{ n:'連環 Call', cd:6, d:'每 6 秒隨機呼叫 6 個敵人，各受 ×5 傷害' }, need:0, ach:'boss10', hair:'#ff6aa8', pants:'#2b2552', skin:null },
   volt:  { n:'電波仔', d:'訊號滿格。暴擊率 +6%，閃電傷害 +30%', eff:{ crit:6, light:30 }, sig:{ n:'訊號塔', cd:8, d:'每 8 秒落雷劈 5 個敵人（必定暴擊）' }, need:12, hair:'#e0b020', pants:'#8a4a8f', skin:'#e2ac86' },
 };

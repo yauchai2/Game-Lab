@@ -26,7 +26,23 @@
     LEECH: { n: '無線充電', shape: [[0, 0], [1, 0]], needs: [],        mod: { leech: 0.12 } },
   };
   Object.assign(SUPPORTS,{FOCUS:{n:'鎖頻晶片',shape:[[0,0]],needs:[],mod:{dmg:.35,crit:.15,cd:.15}},FORK:{n:'分線器',shape:[[0,0],[0,1]],needs:['proj','melee'],mod:{fork:1}},RECOVER:{n:'備用電池',shape:[[0,0],[1,0]],needs:[],mod:{recover:1}},DELAY:{n:'延遲緩衝',shape:[[0,0],[1,0],[1,1]],needs:[],mod:{dmg:-.15,repeat:1}}});
-  const CD_FLOOR = -0.7; // 冷卻縮減上限 70%
+  const LIMITS = Object.freeze({ cooldownReduction:0.6, repeatDamage:0.6, castTime:0.4 });
+  // Shared by the standalone board, runtime stats and combat previews.
+  function skillMods(keys, key) {
+    const n = id => keys.filter(k => k === id).length;
+    return {
+      hit:(1 + .35*n('FOCUS'))*(n('DELAY') ? .85 : 1)*(1 + .45*n('HEAVY'))*
+        (1 + .08*Math.max(0,Math.min(5,keys.length)-2))*(1 + .2*n('COOL') + .1*n('CRYSTAL'))*
+        (n('AREA') && key === 'FIRE' ? .85 : 1),
+      crit:15*n('FOCUS') + 30*n('CRITS') + 15*n('CRYSTAL'),
+      reduction:30*n('HASTE') + 15*n('COOL'), delay:1 + .15*n('FOCUS'),
+      twin:n('TWIN'), area:!!n('AREA'), leech:!!n('LEECH'), repeat:!!n('DELAY'),
+    };
+  }
+  function cooldown(base, keys, haste=0, multiplier=1) {
+    const mod = skillMods(keys, '');
+    return base*multiplier*mod.delay*(1 - Math.min(LIMITS.cooldownReduction,Math.max(0,haste + mod.reduction)/100));
+  }
 
   const defOf = (kind, key) => (kind === 'active' ? ACTIVES : SUPPORTS)[key];
   const rotCell = ([x, y]) => [-y, x];
@@ -98,7 +114,7 @@
       const linked = [...adj].map(id => byId.get(id)).filter(s => fits(s, a));
       const stat = { dmg: 0, area: 0, cd: 0, crit: 0, repeat: 0, leech: 0 };
       for (const s of linked) for (const [k, v] of Object.entries(SUPPORTS[s.key].mod)) stat[k] += v;
-      stat.cd = Math.max(stat.cd, CD_FLOOR);
+      stat.cd = Math.round((cooldown(ACTIVES[a.key].cd,linked.map(s=>s.key))/ACTIVES[a.key].cd-1)*1e12)/1e12;
       out.push({ id: a.id, key: a.key, linked: linked.map(s => s.id), stat });
     }
     return out;
@@ -120,21 +136,19 @@
     return null;
   }
 
-  const REPEAT_K = 0.6; // 重複施放的傷害係數（雙卡雙待）
-
   // 預期 DPS（單一目標）：每次命中 = 武器傷害 × 技能倍率 × (1 + 傷害加成) × 期望暴擊倍率
   // hero：{ hit 武器傷害, crit 暴擊率 %, cm 暴擊傷害 % }
   function dps(b, hero) {
     return resolve(b).map(r => {
-      const d = ACTIVES[r.key], st = r.stat;
-      const crit = Math.min(1, Math.max(0, (hero.crit + st.crit * 100) / 100));
-      const hit = hero.hit * d.mult * Math.max(0, 1 + st.dmg) * (1 + crit * (hero.cm / 100 - 1));
-      const interval = d.cd * (1 + st.cd);
-      const perCast = hit * (1 + st.repeat * REPEAT_K);
+      const d = ACTIVES[r.key], keys=r.linked.map(id=>b.pieces.find(p=>p.id===id).key), mod=skillMods(keys,r.key);
+      const crit = Math.min(1, Math.max(0, (hero.crit + mod.crit) / 100));
+      const hit = hero.hit * d.mult * mod.hit * (1 + crit * (hero.cm / 100 - 1));
+      const interval = cooldown(d.cd, keys, hero.haste || 0);
+      const perCast = hit * (1 + mod.twin * REPEAT_K + (mod.repeat ? .45 : 0));
       return { id: r.id, key: r.key, hit, interval, dps: perCast / interval };
     });
   }
 
-  const api = { findSpot, dps, ACTIVES, SUPPORTS, createBoard, shapeOf, cellsOf, canPlace, place, remove, rotate, resolve };
+  const api = { findSpot, dps, LIMITS, skillMods, cooldown, ACTIVES, SUPPORTS, createBoard, shapeOf, cellsOf, canPlace, place, remove, rotate, resolve };
   if (typeof module !== 'undefined') module.exports = api; else root.GridLab = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -74,17 +74,17 @@ function shapeIcon(kind, key, rot = 0, col){
   return o + '</span>';
 }
 function buildBar(){
-  return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><p class="uxmeta">技能與天賦獨立，裝備共用。</p></section>`;
+  return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><p class="uxmeta">技能、天賦與出手策略獨立，裝備共用。</p>${uiPolicyHtml()}</section>`;
 }
 function dpsBar(){
-  const sk = G.st.sk || {}, ids = Object.keys(sk), tot = ids.reduce((a, id) => a + sk[id].hit/Math.max(.2, sk[id].cd), 0) || 1;
-  return `<div class="dpsbar"><div>DPS <b>${tFmt(G.st.dps)}</b> <span id="pzdelta" class="mute"></span></div><div class="shares">${ids.map(id => `<span style="flex:${Math.max(1, Math.round(sk[id].hit/Math.max(.2, sk[id].cd)/tot*100))}" title="${SKILLS[id].n}">${SKILLS[id].n}</span>`).join('')}</div>${uxPieceDetails()}</div>`;
+  const sk = G.st.sk || {}, ids = Object.keys(sk), tot = ids.reduce((a, id) => a+sk[id].direct*sk[id].estimatedCasts, 0) || 1;
+  return `<div class="dpsbar"><div>單體直傷預估 <b>${tFmt(G.st.dps)}</b> <span id="pzdelta" class="mute"></span></div><div class="shares">${ids.map(id => `<span style="flex:${Math.max(1, Math.round(sk[id].direct*sk[id].estimatedCasts/tot*100))}" title="${SKILLS[id].n}">${SKILLS[id].n}</span>`).join('')}</div>${uxPieceDetails()}</div>`;
 }
 function switchBuild(i){
   if (i === (G.bi || 0)) return; if (!G.builds) G.builds = [null, null, null];
-  G.builds[G.bi || 0] = JSON.parse(JSON.stringify({ board:G.board, pass:G.pass }));
+  G.builds[G.bi || 0] = JSON.parse(JSON.stringify({board:G.board,pass:G.pass,castPolicy:G.castPolicy}));
   const t = G.builds[i]; G.bi = i; selPiece = null; held = null;
-  if (t){ G.board = JSON.parse(JSON.stringify(t.board)); G.pass = t.pass.slice(); } else { boardFromLegacy(['FIRE'], {}); G.pass = []; }
+  if (t){ G.board = JSON.parse(JSON.stringify(t.board)); G.pass=t.pass.slice();G.castPolicy=t.castPolicy==='combo'?'combo':'balanced'; } else { boardFromLegacy(['FIRE'], {}); G.pass=[];G.castPolicy='balanced';}
   const use = {}, cu = {};   // 配件與卡匣只有一份庫存：超出的從這套拿掉
   G.board.pieces = G.board.pieces.filter(p => { if (p.kind !== 'support') return true; use[p.key] = (use[p.key] || 0) + 1; return use[p.key] <= (G.gems[p.key] || 0); });
   for (const p of G.board.pieces) if (p.mode){ cu[p.mode] = (cu[p.mode] || 0) + 1; if (cu[p.mode] > (G.carts[p.mode] || 0)) p.mode = null; }
@@ -109,7 +109,7 @@ function skillsHtml0(){
   h += `</div><div class="rz">${rz.length ? '共鳴　' + rz.join('　') : '共鳴：塞滿整列、整欄，或同元素技能緊貼，有額外加成'}</div>`;
   const hd = held ? (held.kind === 'active' ? SKILLS[held.key].n : SUPPS[held.key].n) : '';
   h += `<div class="pzbar"><button ${held || selPiece != null ? '' : 'disabled'} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button>${held ? `<span class="mute">手上：${hd} ${shapeIcon(held.kind, held.key, heldRot)}</span>` : ''}<span id="pzmsg" class="mute"></span></div>`;
-  h += uiInventoryHtml() + uiResolvedHtml();
+  h+=uiInventoryHtml()+uiResolvedHtml()+uiCombatHtml();
   return h;
 }
 function treeHtml(){

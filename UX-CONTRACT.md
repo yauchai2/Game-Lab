@@ -138,3 +138,12 @@
 - UI_DATA：warehouse 是角色子頁，pagination 為 12 件，無搜尋欄或獨立主題。天賦原 SVG 與原生清單共用 allocPass／nodeOpen，不能繞過連線與點數限制。
 
 - MONSTER_GUIDE 由 01-data.js 擁有，圖鑑與編年史不各自維護怪物清單；新增類型必須與 MTYPES 覆蓋一致。
+
+
+## 連動構築（0.28.0）
+
+出手策略：uiPolicyHtml／uiSetCastPolicy 共用原生 button group、aria-pressed 與 data-focus；有效策略加入原存檔 v2，舊存檔預設均衡。三套配置一併保存策略，裝備仍共用。
+
+戰報：uiCombatHtml 預設折疊，uiCombatRefresh 只更新已展開的文字，不重建盤面或搶焦點；訓練中不可重設報表，會解釋原因。數據是暫存的有效傷害，不含溢傷；單體直傷預估與訓練實測明確區分。
+
+訓練：uiTrainingPreset／trainStart／trainEnd 是目標、啟動與取消唯一 owner，進行中目標按鍵 disabled。取消不覆寫上次結果、生命比例與冷卻還原，測試電荷不帶出；沒有獎勵或地面拾取。電路配方：buyCircuitMode 執行時重驗等級、點數、持有狀態，失敗不扣款；已持有按鍵名稱包含卡匣名稱。

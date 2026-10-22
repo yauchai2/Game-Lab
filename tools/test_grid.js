@@ -22,7 +22,7 @@ G.place(b, 'active', 'FROST', 0, 1);
 G.place(b, 'support', 'AREA', 0, 2);
 assert.strictEqual(G.resolve(b)[0].linked.length, 0, '標籤不符不生效');
 
-// 冷卻縮減上限 70%
+// 冷卻縮減上限 60%
 b = G.createBoard(3, 3);
 G.place(b, 'active', 'FIRE', 1, 1);
 b = G.createBoard(5, 5);
@@ -30,7 +30,7 @@ G.place(b, 'active', 'FIRE', 2, 2);
 assert(G.place(b, 'support', 'HASTE', 1, 1));   // 橫三格 (1,1)(2,1)(3,1)，貼著 (2,2)
 assert(G.place(b, 'support', 'HASTE', 0, 3));   // 橫三格 (0,3)(1,3)(2,3)，貼在下方
 assert(G.place(b, 'support', 'HASTE', 3, 2, 1));   // 旋轉成直立 (3,2)(3,3)(3,4)，貼右側
-assert.strictEqual(G.resolve(b)[0].stat.cd, -0.7, '三個寬頻 -90% 要被上限卡在 -70%');
+assert.strictEqual(G.resolve(b)[0].stat.cd, -0.6, '三個寬頻 -90% 要被上限卡在 -60%');
 
 // 旋轉：L 形可原地旋轉，卡牆時失敗
 b = G.createBoard(3, 3);
@@ -54,7 +54,7 @@ d = G.dps(b, hero)[0];
 assert(Math.abs(d.dps - (100 * 2.6 * 1.45) / (2.6 * 0.7)) < 1e-9, '加成後 DPS');
 assert(G.place(b, 'support', 'TWIN', 3, 2));        // L 形 (3,2)(4,2)(3,3)，貼右側：重複施放一次，60% 傷害
 d = G.dps(b, hero)[0];
-assert(Math.abs(d.dps - (100 * 2.6 * 1.45 * 1.6) / (2.6 * 0.7)) < 1e-9, '重複施放');
+assert(Math.abs(d.dps - (100 * 2.6 * 1.45 * 1.08 * 1.6) / (2.6 * 0.7)) < 1e-9, '重複施放');
 const hc = G.dps(b, { hit: 100, crit: 50, cm: 200 })[0];
 assert(Math.abs(hc.hit / d.hit - 1.5) < 1e-9, '50% 暴擊、暴傷 200% 的期望倍率 1.5');
 // findSpot：輔助會找到能連到指定主動機件的位置（會自己旋轉）

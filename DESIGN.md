@@ -156,3 +156,8 @@ Alan 最新要求明確取代 0.26.2 的「HUD、血條與文字保持清晰」�
 像素材質以 ui-pixelfx 作 variant：shell／control 半徑分別 2／0px，外殼、按鍵、選中、主要動作與標題改為硬分段色帶；閱讀區保留乾淨背景。基底 frontmatter 的 10／4px 是效果關閉時的材質，像素 variant 透過相同 UX_THEME token 名稱覆寫，不另建平行頁面。12px 輔助標籤保持原生字格；正文 16px，輸入不小於 16px。
 
 生命及經驗視覺以 2% 步幅向上取格，非零比例不顯示成空條；每格 6px 色塊／2px 間隔。精確生命及 ARIA 數值保持原值，視覺取格不影響遊戲計算。關閉質感後恢復連續血條與平滑基底按鍵，但保留字模及字級，避免操作滑桿時文字重排。所有變更不用逐幀 DOM 截圖、全頁 SVG 濾鏡或文字覆蓋畫布。瀏覽器縮放與未收字形仍可能帶來原生反鋸齒，不宣稱每種縮放均為逐像素完全一致。
+
+
+## 構築出手與訓練（0.28.0）
+
+延續現行像素掌機材質，不新增色票、字型、圖示或獨立皮膚。出手策略使用原生按鍵群組與 aria-pressed，資料列沿用 ui-resolved，配方沿用電路合成區。戰報預設折疊，只對已展開節點更新文字，不用即時 aria-live 播報計時；訓練目標使用同一按鍵群組，進行中禁改目標並提供取消。現行 UI owner 為 uiPolicyHtml／uiCombatHtml／uiCombatRefresh／uiAdventureHtml，規則來源為 GridLab.cooldown／skillPattern；原生焦點、草稿及動態偏好保持共用契約。證據見 docs/mechanics-v0.28.0.md。
