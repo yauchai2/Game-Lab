@@ -1,0 +1,863 @@
+{
+  "version": "0.31.0",
+  "seeds": [
+    11,
+    29,
+    83,
+    127,
+    251
+  ],
+  "fingerprints": {
+    "src/game/00-grid.js": "29ec492d044f47d7e8601de607728d2f84297b83049973a565f2cd1e9f8c8c8a",
+    "src/game/01-data.js": "0f21671a193155ecfe11dbc0f2f633841d129ae18f2d9c9f391283c884e689c5",
+    "src/game/02-state.js": "bc1564eed0d70d363abf6e83fe6eeb3ab28957222289f8dddaa866b3d129f0f5",
+    "src/game/03-combat.js": "22da1536ba765d80dcc2fdd5067420aa8419a4d8726beb41e7a423802b7223d8",
+    "src/game/05-ui.js": "58a19797b91d689d53f8120cbf5cbc2b09fa724639194f75a0a1fd06fe982969"
+  },
+  "method": "Production catchUp/update/pickup/save/load. Browser IO only is mocked. Fixed wall clock, seeded gameplay RNG, default new-player gear/board, no renderer/audio RNG calls. Automatic choices resolve at the end, following existing source. Five seeds per group; interpolated quantiles are exploratory, not population estimates.",
+  "limitations": [
+    "No Safari/FPS/memory/real user retention evidence",
+    "Not online/offline distribution equivalence: step size, penalties and visual RNG differ",
+    "City assertions test single departure and resource safety, not route success balance"
+  ],
+  "rows": [
+    {
+      "seed": 11,
+      "autoCard": false,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 99,
+      "deaths": 0,
+      "gold": 283,
+      "parts": 0,
+      "chips": 11,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 4,
+      "overflowRecycled": 0,
+      "picks": 3,
+      "relicPicks": 1,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 647,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 11,
+      "autoCard": false,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 14,
+      "kills": 24072,
+      "deaths": 160,
+      "gold": 892470,
+      "parts": 7082,
+      "chips": 5115,
+      "coreDust": 161,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 2464,
+      "picks": 30,
+      "relicPicks": 172,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 64563,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 29,
+      "autoCard": false,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 99,
+      "deaths": 0,
+      "gold": 294,
+      "parts": 0,
+      "chips": 16,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 5,
+      "overflowRecycled": 0,
+      "picks": 3,
+      "relicPicks": 1,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 189,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 29,
+      "autoCard": false,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 14,
+      "kills": 22177,
+      "deaths": 144,
+      "gold": 851697,
+      "parts": 6287,
+      "chips": 4744,
+      "coreDust": 146,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 2226,
+      "picks": 30,
+      "relicPicks": 157,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 54252,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 83,
+      "autoCard": false,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 97,
+      "deaths": 0,
+      "gold": 282,
+      "parts": 0,
+      "chips": 13,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 7,
+      "overflowRecycled": 0,
+      "picks": 3,
+      "relicPicks": 1,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 598,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 83,
+      "autoCard": false,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 14,
+      "kills": 22181,
+      "deaths": 142,
+      "gold": 808048,
+      "parts": 6421,
+      "chips": 4681,
+      "coreDust": 165,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 2181,
+      "picks": 30,
+      "relicPicks": 153,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 73838,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 127,
+      "autoCard": false,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 110,
+      "deaths": 0,
+      "gold": 307,
+      "parts": 0,
+      "chips": 12,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 7,
+      "overflowRecycled": 0,
+      "picks": 3,
+      "relicPicks": 1,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 374,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 127,
+      "autoCard": false,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 14,
+      "kills": 21805,
+      "deaths": 142,
+      "gold": 811750,
+      "parts": 6105,
+      "chips": 4570,
+      "coreDust": 148,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 2126,
+      "picks": 30,
+      "relicPicks": 154,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 70744,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 251,
+      "autoCard": false,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 93,
+      "deaths": 0,
+      "gold": 280,
+      "parts": 0,
+      "chips": 12,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 5,
+      "overflowRecycled": 0,
+      "picks": 3,
+      "relicPicks": 1,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 242,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 251,
+      "autoCard": false,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 15,
+      "kills": 18678,
+      "deaths": 117,
+      "gold": 753894,
+      "parts": 5376,
+      "chips": 3877,
+      "coreDust": 133,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 1810,
+      "picks": 30,
+      "relicPicks": 129,
+      "cards": 0,
+      "relics": 0,
+      "localComputeMs": 59590,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 11,
+      "autoCard": true,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 99,
+      "deaths": 0,
+      "gold": 283,
+      "parts": 0,
+      "chips": 11,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 4,
+      "overflowRecycled": 0,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 3,
+      "relics": 1,
+      "localComputeMs": 148,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 11,
+      "autoCard": true,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 14,
+      "kills": 24072,
+      "deaths": 160,
+      "gold": 892470,
+      "parts": 7082,
+      "chips": 5115,
+      "coreDust": 161,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 2464,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 30,
+      "relics": 12,
+      "localComputeMs": 72683,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 29,
+      "autoCard": true,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 99,
+      "deaths": 0,
+      "gold": 294,
+      "parts": 0,
+      "chips": 16,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 5,
+      "overflowRecycled": 0,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 3,
+      "relics": 1,
+      "localComputeMs": 141,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 29,
+      "autoCard": true,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 14,
+      "kills": 22177,
+      "deaths": 144,
+      "gold": 851697,
+      "parts": 6287,
+      "chips": 4744,
+      "coreDust": 146,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 2226,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 30,
+      "relics": 12,
+      "localComputeMs": 67736,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 83,
+      "autoCard": true,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 97,
+      "deaths": 0,
+      "gold": 282,
+      "parts": 0,
+      "chips": 13,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 7,
+      "overflowRecycled": 0,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 3,
+      "relics": 1,
+      "localComputeMs": 476,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 83,
+      "autoCard": true,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 14,
+      "kills": 22181,
+      "deaths": 142,
+      "gold": 808048,
+      "parts": 6421,
+      "chips": 4681,
+      "coreDust": 165,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 2181,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 30,
+      "relics": 12,
+      "localComputeMs": 55551,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 127,
+      "autoCard": true,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 110,
+      "deaths": 0,
+      "gold": 307,
+      "parts": 0,
+      "chips": 12,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 7,
+      "overflowRecycled": 0,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 3,
+      "relics": 1,
+      "localComputeMs": 368,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 127,
+      "autoCard": true,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 14,
+      "kills": 21805,
+      "deaths": 142,
+      "gold": 811750,
+      "parts": 6105,
+      "chips": 4570,
+      "coreDust": 148,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 2126,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 30,
+      "relics": 12,
+      "localComputeMs": 59175,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 251,
+      "autoCard": true,
+      "awaySeconds": 120,
+      "simulatedSeconds": 120,
+      "lvl": 4,
+      "depth": 2,
+      "kills": 93,
+      "deaths": 0,
+      "gold": 280,
+      "parts": 0,
+      "chips": 12,
+      "coreDust": 0,
+      "cores": 0,
+      "inventory": 5,
+      "overflowRecycled": 0,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 3,
+      "relics": 1,
+      "localComputeMs": 203,
+      "reloadPreservesEarnedState": true
+    },
+    {
+      "seed": 251,
+      "autoCard": true,
+      "awaySeconds": 21600,
+      "simulatedSeconds": 21600,
+      "lvl": 31,
+      "depth": 15,
+      "kills": 18678,
+      "deaths": 117,
+      "gold": 753894,
+      "parts": 5376,
+      "chips": 3877,
+      "coreDust": 133,
+      "cores": 9,
+      "inventory": 200,
+      "overflowRecycled": 1810,
+      "picks": 0,
+      "relicPicks": 0,
+      "cards": 30,
+      "relics": 12,
+      "localComputeMs": 30980,
+      "reloadPreservesEarnedState": true
+    }
+  ],
+  "groups": [
+    {
+      "autoCard": false,
+      "awaySeconds": 120,
+      "sampleSize": 5,
+      "metrics": {
+        "lvl": {
+          "min": 4,
+          "p10": 4,
+          "p50": 4,
+          "p90": 4,
+          "max": 4
+        },
+        "depth": {
+          "min": 2,
+          "p10": 2,
+          "p50": 2,
+          "p90": 2,
+          "max": 2
+        },
+        "kills": {
+          "min": 93,
+          "p10": 94.6,
+          "p50": 99,
+          "p90": 105.6,
+          "max": 110
+        },
+        "deaths": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        },
+        "gold": {
+          "min": 280,
+          "p10": 280.8,
+          "p50": 283,
+          "p90": 301.8,
+          "max": 307
+        },
+        "parts": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        },
+        "chips": {
+          "min": 11,
+          "p10": 11.4,
+          "p50": 12,
+          "p90": 14.8,
+          "max": 16
+        },
+        "cores": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        },
+        "picks": {
+          "min": 3,
+          "p10": 3,
+          "p50": 3,
+          "p90": 3,
+          "max": 3
+        },
+        "overflowRecycled": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        }
+      }
+    },
+    {
+      "autoCard": false,
+      "awaySeconds": 21600,
+      "sampleSize": 5,
+      "metrics": {
+        "lvl": {
+          "min": 31,
+          "p10": 31,
+          "p50": 31,
+          "p90": 31,
+          "max": 31
+        },
+        "depth": {
+          "min": 14,
+          "p10": 14,
+          "p50": 14,
+          "p90": 14.6,
+          "max": 15
+        },
+        "kills": {
+          "min": 18678,
+          "p10": 19928.8,
+          "p50": 22177,
+          "p90": 23315.6,
+          "max": 24072
+        },
+        "deaths": {
+          "min": 117,
+          "p10": 127,
+          "p50": 142,
+          "p90": 153.6,
+          "max": 160
+        },
+        "gold": {
+          "min": 753894,
+          "p10": 775555.6,
+          "p50": 811750,
+          "p90": 876160.8,
+          "max": 892470
+        },
+        "parts": {
+          "min": 5376,
+          "p10": 5667.6,
+          "p50": 6287,
+          "p90": 6817.6,
+          "max": 7082
+        },
+        "chips": {
+          "min": 3877,
+          "p10": 4154.2,
+          "p50": 4681,
+          "p90": 4966.6,
+          "max": 5115
+        },
+        "cores": {
+          "min": 9,
+          "p10": 9,
+          "p50": 9,
+          "p90": 9,
+          "max": 9
+        },
+        "picks": {
+          "min": 30,
+          "p10": 30,
+          "p50": 30,
+          "p90": 30,
+          "max": 30
+        },
+        "overflowRecycled": {
+          "min": 1810,
+          "p10": 1936.4,
+          "p50": 2181,
+          "p90": 2368.8,
+          "max": 2464
+        }
+      }
+    },
+    {
+      "autoCard": true,
+      "awaySeconds": 120,
+      "sampleSize": 5,
+      "metrics": {
+        "lvl": {
+          "min": 4,
+          "p10": 4,
+          "p50": 4,
+          "p90": 4,
+          "max": 4
+        },
+        "depth": {
+          "min": 2,
+          "p10": 2,
+          "p50": 2,
+          "p90": 2,
+          "max": 2
+        },
+        "kills": {
+          "min": 93,
+          "p10": 94.6,
+          "p50": 99,
+          "p90": 105.6,
+          "max": 110
+        },
+        "deaths": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        },
+        "gold": {
+          "min": 280,
+          "p10": 280.8,
+          "p50": 283,
+          "p90": 301.8,
+          "max": 307
+        },
+        "parts": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        },
+        "chips": {
+          "min": 11,
+          "p10": 11.4,
+          "p50": 12,
+          "p90": 14.8,
+          "max": 16
+        },
+        "cores": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        },
+        "picks": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        },
+        "overflowRecycled": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        }
+      }
+    },
+    {
+      "autoCard": true,
+      "awaySeconds": 21600,
+      "sampleSize": 5,
+      "metrics": {
+        "lvl": {
+          "min": 31,
+          "p10": 31,
+          "p50": 31,
+          "p90": 31,
+          "max": 31
+        },
+        "depth": {
+          "min": 14,
+          "p10": 14,
+          "p50": 14,
+          "p90": 14.6,
+          "max": 15
+        },
+        "kills": {
+          "min": 18678,
+          "p10": 19928.8,
+          "p50": 22177,
+          "p90": 23315.6,
+          "max": 24072
+        },
+        "deaths": {
+          "min": 117,
+          "p10": 127,
+          "p50": 142,
+          "p90": 153.6,
+          "max": 160
+        },
+        "gold": {
+          "min": 753894,
+          "p10": 775555.6,
+          "p50": 811750,
+          "p90": 876160.8,
+          "max": 892470
+        },
+        "parts": {
+          "min": 5376,
+          "p10": 5667.6,
+          "p50": 6287,
+          "p90": 6817.6,
+          "max": 7082
+        },
+        "chips": {
+          "min": 3877,
+          "p10": 4154.2,
+          "p50": 4681,
+          "p90": 4966.6,
+          "max": 5115
+        },
+        "cores": {
+          "min": 9,
+          "p10": 9,
+          "p50": 9,
+          "p90": 9,
+          "max": 9
+        },
+        "picks": {
+          "min": 0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0,
+          "max": 0
+        },
+        "overflowRecycled": {
+          "min": 1810,
+          "p10": 1936.4,
+          "p50": 2181,
+          "p90": 2368.8,
+          "max": 2464
+        }
+      }
+    }
+  ],
+  "capChecks": [
+    {
+      "seed": 11,
+      "autoCard": false,
+      "sixHoursEqualsTwelveHours": true
+    },
+    {
+      "seed": 11,
+      "autoCard": true,
+      "sixHoursEqualsTwelveHours": true
+    }
+  ],
+  "cityChecks": [
+    {
+      "route": "signal",
+      "singleDeparture": true,
+      "clears": {
+        "signal:1": 1
+      },
+      "fragments": {
+        "signal": 114,
+        "memory": 100,
+        "power": 100
+      },
+      "seals": {
+        "signal": 1,
+        "memory": 1,
+        "power": 1
+      },
+      "noAutomaticCraftingOrNexus": true
+    },
+    {
+      "route": "memory",
+      "singleDeparture": true,
+      "clears": {
+        "memory:1": 1
+      },
+      "fragments": {
+        "signal": 100,
+        "memory": 114,
+        "power": 100
+      },
+      "seals": {
+        "signal": 1,
+        "memory": 1,
+        "power": 1
+      },
+      "noAutomaticCraftingOrNexus": true
+    },
+    {
+      "route": "power",
+      "singleDeparture": true,
+      "clears": {
+        "power:1": 1
+      },
+      "fragments": {
+        "signal": 100,
+        "memory": 100,
+        "power": 114
+      },
+      "seals": {
+        "signal": 1,
+        "memory": 1,
+        "power": 1
+      },
+      "noAutomaticCraftingOrNexus": true
+    }
+  ]
+}
