@@ -16,7 +16,10 @@ with tempfile.TemporaryDirectory(prefix='game-lab-build-check-') as temp:
     subprocess.run([sys.executable, str(ROOT / 'tools/build.py'), str(expected)], check=True)
     if expected.read_bytes() != game:
         sys.exit('The standalone build is stale. Rebuild, commit and push it before publishing.')
-version = re.search(r"\{ v:'([^']+)'", (ROOT / 'src/game/01-data.js').read_text())[1]
+version_match = re.search(r"const CHANGELOG\s*=\s*\[\s*\{\s*v\s*:\s*['\"]([^'\"]+)['\"]", (ROOT / 'src/game/01-data.js').read_text())
+if not version_match:
+    sys.exit('Cannot read the first CHANGELOG version; refusing to publish stale metadata.')
+version = version_match[1]
 commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
 out.mkdir(parents=True, exist_ok=True)
 page = (ROOT / 'index.html').read_text()
