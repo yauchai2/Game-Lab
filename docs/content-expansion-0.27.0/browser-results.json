@@ -1,0 +1,144 @@
+{
+  "regions": [
+    {
+      "region": "幽暗森林",
+      "types": [
+        "slime",
+        "slime",
+        "skel",
+        "slime"
+      ],
+      "calls": 262
+    },
+    {
+      "region": "荒蕪沙漠",
+      "types": [
+        "brute",
+        "crab",
+        "crab",
+        "crab",
+        "crab",
+        "brute",
+        "brute"
+      ],
+      "calls": 316
+    },
+    {
+      "region": "凍結雪原",
+      "types": [
+        "skel",
+        "drone",
+        "wisp",
+        "skel"
+      ],
+      "calls": 293
+    },
+    {
+      "region": "熔岩深淵",
+      "types": [
+        "crab",
+        "crab",
+        "bomb",
+        "bomb",
+        "brute",
+        "bomb",
+        "brute"
+      ],
+      "calls": 293
+    },
+    {
+      "region": "霓虹夜城",
+      "types": [
+        "drone",
+        "wisp",
+        "wisp",
+        "speaker",
+        "wisp"
+      ],
+      "calls": 192
+    },
+    {
+      "region": "千禧遊樂場",
+      "types": [
+        "spider",
+        "speaker",
+        "slime",
+        "slime",
+        "slime"
+      ],
+      "calls": 209
+    },
+    {
+      "region": "廢訊號站",
+      "types": [
+        "drone",
+        "drone",
+        "speaker",
+        "speaker",
+        "drone",
+        "drone"
+      ],
+      "calls": 217
+    },
+    {
+      "region": "磁帶海港",
+      "types": [
+        "spider",
+        "spider",
+        "drone",
+        "spider",
+        "spider",
+        "spider"
+      ],
+      "calls": 196
+    },
+    {
+      "region": "電路神社",
+      "types": [
+        "spider",
+        "wisp",
+        "skel",
+        "spider"
+      ],
+      "calls": 235
+    },
+    {
+      "region": "地下機房",
+      "types": [
+        "speaker",
+        "crab",
+        "bomb",
+        "crab"
+      ],
+      "calls": 191
+    },
+    {
+      "region": "霓虹高架",
+      "types": [
+        "brute",
+        "speaker",
+        "brute",
+        "brute",
+        "drone",
+        "drone",
+        "speaker"
+      ],
+      "calls": 337
+    },
+    {
+      "region": "廢棄商場",
+      "types": [
+        "wisp",
+        "spider",
+        "spider",
+        "spider"
+      ],
+      "calls": 184
+    }
+  ],
+  "pool": {
+    "materials": 24,
+    "size": 24
+  },
+  "errors": []
+}

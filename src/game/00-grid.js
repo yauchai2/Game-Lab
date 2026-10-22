@@ -25,6 +25,7 @@
     CRYSTAL:{ n: '水晶振盪', shape: [[0, 0]], needs: [],        mod: { dmg: 0.1, crit: 0.15 } },
     LEECH: { n: '無線充電', shape: [[0, 0], [1, 0]], needs: [],        mod: { leech: 0.12 } },
   };
+  Object.assign(SUPPORTS,{FOCUS:{n:'鎖頻晶片',shape:[[0,0]],needs:[],mod:{dmg:.35,crit:.15,cd:.15}},FORK:{n:'分線器',shape:[[0,0],[0,1]],needs:['proj','melee'],mod:{fork:1}},RECOVER:{n:'備用電池',shape:[[0,0],[1,0]],needs:[],mod:{recover:1}},DELAY:{n:'延遲緩衝',shape:[[0,0],[1,0],[1,1]],needs:[],mod:{dmg:-.15,repeat:1}}});
   const CD_FLOOR = -0.7; // 冷卻縮減上限 70%
 
   const defOf = (kind, key) => (kind === 'active' ? ACTIVES : SUPPORTS)[key];

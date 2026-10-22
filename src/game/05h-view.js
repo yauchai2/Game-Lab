@@ -38,6 +38,7 @@ function viewApplyPrefs(){
   const motion=GAME_VIEW.prefs.uiFx>0&&GAME_VIEW.prefs.glitch&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.body.classList.toggle('signal-fx',motion);
   document.body.classList.toggle('ui-pixelfx',GAME_VIEW.prefs.uiFx>0);document.body.dataset.uiFx=GAME_VIEW.prefs.uiFx;
+  if(!GAME_VIEW.prefs.glitch||matchMedia('(prefers-reduced-motion: reduce)').matches){FXO.shake=0;FXO.flash=0;FXO.punch=0;FXO.stop=0;}
   if(!motion){clearTimeout(GAME_VIEW.pulseTimer);document.body.classList.remove('ui-fx-pulse');}
   const range=$('ui-fx-level'),name=$('ui-fx-name');if(range){range.value=GAME_VIEW.prefs.uiFx;range.setAttribute('aria-valuetext',UI_FX_NAMES[GAME_VIEW.prefs.uiFx]);}if(name)name.textContent=UI_FX_NAMES[GAME_VIEW.prefs.uiFx];
   document.body.classList.toggle('pixel-icons',GAME_VIEW.prefs.pixels);
@@ -46,7 +47,7 @@ function viewApplyPrefs(){
     else document.documentElement.style.removeProperty('--pixel-'+key);
   }
   document.querySelectorAll('[data-view-idle]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.viewIdle===GAME_VIEW.prefs.idle)));
-  document.querySelectorAll('[data-view-setting]').forEach(b=>{const on=GAME_VIEW.prefs[b.dataset.viewSetting];b.setAttribute('aria-pressed',String(on));b.textContent=b.dataset.viewSetting==='pixels'?(on?'像素圖示':'原始圖示'):(on?'訊號效果：開':'訊號效果：關');});
+  document.querySelectorAll('[data-view-setting]').forEach(b=>{const on=GAME_VIEW.prefs[b.dataset.viewSetting];b.setAttribute('aria-pressed',String(on));b.textContent=b.dataset.viewSetting==='pixels'?(on?'像素圖示':'原始圖示'):(on?'動態衝擊：開':'動態衝擊：關');});
 }
 function viewPreparePixels(){
   // 原圖保持不變。以每格 24 邏輯像素取樣，所有尺寸共用同一份圖集。
@@ -115,7 +116,7 @@ function viewInit(){
   hud.innerHTML='<div class="hud-left"><div class="hud-level"><span>LV</span><b data-hud="level"></b></div><div class="hud-vitals"><div class="hud-healthline"><span>HP</span><b data-hud="hp"></b></div><div class="hud-meter hud-hp" data-hud="hpbar" role="progressbar" aria-label="生命" aria-valuemin="0" aria-valuemax="100"><i></i></div><div class="hud-meter hud-xp" data-hud="xpbar" role="progressbar" aria-label="經驗" aria-valuemin="0" aria-valuemax="100"><span>XP</span><i></i></div></div><div class="hud-progress" data-hud="progress"></div></div><div class="hud-right"><div><span>G</span><b data-hud="gold"></b></div><div><span>DPS</span><b data-hud="dps"></b></div></div>';
   GAME_VIEW.hud=hud;GAME_VIEW.fields=Object.fromEntries([...hud.querySelectorAll('[data-hud]')].map(el=>[el.dataset.hud,el]));ui.drawStats=viewRenderHUD;
   const back=document.createElement('button');back.id='watch-return';back.type='button';back.hidden=true;back.setAttribute('aria-label','返回操作台');back.innerHTML='<span><i aria-hidden="true"></i>觀戰中 · 點一下返回<span class="watch-key"> ／ Esc</span></span>';back.onclick=()=>viewExitWatch();document.body.appendChild(back);
-  const settings=document.createElement('section');settings.className='view-settings';settings.setAttribute('aria-label','畫面與觀戰');settings.innerHTML='<h3>畫面與觀戰</h3><p>像素質感套用整個操作介面，搭配低面數場景；動態訊號可獨立關閉。</p><div class="view-options" role="group" aria-label="圖示與動態效果"><button type="button" data-view-setting="pixels"></button><button type="button" data-view-setting="glitch"></button></div><h4>無操作後自動觀戰</h4><div class="view-options" role="group" aria-label="自動觀戰等待時間">'+[[0,'關閉'],[30,'30 秒'],[60,'60 秒'],[120,'2 分鐘']].map(([s,t])=>`<button type="button" data-view-idle="${s}">${t}</button>`).join('')+'</div><p>觀戰填滿遊戲視窗。點一下或按 Esc 返回；編輯、拖曳及選擇獎勵時不自動切換。系統啟用減少動態效果時，訊號動畫會停用。</p><button type="button" id="watch-now">立即觀戰 ↗</button>';
+  const settings=document.createElement('section');settings.className='view-settings';settings.setAttribute('aria-label','畫面與觀戰');settings.innerHTML='<h3>畫面與觀戰</h3><p>像素質感套用整個操作介面，搭配低面數場景；震動、衝擊與動態訊號可獨立關閉。</p><div class="view-options" role="group" aria-label="圖示與動態效果"><button type="button" data-view-setting="pixels"></button><button type="button" data-view-setting="glitch"></button></div><h4>無操作後自動觀戰</h4><div class="view-options" role="group" aria-label="自動觀戰等待時間">'+[[0,'關閉'],[30,'30 秒'],[60,'60 秒'],[120,'2 分鐘']].map(([s,t])=>`<button type="button" data-view-idle="${s}">${t}</button>`).join('')+'</div><p>觀戰填滿遊戲視窗。點一下或按 Esc 返回；編輯、拖曳及選擇獎勵時不自動切換。系統啟用減少動態效果時，訊號動畫會停用。</p><button type="button" id="watch-now">立即觀戰 ↗</button>';
   $('uisettings').prepend(settings);
   const control=document.createElement('div');control.className='view-fx-control';control.innerHTML='<div><label for="ui-fx-level">介面像素質感</label><output for="ui-fx-level" id="ui-fx-name"></output></div><input id="ui-fx-level" type="range" min="0" max="3" step="1" aria-describedby="ui-fx-help"><div class="view-fx-ticks" aria-hidden="true"><span>關閉</span><span>輕微</span><span>標準</span><span>強烈</span></div><p id="ui-fx-help">調整整體色階與外殼訊號質感。內容區保持乾淨，方便閱讀。</p>';
   settings.querySelector('.view-options').before(control);

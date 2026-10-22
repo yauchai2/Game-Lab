@@ -125,3 +125,16 @@
 - UI 圖示、文字、互動區及存檔契約不變；離線／背景繪製暫停延用 0.26.1。開發用 clean 對照可暫時使用原生 DPR，正式預設不切回。
 
 裝扮的 3D 角色預覽也共用 r3BufferSize 與 pixelated 放大，保留旋轉／裝扮及相機比例；只有 buffer 尺寸改變才呼叫 setSize，不再每 40ms 重設像素倍率與緩衝區。
+
+## 倉庫、地面掉落與電路擴充（0.27.0）
+
+- validGear／storeGear／equipStored／recycleStored 是普通裝備的持有與資源 owner。倉庫 200 件，以安全 UID 識別；手動穿戴關閉 autoEquip，舊裝備保留。滿倉先比較稀有度、最佳詞綴階級及等級，只回收未保護的較低優先度裝備；沒有較低候選就回收新物品。過濾門檻仍生效。每次自動回收累計 storageRecycled，規則在倉庫明示。
+- 穿著、上一件、保管鎖定、詞綴鎖定及已腐化物品不能手動回收／被滿倉替換。手動回收共用 dialog，確認時重新檢查；重複確認不重付資源。傳奇持有延用 armory，重複核心保護規則不變。
+- applySave 先重建庫存、規範 UID，再把 equip／equipBackup 指回相同實體。舊存檔新欄位缺省為空倉、0 電路點數及開啟自動換裝；不繼承先前讀取存檔的物品或貨幣。舊版已賣掉的物品不虛構恢復。
+- dropGround 合併鄰近金幣／電路點數；collectNearby 要求角色活著、掉落可拾且距離不超過 6，年齡再久也不直接入帳。角色以可到達的掉落物為移動目標。groundDrops 保存未拾物，讀取不重複領取。離線補算最後收集餘下物品，保留原六小時上限與待選契約。
+- rollAff 產生 T0–T4，新詞綴 T2／T1／T0 分別要求物品等級 5／12／25。舊詞綴保留數值並推定顯示階級，不回溯重洗。
+- buyCircuitSupport 只接受四個明定 ID，20 點換一件指定配件，資源不足不扣；合成後保留已展開的工作區。配件仍以同一 GridLab 鄰接／標籤及實際戰鬥計算為準，所有角色共享。
+- ui.renderInterval 僅限制繪製。前景模擬使用實際 wall gap，超過既有三秒閾值才進 catchUp；hitStop 只暫停繪製且限制觸發間隔，不縮小模擬 dt。倉庫分頁／部位篩選保留可恢復的 data-focus；刪除後聚焦穩定控制。
+- UI_DATA：warehouse 是角色子頁，pagination 為 12 件，無搜尋欄或獨立主題。天賦原 SVG 與原生清單共用 allocPass／nodeOpen，不能繞過連線與點數限制。
+
+- MONSTER_GUIDE 由 01-data.js 擁有，圖鑑與編年史不各自維護怪物清單；新增類型必須與 MTYPES 覆蓋一致。

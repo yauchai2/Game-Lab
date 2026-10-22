@@ -38,7 +38,7 @@ run('every distinct legendary is retained and normal high score cannot remove th
   assert.strictEqual(G.armory.W_ECHO,a);assert.strictEqual(G.equip.weapon,a);
   pickup({kind:'item',it:b});assert.strictEqual(G.armory.W_FORK,b);assert.strictEqual(G.equip.weapon,a);
   const before=G.parts;pickup({kind:'item',it:makeItem('weapon',2,1000)});
-  assert.strictEqual(G.equip.weapon,a);assert.equal(G.parts,before+5);
+  assert.strictEqual(G.equip.weapon,a);assert.equal(G.parts,before);assert(G.inventory.some(it=>it.il===1000));
 `);
 run('manual core swaps and restoration preserve ownership, resources and the previous normal item',`
   const normal=G.equip.weapon,a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});pickup({kind:'item',it:b});
@@ -63,7 +63,7 @@ run('unprotected stored duplicate upgrades, and restoration resolves the upgrade
 `);
 run('ordinary auto upgrade remains available without a legendary equipped',`
   const old=G.equip.weapon,parts=G.parts,better=makeItem('weapon',2,40);pickup({kind:'item',it:better});
-  assert.strictEqual(G.equip.weapon,better);assert.equal(G.parts,parts+1);assert.notStrictEqual(G.equip.weapon,old);
+  assert.strictEqual(G.equip.weapon,better);assert.equal(G.parts,parts);assert(G.inventory.includes(old));assert.notStrictEqual(G.equip.weapon,old);
 `);
 run('save round trip preserves deferred choices, core modifications and a working restore',`
   const a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});pickup({kind:'item',it:b});equipCore('W_FORK');

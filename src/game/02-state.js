@@ -23,15 +23,20 @@ const TREE = (() => {
 /* ---------- game state ---------- */
 const G = {
   time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
-  equip:{ weapon:null, armor:null, ring:null }, armory:{}, equipBackup:{}, deferChoices:false, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
+  inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:true, storageRecycled:0, chips:0, equip:{ weapon:null, armor:null, ring:null }, armory:{}, equipBackup:{}, deferChoices:false, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
   pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'阿街', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
   h:{ x:HX, y:HY, vx:0, vy:0, gx:HX, gy:HY, aiT:0, mv:0, hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
   lgK:0, lgC:0, mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
 };
 /* 打擊感：畫面震動、縮放衝擊、邊緣閃光；視角旋轉（yaw）也放這裡 */
 const FXO = { shake:0, flash:0, fc:'#fff', punch:0, yaw:0, yawT:0, zoom:1, zoomT:1, stop:0 };
-function hitStop(t){ if (!G.offline) FXO.stop = Math.max(FXO.stop, t); }
-function kick(s, f, c, p){ if (G.offline) return; FXO.shake = Math.max(FXO.shake, s); if (f){ FXO.flash = Math.max(FXO.flash, f); FXO.fc = c || '#fff'; } if (p) FXO.punch = Math.max(FXO.punch, p); }
+function hitStop(t){if(G.offline||G.time-(FXO.stopAt??-10)<.6||typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches||typeof GAME_VIEW!=='undefined'&&!GAME_VIEW.prefs.glitch)return;FXO.stopAt=G.time;FXO.stop=Math.max(FXO.stop,Math.min(.07,t));}
+function kick(s,f,c,p){
+ if(G.offline||typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches||typeof GAME_VIEW!=='undefined'&&!GAME_VIEW.prefs.glitch)return;
+ FXO.shake=Math.max(FXO.shake,Math.min(3,s));
+ if(f&&G.time-(FXO.flashAt??-10)>.8){FXO.flash=Math.max(FXO.flash,Math.min(.45,f));FXO.fc=c||'#fff';FXO.flashAt=G.time;}
+ if(p)FXO.punch=Math.max(FXO.punch,Math.min(.8,p));
+}
 /* 配件拼圖：玩家擺的是 G.board；G.slots / G.supp 由它推導出來，戰鬥與屬性計算照舊讀這兩個 */
 const boardRows = (lvl = G.lvl) => Math.max(1, SLOT_LV.filter(l => lvl >= l).length);
 function newBoard(){ G.board = GridLab.createBoard(6, boardRows()); }
@@ -84,12 +89,16 @@ const cartFree = id => (G.carts[id] || 0) - cartUsed(id);
 const gemFree = id => (G.gems[id] || 0) - gemUsed(id);
 const passPoints = () => Math.max(0, G.lvl - 1) + Math.floor((G.maxDepth - 1)/4) - G.pass.length;
 const nodeOpen = id => !G.pass.includes(id) && id !== 'S' && TREE[id].links.some(l => l === 'S' || G.pass.includes(l));
-const biomeNow = () => G.run ? G.run.map.biome : Math.floor((G.depth - 1)/8) % BIOMES.length;
+const biomeNow = () => G.run ? G.run.map.biome : Math.floor((G.depth - 1)/4) % BIOMES.length;
 const lvlNow = () => G.run ? G.run.map.lvl : G.depth;
 const runQ = () => G.run ? G.run.map.mods.reduce((a, m) => a + MODS[m].q, 0) : 0;
 
 /* ---------- items ---------- */
-function rollAff(k, il, boost=1){ const v = AFF[k].b(il) * (.6 + Math.random()*.7) * boost; return { k, v: k === 'leech' ? Math.round(v*10)/10 : Math.max(1, Math.round(v)) }; }
+function rollAff(k, il, boost=1){
+  const r=Math.random(),tier=il>=25&&r<.015?0:il>=12&&r<.1?1:il>=5&&r<.35?2:r<.7?3:4;
+  const v=AFF[k].b(il)*[1.65,1.35,1.1,.88,.65][tier]*(.9+Math.random()*.2)*boost;
+  return {k,v:k==='leech'?Math.round(v*10)/10:Math.max(1,Math.round(v)),tier};
+}
 function makeItem(slot, rar, il){
   const n = rar === 0 ? 0 : rar === 1 ? (Math.random() < .5 ? 1 : 2) : rar === 2 ? (Math.random() < .5 ? 3 : 4) : 4;
   const LG = rar === 3 ? tPick(LEGENDS[slot]) : null, keys = rar === 3 ? LG.aff.slice() : POOL[slot].slice().sort(() => Math.random() - .5).slice(0, n);
@@ -110,7 +119,7 @@ function rarityRoll(boss){
   return i;
 }
 const itemValue = it => Math.round((1 + it.r*2.2) * (4 + it.il*2.4));
-const itemLines = it => [it.imp, ...it.aff].map((a, i) => ({ t:AFF[a.k].t(a.v), imp:i === 0 })).concat(it.cr ? [{ t:'已腐化', lg:true }] : []).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
+const itemLines = it => [it.imp, ...it.aff].map((a, i) => ({ t:(i?`T${affTier(a,it.il)} · `:'')+AFF[a.k].t(a.v), imp:i === 0 })).concat(it.cr ? [{ t:'已腐化', lg:true }] : []).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
 const offPen = () => G.offline && G.offPen;   // 離開超過 60 秒才算離線：經驗 75%、掉落 25%、暗金不掉；短暫切走只是快轉補上
 const salvage = it => { G.parts = (G.parts || 0) + [1, 2, 5, 12][it.r]; };   // 拆下的裝備變成零件，拿去改機
 const lgOn = id => Object.values(G.equip).some(it => it && it.lg === id);
@@ -125,7 +134,8 @@ function syncCoreCollection(){
 function equipCore(id){
   const slot = coreSlot(id), it = G.armory?.[id];
   if (!slot || !it || G.equip[slot]?.lg === id) return false;
-  G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
+  if(G.equip[slot]&&!G.equip[slot].lg)storeGear(G.equip[slot]);
+  G.autoEquip=false;G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
   recalc(); G.dirty = true; return true;
 }
 function restoreEquipment(slot){
@@ -133,7 +143,7 @@ function restoreEquipment(slot){
   if (!last || last.slot !== slot) return false;
   const it = last.lg ? G.armory[last.lg] : last;
   if (!it) return false;
-  G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
+  G.autoEquip=false;G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
   recalc(); G.dirty = true; return true;
 }
 function makeMap(lvl){
@@ -183,12 +193,13 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp){
   s.sk = {}; let dps2 = 0;
   for (const id of slots){ if (!id) continue;
     const K = SKILLS[id], sp = supp[id] || [], has = x => sp.includes(x), n = x => sp.filter(y => y === x).length;
-    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (Object.values(equip).some(it => it && it.lg === 'W_MULTI') ? 1 + .15*slots.filter(Boolean).length : 1) * (1 + .45*n('HEAVY')) * (1 + .08*Math.max(0, Math.min(5, sp.length) - 2)) * (1 + .2*n('COOL') + .1*n('CRYSTAL')) * (1 + .12*bb.rows) * (bb.pair[id] ? 1.15 : 1) * (has('AREA') && id === 'FIRE' ? .85 : 1);
-    const cd = K.cd * (G.modeOf[id] === 'CHAIN_OVERLOAD' ? 1.8 : 1) * (1 - Math.min(.6, (s.haste + 30*n('HASTE') + 15*n('COOL'))/100)), crit = Math.min(100, s.crit + 30*n('CRITS') + 15*n('CRYSTAL'));
+    const hit = s.dmg * K.mult * (1 + (s.inc + s[K.el] + s.sinc)/100) * (Object.values(equip).some(it => it && it.lg === 'W_MULTI') ? 1 + .15*slots.filter(Boolean).length : 1) * (1+.35*n('FOCUS'))*(has('DELAY')?.85:1) * (1 + .45*n('HEAVY')) * (1 + .08*Math.max(0, Math.min(5, sp.length) - 2)) * (1 + .2*n('COOL') + .1*n('CRYSTAL')) * (1 + .12*bb.rows) * (bb.pair[id] ? 1.15 : 1) * (has('AREA') && id === 'FIRE' ? .85 : 1);
+    const cd = K.cd * (1+.15*n('FOCUS')) * (G.modeOf[id] === 'CHAIN_OVERLOAD' ? 1.8 : 1) * (1 - Math.min(.6, (s.haste + 30*n('HASTE') + 15*n('COOL'))/100)), crit = Math.min(100, s.crit + 15*n('FOCUS') + 30*n('CRITS') + 15*n('CRYSTAL'));
     const ca = 1 + crit/100*(s.cm/100 - 1);
     s.sk[id] = { mode:G.modeOf[id] || null, hit, cd, crit, has:sp.filter(Boolean), area:has('AREA'), twin:n('TWIN'), leech:has('LEECH') };
-    dps2 += hit * ca * K.tg * (has('AREA') && id === 'FIRE' ? 1.5 : 1) * (1 + .6*n('TWIN')) / cd;
+    dps2 += hit * ca * K.tg * (has('AREA') && id === 'FIRE' ? 1.5 : 1) * (1 + .6*n('TWIN')) * (has('DELAY')?1.45:1) / cd;
   }
+  if(pass.includes('EK'))dps2*=1.35;
   s.dps = s.hit * s.critAvg * s.aps + dps2;
   s.power = s.dps * Math.sqrt(s.life / (1 - s.red));
   return s;
@@ -218,13 +229,13 @@ function resolveOfflineChoices(summary){
 }
 const xpNeed = L => Math.round(30 * Math.pow(1.32, L-1));
 function logLine(txt, col){ if (G.offline) return; if (typeof bossPush === 'function') bossPush(txt, col && col.length === 7 && col.toLowerCase() === '#2b2552' ? null : col, 'INFO'); G.log.unshift({ txt, col:col || '#2b2552' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
-function addFloat(x, y, z, txt, col, size=3.6){ if (G.offline) return; G.floats.push({ x, y, z, txt, col, size, t:0 }); }
-function addFx(e){ if (!G.offline) G.fx.push(e); }
+function addFloat(x, y, z, txt, col, size=3.6){ if (G.offline) return; if(G.floats.length>=20)G.floats.shift(); G.floats.push({ x, y, z, txt, col, size, t:0 }); }
+function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
 function serialize(){ return { v:2, t:Date.now(), lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
-  equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:G.h.hp, log:G.log.slice(0, 5) }; }
+  inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:G.h.hp, log:G.log.slice(0, 5) }; }
 function applySave(o){
   if (!o || o.v !== 2) return false;
   for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','carts','seen','goals','mapsDone','pass','ach','legSeen','pity','parts','bossHp','towerBest','quest','craftN','mk','seenG','seenC','cz','userCz','dmgNum','seenInv','seenParts','seenGoals','builds','bi','relics','relicPicks','cos','own','heroName','born','autoCard','bossKills','char','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
@@ -232,7 +243,12 @@ function applySave(o){
   G.armory = Object.fromEntries(Object.entries(o.armory || {}).filter(([id,it]) => coreSlot(id) && it && it.lg === id && it.slot === coreSlot(id) && Array.isArray(it.aff) && it.imp));
   G.equipBackup = Object.fromEntries(Object.entries(o.equipBackup || {}).filter(([slot,it]) => SLOTN[slot] && it?.slot === slot && Array.isArray(it.aff) && it.imp));
   G.deferChoices = o.deferChoices === true;
-  G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!CHARS[G.char]) G.char = 'street'; if (!G.ach) G.ach = {}; G.mons = []; G.drops = []; G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
+  G.inventory=(Array.isArray(o.inventory)?o.inventory:[]).filter(validGear).slice(0,200);
+  {const used=new Set();let next=1;for(const it of G.inventory){if(!Number.isSafeInteger(it.uid)||it.uid<1||it.uid>1e8||used.has(it.uid)){while(used.has(next))next++;it.uid=next++;}used.add(it.uid);}G.nextGearId=Math.max(1,...used)+1;}G.autoEquip=o.autoEquip!==false;
+  G.storageRecycled=Math.max(0,+o.storageRecycled||0);G.chips=Math.max(0,+o.chips||0);G.inventoryRevision++;
+  for(const group of [G.equip,G.equipBackup])for(const slot of Object.keys(group)){const it=group[slot];if(validGear(it)&&!it.lg){storeGear(it);group[slot]=G.inventory.find(x=>x.uid===it.uid)||it;}}
+
+  G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!CHARS[G.char]) G.char = 'street'; if (!G.ach) G.ach = {}; G.mons = []; G.drops = (Array.isArray(o.groundDrops)?o.groundDrops:[]).filter(validDrop).map(d=>({...d,t:Number.isFinite(d.t)?d.t:0,done:false})); G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
   if (o.board && o.board.pieces){ if (o.board.v === 3) G.board = o.board; else sanitizeBoard(o.board); } else boardFromLegacy(o.slots || ['FIRE'], o.supp);
   recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
@@ -241,3 +257,69 @@ function loadGame(){ try { const raw = localStorage.getItem(SAVE_KEY); return ra
 const encodeSave = () => { try { return btoa(unescape(encodeURIComponent(JSON.stringify(serialize())))); } catch (e) { return ''; } };
 const decodeSave = str => { try { return JSON.parse(decodeURIComponent(escape(atob(str.trim())))); } catch (e) { return null; } };
 
+
+/* 裝備實體與倉庫：自動換裝不再消滅候選，滿倉回收有明確計數。 */
+const validGear=it=>!!(it&&SLOTN[it.slot]&&Number.isInteger(it.r)&&it.r>=0&&it.r<=3&&it.imp&&AFF[it.imp.k]&&Number.isFinite(it.imp.v)&&Number.isFinite(it.il)&&it.il>0&&Array.isArray(it.aff)&&it.aff.every(a=>AFF[a.k]&&Number.isFinite(a.v)));
+function affTier(a,il=1){if(Number.isInteger(a.tier)&&a.tier>=0&&a.tier<=4)return a.tier;const ratio=a.v/AFF[a.k].b(il);return ratio>=1.5?0:ratio>=1.2?1:ratio>=1?2:ratio>=.8?3:4;}
+function gearPriority(it){return it.r*10000000000+(4-Math.min(4,...it.aff.map(a=>affTier(a,it.il))))*10000000+Math.min(9999,it.il);}
+function storeGear(it){
+  if(!validGear(it)||it.lg)return false;
+  if(it.uid&&G.inventory.some(x=>x.uid===it.uid))return true;
+  if(G.inventory.includes(it))return true;
+  if(G.inventory.length>=200){
+    const protectedItems=[...Object.values(G.equip),...Object.values(G.equipBackup)];
+    const low=G.inventory.filter(x=>!x.kept&&!x.cr&&x.lk==null&&!protectedItems.includes(x)).sort((a,b)=>gearPriority(a)-gearPriority(b))[0];
+    if(!low||gearPriority(it)<=gearPriority(low))return false;
+    G.inventory=G.inventory.filter(x=>x!==low);recycleOverflow(low);
+  }
+  it.uid=G.nextGearId++;G.inventory.push(it);G.inventoryRevision++;return true;
+}
+function equipStored(uid){
+  const it=G.inventory.find(x=>x.uid===uid);if(!it||G.equip[it.slot]===it)return false;
+  const old=G.equip[it.slot];if(old&&!old.lg&&!storeGear(old))return false;
+  G.equipBackup[it.slot]=old;G.equip[it.slot]=it;G.autoEquip=false;recalc();G.inventoryRevision++;return true;
+}
+function recycleStored(uid){
+  const it=G.inventory.find(x=>x.uid===uid);if(!it||it.kept||it.cr||it.lk!=null||Object.values(G.equip).includes(it)||Object.values(G.equipBackup).includes(it))return false;
+  G.inventory=G.inventory.filter(x=>x!==it);G.gold+=itemValue(it);salvage(it);G.inventoryRevision++;G.dirty=true;return true;
+}
+function recycleOverflow(it){G.gold+=itemValue(it);salvage(it);G.storageRecycled++;G.dirty=true;}
+function collectEquipment(it){
+  if(!validGear(it))return;
+  if(it.lg)return false;
+  if(it.r<G.filter){recycleOverflow(it);return true;}
+  const old=G.equip[it.slot],upgrade=G.autoEquip&&!old?.lg&&(!old||calc({...G.equip,[it.slot]:it}).power>G.st.power*1.02);
+  if(old&&!old.lg)storeGear(old);
+  if(!storeGear(it)){recycleOverflow(it);return true;}
+  if(upgrade){G.equipBackup[it.slot]=old;G.equip[it.slot]=it;recalc();if(G.off)G.off.eq++;logLine(`換上 ${it.name}，上一件保留在倉庫`,RAR[it.r].c);}
+  G.off&&(G.off.stored=(G.off.stored||0)+1);G.dirty=true;return true;
+}
+const validDrop=d=>!!(d&&Number.isFinite(d.x)&&Number.isFinite(d.y)&&(['gold','chip'].includes(d.kind)?Number.isFinite(d.amount)&&d.amount>0:d.kind==='item'?validGear(d.it):d.kind==='gem'?SUPPS[d.id]:d.kind==='cart'?MODES[d.id]:d.kind==='map'?d.map&&BIOMES[d.map.biome]:false));
+function dropGround(d){
+  d.x=tClamp(d.x,HX-38,HX+38);d.y=tClamp(d.y,HY-38,HY+38);
+  if(d.kind==='gold'||d.kind==='chip'){
+    const near=G.drops.find(x=>!x.done&&x.kind===d.kind&&Math.hypot(x.x-d.x,x.y-d.y)<8);
+    if(near){near.amount+=d.amount;return;}
+  }
+  G.drops.push(d);
+}
+function collectNearby(dt){
+  for(const d of G.drops){d.t+=dt;if(!d.done&&d.t>=.35&&G.h.dead<=0&&Math.hypot(d.x-G.h.x,d.y-G.h.y)<=6){d.done=true;addFx({k:'pickup',x:d.x,y:d.y,x2:G.h.x,y2:G.h.y,col:d.kind==='gold'?'#e4c379':'#81cbd1',t:0,dur:.35});pickup(d);}}
+  G.drops=G.drops.filter(d=>!d.done);
+}
+
+/* 六向電路天賦：角色共用所有路徑，以取捨組成流派。 */
+(function expandCircuitTree(){
+ const themes=[['D',-30,'#e9b765',[{haste:4},{sinc:6},{lifePct:-2,haste:5}],['超頻協定',{haste:25,lifePct:-22}]],['E',90,'#ae98e8',[{sinc:7},{armor:12},{leech:.5}],['斷線重播',{sinc:12,apsInc:-20}]],['F',210,'#72caca',[{crit:1.5},{cm:9},{life:16}],['電池孤注',{cm:70,lifePct:-25}]]];
+ const add=(id,x,y,eff,col,name,big=false)=>TREE[id]={id,x,y,eff,col,name:name||effText(eff),big,links:[]};
+ const link=(a,b)=>{TREE[a].links.push(b);TREE[b].links.push(a)};
+ for(const[k,ang,col,pool,key]of themes){const a=ang*Math.PI/180,dx=Math.cos(a),dy=Math.sin(a);let prev='S';
+  for(let i=0;i<9;i++){const id=k+i,r=17+i*10;add(id,dx*r,dy*r,pool[i%3],col);link(prev,id);prev=id;
+   if([3,5,7].includes(i))for(let j=0;j<2;j++){const sid=k+'s'+i+j,sg=i===5?-1:1;add(sid,dx*(r+4+j*10)-dy*14*sg,dy*(r+4+j*10)+dx*14*sg,pool[(i+j+1)%3],col);link(j?k+'s'+i+'0':id,sid);}
+  }
+  add(k+'K',dx*113,dy*113,key[1],col,key[0]+'：'+effText(key[1]),true);link(prev,k+'K');
+ }
+ const arms=[['A',-90,4],['D',-30,5],['B',30,4],['E',90,5],['C',150,4],['F',210,5]];
+ for(let i=0;i<arms.length;i++){let prev=arms[i][0]+arms[i][2];for(let j=0;j<2;j++){const a=(arms[i][1]+20+j*20)*Math.PI/180,id='R'+i+j;add(id,Math.cos(a)*70,Math.sin(a)*70,j?{life:18}:{dmgPct:5},'#9cacc9');link(prev,id);prev=id;}const next=arms[(i+1)%arms.length];link(prev,next[0]+next[2]);}
+})();
+function buyCircuitSupport(id){if(!['FOCUS','FORK','RECOVER','DELAY'].includes(id)||G.chips<20)return false;G.chips-=20;G.gems[id]=(G.gems[id]||0)+1;G.dirty=true;return true;}

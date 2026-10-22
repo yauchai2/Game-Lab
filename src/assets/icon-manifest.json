@@ -58,7 +58,7 @@
     "gems": {
       "file": "gems.svg",
       "cols": 4,
-      "rows": 2,
+      "rows": 3,
       "ids": [
         "HEAVY",
         "AREA",
@@ -67,7 +67,11 @@
         "CRITS",
         "LEECH",
         "COOL",
-        "CRYSTAL"
+        "CRYSTAL",
+        "FOCUS",
+        "FORK",
+        "RECOVER",
+        "DELAY"
       ]
     },
     "relics": {

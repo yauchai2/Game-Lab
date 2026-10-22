@@ -1,13 +1,13 @@
 /* 操作台：共用導覽、工作分類與響應式外框。UI 暫存不改遊戲規則。 */
 const UI_NAV = [
-  {k:'char',n:'角色',icon:'role',pages:['char','dress']},
+  {k:'char',n:'角色',icon:'role',pages:['char','dress','warehouse']},
   {k:'skills',n:'戰鬥',icon:'battle',pages:['skills']},
   {k:'craft',n:'打造',icon:'craft',pages:['craft']},
   {k:'tree',n:'成長',icon:'growth',pages:['tree']},
   {k:'maps',n:'冒險',icon:'adventure',pages:['maps']},
   {k:'menu',n:'更多',icon:'more',pages:['menu','goals','ach','dex','log','save','settings']}
 ];
-const UI_TITLE = {char:'角色總覽',dress:'角色與裝扮',skills:'戰鬥構築',craft:'打造工作台',tree:'天賦成長',maps:'冒險',menu:'更多',goals:'目標',ach:'成就',dex:'圖鑑',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定'};
+const UI_TITLE = {warehouse:'裝備倉庫',char:'角色總覽',dress:'角色與裝扮',skills:'戰鬥構築',craft:'打造工作台',tree:'天賦成長',maps:'冒險',menu:'更多',goals:'目標',ach:'成就',dex:'圖鑑',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定'};
 const UI_WORK = {inventory:'support',craftSlot:'weapon',craftAct:'upgrade',adventure:'maps'};
 function uiNavHtml(){
   return UI_NAV.map(g=>{const current=g.pages.includes(modalTab),locked=!tabOpen(g.k),dot=g.k==='menu' ? dotOn('col')||logNew() : g.k==='tree' ? passPoints()>0 : dotOn(g.k);
@@ -33,7 +33,7 @@ function uiMenuHtml(){
 function uiCharacterHtml(){
   const s=G.st;
   const rows=[['預估傷害',tFmt(s.dps)+' DPS'],['最大生命',tFmt(s.life)],['暴擊率',s.crit.toFixed(0)+'%'],['傷害減免',(s.red*100).toFixed(0)+'%']];
-  return `<section class="ui-character-head"><span class="ui-eyebrow">${CHARS[G.char].n}</span><h3>${uxEsc(G.heroName||'阿街')}<small>LV. ${G.lvl}</small></h3><p id="ui-char-progress">深度 ${G.depth} · 累計擊殺 ${tFmt(G.totalKills)}</p><button class="mb" onclick="openModal('dress')">角色與裝扮 ↗</button></section><div class="ui-equipment">${Object.keys(SLOTN).map(slotHtml).join('')}</div>${uiCoreCollection()}<section class="ui-section"><h3>戰鬥狀態</h3><dl class="ui-stat-list">${rows.map(([n,v])=>`<div><dt>${n}</dt><dd>${v}</dd></div>`).join('')}</dl><p class="uxmeta">一般裝備自動比較。穿上傳奇後會保留核心，可在收藏中換用或還原。</p></section>${charHtml()}${cardsHtml()}<details class="ui-section"><summary>事件紀錄</summary><ol class="log">${G.log.map(l=>`<li>${uxEsc(l.txt)}</li>`).join('')}</ol></details>`;
+  return `<section class="ui-character-head"><span class="ui-eyebrow">${CHARS[G.char].n}</span><h3>${uxEsc(G.heroName||'阿街')}<small>LV. ${G.lvl}</small></h3><p id="ui-char-progress">深度 ${G.depth} · 累計擊殺 ${tFmt(G.totalKills)}</p><button class="mb" onclick="openModal('dress')">角色與裝扮 ↗</button></section><section class="ui-section"><button class="mb pri" onclick="openModal('warehouse')">裝備倉庫（<span id="ui-gear-count">${G.inventory.length}</span>／200）</button><p>拾到與替換的裝備留在倉庫。電路點數：${G.chips}。</p></section><div class="ui-equipment">${Object.keys(SLOTN).map(slotHtml).join('')}</div>${uiCoreCollection()}<section class="ui-section"><h3>戰鬥狀態</h3><dl class="ui-stat-list">${rows.map(([n,v])=>`<div><dt>${n}</dt><dd>${v}</dd></div>`).join('')}</dl><p class="uxmeta">自動換裝可在倉庫調整。傳奇核心保留，可在收藏中換用或還原。</p></section>${charHtml()}${cardsHtml()}<details class="ui-section"><summary>事件紀錄</summary><ol class="log">${G.log.map(l=>`<li>${uxEsc(l.txt)}</li>`).join('')}</ol></details>`;
 }
 function uiCoreCollection(){
   const ids=Object.keys(LEGEND_BY).filter(id=>G.armory[id]);
@@ -132,7 +132,8 @@ function uiLeaveMap(){
 
 let UI_LIVE_SIGNATURE='';
 function uiLiveSignature(){
-  if(modalTab==='skills')return JSON.stringify([G.lvl,G.board,G.gems,G.carts,G.seen,G.st.dps]);
+  if(modalTab==='warehouse')return JSON.stringify([G.inventoryRevision,G.autoEquip,G.storageRecycled]);
+  if(modalTab==='skills')return JSON.stringify([G.lvl,G.board,G.gems,G.carts,G.seen,G.st.dps,G.chips]);
   if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.cards,G.picks,G.relicPicks]);
   if(modalTab==='craft')return JSON.stringify([G.parts,G.equip]);
   if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,G.towerBest,!!G.train,G.trainLast,G.maxDepth]);
@@ -143,6 +144,7 @@ function uiRefreshLive(){
   if(!$('modal')||$('modal').hidden)return;
   const signature=uiLiveSignature();
   if(signature!==UI_LIVE_SIGNATURE&&!drag&&!UX_LAYERS.length&&!document.querySelector('#mbody input:focus,#mbody textarea:focus'))renderModal();
+  const gearCount=$('ui-gear-count');if(gearCount&&gearCount.textContent!==String(G.inventory.length))gearCount.textContent=G.inventory.length;
   const progress=$('ui-char-progress'),text=`深度 ${G.depth} · 累計擊殺 ${tFmt(G.totalKills)}`;
   if(progress&&progress.textContent!==text)progress.textContent=text;
   const R=G.run,count=$('ui-run-count'),bar=document.querySelector('[aria-label="地圖擊殺進度"]');
@@ -162,3 +164,30 @@ function uiConfirmRespec(){
   if(G.lvl!==pending.lvl||JSON.stringify(G.pass)!==pending.pass||G.gold<pending.cost){uxAnnounce('天賦或金幣已變動，請重新確認。');return;}
   respec();uxAnnounce(`已重置天賦，消耗 ${pending.cost} 金幣。`);
 }
+
+/* 倉庫與電路合成沿用同一外殼、確認及焦點系統。 */
+const WAREHOUSE_UI={slot:'all',page:0};
+function warehouseHtml(){
+ const list=G.inventory.filter(it=>WAREHOUSE_UI.slot==='all'||it.slot===WAREHOUSE_UI.slot).slice().reverse(),pages=Math.max(1,Math.ceil(list.length/12));WAREHOUSE_UI.page=Math.min(WAREHOUSE_UI.page,pages-1);
+ return `<section class="ui-section"><h3>裝備倉庫 ${G.inventory.length}／200</h3><p>拾到與換下的裝備留在這裡；傳奇在角色的核心收藏。</p><button class="mb" data-focus="warehouse-auto" aria-pressed="${G.autoEquip}" onclick="G.autoEquip=!G.autoEquip;G.dirty=true;renderModal()">自動換裝：${G.autoEquip?'開':'關'}</button><p class="uxmeta">滿倉優先保留高稀有度與高階詞綴，僅回收未保護裝備；低於過濾門檻也會回收。累計回收 ${G.storageRecycled} 件。</p><div class="ui-segments" role="group" aria-label="倉庫部位">${[['all','全部'],...Object.entries(SLOTN)].map(([id,n])=>`<button data-focus="warehouse-filter-${id}" aria-pressed="${WAREHOUSE_UI.slot===id}" onclick="WAREHOUSE_UI.slot='${id}';WAREHOUSE_UI.page=0;renderModal()">${n}</button>`).join('')}</div></section><div class="ui-warehouse-list">${list.slice(WAREHOUSE_UI.page*12,WAREHOUSE_UI.page*12+12).map(it=>`<article class="ui-section"><div class="nm">${eqico(it.slot,it.r,28)}<b>${uxEsc(it.name)}</b><small>${RAR[it.r].n} · Lv. ${it.il}</small></div><p>${it.kept?'已鎖定 · ':''}${G.equip[it.slot]===it?'穿著中':G.equipBackup[it.slot]===it?'上一件裝備':'倉庫保管'}</p><ul>${itemLines(it).slice(0,3).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><button class="mb" data-focus="gear-${it.uid}" onclick="uiInspectGear(${it.uid})">比較與管理</button></article>`).join('')||'<p>目前沒有這個部位的裝備。角色走近掉落物後會自動拾入。</p>'}</div><div class="uxactions"><button class="mb" data-focus="warehouse-prev" ${WAREHOUSE_UI.page===0?'disabled':''} onclick="warehouseMove(-1)">上一頁</button><span>第 ${WAREHOUSE_UI.page+1}／${pages} 頁 · ${list.length} 件</span><button class="mb" data-focus="warehouse-next" ${WAREHOUSE_UI.page>=pages-1?'disabled':''} onclick="warehouseMove(1)">下一頁</button></div>`;
+}
+function uiInspectGear(uid){
+ const it=G.inventory.find(x=>x.uid===uid);if(!it)return;const next=calc({...G.equip,[it.slot]:it}),current=G.st,on=G.equip[it.slot]===it,guard=it.kept||it.cr||it.lk!=null||on||Object.values(G.equipBackup).includes(it);
+ showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[it.slot]} · ${RAR[it.r].n} · 物品等級 ${it.il}</p><dl class="ui-stat-list"><div><dt>預估傷害</dt><dd>${tFmt(current.dps)} → ${tFmt(next.dps)}</dd></div><div><dt>最大生命</dt><dd>${tFmt(current.life)} → ${tFmt(next.life)}</dd></div><div><dt>暴擊率</dt><dd>${current.crit.toFixed(1)}% → ${next.crit.toFixed(1)}%</dd></div></dl><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回倉庫</button><button class="mb pri" ${on?'disabled':''} onclick="uiWearStored(${uid})">${on?'穿著中':'換上這件裝備'}</button><button class="mb" onclick="uiKeepStored(${uid})">${it.kept?'解除保管鎖定':'鎖定保管'}</button><button class="mb" ${guard?'disabled':''} onclick="uiRecycleAsk(${uid})">回收裝備</button></div>${guard?'<p class="uxmeta">穿著、上一件、鎖定、詞綴鎖定或已腐化的裝備受保護，不能直接回收。</p>':''}`);
+}
+function uiWearStored(uid){if(!equipStored(uid)){uxAnnounce('裝備狀態已變更，請重新查看。');return;}hideOverlay();renderModal();uxAnnounce('已換裝，自動換裝已關閉，上一件裝備保留。');}
+function uiKeepStored(uid){const it=G.inventory.find(x=>x.uid===uid);if(!it)return;it.kept=!it.kept;G.inventoryRevision++;G.dirty=true;hideOverlay();renderModal();uxAnnounce(it.kept?'裝備已鎖定保管。':'已解除保管鎖定。');}
+function uiRecycleAsk(uid){
+ const it=G.inventory.find(x=>x.uid===uid);if(!it)return;
+ hideOverlay();showOverlay(`<h2 class="uxdialog-title">回收 ${uxEsc(it.name)}？</h2><p>裝備會消失，轉為 ${itemValue(it)} 金幣及零件；不能還原。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">保留裝備</button><button class="mb pri" onclick="uiRecycleConfirm(${uid})">確認回收</button></div>`);
+}
+function uiRecycleConfirm(uid){const ok=recycleStored(uid);hideOverlay();renderModal();document.querySelector('[data-focus="warehouse-auto"]')?.focus();uxAnnounce(ok?'已回收為金幣與零件。':'裝備受到保護或已不存在，沒有回收。');}
+function circuitShopHtml(){return `<details class="ui-section"><summary>電路合成 · <span id="ui-chip-count">${G.chips}</span> 點</summary><p>拾取敵人掉落的電路點數，用來指定合成配件；所有角色都能使用，相鄰及標籤規則照常生效。</p>${['FOCUS','FORK','RECOVER','DELAY'].map(id=>`<article><p>${gemIco(id,24)} ${SUPPS[id].n} · ${SUPPS[id].d}</p><button class="mb" ${G.chips<20?'disabled':''} onclick="uiBuySupport('${id}')">20 點合成 ${SUPPS[id].n}</button></article>`).join('')}</details>`;}
+function uiBuySupport(id){if(!buyCircuitSupport(id)){uxAnnounce('電路點數不足，沒有扣除資源。');return;}renderModal();uxAnnounce(`已合成${SUPPS[id].n}，消耗 20 電路點數。`);}
+function treeAvailableHtml(){
+ const open=Object.values(TREE).filter(n=>nodeOpen(n.id)),branch={A:'耐久',B:'元素',C:'暴擊',D:'超頻',E:'回授',F:'電池',R:'接線'};
+ return `<details class="ui-section"><summary>可連接節點清單（${open.length}）</summary><p>可用清單選擇，不必瞄準盤面的小圓點。每個節點消耗 1 天賦點，所有角色共用。</p><div class="ui-directory">${open.map(n=>`<button data-focus="talent-${n.id}" ${passPoints()<=0?'disabled':''} onclick="uiAllocateTalent('${n.id}')"><b>${branch[n.id[0]]}支線</b><span>${uxEsc(n.name)}</span></button>`).join('')||'<p>已點亮目前所有可連接節點。</p>'}</div></details>`;
+}
+function uiAllocateTalent(id){const before=G.pass.length;allocPass(id);if(G.pass.length>before){document.querySelector(`[data-tree="${id}"]`)?.focus();uxAnnounce(`已點亮${TREE[id].name}。`);uxAnimatePanel();}}
+
+function warehouseMove(delta){WAREHOUSE_UI.page=Math.max(0,WAREHOUSE_UI.page+delta);renderModal();const id=delta>0?'warehouse-next':'warehouse-prev',next=document.querySelector(`[data-focus="${id}"]`);(next&&!next.disabled?next:document.querySelector(`[data-focus="${delta>0?'warehouse-prev':'warehouse-next'}"]`))?.focus();}

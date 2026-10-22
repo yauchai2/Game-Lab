@@ -6,7 +6,7 @@ recalc(); G.h.hp = G.st.life;
 let loadedT = 0;
 if (!Q.has('fresh')){ const o = loadGame(); if (o && applySave(o)) loadedT = o.t || 0; }
 G.speed = 1;   // 已拿掉遊戲速度選項
-if (!loadedT) logLine('冒險開始！英雄會自動戰鬥、撿裝備、換更強的。', '#2b2552');
+if (!loadedT) logLine('冒險開始！英雄會自動戰鬥並走近拾取掉落物，裝備可到角色的倉庫管理。', '#2b2552');
 
 let ui;
 const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++){ while (G.picks > 0){ const c = rollCards(1)[0]; if (!c) break; takeCard(c); } while (G.relicPicks > 0){ const r = rollRelics(1)[0]; if (!r){ G.relicPicks = 0; break; } takeRelic(r); } update(.05); } G.offline = false; G.floats = []; G.fx = []; };
@@ -59,15 +59,16 @@ if (Q.has('picks')) G.picks = +Q.get('picks');
 if (Q.has('modal')) openModal(Q.get('modal'));
 const gap0 = Q.has('away') ? +Q.get('away') : loadedT ? (Date.now() - loadedT)/1000 : 0;
 if (gap0 > 20) catchUp(gap0, true);
-ui.suspendRender=()=>G.offline||document.hidden;
+ui.renderInterval=1000/30;
+ui.suspendRender=()=>G.offline||document.hidden||FXO.stop>0;
 ui.animate(dt => {
   const now = Date.now(), gap = (now - G.lastWall)/1000; G.lastWall = now;
   if (G.paused) return true;
-  if (FXO.stop > 0){ FXO.stop -= dt; dt *= .1; }
+  if (FXO.stop > 0) FXO.stop -= dt;
   if (G.relicPicks > 0 && !G.offline && (G.autoCard || (!G.deferChoices && !G.offerR && $('ovl').hidden))) openRelics();
   else if (G.picks > 0 && !G.offline && (G.autoCard || (!G.deferChoices && !G.offer && $('ovl').hidden))) openCards();
   if (gap > 3){ catchUp(gap, gap > 20); return true; }
-  stepSim(dt); return true;
+  stepSim(gap>=0?gap:dt); return true;
 });
 setInterval(() => { if (!G.paused) saveGame(); }, 5000);
 addEventListener('pagehide', () => { if (!G.paused) saveGame(); });

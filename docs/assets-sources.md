@@ -10,7 +10,7 @@ Alan 要求所有 icon／image 重做且簡約。目前八組靜態 UI 資產已
 | --- | --- | --- |
 | src/assets/icons.svg | 20 | 12 個通用圖示＋六入口功能符號＋鎖定／解鎖 |
 | src/assets/skills.svg | 9 | 電池、冷氣、紅外線、衛星、喇叭、磁鐵、郵件、相機、雷射筆 |
-| src/assets/gems.svg | 8 | 晶片、廣播、訊號條、雙卡、爆發、充電、散熱片、水晶 |
+| src/assets/gems.svg | 12 | 原八種符號，加鎖頻、分線、備用電池、延遲緩衝四個新繪符號 |
 | src/assets/relics.svg | 12 | 各遺物的簡化物件剪影 |
 | src/assets/legends.svg | 9 | 傳奇武器／外套／配件，不靠光暈辨識 |
 | src/assets/badges.svg | 12 | 八角徽章與不同主符號 |
