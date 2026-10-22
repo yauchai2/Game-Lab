@@ -1,0 +1,6 @@
+{
+  "mobile_width": 390,
+  "mobile_jump_focus": true,
+  "mechanic_specific_readout": true,
+  "method": "Playwright real clicks and document.activeElement; 2026-10-22"
+}
