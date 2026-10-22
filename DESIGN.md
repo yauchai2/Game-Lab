@@ -125,3 +125,13 @@ UX_THEME 是色彩及材質參數唯一來源，含 --ux-metal、--ux-key-face�
 ## 玩法收藏與離線選擇（0.26.0）
 
 傳奇收藏在角色頁以可展開的正常流區塊呈現，沿用銀灰外殼、藍紫按鍵、像素符號與單線閱讀分組。效果先顯示，完整詞綴可展開，換裝／上一件使用同一按鍵材質，不增加另一套裝備皮膚。離線摘要在既有分組中顯示待選數與入口，選擇沿用共用 dialog。字型／色票／動態偏好不變；證據見 docs/gameplay-first-pass-2026-10-21.md。
+
+## 全尺寸低解析度 3D（0.26.2，2026-10-22）
+
+Alan 指定真正的 downsampled rendering，所有 3D 幾何與特效先共用低解析度 framebuffer，再以 CSS image-rendering:pixelated 放大。沿用原 WebGL canvas，無額外全解析度後製 pass、DOM 擷取或 UI 濾鏡。這是 Y2K 低面數物件的整體取樣風格，不新增模型／貼圖降質或 8-bit 扁平改造。銀灰掌機、藍紫 LCD 與常規像素字體保留。
+
+Canonical owner 為 src/game/04-render.js 的 r3BufferSize 與 r3frame。scale = max(2, ceil(max(CSS 寬, CSS 高) / 640))，buffer = floor(CSS 尺寸 / scale)，保持 CSS 外框與原相機長寬比；取整只帶來不足一個 buffer 像素的比例差。預設不乘 devicePixelRatio，避免 Retina 抵銷下採樣。1920 × 1080 觀戰為 640 × 360，390 × 260 手機戰場為 195 × 130；直式觀戰長邊同樣有上限，不強拉成 16:9。
+
+至少 2 CSS px 一格、長邊最多 640 個樣本是目前折衷，320 × 240 不作所有比例的固定拉伸。維持低面數輪廓、平塗材質與現有光線；本輪不加抖動、CRT 模糊、色差或逐幀隨機抖圖，以免損失角色辨識及流暢度。HUD、血條與傷害數字、工作頁文字仍為清晰的原生 DOM／SVG。?clean 只保留給開發前後比對，不作另一套響應式策略。
+
+裝扮的 3D 角色預覽也共用 r3BufferSize 與 pixelated 放大，保留旋轉／裝扮及相機比例；只有 buffer 尺寸改變才呼叫 setSize，不再每 40ms 重設像素倍率與緩衝區。
