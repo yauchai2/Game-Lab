@@ -36,7 +36,7 @@ check('all 100 talent nodes are reachable and the replay protocol has a real spe
  assert.equal(Object.keys(TREE).length,100);const seen=new Set(['S']),q=['S'];while(q.length)for(const id of TREE[q.shift()].links)if(!seen.has(id)){seen.add(id);q.push(id);}assert.equal(seen.size,100);const base=calc(G.equip,[]),over=calc(G.equip,['DK']),replay=calc(G.equip,['EK']);assert(over.life<base.life);assert(over.sk.FIRE.cd<base.sk.FIRE.cd);assert(replay.aps<base.aps);
 `);
 check('replay support and protocol enqueue bounded non-recursive casts',`
- G.lvl=30;G.pass=['EK'];G.board=GridLab.createBoard(6,6);GridLab.place(G.board,'active','FIRE',0,0);GridLab.place(G.board,'support','DELAY',1,0);recalc();G.mons=[{type:'slime',x:HX+4,y:HY,hp:1e8,hpMax:1e8,dead:false,fall:0}];castSkill('FIRE');assert(G.timers.some(t=>t.rep===.45));assert(G.timers.some(t=>t.rep===.35));const n=G.timers.length;castSkill('FIRE',.45);assert.equal(G.timers.length,n);
+ G.lvl=30;G.pass=['EK'];G.board=GridLab.createBoard(6,6);GridLab.place(G.board,'active','FIRE',0,0);GridLab.place(G.board,'support','DELAY',1,0);recalc();G.mons=[{type:'slime',x:HX+4,y:HY,hp:1e8,hpMax:1e8,dead:false,fall:0}];castSkill('FIRE');assert(G.timers.some(t=>t.rep===.45));assert(G.timers.some(t=>t.rep===.6));const n=G.timers.length;castSkill('FIRE',.45);assert.equal(G.timers.length,n);
 `);
 check('fork and recovery effects apply once within their cooldown windows',`
  const a={type:'slime',x:HX+4,y:HY,hp:1e6,hpMax:1e6,dead:false,fall:0},b={...a,x:HX+8};G.mons=[a,b];G.st.sk.FIRE.has=['FORK','RECOVER'];G.h.hp=G.st.life*.5;const hp=G.h.hp;applySkillHit('FIRE',a);assert(G.h.hp>hp);assert(b.hp<1e6);const second=G.h.hp,other=b.hp;applySkillHit('FIRE',a);assert.equal(G.h.hp,second);assert.equal(b.hp,other);

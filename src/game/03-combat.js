@@ -7,12 +7,14 @@ const MTYPES = { slime:{ hp:1, dmg:.8, xp:1, g:1, spd:15, atk:1.5 }, skel:{ hp:1
 Object.assign(MTYPES,{spider:{hp:.8,dmg:1.1,xp:1.3,g:1.2,spd:27,atk:1},speaker:{hp:2,dmg:1.8,xp:2,g:1.8,spd:10,atk:2.1},wisp:{hp:.65,dmg:1.35,xp:1.5,g:1.4,spd:22,atk:1.25},crab:{hp:3.2,dmg:2,xp:2.7,g:2.4,spd:9,atk:2.2}});
 const REGION_MOBS=[['slime','spider','skel'],['crab','brute','bomb'],['wisp','skel','drone'],['bomb','crab','brute'],['drone','speaker','wisp'],['spider','speaker','slime'],['drone','wisp','speaker'],['crab','spider','drone'],['wisp','spider','skel'],['speaker','bomb','crab'],['drone','brute','speaker'],['spider','wisp','bomb']];
 function spawnPack(){
+  if(G.run?.city?.awaitChoice)return;
   const R = G.run, d = lvlNow(), mods = R ? R.map.mods : [], kills = R ? R.kills : G.kills, need = R ? R.need : G.need, bossOut = R ? R.bossOut : G.bossOut;
   if (!R && G.need < 60) G.need = 60;   /* 舊存檔的門檻較低，大群怪的玩法改成 60 */
   const bossNow = (R || G.push) && kills >= need && !bossOut && !(R && R.tower && R.floor % 10 !== 0) && (G.h.hp >= G.st.life*(G.bossHp || 0)/100 || R);   // 推進模式：生命低於設定值就先不開打
   let types;
   if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的守關者出現了！`, '#8e3fd1'); }
   else {const n=Math.min(hordeCap()-G.mons.filter(m=>!m.dead).length,4+Math.floor(Math.random()*4)+(mods.includes('more')?2:0)+(mods.includes('swarm')?3:0));const pool=REGION_MOBS[biomeNow()]||REGION_MOBS[0];types=Array.from({length:Math.max(0,n)},()=>tPick(pool));}
+  if(R?.city&&R.city.stage<3)types=types.map(()=>tPick(CITY_ROUTES[R.city.route].pool));
   const hpK = (mods.includes('tough') ? 1.4 : 1)*(mods.includes('swarm') ? .75 : 1), dmgK = mods.includes('deadly') ? 1.35 : 1, fastK = mods.includes('fast') ? 1.25 : 1;
   const packRift = Math.floor(Math.random()*RIFTS.length), used = new Set(G.mons.filter(m => !m.dead).map(m => m.slot));
   types.forEach((t, i) => {
@@ -23,6 +25,7 @@ function spawnPack(){
     G.mons.push({ type:t, boss:t === 'boss', elite:el, x:sx, y:sy, hp:hp*(el ? 3.2 : 1), hpMax:hp*(el ? 3.2 : 1), dmg:(el ? 1.3 : 1) * 4.5 * Math.pow(1.22, d-1) * T.dmg * dmgK * (1.3+Math.min(1.1,Math.max(0,d-2)*.09)) * (t==='boss'?1.35:1) * (t !== 'boss' ? HORDE.dmg : 1) * (1 + earlyK()*.12), atkInt:T.atk/fastK, spdK:fastK, atkCd:tRand(.3, T.atk),
       slot, fall:t === 'boss' ? .9 : 0, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
   });
+  if(R?.city)for(const m of G.mons)if(!m.dead&&!m.cityRoute)cityMonster(m);
   addFx({ k:'portal', t:0, dur:.5, x:RIFTS[packRift][0], y:RIFTS[packRift][1] });
 }
 function dropItem(m, it){ dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'item', it, t:0 }); if (it.r >= 2 && !G.offline){ lootToast(it); bossLoot(it); SFX('rare'); if (it.r >= 3) kick(.6, .3, '#ffb27a', .5); } }
@@ -39,12 +42,13 @@ function killMon(m){
   if (G.relics.BOMB && Math.random() < .1 && G.slots[0]){ addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 5, t:0, dur:.35 }); for (const o of G.mons) if (!o.dead && o !== m && !(o.fall > 0) && Math.hypot(o.x - m.x, o.y - m.y) < 9) applySkillHit(G.slots[0], o, 1.5,'proc'); }
   if (lgOn('A_RESET') && ++G.lgK % 25 === 0){ for (const id of G.slots) G.cds[id] = 0; addFloat(G.h.x, G.h.y, BZ + 24, '冷卻完畢', '#4a8fe0', 3.6); }
   if (lgOn('R_LINK')){ const o = G.mons.filter(x => !x.dead && x !== m && !(x.fall > 0)).sort((a, b) => Math.hypot(a.x - m.x, a.y - m.y) - Math.hypot(b.x - m.x, b.y - m.y))[0]; if (o){ addFx({ k:'bolt', pts:[[m.x, m.y, BZ + 8], [o.x, o.y, BZ + 8]], t:0, dur:.2 }); hitMon(o, m.hpMax*.5, false); } }
-  if (m.type === 'bomb' && !G.offline){ addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 6, t:0, dur:.4, big:true, col:'#ff5a3a' }); kick(1.1, .3, '#ff9a3c', .6); if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 12 && G.h.dead <= 0){ const bd = Math.max(1, m.dmg*1.6*(1 - G.st.red)); G.h.hp -= bd; G.h.hurtT = .15; addFloat(G.h.x + 3, G.h.y, BZ + 16, tFmt(bd), '#e2483d', 3.6); } for (const o of G.mons) if (!o.dead && o !== m && !(o.fall > 0) && Math.hypot(o.x - m.x, o.y - m.y) < 10) hitMon(o, m.hpMax*.6, false); }
+  if (m.type === 'bomb' && !G.offline){ addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 6, t:0, dur:.4, big:true, col:'#ff5a3a' }); kick(1.1, .3, '#ff9a3c', .6); if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 12 && G.h.dead <= 0){ const bd = Math.max(1, m.dmg*1.6*(1 - G.st.red)); heroDamage(bd); G.h.hurtT = .15; addFloat(G.h.x + 3, G.h.y, BZ + 16, tFmt(bd), '#e2483d', 3.6); } for (const o of G.mons) if (!o.dead && o !== m && !(o.fall > 0) && Math.hypot(o.x - m.x, o.y - m.y) < 10) hitMon(o, m.hpMax*.6, false); }
   const nItems = m.boss ? 2 + (Math.random() < .5 ? 1 : 0) : m.elite ? 1 + (Math.random() < .5 ? 1 : 0) : Math.random() < HORDE.drop*(1 + q)*(offPen() ? .25 : 1) ? 1 : 0;   // 離線：掉落 25%
   for (let i = 0; i < nItems; i++) dropItem(m, makeItem(tPick(['weapon','armor','ring']), rarityRoll(m.boss), d));
   if (Math.random() < (m.boss ? .3 : .012)) dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'cart', id:tPick(Object.keys(MODES)), t:0 });
   if (Math.random() < (m.boss ? .35 : .025)) dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'gem', id:tPick(Object.keys(SUPPS)), t:0 });
   if (Math.random() < (m.boss && !R ? 1 : .03)) dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'map', map:makeMap(d + (Math.random() < .3 ? 1 : 0)), t:0 });
+  if(R?.city&&!m.boss)cityStageClear();
   if (m.boss){
     if (R){ completeRun(); }
     else { G.bossOut = false; G.kills = 0; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗守關者！進入深度 ${G.depth}`, '#2f9e4f'); } }
@@ -71,6 +75,7 @@ function towerNext(){
 }
 function completeRun(){
   if (!G.run) return;
+  if(G.run.city){if(G.run.city.stage===3&&G.run.bossOut&&G.mons.some(m=>m.boss&&m.dead))cityFinish(true);return;}
   if (G.run && G.run.tower){ G.mapsDone++; towerNext(); return; }
   G.mapsDone++; checkGoals();
   const R = G.run, q = runQ(), lvl = R.map.lvl, extra = 2 + Math.ceil(q*4);
@@ -104,7 +109,7 @@ function pickup(d){
     G.armory[it.lg] = it;
     if (!old && G.off) G.off.cores = (G.off.cores || 0) + 1;
     logLine(`${old?'更新':'收藏'}傳奇核心：${it.name}`, rc);
-    if (!cur?.lg && (!cur || cand.power > G.st.power*1.02)){
+    if (G.autoEquip && !cur?.lg && (!cur || cand.power > G.st.power*1.02)){
       // 收藏裝備永不作自動拆解來源；一般裝備仍使用原本的自動比較。
       if(cur){if(!cur.lg)storeGear(cur);G.equipBackup[it.slot]=cur;}
       G.equip[it.slot] = it; recalc(); if (G.off) G.off.eq++;
@@ -173,6 +178,7 @@ function chooseReadySkill(){
 function hitMon(m, dmg, crit, source=G.src||'其他'){
   if (m.dead || m.fall > 0) return;
   if(!Number.isFinite(dmg)||dmg<=0)return;
+  dmg=cityIncoming(m,dmg);if(dmg<=0)return;
   combatDamage(source,Math.min(Math.max(0,m.hp),dmg));
   m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit');
   if (!m.training && !m.boss && !m.dv && !G.offline && Math.random() < .14){ const a = Math.random()*6.28; m.dv = { x:Math.cos(a)*42, y:Math.sin(a)*42, t:.22 }; }   // 挨打後側閃
@@ -194,6 +200,7 @@ function revive(){ const h = G.h; h.dead = 0; h.x = HX; h.y = HY; h.vx = h.vy = 
 function heroDie(){
   const h=G.h;
   if (lgOn('A_PHOENIX') && !(h.phx > 0)){ h.phx = 90; h.hp = G.st.life*.5; for (const id of G.slots) G.cds[id] = 0; addFx({ k:'nova', t:0, dur:.55 }); addFloat(h.x, h.y, BZ + 24, '不滅', '#ff7a3d', 5); kick(2, .6, '#ffa040', .8); SFX('boom'); return; } h.dead=3;h.castT=-1;G.readySince={};G.signalCharge=0;G.deaths++; SFX('die'); G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.timers.length = 0;
+  if(G.run?.city){cityFinish(false);return;}
   if (G.run && G.run.tower){ G.towerBest = Math.max(G.towerBest || 0, G.run.floor - 1); logLine(`你倒下了……無限之塔結束，最高第 ${G.towerBest} 層`, '#e2483d'); G.run = null; }
   else if (G.run){ logLine('你倒下了……地圖失敗', '#e2483d'); G.run = null; }
   else { if (G.push && G.depth > 1) G.depth--; G.kills = 0; G.bossOut = false; logLine('你倒下了……退回較淺的深度', '#e2483d'); }
@@ -231,7 +238,7 @@ function performSkill(id,repeat,origin){
   if (origin === 'primary' && !G.offline){ const K0 = SKILLS[id]; addFx({ k:'ring', x:h.x, y:h.y, col:K0.col, t:0, dur:.45 }); addFx({ k:'pillar', x:h.x, y:h.y, col:K0.col, t:0, dur:.3 });
     if (K0.cd >= 2 && (G.fx.length < 30)) addFloat(h.x - 2, h.y, BZ + 40, K0.n, K0.col, 4.4);
     kick(K0.cd>=4?1.7:.65,K0.cd>=4?.22:0,K0.col,K0.cd>=4?.6:.2); }
-  if(origin==='primary'){if(k.has.includes('DELAY'))G.timers.push({id,t:.6,rep:.45});if(G.pass.includes('EK'))G.timers.push({id,t:.8,rep:.35});}
+  if(origin==='primary'){if(k.has.includes('DELAY'))G.timers.push({id,t:.6,rep:.45});if(G.pass.includes('EK'))G.timers.push({id,t:.8,rep:s.firmware.includes('EK')?.6:.35});}
   const near = (m0, n, ex) => G.mons.filter(m => !m.dead && m !== m0 && !(ex && ex.has(m))).sort((a, b) => Math.hypot(a.x - m0.x, a.y - m0.y) - Math.hypot(b.x - m0.x, b.y - m0.y)).slice(0, n);
   if (id === 'FIRE'){ const tg = prim; G.proj.push({k:'fire',tg,t:0,dur:.4,mul:repeat,origin}); return; }
   if (id === 'FROST'){
@@ -249,7 +256,7 @@ function performSkill(id,repeat,origin){
   }
   if(id==='METEOR'){
     const coldBoost=!!(p.coldStart&&origin==='primary'&&prim.frozen>0);
-    if(coldBoost){prim.frozen=0;combatCombo('coldBursts');}
+    if(coldBoost){prim.frozen=0;combatCombo('coldBursts');if(s.firmware.includes('AK')){h.buffer=s.life*.12;h.bufferUntil=G.time+4;}}
     for(let i=0;i<p.count;i++){const target=i?(near(prim,1)[0]||prim):prim;
       G.proj.push({k:'meteor',x:target.x,y:target.y,t:-i*.15,dur:.9,mul:repeat*p.each,origin,target,coldBoost:i===0&&coldBoost});}
     if(cardN('V_ECHO'))G.timers.push({t:.6,echo:'METEOR',mul:repeat*.5});return;
@@ -275,7 +282,7 @@ function performSkill(id,repeat,origin){
       total += applySkillHit(id, m, repeat*p.each); addFx({ k:'bolt', pts:[[h.x + 3.4, h.y - 3.6, BZ + 9.2], [m.x, m.y, BZ + 8]], t:-i*.02, dur:.2 }); }
   }
   if (id === 'BEAM'){
-    SFX('fire'); const base = Math.atan2(prim.y - h.y, prim.x - h.x), w=p.width,spent=p.capacitor&&origin==='primary'?G.signalCharge:0,mu=repeat*p.each*(1+spent*.35);
+    SFX('fire'); const base = Math.atan2(prim.y - h.y, prim.x - h.x), w=p.width,spent=p.capacitor&&origin==='primary'?G.signalCharge:0,mu=repeat*p.each*(1+spent*(s.firmware.includes('FK')?.45:.35));
     if(spent){G.signalCharge=0;combatCombo('chargeSpent',spent);addFx({k:'ring',x:h.x,y:h.y,col:'#57efff',t:0,dur:.5});}
     const shoot = (ang, m2) => { const ux = Math.cos(ang), uy = Math.sin(ang);
       for (const m of al){ const dx = m.x - h.x, dy = m.y - h.y, al2 = dx*ux + dy*uy; if (al2 > 0 && al2 < 90 && Math.abs(dx*uy - dy*ux) < w) total += applySkillHit(id, m, mu*m2); }
@@ -340,10 +347,10 @@ function trainStart(){
   if(G.run||G.train)return;
   const n=G.trainingPreset==='single'?1:5;
   G.train={start:G.time,t:30,duration:30,dmg:{},total:0,n,preset:n===1?'single':'crowd',chargeBefore:G.signalCharge,
-    modeBefore:G.st.sk.BEAM?.mode,hpBefore:G.h.hp/G.st.life,cdsBefore:{...G.cds}};
+    bufferBefore:G.h.buffer||0,bufferUntilBefore:G.h.bufferUntil||0,modeBefore:G.st.sk.BEAM?.mode,hpBefore:G.h.hp/G.st.life,cdsBefore:{...G.cds}};
   G.mons=[];G.proj=[];G.timers=[];G.readySince={};G.signalCharge=0;G.h.castT=-1;G.h.swingT=-1;
   for(const id of G.slots)G.cds[id]=0;
-  G.h.hp=G.st.life;G.spawnCd=99;
+  G.h.buffer=0;G.h.bufferUntil=0;G.h.hp=G.st.life;G.spawnCd=99;
   for(let i=0;i<n;i++)G.mons.push({type:'slime',training:true,boss:false,x:G.h.x+(i-(n-1)/2)*4,y:G.h.y-10,
     hp:1e15,hpMax:1e15,dmg:0,atkInt:1e9,spdK:0,atkCd:1e9,slot:i,fall:0,fight:false,dead:false,deadT:0,hurtT:0,frozen:0,lunge:-1,lungeHit:true,ph:i});
   logLine(`訓練場：${n===1?'單體':'群體'}，測量 30 秒`,'#1f9bbf');closeModal();
@@ -351,6 +358,7 @@ function trainStart(){
 function trainEnd(abort){
   const T=G.train;if(!T)return;G.train=null;
   if(Number.isFinite(T.hpBefore))G.h.hp=T.hpBefore*G.st.life;
+  G.h.buffer=G.st.firmware.includes('AK')&&G.time<(T.bufferUntilBefore||0)?Math.min(T.bufferBefore||0,G.st.life*.12):0;G.h.bufferUntil=T.bufferUntilBefore||0;
   G.mons=[];G.proj=[];G.timers=[];G.h.castT=-1;G.h.swingT=-1;G.readySince={};G.spawnCd=.8;
   G.signalCharge=G.st.sk.BEAM?.mode===T.modeBefore?(T.chargeBefore||0):0;
   for(const id of G.slots)G.cds[id]=T.cdsBefore?.[id]||0;
@@ -360,6 +368,7 @@ function trainEnd(abort){
   G.dirty=true;
 }
 function update(dt){
+  if(G.run?.city?.awaitChoice){const c=G.run.city;if(!Number.isFinite(c.choiceAt)||c.choiceAt>Date.now())c.choiceAt=Date.now();if(G.offline||Date.now()-c.choiceAt>=15000)cityChoose(c.policy,c.stage);else return;}
   G.src = '其他';
   if (G.train){ G.train.t -= dt; for (const m of G.mons) if (!m.dead){ m.hp = m.hpMax; } if (G.train.t <= 0) trainEnd(); }
   G.time += dt; if ((G.time*2 | 0) !== G._ac){ G._ac = G.time*2 | 0; checkAch(); } const h = G.h, s = G.st;
@@ -375,7 +384,8 @@ function update(dt){
     if (m.fall > 0){ m.fall -= dt; if (m.fall <= 0){ addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 4, t:0, dur:.6, big:true }); SFX('boom'); kick(2.4, .5, '#ffffff', 1); } continue; }
     if (m.hurtT > 0) m.hurtT -= dt;
     if (m.shock > 0) m.shock -= dt;
-    if (m.burn > 0){ m.burn -= dt; m.bt = (m.bt || 0) + dt; if (m.bt >= .5){ m.bt = 0; m.hp -= m.burnD*.5; combatDamage('燃燒',Math.min(m.hp+m.burnD*.5,m.burnD*.5)); if (m.hp <= 0){ killMon(m); continue; } } }
+    cityTickMonster(m,dt);
+    if (m.burn > 0){ m.burn -= dt; m.bt = (m.bt || 0) + dt; if (m.bt >= .5){ m.bt = 0; const burnHit=cityIncoming(m,m.burnD*.5);combatDamage('燃燒',Math.min(m.hp,burnHit));m.hp-=burnHit; if (m.hp <= 0){ killMon(m); continue; } } }
     if(m.freezeBuildup>0)m.freezeBuildup=Math.max(0,m.freezeBuildup-COMBAT_RULES.freezeDecay*dt);
     if(m.frozen>0){m.frozen=Math.max(0,m.frozen-dt);if(m.frozen>0)continue;}
     const so = SLOTS[m.slot % SLOTS.length], dx = h.x + so[0] - m.x, dy = h.y + so[1] - m.y, dist = Math.hypot(dx, dy), spd = MTYPES[m.type].spd * m.spdK;
@@ -385,12 +395,12 @@ function update(dt){
     if((m.boss||m.type==='speaker'||m.type==='crab')&&!(m.fall>0)){
       m.skillCd=(m.skillCd??3)-dt;
       if(m.skillCd<=0&&!m.warning){m.warning={x:h.x,y:h.y,t:.9};addFx({k:'warning',x:h.x,y:h.y,t:0,dur:.9,col:'#ff8a4a'});}
-      if(m.warning){m.warning.t-=dt;if(m.warning.t<=0){if(Math.hypot(h.x-m.warning.x,h.y-m.warning.y)<9){h.hp-=m.dmg*(m.boss?1.8:1.2)*(1-s.red);kick(1.7,.2,'#ff5a3a',.5);}addFx({k:'boom',x:m.warning.x,y:m.warning.y,z:BZ+2,t:0,dur:.6,big:true});m.warning=null;m.skillCd=m.boss?4:6;}}
+      if(m.warning){m.warning.t-=dt;if(m.warning.t<=0){if(Math.hypot(h.x-m.warning.x,h.y-m.warning.y)<9){heroDamage(m.dmg*(m.boss?1.8:1.2)*(1-s.red));kick(1.7,.2,'#ff5a3a',.5);}addFx({k:'boom',x:m.warning.x,y:m.warning.y,z:BZ+2,t:0,dur:.6,big:true});m.warning=null;m.skillCd=m.boss?(m.cityRoute==='signal'?2.5:4):6;}}
     }
     if (m.fight){ m.atkCd -= dt; if (m.atkCd <= 0 && m.lunge < 0){ m.lunge = 0; m.lungeHit = false; m.atkCd = m.atkInt; } }
     if (m.lunge >= 0){
       m.lunge += dt;
-      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ { const a = Math.random()*6.28; h.dash = { a, t:0 }; h.vx += Math.cos(a)*70; h.vy += Math.sin(a)*70; } addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); if (lgOn('A_RIPOSTE')){ const sid = tPick(G.slots.filter(Boolean)); if (sid) castSkill(sid, .8); } continue; } const dmg = Math.max(1, m.dmg * (1 - s.red) * tRand(.9, 1.1)); h.hp -= dmg; h.hurtT = .15; kick(Math.min(1.6, .6 + dmg/G.st.life*4), .35, '#ff3050'); if (dmg >= G.st.life*.08) hitStop(.07); addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#e2483d', 3.6); }
+      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ { const a = Math.random()*6.28; h.dash = { a, t:0 }; h.vx += Math.cos(a)*70; h.vy += Math.sin(a)*70; } addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); if (lgOn('A_RIPOSTE')){ const sid = tPick(G.slots.filter(Boolean)); if (sid) castSkill(sid, .8); } continue; } const dmg = Math.max(1, m.dmg * (1 - s.red) * tRand(.9, 1.1)); heroDamage(dmg); h.hurtT = .15; kick(Math.min(1.6, .6 + dmg/G.st.life*4), .35, '#ff3050'); if (dmg >= G.st.life*.08) hitStop(.07); addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#e2483d', 3.6); }
       if (m.lunge >= .3) m.lunge = -1;
     }
   }

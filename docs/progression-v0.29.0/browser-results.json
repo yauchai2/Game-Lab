@@ -1,0 +1,174 @@
+[
+  {
+    "width": 390,
+    "errors": [],
+    "city": {
+      "maxTier": 1,
+      "fragments": {
+        "signal": 15,
+        "memory": 0,
+        "power": 0
+      },
+      "seals": {
+        "1": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "2": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "3": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "4": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "5": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "6": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "7": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "8": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        }
+      },
+      "clears": {
+        "signal:1": 1,
+        "memory:1": 0,
+        "power:1": 0,
+        "signal:2": 0,
+        "memory:2": 0,
+        "power:2": 0,
+        "signal:3": 0,
+        "memory:3": 0,
+        "power:3": 0,
+        "signal:4": 0,
+        "memory:4": 0,
+        "power:4": 0,
+        "signal:5": 0,
+        "memory:5": 0,
+        "power:5": 0,
+        "signal:6": 0,
+        "memory:6": 0,
+        "power:6": 0,
+        "signal:7": 0,
+        "memory:7": 0,
+        "power:7": 0,
+        "signal:8": 0,
+        "memory:8": 0,
+        "power:8": 0
+      },
+      "nexusWins": 0,
+      "target": "W_ECHO",
+      "policy": "safe",
+      "last": {
+        "text": "磁帶迴廊第 1 階帶回：0 枚區域碎片"
+      }
+    }
+  },
+  {
+    "width": 1440,
+    "errors": [],
+    "city": {
+      "maxTier": 1,
+      "fragments": {
+        "signal": 15,
+        "memory": 0,
+        "power": 0
+      },
+      "seals": {
+        "1": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "2": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "3": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "4": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "5": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "6": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "7": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        },
+        "8": {
+          "signal": 0,
+          "memory": 0,
+          "power": 0
+        }
+      },
+      "clears": {
+        "signal:1": 1,
+        "memory:1": 0,
+        "power:1": 0,
+        "signal:2": 0,
+        "memory:2": 0,
+        "power:2": 0,
+        "signal:3": 0,
+        "memory:3": 0,
+        "power:3": 0,
+        "signal:4": 0,
+        "memory:4": 0,
+        "power:4": 0,
+        "signal:5": 0,
+        "memory:5": 0,
+        "power:5": 0,
+        "signal:6": 0,
+        "memory:6": 0,
+        "power:6": 0,
+        "signal:7": 0,
+        "memory:7": 0,
+        "power:7": 0,
+        "signal:8": 0,
+        "memory:8": 0,
+        "power:8": 0
+      },
+      "nexusWins": 0,
+      "target": "W_ECHO",
+      "policy": "safe",
+      "last": {
+        "text": "磁帶迴廊第 1 階帶回：0 枚區域碎片"
+      }
+    }
+  }
+]

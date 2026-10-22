@@ -147,3 +147,19 @@
 戰報：uiCombatHtml 預設折疊，uiCombatRefresh 只更新已展開的文字，不重建盤面或搶焦點；訓練中不可重設報表，會解釋原因。數據是暫存的有效傷害，不含溢傷；單體直傷預估與訓練實測明確區分。
 
 訓練：uiTrainingPreset／trainStart／trainEnd 是目標、啟動與取消唯一 owner，進行中目標按鍵 disabled。取消不覆寫上次結果、生命比例與冷卻還原，測試電荷不帶出；沒有獎勵或地面拾取。電路配方：buyCircuitMode 執行時重驗等級、點數、持有狀態，失敗不扣款；已持有按鍵名稱包含卡匣名稱。
+
+
+## 城市、定向核心及有限天賦（0.29.0）
+
+依據 Alan 明確授權及 docs/progression-v0.29.0.md 的玩法契約。
+
+| 能力 | 共用 owner | 介面契約 |
+| --- | --- | --- |
+| 點數／核心上限 | talentBudget、canAllocateTalent、talentPlan | 盤面與原生按鍵清單共用可執行條件；有限預算與核心數以文字顯示 |
+| 轉換及還原 | uiTalentPreview、uiConfirmTalents、convertTalents、restoreLegacyTalents | 保留舊快照，預覽差異，免費確認，重驗配置；裝備／庫存保留 |
+| 城市選路 | cityStart、cityChoose、cityFinish | 出發策略及目標固定；預先顯示代價；選路有時限及後備行為；暫存與永久資料分離 |
+| 定向合成 | uiForgeCore、forgeTargetCore | 確認成本／對象／等級，執行時重驗，加入收藏而不換裝，失敗不扣款 |
+| 中樞 | uiCityStart、uiCityConfirmStart、cityCanStart | 顯示憑證代價／失敗後果，取消不消耗，過期目標或挑戰狀態拒絕出發 |
+| checkpoint 入口 | uiCityRevealCheckpoint | 新分岔才置頂並聚焦安全選項，保留既有 dialog 的優先焦點；倒數不使用 aria-live 逐秒播報 |
+
+城市路線、八階與九款目標都是固定小目錄，以 render-all 搭配漸進展開；不新增表格選取、原生 select 或遠端分頁。當局配置變動不覆寫永久卡片；存檔保留路段、選路、碎片及出發策略，過期／無效 checkpoint 安全返回。搜尋、存檔草稿、一般地圖及其他兄弟流程保持既有 owner。

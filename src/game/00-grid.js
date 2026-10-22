@@ -144,7 +144,7 @@
       const crit = Math.min(1, Math.max(0, (hero.crit + mod.crit) / 100));
       const hit = hero.hit * d.mult * mod.hit * (1 + crit * (hero.cm / 100 - 1));
       const interval = cooldown(d.cd, keys, hero.haste || 0);
-      const perCast = hit * (1 + mod.twin * REPEAT_K + (mod.repeat ? .45 : 0));
+      const perCast = hit * (1 + mod.twin * LIMITS.repeatDamage + (mod.repeat ? .45 : 0));
       return { id: r.id, key: r.key, hit, interval, dps: perCast / interval };
     });
   }

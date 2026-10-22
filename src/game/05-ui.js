@@ -61,7 +61,7 @@ function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); set
   const settings=modalTab==='settings'; $('uisettings').hidden=!settings; $('mmenu').hidden=false; $('mbody').hidden=settings;
   if(!settings) $('mbody').innerHTML = modalTab === 'warehouse' ? warehouseHtml() : modalTab === 'char' ? uiCharacterHtml() : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? dressHtml() : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : modalTab === 'save' ? saveHtml() : uiMenuHtml();
   uxRestorePanel(uxPanel,resetScroll);if(resetScroll)uxAnimatePanel();
-  UI_LIVE_SIGNATURE=uiLiveSignature();
+  UI_LIVE_SIGNATURE=uiLiveSignature();uiCityRevealCheckpoint();
 }
 let held = null, heldRot = 0, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff', COOL:'#6fd6e8', CRYSTAL:'#d99bff' };
@@ -81,10 +81,10 @@ function dpsBar(){
   return `<div class="dpsbar"><div>單體直傷預估 <b>${tFmt(G.st.dps)}</b> <span id="pzdelta" class="mute"></span></div><div class="shares">${ids.map(id => `<span style="flex:${Math.max(1, Math.round(sk[id].direct*sk[id].estimatedCasts/tot*100))}" title="${SKILLS[id].n}">${SKILLS[id].n}</span>`).join('')}</div>${uxPieceDetails()}</div>`;
 }
 function switchBuild(i){
-  if (i === (G.bi || 0)) return; if (!G.builds) G.builds = [null, null, null];
-  G.builds[G.bi || 0] = JSON.parse(JSON.stringify({board:G.board,pass:G.pass,castPolicy:G.castPolicy}));
+  if(G.run?.city||G.train){uxAnnounce('先結束城市遠征或訓練，再切換構築。');return;}if (i === (G.bi || 0)) return; if (!G.builds) G.builds = [null, null, null];
+  G.builds[G.bi || 0] = JSON.parse(JSON.stringify({board:G.board,pass:G.pass,castPolicy:G.castPolicy,legacyMode:G.legacyMode}));
   const t = G.builds[i]; G.bi = i; selPiece = null; held = null;
-  if (t){ G.board = JSON.parse(JSON.stringify(t.board)); G.pass=t.pass.slice();G.castPolicy=t.castPolicy==='combo'?'combo':'balanced'; } else { boardFromLegacy(['FIRE'], {}); G.pass=[];G.castPolicy='balanced';}
+  if (t){ G.board = JSON.parse(JSON.stringify(t.board)); G.pass=t.pass.slice();G.castPolicy=t.castPolicy==='combo'?'combo':'balanced';G.legacyMode=t.legacyMode===true||talentOverLimit(G.pass); } else { boardFromLegacy(['FIRE'], {}); G.pass=[];G.castPolicy='balanced';G.legacyMode=false;}
   const use = {}, cu = {};   // 配件與卡匣只有一份庫存：超出的從這套拿掉
   G.board.pieces = G.board.pieces.filter(p => { if (p.kind !== 'support') return true; use[p.key] = (use[p.key] || 0) + 1; return use[p.key] <= (G.gems[p.key] || 0); });
   for (const p of G.board.pieces) if (p.mode){ cu[p.mode] = (cu[p.mode] || 0) + 1; if (cu[p.mode] > (G.carts[p.mode] || 0)) p.mode = null; }
@@ -120,17 +120,18 @@ function treeHtml0(){
   for (const id in TREE){ const n = TREE[id]; for (const l of n.links) if (id < l){ const m = TREE[l], on2 = (id === 'S' || G.pass.includes(id)) && (l === 'S' || G.pass.includes(l));
     lines += `<line class="${on2 ? 'connected' : 'inactive'}" x1="${n.x.toFixed(1)}" y1="${n.y.toFixed(1)}" x2="${m.x.toFixed(1)}" y2="${m.y.toFixed(1)}" stroke="${on2 ? n.col === '#e8e2d4' ? m.col : n.col : '#d3daf0'}" stroke-width="${on2 ? 3.4 : 1.6}" stroke-linecap="round"/>`; } }
   const star = (x, y, R, r) => Array.from({ length: 10 }, (_, i) => { const a = -Math.PI/2 + i*Math.PI/5, k = i % 2 ? r : R; return `${(x + Math.cos(a)*k).toFixed(1)},${(y + Math.sin(a)*k).toFixed(1)}`; }).join(' ');
-  for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = nodeOpen(id) && pts > 0, x = n.x.toFixed(1), y = n.y.toFixed(1), r = n.big ? 6.6 : 4;
+  for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = canAllocateTalent(id), x = n.x.toFixed(1), y = n.y.toFixed(1), r = n.big ? 6.6 : 4;
     const fill = got ? n.col : '#eef3ff', stroke = got ? '#ffffff' : open ? '#2b2552' : '#c3cbe8', sw = got ? 2 : open ? 1.8 : 1.2;
     const shape = n.big ? `<polygon points="${star(+x, +y, r + 1.6, r*.55)}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>` : `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>`;
-    nodes += `<g class="tn ${got ? 'got' : open ? 'open' : 'locked'}" data-tree="${id}" role="button" tabindex="${open?0:-1}" aria-disabled="${!open}" aria-label="${uxEsc(n.name)}，${got?'已點亮':open?'可點亮':'未連到或點數不足'}" onfocus="treeInfo('${id}')" onmouseover="treeInfo('${id}')" onclick="treeInfo('${id}');allocPass('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();allocPass('${id}')}" style="cursor:${open ? 'pointer' : 'default'}"><title>${n.name}</title>${got ? `<circle cx="${x}" cy="${y}" r="${r + 2.4}" fill="${n.col}" opacity=".28"/>` : ''}${shape}${got && !n.big ? `<circle cx="${(+x - r*.3).toFixed(1)}" cy="${(+y - r*.35).toFixed(1)}" r="${(r*.28).toFixed(1)}" fill="#fff" opacity=".8"/>` : ''}</g>`; }
-  return `<div class="hint">可用天賦點：<b>${pts}</b>（每升一級 +1，每打到更深 4 層 +1）。點亮與已點亮節點相連的點。</div>
+    nodes += `<g class="tn ${got ? 'got' : open ? 'open' : 'locked'}" data-tree="${id}" role="button" tabindex="${open?0:-1}" aria-disabled="${!open}" aria-label="${uxEsc(talentName(id))}，${got?'已點亮':open?'可點亮':'未連到或點數不足'}" onfocus="treeInfo('${id}')" onmouseover="treeInfo('${id}')" onclick="treeInfo('${id}');allocPass('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();allocPass('${id}')}" style="cursor:${open ? 'pointer' : 'default'}"><title>${talentName(id)}</title>${got ? `<circle cx="${x}" cy="${y}" r="${r + 2.4}" fill="${n.col}" opacity=".28"/>` : ''}${shape}${got && !n.big ? `<circle cx="${(+x - r*.3).toFixed(1)}" cy="${(+y - r*.35).toFixed(1)}" r="${(r*.28).toFixed(1)}" fill="#fff" opacity=".8"/>` : ''}</g>`; }
+  return `${uiTalentBudget()}<div class="hint">可用天賦點：<b>${pts}</b>（最多 36 點，最多兩個韌體）。點亮與已點亮節點相連的點。</div>
     <svg viewBox="-125 -125 250 250" class="tree">${lines}${nodes}</svg>${treeAvailableHtml()}
     <div id="tinfo" class="hint">滑過節點看效果。<span style="color:#e2584d">紅：力量</span> <span style="color:#3f86e6">藍：智慧</span> <span style="color:#3bb552">綠：敏捷</span></div>
-    <button class="mb" onclick="uiRespec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
+    <button class="mb" ${G.run?.city||G.train?'disabled':''} onclick="uiRespec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
 }
-function treeInfo(id){ const n = TREE[id], el = $('tinfo'); if (el) el.textContent = id === 'S' ? '起點' : `${n.name}${nodeOpen(id) ? '' : G.pass.includes(id) ? '（已點亮）' : '（未連到）'}`; }
+function treeInfo(id){ const n = TREE[id], el = $('tinfo'); if (el) el.textContent = id === 'S' ? '起點' : `${talentName(id)}${nodeOpen(id) ? '' : G.pass.includes(id) ? '（已點亮）' : '（未連到）'}`; }
 function nextStep(){
+  if(G.run?.city?.awaitChoice)return {t:'城市路段完成，選擇下一段或帶回碎片',tab:'maps'};
   const q = QUESTS[G.quest || 0];
   if (q) return { t:`${q.n}（${q.t}）`, tab:'goals' };
   if (passPoints() > 0 && tabOpen('tree')) return { t:`有 ${passPoints()} 點天賦可以分配`, tab:'tree' };
@@ -242,14 +243,14 @@ function pzHover(x, y){
 function dpsWith(B){ const keep = G.board; G.board = B; syncBoard(); const d = calc().dps; G.board = keep; syncBoard(); return d; }
 function pzRot(){ if (held){ heldRot = (heldRot + 1) % 4; if (drag && drag.ghost) drag.ghost.innerHTML = shapeIcon(held.kind, held.key, heldRot); else renderModal(); return; } if (selPiece == null) return; const ok = GridLab.rotate(G.board, selPiece); recalc(); pzMsg(ok ? '' : '旋轉後放不下'); }
 function pzDel(){ if (selPiece != null) GridLab.remove(G.board, selPiece); selPiece = null; recalc(); renderModal(); }
-function allocPass(id){ if (passPoints() <= 0 || !nodeOpen(id)) return; G.pass.push(id); recalc(); logLine(`天賦：${TREE[id].name}`, '#2f7fc4'); renderModal(); }
-function respec(){ const cost = 100*G.lvl; if (!G.pass.length || G.gold < cost) return; G.gold -= cost; G.pass = []; recalc(); renderModal(); }
+function allocPass(id){ if (G.run?.city||G.train||!canAllocateTalent(id)) return; G.pass.push(id); recalc(); logLine(`天賦：${talentName(id)}`, '#2f7fc4'); renderModal(); }
+function respec(){if(G.run?.city||G.train)return; const cost = 100*G.lvl; if (!G.pass.length || G.gold < cost) return; G.gold -= cost; G.pass = [];G.legacyMode=false; recalc(); renderModal(); }
 function enterMap(id){
-  if (G.run) return; const i = G.maps.findIndex(m => m.id === id); if (i < 0) return;
+  if (G.run||G.train) return; const i = G.maps.findIndex(m => m.id === id); if (i < 0) return;
   const map = G.maps.splice(i, 1)[0]; G.run = { map, kills:0, need:80, bossOut:false };
   G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.spawnCd = .8; G.h.hp = G.st.life; logLine(`進入地圖：${BIOMES[map.biome].n} Lv. ${map.lvl}`, '#2f7fc4'); closeModal();
 }
-function abandonMap(){ if (!G.run) return; G.run = null; G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.spawnCd = .8; logLine('放棄了地圖', '#857d6e'); renderModal(); }
+function abandonMap(){if(G.run?.city){cityFinish(false);renderModal();return;} if (!G.run) return; G.run = null; G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.spawnCd = .8; logLine('放棄了地圖', '#857d6e'); renderModal(); }
 const smsg = t => { const e = $('smsg'); if (e) e.textContent = t; };
 function doSave(){ smsg(saveGame() ? '已存檔。' : '這個環境不允許瀏覽器存檔，請改用「匯出存檔碼」。'); }
 function doExport(){ const c = encodeSave(); $('sv').value = c; $('sv').select(); smsg('存檔碼已產生，請整段複製保存。'); }

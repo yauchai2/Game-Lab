@@ -23,7 +23,7 @@ function uiTitle(){
 }
 function uiSegments(key,items,label){return `<div class="ui-segments" role="group" aria-label="${label}">${items.map(([id,name])=>`<button aria-pressed="${UI_WORK[key]===id}" data-focus="${key}-${id}" onclick="uiWork('${key}','${id}')">${name}</button>`).join('')}</div>`;}
 function uiWork(key,id){
-  const allowed={inventory:['active','support','cart'],craftSlot:Object.keys(SLOTN),craftAct:Object.keys(CRAFT),adventure:['maps','tower','training']};
+  const allowed={inventory:['active','support','cart'],craftSlot:Object.keys(SLOTN),craftAct:Object.keys(CRAFT),adventure:['maps','city','tower','training']};
   if(!allowed[key]?.includes(id))return;UI_WORK[key]=id;renderModal();
 }
 function uiMenuHtml(){
@@ -37,7 +37,7 @@ function uiCharacterHtml(){
 }
 function uiCoreCollection(){
   const ids=Object.keys(LEGEND_BY).filter(id=>G.armory[id]);
-  return `<details class="ui-section ui-core-collection"><summary>傳奇核心收藏 ${ids.length}／${Object.keys(LEGEND_BY).length}</summary><p class="uxmeta">不同核心會留下來供你研究；裝備中的核心不會被自動替換。同款只保留一件，未裝備、未鎖定且未腐化的收藏會比較升級，其餘重複品拆成零件。</p>${ids.length?ids.map(id=>{const it=G.armory[id],on=G.equip[it.slot]?.lg===id;return `<article class="ui-core-item"><div class="nm">${xico('legend',id,28)}<b>${uxEsc(it.name)}</b><small>${SLOTN[it.slot]} · 等級 ${it.il}</small></div><p>${uxEsc(LEGEND_BY[id].d)}</p><details><summary>屬性與效果</summary><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul></details><button class="mb" ${on?'disabled':''} onclick="uiEquipCore('${id}')">${on?'已裝備':`換上${uxEsc(it.name)}`}</button></article>`}).join(''):'<p>打到第一件傳奇後，就能在這裡保留及換用它的特殊效果。</p>'}<div class="uxactions">${Object.keys(SLOTN).filter(slot=>G.equipBackup[slot]).map(slot=>`<button class="mb" onclick="uiRestoreEquipment('${slot}')">切回上一件${SLOTN[slot]}</button>`).join('')}</div></details>`;
+  return `<button class="mb" onclick="uiCityGo()">城市遠征 · 定向追求核心</button><details class="ui-section ui-core-collection"><summary>傳奇核心收藏 ${ids.length}／${Object.keys(LEGEND_BY).length}</summary><p class="uxmeta">不同核心會留下來供你研究；裝備中的核心不會被自動替換。同款只保留一件，未裝備、未鎖定且未腐化的收藏會比較升級，其餘重複品拆成零件。</p>${ids.length?ids.map(id=>{const it=G.armory[id],on=G.equip[it.slot]?.lg===id;return `<article class="ui-core-item"><div class="nm">${xico('legend',id,28)}<b>${uxEsc(it.name)}</b><small>${SLOTN[it.slot]} · 等級 ${it.il}</small></div><p>${uxEsc(LEGEND_BY[id].d)}</p><details><summary>屬性與效果</summary><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul></details><button class="mb" ${on?'disabled':''} onclick="uiEquipCore('${id}')">${on?'已裝備':`換上${uxEsc(it.name)}`}</button></article>`}).join(''):'<p>打到第一件傳奇後，就能在這裡保留及換用它的特殊效果。</p>'}<div class="uxactions">${Object.keys(SLOTN).filter(slot=>G.equipBackup[slot]).map(slot=>`<button class="mb" onclick="uiRestoreEquipment('${slot}')">切回上一件${SLOTN[slot]}</button>`).join('')}</div></details>`;
 }
 function uiEquipCore(id){ if(equipCore(id)){renderModal();uxAnnounce(`已換上${LEGEND_BY[id].name}，可切回上一件裝備。`);} }
 function uiRestoreEquipment(slot){ if(restoreEquipment(slot)){renderModal();uxAnnounce(`已切回上一件${SLOTN[slot]}。`);} }
@@ -115,10 +115,12 @@ body.d .stats{position:absolute;left:8px;right:8px;top:4px;margin:0;max-width:no
 @media(max-height:500px){body.m .stats{top:0}body.m #mttl{min-height:40px}body.m .stage{padding-bottom:30px}body.m #fig{max-height:110px}body.m #mbody{padding:8px}body.m #mtabs{height:48px}body.m{padding-bottom:calc(48px + env(safe-area-inset-bottom))!important}}
 `;
 function uiAdventureHtml(){
+  if(G.run?.city?.awaitChoice)UI_WORK.adventure='city';
   const R=G.run,mode=UI_WORK.adventure;
-  const nav=uiSegments('adventure',[['maps','地圖'],['tower','無限之塔'],['training','訓練場']],'冒險分類');
-  const current=R?`<section class="ui-section"><div class="ui-map-state"><b>${R.tower?'無限之塔 第 '+R.floor+' 層':BIOMES[R.map.biome].n}</b><span>進行中</span></div><div class="ui-progress" role="progressbar" aria-label="地圖擊殺進度" aria-valuemin="0" aria-valuemax="${R.need}" aria-valuenow="${Math.min(R.kills,R.need)}"><i style="width:${Math.min(100,R.kills/R.need*100)}%"></i></div><p id="ui-run-count" class="uxmeta">擊殺 ${Math.min(R.kills,R.need)}／${R.need}</p>${runMods(R)}<button class="mb" onclick="uiLeaveMap()">離開目前挑戰</button></section>`:`<section class="ui-section"><div class="ui-map-state"><b>一般冒險</b><span>深度 ${G.depth}</span></div><p id="ui-normal-count" class="uxmeta">擊殺 ${Math.min(G.kills,G.need)}／${G.need}${G.push?'，持續推進並挑戰守關者':'，目前原地刷怪'}</p></section>`;
+  const nav=uiSegments('adventure',[['maps','地圖'],['city','城市遠征'],['tower','無限之塔'],['training','訓練場']],'冒險分類');
+  const current=R?.city?uiCityRunHtml():R?`<section class="ui-section"><div class="ui-map-state"><b>${R.tower?'無限之塔 第 '+R.floor+' 層':BIOMES[R.map.biome].n}</b><span>進行中</span></div><div class="ui-progress" role="progressbar" aria-label="地圖擊殺進度" aria-valuemin="0" aria-valuemax="${R.need}" aria-valuenow="${Math.min(R.kills,R.need)}"><i style="width:${Math.min(100,R.kills/R.need*100)}%"></i></div><p id="ui-run-count" class="uxmeta">擊殺 ${Math.min(R.kills,R.need)}／${R.need}</p>${runMods(R)}<button class="mb" onclick="uiLeaveMap()">離開目前挑戰</button></section>`:`<section class="ui-section"><div class="ui-map-state"><b>一般冒險</b><span>深度 ${G.depth}</span></div><p id="ui-normal-count" class="uxmeta">擊殺 ${Math.min(G.kills,G.need)}／${G.need}${G.push?'，持續推進並挑戰守關者':'，目前原地刷怪'}</p></section>`;
   if(mode==='tower')return current+nav+`<section class="ui-section"><h3>無限之塔</h3><p>最高紀錄 ${G.towerBest||0} 層</p><p class="uxmeta">${G.maxDepth<8?'深度 8 解鎖':'逐層挑戰更強的守關者。'}</p><button class="mb pri" ${R||G.maxDepth<8?'disabled':''} onclick="towerStart()">挑戰無限之塔</button>${R?'<p class="uxmeta">請先完成或離開目前挑戰。</p>':''}</section>`;
+  if(mode==='city')return (R?current:'')+nav+(R?.city?'<details class="ui-section"><summary>查看城市目標與下次出發設定</summary>'+uiCityHtml()+'</details>':uiCityHtml());
   if(mode==='training'){
     const L=G.trainLast,mx=L?.rows.length?L.rows[0][1]:1;
     return current+nav+`<section class="ui-section"><h3>訓練場</h3><p>選擇 1 隻或 5 隻不還手的假人，測量 30 秒實際傷害。</p><div class="view-options" role="group" aria-label="訓練目標">${[['single','單體假人'],['crowd','群體假人']].map(([id,name])=>`<button class="mb" aria-pressed="${(G.trainingPreset||'crowd')===id}" ${G.train?'disabled':''} onclick="uiTrainingPreset('${id}')">${name}</button>`).join('')}</div>${G.train?`<p id="ui-train-time">測量中，剩 ${Math.ceil(G.train.t)} 秒</p><button class="mb" onclick="trainEnd(true)">取消測量</button>`:`<button class="mb pri" ${R?'disabled':''} onclick="trainStart()">開始測量</button>`}<p class="uxmeta">測試不掉落獎勵；開始時清空測試電荷，結束或取消後還原原有電荷。單體預估不等同多目標實測。</p>${L?`<p>上次結果：每秒約 <b>${tFmt(L.dps)}</b>（${L.n||5} 隻合計）</p>${L.rows.map(([k,v])=>`<div class="gl"><b>${uxEsc(k)}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${L.total?Math.round(v/L.total*100):0}%　${tFmt(v/(L.duration||30))}／秒</em></div>`).join('')}<details><summary>出手與連動結果</summary>${Object.entries(L.stats||{}).map(([id,row])=>`<p>${SKILLS[id].n}：${row.casts} 次出手／${row.repeats} 次回放，最長等候 ${row.maxWait.toFixed(1)} 秒</p>`).join('')}${uiComboSummary(L.combos)}</details>`:'<p class="uxmeta">完成測量後，保留傷害分布、出手次數與連動結果。</p>'}</section>`;
@@ -127,6 +129,7 @@ function uiAdventureHtml(){
 }
 function uiLeaveMap(){
   if(!G.run)return;
+  if(G.run.city){showOverlay('<h2 class="uxdialog-title">撤離城市遠征？</h2><p>保留已完成路段的碎片，放棄本次收尾獎勵；中樞已消耗的憑證不退還。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">繼續遠征</button><button class="mb pri" onclick="hideOverlay();abandonMap()">撤離並帶回碎片</button></div>');return;}
   showOverlay(`<h2 class="uxdialog-title">離開目前挑戰？</h2><p>目前的進度會結束，已消耗的地圖不會退還。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">繼續挑戰</button><button class="mb pri" onclick="hideOverlay();abandonMap()">離開挑戰</button></div>`);
 }
 
@@ -136,7 +139,7 @@ function uiLiveSignature(){
   if(modalTab==='skills')return JSON.stringify([G.lvl,G.board,G.gems,G.carts,G.seen,G.st.dps,G.chips]);
   if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.cards,G.picks,G.relicPicks]);
   if(modalTab==='craft')return JSON.stringify([G.parts,G.equip]);
-  if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,G.towerBest,!!G.train,G.trainLast,G.maxDepth]);
+  if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,G.run?.city,G.city,G.towerBest,!!G.train,G.trainLast,G.maxDepth]);
   return modalTab;
 }
 function uiRefreshLive(){
@@ -150,19 +153,21 @@ function uiRefreshLive(){
   const R=G.run,count=$('ui-run-count'),bar=document.querySelector('[aria-label="地圖擊殺進度"]');
   if(R&&count){count.textContent=`擊殺 ${Math.min(R.kills,R.need)}／${R.need}`;if(bar){bar.setAttribute('aria-valuenow',Math.min(R.kills,R.need));bar.querySelector('i').style.width=Math.min(100,R.kills/R.need*100)+'%';}}
   const normal=$('ui-normal-count');if(normal&&!R)normal.textContent=`擊殺 ${Math.min(G.kills,G.need)}／${G.need}${G.push?'，持續推進並挑戰守關者':'，目前原地刷怪'}`;
+  const choice=$('ui-city-choice-time');if(choice&&G.run?.city?.awaitChoice)choice.textContent=`${Math.max(0,15-Math.floor((Date.now()-(G.run.city.choiceAt||Date.now()))/1000))} 秒後依出發策略自動選路，也可立即選擇。`;
   uiCombatRefresh();
   const timer=$('ui-train-time');if(timer&&G.train)timer.textContent=`測量中，剩 ${Math.ceil(G.train.t)} 秒`;
 }
 
 let UI_RESPEC=null;
 function uiRespec(){
+  if(G.run?.city||G.train){uxAnnounce('先結束城市遠征或訓練，再重置天賦。');return;}
   const cost=100*G.lvl;if(!G.pass.length||G.gold<cost)return;
   UI_RESPEC={lvl:G.lvl,pass:JSON.stringify(G.pass),cost};
   showOverlay(`<h2 class="uxdialog-title">重置目前構築的天賦？</h2><p>消耗 ${cost} 金幣，清除目前配置，點數可重新分配。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="UI_RESPEC=null;hideOverlay()">保留天賦</button><button class="mb pri" onclick="uiConfirmRespec()">重置天賦</button></div>`);
 }
 function uiConfirmRespec(){
   const pending=UI_RESPEC;UI_RESPEC=null;hideOverlay();if(!pending)return;
-  if(G.lvl!==pending.lvl||JSON.stringify(G.pass)!==pending.pass||G.gold<pending.cost){uxAnnounce('天賦或金幣已變動，請重新確認。');return;}
+  if(G.run?.city||G.train||G.lvl!==pending.lvl||JSON.stringify(G.pass)!==pending.pass||G.gold<pending.cost){uxAnnounce('天賦或金幣已變動，請重新確認。');return;}
   respec();uxAnnounce(`已重置天賦，消耗 ${pending.cost} 金幣。`);
 }
 
@@ -186,10 +191,10 @@ function uiRecycleConfirm(uid){const ok=recycleStored(uid);hideOverlay();renderM
 function circuitShopHtml(){return `<details class="ui-section"><summary>電路合成 · <span id="ui-chip-count">${G.chips}</span> 點</summary><p>拾取敵人掉落的電路點數，用來指定合成配件；所有角色都能使用，相鄰及標籤規則照常生效。</p>${['FOCUS','FORK','RECOVER','DELAY'].map(id=>`<article><p>${gemIco(id,24)} ${SUPPS[id].n} · ${SUPPS[id].d}</p><button class="mb" ${G.chips<20?'disabled':''} onclick="uiBuySupport('${id}')">20 點合成 ${SUPPS[id].n}</button></article>`).join('')}<h3>連動模式</h3><p>選取衛星或雷射，再到模式卡匣裝上。搭配連動優先，會先準備凍結或電荷；所有角色可用。</p>${['METEOR_COLDSTART','BEAM_CAPACITOR'].map(id=>`<article><p><b>${MODES[id].n}</b> · ${MODES[id].d}</p><button class="mb" data-focus="recipe-${id}" ${G.chips<20||G.carts[id]||G.lvl<SKILLS[MODES[id].sk].lvl?'disabled':''} onclick="uiBuyCircuitMode('${id}')">${G.carts[id]?'已持有 '+MODES[id].n:G.lvl<SKILLS[MODES[id].sk].lvl?'等級 '+SKILLS[MODES[id].sk].lvl+' 解鎖':'20 點合成 '+MODES[id].n}</button></article>`).join('')}</details>`;}
 function uiBuySupport(id){if(!buyCircuitSupport(id)){uxAnnounce('電路點數不足，沒有扣除資源。');return;}renderModal();uxAnnounce(`已合成${SUPPS[id].n}，消耗 20 電路點數。`);}
 function treeAvailableHtml(){
- const open=Object.values(TREE).filter(n=>nodeOpen(n.id)),branch={A:'耐久',B:'元素',C:'暴擊',D:'超頻',E:'回授',F:'電池',R:'接線'};
- return `<details class="ui-section"><summary>可連接節點清單（${open.length}）</summary><p>可用清單選擇，不必瞄準盤面的小圓點。每個節點消耗 1 天賦點，所有角色共用。</p><div class="ui-directory">${open.map(n=>`<button data-focus="talent-${n.id}" ${passPoints()<=0?'disabled':''} onclick="uiAllocateTalent('${n.id}')"><b>${branch[n.id[0]]}支線</b><span>${uxEsc(n.name)}</span></button>`).join('')||'<p>已點亮目前所有可連接節點。</p>'}</div></details>`;
+ const open=Object.values(TREE).filter(n=>canAllocateTalent(n.id)),branch={A:'耐久',B:'元素',C:'暴擊',D:'超頻',E:'回授',F:'電池',R:'接線'};
+ return `<details class="ui-section"><summary>可連接節點清單（${open.length}）</summary><p>可用清單選擇，不必瞄準盤面的小圓點。每個節點消耗 1 天賦點，所有角色共用。</p><div class="ui-directory">${open.map(n=>`<button data-focus="talent-${n.id}" ${passPoints()<=0?'disabled':''} onclick="uiAllocateTalent('${n.id}')"><b>${branch[n.id[0]]}支線</b><span>${uxEsc(talentName(n.id))}</span></button>`).join('')||'<p>已點亮目前所有可連接節點。</p>'}</div></details>`;
 }
-function uiAllocateTalent(id){const before=G.pass.length;allocPass(id);if(G.pass.length>before){document.querySelector(`[data-tree="${id}"]`)?.focus();uxAnnounce(`已點亮${TREE[id].name}。`);uxAnimatePanel();}}
+function uiAllocateTalent(id){const before=G.pass.length;allocPass(id);if(G.pass.length>before){document.querySelector(`[data-tree="${id}"]`)?.focus();uxAnnounce(`已點亮${talentName(id)}。`);uxAnimatePanel();}}
 
 function warehouseMove(delta){WAREHOUSE_UI.page=Math.max(0,WAREHOUSE_UI.page+delta);renderModal();const id=delta>0?'warehouse-next':'warehouse-prev',next=document.querySelector(`[data-focus="${id}"]`);(next&&!next.disabled?next:document.querySelector(`[data-focus="${delta>0?'warehouse-prev':'warehouse-next'}"]`))?.focus();}
 
@@ -213,3 +218,29 @@ function uiCombatRefresh(){
   const c=book.combos||{};$('ui-combat-combos').textContent=`產生／消耗電荷 ${c.chargeGain||0}／${c.chargeSpent||0} 格；冷啟動 ${c.coldBursts||0} 次。`;
 }
 function uiBuyCircuitMode(id){if(!buyCircuitMode(id)){uxAnnounce('尚未解鎖、點數不足或已持有，沒有扣除資源。');return;}renderModal();uxAnnounce(`已合成${MODES[id].n}，消耗 20 電路點數。選取對應技能，再到模式卡匣裝上。`);}
+
+/* 城市流程延伸既有冒險與確認視窗，不新增頂層導覽。 */
+const CITY_UI={route:'memory',tier:1};let CITY_CONFIRM=null,TALENT_CONFIRM=null;
+function uiTalentBudget(){return `<section class="ui-section"><h3>路徑 ${G.pass.length}／${talentBudget()} · 韌體 ${firmwareCount(G.pass)}／${FIRMWARE_LIMIT}</h3>${G.run?.city||G.train?'<p>先結束城市遠征或訓練，再更動天賦。</p>':''}<p>路徑上限 ${TALENT_LIMIT} 點；等級與深度解鎖點數。最多兩個韌體，效果與代價同時生效。</p>${passiveLegacy()?'<p>目前保留舊制配置，未刪除任何節點。先預覽並免費轉換，才可進入城市遠征。</p><button class="mb pri" onclick="uiTalentPreview()">預覽免費轉換</button>':''}${G.legacyTalent&&!G.legacyMode?'<button class="mb" onclick="uiRestoreTalents()">還原改版前天賦</button>':''}<details><summary>六種韌體與代價</summary>${Object.entries(FIRMWARE).map(([id,f])=>`<p><b>${f.n}</b>：${f.d}${G.pass.includes(id)?'（已選）':''}</p>`).join('')}</details><details><summary>退回末端節點（免費）</summary><p>只可退回不會切斷其他節點的點。進行挑戰或訓練時暫不可更動。</p>${G.pass.filter(id=>connectedTalents(G.pass.filter(k=>k!==id))).map(id=>`<button class="mb" data-focus="refund-${id}" ${G.run||G.train?'disabled':''} onclick="uiRefundTalent('${id}')">退回 ${uxEsc(talentName(id))}</button>`).join('')||'<p>尚未分配節點。</p>'}</details></section>`;}
+function uiTalentPreview(){if(G.run||G.train){uxAnnounce('先結束挑戰或訓練，再轉換天賦。');return;}const plan=talentPlan(),after=calc(G.equip,plan,G.slots,G.supp,true);TALENT_CONFIRM={pass:JSON.stringify(G.pass),plan:JSON.stringify(plan),legacy:G.legacyMode,bi:G.bi||0};showOverlay(`<h2 class="uxdialog-title">預覽有限天賦配置</h2><p>保留 ${plan.length} 點／${firmwareCount(plan)} 個韌體，移出 ${G.pass.length-plan.length} 個節點；永久裝備與庫存保留。原配置另存快照，可還原。</p><p>單體直傷預估：${tFmt(G.st.dps)} → ${tFmt(after.dps)}<br>最大生命：${tFmt(G.st.life)} → ${tFmt(after.life)}</p><details><summary>預覽保留節點</summary>${plan.map(id=>`<p>${uxEsc(FIRMWARE[id]?.n||TREE[id].name)}</p>`).join('')}</details><p>轉換免費，不會自動購買或分配其他節點。城市挑戰需要使用有限預算。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="TALENT_CONFIRM=null;hideOverlay()">保留原配置</button><button class="mb pri" onclick="uiConfirmTalents()">免費轉換</button></div>`);}
+function uiConfirmTalents(){const pending=TALENT_CONFIRM;TALENT_CONFIRM=null;hideOverlay();if(!pending||pending.pass!==JSON.stringify(G.pass)||pending.plan!==JSON.stringify(talentPlan())||pending.legacy!==G.legacyMode||pending.bi!==(G.bi||0)||!convertTalents()){uxAnnounce('配置已變動或挑戰進行中，請重新預覽。');return;}renderModal();uxAnnounce('已免費轉換，原天賦快照可還原。');}
+function uiRestoreTalents(){showOverlay('<h2 class="uxdialog-title">還原改版前天賦？</h2><p>恢復改版前的天賦與三套配置，裝備與新取得道具保留。還原後暫停城市入口，可再次免費轉換。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">保留目前配置</button><button class="mb pri" onclick="hideOverlay();if(restoreLegacyTalents()){renderModal();uxAnnounce(\'已還原舊天賦。\')}">還原舊天賦</button></div>');}
+function uiRefundTalent(id){if(!refundTalent(id)){uxAnnounce('節點會切斷路徑或挑戰進行中，未退回。');return;}renderModal();uxAnnounce('已退回一點天賦，可重新分配。');}
+function uiCityConfig(key,value){if(key==='route'&&CITY_ROUTES[value])CITY_UI.route=value;if(key==='tier')CITY_UI.tier=Math.max(1,Math.min(G.city?.maxTier||1,Number(value)||1));renderModal();}
+function uiCityPolicy(id){if(!['safe','risk'].includes(id))return;G.city||=newCity();G.city.policy=id;G.dirty=true;renderModal();}
+function uiCityTarget(id){if(!LEGEND_BY[id])return;G.city||=newCity();G.city.target=id;G.dirty=true;renderModal();uxAnnounce(`追求目標：${LEGEND_BY[id].name}。已出發遠征保留原目標。`);}
+function uiCityGo(){UI_WORK.adventure='city';openModal('maps');}
+function uiCityStart(nexus=false){const route=CITY_UI.route,tier=CITY_UI.tier;if(!cityCanStart(route,tier,nexus)){uxAnnounce('尚未解鎖、憑證不足或挑戰進行中，未出發。');return;}
+ if(!nexus){cityStart(route,tier);closeModal();return;}
+ CITY_CONFIRM={route,tier,target:G.city.target};showOverlay(`<h2 class="uxdialog-title">挑戰第 ${tier} 階城市中樞？</h2><p>消耗本階三區憑證各一枚。勝利保證掉落出發時選定的核心，並解鎖下一階（最高八階）；失敗不退憑證，已完成路段碎片保留。</p><p>目標：${LEGEND_BY[G.city.target].name}</p><div class="uxactions"><button class="mb" data-initial-focus onclick="CITY_CONFIRM=null;hideOverlay()">先不挑戰</button><button class="mb pri" onclick="uiCityConfirmStart()">消耗三區憑證並出發</button></div>`);}
+function uiCityConfirmStart(){const c=CITY_CONFIRM;CITY_CONFIRM=null;hideOverlay();if(!c||c.target!==G.city.target||!cityStart(c.route,c.tier,true)){uxAnnounce('遠征狀態已變動，沒有消耗憑證。');return;}closeModal();}
+function uiCityChoose(id,stage){if(cityChoose(id,stage)){renderModal();uxAnnounce('已套用當局協定，繼續遠征。');}else uxAnnounce('路段已變動，沒有重複選路。');}
+function uiForgeCore(id){const C=G.city||(G.city=newCity()),route=cityRouteForCore(id);if(!route)return;showOverlay(`<h2 class="uxdialog-title">定向合成${LEGEND_BY[id].name}？</h2><p>消耗 ${CITY_ROUTES[route].n}的 24 枚碎片（持有 ${C.fragments[route]}）。生成等級 ${Math.max(8,G.maxDepth)}，詞綴數值隨機；特殊效果固定。加入核心收藏，不自動換裝。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">保留碎片</button><button class="mb pri" onclick="uiConfirmForge('${id}')">消耗 24 碎片合成</button></div>`);}
+function uiConfirmForge(id){hideOverlay();if(forgeTargetCore(id)){renderModal();uxAnnounce('合成完成，已加入角色的傳奇核心收藏；未改動裝備。');}else uxAnnounce('碎片不足、已持有或挑戰進行中，沒有扣款。');}
+function uiCityRunHtml(){const R=G.run,c=R.city;return `<section class="ui-section"><h3>${c.nexus?'城市中樞':CITY_ROUTES[c.route].n} · 第 ${c.tier} 階</h3><p>路段 ${c.stage}／3 · ${c.stage===3?'收尾首領':`<span id="ui-run-count">擊殺 ${Math.min(R.kills,R.need)}／${R.need}</span>`}</p><p>已存 ${c.bank} 枚${CITY_ROUTES[c.route].n}碎片；撤離或死亡仍帶回。核心目標：${LEGEND_BY[c.target].name}。</p>${c.branches.length?`<p>當局協定：${c.branches.map(id=>CITY_BRANCHES[id].n).join('、')}</p>`:''}${c.awaitChoice?`<h3>下一段走哪條路？</h3><p>效果累加，只在本次遠征生效。</p><p id="ui-city-choice-time">15 秒後依出發策略自動選路，也可立即選擇。</p><div class="ui-directory">${Object.entries(CITY_BRANCHES).map(([id,b])=>`<button data-focus="city-branch-${id}" onclick="uiCityChoose('${id}',${c.stage})"><b>${b.n}</b><span>${b.d}</span></button>`).join('')}</div>`:`<p>${c.nexus?'訊號、護盾與重裝威脅依路段輪替，首領在生命 65%／30% 時加速。':CITY_ROUTES[c.route].threat}</p>`}<button class="mb" onclick="uiLeaveMap()">撤離並帶回碎片</button></section>`;}
+function uiCityHtml(){const C=G.city||(G.city=newCity());CITY_UI.tier=Math.min(C.maxTier,CITY_UI.tier);const route=CITY_UI.route,tier=CITY_UI.tier,target=C.target,tr=cityRouteForCore(target),active=!!G.run||!!G.train;
+ return `<section class="ui-section"><h3>城市遠征</h3><p>選擇路線，追求對應核心。完成三區後挑戰中樞。</p><details><summary>遠征規則與進度</summary><p>三個路段、兩次選路、一次收尾首領。三區憑證開啟同階中樞；完成中樞推進下一階。各階憑證分開保存，沒有每日重置。</p></details>${!cityReady()?`<p>${G.maxDepth<8?'最深第 8 層解鎖。':'先到成長頁預覽並轉換有限天賦。'}</p>`:''}${C.last?`<p>${uxEsc(C.last.text)}</p>`:''}<div class="view-options" role="group" aria-label="遠征階級">${Array.from({length:C.maxTier},(_,i)=>i+1).map(t=>`<button class="mb" aria-pressed="${t===tier}" data-focus="city-tier-${t}" onclick="uiCityConfig('tier',${t})">第 ${t} 階</button>`).join('')}</div><p>第 ${tier} 階憑證：${Object.keys(CITY_ROUTES).map(id=>`${CITY_ROUTES[id].n} ${C.seals[tier]?.[id]?'✓':'未取得'}`).join('／')}</p></section><section class="ui-section"><div class="view-options" role="group" aria-label="城市路線">${Object.entries(CITY_ROUTES).map(([id,r])=>`<button class="mb" aria-pressed="${route===id}" data-focus="city-route-${id}" onclick="uiCityConfig('route','${id}')">${r.n}</button>`).join('')}</div><h3>${CITY_ROUTES[route].n}</h3><p>敵人等級 ${Math.max(8,G.maxDepth)+2*(tier-1)}；當局增益與代價結束後移除。</p><p>${CITY_ROUTES[route].d}</p><p>${CITY_ROUTES[route].threat}。掉落偏向：${CITY_ROUTES[route].cores.map(id=>LEGEND_BY[id].name).join('、')}。</p><p>碎片 ${C.fragments[route]} 枚／核心成本 24。首階完整遠征至少 14 枚，安全路線兩次即可合成一款未持有核心；收尾另有 15% 區域核心機會。</p><button class="mb pri" data-focus="city-start" ${cityCanStart(route,tier)?'':'disabled'} onclick="uiCityStart()">出發第 ${tier} 階遠征</button><button class="mb" ${cityCanStart(route,tier,true)?'':'disabled'} onclick="uiCityStart(true)">挑戰第 ${tier} 階中樞 · 消耗三區憑證</button>${active?'<p>先結束目前挑戰或訓練。</p>':''}<details><summary>離線出發策略</summary><p>出發即授權離線自動選路：${C.policy==='risk'?'帶電捷徑':'旁路校準'}。只完成當前遠征；失敗不重開、不自動消耗其他門票。前景到分岔可自行選擇，15 秒後依出發策略自動繼續。</p><div class="view-options">${[['safe','保守選路'],['risk','碎片優先']].map(([id,n])=>`<button class="mb" aria-pressed="${C.policy===id}" onclick="uiCityPolicy('${id}')">${n}</button>`).join('')}</div></details></section><section class="ui-section"><h3>追求：${LEGEND_BY[target].name}</h3><p>${LEGEND_BY[target].d}</p><p>來源：${CITY_ROUTES[tr].n}。${C.fragments[tr]}／24 枚碎片；城市中樞勝利保證掉落出發時目標。遠征中的目標不隨此處變更。</p><button class="mb" ${!active&&cityReady()&&!G.armory[target]&&C.fragments[tr]>=24?'':'disabled'} onclick="uiForgeCore('${target}')">${G.armory[target]?'已收藏 '+LEGEND_BY[target].name:'24 碎片合成 '+LEGEND_BY[target].name}</button><button class="mb" onclick="openModal('char')">查看核心收藏</button><details><summary>選擇追求核心 · 九款</summary><div class="ui-directory">${Object.entries(CITY_ROUTES).flatMap(([rid,r])=>r.cores.map(id=>`<button data-focus="city-target-${id}" aria-pressed="${target===id}" onclick="uiCityTarget('${id}')"><b>${LEGEND_BY[id].name}${G.armory[id]?' · 已收藏':''}</b><span>${r.n} · ${LEGEND_BY[id].d}</span></button>`)).join('')}</div></details></section>`;
+}
+
+let CITY_CHECKPOINT_REVEALED=null;
+function uiCityRevealCheckpoint(){const c=G.run?.city;if(modalTab!=='maps'||!c?.awaitChoice||UX_LAYERS.length)return;const key=G.run.map.id+':'+c.stage;if(CITY_CHECKPOINT_REVEALED===key)return;CITY_CHECKPOINT_REVEALED=key;requestAnimationFrame(()=>{if(modalTab!=='maps'||!G.run?.city?.awaitChoice)return;$('mbody').scrollTop=0;document.querySelector('[data-focus="city-branch-safe"]')?.focus({preventScroll:true});});}
