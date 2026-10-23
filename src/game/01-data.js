@@ -54,6 +54,38 @@ const LEGENDS = {
            { id:'R_LINK', name:'訊號滿格',     aff:['crit','inc','fire','light'], d:'擊殺怪物時，其生命的 50% 變成傷害轉給最近的敵人' },
            { id:'R_DIAL', name:'撥號連線',     aff:['cm','aps','haste','inc'],  d:'每次施放技能有 20% 機率免費再施放一次' } ],
 };
+// User supplied Y2K signature gear: kept out of ordinary rarity/pity/forge pools.
+const SIGNATURE_DROP = {normal:.00001, elite:.0001, boss:.001};
+const SIGNATURE_PENDING = new Set(['ping_clip','milo_md_strap','ping_bag_strap','null_lanyard']);
+const SIGNATURE_GEAR = Object.fromEntries([
+ ["aki_headphones", "street", "armor", "修補耳機"],
+ ["aki_baton", "street", "weapon", "改裝伸縮電棍"],
+ ["aki_chain", "street", "ring", "銀色腰鏈"],
+ ["aki_charm", "street", "ring", "插頭吊飾"],
+ ["milo_headphones", "frost", "armor", "DJ 耳機"],
+ ["milo_md", "frost", "ring", "MD 隨身聽"],
+ ["milo_disc", "frost", "weapon", "音波發射盤"],
+ ["milo_belt", "frost", "ring", "條紋腰帶布帶"],
+ ["milo_md_strap", "frost", "armor", "MD 機肩帶"],
+ ["ping_clip", "beep", "armor", "金屬髮夾"],
+ ["ping_comm", "beep", "ring", "通訊耳機"],
+ ["ping_bag", "beep", "armor", "硬殼郵差包"],
+ ["ping_launcher", "beep", "weapon", "前臂發射器"],
+ ["ping_phone", "beep", "ring", "翻蓋手機"],
+ ["ping_bag_strap", "beep", "armor", "郵差包肩帶"],
+ ["null_goggles", "volt", "armor", "防護眼鏡"],
+ ["null_controller", "volt", "weapon", "電子寵物控制器"],
+ ["null_box", "volt", "ring", "備用電池盒"],
+ ["null_pet", "volt", "ring", "浮游寵機"],
+ ["null_lanyard", "volt", "armor", "控制器頸繩"]
+].map(([model,owner,slot,label])=>{
+ const who={street:'AKI',frost:'MILO',beep:'PING',volt:'NULL'}[owner],id='Y2K_'+model.toUpperCase();
+ return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅本人可裝備。'+(SIGNATURE_PENDING.has(model)?'目前只有參考圖，暫用簡模。':'')+'小怪 0.001%、菁英 0.01%、首領 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
+}));
+for(const gear of Object.values(SIGNATURE_GEAR))LEGENDS[gear.slot].push(gear);
+const signatureOf = it => it && SIGNATURE_GEAR[it.lg] || null;
+const canUseGear = (it,character=G.char) => !signatureOf(it)||signatureOf(it).owner===character;
+
 const LEGEND_BY = {}; for (const sl in LEGENDS) for (const L of LEGENDS[sl]) LEGEND_BY[L.id] = L;
 
 const SKILLS = {
@@ -70,6 +102,21 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.42.0', d:'2026-10-24', t:[
+    '三色接線板整合：10×10 配置、拖曳電纜、同色配件加成與一鍵設好，舊構築自動遷移',
+    '四角色封面舞台與裝扮共用 3D 預覽，加入選角預覽、旋轉、試穿及清楚的能力摘要',
+    '加入二十款角色專裝收藏與獨立稀有掉落，其中十六款使用專屬模型；四款待補模型清楚標示',
+    '專裝同步呈現在戰場、角色舞台及收藏，保留倉庫、裝扮與原有存檔'
+  ] },
+  { v:'0.41.7', d:'2026-10-23', t:['撿取範圍放遠；掉落物改成慢慢飛向角色，距離愈遠飛得愈久，收益結算不變'] },
+  { v:'0.41.6', d:'2026-10-23', t:['技能頁難度循序漸進：Lv1–3 只看到一個終點，電線自動接好，沒有色塊和工具；Lv4 起解鎖色塊與配件擺放；Lv9 起顯示完整的多終點接線玩法','說明文字會提示下一個終點在幾級解鎖'] },
+  { v:'0.41.5', d:'2026-10-23', t:['接線板操作簡化：點終點直接跳出技能選單，選了就裝上並自動接好電線；點電線上的色塊直接跳出配件選單，選了就放上去；點已放的配件可以收回','修正終點格的文字與標籤重疊'] },
+  { v:'0.41.4', d:'2026-10-23', t:['接線板改成和遊戲一致的深藍紫窗口色：深藍底、凹下去的格子，電線與起點、終點用亮色，主體和背景一眼分得開','裝了技能的終點仍保留顏色：粗色框、顏色標籤和底部色條；選取改成白色外框，不再和黃色提示閃光混淆','電線經過的空配件位會在線上留一個帶色環的小孔，看得出這格還能放配件'] },
+  { v:'0.41.3', d:'2026-10-23', t:['接線板可以直接按住起點，拉到終點就接好：不用先選插槽，沒裝技能的插槽會自動補上技能，重新拉會取代舊線','接線板格子之間留出空隙，畫面不再擠在一起'] },
+  { v:'0.41.2', d:'2026-10-23', t:['接線板的電線改成一條連續的粗電纜，帶高光；沿路的配件襯墊改成低調的淡色小圓點，畫面焦點放在電線、起點與終點','接線板起點（電源）與終點（技能插槽）都直接標上文字，一眼看得出線從哪裡接到哪裡'] },
+  { v:'0.41.1', d:'2026-10-23', t:['技能頁新手引導重做：開頭一句話講明接線板是什麼，每一步只講一件事，並讓下一步要點的格子閃爍提示','第 2、3 步多了「一鍵幫我設好」按鈕，不想研究的人一按就完成','接線板下方加了圖例：電源、技能插槽、色塊各代表什麼'] },
+  { v:'0.41.0', d:'2026-10-23', t:['技能接線板全面改版：電源與插槽有紅、藍、綠三色，每個插槽只能接同色電源，線愈繞愈能經過更多色塊','配件只能放在線經過的色塊襯墊上；和線同色的襯墊效果 ×2，異色 ×1，不再限制線長與配件數量','拖線更順：點電源或插槽就會沿路補線，也可以直接把配件拖到襯墊上，或按「自動配置」一鍵擺放','接線板換上天藍 Y2K 風格：粗黑邊、發光色塊與彩色電路線','舊存檔會自動轉換：技能保留並自動接線，配件重新放到襯墊上，戰力可能略有變動'] },
+  { v:'0.40.2',d:'2026-10-23',t:['角色總覽改成街頭角色封面：四人獨立背景、大型 3D 預覽、三件隨身裝備與能力摘要','總覽與裝扮共用展示台，選角先預覽再使用；試穿、取消與金幣不足有清楚提示','加入角色旋轉按鈕、實際外觀縮圖及預覽失敗重試，保留原藍紫窗口與角色待機']},
   { v:'0.40.1', d:'2026-10-23', t:['自動換裝現在可以換掉暗金核心：新裝備戰力高出 35% 才會換，核心仍留在收藏，可一鍵換回','各頁小標題（新手任務、目標、圖鑑分類）文字改成白色，不再暗沉難讀','還原按鈕與輸入欄的斜面藍紫風格，不再使用扁平白色按鈕'] },
   { v:'0.40.0', d:'2026-10-23', t:['新增「排行榜」（更多 → 排行榜），先放了幾筆標示「示範」的假排名讓你看版面：自動記下最深層數與無限之塔最高層，連同當時的完整構築','可以隨時記錄目前構築，點開能看到技能、配件接線、裝備與遺物','構築可以複製成構築碼傳給朋友，貼上就能觀摩對方怎麼砌','目前只存在這台瀏覽器，全球榜之後開放'] },
   { v:'0.39.25', d:'2026-10-23', t:['角色頁的小手機改成等距視角的低解像度 3D 模型，慢速自轉，不再有誇張的透視'] },

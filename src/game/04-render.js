@@ -140,19 +140,18 @@ function buildHeroAccessories(B,cos){
  if(cos.accessoryStyle==='pager'){mk(new T3.BoxGeometry(2.8,2.1,1),dark,4,1,3.5,B.torso);mk(new T3.BoxGeometry(1.8,.8,.15),screen,4,1.3,4.1,B.torso);}
  if(cos.accessoryStyle==='charm'){mk(new T3.TorusGeometry(1.8,.13,4,10),silver,0,6.8,3.3,B.torso).scale.y=1.3;mk(new T3.OctahedronGeometry(.7,0),screen,0,4.5,3.8,B.torso);}
 }
-// Y2K 城市武器（依武器階級）：0 摺疊傘、1 鋁製球棒、2 霓虹光管、3 雷射光劍；稀有度決定主色與發光
+// 普通裝備先用簡模；專裝由 equipment-render.js 掛到角色骨架。
 const WOV = new URLSearchParams(location.search);   // 測試用：?wt=0..3&wr=0..3 直接指定武器外觀
-function buildWeapon(sw, wt, wr){   // 模型來自 Blender（tools/model/gen_weapons.py）；這裡只負責依稀有度換色與發光
-  const C = [['#e8eef5', '#cfdcf0'], ['#8fd0ff', '#4aa8ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff5a8a']][wr], glow = wr >= 2;
-  const lit = (c, k = .5) => m3(c, { emissive:c, emissiveIntensity:k });
-  const mf = hex => {
-    if (wt === 2) return hex === C[1] ? lit(C[1], .9) : hex === C[0] ? basic(C[0], .25) : m3(hex);
-    if (wt === 3) return hex === C[1] ? basic(C[1], .45) : hex === '#ffffff' ? lit('#ffffff', .8) : m3(hex);
-    if (glow && ((wt === 0 && hex === C[1]) || (wt === 1 && hex === C[0]))) return lit(hex, .3);
-    return m3(hex);
-  };
-  sw.add(modelGroup(WEAPON_MODEL['w' + wt], { '#c0':C[0], '#c1':C[1], '#g0':C[1] }, mf));
-  if (wr === 3) mk(ico(5, 1), basic('#ff9a3c', .15), 0, 6, 0, sw);
+function buildSimpleEquipment(slot,tier=0,rarity=0){
+ const g=new T3.Group(),col=['#bbc8d2','#8bbcd5','#d5bf80','#c99174'][rarity]||'#bbc8d2',shell=m3(col),dark=m3('#34435a');g.userData.placeholder=slot;
+ if(slot==='weapon'){mk(new T3.CylinderGeometry(.45,.45,2,6),dark,0,0,0,g);mk(new T3.BoxGeometry(1.2,5+tier,.8),shell,0,3,0,g);mk(new T3.BoxGeometry(.8,.5,.9),m3('#81cbd1'),0,5,0,g);}
+ else if(slot==='armor'){mk(new T3.BoxGeometry(3.2,3.5,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(1.4,.7,1),dark,0,.5,0,g);}
+ else{mk(new T3.BoxGeometry(2.4,1.8,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(1.5,.7,.1),dark,0,.2,.45,g);}
+ return g;
+}
+
+function buildWeapon(sw, wt, wr){
+  sw.add(buildSimpleEquipment('weapon',wt,wr));
 }
 function buildGrave(){
   const g = new T3.Group();
@@ -407,6 +406,7 @@ function buildDrop(d){
   else if (d.kind === 'map'){ mk(cylG(.9, .9, 4.4, 6), m3('#fff0c0'), 0, 1.6, 0, item).rotation.z = Math.PI/2; for (const sx of [-2.3, 2.3]) mk(ico(.7, 0), m3('#ffd35a'), sx, 1.6, 0, item); mk(ico(.7, 0), m3(BIOMES[d.map.biome].portal, { emissive:col, emissiveIntensity:.4 }), 0, 2.6, 0, item); }
   else if(d.kind==='gold'){mk(cylG(1.4,1.4,.6,6),m3('#e4ba58'),0,1,0,item).rotation.z=.2;}
   else if(d.kind==='chip'){mk(new T3.BoxGeometry(2.8,.5,2.8),m3('#62c8ce'),0,1,0,item);mk(new T3.BoxGeometry(1.3,.6,1.3),m3('#24364d'),0,1.5,0,item);}
+  else if (signatureOf(d.it)&&!signatureOf(d.it).pending&&typeof equipmentModel==='function'){const model=equipmentModel(signatureOf(d.it).model);if(model){model.scale.setScalar(5);model.position.y=3;item.add(model);}}
   else if (d.it.slot === 'weapon'){ const w = new T3.Group(); item.add(w); mk(new T3.BoxGeometry(.9, 5.6, .35), m3(col, { emissive:col, emissiveIntensity:.15 }), 0, 3.8, 0, w); mk(cylG(.35, .35, 2, 5), m3('#7a5a8a'), 0, 0, 0, w); mk(new T3.BoxGeometry(2.4, .5, .8), m3('#ffd35a'), 0, 1, 0, w); w.rotation.z = Math.PI/3; w.position.y = 1.6; }
   else if (d.it.slot === 'armor'){ mk(cylG(1.5, 2.1, 3.2, 7), m3(col, { emissive:col, emissiveIntensity:.15 }), 0, 2, 0, item); for (const sx of [-1, 1]) mk(ico(1, 0), m3(col), sx*2, 3.3, 0, item); }
   else { mk(new T3.TorusGeometry(1.4, .45, 5, 8), m3('#ffe27a'), 0, 2, 0, item).rotation.x = Math.PI/2.6; mk(ico(.75, 0), m3(col, { emissive:col, emissiveIntensity:.35 }), 0, 3.5, 0, item); }
@@ -561,7 +561,7 @@ function updateFx(){
   const sph=geo('fxs',()=>ico(1,1)),disc=geo('fxd',()=>new T3.CircleGeometry(1,20).rotateX(-Math.PI/2)),ring=geo('fxr',()=>new T3.RingGeometry(.83,1,24).rotateX(-Math.PI/2)),box=geo('fxf',()=>new T3.BoxGeometry(1,.25,1));
   const warnings=G.mons.filter(m=>!m.dead&&m.warning&&!(m.frozen>0)).map(m=>({k:'danger',...m.warning,t:1-m.warning.t/m.warning.duration,col:m.boss?'#c45b64':'#c87e48'}));
   for(const e of warnings.concat(G.fx)){const fade=1-e.t;
-    if(e.k==='pickup'){const x=tLerp(e.x,e.x2,ease(e.t)),y=tLerp(e.y,e.y2,ease(e.t));add(sph,e.col,1-e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,.8);continue;}
+    if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}
     if(e.k==='danger'){
       if(e.owner&&(e.owner.dead||!e.owner.warning||e.owner.frozen>0))continue;
       if(e.shape==='line'){const dx=e.x2-e.x,dy=e.y2-e.y,len=Math.hypot(dx,dy),o=add(box,e.col,.28,e.x+dx/2,e.y+dy/2,BZ+.45);o.scale.set(len,.3,e.radius*2);o.rotation.y=-Math.atan2(dy,dx);}
@@ -640,7 +640,7 @@ function scene(){
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
   pu.glows.forEach(gl => gl.scale.setScalar(1 + (pulse ? .35*Math.sin(pulse.t*3.14) : 0))); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
   // 主角
-  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos)].join();
+  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, ...Object.values(G.equip).map(it=>it?[it.lg||'',it.r,aTier(it)].join(':'):''), G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos)].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero){if(typeof characterDispose==='function')characterDispose(R3.hero);R3.world.remove(R3.hero);} R3.hero = G.h.dead>0&&G.h.dead<=2.15 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 怪物與掉落物

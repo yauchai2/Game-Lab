@@ -1,0 +1,18 @@
+{
+  "checks": [
+    "one live model, single identity and three equipment slots",
+    "all four character themes and full model bounds",
+    "preview and cancel never change active character or money",
+    "confirmed character change and locked reason",
+    "trial/cancel preserve ownership, stats and equipment",
+    "purchase pays once and existing thumbnails match cosmetic categories",
+    "button rotation and pointer cancellation",
+    "responsive overview and wardrobe have no overflow",
+    "long name, escaped nickname and empty equipment remain operable",
+    "reduced motion stops preview and retains rotation controls",
+    "scrolled-out stage pauses and model error can recover",
+    "explicit battle preference is retained across role tabs",
+    "one phone entry still opens and returns to character"
+  ],
+  "errors": []
+}

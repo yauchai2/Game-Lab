@@ -9,7 +9,7 @@ const ICON_IDX=ART_SHEETS.icons.ids,SK_IDX=ART_SHEETS.skills.ids;
 function spr(name,size=30){return uiSprite('icons',name,size);}
 function sico(id,size=30){return uiSprite('skills',id,size);}
 const SHEETS={relic:['relics'],legend:['legends'],badge:['badges']};
-function xico(kind,id,size=24){if(kind==='legend'&&typeof icon3dLegendUrl==='function'){const url=icon3dLegendUrl(id);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
+function xico(kind,id,size=24){if(kind==='legend'&&typeof EQUIPMENT_ICONS!=='undefined'&&SIGNATURE_GEAR[id]&&EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model])return `<img src="${EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model]}" width="${size}" height="${size}" alt="" style="vertical-align:middle;margin-right:4px;object-fit:contain;image-rendering:pixelated">`;if(kind==='legend'&&typeof icon3dLegendUrl==='function'){const url=icon3dLegendUrl(id);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
 function eqico(slot,r,size=32,it){
   if(typeof icon3dUrl==='function'){const url=icon3dUrl(slot,it&&typeof aTier==='function'?aTier(it):0,r|0);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}
   return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
@@ -57,7 +57,7 @@ function openModal(tab){ modalTabPrev = modalTab; modalTab = tab || modalTab; ma
 const MOB = () => document.body.classList.contains('m');   // 手機直式：上面戰鬥畫面，下面固定的分頁面板（彈窗變成面板）
 const DESK = () => document.body.classList.contains('d');   // 桌機寬螢幕：左邊角色與紀錄、中間戰鬥、右邊常駐分頁面板
 function closeModal(){ if(MOB()||DESK()){renderModal(true);return;} $('modal').hidden=true; }
-function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); setTimeout(() => { if (typeof dressMount === 'function' && modalTab === 'dress') dressMount(); }, 0);
+function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); setTimeout(() => { if (typeof dressMount === 'function' && ['char','dress'].includes(modalTab)) dressMount(); }, 0);
   if ($('modal').hidden) return;
   $('mtabs').innerHTML=uiNavHtml(); uiTitle();
   const settings=modalTab==='settings';if(settings)uiSyncSettings(); $('uisettings').hidden=!settings; $('mmenu').hidden=false; $('mbody').hidden=settings;
@@ -225,7 +225,7 @@ const HELP = {
 const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
 const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
 // 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
-const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(modalTab==='skills')return G.autoFold===false?2:3;if(['craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
+const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(modalTab==='skills')return G.autoFold===false?2:3;if(['char','dress','craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
 const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
@@ -244,7 +244,7 @@ function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未�
 function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 const qm = k => `<button aria-label="${HELP[k] ? HELP[k][0] : '說明'}" class="qm" onclick="showHelp('${k}')">?</button>`;
 function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; uxOpenDialog(o, o.querySelector('h2,b,.mct')?.textContent || '遊戲提示', hideOverlay); }
-function hideOverlay(){ UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
+function hideOverlay(){ UI_CHARACTER_PICK=null;UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
 const offYield = fn => { if (typeof MessageChannel === 'function'){ const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); fn(); }; c.port2.postMessage(0); } else setTimeout(fn, 0); };
 const OFF_WINDOW = 600;   // 離線只精確模擬前 10 分鐘，其餘用這段的收益率放大
@@ -257,6 +257,8 @@ function offlineBulk(R, f, w){
   if (w.xp > 0) gainXp(w.xp*f);
   const hit = p => { let n = 0; for (let i = 0; i < K; i++) if (Math.random() < p) n++; return n; };
   const nItems = Math.min(800, hit(HORDE.drop*(1 + q)*(offPen() ? .25 : 1)));
+  // Bulk kills use the conservative normal-monster rate; never multiply an observed rare item.
+  for(let i=hit(SIGNATURE_DROP.normal);i>0;i--){const gear=tPick(Object.values(SIGNATURE_GEAR));pickup({kind:'item',it:makeItem(gear.slot,3,d,gear.id)});}
   for (let i = 0; i < nItems; i++) pickup({ kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(false), d) });
   for (let i = hit(.012); i > 0; i--) pickup({ kind:'cart', id:tPick(Object.keys(MODES)) });
   for (let i = hit(.025); i > 0; i--) pickup({ kind:'gem', id:tPick(Object.keys(SUPPS)) });

@@ -1,0 +1,9 @@
+{
+  "combinations": 16,
+  "poses": 1728,
+  "actions": 9,
+  "originalTriangles": 14000,
+  "replacedTriangles": 11836,
+  "errors": [],
+  "visualReview": "Snapshots captured for human inspection; finite bounds do not prove collision-free geometry."
+}
