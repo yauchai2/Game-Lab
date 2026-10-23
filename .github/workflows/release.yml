@@ -1,0 +1,40 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag，例如 v0.38.4'
+        required: true
+      title:
+        description: 'Release 標題'
+        required: true
+      target:
+        description: '要打 Tag 的 commit（完整 SHA）'
+        required: true
+      notes_file:
+        description: '說明檔路徑，例如 docs/release-notes/v0.38.4.md'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target }}
+          fetch-depth: 1
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          TITLE: ${{ inputs.title }}
+          TARGET: ${{ inputs.target }}
+          NOTES: ${{ inputs.notes_file }}
+        run: |
+          test -f "$NOTES"
+          if gh release view "$TAG" >/dev/null 2>&1; then echo "Release $TAG already exists"; exit 1; fi
+          gh release create "$TAG" --target "$TARGET" --title "$TITLE" --notes-file "$NOTES"
