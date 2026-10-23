@@ -68,7 +68,7 @@ const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a
 const GEM_IDX=ART_SHEETS.gems.ids;
 const gemIco=(id,size=22)=>uiSprite('gems',id,size,'','i');
 function buildBar(){
-  return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><p class="uxmeta">切換時保存目前配置；裝備記住同一實體，改機後各引用同步。</p><button class="mb" data-focus="build-save" onclick="uiSaveBuild()">更新目前構築</button><p class="uxmeta">${G.builds[G.bi||0]?.equipment?'已記住角色與三件裝備，引用物品受回收保護。':'此配置尚未記住裝備；可按更新保存。'}</p>${uiBuildGearHtml()}${uiPolicyHtml()}</section>`;
+  return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><button class="mb" data-focus="build-save" title="${G.builds[G.bi||0]?.equipment?'已記住角色與三件裝備':'此配置尚未記住裝備'}；切換構築時會自動保存目前配置" onclick="uiSaveBuild()">${G.builds[G.bi||0]?.equipment?'更新構築':'儲存構築'}</button>${uiBuildGearHtml()}${uiPolicyHtml()}</section>`;
 }
 function dpsBar(){
   const sk = G.st.sk || {}, ids = Object.keys(sk), tot = ids.reduce((a, id) => a+sk[id].direct*sk[id].estimatedCasts, 0) || 1;
@@ -110,9 +110,9 @@ function treeHtml0(){
   const pts = passPoints(); let nodes = '';
   for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = canAllocateTalent(id), x = n.x.toFixed(1), y = n.y.toFixed(1), r = n.big ? 8 : 6;
     nodes += `<g class="tn ${got ? 'got' : open ? 'open' : 'locked'}" data-tree="${id}" role="button" tabindex="${open?0:-1}" aria-disabled="${!open}" aria-label="${uxEsc(talentName(id))}，${got?'已點亮':open?'可點亮':'未連到或點數不足'}" onfocus="treeInfo('${id}')" onmouseover="treeInfo('${id}')" onclick="treeInfo('${id}');allocPass('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();allocPass('${id}')}" style="cursor:${open ? 'pointer' : 'default'}"><title>${talentName(id)}</title><circle cx="${x}" cy="${y}" r="${r + 2}" fill="transparent"/>${open ? `<rect class="tnb" x="${(+x - r).toFixed(1)}" y="${(+y - r).toFixed(1)}" width="${2*r}" height="${2*r}" fill="none" stroke="#2b2552" stroke-width="1.6" shape-rendering="crispEdges"/>` : ''}</g>`; }
-  return `${uiTalentBudget()}<div class="hint">可用天賦點：<b>${pts}</b>（最多 36 點，最多兩個韌體）。點亮與已點亮節點相連的點。</div>
+  return `${uiTalentBudget()}<div class="hint">可用天賦點：<b>${pts}</b></div>
     <div class="treebox"><img class="treecv" alt="" src="${treePixelArt()}"><svg viewBox="-125 -125 250 250" class="tree" role="group" aria-label="天賦盤">${nodes}</svg></div>${treeAvailableHtml()}
-    <div id="tinfo" class="hint">滑過節點看效果。<span style="color:#e2584d">紅：力量</span> <span style="color:#3f86e6">藍：智慧</span> <span style="color:#3bb552">綠：敏捷</span></div>
+    <div id="tinfo" class="hint"><span style="color:#e2584d">紅：力量</span> <span style="color:#3f86e6">藍：智慧</span> <span style="color:#3bb552">綠：敏捷</span></div>
     <button class="mb" ${G.run?.city||G.train?'disabled':''} onclick="uiRespec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
 }
 function treeInfo(id){ const n = TREE[id], el = $('tinfo'); if (el) el.textContent = id === 'S' ? '起點' : `${talentName(id)}${nodeOpen(id) ? '' : G.pass.includes(id) ? '（已點亮）' : '（未連到）'}`; }
