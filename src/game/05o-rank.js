@@ -18,7 +18,7 @@ function rankClean(o){
     r.equip.push({ slot:e.slot, name:rankStr(e.name, 24), r:rankNum(e.r, 0, 3), il:rankNum(e.il, 0, 999), lg:rankStr(e.lg, 16), lines:(Array.isArray(e.lines) ? e.lines : []).slice(0, 8).map(l => rankStr(l, 40)) });
   }
   r.relics = (Array.isArray(o.relics) ? o.relics : []).filter(id => RELICS[id]).slice(0, 20);
-  const b = o.board;
+  const b = o.board; r.board.v = b && b.v === 5 ? 5 : 4;
   if (b && Array.isArray(b.pieces)){
     for (const p of b.pieces.slice(0, 60)){
       if (!p || (p.kind !== 'active' && p.kind !== 'support')) continue;
@@ -35,9 +35,11 @@ function rankClean(o){
 
 /* 示範排名：讓榜單一開始就有東西可以看。不是真人，不存檔、不能刪、不會上傳；有真實紀錄後會依分數混排 */
 function rankDemoBoard(rows){
-  const pieces = [], wires = [];
-  rows.forEach(([skill, sup], i) => { const y = GridLab.SOCKS[i][1]; pieces.push({ kind:'active', key:skill, x:GridLab.W - 1, y }); sup.forEach((k, j) => pieces.push({ kind:'support', key:k, x:1 + j, y })); wires.push({ sock:i, cells:[1, 2, 3, 4, 5, 6].map(x => [x, y]) }); });
-  return { pieces, wires };
+  const b = GridLab.createBoard();
+  rows.forEach(([skill], i) => { GridLab.place(b, 'active', skill, GridLab.SOCKS[i][0], GridLab.SOCKS[i][1], 0, { noWire:true }); });
+  GridLab.autoWireAll(b, 30);
+  rows.forEach(([, sup], i) => { const a = b.pieces.find(p => p.kind === 'active' && GridLab.sockIndex(p) === i); if (a) GridLab.dress(b, i, sup, 30); });
+  return { v:5, pieces:b.pieces.map(p => ({ kind:p.kind, key:p.key, x:p.x, y:p.y })), wires:b.wires };
 }
 function rankDemos(){
   if (RANK.demos) return RANK.demos;
@@ -71,7 +73,7 @@ function rankSave(){ try { localStorage.setItem(RANK_KEY, JSON.stringify({ v:1, 
 function rankSnap(cat, score){
   const equip = Object.keys(SLOTN).map(s => { const it = G.equip[s]; return it ? { slot:s, name:it.name, r:it.r, il:it.il, lg:it.lg || '', lines:itemLines(it).map(l => l.t) } : null; }).filter(Boolean);
   return rankClean({ cat, score, t:Date.now(), name:G.heroName || '阿街', char:G.char, lvl:G.lvl, depth:G.maxDepth, tower:G.towerBest || 0, dps:G.st.dps, life:G.st.life, crit:G.st.crit,
-    equip, relics:Object.keys(G.relics || {}), pass:(G.pass || []).length, ver:VERSION(), board:{ pieces:G.board.pieces, wires:G.board.wires } });
+    equip, relics:Object.keys(G.relics || {}), pass:(G.pass || []).length, ver:VERSION(), board:{ v:5, pieces:G.board.pieces, wires:G.board.wires } });
 }
 function rankAdd(r){
   RANK.recs.unshift(r);
@@ -105,21 +107,22 @@ function rankImport(text){
 }
 
 function rankMini(b){
-  const W = GridLab.W, H = GridLab.H, pt = (x, y) => `${(x + .5).toFixed(2)},${(y + .5).toFixed(2)}`;
-  const act = {}; for (const p of b.pieces) if (p.kind === 'active') act[p.x + ',' + p.y] = p;
+  if (b.v !== 5) return '';
+  const W = GridLab.W, H = GridLab.H, pt = (x, y) => `${(x + .5).toFixed(2)},${(y + .5).toFixed(2)}`, bd = { pieces:b.pieces, wires:b.wires };
   let svg = '';
-  for (const w of b.wires){ if (!w.cells.length) continue; const pts = [pt(0, w.cells[0][1]), ...w.cells.map(c => pt(c[0], c[1]))]; if (GridLab.connected(b, w.sock)) pts.push(pt(W - 1, GridLab.SOCKS[w.sock][1])); svg += `<polyline points="${pts.join(' ')}"/>`; }
+  for (const w of b.wires){ if (!w.cells.length || !GridLab.SRCS[w.sock]) continue; const s = GridLab.SRCS[w.sock], k = GridLab.SOCKS[w.sock], pts = [pt(s[0], s[1]), ...w.cells.map(c => pt(c[0], c[1]))]; if (GridLab.connected(bd, w.sock)) pts.push(pt(k[0], k[1])); svg += `<polyline class="c-${GridLab.SOCK_COL[w.sock]}" points="${pts.join(' ')}"/>`; }
   let cells = '';
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++){
-    const sp = b.pieces.find(p => p.x === x && p.y === y);
-    cells += `<i class="${sp ? (sp.kind === 'active' ? 'sk' : 'su') : ''}">${sp ? (sp.kind === 'active' ? sico(sp.key, 16) : uxEsc(SUPPS[sp.key].n.slice(0, 2))) : ''}</i>`;
+    const sp = b.pieces.find(p => p.x === x && p.y === y), pc = GridLab.padColor(x, y);
+    cells += `<i class="${sp ? (sp.kind === 'active' ? 'sk' : 'su') : pc ? 'pd p' + pc : ''}">${sp ? (sp.kind === 'active' ? sico(sp.key, 12) : uxEsc(SUPPS[sp.key].n.slice(0, 1))) : ''}</i>`;
   }
   return `<div class="rk-board" aria-label="接線板"><div class="rk-cells">${cells}</div><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${svg}</svg></div>`;
 }
 function rankDetail(r){
   const eq = r.equip.map(e => `<li class="r${e.r}"><b>${uxEsc(SLOTN[e.slot])}</b> ${uxEsc(e.name)}<small>Lv. ${e.il}${e.lg ? ' · 暗金' : ''}</small>${e.lines.length ? `<em>${e.lines.slice(0, 4).map(uxEsc).join('　')}</em>` : ''}</li>`).join('') || '<li>沒有裝備紀錄</li>';
-  const sk = r.board.pieces.filter(p => p.kind === 'active').sort((a, b) => a.y - b.y).map(p => {
-    const sock = GridLab.sockAtY(p.y), w = r.board.wires.find(x => x.sock === sock), sup = w ? w.cells.map(c => r.board.pieces.find(q => q.kind === 'support' && q.x === c[0] && q.y === c[1])).filter(Boolean) : [];
+  const rsock = p => { const s = GridLab.sockAt(p.x, p.y); return s >= 0 ? s : p.x === 7 ? [3, 4, 2, 5, 1, 6].indexOf(p.y) : -1; };
+  const sk = r.board.pieces.filter(p => p.kind === 'active').sort((a, b) => rsock(a) - rsock(b)).map(p => {
+    const sock = rsock(p), w = r.board.wires.find(x => x.sock === sock), sup = w ? w.cells.map(c => r.board.pieces.find(q => q.kind === 'support' && q.x === c[0] && q.y === c[1])).filter(Boolean) : [];
     return `<li>${sico(p.key, 20)}<b>${uxEsc(SKILLS[p.key].n)}</b><span>${sup.length ? sup.map(s => uxEsc(SUPPS[s.key].n)).join('、') : '沒有配件'}</span></li>`;
   }).join('') || '<li>沒有技能紀錄</li>';
   const code = rankCode(r), del = r.demo ? '' : `<button class="mb" onclick="rankDel('${r.id}')">刪除這筆</button>`, pic = icon3dPortraitUrl(r.char);
@@ -163,9 +166,9 @@ rankLoad();
 .rk-list li{display:flex;align-items:center;gap:8px;padding:6px 8px;background:#f4f5ff;border:2px solid #fff;outline:1px solid #8c9bd0}.rk-list li span{color:#5c6a8e;font-size:12px}
 .rk-eq li{padding:6px 8px;background:#f4f5ff;border:2px solid #fff;outline:1px solid #8c9bd0;display:grid;gap:2px}.rk-eq small{color:#5c6a8e}.rk-eq em{font-style:normal;font-size:12px;color:#33407f}
 .rk-eq li.r1 b{color:#2a76d6}.rk-eq li.r2 b{color:#b8860b}.rk-eq li.r3 b{color:#d0522e}
-.rk-board{position:relative;width:min(100%,240px);aspect-ratio:1;margin:8px auto 0;background:#bfe3c7;border:3px solid #fff;outline:1px solid #5c6a8e}
-.rk-cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr)}
-.rk-cells i{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:9px;color:#1d2552;border:1px solid #9cc7a6;overflow:hidden}.rk-cells i.sk{background:#33407f}.rk-cells i.su{background:#ffe45c}
-.rk-board svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.rk-board polyline{fill:none;stroke:#d9892b;stroke-width:.16;stroke-linejoin:round;stroke-linecap:round}
+.rk-board{position:relative;width:min(100%,240px);aspect-ratio:1;margin:8px auto 0;background:linear-gradient(#69c4ff,#d8f1ff);border:3px solid #fff;outline:1px solid #5c6a8e}
+.rk-cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(10,1fr)}
+.rk-cells i{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:8px;color:#1d2552;border:1px solid #ffffff88;overflow:hidden}.rk-cells i.sk{background:#33407f}.rk-cells i.su{background:#ffe45c}.rk-cells i.pr{background:#ff6a3d88}.rk-cells i.pb{background:#3f86ff88}.rk-cells i.pg{background:#35d49388}
+.rk-board svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.rk-board polyline{fill:none;stroke:#14204f;stroke-width:.3;stroke-linejoin:round;stroke-linecap:round}.rk-board polyline.c-r{stroke:#ff5a3c}.rk-board polyline.c-b{stroke:#3c7dff}.rk-board polyline.c-g{stroke:#2fd08a}.rk-board polyline{stroke-width:.22;stroke-linejoin:round;stroke-linecap:round}
 .rk-code{width:100%;box-sizing:border-box;margin:0 0 8px;padding:6px;font:12px/1.4 monospace;color:#1d2552;background:#f4f5ff;border:2px solid #8c9bd0;border-radius:0;resize:vertical}
 `; document.head.appendChild(st); })();

@@ -14,8 +14,8 @@ let {p,c}=await page();
 await check('mobile role cards and no overflow',async()=>{const r=await p.locator('.char-card').boundingBox();assert(r.width>340);const btn=await p.getByRole('button',{name:/阿街.*✓/}).boundingBox();assert(btn.width>100);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth),390);await p.locator('.char-card').scrollIntoViewIfNeeded();await shot(p,'01-mobile-role');});
 await p.locator('[data-focus="nav-skills"]').click();
 await check('touch placement on a wire, hold card and cancellation',async()=>{
- await p.evaluate(()=>{G.lvl=Math.max(G.lvl,12);G.gems.HASTE=Math.max(G.gems.HASTE||0,3);recalc();wireAuto();renderModal();});
- const cell=await p.evaluate(()=>{const B=G.board;for(const w of B.wires)for(const c of w.cells)if(!B.pieces.some(q=>q.kind==='support'&&q.x===c[0]&&q.y===c[1])&&!GridLab.isRock(c[0],c[1]))return c;});
+ await p.evaluate(()=>{G.lvl=Math.max(G.lvl,12);G.gems.HASTE=Math.max(G.gems.HASTE||0,3);recalc();wireAuto();{const sp=G.board.pieces.find(q=>q.kind==='support');if(sp)GridLab.remove(G.board,sp.id);}recalc();renderModal();});
+ const cell=await p.evaluate(()=>{const B=G.board;for(const w of B.wires)for(const c of w.cells)if(!B.pieces.some(q=>q.kind==='support'&&q.x===c[0]&&q.y===c[1])&&GridLab.isPad(c[0],c[1]))return c;});
  assert(cell);
  const before=await p.evaluate(()=>({n:gemFree('HASTE'),pieces:G.board.pieces.length}));
  await p.locator('[data-focus="support-HASTE"]').click();assert(await p.locator('.wsel .uxeffect').isVisible());

@@ -1,14 +1,17 @@
 // 接線板：純邏輯，不依賴遊戲其他檔案。設計見 docs/wire-board-design.md
-// 左邊是電源匯流排，右邊是技能插槽；玩家從電源拉一條線到插槽，線經過的輔助配件才會強化那個技能。
+// 顏色接線板（B3）：電源在左邊與下邊、技能插槽在上邊與右邊，每個插槽只接同色電源；線經過的色塊襯墊才放得下輔助配件，
+// 同色襯墊 ×2、其他顏色 ×1。
 (function (root) {
-  const W = 8, H = 8;                                          // 第 0 欄電源、第 7 欄插槽，中間 6 欄是可走線的格子
-  const SOCKS = [[7, 3], [7, 4], [7, 2], [7, 5], [7, 1], [7, 6]];   // 插槽位置，依解鎖順序排列
+  const W = 10, H = 10;                                        // 邊上一圈是電源與插槽，中間 8×8 是可走線的格子
+  const SOCKS = [[9, 4], [3, 0], [9, 2], [6, 0], [9, 7], [1, 0]];   // 插槽位置，依解鎖順序排列
+  const SRCS = [[5, 9], [0, 4], [3, 9], [0, 7], [7, 9], [0, 2]];    // 每個插槽專屬的電源（同一組的位置不會交叉）
+  const SOCK_COL = ['r', 'b', 'g', 'r', 'b', 'g'];               // 插槽與它的電源顏色：紅、藍、綠
   const SOCK_LV = [1, 4, 9, 15, 22, 30];                       // 與 01-data.js 的 SLOT_LV 相同；這裡獨立複製一份
-  const ROCKS = [[3, 1], [4, 6], [5, 0], [2, 7]];      // 壞軌：固定不變，不能放配件也不能走線
-  const BOOSTS = [[2, 4], [5, 3], [3, 2], [4, 5]];             // 強化格：放在這裡的配件效果 ×1.4
-  const BOOST_LV = 6;
+  const OLD_SOCKS = [[7, 3], [7, 4], [7, 2], [7, 5], [7, 1], [7, 6]];   // 舊版（0.33–0.40）插槽位置，只用來搬舊存檔
+  const ROCKS = [[4, 4], [5, 5], [3, 6]];                              // 壞軌：固定不變，不能放配件也不能走線
+  const PADS = [[7, 4, 'r'], [1, 4, 'b'], [8, 4, 'g'], [6, 3, 'r'], [6, 8, 'b'], [5, 1, 'g'], [8, 6, 'r'], [4, 3, 'b'], [2, 7, 'g'], [8, 3, 'r'], [8, 8, 'b'], [3, 7, 'g'], [7, 1, 'r'], [2, 4, 'b'], [3, 2, 'g'], [1, 2, 'r'], [2, 5, 'b'], [6, 1, 'g'], [7, 7, 'r'], [5, 6, 'b'], [3, 1, 'g'], [4, 5, 'r'], [6, 4, 'b'], [8, 7, 'g'], [3, 3, 'r'], [3, 5, 'b'], [4, 2, 'g']];  // 色塊襯墊 [x, y, 顏色]：配件只能放在襯墊上
+  const PAD_MATCH = 2;                                         // 配件顏色與線同色的襯墊 ×2
   const TIER_MUL = [1, 1.5, 2];                          // 配件階級：Ⅰ、Ⅱ、Ⅲ
-  const ADJ_BONUS = 1.2, ADJ_CAP = 1.6, BOOST_MUL = 1.4;
 
   // 主動機件：mult、cd 與 src/game/01-data.js 的 SKILLS 相同；原型獨立，所以在這裡複製一份
   const ACTIVES = {
@@ -67,20 +70,24 @@
   const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
   const same = (a, b) => a[0] === b[0] && a[1] === b[1];
   const has = (list, x, y) => list.some(c => c[0] === x && c[1] === y);
-  const isInner = (x, y) => x >= 1 && x <= W - 2 && y >= 0 && y < H;
+  const isInner = (x, y) => x >= 1 && x <= W - 2 && y >= 1 && y <= H - 2;
   const isRock = (x, y) => has(ROCKS, x, y);
-  const isBoost = (x, y) => has(BOOSTS, x, y);
-  const sockAtY = y => SOCKS.findIndex(s => s[1] === y);
-  const sockIndex = p => (p.x === W - 1 ? sockAtY(p.y) : -1);
+  const padAt = (x, y) => PADS.find(p => p[0] === x && p[1] === y);
+  const isPad = (x, y) => !!padAt(x, y);
+  const padColor = (x, y) => { const p = padAt(x, y); return p ? p[2] : null; };
+  const sockAt = (x, y) => SOCKS.findIndex(s => s[0] === x && s[1] === y);
+  const sockIndex = p => sockAt(p.x, p.y);
+  const startOf = i => { const [x, y] = SRCS[i]; return x === 0 ? [1, y] : [x, H - 2]; };   // 電源旁邊、線的第一格
+  const endOf = i => { const [x, y] = SOCKS[i]; return x === W - 1 ? [W - 2, y] : [x, 1]; };   // 插槽旁邊、線的最後一格
   const levelSockets = lvl => SOCK_LV.filter(l => lvl >= l).length;
   const unlockedCount = (b, lvl) => Math.min(SOCKS.length, Math.max(levelSockets(lvl), (b && b.extra) || 0));
-  const gemCap = lvl => lvl >= 15 ? 5 : lvl >= 9 ? 4 : lvl >= 4 ? 3 : 2;   // 一條線最多生效的配件數
-  const wireMax = (b, lvl) => 6*unlockedCount(b, lvl) + 4 + 2*Math.floor(lvl/10);   // 整塊板子可用的線長（格數）
+  const gemCap = () => 99;      // 配件數量由襯墊數量自然限制，不另設上限
+  const wireMax = () => 99;     // 線長也沒有硬上限，板面只有 6×6，三條以上的線會互相擠
 
-  function createBoard() { return { w: W, h: H, v: 4, pieces: [], wires: [], nextId: 1, extra: 0 }; }
+  function createBoard() { return { w: W, h: H, v: 5, pieces: [], wires: [], nextId: 1, extra: 0 }; }
   const pieceAt = (b, x, y, kind) => b.pieces.find(p => p.x === x && p.y === y && (!kind || p.kind === kind));
   const getWire = (b, i) => b.wires.find(w => w.sock === i);
-  const connected = (b, i) => { const w = getWire(b, i); return !!(w && w.cells.length && same(w.cells[w.cells.length - 1], [W - 2, SOCKS[i][1]])); };
+  const connected = (b, i) => { const w = getWire(b, i); return !!(w && w.cells.length && same(w.cells[w.cells.length - 1], endOf(i))); };
   const wireCellSet = (b, except) => { const s = new Set(); for (const w of b.wires) if (w.sock !== except) for (const c of w.cells) s.add(c[0] + ',' + c[1]); return s; };
   const wireLen = b => b.wires.reduce((a, w) => a + w.cells.length, 0);
   const wireOf = (b, x, y) => b.wires.find(w => has(w.cells, x, y));
@@ -93,7 +100,7 @@
     let w = getWire(b, i);
     if (w && connected(b, i)) return no('這條線已經接通，點最後一格可以收回');
     const last = w && w.cells.length ? w.cells[w.cells.length - 1] : null;
-    if (!last) { if (x !== 1) return no('線要從左邊電源旁邊的格子開始'); }
+    if (!last) { if (!same(startOf(i), [x, y])) return no('線要從自己顏色的電源旁邊的格子開始'); }
     else if (Math.abs(x - last[0]) + Math.abs(y - last[1]) !== 1) return no('只能接在線尾旁邊的格子');
     if (wireCellSet(b).has(x + ',' + y)) return no('這格已經有線了');
     if (lvl != null && wireLen(b) >= wireMax(b, lvl)) return no('線不夠長，升級可以加長');
@@ -101,27 +108,48 @@
     w.cells.push([x, y]);
     return { ok: true, connected: connected(b, i) };
   }
+  // 從線尾（沒有線就從電源旁邊的格子）一路接到指定格：繞開壞軌與別條線，找最短路徑，逐格接上；中途接不上就停在原地
+  function extendTo(b, i, x, y, lvl) {
+    if (!isInner(x, y)) return no('線只能走中間的格子');
+    const w = getWire(b, i), last = w && w.cells.length ? w.cells[w.cells.length - 1] : null;
+    if (connected(b, i)) return no('這條線已經接通，點最後一格可以收回');
+    if (last && last[0] === x && last[1] === y) return no('已經在線尾');
+    const direct = extend(b, i, x, y, lvl); if (direct.ok) return direct;
+    const used = wireCellSet(b); if (w) for (const c of w.cells) used.add(c.join());
+    const ok = (cx, cy) => isInner(cx, cy) && !isRock(cx, cy) && !used.has(cx + ',' + cy);
+    const from = last ? last : startOf(i);
+    if (!ok(x, y) || (!last && !ok(from[0], from[1]))) return direct;
+    const prev = new Map(), q = [from.slice()]; prev.set(from.join(), null);
+    while (q.length) {
+      const c = q.shift(); if (c[0] === x && c[1] === y) break;
+      for (const [dx, dy] of DIRS) { const nx = c[0] + dx, ny = c[1] + dy, k = nx + ',' + ny; if (!ok(nx, ny) || prev.has(k)) continue; prev.set(k, c); q.push([nx, ny]); }
+    }
+    if (!prev.has(x + ',' + y)) return direct;
+    const path = []; for (let c = [x, y]; c; c = prev.get(c[0] + ',' + c[1])) path.unshift(c);
+    if (last) path.shift();
+    let r = direct;
+    for (const c of path) { r = extend(b, i, c[0], c[1], lvl); if (!r.ok) break; }
+    return r;
+  }
   function shrink(b, i) { const w = getWire(b, i); if (!w) return false; w.cells.pop(); if (!w.cells.length) b.wires = b.wires.filter(q => q !== w); return true; }
   function cut(b, i, x, y) { const w = getWire(b, i); if (!w) return false; const k = w.cells.findIndex(c => c[0] === x && c[1] === y); if (k < 0) return false; w.cells.length = k + 1; return true; }
   function clearWire(b, i) { b.wires = b.wires.filter(w => w.sock !== i); }
 
-  // 最短路線：從電源旁邊任一格走到插槽旁；先走強化格再走普通格，同長度時優先經過強化格
+  // 最短路線：從這個插槽專屬電源旁邊的格子走到插槽旁；同長度時優先經過同色襯墊
   function route(b, i, lvl, avoid) {
-    const used = avoid || wireCellSet(b, i), goal = [W - 2, SOCKS[i][1]];
+    const used = avoid || wireCellSet(b, i), goal = endOf(i), start = startOf(i), col = SOCK_COL[i];
     const ok = (x, y) => isInner(x, y) && !isRock(x, y) && !used.has(x + ',' + y);
-    if (!ok(goal[0], goal[1])) return null;
-    // Dijkstra：上下轉彎略貴一點，路線盡量走直線，不會亂闖別條線的位置；強化格稍微便宜，同長度時優先經過
-    const gy = SOCKS[i][1], dist = new Map(), prev = new Map(), q = [];
-    const cost = (x, y, vert) => 1 + (vert ? .3 : 0) + Math.abs(y - gy)*.02 - (isBoost(x, y) ? .05 : 0);
-    for (let y = 0; y < H; y++) if (ok(1, y)) { dist.set('1,' + y, cost(1, y, false)); q.push([1, y]); }
+    if (!ok(goal[0], goal[1]) || !ok(start[0], start[1])) return null;
+    const dist = new Map(), prev = new Map(), q = [start.slice()];
+    const cost = (x, y) => { const c = padColor(x, y); return 1 - (c === col ? .1 : c ? .05 : 0); };
+    dist.set(start.join(), cost(start[0], start[1]));
     while (q.length) {
       let m = 0; for (let k = 1; k < q.length; k++) if (dist.get(q[k].join()) < dist.get(q[m].join())) m = k;
       const c = q.splice(m, 1)[0], d = dist.get(c.join());
-      for (const [dx, dy] of DIRS) { const x = c[0] + dx, y = c[1] + dy, k = x + ',' + y; if (!ok(x, y)) continue; const nd = d + cost(x, y, dy !== 0); if (!dist.has(k) || nd < dist.get(k) - 1e-9) { if (!dist.has(k)) q.push([x, y]); dist.set(k, nd); prev.set(k, c); } }
+      for (const [dx, dy] of DIRS) { const x = c[0] + dx, y = c[1] + dy, k = x + ',' + y; if (!ok(x, y)) continue; const nd = d + cost(x, y); if (!dist.has(k) || nd < dist.get(k) - 1e-9) { if (!dist.has(k)) q.push([x, y]); dist.set(k, nd); prev.set(k, c); } }
     }
     if (!dist.has(goal.join())) return null;
     const out = []; for (let c = goal; c; c = prev.get(c[0] + ',' + c[1])) out.unshift(c);
-    if (lvl != null && wireLen(b) - ((getWire(b, i) || { cells: [] }).cells.length) + out.length > wireMax(b, lvl)) return null;
     return out;
   }
   function autoWire(b, i, lvl) {
@@ -152,8 +180,8 @@
   const cellsOf = p => [[p.x, p.y]];
   function canPlace(b, kind, key, x, y, rot, ignoreId) {
     if (!defOf(kind, key)) return false;
-    if (kind === 'active') return x === W - 1 && sockAtY(y) >= 0 && !b.pieces.some(p => p.kind === 'active' && p.y === y && p.id !== ignoreId);
-    return isInner(x, y) && !isRock(x, y) && !b.pieces.some(p => p.kind === 'support' && p.x === x && p.y === y && p.id !== ignoreId);
+    if (kind === 'active') return sockAt(x, y) >= 0 && !b.pieces.some(p => p.kind === 'active' && p.x === x && p.y === y && p.id !== ignoreId);
+    return isInner(x, y) && !isRock(x, y) && isPad(x, y) && !b.pieces.some(p => p.kind === 'support' && p.x === x && p.y === y && p.id !== ignoreId);
   }
   function place(b, kind, key, x, y, rot, opts) {
     if (!canPlace(b, kind, key, x, y)) return null;
@@ -173,12 +201,10 @@
 
   const fits = (key, act) => { const need = SUPPORTS[key].needs; return !need.length || need.some(t => ACTIVES[act.key].tags.includes(t)); };
 
-  // 每個配件的強度：相鄰同款每個 ×1.2（最多 ×1.6），放在強化格上再 ×1.4
+  // 每個配件的強度：放在與這條線同色的襯墊上 ×2，其他顏色 ×1；再乘上配件階級
   function strength(b, p, lvl) {
-    let f = 1;
-    for (const [dx, dy] of DIRS) { const n = pieceAt(b, p.x + dx, p.y + dy, 'support'); if (n && n.key === p.key) f *= ADJ_BONUS; }
-    f = Math.min(ADJ_CAP, f);
-    if (lvl >= BOOST_LV && isBoost(p.x, p.y)) f *= BOOST_MUL;
+    const w = wireOf(b, p.x, p.y);
+    const f = w && padColor(p.x, p.y) === SOCK_COL[w.sock] ? PAD_MATCH : 1;
     return f * TIER_MUL[Math.min(3, p.t || 1) - 1];
   }
   // 每個主動機件的結算：線經過、標籤相符的輔助，依序取到上限為止，數值乘上強度後加總（冷卻有下限）
@@ -202,14 +228,13 @@
     return out;
   }
 
-  // 補一個位置（相容舊介面）：輔助要落在指定主動機件的線上，會避開相鄰同款與強化格；找不到回傳 null
+  // 補一個位置：輔助要落在指定主動機件的線上、而且是襯墊；優先同色襯墊（×2），找不到回傳 null
   function findSpot(b, kind, key, activeId) {
     if (kind === 'active') { for (const [x, y] of SOCKS) if (canPlace(b, 'active', key, x, y)) return { x, y, rot: 0 }; return null; }
     const act = b.pieces.find(p => p.id === activeId && p.kind === 'active'); if (!act || !fits(key, act)) return null;
     const i = sockIndex(act); if (!connected(b, i) && !autoWire(b, i).ok) return null;
     const cells = getWire(b, i).cells.filter(([x, y]) => canPlace(b, 'support', key, x, y));
-    const score = ([x, y]) => (DIRS.some(([dx, dy]) => { const n = pieceAt(b, x + dx, y + dy, 'support'); return n && n.key === key; }) ? 2 : 0) + (isBoost(x, y) ? 1 : 0);
-    const c = cells.map((c, k) => ({ c, s: score(c)*100 + k })).sort((a, d) => a.s - d.s)[0];
+    const c = cells.map((c, k) => ({ c, s: (padColor(c[0], c[1]) === SOCK_COL[i] ? 0 : 1)*100 + k })).sort((a, d) => a.s - d.s)[0];
     return c ? { x: c.c[0], y: c.c[1], rot: 0 } : null;
   }
 
@@ -247,7 +272,7 @@
       for (const c of w.cells) {
         if (!Array.isArray(c) || !Number.isInteger(c[0]) || !Number.isInteger(c[1]) || !isInner(c[0], c[1]) || isRock(c[0], c[1]) || used.has(c.join())) { okw = false; break; }
         const last = cells[cells.length - 1];
-        if (last ? Math.abs(last[0] - c[0]) + Math.abs(last[1] - c[1]) !== 1 : c[0] !== 1) { okw = false; break; }
+        if (last ? Math.abs(last[0] - c[0]) + Math.abs(last[1] - c[1]) !== 1 : !same(startOf(w.sock), c)) { okw = false; break; }
         cells.push([c[0], c[1]]);
       }
       if (!okw || !cells.length) continue;
@@ -292,11 +317,30 @@
     return b;
   }
   // 任何版本的接線板都收成最新版
-  function adopt(raw, lvl = 1) { return raw && raw.v === 4 ? normalize(raw) : raw && raw.pieces ? migrate(raw, lvl) : migrate({ pieces: [] }, lvl); }
+  // 0.33–0.40 的接線板（v4：插槽全在右欄、電源在左欄）搬到顏色接線板：技能留在原本的插槽順序，重新接線，配件盡量放回襯墊
+  function convertV4(raw, lvl) {
+    const b = createBoard(), olds = [];
+    b.extra = Math.max(0, Math.min(SOCKS.length, Math.floor((raw && raw.extra) || 0)));
+    for (const p of (raw && raw.pieces) || []) {
+      if (!p || p.kind !== 'active' || !ACTIVES[p.key] || !Number.isInteger(p.x) || !Number.isInteger(p.y)) continue;
+      const i = OLD_SOCKS.findIndex(s => s[0] === p.x && s[1] === p.y);
+      if (i < 0 || b.pieces.some(q => q.kind === 'active' && q.key === p.key) || pieceAt(b, SOCKS[i][0], SOCKS[i][1], 'active')) continue;
+      const q = place(b, 'active', p.key, SOCKS[i][0], SOCKS[i][1], 0, { noWire: true }); if (q && p.mode) q.mode = p.mode;
+      const w = ((raw && raw.wires) || []).find(w => w && w.sock === i), cells = w && Array.isArray(w.cells) ? w.cells : [];
+      olds[i] = cells.map(c => ((raw.pieces || []).find(s => s && s.kind === 'support' && SUPPORTS[s.key] && s.x === c[0] && s.y === c[1]))).filter(Boolean);
+    }
+    autoWireAll(b, lvl);
+    olds.forEach((list, i) => {
+      const act = b.pieces.find(p => p.kind === 'active' && sockIndex(p) === i); if (!act || !list || !connected(b, i)) return;
+      for (const s of list) { if (!fits(s.key, act)) continue; const sp = findSpot(b, 'support', s.key, act.id); if (!sp) break; place(b, 'support', s.key, sp.x, sp.y, 0, { t: s.t }); }
+    });
+    return b;
+  }
+  function adopt(raw, lvl = 1) { return raw && raw.v === 5 ? normalize(raw) : raw && raw.v === 4 ? convertV4(raw, lvl) : raw && raw.pieces ? migrate(raw, lvl) : migrate({ pieces: [] }, lvl); }
 
-  const api = { TIER_MUL, W, H, SOCKS, SOCK_LV, ROCKS, BOOSTS, BOOST_LV, ADJ_BONUS, ADJ_CAP, BOOST_MUL, LIMITS, ACTIVES, SUPPORTS,
-    skillMods, cooldown, gemCap, wireMax, unlockedCount, levelSockets, isInner, isRock, isBoost, sockIndex, sockAtY, pieceAt, getWire, connected, wireLen, wireOf, wireCellSet,
-    createBoard, extend, shrink, cut, clearWire, route, autoWire, autoWireAll, shapeOf, cellsOf, canPlace, place, remove, rotate, fits, strength, resolve, findSpot, dps,
+  const api = { TIER_MUL, W, H, SOCKS, SRCS, SOCK_COL, SOCK_LV, ROCKS, PADS, PAD_MATCH, startOf, endOf, sockAt, padAt, isPad, padColor, LIMITS, ACTIVES, SUPPORTS,
+    skillMods, cooldown, gemCap, wireMax, unlockedCount, levelSockets, isInner, isRock, sockIndex, pieceAt, getWire, connected, wireLen, wireOf, wireCellSet,
+    createBoard, extend, extendTo, shrink, cut, clearWire, route, autoWire, autoWireAll, shapeOf, cellsOf, canPlace, place, remove, rotate, fits, strength, resolve, findSpot, dps,
     normalize, migrate, fromLegacy, adopt, dress };
   if (typeof module !== 'undefined') module.exports = api; else root.GridLab = api;
 })(typeof window !== 'undefined' ? window : globalThis);
