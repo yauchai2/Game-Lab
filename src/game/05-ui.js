@@ -228,20 +228,38 @@ function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox 
 function hideOverlay(){ UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
 const offYield = fn => { if (typeof MessageChannel === 'function'){ const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); fn(); }; c.port2.postMessage(0); } else setTimeout(fn, 0); };
+const OFF_WINDOW = 600;   // 離線只精確模擬前 10 分鐘，其餘用這段的收益率放大
+function offlineBulk(R, f, w){
+  f *= .8;   // 放大段不再精確推進難度，保守折損兩成
+  const K = Math.round(w.kills*f), d = lvlNow(), q = runQ();
+  G.totalKills += K; G.gold += Math.round(w.gold*f); G.chips += Math.round(w.chips*f); G.deaths += Math.round(w.deaths*f);
+  if (w.xp > 0) gainXp(w.xp*f);
+  const hit = p => { let n = 0; for (let i = 0; i < K; i++) if (Math.random() < p) n++; return n; };
+  const nItems = Math.min(800, hit(HORDE.drop*(1 + q)*(offPen() ? .25 : 1)));
+  for (let i = 0; i < nItems; i++) pickup({ kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(false), d) });
+  for (let i = hit(.012); i > 0; i--) pickup({ kind:'cart', id:tPick(Object.keys(MODES)) });
+  for (let i = hit(.025); i > 0; i--) pickup({ kind:'gem', id:tPick(Object.keys(SUPPS)) });
+  for (let i = Math.min(15, hit(.03)); i > 0; i--) pickup({ kind:'map', map:makeMap(d) });
+  const boss = Math.min(Math.floor(w.boss*f), Math.floor(R/1800)); if (boss > 0){ G.bossKills = (G.bossKills || 0) + boss; if (G.push && !G.run){ G.depth += boss; G.maxDepth = Math.max(G.maxDepth, G.depth); } }
+}
 function catchUp(sec, report){
   if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
   const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths, inventory:G.inventory.length,chips:G.chips, gems:{...G.gems}, carts:{...G.carts} };
-  G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
-  let left = sec; const total = sec;
+  G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
+  const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };
+  let left = simSec; const total = simSec;
   if (report) showOverlay(`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
     const t0 = performance.now();
     while (left > 0 && performance.now() - t0 < 30){
-      const st = total - left > 1800 ? .4 : .2;   // 前半小時照原本精度，之後每步放大一倍，收益差距在隨機波動內
-      update(st); left -= st;
+      update(.2); left -= .2;
     }
     if (left > 0){ if (report && $('oprog')) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; offYield(chunk); return; }
     for (const d of G.drops) if (!d.done){ d.done = true; pickup(d); } G.drops = []; G.proj = []; G.timers = []; G.mons = []; G.spawnCd = .5; G.h.swingT = -1; G.h.castT = -1; G.h.dead = 0;
+    if (sec > simSec){
+      const w = { gold:G.gold - w0.gold, kills:G.totalKills - w0.kills, chips:G.chips - w0.chips, deaths:G.deaths - w0.deaths, boss:(G.bossKills || 0) - w0.boss, xp:G.off.xp };
+      offlineBulk(sec - simSec, (sec - simSec)/simSec, w);
+    }
     resolveOfflineChoices(G.off);
     if (G.h.hp <= 0) G.h.hp = G.st.life;
     G.offline = false; G.paused = false; G.lastWall = Date.now(); const o = G.off; G.off = null; G.dirty = true; const saved = saveGame();

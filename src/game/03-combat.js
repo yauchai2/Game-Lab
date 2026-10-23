@@ -90,7 +90,7 @@ function completeRun(){
   logLine(`地圖完成！獎勵 +${bonus}g 與 ${extra} 件戰利品`, '#2f9e4f'); G.run = null; G.dirty = true;
 }
 function gainXp(xp){
-  G.xp += xp;
+  G.xp += xp; if (G.off) G.off.xp = (G.off.xp || 0) + xp;
   while (G.xp >= xpNeed(G.lvl)){ G.xp -= xpNeed(G.lvl); G.lvl++; if(GAME_FEATURES.cardChoices)G.picks++; SFX('lvl'); recalc(); G.h.hp = Math.min(G.st.life,G.h.hp+G.st.life*.2); kick(.7, .45, '#fff3a0', .5); addFloat(G.h.x + 3, G.h.y, BZ + 24, 'LEVEL UP', '#2f9e4f', 4.6); logLine(`升級了！等級 ${G.lvl}（路徑預算 ${talentBudget()}／${TALENT_LIMIT}）`, '#2f9e4f');
     if (G.off) G.off.lvls++; }
 }
