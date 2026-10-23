@@ -275,7 +275,7 @@ function phoneMini(){
   return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span><i class="ph-sp ph-sp1">✦</i><i class="ph-sp ph-sp2">✧</i></span>`;
 }
 function phoneButtonHtml(){
-  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}<span class="ph-open-txt"><b class="ph-rb">★ 角色手機 ★</b><small>▶ 點我開機！全屏 3D 看角色資訊</small></span><em class="ph-new">NEW!</em></button>`;
+  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}<b class="ph-rb">▶ 點我開機</b><em class="ph-new">NEW!</em></button>`;
 }
 
 (function(){ const s = document.createElement('style'); s.textContent = `
@@ -310,22 +310,18 @@ function phoneButtonHtml(){
 #ph-root .ph-key{position:absolute;padding:0!important;min-height:0!important;border:0!important;background:transparent!important;box-shadow:none!important;border-radius:14px!important;cursor:pointer;-webkit-tap-highlight-color:transparent;transform:translateZ(2px)}
 #ph-root .ph-key:hover{background:#ffffff26!important;box-shadow:0 0 12px #8ff8!important}#ph-root .ph-key.hit,#ph-root .ph-key:active{background:#0004!important;box-shadow:inset 0 3px 8px #0008!important}
 #ph-root .ph-key:focus-visible{outline:3px solid #ffe45c}
-#ph-host,.ph-open{--ph-x:0}
-.ph-open{position:relative;display:flex;align-items:center;gap:6px;width:100%;min-height:92px;margin:8px 0;padding:6px 10px 6px 4px!important;text-align:left;overflow:visible;background:linear-gradient(135deg,#0b1a5c,#2a52c9 55%,#6a3fd6)!important;color:#fff!important;border:3px ridge #c8d0ff!important;border-radius:0!important;box-shadow:0 3px 0 #1a2a7a,0 0 14px #5b7bff88!important;cursor:pointer;animation:phGlow 2.2s ease-in-out infinite}
-@keyframes phGlow{50%{box-shadow:0 3px 0 #1a2a7a,0 0 22px #9fc0ffcc}}
-.ph-open::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#0000 0 2px,#0000001f 2px 3px);pointer-events:none}
-.ph-open:hover{filter:brightness(1.15)}.ph-open:active{transform:translateY(2px)}
-.ph-mini{position:relative;flex:none;width:76px;height:112px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
-.ph-mini-s{position:absolute;left:38px;top:60px;width:0;height:0;transform-style:preserve-3d;transform:scale(.118)}
+.ui-character-head{position:relative;min-height:158px}
+.ph-open{position:absolute;right:6px;top:4px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0;width:112px;margin:0;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;cursor:pointer;overflow:visible}
+.ph-open:hover{filter:brightness(1.12)}.ph-open:active{transform:translateY(2px)}
+.ph-mini{position:relative;flex:none;width:112px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
+.ph-mini-s{position:absolute;left:56px;top:70px;width:0;height:0;transform-style:preserve-3d;transform:scale(.135)}
 .ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;animation:phMiniSpin 4.8s ease-in-out infinite}
 @keyframes phMiniSpin{0%{transform:rotateY(-48deg) rotateX(6deg) translateY(0)}50%{transform:rotateY(48deg) rotateX(-4deg) translateY(-30px)}100%{transform:rotateY(-48deg) rotateX(6deg) translateY(0)}}
 .ph-open:hover .ph-mini-spin{animation-duration:1.6s}
 .ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
 @keyframes phSpk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
-.ph-open-txt{position:relative;flex:1;display:flex;flex-direction:column;gap:3px;z-index:1}
-.ph-rb{font:18px/1.2 "Cubic 11",system-ui!important;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8,#ff5a5a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;animation:phRb 2s linear infinite;filter:drop-shadow(1px 1px 0 #000)}
-.ph-open-txt small{font:12px/1.3 "Cubic 11",system-ui!important;color:#d8e6ff;animation:phBlink 1.1s steps(2) infinite}@keyframes phBlink{50%{opacity:.45}}
-.ph-new{position:absolute;right:6px;top:-12px;z-index:2;padding:7px 8px;font:700 12px "Cubic 11",system-ui;font-style:normal;color:#d00;background:#ffe45c;clip-path:polygon(50% 0,61% 20%,82% 8%,80% 32%,100% 38%,84% 55%,96% 78%,72% 74%,64% 100%,50% 82%,36% 100%,28% 74%,4% 78%,16% 55%,0 38%,20% 32%,18% 8%,39% 20%);animation:phNew .9s steps(2) infinite;transform:rotate(12deg)}
+.ph-rb{font:15px/1.2 "Cubic 11",system-ui!important;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8,#ff5a5a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;animation:phRb 2s linear infinite;filter:drop-shadow(1px 1px 0 #000)}
+.ph-new{position:absolute;right:-4px;top:-6px;z-index:2;padding:7px 8px;font:700 12px "Cubic 11",system-ui;font-style:normal;color:#d00;background:#ffe45c;clip-path:polygon(50% 0,61% 20%,82% 8%,80% 32%,100% 38%,84% 55%,96% 78%,72% 74%,64% 100%,50% 82%,36% 100%,28% 74%,4% 78%,16% 55%,0 38%,20% 32%,18% 8%,39% 20%);animation:phNew .9s steps(2) infinite;transform:rotate(12deg)}
 @keyframes phNew{50%{background:#fff;color:#06f}}
 .ph-css{position:absolute;inset:0;perspective:1000px;pointer-events:none;overflow:hidden}.ph-camel{position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none}
 .ph-glel{position:absolute;left:0;top:0;pointer-events:auto;transform-origin:50% 50%}.ph-keys.ph-glel{pointer-events:none}.ph-keys .ph-key{pointer-events:auto;transform:none}
