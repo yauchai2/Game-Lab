@@ -71,3 +71,6 @@ GPT Image 於 Figma 草稿檔生成 4×3 圖集（列：武器、外套、配件
 ## 介面字體：Cubic 11 與 LCD 光學子集（0.27.1）
 
 來源：[ACh-K／Cubic-11](https://github.com/ACh-K/Cubic-11)。完整上游授權保存在 tools/font/Cubic-OFL.txt；包含作者及 M+ 衍生來源說明與 SIL OFL 1.1。tools/pack_font.py 從同一份 TTF 生成原字模子集及 LCD 16px 格線對齊版本，字形／字寬／基線的修改只用於 LCD 版本。兩份內嵌 WOFF2 都保留原始版權並內嵌完整授權，可隨單檔遊戲分發。
+
+## 角色手機（0.38.0）
+- 手機正面、背面、側面圖由專案成員提供，經 `tools/phone_prep.py` 去背、對齊後輸出到 `src/assets/phone/`，再打包成 `src/game/phone-assets.js`。
