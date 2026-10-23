@@ -14,7 +14,7 @@ const out=process.env.GAME_LAB_LAYOUT_OUTPUT||'/tmp/game-lab-layout-validation';
   for(const size of [{width:1440,height:1000},{width:390,height:844}]){
    await p.setViewportSize(size);await p.waitForTimeout(80);assert.equal(await p.locator('#mtabs>button').count(),6);
    for(let i=0;i<keys.length;i++){await click(keys[i]);assert.equal(await p.evaluate(()=>modalTab),keys[i]);assert.equal(await p.locator(`[data-focus="nav-${keys[i]}"]`).getAttribute('aria-label'),names[i]);}
-   await click('char');await p.getByRole('button',{name:'裝扮',exact:true}).click();assert.equal(await p.evaluate(()=>modalTab),'dress');await p.getByRole('button',{name:'返回角色',exact:true}).click();assert.equal(await p.evaluate(()=>modalTab),'char');
+   await click('char');await p.getByRole('button',{name:'裝扮',exact:true}).click();assert.equal(await p.evaluate(()=>modalTab),'dress');await p.getByRole('button',{name:'總覽',exact:true}).click();assert.equal(await p.evaluate(()=>modalTab),'char');
   }
   await shot('10-role-mobile');
  });

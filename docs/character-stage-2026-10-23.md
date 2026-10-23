@@ -1,7 +1,7 @@
 # 角色封面與共用試穿舞台
 
 日期：2026-10-23（Asia/Hong_Kong）。候選版本 0.40.2。
-狀態：主要來源與測試已由原對話的完整檔案差異及修改命令復原，已整合最新 main 並補字型；本次雲端 Chromium 複驗進行中。未合併、未正式發佈。
+狀態：主要來源與測試已由原對話的完整檔案差異及修改命令復原，已整合最新 main 並補字型；本次雲端 Chromium 角色頁 13 組流程與單檔已通過檢查。未合併、未正式發佈。
 接續分支：codex/character-stage-resume。基準：main a0d53f307b5c72526f6c27e515602cd9a6938823（0.40.1）。原中斷分支 codex/character-stage 停在 47f00f1，未包含角色頁修改。
 
 ## 授權與整合
@@ -77,6 +77,19 @@ strict UI audit 已執行，仍只有未修改 05k-phone.js 兩處 data-act 事�
 - 原工作目錄在另一執行環境，無法直接存取；遠端分支未推送修改。從可存取的原對話讀取完整 helper、CSS、共用預覽、兩個新測試及精確修改差異，在獨立 worktree 套用。
 - 跳過已截斷的遠端同步 JSON，直接以最新 main a0d53f3 建立乾淨基準，保留 0.40.1 的按鍵、自動換裝與進度曲線。沒有覆寫舊工作目錄、其他分支或任何 GLB。
 - 候選日誌由 0.40.1 調整為 0.40.2；font 子集補齊新介面字，重新 build。來源字體 SHA-256：0193f5f033612496df6b45ee92ac3b335bc6a5a24ff95da55ca87b33e57dcf62。
-- 本次已通過角色舞台／裝扮單元、角色待機、GLB／戰鬥專技、UX revision、裝備 18 項、UX 邏輯、兩種子六十分鐘進度曲線及字模格線。瀏覽器回歸與證據另存 character-stage-resume-2026-10-23/；進行中項不宣稱已完成。
+- 本次已通過角色舞台／裝扮單元、角色待機、GLB／戰鬥專技、UX revision、裝備 18 項、UX 邏輯、兩種子六十分鐘進度曲線及字模格線。恢復後 13 組角色頁瀏覽器檢查通過；證據另存 character-stage-resume-2026-10-23/，單檔另做獨立檢查。
 - 初次雲端流程遇節點重掛、軟體渲染造成離線摘要及載入超時；測試改用 static、停用主戰場持續繪製、低畫質、關閉觀戰及保留預覽真實渲染。這些是測試隔離，沒有修改正式模擬或離線規則，不代表效能測試。
 - strict audit 保留原有 05k-phone.js 兩處事件委派偵測限制；DESIGN lint 零錯誤／警告。沒有更動手機事件以消除靜態誤判。
+
+## 接續環境驗證結果
+
+- 13 組角色頁流程全部通過：四人、選角、試穿、購買、旋轉、320×740／390×844／768×700／844×390／1440×1000、長名稱與轉義、空槽、reduced-motion、離屏、錯誤重試、玩家偏好與手機返回。見 [本次結果](character-stage-resume-2026-10-23/browser-results.json)。
+- 本次預設低畫質、static、停用持續主戰場繪製，resize 後補畫一幀更新原戰場尺寸；PV 本身仍使用真實 WebGL／骨架／材質與原來的定時動畫。這是功能驗證，不是 FPS 或真機驗收。
+- 修改 UI 中 624 個漢字全有 Cubic 字模；字模格線通過。新字體／dist 都在分支內，並確認從來源重新 build 與提交單檔逐位元一致。
+- 測試工具在錯誤時關閉 Chromium，避免環境留下持續渲染程序。舊 layout 回歸的裝扮返回標籤對齊「總覽」；這項只改測試選擇器，沒有改其他頁面。
+- 原對話的整套接線／地圖失敗是歷史紀錄，本次未把整套全站測試報成通過；沒有修改其玩法或刪去那些斷言。兩項既有手機靜態偵測限制保留，手機開啟／返回實際流程通過。
+- 候選 PR：https://github.com/yauchai2/Game-Lab/pull/30 。來源及 9 MB 單檔可由此分支取得；未合併 main、未建立 Release、未更新 gh-pages。
+
+原規劃來源：https://github.com/yauchai2/Game-Lab/blob/codex/character-art-direction-plan/docs/character-art-direction-plan-2026-10-23.md 。
+
+單檔驗證已完成：攔截初始文件並封鎖其他網路請求，390px 真實預覽、三裝備格及版本 0.40.2 通過，沒有外部資源請求或 pageerror；不宣稱原生 file URL 已測試。工具 tools/test_character_stage_bundle.cjs，結果見 character-stage-resume-2026-10-23/bundle-results.json。
