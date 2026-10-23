@@ -387,3 +387,21 @@ function uiMapGroups(){
 #mbody .rpgm .rc,#mbody .ui-section{background:transparent}
 `;document.head.appendChild(st);})();
 (function(){const st=document.createElement('style');st.textContent=`#mbody .rc>.rh,#mbody .rc.wide>.rh{border-radius:0!important;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;border:2px solid #fff!important;padding:3px 8px!important}`;document.head.appendChild(st);})();
+/* 設定頁：每組設定做成小視窗（標題列＋內容），圖示格、像素滑桿與檸檬黃數值標籤 */
+(function(){const st=document.createElement('style');st.textContent=`
+body.ui-material #uisettings .ui-setting-grid>.ui-setting-block,body #uisettings .ui-setting-block{position:relative;margin:10px 0!important;padding:0 10px 10px!important;background:#e6e8f6!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:3px 3px 0 #8c9bd0}
+body #uisettings .ui-setting-block>h4,body #uisettings .view-fx-control>div:first-child{display:flex;align-items:center;justify-content:flex-start;gap:6px;margin:0 -10px 10px!important;padding:4px 8px;font:14px var(--ux-body,system-ui);color:#fff;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);border-bottom:2px solid #1d2552}
+body #uisettings .ui-setting-block>h4::before,body #uisettings .view-fx-control>div:first-child label::before{content:"";display:inline-block;width:8px;height:8px;margin-right:6px;background:#ffe45c;border:1px solid #1d2552}
+body #uisettings .view-fx-control label{color:#fff;font:14px var(--ux-body,system-ui)}
+body #uisettings .view-fx-control output{margin-left:auto;padding:1px 8px;background:#ffe45c;color:#1d2552;border:1px solid #1d2552;font-size:12px}
+body #uisettings .view-fx-ticks span{color:#33407f}
+body #uisettings input#ui-fx-level{-webkit-appearance:none;appearance:none;background:transparent}
+body #uisettings input#ui-fx-level::-webkit-slider-runnable-track{height:12px;background:#18233d;border:2px solid #1d2552;box-shadow:1px 1px 0 #fff}
+body #uisettings input#ui-fx-level::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:22px;margin-top:-7px;background:linear-gradient(#fff3bf,#efce68);border:2px solid #1d2552;border-radius:0}
+body #uisettings input#ui-fx-level::-moz-range-track{height:12px;background:#18233d;border:2px solid #1d2552}
+body #uisettings input#ui-fx-level::-moz-range-thumb{width:14px;height:20px;background:#efce68;border:2px solid #1d2552;border-radius:0}
+body.ui-material #uisettings #btns .act{position:relative;padding-left:14px!important;border-left:6px solid #33407f!important}
+body.ui-material #uisettings #btns .act::after{content:"";position:absolute;left:-6px;top:0;width:6px;height:100%;background:linear-gradient(#ffe45c 0 30%,#33407f 30% 100%);opacity:0}
+body #uisettings .view-settings .view-options>button,body #uisettings #watch-now{border-radius:0!important}
+body #uisettings .ui-rules{margin-top:8px}
+`;document.head.appendChild(st);})();
