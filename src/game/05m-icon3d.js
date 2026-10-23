@@ -128,3 +128,21 @@ function icon3dObjUrl(kind){
   } catch (e) { return ''; }
 }
 function obj3d(kind, size){ const u = typeof icon3dObjUrl === 'function' ? icon3dObjUrl(kind) : ''; return u ? `<img class="ui-obj3d" alt="" aria-hidden="true" src="${u}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated">` : ''; }
+
+/* 角色選擇用的頭像：把角色模型放進離屏畫面，拍頭肩特寫並快取；貼圖還沒載入完就先回傳空字串，稍後自動重畫角色頁 */
+function icon3dPortraitUrl(key){
+  const ck = 'P_' + key; if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof buildHero !== 'function' || !CHARS[key] || !CHARS[key].model) return '';
+  try {
+    if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const asset = characterAsset(CHARS[key].model), img = asset.material.map && asset.material.map.image;
+    if (!img){ if (!ICON3D.portWait){ ICON3D.portWait = setTimeout(() => { ICON3D.portWait = 0; if (typeof modalTab !== 'undefined' && !$('modal').hidden && modalTab === 'char') renderModal(); }, 350); } return ''; }
+    const prev = G.char; let g; G.char = key; try { g = buildHero(0, 0, 0, 0, G.cos); } finally { G.char = prev; }
+    g.userData.mixer && g.userData.mixer.update(.02); g.scale.setScalar(1); g.rotation.y = 0;
+    for (const o of g.children) if (o.isMesh && o.geometry && o.geometry.type === 'RingGeometry') o.visible = false;
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(24, 1, .1, 400); sc.add(g);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.4)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.6, 1.2, 2); sc.add(dl);
+    g.updateMatrixWorld(true); const hp = new T3.Vector3(); g.userData.B.head.getWorldPosition(hp);
+    cam.position.set(hp.x, hp.y + 1, hp.z + 50); cam.lookAt(hp.x, hp.y - 1.5, hp.z);
+    ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[ck] = url; return url;
+  } catch (e) { return ''; }
+}

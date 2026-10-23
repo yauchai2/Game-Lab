@@ -792,6 +792,7 @@ const SKILLS = {
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
   { v:'0.39.17', d:'2026-10-23', t:['冒險頁「可用地圖」改成方塊卡網格：放大 3D 小島、同款地圖合併顯示數量、等級與詞綴一眼看到','大型守關者的手腳會擺動，近戰怪物戰鬥中偶爾舉臂嘶吼','範圍衝擊的碎片不再從角色身上冒出來繞圈','角色專屬技、太陽遺物與回聲也受施放距離限制，不再打到畫面另一端','死亡視窗配色改成與亮色介面一致，目標頁說明按鈕移到標題旁'] },
+  { v:'0.39.19', d:'2026-10-23', t:['角色選擇改成復古選角視窗：每位角色有 3D 頭像框、名字欄與職業，下方加上黑底資料欄','選中的角色以藍色高亮框標示「使用中」'] },
   { v:'0.39.18', d:'2026-10-23', t:['介面配色還原成藍紫窗口風格'] },
   { v:'0.39.16',d:'2026-10-23',t:['介面配色改成亮銀外殼、白色閱讀面、鮮藍選中與檸檬黃主要按鈕','角色與裝扮預覽加入四位角色各自的待機小動作','角色頁小手機改成緩慢單向自轉']},
   { v:'0.39.15',d:'2026-10-23',t:['巨像、螃蟹、蜘蛛、鼹鼠的手腳可以各自擺動：巨像走路擺臂、出手舉臂砸下，螃蟹鉗子開闔、八腳橫行，蜘蛛八腳輪流點地，鼹鼠雙爪挖掘']},
@@ -3396,7 +3397,7 @@ function openRelics(){ if(!GAME_FEATURES.cardChoices)return;
 function pickRelic(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
 function pickCard(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
 function charHtml(){
-  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true"><b>${c.n}${G.char === id ? ' ✓' : ''}</b>${charOk(id) ? '' : `<span class="mute">${c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖'}</span>`}</button>`).join('')}</div><div class="char-description">${CHARS[G.char].d}<br>專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
+  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => { const ok = charOk(id), on = G.char === id, pu = typeof icon3dPortraitUrl === 'function' ? icon3dPortraitUrl(id) : '', nm = String(c.n).split(' '); return `<button class="chr${on ? ' on' : ''}${ok ? '' : ' lock'}" ${ok ? '' : 'disabled'} aria-pressed="${on}" onclick="pickChar('${id}');G.dirty=true"><span class="chr-pic">${pu ? `<img alt="" aria-hidden="true" src="${pu}" style="image-rendering:pixelated">` : ''}</span><span class="chr-info"><b>${nm[0]}<small>${nm[1] || ''}</small></b><i>${ok ? (c.title || c.d) : (c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖')}</i>${on ? '<em>使用中 ✓</em>' : ''}</span></button>`; }).join('')}</div><div class="chr-data"><p><span>姓名</span><b>${CHARS[G.char].n}</b></p><p><span>職業</span><b>${CHARS[G.char].title||CHARS[G.char].d}</b></p><p><span>定位</span><b>${CHARS[G.char].role||"—"}</b></p><p><span>專屬</span><b>${CHARS[G.char].sig.n}</b></p></div><div class="char-description">專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
 }
 function achHtml(){
   const n = achCount(), tot = Object.keys(ACHS).filter(id=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).length;
@@ -4671,6 +4672,24 @@ function uiMapGroups(){
 #mbody .ui-mtile b{font:13px var(--ux-body,system-ui);text-shadow:1px 1px 0 #ffffffb0;margin-bottom:3px}
 #mbody .ui-mtile .pip{font-size:12px;letter-spacing:2px;color:#b3261e}
 `;document.head.appendChild(st);})();
+/* 角色選擇：復古選角視窗，頭像框加資料欄，延續藍紫窗口配色 */
+(function(){const st=document.createElement('style');st.textContent=`
+#mbody .char-card .chars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#mbody .char-card .chr{display:flex!important;flex-direction:row!important;align-items:stretch!important;gap:8px;min-height:84px;padding:5px!important;text-align:left;white-space:normal;background:#d9dff0!important;color:#1d2552!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:0 2px 0 #8c9bd0!important}
+#mbody .char-card .chr .chr-pic{flex:0 0 66px;width:66px;height:66px;align-self:center;background:linear-gradient(180deg,#b8c8ee,#8fa3d8);border:2px solid #5c6a8e;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 #33407f;overflow:hidden;display:block}
+#mbody .char-card .chr .chr-pic img{width:100%;height:100%;display:block}
+#mbody .char-card .chr .chr-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:3px}
+#mbody .char-card .chr .chr-info b{display:block;color:#1d2552;padding:2px 4px;background:#fff;border:1px solid #8c9bd0;font-size:14px;line-height:1.15}
+#mbody .char-card .chr .chr-info b small{margin-left:4px;font-size:11px;opacity:.7}
+#mbody .char-card .chr .chr-info i{font-style:normal;font-size:12px;line-height:1.25}
+#mbody .char-card .chr .chr-info em{font-style:normal;align-self:flex-start;padding:1px 5px;font-size:12px;background:#ffe45c;color:#1d2552;border:1px solid #1d2552}
+#mbody .char-card .chr.on{background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;outline:2px solid #1d2552}
+#mbody .char-card .chr.on .chr-pic{border-color:#ffe45c}
+#mbody .char-card .chr.lock{opacity:.6}#mbody .char-card .chr.lock .chr-pic img{filter:grayscale(1) brightness(.6)}
+#mbody .chr-data{margin:8px 0 4px;padding:8px 10px;background:#05060d;border:3px solid #8c9bd0;outline:1px solid #1d2552;color:#fff;font-family:var(--ux-body,system-ui)}
+#mbody .chr-data p{display:flex;gap:10px;margin:0;line-height:1.5}#mbody .chr-data p span{flex:0 0 3em;color:#9fb4ff;letter-spacing:.1em}#mbody .chr-data p b{font-weight:normal;min-width:0}
+@media(max-width:420px){#mbody .char-card .chr .chr-pic{flex-basis:52px;width:52px;height:52px}#mbody .char-card .chr{gap:6px;padding:4px!important}#mbody .char-card .chr .chr-info b{font-size:13px}}
+`;document.head.appendChild(st);})();
 
 </script>
 <script>
@@ -5934,6 +5953,24 @@ function icon3dObjUrl(kind){
   } catch (e) { return ''; }
 }
 function obj3d(kind, size){ const u = typeof icon3dObjUrl === 'function' ? icon3dObjUrl(kind) : ''; return u ? `<img class="ui-obj3d" alt="" aria-hidden="true" src="${u}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated">` : ''; }
+
+/* 角色選擇用的頭像：把角色模型放進離屏畫面，拍頭肩特寫並快取；貼圖還沒載入完就先回傳空字串，稍後自動重畫角色頁 */
+function icon3dPortraitUrl(key){
+  const ck = 'P_' + key; if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof buildHero !== 'function' || !CHARS[key] || !CHARS[key].model) return '';
+  try {
+    if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const asset = characterAsset(CHARS[key].model), img = asset.material.map && asset.material.map.image;
+    if (!img){ if (!ICON3D.portWait){ ICON3D.portWait = setTimeout(() => { ICON3D.portWait = 0; if (typeof modalTab !== 'undefined' && !$('modal').hidden && modalTab === 'char') renderModal(); }, 350); } return ''; }
+    const prev = G.char; let g; G.char = key; try { g = buildHero(0, 0, 0, 0, G.cos); } finally { G.char = prev; }
+    g.userData.mixer && g.userData.mixer.update(.02); g.scale.setScalar(1); g.rotation.y = 0;
+    for (const o of g.children) if (o.isMesh && o.geometry && o.geometry.type === 'RingGeometry') o.visible = false;
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(24, 1, .1, 400); sc.add(g);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.4)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.6, 1.2, 2); sc.add(dl);
+    g.updateMatrixWorld(true); const hp = new T3.Vector3(); g.userData.B.head.getWorldPosition(hp);
+    cam.position.set(hp.x, hp.y + 1, hp.z + 50); cam.lookAt(hp.x, hp.y - 1.5, hp.z);
+    ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[ck] = url; return url;
+  } catch (e) { return ''; }
+}
 
 </script>
 <script>
