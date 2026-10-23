@@ -1,6 +1,6 @@
 /* ---------- 角色頁與裝扮：資料卡、3D 預覽與三類公開裝扮 ---------- */
 let dSel = { cat:'weaponStyle', id:null };   // 目前選中（預覽中）的部位與顏色；id 為 null 代表預覽目前穿的
-const PV = { cv:null, rd:null, sc:null, cam:null, hero:null, sig:'', yaw:.5, auto:true, drag:null };
+const PV = { cv:null, rd:null, sc:null, cam:null, hero:null, sig:'', yaw:.5, drag:null, lastTime:null };
 const cosGet = (cat, id) => (COS[cat]||[]).find(x => x[0] === id);
 const cosOwned = (cat, id) => !!cosGet(cat,id)&&(cosGet(cat,id)[3]===0||!!G.own[cat+':'+id]);
 function cosPreview(){ const c = Object.assign({}, G.cos); if (dSel.id&&cosAvailable(dSel.cat)&&cosGet(dSel.cat,dSel.id)) c[dSel.cat] = dSel.id; return c; }
@@ -41,22 +41,24 @@ function dressMount(){
     PV.rd = new T3.WebGLRenderer({ canvas:PV.cv, antialias:false, alpha:true }); PV.rd.setPixelRatio(1); PV.rd.setClearColor(0x000000, 0); PV.rd.outputColorSpace = T3.SRGBColorSpace;
     PV.sc = new T3.Scene(); PV.sc.add(new T3.HemisphereLight(0xeaf5ff, 0xd8c8f0, 1.55)); const sun = new T3.DirectionalLight(0xfff6ea, 1.5); sun.position.set(30, 60, 50); PV.sc.add(sun); PV.sc.add(new T3.AmbientLight(0xffffff, .25));
     PV.cam = new T3.OrthographicCamera(-1, 1, 1, -1, -100, 100);
-    PV.cv.addEventListener('pointerdown', e => { PV.drag = { x:e.clientX, y:PV.yaw }; PV.auto = false; PV.cv.style.cursor = 'grabbing'; });
+    PV.cv.addEventListener('pointerdown', e => { PV.drag = { x:e.clientX, y:PV.yaw }; PV.cv.style.cursor = 'grabbing'; });
     addEventListener('pointermove', e => { if (PV.drag) PV.yaw = PV.drag.y + (e.clientX - PV.drag.x)*.012; });
     addEventListener('pointerup', () => { PV.drag = null; if (PV.cv) PV.cv.style.cursor = 'grab'; });
     setInterval(dressTick, 40);
   }
-  host.appendChild(PV.cv); PV.sig = '';
+  host.appendChild(PV.cv); PV.lastTime = null;
 }
 function dressTick(){
-  if (!PV.rd || !PV.cv.isConnected || (modalTab !== 'dress') || $('modal').hidden) return;
+  if (!PV.rd || !PV.cv.isConnected || (modalTab !== 'dress') || $('modal').hidden || document.hidden){ PV.lastTime=null; return; }
+  const now=performance.now(),dt=PV.lastTime===null?0:Math.min(.1,(now-PV.lastTime)/1000);PV.lastTime=now;
   const w = PV.cv.clientWidth, h = PV.cv.clientHeight; if (w < 4 || h < 4) return;
   const A = G.equip.armor, W = G.equip.weapon, cos = cosPreview(), sig = [aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, G.char, JSON.stringify(cos)].join();
   if (sig !== PV.sig){ PV.sig = sig; if (PV.hero){if(typeof characterDispose==='function')characterDispose(PV.hero);PV.sc.remove(PV.hero);} const g = buildHero(aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, cos); g.scale.setScalar(1); g.traverse(o => { if (o.isMesh && o.material && o.material.transparent && o.material.opacity < .9 && o.geometry.type !== 'SphereGeometry') o.visible = false; }); PV.hero = g; PV.sc.add(g); PV.sc.updateMatrixWorld(true); PV.box = new T3.Box3(); g.traverse(o => { if (o.isMesh && o.visible && o.geometry.type !== 'RingGeometry' && o.geometry.type !== 'CircleGeometry'){ o.geometry.computeBoundingBox(); PV.box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld)); } }); }
-  if(PV.hero.userData.y2k)characterAnimate(PV.hero,.04);
-  if (PV.auto) PV.yaw += .02; PV.hero.rotation.y = PV.yaw;
-  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=!R3.clean&&r3Quality(r3ViewQuality(),innerWidth)==='low'?'pixelated':'auto';
+  if(PV.hero.userData.y2k)characterPreviewAnimate(PV.hero,dt,matchMedia('(prefers-reduced-motion: reduce)').matches);
+  PV.hero.rotation.y = PV.yaw;
+  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=R3.clean?'auto':'pixelated';
   if(PV.cv.width!==buffer.width||PV.cv.height!==buffer.height)PV.rd.setSize(buffer.width,buffer.height,false);
   const bx = PV.box, cy = (bx.min.y + bx.max.y)/2, vh = (bx.max.y - bx.min.y)*1.2, vw = vh*w/h; PV.cam.left = -vw/2; PV.cam.right = vw/2; PV.cam.top = vh/2; PV.cam.bottom = -vh/2; PV.cam.position.set(0, cy, 40); PV.cam.lookAt(0, cy, 0); PV.cam.updateProjectionMatrix();
   PV.rd.render(PV.sc, PV.cam);
 }
+

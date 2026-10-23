@@ -78,6 +78,7 @@ function viewRenderHUD(){
   const setBar=(el,ratio,now,max)=>{const percent=String(Math.round(ratio*100)),pixel=Math.ceil(ratio*50)*2+'%';if(el.getAttribute('aria-valuenow')!==percent){el.setAttribute('aria-valuenow',percent);el.style.setProperty('--fill',percent+'%');}if(el.style.getPropertyValue('--pixel-fill')!==pixel)el.style.setProperty('--pixel-fill',pixel);const text=`${now}／${max}`;if(el.getAttribute('aria-valuetext')!==text)el.setAttribute('aria-valuetext',text);};
   setBar(hpBar,hpRatio,hp,max);setBar(xpBar,xpRatio,xp,need);
   GAME_VIEW.hud.classList.toggle('hud-danger',hpRatio<.3&&G.h.dead<=0);GAME_VIEW.hud.classList.toggle('hud-dead',G.h.dead>0);
+  if(typeof deathFxUpdate==='function')deathFxUpdate();
 }
 function viewBlocked(){
   const active=document.activeElement;
@@ -161,6 +162,7 @@ body.ui-material .battle-hud .hud-level{height:48px}
 body.ui-material .battle-hud .hud-level span{font-size:12px!important;line-height:18px}
 body.ui-material .battle-hud .hud-level b{font-size:20px!important;line-height:28px}
 @media(min-width:1180px){body.ui-material .battle-hud .hud-left{grid-template-columns:56px minmax(100px,260px);max-width:324px}body.ui-material .battle-hud .hud-level{height:58px}body.ui-material .battle-hud .hud-level span{font-size:16px!important;line-height:24px}body.ui-material .battle-hud .hud-level b{font-size:26px!important;line-height:34px}body.ui-material .battle-hud .hud-meter{height:22px}body.ui-material .battle-hud .hud-meter.hud-xp{height:14px}}
+@media(min-width:1180px){body.ui-material .battle-hud .hud-left,body.ui-material .battle-hud .hud-right{zoom:1.45}body.ui-material .battle-hud .hud-left{max-width:324px}}
 body.ui-material.m .stage{padding-top:72px!important}body.ui-material.m .stage #loot{top:80px!important}
 
 /* 覆蓋原先 STATUS 櫃體。HUD 是世界上方的獨立讀數；共用色階不改變字形與位置。 */

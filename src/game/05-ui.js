@@ -9,14 +9,16 @@ const ICON_IDX=ART_SHEETS.icons.ids,SK_IDX=ART_SHEETS.skills.ids;
 function spr(name,size=30){return uiSprite('icons',name,size);}
 function sico(id,size=30){return uiSprite('skills',id,size);}
 const SHEETS={relic:['relics'],legend:['legends'],badge:['badges']};
-function xico(kind,id,size=24){return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
-function eqico(slot,r,size=32){return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
+function xico(kind,id,size=24){if(kind==='legend'&&typeof icon3dLegendUrl==='function'){const url=icon3dLegendUrl(id);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
+function eqico(slot,r,size=32,it){
+  if(typeof icon3dUrl==='function'){const url=icon3dUrl(slot,it&&typeof aTier==='function'?aTier(it):0,r|0);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}
+  return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
 const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
 function slotHtml(slot){
   const it = G.equip[slot];
   if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${spr(SLOT_ICON[slot], 32)}<div class="mute">空</div></div></div>`;
   const lines = itemLines(it).slice(0, 3).map(l => `<li class="${l.imp ? 'imp' : l.lg ? 'lgd' : ''}">${l.t}</li>`).join('');
-  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${it.lg && xico('legend', it.lg, 34) ? xico('legend', it.lg, 34) : eqico(slot, it.r, 34)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
+  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${it.lg && xico('legend', it.lg, 64) ? xico('legend', it.lg, 64) : eqico(slot, it.r, 64, it)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
 }
 function panelHtml(){
   const s = G.st, h = G.h, R = G.run;
@@ -32,7 +34,7 @@ function codexHtml(){
   const lg = Object.values(LEGEND_BY), nl = lg.filter(L => G.legSeen[L.id]).length, md = Object.keys(MODES), nm = md.filter(id => G.seen[id]).length, sk = Object.keys(SKILLS), ns = sk.filter(id => G.lvl >= SKILLS[id].lvl).length;
   const slotOf = id => Object.keys(LEGENDS).find(k => LEGENDS[k].some(L => L.id === id));
   return `<div class="rc wide"><div class="rh">圖鑑</div><div class="mute">守關者暗金保底：連續 ${G.pity || 0} 件沒出，下一件暗金機率 ${Math.round(Math.min(1, .1 + .06*(G.pity || 0))*100)}%</div>
-    <div class="mct" style="margin:8px 0 3px">元素反應</div><ul class="ach"><li class="got"><b>火焰</b> 命中的敵人燃燒 3 秒，持續受到傷害</li><li class="got"><b>閃電</b> 命中的敵人被標記 4 秒</li><li class="got"><b>融化</b> 火焰打到凍結的敵人：傷害 +40%，解除凍結</li><li class="got"><b>超導</b> 閃電打到凍結的敵人：傷害 +30%</li><li class="got"><b>蒸氣</b> 冰霜打到燃燒的敵人：周圍 8 格內敵人受到 40% 傷害，熄滅燃燒</li><li class="got"><b>過載</b> 火焰或冰霜打到被閃電標記的敵人：傷害 +25%</li></ul>
+    <div class="mct" style="margin:8px 0 3px">元素反應</div><ul class="ach"><li class="got">${obj3d('orb:#ff7a3d',28)}<b>火焰</b> 命中的敵人燃燒 3 秒，持續受到傷害</li><li class="got">${obj3d('orb:#ffe04a',28)}<b>閃電</b> 命中的敵人被標記 4 秒</li><li class="got">${obj3d('orb:#ff9ad0',28)}<b>融化</b> 火焰打到凍結的敵人：傷害 +40%，解除凍結</li><li class="got">${obj3d('orb:#8fe8ff',28)}<b>超導</b> 閃電打到凍結的敵人：傷害 +30%</li><li class="got">${obj3d('orb:#c9d3ff',28)}<b>蒸氣</b> 冰霜打到燃燒的敵人：周圍 8 格內敵人受到 40% 傷害，熄滅燃燒</li><li class="got">${obj3d('orb:#ff5a8a',28)}<b>過載</b> 火焰或冰霜打到被閃電標記的敵人：傷害 +25%</li></ul>
     <div class="mct" style="margin:8px 0 3px">遺物 ${Object.keys(G.relics).length} / ${Object.keys(RELICS).length}</div><ul class="ach">${Object.entries(RELICS).map(([id, r]) => `<li class="${G.relics[id] ? 'got' : 'mute'}">${xico('relic', id, 22)}<b>${G.relics[id] ? r.n : '？？？'}</b> ${G.relics[id] ? r.d : ''}</li>`).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">傳奇裝備 ${nl} / ${lg.length}</div><ul class="ach">${lg.map(L => `<li class="${G.legSeen[L.id] ? 'got' : 'mute'}">${xico('legend', L.id, 24)}<b>${G.legSeen[L.id] ? L.name : '？？？'}</b> ${G.legSeen[L.id] ? L.d : `（暗金${SLOTN[slotOf(L.id)]}）`}</li>`).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">模式卡匣 ${nm} / ${md.length}</div><ul class="ach">${md.map(id => { const M = MODES[id], has = G.seen[id]; return `<li class="${has ? 'got' : 'mute'}"><b>${has ? M.n : '？？？'}</b> ${has ? `（${SKILLS[M.sk].n}）${M.d}` : `（${SKILLS[M.sk].n}）${M.hint}${G.carts[id] ? '　已持有未鑑定' : ''}`}</li>`; }).join('')}</ul>
@@ -81,7 +83,7 @@ function uiConfirmBuildFallback(){const p=BUILD_PENDING;BUILD_PENDING=null;hideO
 function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、角色、策略及三件裝備；引用裝備受回收保護。');}
 function skillsHtml(){
   // 接線板放最上面，收起戰場時一打開就能直接編輯；構築管理與電路合成放在下面
-  return wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + buildBar() + uiResolvedHtml() + uiCombatHtml();
+  return wireGuideHtml() + wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + `<details class="ui-section ui-adv"><summary>進階：構築切換、目前生效、戰鬥報告</summary>${buildBar()}${uiResolvedHtml()}${uiCombatHtml()}</details>`;
 }
 function treeHtml(){
   return charSegHtml() + buildBar() + treeHtml0();
@@ -129,12 +131,12 @@ function questHtml(){
   const q = QUESTS[G.quest || 0];
   if (!q) return '';
   const v = Math.min(q.goal, GOAL_STAT[q.k]());
-  return `<div class="mct">新手任務　${G.quest || 0}/${QUESTS.length}</div><div class="gls"><div class="gl"><b>${q.n}</b><span class="mute">${q.t}　獎勵：${goalRewardText(q.rw)}${q.un ? '　（完成後開放：' + (q.un === 'craft' ? '改機' : '天賦盤') + '）' : ''}</span><i style="--p:${Math.round(v/q.goal*100)}%"></i><em>${v} / ${q.goal}</em></div></div>`;
+  return `<div class="mct">新手任務　${G.quest || 0}/${QUESTS.length}</div><div class="gls"><div class="gl"><b>${obj3d('goals',30)}${q.n}</b><span class="mute">${q.t}　獎勵：${goalRewardText(q.rw)}${q.un ? '　（完成後開放：' + (q.un === 'craft' ? '改機' : '天賦盤') + '）' : ''}</span><i style="--p:${Math.round(v/q.goal*100)}%"></i><em>${v} / ${q.goal}</em></div></div>`;
 }
 function goalsHtml(){
   const done = GOALS.filter(a => G.goals[a.id]).length;
-  return questHtml() + `<div class="mct">目標　${done}${qm('goals')}/${GOALS.length}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
-    return `<div class="gl${ok ? ' ok' : ''}"><b>${ok ? '★ ' : ''}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
+  return questHtml() + `<div class="mct">目標　${done}/${GOALS.length}${qm('goals')}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
+    return `<div class="gl${ok ? ' ok' : ''}"><b>${obj3d(ok?'ach':'goals',30)}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
 }
 function mapsHtml(){ return uiAdventureHtml(); }
 
@@ -142,7 +144,7 @@ function lootToast(it){
   let box = $('loot'); const host = document.querySelector('.stage') || document.body; if (!box){ box = document.createElement('div'); box.id = 'loot'; } if (box.parentNode !== host) host.appendChild(box);
   const R = RAR[it.r], ls = itemLines(it).filter(l => l.lg).slice(0, 1).concat(itemLines(it).filter(l => !l.lg).slice(0, 1)).slice(0, it.lg ? 2 : 1), d = document.createElement('div');
   d.className = 'lt r' + it.r; d.style.setProperty('--rc', R.c); d.style.setProperty('--rg', R.g);
-  d.innerHTML = `<div class="lh">${it.lg && xico('legend', it.lg, 24) ? xico('legend', it.lg, 24) : eqico(it.slot || it.sl, it.r, 24)}<b>${it.name}</b></div>`;
+  d.innerHTML = `<div class="lh">${it.lg && xico('legend', it.lg, 56) ? xico('legend', it.lg, 56) : eqico(it.slot || it.sl, it.r, 56, it)}<b>${it.name}</b></div>`;
   box.prepend(d); while (box.children.length > 2) box.lastChild.remove();
   setTimeout(() => d.classList.add('out'), it.r >= 3 ? 3200 : 1800); setTimeout(() => d.remove(), it.r >= 3 ? 3800 : 2400);
 }
@@ -202,11 +204,11 @@ function openRelics(){ if(!GAME_FEATURES.cardChoices)return;
 function pickRelic(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
 function pickCard(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
 function charHtml(){
-  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true"><b>${c.n}${G.char === id ? ' ✓' : ''}</b>${charOk(id) ? '' : `<span class="mute">${c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖'}</span>`}</button>`).join('')}</div><div class="char-description">${CHARS[G.char].d}<br>專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
+  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => { const ok = charOk(id), on = G.char === id, pu = typeof icon3dPortraitUrl === 'function' ? icon3dPortraitUrl(id) : '', nm = String(c.n).split(' '); return `<button class="chr${on ? ' on' : ''}${ok ? '' : ' lock'}" ${ok ? '' : 'disabled'} aria-pressed="${on}" onclick="pickChar('${id}');G.dirty=true"><span class="chr-pic">${pu ? `<img alt="" aria-hidden="true" src="${pu}" style="image-rendering:pixelated">` : ''}</span><span class="chr-info"><b>${nm[0]}<small>${nm[1] || ''}</small></b><i>${ok ? (c.title || c.d) : (c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖')}</i>${on ? '<em>使用中 ✓</em>' : ''}</span></button>`; }).join('')}</div><div class="chr-data"><p><span>姓名</span><b>${CHARS[G.char].n}</b></p><p><span>職業</span><b>${CHARS[G.char].title||CHARS[G.char].d}</b></p><p><span>定位</span><b>${CHARS[G.char].role||"—"}</b></p><p><span>專屬</span><b>${CHARS[G.char].sig.n}</b></p></div><div class="char-description">專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
 }
 function achHtml(){
   const n = achCount(), tot = Object.keys(ACHS).filter(id=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).length;
-  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).filter(([id])=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
+  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).filter(([id])=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${obj3d('medal:'+['#8fd0ff','#ffd24d','#ff9ad0','#5dffa3','#ff9a5a','#c9a8ff'][(id.length+id.charCodeAt(0))%6],36)||xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
 }
 function cardsHtml(){
   const e = Object.entries(G.cards);if(!GAME_FEATURES.cardChoices)return e.length?`<section class="ui-section"><h3>既有改裝效果</h3><ul>${e.map(([id,n])=>`<li>${uxEsc(CARDS[id].n)} ×${n} · ${uxEsc(CARDS[id].d)}</li>`).join('')}</ul></section>`:''; const pend = (G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button> ` : '') + (G.relicPicks > 0 ? `<button class="mb" onclick="openRelics()">有 ${G.relicPicks} 次遺物待選</button> ` : '') + `<button class="mb" onclick="toggleAuto()">自動隨機：${G.autoCard ? '開' : '關'}</button>`;
@@ -374,6 +376,7 @@ function setupPanel(){
     .mct{font-weight:800;font-size:12.5px;color:var(--wbd)}
     .mc.slot{cursor:pointer} .mc.slot.act{box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk),0 0 0 2px #ff8fb8,3px 4px 0 #5a6bb855 !important}
     .gls{display:grid;gap:6px;margin-top:6px} .gl{position:relative;display:grid;grid-template-columns:1fr auto;gap:0 8px;padding:6px 8px 10px;background:#fff;border:1px solid var(--wdk);border-radius:4px;font-size:12px}
+    .ui-obj3d{display:inline-block;vertical-align:middle;margin-right:6px;flex:none}.ach li.mute .ui-obj3d{filter:grayscale(1);opacity:.45}.gl b{display:flex;align-items:center}
     .gl span{grid-column:1/2;font-size:11px} .gl em{grid-row:1;grid-column:2;font-style:normal;font-size:11px;color:var(--muted)} .gl.ok{background:#fff6d6} .gl.ok em{color:#a07000;font-weight:700}
     .gl i{position:absolute;left:0;bottom:0;height:4px;width:var(--p);background:#ff8fb8;border-radius:0 2px 0 4px}
     .pz{display:grid;width:100%;gap:3px;margin:8px 0;max-width:420px;touch-action:pan-y}
@@ -486,7 +489,7 @@ function setupPanel(){
     const dl = document.createElement('div'); dl.className = 'dlg'; document.querySelector('.stage').appendChild(dl);
     const q = [], who = t => /守關者/.test(t) ? 'WARNING' : /倒下/.test(t) ? 'GAME OVER?' : /暗金/.test(t) ? 'LEGENDARY' : 'SYSTEM';
     let busy = false; const next = () => { if (!q.length){ busy = false; return; } busy = true; const fr = $('fig').getBoundingClientRect(), sr = dl.parentElement.getBoundingClientRect(); dl.style.top = (fr.top - sr.top + fr.height*.78) + 'px'; const t = q.shift(); dl.innerHTML = `<b>${who(t)}</b>${t}<i></i>`; dl.classList.add('show'); setTimeout(() => { dl.classList.remove('show'); setTimeout(next, 300); }, 2600); };
-    const base = logLine; logLine = (t, c) => { base(t, c); if (!G.offline && /升級了|守關者|地圖完成|倒下/.test(t) && q.length < 3){ q.push(t); if (!busy) next(); } };
+    const base = logLine; logLine = (t, c) => { base(t, c); if (!G.offline && /升級了|守關者|地圖完成/.test(t) && q.length < 3){ q.push(t); if (!busy) next(); } };
   }
   const el = document.createElement('div'); el.className = 'rpg'; el.id = 'rpg'; document.querySelector('.stage').after(el);
   const m = document.createElement('div'); m.className = 'modal'; m.id = 'modal'; m.hidden = true; m.innerHTML = `<div class="mbox"><div class="mtabs" id="mtabs"></div><div id="mbody"></div></div>`;

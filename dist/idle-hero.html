@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Idle Hero</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABQ0lEQVR4nNWXP26DMBSHv1Y9RI/A1DVzL0EkysCAVEVI2bJ1YKi6sEVCVSQGhhQpXKJ36MTaLbegk1PUAgY/J1Z+E5Zsfx+PP9YDx7nRTVjGaSsBHIp0lHGnAz/HvoQP0I6J3I6ttADX7tFrtYzTVi30o1eRQF2+ALAr6t4qDD6CbvzywwwePWnnjD6CS8SaQL6A/D5zI5AvgO+M5Li5vIAELhaQwkUCNuAw8TP8B99m8IYYDgYVsAmHmRXItxnJegNHK2xgZgWStZ277mZSBab8Us8moA6Tc+W6z4KoComq0I1AVIV4gYcXeCIJIwEFV5FIXOc7UAZ7mqo5jZuqoQz2RgJGZ4GSUGU3hYsEpOBZAo/vX6frz9WD1fnOX8LBtqnbG6jsihr4bTZ04+66oc5oVKBvs7lRUrMF/oqYRtecOs8Prtt2KehE4U4AAAAASUVORK5CYII=">
 <style>#boot{position:fixed;inset:0;z-index:100;background:#d2d9e7;color:#172751;display:grid;place-content:center;text-align:center;font:16px/1.8 monospace}#boot p{margin:4px}#boot small{font-size:13px;color:#475778}</style>
 </head>
 <body>
@@ -790,7 +791,29 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  { v:'0.38.4',d:'2026-10-23',t:['手機螢幕改成銀灰掌機質感：果凍圓鈕、粉紅寶石愛心、液晶綠跑馬燈與底部選單列','角色頁右側的手機入口回歸簡約，只保留一支緩慢旋轉的 3D 手機']},
+  { v:'0.39.17', d:'2026-10-23', t:['冒險頁「可用地圖」改成方塊卡網格：放大 3D 小島、同款地圖合併顯示數量、等級與詞綴一眼看到','大型守關者的手腳會擺動，近戰怪物戰鬥中偶爾舉臂嘶吼','範圍衝擊的碎片不再從角色身上冒出來繞圈','角色專屬技、太陽遺物與回聲也受施放距離限制，不再打到畫面另一端','死亡視窗配色改成與亮色介面一致，目標頁說明按鈕移到標題旁'] },
+  { v:'0.39.20', d:'2026-10-23', t:['各頁統一成藍紫窗口風：區塊標題變標題列、摺疊列變小視窗列','戰鬥狀態等數據改成黑底資料欄，更新日誌每個版本一張卡片','背包、地圖等空狀態改成虛線框提示卡'] },
+  { v:'0.39.19', d:'2026-10-23', t:['角色選擇改成復古選角視窗：每位角色有 3D 頭像框、名字欄與職業，下方加上黑底資料欄','選中的角色以藍色高亮框標示「使用中」'] },
+  { v:'0.39.18', d:'2026-10-23', t:['介面配色還原成藍紫窗口風格'] },
+  { v:'0.39.16',d:'2026-10-23',t:['介面配色改成亮銀外殼、白色閱讀面、鮮藍選中與檸檬黃主要按鈕','角色與裝扮預覽加入四位角色各自的待機小動作','角色頁小手機改成緩慢單向自轉']},
+  { v:'0.39.15',d:'2026-10-23',t:['巨像、螃蟹、蜘蛛、鼹鼠的手腳可以各自擺動：巨像走路擺臂、出手舉臂砸下，螃蟹鉗子開闔、八腳橫行，蜘蛛八腳輪流點地，鼹鼠雙爪挖掘']},
+  { v:'0.39.14',d:'2026-10-23',t:['技能出手範圍再縮短，只打得到主角身邊的怪；撿東西也要走到更近才會撿起','修正少數怪物倒下時可能出現的畫面錯誤']},
+  { v:'0.39.13',d:'2026-10-23',t:['怪物移動與待機更有個性：螃蟹橫行、蜘蛛急竄、喇叭隨節拍脹縮、鬼火旋轉飄動、鼹鼠起伏鑽行、巨像沉重踏步','技能命中特效依元素區分：火焰迸出火星、冰霜落下冰晶、閃電放出電弧']},
+  { v:'0.39.12',d:'2026-10-23',t:['怪物動作增加：出場時彈出、攻擊前先蹲低蓄力、被打到會往後退；史萊姆被擊倒時攤平、無人機旋轉墜落','過熱電池丟出時拖著火星']},
+  { v:'0.39.11',d:'2026-10-23',t:['技能只會打到主角附近的怪，太遠的怪要等牠們走近才會被打（以前部分範圍技能可以隔著整張地圖打到）','主角出招時不再冒出圍著頭轉的彩色光柱，只保留腳下的光圈']},
+  { v:'0.39.10',d:'2026-10-23',t:['目標頁每個目標加上 3D 小旗與獎盃，成就頁改成 3D 獎章（未達成顯示灰色），圖鑑的元素反應加上各色 3D 元素球']},
+  { v:'0.39.9',d:'2026-10-23',t:['設定頁每個入口加上 3D 小圖示（齒輪、存檔片、旗子、獎盃、圖鑑書、捲軸、對話框、星星）','角色頁的穿著裝備與打造頁的裝備分頁圖示放大']},
+  { v:'0.39.8',d:'2026-10-23',t:['「死亡」視窗改成與遊戲視窗一致的藍紫標題列、灰藍底和像素進度條，去掉粉紅漸層；仍不擋操作，倒數結束自動復活']},
+  { v:'0.39.7',d:'2026-10-23',t:['冒險頁的城市遠征、無限之塔、訓練場加上 3D 小圖：三區路線是各自的 3D 場景卡，無限之塔有依紀錄增高的 3D 塔，訓練場是單體與群體 3D 假人','同時精簡說明文字，次要規則收進摺疊區']},
+  { v:'0.39.6',d:'2026-10-23',t:['冒險頁地圖卡的小島縮圖改成 3D 低面數小島，依地貌配色（含樹木、傳送門），並維持像素顆粒感']},
+  { v:'0.39.5',d:'2026-10-23',t:['技能棋盤上的文字提高對比並放大：技能插槽改深色底淺色字，空槽與鎖定槽、電源列、配件與晶片字級加大']},
+  { v:'0.39.4',d:'2026-10-23',t:['桌面版戰鬥畫面上方的等級、生命與經驗條、深度、金幣與 DPS 整體放大，更好讀；手機版不變']},
+  { v:'0.39.3',d:'2026-10-23',t:['技能頁改成三步引導（裝技能、拉線、放配件），目前該做哪一步會高亮；進階說明收進摺疊區，格子改標「剩 N 個」','桌面版技能棋盤放大，並加上像素顆粒與掃描線質感','傳奇核心改為 3D 圖示；裝備詳情卡的圖示放大']},
+  { v:'0.39.2',d:'2026-10-23',t:['倒下時戰場上方改顯示系統視窗風的大字「死亡」，附復活倒數與進度條；不擋操作、不需要點擊，倒數結束自動復活續打','移除倒下時的黑底對話框，避免重複']},
+  { v:'0.39.1',d:'2026-10-23',t:['角色手機螢幕改成顯示畫面外看不到的資訊：歷年戰績、收藏進度（成就、傳奇核心、遺物、電台手記、裝扮），與外面重複的裝備、屬性、技能、連結頁已移除','新增「全息」頁：目前武器放在旋轉的全息台座上掃描，帶低解析像素 3D 質感']},
+  { v:'0.39.0',d:'2026-10-23',t:['3D 畫質整體調低：高畫質改為原本的低畫質等級，中與低畫質再更低，畫面統一帶像素顆粒感','地圖預覽、3D 手機與角色預覽一起套用低畫質風格','裝備與武器圖示改成 3D 模型渲染的小圖，依裝備階級與稀有度換造型和顏色','下方工作列加入開始選單、音效開關與可點擊的時鐘，並藏了幾個小彩蛋','瀏覽器分頁加上遊戲圖示']},
+  { v:'0.38.5',d:'2026-10-23',t:['角色頁右側的手機入口回歸簡約：一支輕輕自轉的 3D 手機放在銀灰凹槽底框裡']},
+  { v:'0.38.4',d:'2026-10-23',t:['手機螢幕改成銀灰掌機質感：果凍圓鈕、粉紅寶石愛心、液晶綠跑馬燈與底部選單列']},
   { v:'0.38.3',d:'2026-10-23',t:['角色頁的手機入口改成簡潔的小 3D 手機，放在角色資訊卡右側的空位，點一下就開機']},
   { v:'0.38.2',d:'2026-10-23',t:['角色手機改用真正的 3D 模型：側面、邊角與按鍵都有立體厚度，可以自由轉動並翻到背面','螢幕與按鍵會跟著模型一起透視變形，放大螢幕時鏡頭會推近']},
   { v:'0.38.1',d:'2026-10-23',t:['角色頁的手機入口改成會轉動的 3D 小手機，加上舊網頁風的 NEW! 星芒與彩虹字','角色手機新增專屬音效：撥接上網握手聲、按鍵音、開機與關機旋律；雙擊手機可以翻到背面','修正手機側面在側轉時一格一格的破圖，轉動角度改為有限制']},
@@ -1423,7 +1446,7 @@ function dropGround(d){
   G.drops.push(d);
 }
 function collectNearby(dt){
-  for(const d of G.drops){d.t+=dt;if(!d.done&&d.t>=.35&&G.h.dead<=0&&Math.hypot(d.x-G.h.x,d.y-G.h.y)<=6){d.done=true;addFx({k:'pickup',x:d.x,y:d.y,x2:G.h.x,y2:G.h.y,col:d.kind==='gold'?'#e4c379':'#81cbd1',t:0,dur:.35});pickup(d);}}
+  for(const d of G.drops){d.t+=dt;if(!d.done&&d.t>=.35&&G.h.dead<=0&&Math.hypot(d.x-G.h.x,d.y-G.h.y)<=4){d.done=true;addFx({k:'pickup',x:d.x,y:d.y,x2:G.h.x,y2:G.h.y,col:d.kind==='gold'?'#e4c379':'#81cbd1',t:0,dur:.35});pickup(d);}}
   G.drops=G.drops.filter(d=>!d.done);
 }
 
@@ -1970,6 +1993,9 @@ function hitMon(m, dmg, crit, source=G.src||'其他'){
 }
 function rollDmg(base, critPct){ const s = G.st, crit = Math.random()*100 < (critPct == null ? s.crit : critPct); return { dmg:base * (crit ? s.cm/100 : 1) * tRand(.9, 1.1), crit }; }
 const aliveMons = () => G.mons.filter(m => !m.dead && !(m.fall > 0));
+/* 出手範圍：只打得到主角附近的怪，太遠的怪等牠們走近（以前全場無距離限制） */
+const CAST_RANGE = 42;
+const castMons = () => aliveMons().filter(m => Math.hypot(m.x - G.h.x, m.y - G.h.y) <= CAST_RANGE);
 function nearestMon(fightOnly, from){ let best = null, bd = 1e9; const [fx, fy] = from || [G.h.x, G.h.y]; for (const m of G.mons){ if (m.dead || m.fall > 0 || (fightOnly && !m.fight)) continue; const d = Math.hypot(m.x - fx, m.y - fy); if (d < bd && d < 60){ bd = d; best = m; } } return best; }
 
 function revive(){ const h = G.h; h.dead = 0; h.x = HX; h.y = HY; h.vx = h.vy = 0; h.hp = G.st.life; G.spawnCd = 1; }
@@ -1995,7 +2021,7 @@ function skillDmg(id){ const k = G.st.sk[id]; return k; }
 function applySkillHit(id,m,mult=1,origin=G.eventOrigin||'primary'){
   const k=G.st.sk[id];if(!k||!m||m.dead||m.fall>0)return 0;
   const source=SKILLS[id].n+(origin==='primary'?'':origin==='repeat'?'·回放':'·觸發');G.src=source;
-  if (G.fx.length < 36) addFx({ k:'shard', x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, t:0, dur:.4 });
+  if (G.fx.length < 36){ const el = SKILLS[id].el, k = el === 'fire' ? 'embers' : el === 'cold' ? 'snow' : Math.random() < .5 ? 'zap' : 'shard'; addFx({ k, x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, t:0, dur:k === 'embers' ? .7 : k === 'snow' ? .8 : .4 }); }
   if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
   const el = SKILLS[id].el; let rx = null;   /* 元素反應：火燒、閃電標記，加上冰凍，三者互相放大 */
   if (m.frozen > 0 && el === 'fire'){ mult *= 1.4; m.frozen = 0; rx = '融化'; } else if (m.frozen > 0 && el === 'light'){ mult *= 1.3; rx = '超導'; } else if (m.burn > 0 && el === 'cold') rx = '蒸氣';
@@ -2019,9 +2045,9 @@ function castSkill(id,repeat=1,origin=repeat===1?'primary':'repeat'){
 }
 function performSkill(id,repeat,origin){
   const k = G.st.sk[id], s = G.st, h = G.h; let total = 0; if (!k) return;
-  const al = aliveMons(); if (!al.length) return;
+  const al = castMons(); if (!al.length) return;
   const p=k.pattern,prim=(p.coldStart?al.filter(m=>m.frozen>0).sort((a,b)=>Math.hypot(a.x-h.x,a.y-h.y)-Math.hypot(b.x-h.x,b.y-h.y))[0]:null)||nearestMon(false)||al[0],mode=k.mode;combatCast(id,origin);SFX(id.toLowerCase());
-  if (origin === 'primary' && !G.offline){ const K0 = SKILLS[id]; addFx({ k:'ring', x:h.x, y:h.y, col:K0.col, t:0, dur:.45 }); addFx({ k:'pillar', x:h.x, y:h.y, col:K0.col, t:0, dur:.3 });
+  if (origin === 'primary' && !G.offline){ const K0 = SKILLS[id]; addFx({ k:'ring', x:h.x, y:h.y, col:K0.col, t:0, dur:.45 });
     if (K0.cd >= 2 && G.fx.length < 30 && G.time-(h.labelAt??-99)>1.2){ h.labelAt=G.time;addFloat(h.x - 2,h.y,BZ+34,K0.n,K0.col,12,'skill'); }
     kick(K0.cd>=4?1.7:.65,K0.cd>=4?.22:0,K0.col,K0.cd>=4?.6:.2); }
   if(origin==='primary'){if(k.has.includes('DELAY'))G.timers.push({id,t:.6,rep:.45});if(G.pass.includes('EK'))G.timers.push({id,t:.8,rep:s.firmware.includes('EK')?.6:.35});}
@@ -2086,7 +2112,7 @@ function performProj(p){
   const s = G.st, h = G.h;
   if (p.k === 'fire'){
     SFX('boom'); const k = s.sk.FIRE, m = p.tg; if (!k) return; if (m.dead && !G.mons.includes(m)) return;
-    const targets = k.area ? aliveMons() : (m.dead ? [] : [m]); let total = 0;
+    const targets = k.area ? castMons() : (m.dead ? [] : [m]); let total = 0;
     for (const q of targets){ total += applySkillHit('FIRE', q, p.mul); addFx({ k:'boom', x:q.x, y:q.y, z:BZ + 6, t:0, dur:.4 });
       if (k.mode === 'FIRE_BLAST'){ for (const o of G.mons) if (!o.dead && o !== q && Math.hypot(o.x - q.x, o.y - q.y) < 14) total += applySkillHit('FIRE', o, p.mul*.6); }
       if (k.mode === 'FIRE_SPLIT'){ const t2 = G.mons.filter(o => !o.dead && o !== q).sort((a, b) => Math.hypot(a.x - q.x, a.y - q.y) - Math.hypot(b.x - q.x, b.y - q.y)).slice(0, 2);
@@ -2096,7 +2122,7 @@ function performProj(p){
   } else if (p.k === 'meteor'){ kick(1.5, .15, '#ffb070', .6);
     SFX('boom'); const k = s.sk.METEOR; if (!k) return; let total = 0;
     addFx({ k:'boom', x:p.x, y:p.y, z:BZ + 4, t:0, dur:.6, big:true });
-    const pattern=k.pattern,al=aliveMons(),top=pattern.primary? al.slice().sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y))[0] : null;
+    const pattern=k.pattern,al=castMons(),top=pattern.primary? al.slice().sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y))[0] : null;
     for(const q of al){
       if(pattern.radius&&Math.hypot(q.x-p.x,q.y-p.y)>pattern.radius)continue;
       const factor=pattern.primary?(q===top?pattern.primary:pattern.splash):p.coldBoost&&q===p.target?pattern.coldBonus:1;
@@ -2214,7 +2240,7 @@ function update(dt){
   }
   if (h.phx > 0) h.phx -= dt;
   if(typeof characterCombatTick==='function')characterCombatTick(dt);
-  { const sg = CHARS[G.char] && CHARS[G.char].sig, al = aliveMons().filter(m => !(m.fall > 0));
+  { const sg = CHARS[G.char] && CHARS[G.char].sig, al = castMons().filter(m => !(m.fall > 0));
     if (sg && al.length && !G.train){ G.sigT = (G.sigT || 0) + dt; if (G.sigT >= sg.cd){ G.sigT = 0; G.src = '專屬：' + sg.n; const hit = s.hit, pick = n => al.slice().sort(() => Math.random() - .5).slice(0, n); SFX('boom');
       if(typeof y2kSignature==='function')y2kSignature(al,s);
       else if (G.char === 'street'){ addFx({ k:'ring', x:G.h.x, y:G.h.y, col:'#ff9a3c', t:0, dur:.5 }); kick(.8, .2, '#ff9a3c', .5); for (const m of al) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 24){ const a = Math.atan2(m.y - G.h.y, m.x - G.h.x); m.x += Math.cos(a)*5; m.y += Math.sin(a)*5; hitMon(m, hit*7, false); } }
@@ -2222,14 +2248,14 @@ function update(dt){
       else if (G.char === 'beep'){ for (const m of pick(6)){ addFx({ k:'bolt', pts:[[G.h.x + 3.4, G.h.y - 3.6, BZ + 9.2], [m.x, m.y, BZ + 8]], t:0, dur:.3 }); hitMon(m, hit*5, false); } }
       else if (G.char === 'volt'){ for (const m of pick(5)){ addFx({ k:'bolt', pts:[[m.x, m.y, BZ + 60], [m.x, m.y, BZ + 6]], t:0, dur:.35 }); addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 6, col:'#e0b020', t:0, dur:.3 }); m.shock = 4; hitMon(m, hit*2.2, true); } }
     } } }
-  if (G.relics.SUN && G.slots[0] && aliveMons().length && (G.sunT += dt) >= 10){ G.sunT = 0; addFx({ k:'nova', t:0, dur:.55 }); for (const m of aliveMons()) applySkillHit(G.slots[0], m, 1.2,'proc'); }
-  if (h.castT < 0 && aliveMons().length){ const id=chooseReadySkill(); if (id){ h.castReadySince=G.readySince[id]??G.time;h.castT = 0; h.castFired = false; h.castSk = id; G.cds[id] = s.sk[id].cd; } }
+  if (G.relics.SUN && G.slots[0] && castMons().length && (G.sunT += dt) >= 10){ G.sunT = 0; addFx({ k:'nova', t:0, dur:.55 }); for (const m of castMons()) applySkillHit(G.slots[0], m, 1.2,'proc'); }
+  if (h.castT < 0 && castMons().length){ const id=chooseReadySkill(); if (id){ h.castReadySince=G.readySince[id]??G.time;h.castT = 0; h.castFired = false; h.castSk = id; G.cds[id] = s.sk[id].cd; } }
   if (h.castT >= 0){
     h.castT += dt;
     if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk,1,'primary');delete G.readySince[h.castSk]; G.lgC = (G.lgC || 0) + 1; if ((lgOn('W_ECHO') && G.lgC % 4 === 0) || (lgOn('R_DIAL') && Math.random() < .2)) G.timers.push({ t:.3, id:h.castSk, rep:1 }); if (s.sk[h.castSk] && s.sk[h.castSk].twin) for (let i = 0; i < s.sk[h.castSk].twin; i++) G.timers.push({ t:.25*(i + 1), id:h.castSk }); }
     if(h.castT>=GridLab.LIMITS.castTime-1e-9) h.castT = -1;
   }
-  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = aliveMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({k:'meteor',x:q.x,y:q.y,t:0,dur:.9,mul:t.mul,origin:'repeat'}); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id,m,s.sk[t.id].pattern.crush,'repeat'); } } else if (t.flick){ const k = s.sk[t.id], al = aliveMons().filter(m => !(m.fall > 0)).sort((a, b) => Math.hypot(a.x - G.h.x, a.y - G.h.y) - Math.hypot(b.x - G.h.x, b.y - G.h.y)).slice(0, 5);
+  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = castMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({k:'meteor',x:q.x,y:q.y,t:0,dur:.9,mul:t.mul,origin:'repeat'}); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id,m,s.sk[t.id].pattern.crush,'repeat'); } } else if (t.flick){ const k = s.sk[t.id], al = aliveMons().filter(m => !(m.fall > 0)).sort((a, b) => Math.hypot(a.x - G.h.x, a.y - G.h.y) - Math.hypot(b.x - G.h.x, b.y - G.h.y)).slice(0, 5);
         if (k && al.length){ const q = al[t.flick.i % al.length], a = Math.random()*6.28; addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.2 }); addFx({ k:'ghost', x:G.h.x, y:G.h.y, x2:q.x, y2:q.y, col:'#ff9ae0', t:0, dur:.35 });
           [G.h.x,G.h.y]=terrainProject(q.x+Math.cos(a)*3.5,q.y+Math.sin(a)*3.5); G.h.vx = G.h.vy = 0; G.h.dash = null; G.h.gx = G.h.x; G.h.gy = G.h.y;
           addFx({ k:'slash', x:q.x, y:q.y, z:BZ + 7, t:0, dur:.22 }); SFX('crit'); kick(.12);
@@ -2320,7 +2346,7 @@ const T3 = THREE, R3 = { clean:new URLSearchParams(location.search).has('clean')
 function r3Quality(quality='auto',viewportWidth=1024){return ['low','medium','high'].includes(quality)?quality:(viewportWidth<768||typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches&&viewportWidth<1180)?'medium':'high';}
 function r3BufferSize(width,height,dpr=1,clean=false,quality='auto',viewportWidth=width){
   const W=Math.max(2,Number.isFinite(width)?width:2),H=Math.max(2,Number.isFinite(height)?height:2);
-  const q=r3Quality(quality,viewportWidth),policy={low:[.5,720],medium:[.75,1100],high:[1,1600]}[q];
+  const q=r3Quality(quality,viewportWidth),policy={low:[.3,420],medium:[.4,560],high:[.5,720]}[q];
   const ratio=clean?Math.max(1,Math.min(2,Number.isFinite(dpr)?dpr:1)):Math.min(policy[0],policy[1]/Math.max(W,H));
   return {width:Math.max(1,Math.floor(W*ratio)),height:Math.max(1,Math.floor(H*ratio))};
 }
@@ -2758,7 +2784,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   const frameRatio=document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig0.getBoundingClientRect().width):MOB()?mobRatio():Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig0.getBoundingClientRect().width)));
   if(vb0.width && Math.abs(vb0.height/vb0.width-frameRatio)>.01)fig0.setAttribute('viewBox',`0 0 ${vb0.width} ${vb0.width*frameRatio}`);
   const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
-  const cv = R3.rd.domElement; cv.style.imageRendering = !R3.clean&&r3Quality(r3ViewQuality(),innerWidth)==='low'?'pixelated':'auto'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const cv = R3.rd.domElement; cv.style.imageRendering = R3.clean?'auto':'pixelated'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
   const buffer=r3BufferSize(W,H,dpr,R3.clean,r3ViewQuality(),innerWidth);
   R3.W=W;R3.H=H;R3.dpr=dpr;
   if(buffer.width!==cv.width||buffer.height!==cv.height)R3.rd.setSize(buffer.width,buffer.height,false);
@@ -2790,8 +2816,22 @@ const MPOSE_HURT = { hips:[-.2, 0, 0], torso:[-.55, .2, .1], head:[-.55, 0, .25]
 const MPOSE_TMP = {};
 function monLook(m, g){
   const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, dl = Math.hypot(G.h.x - m.x, G.h.y - m.y) || 1, y = m.y + 3*lg*(G.h.y - m.y)/dl, lx = m.x + 3*lg*(G.h.x - m.x)/dl, ps = g.userData, base = (ps.s || 1)*CK*(MONSTER_TRAITS[m.type]?.scale||1);
-  at3(g, lx, y, BZ + terrainHeight(m.x,m.y) + (m.fall > 0 ? 70*Math.pow(m.fall/.9, 2) : 0)); g.rotation.y = Math.atan2(G.h.x - m.x, G.h.y - m.y);   // 面向主角
+  if (m.born === undefined) m.born = G.time; const age = G.time - m.born, pop = age < .4 ? 1 + .35*Math.sin(Math.min(1, age/.4)*Math.PI) - (1 - Math.min(1, age/.4))*.65 : 1,
+    wu = !m.dead && m.fight && !m.warning && m.lunge < 0 && m.atkCd > 0 && m.atkCd < .4 ? 1 - m.atkCd/.4 : 0, kb = m.hurtT > 0 && !m.dead ? Math.min(1, m.hurtT/.12)*2.2 : 0;
+  at3(g, lx - kb*(G.h.x - m.x)/dl, y - kb*(G.h.y - m.y)/dl, BZ + terrainHeight(m.x,m.y) + (m.fall > 0 ? 70*Math.pow(m.fall/.9, 2) : 0)); g.rotation.y = Math.atan2(G.h.x - m.x, G.h.y - m.y);   // 面向主角
   if(ps.simple){g.scale.setScalar(base*(m.type==='crab'?1.15:1));g.position.y+=(m.type==='wisp'?7+Math.sin(t*3)*2:Math.abs(Math.sin(t*7))*.8)+lg*3;g.rotation.x=lg*.3;}
+  if (ps.simple){ const mv = m.fight || m.dead ? 0 : 1, q = m.boss ? 'golem' : m.type;
+    if (q === 'crab'){ g.rotation.z = Math.sin(t*8)*.12*mv; g.rotation.y += Math.sin(t*4)*.15*mv; }
+    else if (q === 'spider'){ g.rotation.y += Math.sin(t*14)*.18*mv; g.position.y += Math.abs(Math.sin(t*16))*.6*mv; }
+    else if (q === 'speaker'){ const bs = 1 + .09*Math.abs(Math.sin(t*6)) + lg*.12; g.scale.set(base/Math.sqrt(bs), base*bs, base/Math.sqrt(bs)); g.rotation.z = Math.sin(t*3)*.05; }
+    else if (q === 'wisp'){ g.rotation.y += t*2.2; g.rotation.z = Math.sin(t*2.4)*.25; }
+    else if (q === 'mole'){ g.position.y -= (.5 + .5*Math.sin(t*4))*1.2*mv; g.rotation.x += Math.sin(t*4 + 1)*.12*mv; }
+    else if (q === 'golem'){ const st = Math.abs(Math.sin(t*3)); g.scale.y *= 1 - .08*st*mv; g.position.y += (1 - st)*.6*mv; g.rotation.z = Math.sin(t*3)*.06*mv; }
+    const L = ps.limbs; if (L && !m.dead){ const w = Math.sin(t*(q === 'golem' ? 3.2 : q === 'spider' ? 14 : q === 'crab' ? 9 : 8));
+      if (q === 'golem'){ const sw = mv ? w*.65 : 0, up = m.lunge >= 0 ? -2.3*lg : m.fight ? -.35 + Math.sin(t*2)*.12 : 0; L.legL.rotation.x = -sw; L.legR.rotation.x = sw; L.armL.rotation.x = sw*.8 + up; L.armR.rotation.x = -sw*.8 + up; L.armL.rotation.z = .08 + lg*.2; L.armR.rotation.z = -.08 - lg*.2; }
+      else if (q === 'spider'){ for (const k in L){ const lb = L[k], i = +k.slice(-1), a = i*1.7 + (k[3] === 'R' ? 0 : 3.1); lb.rotation.y = lb.userData.ry + Math.sin(t*14 + a)*(mv ? .5 : .08) - (m.lunge >= 0 ? lg*.5 : 0); lb.rotation.z = Math.max(0, Math.sin(t*14 + a))*(mv ? .35 : 0)*(k[3] === 'R' ? 1 : -1); } }
+      else if (q === 'crab'){ const sn = Math.sin(t*(m.fight ? 7 : 3)); L.clawL.rotation.z = (.1 + (m.fight ? .35 : .12)*sn)*-1 + lg*.8; L.clawR.rotation.z = (.1 + (m.fight ? .35 : .12)*sn) - lg*.8; L.clawL.rotation.y = L.clawR.rotation.y = Math.sin(t*2)*.1; for (const k in L){ if (k.startsWith('leg')){ const i = +k.slice(-1); L[k].rotation.y = Math.sin(t*12 + i*2.1 + (k[3] === 'R' ? 0 : 1.6))*(mv ? .45 : .05); } } }
+      else if (q === 'mole'){ const dg = Math.sin(t*(m.fight ? 10 : 6)); L.pawL.rotation.x = dg*.8 - lg; L.pawR.rotation.x = -dg*.8 - lg; } } }
   else if (m.type === 'slime'){ g.scale.setScalar(base); const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
   else if (m.type === 'drone'){ g.scale.setScalar(base); g.position.y += 5 + Math.sin(t*4 + m.ph)*1.6 + lg*3; g.rotation.x = .25 + lg*.5; for (const r of ps.rotors) r.rotation.y = t*40; }
   else if (m.type === 'bomb'){ const low = 1 - tClamp(m.hp/m.hpMax), sq = 1 + .06*Math.sin(t*(5 + low*14)); g.scale.set(base*sq, base/sq, base*sq); g.position.y += Math.abs(Math.sin(t*5))*1.2 + lg*3; g.rotation.x = lg*.4; ps.spark.scale.setScalar(.7 + .5*Math.abs(Math.sin(t*12))); ps.spark.material.color.set(Math.sin(t*(8 + low*20)) > 0 ? '#ff3a2a' : '#ffd35a'); }
@@ -2804,12 +2844,15 @@ function monLook(m, g){
     else if (m.lunge >= 0) pose = poseMix(MPOSE_FIGHT, MPOSE_ATK, lg);   // 蓄勢後大幅前撲、手臂掄過頭
     else if (m.fight) pose = poseMix(MPOSE_FIGHT, MPOSE_FIGHT, 0, MPOSE_TMP), pose.torso = [.15 + f*.06, f*.1, 0], pose.armR = [-1.2 + f*.35, 0, .2], pose.foreR = [-.8, 0, 0], pose.armL = [-.6 - f*.3, 0, -.3], pose.head = [f*.05, Math.sin(t*1.5)*.15, 0];
     else pose = poseMix(MPOSE_WALK, MPOSE_WALK, 0, MPOSE_TMP), pose.legL = [-w*.95, 0, 0], pose.legR = [w*.95, 0, 0], pose.shinL = [.2 + Math.max(0, w)*.9, 0, 0], pose.shinR = [.2 + Math.max(0, -w)*.9, 0, 0], pose.armL = [w*.9, 0, -.15], pose.armR = [-w*.9 - .2, 0, .15], pose.foreR = [-.7, 0, 0], pose.torso = [.16*lean, w*.12, 0], pose.hips = [0, -w*.1, 0], pose.head = [-.1 + Math.abs(w)*.1, Math.sin(t*2)*.1, 0];
+    if (m.fight){ const cy = (t + m.ph*3) % (big ? 4 : 5), tau = cy < .8 ? Math.sin(cy/.8*Math.PI) : 0; if (tau > 0){ pose.armL = [-2.5*tau - .6, 0, -.3 - .5*tau], pose.armR = [-2.5*tau - 1.2, 0, .2 + .5*tau], pose.foreL = [-.4, 0, 0], pose.foreR = [-.4, 0, 0], pose.torso = [.15 - .4*tau, 0, 0], pose.head = [-.5*tau, 0, 0]; } }   // 戰鬥中偶爾舉臂嘶吼
     applyPose(B, pose, m.lunge >= 0 ? .8 : .5);
     const tilt = m.hurtT > 0 ? -.35 : lg*.35;   // 整體前傾、受擊後仰（細節由骨架負責）
     ps.tilt = (ps.tilt || 0) + (tilt - (ps.tilt || 0))*.4; g.rotation.x = ps.tilt;
     const st = m.fight ? 1 : 1 + (hop - .5)*.1 + lg*.15; g.scale.set(base/Math.sqrt(st), base*st, base/Math.sqrt(st));
   }
-  if (m.dead){ const u = Math.min(1, m.deadT/.4); g.scale.setScalar(Math.max(.01, base*(1 - u*.4))); g.rotation.x = -1.3*u; g.position.y += Math.sin(u*Math.PI)*6; for (const mt of ps.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u); } if (ps.sh) ps.sh.visible = false; }
+  if (!m.dead){ if (pop !== 1) g.scale.multiplyScalar(Math.max(.2, pop)); if (wu > 0){ g.scale.y *= 1 - .18*wu; g.position.y -= wu*1.2; g.rotation.x -= wu*.35; } }
+  if (m.dead){ const u = Math.min(1, m.deadT/.4); if (m.type === 'slime'){ g.scale.set(base*(1 + u*.7), Math.max(.01, base*(1 - u*.92)), base*(1 + u*.7)); g.rotation.x = 0; for (const mt of ps.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u*u); } if (ps.sh) ps.sh.visible = false; return; }
+    if (m.type === 'drone'){ g.rotation.z = u*10; g.rotation.x = .25 + u*.8; g.position.y += 5 - u*u*9; g.scale.setScalar(Math.max(.01, base*(1 - u*.3))); for (const mt of ps.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u*u); } if (ps.sh) ps.sh.visible = false; return; } g.scale.setScalar(Math.max(.01, base*(1 - u*.4))); g.rotation.x = -1.3*u; g.position.y += Math.sin(u*Math.PI)*6; for (const mt of ps.mats || []){ mt.transparent = true; mt.opacity = Math.max(0, 1 - u); } if (ps.sh) ps.sh.visible = false; }
   else if (m.frozen > 0) flash(g, '#9fe0ff', .55); else if (m.hurtT > 0) flash(g, '#ffffff', .7); else if (m.burn > 0) flash(g, '#ff8a3c', .3 + .12*Math.sin(G.time*14)); else if (m.shock > 0) flash(g, '#ffe45c', .25); else flash(g, '#000000', 0);
   if (m.elite){ if (!ps.eliteRing){ ps.eliteRing = mk(new T3.RingGeometry(5.5, 7, 24).rotateX(-Math.PI/2), basic('#ffd35a', .9), 0, .5, 0, g); ps.eliteRing.material.side = T3.DoubleSide; mk(ico(.8, 0), basic('#ffd35a', .9), 0, 17, 0, g); } g.scale.multiplyScalar(1.3); ps.eliteRing.rotation.y = t*2; }
   if (m.hurtT > 0) g.scale.multiplyScalar(1 + m.hurtT*1.4);   // 挨打時瞬間脹大一下
@@ -2865,7 +2908,10 @@ function updateFx(){
     if(e.k==='warning'){add(ring,e.col||'#ff8a4a',.75,e.x,e.y,BZ+.4,9);continue;}
     if(e.k==='ring'||e.k==='nova'){const r=tLerp(2,e.k==='nova'?48:24,ease(e.t)),x=e.k==='nova'?G.h.x:e.x,y=e.k==='nova'?G.h.y:e.y;add(ring,e.col||'#9fe0ff',fade*.95,x,y,BZ+.6,r);add(disc,e.col||'#9fe0ff',fade*.16,x,y,BZ+.4,r*.9);}
     if(e.k==='pillar'){const o=add(geo('fxp',()=>new T3.CylinderGeometry(1,1,1,8,1,true)),e.col,fade*.55,e.x,e.y,BZ+14*e.t+8);o.scale.set(4*fade+1,22+14*e.t,4*fade+1);}
-    if(e.k==='shard'||e.k==='nova'){const n=e.k==='nova'?8:5;for(let i=0;i<n;i++){const a=i*6.283/n+e.t,d=tLerp(1,e.k==='nova'?40:12,ease(e.t));const o=add(box,i%2?e.col||'#9fe0ff':'#ffffff',fade*.9,(e.x??G.h.x)+Math.cos(a)*d,(e.y??G.h.y)+Math.sin(a)*d,(e.z??BZ)+2+Math.sin(e.t*3.14)*8,fade+1);o.rotation.y=a;}}
+    if(e.k==='shard'||e.k==='nova'){const n=e.k==='nova'?8:5;for(let i=0;i<n;i++){const a=i*6.283/n+e.t,d=tLerp(e.k==='nova'?9:1,e.k==='nova'?40:12,ease(e.t));const o=add(box,i%2?e.col||'#9fe0ff':'#ffffff',fade*.9,(e.x??G.h.x)+Math.cos(a)*d,(e.y??G.h.y)+Math.sin(a)*d,(e.z??BZ)+2+Math.sin(e.t*3.14)*8,fade+1);o.rotation.y=a;}}
+    if(e.k==='embers')for(let i=0;i<6;i++){const a=i*1.047+i*i,d=2+i*.9*e.t*3,o=add(box,i%2?'#ffd35a':e.col||'#ff7a2a',fade*.9,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,e.z+e.t*(10+i*2.5),1.1*fade+.3);o.rotation.set(a,e.t*5,0);}
+    if(e.k==='snow')for(let i=0;i<7;i++){const a=i*.9+i*i,d=3+i*1.1,o=add(box,i%2?'#ffffff':e.col||'#7fd3ff',fade*.9,e.x+Math.cos(a+e.t*2)*d,e.y+Math.sin(a+e.t*2)*d,e.z+9-e.t*(7+i),1.3*fade+.3);o.rotation.set(e.t*6,a,e.t*4);}
+    if(e.k==='zap')for(let i=0;i<4;i++){const a=i*1.571+e.t*6,r=tLerp(2,9,e.t),o=add(geo('fxz',()=>new T3.BoxGeometry(1,.3,.3)),i%2?'#ffffff':e.col||'#ffe45c',fade,e.x+Math.cos(a)*r,e.y+Math.sin(a)*r,e.z+Math.sin(a*2)*2,3.4*fade+.6);o.rotation.set(0,-a,Math.sin(e.t*30)*.6);}
     if(e.k==='ghost')for(let i=0;i<4;i++){const u=i/3;add(geo('fxg',()=>new T3.CylinderGeometry(1.6,2.2,1,6)),e.col,fade*(.1+.35*u),tLerp(e.x,e.x2,u),tLerp(e.y,e.y2,u),BZ+8).scale.set(1,15,1);}
     if(e.k==='boom'){const r=tLerp(2,e.big?20:11,ease(e.t));add(sph,e.col||'#ff9a3c',fade*.75,e.x,e.y,e.z,r);add(sph,'#ffe08a',fade,e.x,e.y,e.z,r*.5);add(ring,e.col||'#ff9a3c',fade,e.x,e.y,BZ+.5,r*1.4);}
     if(e.k==='slash')for(let i=0;i<5;i++){const a=i*1.2566+.4,r=tLerp(4,11,e.t),o=add(geo('fxb',()=>new T3.BoxGeometry(1,.22,.22)),'#ffffff',fade,e.x+2+Math.cos(a)*r*.7,e.y,e.z+Math.sin(a)*r*.7,r*.7);o.rotation.z=a;}
@@ -2875,6 +2921,7 @@ function updateFx(){
     if(p.k==='meteor'){const z=tLerp(70,BZ+2,u*u),r=tLerp(2,9,u),a=u*5;add(disc,'#ff7048',.2+.3*u,p.x,p.y,BZ+.3,r);const core=add(geo('satB',()=>new T3.BoxGeometry(3,3,3)),'#ffd35a',1,p.x,p.y,z);core.rotation.set(u*3,a,.4);for(const sx of[-1,1]){const panel=add(geo('satP',()=>new T3.BoxGeometry(5,.25,2.6)),'#526fdb',1,p.x+Math.cos(a)*sx*4.4,p.y+Math.sin(a)*sx*4.4,z);panel.rotation.y=-a;}add(sph,'#ffe08a',.4,p.x,p.y,z+4,6);continue;}
     if(!p.tg)continue;const a=[G.h.x+3.4,G.h.y-3.6,BZ+9.2*CK],b=[p.tg.x,p.tg.y,BZ+6*CK],at=v=>[tLerp(a[0],b[0],v),tLerp(a[1],b[1],v),tLerp(a[2],b[2],v)+Math.sin(v*Math.PI)*5];
     for(let k=3;k>=1;k--){const q=at(Math.max(0,u-k*.07));add(sph,k%2?'#ffe08a':'#ff9a3c',.55-k*.1,q[0],q[1],q[2],1.2-k*.2);}
+    for(let k=0;k<5;k++){const v=Math.max(0,u-.05-k*.045),q2=at(v),j=Math.sin(k*7.3+u*30)*1.4;add(sph,k%2?'#fff3b8':'#ff5a2a',.7-k*.12,q2[0]+j,q2[1]-j,q2[2]+Math.abs(j)+k*.25,.55);}
     const q=at(u),o=add(geo('batB',()=>cylG(1,1,3,8)),'#28354d',1,q[0],q[1],q[2]);o.rotation.set(u*14,0,u*9);add(sph,'#ff7a2a',.85,q[0],q[1],q[2]+1,1.1);
   }
 }
@@ -2954,11 +3001,12 @@ function scene(){
 /* 新怪物以少數合批網格形成完全不同的輪廓，不增加骨架負擔。 */
 function buildCircuitMon(type){
  const g=new T3.Group(),dark=m3('#27364d'),silver=m3('#a3b9ca'),glow=m3(type==='wisp'?'#b99af0':'#67d5d5');
- if(type==='spider'){mk(ico(4,0),dark,0,4,0,g).scale.set(1.2,.7,1.4);for(const sx of[-1,1])for(let i=0;i<4;i++){const leg=mk(new T3.BoxGeometry(7,.7,.7),silver,sx*5,2,(i-1.5)*2,g);leg.rotation.z=sx*.35;leg.rotation.y=(i-1.5)*.25;}mk(ico(1.6,0),glow,0,4,4,g);}
+ let limbs=null;
+ if(type==='spider'){mk(ico(4,0),dark,0,4,0,g).scale.set(1.2,.7,1.4);mk(ico(1.6,0),glow,0,4,4,g);limbs={};for(const sx of[-1,1])for(let i=0;i<4;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4,3,(i-1.5)*2,l=>{const leg=mk(new T3.BoxGeometry(7,.7,.7),silver,sx*3.5,-1,0,l);leg.rotation.z=sx*.35;},(i-1.5)*.25];}
  if(type==='speaker'){mk(new T3.BoxGeometry(7,11,5),dark,0,5.5,0,g);for(const y of[3,8])mk(cylG(2.3,2.3,.7,10),glow,0,y,2.7,g).rotation.x=Math.PI/2;mk(new T3.BoxGeometry(9,1,6),silver,0,11,0,g);}
  if(type==='wisp'){mk(new T3.OctahedronGeometry(4,0),glow,0,5,0,g).scale.set(.7,1.8,.7);mk(new T3.TorusGeometry(4.8,.5,4,12),silver,0,5,0,g).rotation.x=.7;for(const sx of[-1,1])mk(ico(.8,0),dark,sx*1.3,6,2,g);}
- if(type==='crab'){mk(cylG(5,6,4,6),silver,0,3,0,g);for(const sx of[-1,1]){mk(new T3.BoxGeometry(6,2,2),dark,sx*6,3,0,g);mk(new T3.ConeGeometry(2,5,4),glow,sx*8,4,2,g).rotation.z=-sx*.7;}mk(new T3.BoxGeometry(6,1,1),dark,0,5,4,g);}
- const out=bake(g);out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh&&o.material.emissive){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+ if(type==='crab'){mk(cylG(5,6,4,6),silver,0,3,0,g);mk(new T3.BoxGeometry(6,1,1),dark,0,5,4,g);limbs={};for(const sx of[-1,1]){limbs['claw'+(sx>0?'R':'L')]=[sx*5,3,1,l=>{mk(new T3.BoxGeometry(6,2,2),dark,sx*3,0,0,l);mk(new T3.ConeGeometry(2,5,4),glow,sx*5,1,1.5,l).rotation.z=-sx*.7;}];for(let i=0;i<3;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4.5,2,(i-1)*2.4,l=>{mk(new T3.BoxGeometry(4,.8,.8),silver,sx*2,-.5,0,l).rotation.z=sx*.5;}];}}
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn,ry]=limbs[k];const lb=monLimb(out,px,py,pz,fn);lb.userData.ry=ry||0;out.userData.limbs[k]=lb;}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh&&o.material.emissive){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildRegionLandmark(bi){
  const g=new T3.Group(),B=BIOMES[bi],steel=m3('#43516a'),silver=m3('#a5b8c9'),light=m3(B.glow,{emissive:B.glow,emissiveIntensity:.25});
@@ -2971,12 +3019,15 @@ function buildRegionLandmark(bi){
  if(bi===11){for(const x of[-24,56]){for(let i=0;i<9;i++)block(x+i*.9,BZ+i*.8,75+i*.8,8,.8,2,silver);block(x,BZ+15,85,14,4,3,light);block(x,BZ+7,85,2,14,2);}}
  return g;
 }
+/* 可獨立擺動的肢體：以關節為原點合批，再掛到怪物身上旋轉 */
+function monLimb(root,px,py,pz,fn){const lg=new T3.Group();fn(lg);const b=bake(lg);b.position.set(px,py,pz);root.add(b);return b;}
 function buildFieldMonster(type,variant=0){
- const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
+ let limbs=null;const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
  const box=(w,h,d,mat,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),mat,x,y,z,g);
  if(type==='golem'){
-  for(const x of [-5,5]){box(6,9,7,dark,x,4.5,0);box(8,5,10,stone,x,2,2);box(8,16,9,stone,x*2,17,0);box(9,7,10,silver,x*2,11,1);}
   box(15,17,10,stone,0,17,0);box(11,7,9,silver,0,28,0);box(7,2,1,signal,0,29,4.7);mk(new T3.OctahedronGeometry(3,0),signal,0,19,5.5,g);
+  limbs={legL:[-5,9,0,l=>{mk(new T3.BoxGeometry(6,9,7),dark,0,-4.5,0,l);mk(new T3.BoxGeometry(8,5,10),stone,0,-7,2,l);}],legR:[5,9,0,l=>{mk(new T3.BoxGeometry(6,9,7),dark,0,-4.5,0,l);mk(new T3.BoxGeometry(8,5,10),stone,0,-7,2,l);}],
+    armL:[-10,25,0,l=>{mk(new T3.BoxGeometry(8,16,9),stone,0,-8,0,l);mk(new T3.BoxGeometry(9,7,10),silver,0,-14,1,l);}],armR:[10,25,0,l=>{mk(new T3.BoxGeometry(8,16,9),stone,0,-8,0,l);mk(new T3.BoxGeometry(9,7,10),silver,0,-14,1,l);}]};
  }else if(type==='ranger'){
   for(const x of [-2,2])box(2,7,3,dark,x,3.5,0);box(8,7,5,wood,0,10,0);mk(new T3.ConeGeometry(6,5,5),dark,0,16,0,g);box(5,2,1,signal,0,13,3);box(2,2,13,silver,4,10,4);box(3,5,4,dark,-5,9,0);
  }else if(type==='lantern'){
@@ -2984,18 +3035,20 @@ function buildFieldMonster(type,variant=0){
   for(const x of [-3,3])box(.5,10,.5,dark,x,13,3);mk(new T3.TorusGeometry(3,.5,4,8),silver,0,22,0,g);
  }else if(type==='mole'){
   mk(new T3.IcosahedronGeometry(6,0),wood,0,5,0,g).scale.set(1,.8,1.4);mk(new T3.ConeGeometry(3,7,6),silver,0,5,8,g).rotation.x=Math.PI/2;
-  for(const x of [-5,5]){box(5,3,6,dark,x,2,3);box(3,1,4,silver,x,2,7);}box(7,1.5,1,signal,0,7,5);
+  box(7,1.5,1,signal,0,7,5);limbs={pawL:[-5,3,3,l=>{mk(new T3.BoxGeometry(5,3,6),dark,0,-1,0,l);mk(new T3.BoxGeometry(3,1,4),silver,0,-1,4,l);}],pawR:[5,3,3,l=>{mk(new T3.BoxGeometry(5,3,6),dark,0,-1,0,l);mk(new T3.BoxGeometry(3,1,4),silver,0,-1,4,l);}]};
  }
- const out=bake(g);out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildCircuitBoss(bi,form=bi%3){
- const root=new T3.Group(),body=buildFieldMonster('golem',form);root.add(body);
+ const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);
  const dark=m3('#394d61'),silver=m3('#bdc8cf'),signal=m3(form===0?'#9dbda1':form===1?'#8cb9d0':'#bba8cb');
- if(form===0){for(const x of [-12,12]){mk(new T3.IcosahedronGeometry(6,0),dark,x,26,0,root);mk(new T3.ConeGeometry(3,12,5),signal,x,32,0,root);}}
- if(form===1){for(const x of [-12,12]){mk(new T3.BoxGeometry(7,22,12),dark,x,24,0,root);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,root).rotation.x=Math.PI/2;}mk(new T3.BoxGeometry(1,18,1),silver,0,39,0,root);}
- if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,root);for(const x of [-13,13])mk(new T3.BoxGeometry(5,18,3),silver,x,21,3,root);}
- const out=bake(root);out.userData.simple=true;out.userData.s=4;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});disposeWorldObject(body);return out;
+ if(form===0){for(const x of [-12,12]){mk(new T3.IcosahedronGeometry(6,0),dark,x,26,0,ex);mk(new T3.ConeGeometry(3,12,5),signal,x,32,0,ex);}}
+ if(form===1){for(const x of [-12,12]){mk(new T3.BoxGeometry(7,22,12),dark,x,24,0,ex);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,ex).rotation.x=Math.PI/2;}mk(new T3.BoxGeometry(1,18,1),silver,0,39,0,ex);}
+ if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,ex);for(const x of [-13,13])mk(new T3.BoxGeometry(5,18,3),silver,x,21,3,ex);}
+ root.add(bake(ex));   // 肩甲與光環另外合併；手腳保持獨立，才能跟著擺動
+ root.userData.limbs=body.userData.limbs;root.userData.simple=true;root.userData.s=4;root.userData.mats=[];root.traverse(o=>{if(o.isMesh){o.material=o.material.clone();root.userData.mats.push(o.material);}});return root;
 }
+
 
 </script>
 <script>
@@ -3074,6 +3127,8 @@ function characterPlay(g,name,fade=.1){
 }
 function characterAnimate(g,dt,state={}){
  const u=g.userData;if(!u.y2k)return;dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));
+ // Preview offsets are temporary: remove them before the mixer writes the next pose.
+ if(u.previewApplied){for(const [name,q]of Object.entries(u.previewPose))u.B[name].quaternion.copy(q);u.previewApplied=false;}
  const mode=state.dead?'death':state.hurt?'hurt':state.dash?'dash':state.attack?'attack':state.cast?'cast':state.speed>7?'run':state.speed>1?'walk':'idle';
  if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack')u.actions.attack.reset().play();u.lastSwing=state.swing;
  if(state.cast&&u.lastCast!=null&&state.castTime<u.lastCast&&u.animation==='cast')u.actions.cast.reset().play();u.lastCast=state.castTime;
@@ -3081,12 +3136,59 @@ function characterAnimate(g,dt,state={}){
  u.mixer.update(dt);if(u.pet){const t=u.mixer.time;u.pet.position.set(8+Math.sin(t*1.7)*.6,13+Math.sin(t*3)*.8,-2);u.pet.rotation.y=Math.sin(t)*.25;}
  g.updateMatrixWorld(true);u.skeleton.update();
 }
+// Presentation only. No game clocks, combat flags, save data or model assets change.
+function characterPreviewAnimate(g,dt,reduced=false){
+ if(!g?.userData.y2k)return;
+ const u=g.userData;
+ characterAnimate(g,reduced?0:dt);
+ if(reduced)return;
+ dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));
+ u.previewTime=(u.previewTime||0)+dt;
+ const phase={aki:0,milo:1.7,ping:3.1,null:4.6}[u.id]||0,t=u.previewTime+phase;
+ const smooth=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);};
+ // Long rests between gestures, with soft acceleration and a separate return.
+ const gesture=(period,start,hold,end)=>{const p=t%period;return smooth((p-start)/.8)*(1-smooth((p-hold)/(end-hold)));};
+ if(!u.previewPose)u.previewPose={};
+ if(!u.previewEuler)u.previewEuler=new T3.Euler();
+ if(!u.previewOffset)u.previewOffset=new T3.Quaternion();
+ const turn=(name,x=0,y=0,z=0)=>{
+  const bone=u.B[name];if(!bone)return;
+  (u.previewPose[name]||(u.previewPose[name]=new T3.Quaternion())).copy(bone.quaternion);
+  bone.quaternion.multiply(u.previewOffset.setFromEuler(u.previewEuler.set(x,y,z)));
+ };
+ const breath=Math.sin(t*1.55);
+ if(u.id==='aki'){
+  const look=gesture(11,2,3.8,5.8);
+  turn('torso',.008*breath,0,-.025);
+  turn('head',-.025*look,0,.16*look);
+  turn('foreR',-.10*look);turn('handR',0,.09*look,0);
+ }else if(u.id==='milo'){
+  const beat=Math.sin(t*2.5),tap=gesture(9,3,4.4,6.2);
+  turn('torso',.012*breath,0,.04*beat);
+  turn('head',.055*Math.sin(t*2.5-.45),0,-.025*beat);
+  turn('foreL',-.16*tap);turn('handL',.04*tap,0,.07*tap);
+ }else if(u.id==='ping'){
+  const check=gesture(12,2,4.8,7);
+  turn('torso',.035*check,0,0);
+  turn('head',.13*check,0,-.10*check);
+  turn('armL',-.25*check,0,-.04*check);
+  turn('foreL',-.42*check);turn('handL',0,.06*check,0);
+ }else if(u.id==='null'){
+  const greet=gesture(13,2.5,5.3,7.8);
+  turn('torso',.015*breath,0,-.04*greet);
+  turn('head',.065*greet,0,.18*greet);
+  turn('armR',-.20*greet,0,.08*greet);
+  turn('foreR',-.26*greet);turn('handR',0,.08*Math.sin(t*2)*greet,0);
+ }
+ u.previewApplied=true;g.updateMatrixWorld(true);u.skeleton.update();
+}
 function characterHeroLook(g){
  const h=G.h,u=g.userData;characterAnimate(g,R3.frameDt||1/60,{dead:h.dead>0,hurt:h.hurtT>0,dash:!!h.dash,attack:h.swingT>=0,swing:h.swingT,cast:h.castT>=0||G.time<(h.characterCastUntil||0),castTime:h.castT,speed:h.mv||0});
  at3(g,h.x,h.y,BZ+terrainHeight(h.x,h.y));const target=nearestMon(false);if(target&&h.dead<=0)u.face=Math.atan2(target.x-h.x,target.y-h.y);const d=Math.atan2(Math.sin(u.face-g.rotation.y),Math.cos(u.face-g.rotation.y));g.rotation.y+=d*(1-Math.exp(-12*(R3.frameDt||1/60)));
  g.scale.setScalar(.85*CK);u.orb.visible=h.castT>=0&&h.dead<=0;
 }
 function characterDispose(g){if(!g?.userData.y2k)return;const u=g.userData;u.mixer.stopAllAction();u.mixer.uncacheRoot(g);u.skeleton.dispose();}
+
 
 </script>
 <script>
@@ -3101,14 +3203,16 @@ const ICON_IDX=ART_SHEETS.icons.ids,SK_IDX=ART_SHEETS.skills.ids;
 function spr(name,size=30){return uiSprite('icons',name,size);}
 function sico(id,size=30){return uiSprite('skills',id,size);}
 const SHEETS={relic:['relics'],legend:['legends'],badge:['badges']};
-function xico(kind,id,size=24){return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
-function eqico(slot,r,size=32){return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
+function xico(kind,id,size=24){if(kind==='legend'&&typeof icon3dLegendUrl==='function'){const url=icon3dLegendUrl(id);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
+function eqico(slot,r,size=32,it){
+  if(typeof icon3dUrl==='function'){const url=icon3dUrl(slot,it&&typeof aTier==='function'?aTier(it):0,r|0);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}
+  return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
 const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
 function slotHtml(slot){
   const it = G.equip[slot];
   if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${spr(SLOT_ICON[slot], 32)}<div class="mute">空</div></div></div>`;
   const lines = itemLines(it).slice(0, 3).map(l => `<li class="${l.imp ? 'imp' : l.lg ? 'lgd' : ''}">${l.t}</li>`).join('');
-  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${it.lg && xico('legend', it.lg, 34) ? xico('legend', it.lg, 34) : eqico(slot, it.r, 34)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
+  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${it.lg && xico('legend', it.lg, 64) ? xico('legend', it.lg, 64) : eqico(slot, it.r, 64, it)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
 }
 function panelHtml(){
   const s = G.st, h = G.h, R = G.run;
@@ -3124,7 +3228,7 @@ function codexHtml(){
   const lg = Object.values(LEGEND_BY), nl = lg.filter(L => G.legSeen[L.id]).length, md = Object.keys(MODES), nm = md.filter(id => G.seen[id]).length, sk = Object.keys(SKILLS), ns = sk.filter(id => G.lvl >= SKILLS[id].lvl).length;
   const slotOf = id => Object.keys(LEGENDS).find(k => LEGENDS[k].some(L => L.id === id));
   return `<div class="rc wide"><div class="rh">圖鑑</div><div class="mute">守關者暗金保底：連續 ${G.pity || 0} 件沒出，下一件暗金機率 ${Math.round(Math.min(1, .1 + .06*(G.pity || 0))*100)}%</div>
-    <div class="mct" style="margin:8px 0 3px">元素反應</div><ul class="ach"><li class="got"><b>火焰</b> 命中的敵人燃燒 3 秒，持續受到傷害</li><li class="got"><b>閃電</b> 命中的敵人被標記 4 秒</li><li class="got"><b>融化</b> 火焰打到凍結的敵人：傷害 +40%，解除凍結</li><li class="got"><b>超導</b> 閃電打到凍結的敵人：傷害 +30%</li><li class="got"><b>蒸氣</b> 冰霜打到燃燒的敵人：周圍 8 格內敵人受到 40% 傷害，熄滅燃燒</li><li class="got"><b>過載</b> 火焰或冰霜打到被閃電標記的敵人：傷害 +25%</li></ul>
+    <div class="mct" style="margin:8px 0 3px">元素反應</div><ul class="ach"><li class="got">${obj3d('orb:#ff7a3d',28)}<b>火焰</b> 命中的敵人燃燒 3 秒，持續受到傷害</li><li class="got">${obj3d('orb:#ffe04a',28)}<b>閃電</b> 命中的敵人被標記 4 秒</li><li class="got">${obj3d('orb:#ff9ad0',28)}<b>融化</b> 火焰打到凍結的敵人：傷害 +40%，解除凍結</li><li class="got">${obj3d('orb:#8fe8ff',28)}<b>超導</b> 閃電打到凍結的敵人：傷害 +30%</li><li class="got">${obj3d('orb:#c9d3ff',28)}<b>蒸氣</b> 冰霜打到燃燒的敵人：周圍 8 格內敵人受到 40% 傷害，熄滅燃燒</li><li class="got">${obj3d('orb:#ff5a8a',28)}<b>過載</b> 火焰或冰霜打到被閃電標記的敵人：傷害 +25%</li></ul>
     <div class="mct" style="margin:8px 0 3px">遺物 ${Object.keys(G.relics).length} / ${Object.keys(RELICS).length}</div><ul class="ach">${Object.entries(RELICS).map(([id, r]) => `<li class="${G.relics[id] ? 'got' : 'mute'}">${xico('relic', id, 22)}<b>${G.relics[id] ? r.n : '？？？'}</b> ${G.relics[id] ? r.d : ''}</li>`).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">傳奇裝備 ${nl} / ${lg.length}</div><ul class="ach">${lg.map(L => `<li class="${G.legSeen[L.id] ? 'got' : 'mute'}">${xico('legend', L.id, 24)}<b>${G.legSeen[L.id] ? L.name : '？？？'}</b> ${G.legSeen[L.id] ? L.d : `（暗金${SLOTN[slotOf(L.id)]}）`}</li>`).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">模式卡匣 ${nm} / ${md.length}</div><ul class="ach">${md.map(id => { const M = MODES[id], has = G.seen[id]; return `<li class="${has ? 'got' : 'mute'}"><b>${has ? M.n : '？？？'}</b> ${has ? `（${SKILLS[M.sk].n}）${M.d}` : `（${SKILLS[M.sk].n}）${M.hint}${G.carts[id] ? '　已持有未鑑定' : ''}`}</li>`; }).join('')}</ul>
@@ -3173,7 +3277,7 @@ function uiConfirmBuildFallback(){const p=BUILD_PENDING;BUILD_PENDING=null;hideO
 function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、角色、策略及三件裝備；引用裝備受回收保護。');}
 function skillsHtml(){
   // 接線板放最上面，收起戰場時一打開就能直接編輯；構築管理與電路合成放在下面
-  return wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + buildBar() + uiResolvedHtml() + uiCombatHtml();
+  return wireGuideHtml() + wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + `<details class="ui-section ui-adv"><summary>進階：構築切換、目前生效、戰鬥報告</summary>${buildBar()}${uiResolvedHtml()}${uiCombatHtml()}</details>`;
 }
 function treeHtml(){
   return charSegHtml() + buildBar() + treeHtml0();
@@ -3221,12 +3325,12 @@ function questHtml(){
   const q = QUESTS[G.quest || 0];
   if (!q) return '';
   const v = Math.min(q.goal, GOAL_STAT[q.k]());
-  return `<div class="mct">新手任務　${G.quest || 0}/${QUESTS.length}</div><div class="gls"><div class="gl"><b>${q.n}</b><span class="mute">${q.t}　獎勵：${goalRewardText(q.rw)}${q.un ? '　（完成後開放：' + (q.un === 'craft' ? '改機' : '天賦盤') + '）' : ''}</span><i style="--p:${Math.round(v/q.goal*100)}%"></i><em>${v} / ${q.goal}</em></div></div>`;
+  return `<div class="mct">新手任務　${G.quest || 0}/${QUESTS.length}</div><div class="gls"><div class="gl"><b>${obj3d('goals',30)}${q.n}</b><span class="mute">${q.t}　獎勵：${goalRewardText(q.rw)}${q.un ? '　（完成後開放：' + (q.un === 'craft' ? '改機' : '天賦盤') + '）' : ''}</span><i style="--p:${Math.round(v/q.goal*100)}%"></i><em>${v} / ${q.goal}</em></div></div>`;
 }
 function goalsHtml(){
   const done = GOALS.filter(a => G.goals[a.id]).length;
-  return questHtml() + `<div class="mct">目標　${done}${qm('goals')}/${GOALS.length}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
-    return `<div class="gl${ok ? ' ok' : ''}"><b>${ok ? '★ ' : ''}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
+  return questHtml() + `<div class="mct">目標　${done}/${GOALS.length}${qm('goals')}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
+    return `<div class="gl${ok ? ' ok' : ''}"><b>${obj3d(ok?'ach':'goals',30)}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
 }
 function mapsHtml(){ return uiAdventureHtml(); }
 
@@ -3234,7 +3338,7 @@ function lootToast(it){
   let box = $('loot'); const host = document.querySelector('.stage') || document.body; if (!box){ box = document.createElement('div'); box.id = 'loot'; } if (box.parentNode !== host) host.appendChild(box);
   const R = RAR[it.r], ls = itemLines(it).filter(l => l.lg).slice(0, 1).concat(itemLines(it).filter(l => !l.lg).slice(0, 1)).slice(0, it.lg ? 2 : 1), d = document.createElement('div');
   d.className = 'lt r' + it.r; d.style.setProperty('--rc', R.c); d.style.setProperty('--rg', R.g);
-  d.innerHTML = `<div class="lh">${it.lg && xico('legend', it.lg, 24) ? xico('legend', it.lg, 24) : eqico(it.slot || it.sl, it.r, 24)}<b>${it.name}</b></div>`;
+  d.innerHTML = `<div class="lh">${it.lg && xico('legend', it.lg, 56) ? xico('legend', it.lg, 56) : eqico(it.slot || it.sl, it.r, 56, it)}<b>${it.name}</b></div>`;
   box.prepend(d); while (box.children.length > 2) box.lastChild.remove();
   setTimeout(() => d.classList.add('out'), it.r >= 3 ? 3200 : 1800); setTimeout(() => d.remove(), it.r >= 3 ? 3800 : 2400);
 }
@@ -3294,11 +3398,11 @@ function openRelics(){ if(!GAME_FEATURES.cardChoices)return;
 function pickRelic(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
 function pickCard(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
 function charHtml(){
-  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true"><b>${c.n}${G.char === id ? ' ✓' : ''}</b>${charOk(id) ? '' : `<span class="mute">${c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖'}</span>`}</button>`).join('')}</div><div class="char-description">${CHARS[G.char].d}<br>專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
+  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => { const ok = charOk(id), on = G.char === id, pu = typeof icon3dPortraitUrl === 'function' ? icon3dPortraitUrl(id) : '', nm = String(c.n).split(' '); return `<button class="chr${on ? ' on' : ''}${ok ? '' : ' lock'}" ${ok ? '' : 'disabled'} aria-pressed="${on}" onclick="pickChar('${id}');G.dirty=true"><span class="chr-pic">${pu ? `<img alt="" aria-hidden="true" src="${pu}" style="image-rendering:pixelated">` : ''}</span><span class="chr-info"><b>${nm[0]}<small>${nm[1] || ''}</small></b><i>${ok ? (c.title || c.d) : (c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖')}</i>${on ? '<em>使用中 ✓</em>' : ''}</span></button>`; }).join('')}</div><div class="chr-data"><p><span>姓名</span><b>${CHARS[G.char].n}</b></p><p><span>職業</span><b>${CHARS[G.char].title||CHARS[G.char].d}</b></p><p><span>定位</span><b>${CHARS[G.char].role||"—"}</b></p><p><span>專屬</span><b>${CHARS[G.char].sig.n}</b></p></div><div class="char-description">專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
 }
 function achHtml(){
   const n = achCount(), tot = Object.keys(ACHS).filter(id=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).length;
-  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).filter(([id])=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
+  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).filter(([id])=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${obj3d('medal:'+['#8fd0ff','#ffd24d','#ff9ad0','#5dffa3','#ff9a5a','#c9a8ff'][(id.length+id.charCodeAt(0))%6],36)||xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
 }
 function cardsHtml(){
   const e = Object.entries(G.cards);if(!GAME_FEATURES.cardChoices)return e.length?`<section class="ui-section"><h3>既有改裝效果</h3><ul>${e.map(([id,n])=>`<li>${uxEsc(CARDS[id].n)} ×${n} · ${uxEsc(CARDS[id].d)}</li>`).join('')}</ul></section>`:''; const pend = (G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button> ` : '') + (G.relicPicks > 0 ? `<button class="mb" onclick="openRelics()">有 ${G.relicPicks} 次遺物待選</button> ` : '') + `<button class="mb" onclick="toggleAuto()">自動隨機：${G.autoCard ? '開' : '關'}</button>`;
@@ -3466,6 +3570,7 @@ function setupPanel(){
     .mct{font-weight:800;font-size:12.5px;color:var(--wbd)}
     .mc.slot{cursor:pointer} .mc.slot.act{box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 var(--wdk),0 0 0 2px #ff8fb8,3px 4px 0 #5a6bb855 !important}
     .gls{display:grid;gap:6px;margin-top:6px} .gl{position:relative;display:grid;grid-template-columns:1fr auto;gap:0 8px;padding:6px 8px 10px;background:#fff;border:1px solid var(--wdk);border-radius:4px;font-size:12px}
+    .ui-obj3d{display:inline-block;vertical-align:middle;margin-right:6px;flex:none}.ach li.mute .ui-obj3d{filter:grayscale(1);opacity:.45}.gl b{display:flex;align-items:center}
     .gl span{grid-column:1/2;font-size:11px} .gl em{grid-row:1;grid-column:2;font-style:normal;font-size:11px;color:var(--muted)} .gl.ok{background:#fff6d6} .gl.ok em{color:#a07000;font-weight:700}
     .gl i{position:absolute;left:0;bottom:0;height:4px;width:var(--p);background:#ff8fb8;border-radius:0 2px 0 4px}
     .pz{display:grid;width:100%;gap:3px;margin:8px 0;max-width:420px;touch-action:pan-y}
@@ -3578,7 +3683,7 @@ function setupPanel(){
     const dl = document.createElement('div'); dl.className = 'dlg'; document.querySelector('.stage').appendChild(dl);
     const q = [], who = t => /守關者/.test(t) ? 'WARNING' : /倒下/.test(t) ? 'GAME OVER?' : /暗金/.test(t) ? 'LEGENDARY' : 'SYSTEM';
     let busy = false; const next = () => { if (!q.length){ busy = false; return; } busy = true; const fr = $('fig').getBoundingClientRect(), sr = dl.parentElement.getBoundingClientRect(); dl.style.top = (fr.top - sr.top + fr.height*.78) + 'px'; const t = q.shift(); dl.innerHTML = `<b>${who(t)}</b>${t}<i></i>`; dl.classList.add('show'); setTimeout(() => { dl.classList.remove('show'); setTimeout(next, 300); }, 2600); };
-    const base = logLine; logLine = (t, c) => { base(t, c); if (!G.offline && /升級了|守關者|地圖完成|倒下/.test(t) && q.length < 3){ q.push(t); if (!busy) next(); } };
+    const base = logLine; logLine = (t, c) => { base(t, c); if (!G.offline && /升級了|守關者|地圖完成/.test(t) && q.length < 3){ q.push(t); if (!busy) next(); } };
   }
   const el = document.createElement('div'); el.className = 'rpg'; el.id = 'rpg'; document.querySelector('.stage').after(el);
   const m = document.createElement('div'); m.className = 'modal'; m.id = 'modal'; m.hidden = true; m.innerHTML = `<div class="mbox"><div class="mtabs" id="mtabs"></div><div id="mbody"></div></div>`;
@@ -3611,7 +3716,7 @@ function uiConfirmForgetBuild(){const p=FORGET_BUILD_PENDING;FORGET_BUILD_PENDIN
 <script>
 /* ---------- 角色頁與裝扮：資料卡、3D 預覽與三類公開裝扮 ---------- */
 let dSel = { cat:'weaponStyle', id:null };   // 目前選中（預覽中）的部位與顏色；id 為 null 代表預覽目前穿的
-const PV = { cv:null, rd:null, sc:null, cam:null, hero:null, sig:'', yaw:.5, auto:true, drag:null };
+const PV = { cv:null, rd:null, sc:null, cam:null, hero:null, sig:'', yaw:.5, drag:null, lastTime:null };
 const cosGet = (cat, id) => (COS[cat]||[]).find(x => x[0] === id);
 const cosOwned = (cat, id) => !!cosGet(cat,id)&&(cosGet(cat,id)[3]===0||!!G.own[cat+':'+id]);
 function cosPreview(){ const c = Object.assign({}, G.cos); if (dSel.id&&cosAvailable(dSel.cat)&&cosGet(dSel.cat,dSel.id)) c[dSel.cat] = dSel.id; return c; }
@@ -3652,25 +3757,27 @@ function dressMount(){
     PV.rd = new T3.WebGLRenderer({ canvas:PV.cv, antialias:false, alpha:true }); PV.rd.setPixelRatio(1); PV.rd.setClearColor(0x000000, 0); PV.rd.outputColorSpace = T3.SRGBColorSpace;
     PV.sc = new T3.Scene(); PV.sc.add(new T3.HemisphereLight(0xeaf5ff, 0xd8c8f0, 1.55)); const sun = new T3.DirectionalLight(0xfff6ea, 1.5); sun.position.set(30, 60, 50); PV.sc.add(sun); PV.sc.add(new T3.AmbientLight(0xffffff, .25));
     PV.cam = new T3.OrthographicCamera(-1, 1, 1, -1, -100, 100);
-    PV.cv.addEventListener('pointerdown', e => { PV.drag = { x:e.clientX, y:PV.yaw }; PV.auto = false; PV.cv.style.cursor = 'grabbing'; });
+    PV.cv.addEventListener('pointerdown', e => { PV.drag = { x:e.clientX, y:PV.yaw }; PV.cv.style.cursor = 'grabbing'; });
     addEventListener('pointermove', e => { if (PV.drag) PV.yaw = PV.drag.y + (e.clientX - PV.drag.x)*.012; });
     addEventListener('pointerup', () => { PV.drag = null; if (PV.cv) PV.cv.style.cursor = 'grab'; });
     setInterval(dressTick, 40);
   }
-  host.appendChild(PV.cv); PV.sig = '';
+  host.appendChild(PV.cv); PV.lastTime = null;
 }
 function dressTick(){
-  if (!PV.rd || !PV.cv.isConnected || (modalTab !== 'dress') || $('modal').hidden) return;
+  if (!PV.rd || !PV.cv.isConnected || (modalTab !== 'dress') || $('modal').hidden || document.hidden){ PV.lastTime=null; return; }
+  const now=performance.now(),dt=PV.lastTime===null?0:Math.min(.1,(now-PV.lastTime)/1000);PV.lastTime=now;
   const w = PV.cv.clientWidth, h = PV.cv.clientHeight; if (w < 4 || h < 4) return;
   const A = G.equip.armor, W = G.equip.weapon, cos = cosPreview(), sig = [aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, G.char, JSON.stringify(cos)].join();
   if (sig !== PV.sig){ PV.sig = sig; if (PV.hero){if(typeof characterDispose==='function')characterDispose(PV.hero);PV.sc.remove(PV.hero);} const g = buildHero(aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, cos); g.scale.setScalar(1); g.traverse(o => { if (o.isMesh && o.material && o.material.transparent && o.material.opacity < .9 && o.geometry.type !== 'SphereGeometry') o.visible = false; }); PV.hero = g; PV.sc.add(g); PV.sc.updateMatrixWorld(true); PV.box = new T3.Box3(); g.traverse(o => { if (o.isMesh && o.visible && o.geometry.type !== 'RingGeometry' && o.geometry.type !== 'CircleGeometry'){ o.geometry.computeBoundingBox(); PV.box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld)); } }); }
-  if(PV.hero.userData.y2k)characterAnimate(PV.hero,.04);
-  if (PV.auto) PV.yaw += .02; PV.hero.rotation.y = PV.yaw;
-  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=!R3.clean&&r3Quality(r3ViewQuality(),innerWidth)==='low'?'pixelated':'auto';
+  if(PV.hero.userData.y2k)characterPreviewAnimate(PV.hero,dt,matchMedia('(prefers-reduced-motion: reduce)').matches);
+  PV.hero.rotation.y = PV.yaw;
+  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=R3.clean?'auto':'pixelated';
   if(PV.cv.width!==buffer.width||PV.cv.height!==buffer.height)PV.rd.setSize(buffer.width,buffer.height,false);
   const bx = PV.box, cy = (bx.min.y + bx.max.y)/2, vh = (bx.max.y - bx.min.y)*1.2, vw = vh*w/h; PV.cam.left = -vw/2; PV.cam.right = vw/2; PV.cam.top = vh/2; PV.cam.bottom = -vh/2; PV.cam.position.set(0, cy, 40); PV.cam.lookAt(0, cy, 0); PV.cam.updateProjectionMatrix();
   PV.rd.render(PV.sc, PV.cam);
 }
+
 
 </script>
 <script>
@@ -3758,13 +3865,13 @@ function goldShopHtml(){
 }
 function craftHtml(){
   const sl=UI_WORK.craftSlot,act=UI_WORK.craftAct,it=G.equip[sl],op=CRAFT[act],state=craftState(sl,act);
-  const slots=`<div class="ui-craft-slots" role="group" aria-label="改機裝備">${Object.keys(SLOTN).map(k=>`<button aria-pressed="${sl===k}" onclick="uiWork('craftSlot','${k}')" data-focus="craftSlot-${k}">${eqico(k,G.equip[k]?.r||0,24)}<b>${SLOTN[k]}</b><small>${G.equip[k]?RAR[G.equip[k].r].n:'尚未裝備'}</small></button>`).join('')}</div>`;
+  const slots=`<div class="ui-craft-slots" role="group" aria-label="改機裝備">${Object.keys(SLOTN).map(k=>`<button aria-pressed="${sl===k}" onclick="uiWork('craftSlot','${k}')" data-focus="craftSlot-${k}">${eqico(k,G.equip[k]?.r||0,44,G.equip[k])}<b>${SLOTN[k]}</b><small>${G.equip[k]?RAR[G.equip[k].r].n:'尚未裝備'}</small></button>`).join('')}</div>`;
   const tabs=uiSegments('craftAct',Object.entries(CRAFT).map(([k,c])=>[k,k==='upgrade'&&it?.lg?'核心重構':c.n,c.d]),'改機動作');
   let detail='<section class="ui-section"><h3>尚未裝備道具</h3><p>繼續冒險，自動換上裝備後即可改機。</p></section>';
   if(it){
     const lines=[`<li><span>${AFF[it.imp.k].t(it.imp.v)}</span><small>固定屬性</small></li>`].concat(it.aff.map((a,i)=>`<li><span>T${affTier(a,it.il)} · ${AFF[a.k].t(a.v)}<br><small>同階區間 ${affRange(a,it).min}–${affRange(a,it).max}${a.v>affRange(a,it).max?' · 舊值高於區間，校準可能降低':''}</small></span><button class="mb lk${it.lk===i?' on':''}" ${it.cr?'disabled':''} aria-label="${it.lk===i?'解除鎖定':'鎖定'}${uxEsc(AFF[a.k].t(a.v))}" onclick="craftLock('${sl}',${i})">${spr(it.lk===i?'lock':'unlock',20)}</button></li>`));
     const result=CRAFT_RESULTS[sl];
-    detail=`<section class="ui-section ui-craft-detail"><div class="nm">${eqico(sl,it.r,36)}<div><h3>${uxEsc(it.name)}</h3><span class="uxmeta">${RAR[it.r].n} · 等級 ${it.il}${it.cr?' · 已腐化':''}</span></div></div><ul>${lines.join('')}</ul>${act==='upgrade'&&it.lg?coreRefineHtml(sl,it):`<div class="ui-craft-operation"><p class="uxmeta">${op.d}</p>${!state.ok?`<p id="craft-reason" class="uxwarning">${state.reason}</p>`:'<span id="craft-reason" hidden></span>'}<button class="mb pri" data-focus="craft-${sl}-${act}" aria-describedby="craft-reason" ${state.ok?'':'disabled'} onclick="craftDo('${sl}','${act}')">${act==='corrupt'?'確認腐化風險':op.n} · ${state.cost} 零件</button></div>`}${act==='recal'?affTierHtml(sl,it):''}${result&&result.it===it?`<div class="uxcraft-result" role="status"><b>${uxEsc(result.msg)}</b> · 消耗 ${result.cost} 零件<details><summary>查看變化</summary><p>之前：${uxEsc(result.before)}</p><p>之後：${uxEsc(result.after)}</p></details></div>`:''}</section>`;
+    detail=`<section class="ui-section ui-craft-detail"><div class="nm">${eqico(sl,it.r,64,it)}<div><h3>${uxEsc(it.name)}</h3><span class="uxmeta">${RAR[it.r].n} · 等級 ${it.il}${it.cr?' · 已腐化':''}</span></div></div><ul>${lines.join('')}</ul>${act==='upgrade'&&it.lg?coreRefineHtml(sl,it):`<div class="ui-craft-operation"><p class="uxmeta">${op.d}</p>${!state.ok?`<p id="craft-reason" class="uxwarning">${state.reason}</p>`:'<span id="craft-reason" hidden></span>'}<button class="mb pri" data-focus="craft-${sl}-${act}" aria-describedby="craft-reason" ${state.ok?'':'disabled'} onclick="craftDo('${sl}','${act}')">${act==='corrupt'?'確認腐化風險':op.n} · ${state.cost} 零件</button></div>`}${act==='recal'?affTierHtml(sl,it):''}${result&&result.it===it?`<div class="uxcraft-result" role="status"><b>${uxEsc(result.msg)}</b> · 消耗 ${result.cost} 零件<details><summary>查看變化</summary><p>之前：${uxEsc(result.before)}</p><p>之後：${uxEsc(result.after)}</p></details></div>`:''}</section>`;
   }
   return `<div class="ui-craft-wallet"><span>可用零件</span><strong>${G.parts||0}</strong><span>核心殘晶 ${G.coreDust||0}</span><span>電路點數 ${G.chips||0}</span></div>${slots}${tabs}${detail}<details class="ui-rules"><summary>拾取與自動拆解規則</summary><p class="uxmeta">回收裝備得到零件：普通 1、魔法 2、稀有 5、暗金 12。重複核心另外得到一枚殘晶；構築引用的裝備不會被回收。</p>${rulesBar()}</details>${goldShopHtml()}${circuitShopHtml()}`;
 }
@@ -4114,7 +4221,7 @@ button:enabled,a[href],summary{cursor:pointer}button:focus-visible,a:focus-visib
 .uxsr{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap}
 #mbody .dpsbar{top:-8px;background:var(--ux-screen);border-color:var(--ux-edge);margin-bottom:8px}
 .uxinspect{margin:6px 0 0;padding:8px 2px 2px;border-top:1px solid #b5c4e5;text-align:left;font-family:system-ui,"Microsoft JhengHei",sans-serif;color:var(--ux-ink)}
-.uxinspect-head{display:flex;align-items:center;gap:7px;font-size:14px}.uxinspect-head .uxquiet{margin-left:auto}.uxeffect{font-size:14px;line-height:1.5;font-weight:650;margin-top:4px}.uxmeta{font:12px/1.5 system-ui,"Microsoft JhengHei",sans-serif;color:var(--ux-muted);margin:4px 0}
+.uxinspect-head{display:flex;align-items:center;gap:7px;font-size:14px}.uxinspect-head .uxquiet{margin-left:auto}.uxinspect-head.big3d{gap:12px;font-size:17px}.uxinspect-head.big3d .eq3d{margin:0!important;flex:none}.uxeffect{font-size:14px;line-height:1.5;font-weight:650;margin-top:4px}.uxmeta{font:12px/1.5 system-ui,"Microsoft JhengHei",sans-serif;color:var(--ux-muted);margin:4px 0}
 .uxinspect .uxquiet,.uxinspect .uxboard-link{min-height:32px;padding:3px 10px!important;font-size:12px;border-radius:6px!important}.uxinspect .uxboard-link{margin-top:4px}
 #mbody .pz button.pc{font:inherit;font-size:10px;padding:2px!important;margin:0;aspect-ratio:1;min-width:0;box-shadow:inset 0 2px 3px #1e286440!important;border:1px solid #7d8bbd!important;border-radius:7px!important;background:radial-gradient(circle at 50% 50%,#8294c4 0 18%,#b4c2e6 20%)!important;color:var(--ux-ink)!important;transition:none}
 #mbody .pz button.pc.fill{background:linear-gradient(135deg,#ffffffaa,#ffffff00 45%),var(--pc)!important;border:2px solid #fff!important;box-shadow:inset 0 2px 0 #fffd,inset 0 -3px 0 #00003c35!important}
@@ -4245,8 +4352,8 @@ function uiWork(key,id){
   if(!allowed[key]?.includes(id))return;UI_WORK[key]=id;renderModal();
 }
 function uiMenuHtml(){
-  const group=(name,items)=>`<section class="ui-menu-group"><h3>${name}</h3><div class="ui-directory">${items.map(([k,n,d])=>`<button onclick="openModal('${k}')"><b>${n}</b><span>${d}</span><i aria-hidden="true">↗</i></button>`).join('')}</div></section>`;
-  return group('遊戲',[['settings','遊戲設定','戰鬥規則、拾取與音效'],['save','存檔與備份','本機保存、匯入及匯出']])+group('進度與收藏',[['goals','目標','下一個里程碑與獎勵'],['ach','成就','已達成的挑戰'],['dex','圖鑑','技能、卡匣與收藏紀錄']])+group('其他',[['log','更新日誌','查看版本與更新'],['feedback','意見回饋','回報問題、平衡與玩法建議']])+`<button class="ui-wiki" aria-label="編年史" onclick="wikiOpen()">${spr('star',24)}<span><b>編年史</b><small>查看所有遊戲資訊</small></span><i aria-hidden="true">↗</i></button>`;
+  const group=(name,items)=>`<section class="ui-menu-group"><h3>${name}</h3><div class="ui-directory">${items.map(([k,n,d])=>`<button onclick="openModal('${k}')">${obj3d(k,44)}<b>${n}</b><span>${d}</span><i aria-hidden="true">↗</i></button>`).join('')}</div></section>`;
+  return group('遊戲',[['settings','遊戲設定','戰鬥規則、拾取與音效'],['save','存檔與備份','本機保存、匯入及匯出']])+group('進度與收藏',[['goals','目標','下一個里程碑與獎勵'],['ach','成就','已達成的挑戰'],['dex','圖鑑','技能、卡匣與收藏紀錄']])+group('其他',[['log','更新日誌','查看版本與更新'],['feedback','意見回饋','回報問題、平衡與玩法建議']])+`<button class="ui-wiki" aria-label="編年史" onclick="wikiOpen()">${obj3d('wiki',44)||spr('star',24)}<span><b>編年史</b><small>查看所有遊戲資訊</small></span><i aria-hidden="true">↗</i></button>`;
 }
 function charSegHtml(){return `<div class="ui-segments" role="group" aria-label="角色分頁"><button aria-pressed="${modalTab==='char'}" data-focus="char-stats" onclick="openModal('char')">屬性</button><button aria-pressed="${modalTab==='tree'}" data-focus="char-talent"${tabOpen('tree')?'':' class="lock"'} onclick="${tabOpen('tree')?"openModal('tree')":"lockTip('tree')"}">${tabOpen('tree')?'天賦':'天賦 Lv'+TAB_LVL.tree}${passPoints()>0&&tabOpen('tree')?' ●':''}</button></div>`;}
 function uiCharacterHtml(){
@@ -4255,12 +4362,19 @@ function uiCharacterHtml(){
   return `${charSegHtml()}<section class="ui-character-head">${phoneButtonHtml()}<span class="ui-eyebrow">${CHARS[G.char].n}</span><h3>${uxEsc(G.heroName||'阿街')}<small>LV. ${G.lvl}</small></h3><p id="ui-char-progress">深度 ${G.depth} · 累計擊殺 ${tFmt(G.totalKills)}</p><button class="mb" onclick="openModal('dress')">角色與裝扮 ↗</button></section><div class="ui-equipment">${Object.keys(SLOTN).map(uiEquippedTile).join('')}</div>${uiCoreCollection()}<section class="ui-section"><h3>戰鬥狀態</h3><dl class="ui-stat-list">${rows.map(([n,v])=>`<div><dt>${n}</dt><dd>${v}</dd></div>`).join('')}</dl></section>${charHtml()}${cardsHtml()}<details class="ui-section"><summary>事件紀錄</summary><ol class="log">${G.log.map(l=>`<li>${uxEsc(l.txt)}</li>`).join('')}</ol></details>`;
 }
 /* 共用物品格：精簡讀數，完整名稱與屬性由點選詳情取得。 */
-function uiMapThumb(m){const B=BIOMES[m.biome],blocky=m.biome>=4;let h=0;for(const ch of String(m.id))h=(h*31+ch.charCodeAt(0))>>>0;const sp=[[26,22],[50,18],[36,30],[56,27],[20,27],[44,25]];let o='';for(let i=0;i<4;i++){const [x,y]=sp[(h+i*2)%sp.length],big=(h>>(i+3))&1?1:0.8;o+=blocky?`<path d="M${x-4*big} ${y}h${8*big}v${-7*big}h${-8*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-4*big} ${y-7*big}l${4*big} ${-3*big}l${4*big} ${3*big}z" fill="${B.board.l}"/>`:`<path d="M${x} ${y-12*big}l${5*big} ${12*big}h${-10*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-1} ${y}h2v3h-2z" fill="${B.board.d}"/>`;}return `<svg class="ui-mapthumb" viewBox="0 0 80 56" aria-hidden="true"><ellipse cx="40" cy="50" rx="34" ry="5" fill="#0002"/><path d="M4 24L40 42v9L4 33z" fill="${B.board.d}"/><path d="M76 24L40 42v9l36-18z" fill="${B.board.m}" opacity=".85"/><path d="M40 6L76 24L40 42L4 24z" fill="${B.board.l}" stroke="${B.board.d}" stroke-width="1"/><ellipse cx="40" cy="24" rx="7" ry="3.5" fill="${B.portal}" opacity=".75"/><ellipse cx="40" cy="23" rx="3.5" ry="1.8" fill="${B.glow}"/>${o}</svg>`;}
+function uiMapThumbSvg(m){const B=BIOMES[m.biome],blocky=m.biome>=4;let h=0;for(const ch of String(m.id))h=(h*31+ch.charCodeAt(0))>>>0;const sp=[[26,22],[50,18],[36,30],[56,27],[20,27],[44,25]];let o='';for(let i=0;i<4;i++){const [x,y]=sp[(h+i*2)%sp.length],big=(h>>(i+3))&1?1:0.8;o+=blocky?`<path d="M${x-4*big} ${y}h${8*big}v${-7*big}h${-8*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-4*big} ${y-7*big}l${4*big} ${-3*big}l${4*big} ${3*big}z" fill="${B.board.l}"/>`:`<path d="M${x} ${y-12*big}l${5*big} ${12*big}h${-10*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-1} ${y}h2v3h-2z" fill="${B.board.d}"/>`;}return `<svg class="ui-mapthumb" viewBox="0 0 80 56" aria-hidden="true"><ellipse cx="40" cy="50" rx="34" ry="5" fill="#0002"/><path d="M4 24L40 42v9L4 33z" fill="${B.board.d}"/><path d="M76 24L40 42v9l36-18z" fill="${B.board.m}" opacity=".85"/><path d="M40 6L76 24L40 42L4 24z" fill="${B.board.l}" stroke="${B.board.d}" stroke-width="1"/><ellipse cx="40" cy="24" rx="7" ry="3.5" fill="${B.portal}" opacity=".75"/><ellipse cx="40" cy="23" rx="3.5" ry="1.8" fill="${B.glow}"/>${o}</svg>`;}
+const UI_THUMB={};
+function uiMapThumb(m){const u3=typeof icon3dMapUrl==='function'?icon3dMapUrl(m):'';if(u3)return `<img class="ui-mapthumb" alt="" aria-hidden="true" src="${u3}" style="image-rendering:pixelated">`;   // 地圖縮圖：向量圖先縮成 40×28 再像素化放大，和 3D 畫面的低畫質感一致
+  const svg=uiMapThumbSvg(m),key=m.id+':'+m.biome,url=UI_THUMB[key];
+  if(url)return `<img class="ui-mapthumb" alt="" aria-hidden="true" src="${url}" style="image-rendering:pixelated">`;
+  if(url===undefined){UI_THUMB[key]='';const img=new Image();img.onload=()=>{try{const c=document.createElement('canvas');c.width=40;c.height=28;const x=c.getContext('2d');x.imageSmoothingEnabled=true;x.drawImage(img,0,0,40,28);UI_THUMB[key]=c.toDataURL('image/png');if(typeof renderModal==='function'&&!$('modal').hidden)renderModal();}catch(e){UI_THUMB[key]=null;}};img.onerror=()=>{UI_THUMB[key]=null;};img.src='data:image/svg+xml;charset=utf8,'+encodeURIComponent(svg.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" width="80" height="56" '));}
+  return svg;
+}
 function uiMapCard(m){const B=BIOMES[m.biome],c=mapChallenge(m.mods);return `<button type="button" class="ui-mapcard" data-focus="map-${uxEsc(m.id)}" aria-label="${uxEsc(B.n)}，等級 ${m.lvl}，挑戰詞綴 ${c}，查看詳情" style="--b1:${B.board.l};--b2:${B.board.m};--b3:${B.board.d};--t1:${B.t1};--t2:${B.t2}" onclick="uiInspectMap('${encodeURIComponent(m.id).replace(/'/g,'%27')}')">${uiMapThumb(m)}<b>${uxEsc(B.n)}</b><span class="lv">Lv. ${m.lvl}</span><span class="ch">挑戰詞綴 ${c}</span></button>`;}
 function uiItemTile({focus,icon,name,meta='',state='',action,rarity=0,tip=''}){return `<button type="button" class="ui-item-tile"${tip?` data-tip="${uxEsc(tip)}"`:''} data-rarity="${rarity}" style="--item-rarity:${RAR[rarity]?.c||'var(--ux-edge)'}" data-focus="${uxEsc(focus)}" aria-label="${uxEsc(name)}，${RAR[rarity]?RAR[rarity].n+'，':''}${uxEsc(meta)}${state?'，'+uxEsc(state):''}，查看詳情" onclick="${action}"><span class="ui-item-state">${uxEsc(state)}</span>${icon}<b>${uxEsc(name)}</b><small>${uxEsc(meta)}</small></button>`;}
 function uiGearState(it){return G.equip[it.slot]===it?'穿著':it.kept?'鎖定':gearReferenced(it)?'構築':G.equipBackup[it.slot]===it?'上一件':it.cr?'腐化':it.lk!=null?'詞綴鎖':'';}
-function uiGearTile(it,core=false){return uiItemTile({focus:core?'core-'+it.lg:'gear-'+it.uid,icon:core?xico('legend',it.lg,28):eqico(it.slot,it.r,28),name:it.name,meta:`Lv. ${it.il} · ${it.aff.length?'T'+Math.min(...it.aff.map(a=>affTier(a,it.il))):RAR[it.r].n}`,state:uiGearState(it)||RAR[it.r].n,action:core?`uiInspectCore('${it.lg}')`:`uiInspectGear(${it.uid})`,rarity:it.r,tip:[it.name+'（'+SLOTN[it.slot]+' · '+RAR[it.r].n+'）',...itemLines(it).map(l=>l.t)].join('\n')});}
-function uiEquippedTile(slot){const it=G.equip[slot];return it?uiItemTile({focus:'equipped-'+slot,icon:it.lg?xico('legend',it.lg,28):eqico(slot,it.r,28),name:it.name,meta:`${SLOTN[slot]} · Lv. ${it.il}`,state:'穿著',action:`uiInspectEquipped('${slot}')`,rarity:it.r}):`<div class="ui-item-tile ui-item-empty">${spr(SLOT_ICON[slot],28)}<b>${SLOTN[slot]}</b><small>空欄位</small></div>`;}
+function uiGearTile(it,core=false){return uiItemTile({focus:core?'core-'+it.lg:'gear-'+it.uid,icon:core?xico('legend',it.lg,28):eqico(it.slot,it.r,52,it),name:it.name,meta:`Lv. ${it.il} · ${it.aff.length?'T'+Math.min(...it.aff.map(a=>affTier(a,it.il))):RAR[it.r].n}`,state:uiGearState(it)||RAR[it.r].n,action:core?`uiInspectCore('${it.lg}')`:`uiInspectGear(${it.uid})`,rarity:it.r,tip:[it.name+'（'+SLOTN[it.slot]+' · '+RAR[it.r].n+'）',...itemLines(it).map(l=>l.t)].join('\n')});}
+function uiEquippedTile(slot){const it=G.equip[slot];return it?uiItemTile({focus:'equipped-'+slot,icon:it.lg?xico('legend',it.lg,28):eqico(slot,it.r,52,it),name:it.name,meta:`${SLOTN[slot]} · Lv. ${it.il}`,state:'穿著',action:`uiInspectEquipped('${slot}')`,rarity:it.r}):`<div class="ui-item-tile ui-item-empty">${spr(SLOT_ICON[slot],28)}<b>${SLOTN[slot]}</b><small>空欄位</small></div>`;}
 function uiInspectEquipped(slot){const it=G.equip[slot];if(!it)return;if(it.lg)return uiInspectCore(it.lg);if(G.inventory.includes(it))return uiInspectGear(it.uid);showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[slot]} · ${RAR[it.r].n} · 物品等級 ${it.il} · 穿著中</p><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><button class="mb" data-initial-focus onclick="hideOverlay()">返回角色</button>`);}
 function uiGearComparison(it){const next=calc({...G.equip,[it.slot]:it}),current=G.st;return `<dl class="ui-stat-list"><div><dt>預估傷害</dt><dd>${tFmt(current.dps)} → ${tFmt(next.dps)}</dd></div><div><dt>最大生命</dt><dd>${tFmt(current.life)} → ${tFmt(next.life)}</dd></div><div><dt>暴擊率</dt><dd>${current.crit.toFixed(1)}% → ${next.crit.toFixed(1)}%</dd></div></dl>`;}
 function uiInspectCore(id){const it=G.armory[id];if(!it)return;const on=G.equip[it.slot]===it,back=modalTab==='warehouse'?'返回倉庫':'返回收藏';showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[it.slot]} · 暗金 · 物品等級 ${it.il}${on?' · 穿著中':''}</p><p>${uxEsc(LEGEND_BY[id].d)}</p>${uiGearComparison(it)}<ul>${itemLines(it).filter(l=>!l.lg||l.t==='已腐化').map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">${back}</button><button class="mb pri" ${on?'disabled':''} onclick="uiEquipCore('${id}')">${on?'已裝備':'換上'+uxEsc(it.name)}</button></div>`);}
@@ -4308,8 +4422,8 @@ body.d .stats{position:absolute;left:8px;right:8px;top:4px;margin:0;max-width:no
 .ui-character-head{padding:16px;background:transparent}.ui-eyebrow{font-size:12px;color:var(--ux-muted)}.ui-character-head h3{display:flex;align-items:baseline;gap:12px;font:24px "Cubic 11",system-ui,sans-serif;margin:5px 0}.ui-character-head small{font:13px system-ui,sans-serif;color:var(--ux-muted)}.ui-character-head p{font-size:13px;margin:7px 0 12px}.ui-equipment{display:grid;grid-template-columns:1fr;gap:8px;margin:12px 0}.ui-equipment .nm{gap:12px}.ui-equipment .rc ul{font-size:13px;line-height:1.6}.ui-stat-list{margin:0}.ui-stat-list>div{display:flex;gap:12px;justify-content:space-between;border-bottom:1px solid #e2e9f5;padding:7px 0}.ui-stat-list dd{margin:0;font-variant-numeric:tabular-nums;font-weight:650}
 .ui-segments{display:flex;gap:4px;padding:4px;margin:10px 0;background:#e4ecfa;border:1px solid #b7c7e6;border-radius:8px}.ui-segments>button{flex:1;min-width:0;min-height:40px;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--ux-muted);font:13px system-ui,sans-serif;padding:5px}.ui-segments>button[aria-pressed="true"]{color:var(--ux-ink);background:#fff;border-color:var(--ux-edge);box-shadow:0 1px 2px #31467c20}
 .ui-inventory{margin:16px 0}.ui-inventory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#mbody .gt{min-width:0;min-height:80px;border-radius:7px!important;padding:9px!important;position:relative;border-color:#aabbdc!important;box-shadow:none!important;font:13px/1.4 system-ui,sans-serif}#mbody .gt small{font:12px/1.5 system-ui,sans-serif}#mbody .gt .shp{grid-column:2/4;justify-self:start;margin-top:5px}.ui-inventory .skrow{grid-template-columns:1fr 1fr}.ui-inventory .gems{grid-template-columns:1fr}#mbody .gt[disabled]{opacity:1;filter:grayscale(.45);color:#64728e;background:#eaf0fa!important}#mbody .gt.on{outline:2px solid var(--ux-blue)}
-#mbody .dpsbar{position:static!important;margin:8px 0;padding:10px;border:1px solid var(--ux-edge);border-radius:8px;background:#eaf1fd}.dpsbar>div:first-child{font:13px system-ui,sans-serif}.dpsbar>div:first-child b{font-size:22px;font-variant-numeric:tabular-nums}.shares{margin-top:6px}.shares span{font:11px system-ui,sans-serif!important}.uxinspect{scroll-margin-top:12px}#mbody .ui-map-grid{display:grid;grid-template-columns:1fr!important;gap:6px}#mbody .ui-mapcard{position:relative;display:block;width:100%;min-height:56px;padding:0!important;text-align:left;overflow:hidden;border:2px solid #fff!important;outline:1px solid #7d8bbd;border-radius:0!important;background:var(--b2)!important;color:#12202a!important;box-shadow:0 2px 0 #8c9bd0!important}#mbody .ui-mapcard i{position:absolute;inset:0;background:linear-gradient(180deg,var(--b1) 0 40%,var(--b2) 40% 70%,var(--b3) 70%);image-rendering:pixelated;opacity:.95}#mbody .ui-mapcard i::after{content:"";position:absolute;right:10px;bottom:8px;width:14px;height:14px;background:var(--t1);box-shadow:-18px 4px 0 -2px var(--t2),-34px 0 0 -3px var(--t1)}#mbody .ui-mapcard b,#mbody .ui-mapcard span{position:absolute;z-index:1;font-family:var(--ux-body)!important;text-shadow:1px 1px 0 #ffffffb0}#mbody .ui-mapcard b{left:8px;top:6px;font-size:14px}#mbody .ui-mapcard .lv{right:8px;top:6px;font-size:12px}#mbody .ui-mapcard .ch{left:8px;bottom:5px;font-size:12px}#mbody .ui-mapcard{min-height:64px!important;padding-left:88px!important;background:linear-gradient(90deg,var(--b3) 0 84px,var(--b1) 84px)!important}#mbody .ui-mapcard .ui-mapthumb{position:absolute;left:4px;top:4px;width:78px;height:56px}#mbody .ui-mapcard b{left:92px!important}#mbody .ui-mapcard .ch{left:92px!important}.ui-shoprow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed #9aa6d0}.ui-shoprow>div:first-child{min-width:0}.ui-shoprow b{display:block;font-size:14px}.ui-shoprow small{display:block;font-size:12px;opacity:.8}.ui-shopbtns{display:flex;flex-direction:column;gap:4px;flex:none}.ui-shopbtns .mb{font-size:12px;padding:4px 8px}.whact{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.whcard ul{margin:4px 0;padding-left:16px}.whcard .ui-stat-list{margin:4px 0}.uxinspect .uxeffect{font-weight:600}.uxinspect-head{flex-wrap:wrap}.uxinspect-head>b{flex:1}.uxinspect-head .shp{display:none}.uxinspect-head .uxboard-link{margin:0;min-height:40px}.uxinspect-head .uxquiet{margin:0}.uxgrid-help{margin:10px 0;font-size:12px}#mbody .pz{max-width:336px;margin:12px auto;gap:4px;padding:7px;background:#c4d0e8;border:1px solid #8e9fc6;border-radius:9px}#mbody .pzbar{position:static!important;display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 0;background:none;border:0}#mbody .rz{font:12px/1.5 system-ui,sans-serif;color:var(--ux-muted);margin:8px 0}.ui-resolved article{padding:10px 0;border-bottom:1px solid #e1e8f4}.ui-resolved article>div{display:flex;align-items:center;gap:8px}.ui-resolved article>div>span:last-child{margin-left:auto;font-size:12px;color:var(--ux-muted)}.ui-resolved article p{font-size:13px;margin:5px 0;color:var(--ux-muted)}.ui-resolved details{margin-top:10px}.ui-resolved summary{min-height:36px;padding:8px 0}
-.ui-directory{display:grid;gap:8px}.ui-directory button,.ui-wiki{display:flex;align-items:center;gap:10px;min-height:64px;padding:10px 12px;text-align:left;border:1px solid #b9c8e3;border-radius:7px;background:#f3f7ff;color:var(--ux-ink);font:14px system-ui,sans-serif}.ui-directory button{display:grid;grid-template-columns:1fr auto}.ui-directory button b{font-weight:600}.ui-directory button span{grid-column:1;font-size:12px;color:var(--ux-muted)}.ui-directory i{grid-column:2;grid-row:1/3;font-style:normal}.ui-wiki{width:100%;background:#e6eefa}.ui-wiki span{display:grid;gap:4px}.ui-wiki small{color:var(--ux-muted)}.ui-wiki i{margin-left:auto;font-style:normal}
+#mbody .dpsbar{position:static!important;margin:8px 0;padding:10px;border:1px solid var(--ux-edge);border-radius:8px;background:#eaf1fd}.dpsbar>div:first-child{font:13px system-ui,sans-serif}.dpsbar>div:first-child b{font-size:22px;font-variant-numeric:tabular-nums}.shares{margin-top:6px}.shares span{font:11px system-ui,sans-serif!important}.uxinspect{scroll-margin-top:12px}#mbody .ui-map-grid{display:grid;grid-template-columns:1fr!important;gap:6px}#mbody .ui-mapcard{position:relative;display:block;width:100%;min-height:56px;padding:0!important;text-align:left;overflow:hidden;border:2px solid #fff!important;outline:1px solid #7d8bbd;border-radius:0!important;background:var(--b2)!important;color:#12202a!important;box-shadow:0 2px 0 #8c9bd0!important}#mbody .ui-mapcard i{position:absolute;inset:0;background:linear-gradient(180deg,var(--b1) 0 40%,var(--b2) 40% 70%,var(--b3) 70%);image-rendering:pixelated;opacity:.95}#mbody .ui-mapcard i::after{content:"";position:absolute;right:10px;bottom:8px;width:14px;height:14px;background:var(--t1);box-shadow:-18px 4px 0 -2px var(--t2),-34px 0 0 -3px var(--t1)}#mbody .ui-mapcard b,#mbody .ui-mapcard span{position:absolute;z-index:1;font-family:var(--ux-body)!important;text-shadow:1px 1px 0 #ffffffb0}#mbody .ui-mapcard b{left:8px;top:6px;font-size:14px}#mbody .ui-mapcard .lv{right:8px;top:6px;font-size:12px}#mbody .ui-mapcard .ch{left:8px;bottom:5px;font-size:12px}#mbody .ui-mapcard{min-height:64px!important;padding-left:88px!important;background:linear-gradient(90deg,var(--b3) 0 84px,var(--b1) 84px)!important}#mbody .ui-mapcard .ui-scene{width:auto;height:84px;max-width:100%;display:block;margin:0 auto 2px;image-rendering:pixelated}.ui-scene.tall{width:auto;height:120px;margin:0}.ui-towerbox{display:flex;align-items:center;gap:14px}.ui-towernum b{font-size:34px;line-height:1.1}.view-options.ui-scenes{grid-template-columns:repeat(auto-fit,minmax(88px,1fr))}.ui-scenebtn{display:flex!important;flex-direction:column;align-items:center;justify-content:flex-end;position:relative;min-height:104px!important}.ui-scenes{margin-bottom:8px}.ui-scenebtn[aria-pressed=true]{outline:3px solid #ffd24d;outline-offset:-3px}.ui-scenebtn i{position:absolute;right:4px;top:2px;font-style:normal;color:#19865a;font-weight:700}.ui-mapthumb{position:absolute;left:4px;top:4px;width:78px;height:56px}#mbody .ui-mapcard b{left:92px!important}#mbody .ui-mapcard .ch{left:92px!important}.ui-shoprow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed #9aa6d0}.ui-shoprow>div:first-child{min-width:0}.ui-shoprow b{display:block;font-size:14px}.ui-shoprow small{display:block;font-size:12px;opacity:.8}.ui-shopbtns{display:flex;flex-direction:column;gap:4px;flex:none}.ui-shopbtns .mb{font-size:12px;padding:4px 8px}.whact{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.whcard ul{margin:4px 0;padding-left:16px}.whcard .ui-stat-list{margin:4px 0}.uxinspect .uxeffect{font-weight:600}.uxinspect-head{flex-wrap:wrap}.uxinspect-head>b{flex:1}.uxinspect-head .shp{display:none}.uxinspect-head .uxboard-link{margin:0;min-height:40px}.uxinspect-head .uxquiet{margin:0}.uxgrid-help{margin:10px 0;font-size:12px}#mbody .pz{max-width:336px;margin:12px auto;gap:4px;padding:7px;background:#c4d0e8;border:1px solid #8e9fc6;border-radius:9px}#mbody .pzbar{position:static!important;display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 0;background:none;border:0}#mbody .rz{font:12px/1.5 system-ui,sans-serif;color:var(--ux-muted);margin:8px 0}.ui-resolved article{padding:10px 0;border-bottom:1px solid #e1e8f4}.ui-resolved article>div{display:flex;align-items:center;gap:8px}.ui-resolved article>div>span:last-child{margin-left:auto;font-size:12px;color:var(--ux-muted)}.ui-resolved article p{font-size:13px;margin:5px 0;color:var(--ux-muted)}.ui-resolved details{margin-top:10px}.ui-resolved summary{min-height:36px;padding:8px 0}
+.ui-directory{display:grid;gap:8px}.ui-directory button,.ui-wiki{display:flex;align-items:center;gap:10px;min-height:64px;padding:10px 12px;text-align:left;border:1px solid #b9c8e3;border-radius:7px;background:#f3f7ff;color:var(--ux-ink);font:14px system-ui,sans-serif}.ui-directory button{display:grid;grid-template-columns:auto 1fr auto;column-gap:12px;align-items:center}.ui-directory button .ui-obj3d{grid-row:1/3;grid-column:1}.ui-directory button b,.ui-directory button span{grid-column:2}.ui-directory button i{grid-column:3;grid-row:1/3}.ui-directory button b{font-weight:600}.ui-directory button span{font-size:12px;color:var(--ux-muted)}.ui-directory i{grid-column:2;grid-row:1/3;font-style:normal}.ui-wiki{width:100%;background:#e6eefa}.ui-wiki span{display:grid;gap:4px}.ui-wiki small{color:var(--ux-muted)}.ui-wiki i{margin-left:auto;font-style:normal}
 .ui-craft-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:10px 0}.ui-craft-slots button{min-height:82px;display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:9px;border:1px solid #b1c1de;border-radius:8px;background:#eaf0fb;color:var(--ux-ink);font:13px system-ui,sans-serif}.ui-craft-slots button[aria-pressed="true"]{border:2px solid var(--ux-blue);background:#fff}.ui-craft-slots small{font-size:11px}.ui-craft-wallet{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:baseline;padding:6px 0}.ui-craft-wallet strong{font:22px "Cubic 11",system-ui,sans-serif}.ui-craft-detail>ul{list-style:none;padding:0;margin:12px 0}.ui-craft-detail li{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #e0e8f6;padding:6px 0;font-size:13px}.ui-craft-operation{padding:12px;background:#eaf1fb;border-radius:8px;margin:10px 0}.ui-craft-operation h3{font-size:16px;margin:0 0 6px}.ui-craft-operation p{font-size:13px;margin:5px 0}.ui-craft-operation .mb{width:100%;margin-top:10px}.ui-craft-result{margin:12px 0}.ui-rules{margin-top:12px;border-top:1px solid #c7d3e8;padding-top:10px}.ui-rules summary{padding:8px 0}
 .ui-map-list{display:grid;gap:12px}.ui-map-card{overflow:hidden;border:1px solid #a9bbdc;border-radius:9px;background:#fff}.ui-map-banner{position:relative;padding:16px;min-height:92px;background:var(--land);color:#15263d;overflow:hidden}.ui-map-banner h3{position:relative;margin:6px 0 0;font:21px "Cubic 11",system-ui,sans-serif;z-index:1}.ui-map-banner span{font:12px system-ui,sans-serif}.ui-map-info{padding:12px}.ui-map-info .rchips{gap:6px;margin:0 0 8px}.ui-map-info details{font-size:13px;margin:10px 0}.ui-map-info summary{min-height:36px;padding:7px 0}.ui-map-info ul{padding-left:18px;line-height:1.7}.ui-map-info .mb.pri{width:100%}.ui-map-state{display:flex;justify-content:space-between;gap:8px;font-size:13px}.ui-progress{height:7px;background:#dce5f4;border-radius:4px;overflow:hidden;margin:8px 0}.ui-progress i{display:block;height:100%;background:var(--ux-blue)}
 #mbody .ui-segments>button{background:transparent!important;border:1px solid transparent!important;border-radius:5px!important;box-shadow:none!important;color:var(--ux-muted)!important;text-shadow:none!important;font:13px/1.4 system-ui,sans-serif!important;padding:6px!important}
@@ -4369,13 +4483,13 @@ function uiAdventureHtml(){
   const R=G.run,mode=UI_WORK.adventure;
   const nav=uiSegments('adventure',[['maps','地圖','消耗地圖卡進入挑戰，打贏有額外獎勵'],['city','城市遠征','三段路線加首領，取得傳奇核心碎片'],['tower','無限之塔','一路往上爬，死亡就結束，記錄最高層'],['training','訓練場','對假人測試 DPS，不影響進度']],'冒險分類');
   const current=R?.city?uiCityRunHtml():R?`<section class="ui-section"><div class="ui-map-state"><b>${R.tower?'無限之塔 第 '+R.floor+' 層':BIOMES[R.map.biome].n}</b><span>進行中</span></div><div class="ui-progress" role="progressbar" aria-label="地圖擊殺進度" aria-valuemin="0" aria-valuemax="${R.need}" aria-valuenow="${Math.min(R.kills,R.need)}"><i style="width:${Math.min(100,R.kills/R.need*100)}%"></i></div><p id="ui-run-count" class="uxmeta">擊殺 ${Math.min(R.kills,R.need)}／${R.need}</p>${runMods(R)}<button class="mb" onclick="uiLeaveMap()">離開目前挑戰</button></section>`:`<section class="ui-section"><div class="ui-map-state"><b>一般冒險</b><span>深度 ${G.depth}</span></div><p id="ui-normal-count" class="uxmeta">擊殺 ${Math.min(G.kills,G.need)}／${G.need}${G.push?'':'，原地刷怪'}</p></section>`;
-  if(mode==='tower')return current+nav+`<section class="ui-section"><h3>無限之塔</h3><p>最高紀錄 ${G.towerBest||0} 層</p><p class="uxmeta">${G.maxDepth<8?'深度 8 解鎖':'逐層挑戰更強的守關者。'}</p><button class="mb pri" ${R||G.maxDepth<8?'disabled':''} onclick="towerStart()">挑戰無限之塔</button>${R?'<p class="uxmeta">請先完成或離開目前挑戰。</p>':''}</section>`;
+  if(mode==='tower')return current+nav+`<section class="ui-section"><h3>無限之塔</h3><div class="ui-towerbox">${(u=>u?`<img class="ui-scene tall" alt="" aria-hidden="true" src="${u}" style="image-rendering:pixelated">`:'')(icon3dSceneUrl('tower',Math.ceil((G.towerBest||0)/2)+3))}<div><div class="ui-towernum"><b>${G.towerBest||0}</b> 層</div><div class="uxmeta">最高紀錄</div>${G.maxDepth<8?'<p class="uxmeta">深度 8 解鎖</p>':''}</div></div><button class="mb pri" ${R||G.maxDepth<8?'disabled':''} onclick="towerStart()">挑戰無限之塔</button>${R?'<p class="uxmeta">請先完成或離開目前挑戰。</p>':''}</section>`;
   if(mode==='city')return (R?current:'')+nav+(R?.city?'<details class="ui-section"><summary>查看城市目標與下次出發設定</summary>'+uiCityHtml()+'</details>':uiCityHtml());
   if(mode==='training'){
     const L=G.trainLast,mx=L?.rows.length?L.rows[0][1]:1;
-    return current+nav+`<section class="ui-section"><h3>訓練場</h3><p>選擇 1 隻或 5 隻不還手的假人，測量 30 秒實際傷害。</p><div class="view-options" role="group" aria-label="訓練目標">${[['single','單體假人'],['crowd','群體假人']].map(([id,name])=>`<button class="mb" aria-pressed="${(G.trainingPreset||'crowd')===id}" ${G.train?'disabled':''} onclick="uiTrainingPreset('${id}')">${name}</button>`).join('')}</div>${G.train?`<p id="ui-train-time">測量中，剩 ${Math.ceil(G.train.t)} 秒</p><button class="mb" onclick="trainEnd(true)">取消測量</button>`:`<button class="mb pri" ${R?'disabled':''} onclick="trainStart()">開始測量</button>`}<p class="uxmeta">測試不掉落獎勵；開始時清空測試電荷，結束或取消後還原原有電荷。單體預估不等同多目標實測。</p>${L?`<p>上次結果：每秒約 <b>${tFmt(L.dps)}</b>（${L.n||5} 隻合計）</p>${L.rows.map(([k,v])=>`<div class="gl"><b>${uxEsc(k)}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${L.total?Math.round(v/L.total*100):0}%　${tFmt(v/(L.duration||30))}／秒</em></div>`).join('')}<details><summary>出手與連動結果</summary>${Object.entries(L.stats||{}).map(([id,row])=>`<p>${SKILLS[id].n}：${row.casts} 次出手／${row.repeats} 次回放，最長等候 ${row.maxWait.toFixed(1)} 秒</p>`).join('')}${uiComboSummary(L.combos)}</details>`:'<p class="uxmeta">完成測量後，保留傷害分布、出手次數與連動結果。</p>'}</section>`;
+    return current+nav+`<section class="ui-section"><h3>訓練場</h3><p class="uxmeta">選目標，測 30 秒傷害。</p><div class="view-options ui-scenes" role="group" aria-label="訓練目標">${[['single','單體假人','dummy1'],['crowd','群體假人','dummy5']].map(([id,name,k])=>`<button class="mb ui-scenebtn" aria-pressed="${(G.trainingPreset||'crowd')===id}" ${G.train?'disabled':''} onclick="uiTrainingPreset('${id}')">${(u=>u?`<img class="ui-scene" alt="" aria-hidden="true" src="${u}" style="image-rendering:pixelated">`:'')(icon3dSceneUrl(k))}<span>${name}</span></button>`).join('')}</div>${G.train?`<p id="ui-train-time">測量中，剩 ${Math.ceil(G.train.t)} 秒</p><button class="mb" onclick="trainEnd(true)">取消測量</button>`:`<button class="mb pri" ${R?'disabled':''} onclick="trainStart()">開始測量</button>`}<details><summary>測量說明</summary><p class="uxmeta">測試不掉落獎勵；開始時清空測試電荷，結束或取消後還原原有電荷。單體預估不等同多目標實測。</p></details>${L?`<p>上次結果：每秒約 <b>${tFmt(L.dps)}</b>（${L.n||5} 隻合計）</p>${L.rows.map(([k,v])=>`<div class="gl"><b>${uxEsc(k)}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${L.total?Math.round(v/L.total*100):0}%　${tFmt(v/(L.duration||30))}／秒</em></div>`).join('')}<details><summary>出手與連動結果</summary>${Object.entries(L.stats||{}).map(([id,row])=>`<p>${SKILLS[id].n}：${row.casts} 次出手／${row.repeats} 次回放，最長等候 ${row.maxWait.toFixed(1)} 秒</p>`).join('')}${uiComboSummary(L.combos)}</details>`:'<p class="uxmeta">完成測量後，保留傷害分布、出手次數與連動結果。</p>'}</section>`;
   }
-  return uiWorldViewHtml()+current+nav+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><div class="ui-item-grid ui-map-grid" role="group" aria-label="地圖庫存">${G.maps.length?G.maps.map(m=>uiMapCard(m)).join(''):'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏守關者便有機會取得。</p>'}</div>`;
+  return uiWorldViewHtml()+current+nav+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><div class="ui-mgroups" role="group" aria-label="地圖庫存">${G.maps.length?uiMapGroups():'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏守關者便有機會取得。</p>'}</div>`;
 }
 let UI_MAP_PENDING=null;
 function uiInspectMap(encoded){let id;try{id=decodeURIComponent(encoded);}catch(_){return;}const m=G.maps.find(x=>x.id===id);if(!m)return;UI_MAP_PENDING={id,stamp:JSON.stringify(m)};const biome=BIOMES[m.biome],land=terrainBuild('map:'+m.id+':0'),q=m.mods.reduce((sum,k)=>sum+(MODS[k]?.q||0),0);showOverlay(`<h2 class="uxdialog-title">${biome.n} · Lv. ${m.lvl}</h2><div class="ui-map-banner" style="--land:${biome.board.l};--land2:${biome.board.m}"><span>挑戰詞綴 ${mapChallenge(m.mods)} · 戰利品 +${Math.round(q*100)}%</span></div><p>${land.name} · ${land.bounds[1]-land.bounds[0]} × ${land.bounds[3]-land.bounds[2]} · 起伏最高 ${land.amplitude} 單位</p><ul>${m.mods.length?m.mods.map(k=>`<li>${mapKind(k)} · ${MODS[k].n}</li>`).join(''):'<li>沒有額外詞綴</li>'}</ul>${m.mods.includes('rich')?'<p>金幣 +60%</p>':''}${m.mods.includes('lucky')?'<p>稀有度提升</p>':''}<p>進入會消耗這張地圖，離開不退還。${G.run||G.train?'先結束目前挑戰或訓練。':''}</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回地圖</button><button class="mb pri" ${G.run||G.train?'disabled':''} onclick="uiUseMapPreview()">進入 · 消耗這張地圖</button></div>`);}
@@ -4437,7 +4551,7 @@ function whClose(){const k=WAREHOUSE_UI.sel;WAREHOUSE_UI.sel=null;renderModal();
 function warehouseCardHtml(){
  const it=WAREHOUSE_UI.kind==='gear'&&G.inventory.find(x=>x.uid===WAREHOUSE_UI.sel);if(!it){WAREHOUSE_UI.sel=null;return '';}
  const uid=it.uid,on=G.equip[it.slot]===it,guard=it.kept||it.cr||it.lk!=null||on||Object.values(G.equipBackup).includes(it)||gearReferenced(it);
- return `<section id="whcard" class="uxinspect whcard" aria-label="${uxEsc(it.name)}"><div class="uxinspect-head">${eqico(it.slot,it.r,28)}<b>${uxEsc(it.name)}</b><button class="uxquiet" onclick="whClose()">取消</button></div><div class="uxmeta">${SLOTN[it.slot]} · ${RAR[it.r].n} · 等級 ${it.il}</div><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul>${uiGearComparison(it)}<div class="uxactions whact"><button class="mb pri" ${on?'disabled':''} onclick="uiWearStored(${uid})">${on?'穿著中':'換上'}</button><button class="mb" onclick="uiKeepStored(${uid})">${it.kept?'解除鎖定':'鎖定'}</button><button class="mb" ${guard?'disabled':''} title="${guard?'穿著、上一件、構築引用、鎖定、詞綴鎖定或已腐化的裝備受保護，不能回收':''}" onclick="uiRecycleAsk(${uid})">回收</button></div></section>`;
+ return `<section id="whcard" class="uxinspect whcard" aria-label="${uxEsc(it.name)}"><div class="uxinspect-head big3d">${eqico(it.slot,it.r,96,it)}<b>${uxEsc(it.name)}</b><button class="uxquiet" onclick="whClose()">取消</button></div><div class="uxmeta">${SLOTN[it.slot]} · ${RAR[it.r].n} · 等級 ${it.il}</div><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul>${uiGearComparison(it)}<div class="uxactions whact"><button class="mb pri" ${on?'disabled':''} onclick="uiWearStored(${uid})">${on?'穿著中':'換上'}</button><button class="mb" onclick="uiKeepStored(${uid})">${it.kept?'解除鎖定':'鎖定'}</button><button class="mb" ${guard?'disabled':''} title="${guard?'穿著、上一件、構築引用、鎖定、詞綴鎖定或已腐化的裝備受保護，不能回收':''}" onclick="uiRecycleAsk(${uid})">回收</button></div></section>`;
 }
 function uiInspectGear(uid){
  const it=G.inventory.find(x=>x.uid===uid);if(!it)return;
@@ -4503,7 +4617,7 @@ function uiForgeCore(id){const C=G.city||(G.city=newCity()),route=cityRouteForCo
 function uiConfirmForge(id){hideOverlay();if(forgeTargetCore(id)){renderModal();uxAnnounce('合成完成，已加入角色的傳奇核心收藏；未改動裝備。');}else uxAnnounce('碎片不足、已持有或挑戰進行中，沒有扣款。');}
 function uiCityRunHtml(){const R=G.run,c=R.city;return `<section class="ui-section"><h3>${c.nexus?'城市中樞':CITY_ROUTES[c.route].n} · 第 ${c.tier} 階</h3><p>路段 ${c.stage}／3 · ${c.stage===3?'收尾首領':`<span id="ui-run-count">擊殺 ${Math.min(R.kills,R.need)}／${R.need}</span>`}</p><p>已存 ${c.bank} 枚${CITY_ROUTES[c.route].n}碎片；撤離或死亡仍帶回。核心目標：${LEGEND_BY[c.target].name}。</p>${c.branches.length?`<p>當局協定：${c.branches.map(id=>CITY_BRANCHES[id].n).join('、')}</p>`:''}${c.awaitChoice?`<h3>下一段走哪條路？</h3><p>效果累加，只在本次遠征生效。</p><p id="ui-city-choice-time">15 秒後依出發策略自動選路，也可立即選擇。</p><div class="ui-directory">${Object.entries(CITY_BRANCHES).map(([id,b])=>`<button data-focus="city-branch-${id}" onclick="uiCityChoose('${id}',${c.stage})"><b>${b.n}</b><span>${b.d}</span></button>`).join('')}</div>`:`<p>${c.nexus?'訊號、護盾與重裝威脅依路段輪替，首領在生命 65%／30% 時加速。':CITY_ROUTES[c.route].threat}</p>`}<button class="mb" onclick="uiLeaveMap()">撤離並帶回碎片</button></section>`;}
 function uiCityHtml(){const C=G.city||(G.city=newCity());CITY_UI.tier=Math.min(C.maxTier,CITY_UI.tier);const route=CITY_UI.route,tier=CITY_UI.tier,target=C.target,tr=cityRouteForCore(target),active=!!G.run||!!G.train;
- return `<section class="ui-section"><h3>城市遠征</h3><p>選擇路線，追求對應核心。完成三區後挑戰中樞。</p><details><summary>遠征規則與進度</summary><p>三個路段、兩次選路、一次收尾首領。三區憑證開啟同階中樞；完成中樞推進下一階。各階憑證分開保存，沒有每日重置。</p></details>${!cityReady()?`<p>${G.maxDepth<8?'最深第 8 層解鎖。':'先到成長頁預覽並轉換有限天賦。'}</p>`:''}${C.last?`<p>${uxEsc(C.last.text)}</p>`:''}<div class="view-options" role="group" aria-label="遠征階級">${Array.from({length:C.maxTier},(_,i)=>i+1).map(t=>`<button class="mb" aria-pressed="${t===tier}" data-focus="city-tier-${t}" onclick="uiCityConfig('tier',${t})">第 ${t} 階</button>`).join('')}</div><p>第 ${tier} 階憑證：${Object.keys(CITY_ROUTES).map(id=>`${CITY_ROUTES[id].n} ${C.seals[tier]?.[id]?'✓':'未取得'}`).join('／')}</p></section><section class="ui-section"><div class="view-options" role="group" aria-label="城市路線">${Object.entries(CITY_ROUTES).map(([id,r])=>`<button class="mb" aria-pressed="${route===id}" data-focus="city-route-${id}" onclick="uiCityConfig('route','${id}')">${r.n}</button>`).join('')}</div><h3>${CITY_ROUTES[route].n}</h3><p>敵人等級 ${Math.max(8,G.maxDepth)+2*(tier-1)}；當局增益與代價結束後移除。</p><p>${CITY_ROUTES[route].d}</p><p>${CITY_ROUTES[route].threat}。掉落偏向：${CITY_ROUTES[route].cores.map(id=>LEGEND_BY[id].name).join('、')}。</p><p>碎片 ${C.fragments[route]} 枚／核心成本 24。首階完整遠征至少 14 枚，安全路線兩次即可合成一款未持有核心；收尾另有 15% 區域核心機會。</p><button class="mb pri" data-focus="city-start" ${cityCanStart(route,tier)?'':'disabled'} onclick="uiCityStart()">出發第 ${tier} 階遠征</button><button class="mb" ${cityCanStart(route,tier,true)?'':'disabled'} onclick="uiCityStart(true)">挑戰第 ${tier} 階中樞 · 消耗三區憑證</button>${active?'<p>先結束目前挑戰或訓練。</p>':''}<details><summary>離線出發策略</summary><p>出發即授權離線自動選路：${C.policy==='risk'?'帶電捷徑':'旁路校準'}。只完成當前遠征；失敗不重開、不自動消耗其他門票。前景到分岔可自行選擇，15 秒後依出發策略自動繼續。</p><div class="view-options">${[['safe','保守選路'],['risk','碎片優先']].map(([id,n])=>`<button class="mb" aria-pressed="${C.policy===id}" onclick="uiCityPolicy('${id}')">${n}</button>`).join('')}</div></details></section><section class="ui-section"><h3>追求：${LEGEND_BY[target].name}</h3><p>${LEGEND_BY[target].d}</p><p>來源：${CITY_ROUTES[tr].n}。${C.fragments[tr]}／24 枚碎片；城市中樞勝利保證掉落出發時目標。遠征中的目標不隨此處變更。</p><button class="mb" ${!active&&cityReady()&&!G.armory[target]&&C.fragments[tr]>=24?'':'disabled'} onclick="uiForgeCore('${target}')">${G.armory[target]?'已收藏 '+LEGEND_BY[target].name:'24 碎片合成 '+LEGEND_BY[target].name}</button><button class="mb" onclick="openModal('char')">查看核心收藏</button><details><summary>選擇追求核心 · 九款</summary><div class="ui-directory">${Object.entries(CITY_ROUTES).flatMap(([rid,r])=>r.cores.map(id=>`<button data-focus="city-target-${id}" aria-pressed="${target===id}" onclick="uiCityTarget('${id}')"><b>${LEGEND_BY[id].name}${G.armory[id]?' · 已收藏':''}</b><span>${r.n} · ${LEGEND_BY[id].d}</span></button>`)).join('')}</div></details></section>`;
+ return `<section class="ui-section"><h3>城市遠征</h3><details><summary>遠征規則與進度</summary><p>選擇路線，追求對應核心。完成三區後挑戰中樞。</p><p>三個路段、兩次選路、一次收尾首領。三區憑證開啟同階中樞；完成中樞推進下一階。各階憑證分開保存，沒有每日重置。</p></details>${!cityReady()?`<p>${G.maxDepth<8?'最深第 8 層解鎖。':'先到成長頁預覽並轉換有限天賦。'}</p>`:''}${C.last?`<p>${uxEsc(C.last.text)}</p>`:''}<div class="view-options" role="group" aria-label="遠征階級">${Array.from({length:C.maxTier},(_,i)=>i+1).map(t=>`<button class="mb" aria-pressed="${t===tier}" data-focus="city-tier-${t}" onclick="uiCityConfig('tier',${t})">第 ${t} 階</button>`).join('')}</div><p class="uxmeta">第 ${tier} 階憑證：${Object.keys(CITY_ROUTES).map(id=>`${CITY_ROUTES[id].n} ${C.seals[tier]?.[id]?'✓':'未取得'}`).join('／')}</p></section><section class="ui-section"><div class="view-options ui-scenes ui-routes" role="group" aria-label="城市路線">${Object.entries(CITY_ROUTES).map(([id,r])=>`<button class="mb ui-scenebtn" aria-pressed="${route===id}" data-focus="city-route-${id}" onclick="uiCityConfig('route','${id}')">${(u=>u?`<img class="ui-scene" alt="" aria-hidden="true" src="${u}" style="image-rendering:pixelated">`:'')(icon3dSceneUrl('route_'+id))}<span>${r.n}</span><i>${C.seals[tier]?.[id]?'✓':''}</i></button>`).join('')}</div><h3>${CITY_ROUTES[route].n}</h3><p>${CITY_ROUTES[route].threat}。敵人等級 ${Math.max(8,G.maxDepth)+2*(tier-1)}。</p><p>碎片 <b>${C.fragments[route]}</b>／24　掉落：${CITY_ROUTES[route].cores.map(id=>LEGEND_BY[id].name).join('、')}</p><details><summary>路線說明</summary><p>${CITY_ROUTES[route].d}</p><p>當局增益與代價結束後移除。首階完整遠征至少 14 枚，安全路線兩次即可合成一款未持有核心；收尾另有 15% 區域核心機會。</p></details><button class="mb pri" data-focus="city-start" ${cityCanStart(route,tier)?'':'disabled'} onclick="uiCityStart()">出發第 ${tier} 階遠征</button><button class="mb" ${cityCanStart(route,tier,true)?'':'disabled'} onclick="uiCityStart(true)">挑戰第 ${tier} 階中樞 · 消耗三區憑證</button>${active?'<p>先結束目前挑戰或訓練。</p>':''}<details><summary>離線出發策略</summary><p>出發即授權離線自動選路：${C.policy==='risk'?'帶電捷徑':'旁路校準'}。只完成當前遠征；失敗不重開、不自動消耗其他門票。前景到分岔可自行選擇，15 秒後依出發策略自動繼續。</p><div class="view-options">${[['safe','保守選路'],['risk','碎片優先']].map(([id,n])=>`<button class="mb" aria-pressed="${C.policy===id}" onclick="uiCityPolicy('${id}')">${n}</button>`).join('')}</div></details></section><section class="ui-section"><h3>追求：${LEGEND_BY[target].name}</h3><p>${LEGEND_BY[target].d}</p><p>來源：${CITY_ROUTES[tr].n}。${C.fragments[tr]}／24 枚碎片；城市中樞勝利保證掉落出發時目標。遠征中的目標不隨此處變更。</p><button class="mb" ${!active&&cityReady()&&!G.armory[target]&&C.fragments[tr]>=24?'':'disabled'} onclick="uiForgeCore('${target}')">${G.armory[target]?'已收藏 '+LEGEND_BY[target].name:'24 碎片合成 '+LEGEND_BY[target].name}</button><button class="mb" onclick="openModal('char')">查看核心收藏</button><details><summary>選擇追求核心 · 九款</summary><div class="ui-directory">${Object.entries(CITY_ROUTES).flatMap(([rid,r])=>r.cores.map(id=>`<button data-focus="city-target-${id}" aria-pressed="${target===id}" onclick="uiCityTarget('${id}')"><b>${LEGEND_BY[id].name}${G.armory[id]?' · 已收藏':''}</b><span>${r.n} · ${LEGEND_BY[id].d}</span></button>`)).join('')}</div></details></section>`;
 }
 
 let CITY_CHECKPOINT_REVEALED=null;
@@ -4536,6 +4650,68 @@ function feedbackDownload(){if(!FEEDBACK_PREVIEW)return;const p=FEEDBACK_PREVIEW
 function fieldJournalHtml(){const count=FIELD_STORIES.filter((_,i)=>G.storyFlags['p'+i]).length;return `<details class="ui-rules"><summary>電台手記 · 已收錄 ${count}／${FIELD_STORIES.length}</summary><p>停電後第七年。你帶著舊卡匣，沿各島微弱的訊號尋找山頂電台。</p>${FIELD_STORIES.map((e,i)=>{const f=G.storyFlags['p'+i]||0;return f?`<details class="field-entry"><summary>${uxEsc(e[0])}${f&2?' · 歸途已收錄':''}</summary><p class="uxmeta">${uxEsc(e[1])}</p><p>${uxEsc(e[2])}</p>${f&2?`<p>歸途：${uxEsc(e[3])}</p>`:''}</details>`:'';}).join('')||'<p>到達新的地景後，會收錄當地留言。</p>'}</details>`;}
 
 function uiWorldViewHtml(){const p=terrainNow(),size={regular:'一般地圖',medium:'中型地圖',large:'大型地圖',giant:'巨型地圖',training:'訓練場'}[p.sizeClass];return `<section class="ui-section"><h3>${p.name} · ${size}</h3><button class="mb" type="button" aria-pressed="${!!FXO.overview}" onclick="toggleWorldOverview()">${FXO.overview?'返回戰鬥鏡頭':'查看全景地圖'}</button>${fieldJournalHtml()}</section>`;}
+
+/* 可用地圖：依地貌分組、同款（地貌＋等級＋詞綴）合併成一張並標示數量，方塊卡放大 3D 小島 */
+function uiMapGroups(){
+  const by=new Map();
+  for(const m of G.maps){const key=m.biome+'|'+m.lvl+'|'+m.mods.slice().sort().join(','),g=by.get(key);if(g){g.n++;}else by.set(key,{m,n:1});}
+  const list=[...by.values()].sort((a,b)=>a.m.biome-b.m.biome||b.m.lvl-a.m.lvl);
+  return `<div class="ui-mgrid">`+list.map(({m,n})=>{const B=BIOMES[m.biome],c=mapChallenge(m.mods),pips='◆'.repeat(c)+'◇'.repeat(Math.max(0,3-c));
+    return `<button type="button" class="ui-mtile" data-focus="map-${uxEsc(m.id)}" aria-label="${uxEsc(B.n)}，等級 ${m.lvl}，挑戰詞綴 ${c}，共 ${n} 張，查看詳情" style="--b1:${B.board.l};--b2:${B.board.m};--b3:${B.board.d}" onclick="uiInspectMap('${encodeURIComponent(m.id).replace(/'/g,'%27')}')">${uiMapThumb(m)}<span class="lv">Lv.${m.lvl}</span>${n>1?`<span class="cnt">×${n}</span>`:''}<b>${uxEsc(B.n)}</b><span class="pip" title="挑戰詞綴 ${c}">${pips}</span></button>`;}).join('')+`</div>`;
+}
+(function(){const st=document.createElement('style');st.textContent=`
+#mbody .ui-mgroups{display:flex;flex-direction:column;gap:12px;margin:8px 0}
+#mbody .ui-mgroup h4{display:flex;align-items:center;gap:8px;margin:0 0 6px;padding:3px 8px;font:15px var(--ux-body,system-ui);color:#12202a;background:linear-gradient(90deg,var(--b1),#ffffff00);border-left:6px solid var(--b3)}
+#mbody .ui-mgroup h4 i{display:none}#mbody .ui-mgroup h4 small{margin-left:auto;font-size:12px;opacity:.7}
+#mbody .ui-mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+#mbody .ui-mtile{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:flex-end;min-height:132px;padding:6px 4px 4px!important;border:2px solid #fff!important;outline:1px solid #7d8bbd;border-radius:0!important;background:linear-gradient(180deg,var(--b1) 0 55%,var(--b2) 55% 100%)!important;color:#12202a!important;box-shadow:0 2px 0 #8c9bd0!important;overflow:hidden}
+#mbody .ui-mtile .ui-mapthumb{width:92px;height:auto;margin:0 0 2px;image-rendering:pixelated}
+#mbody .ui-mtile:hover,#mbody .ui-mtile:focus-visible{outline:2px solid #2f6bff;transform:translateY(-1px)}
+#mbody .ui-mtile span{font-family:var(--ux-body,system-ui)!important;text-shadow:1px 1px 0 #ffffffb0;line-height:1}
+#mbody .ui-mtile .lv{position:absolute;left:4px;top:4px;padding:2px 4px;font-size:12px;background:#12202acc;color:#fff;text-shadow:none}
+#mbody .ui-mtile .cnt{position:absolute;right:4px;top:4px;padding:2px 4px;font-size:13px;background:#ffe45c;color:#12202a;border:1px solid #12202a;text-shadow:none}
+#mbody .ui-mtile b{font:13px var(--ux-body,system-ui);text-shadow:1px 1px 0 #ffffffb0;margin-bottom:3px}
+#mbody .ui-mtile .pip{font-size:12px;letter-spacing:2px;color:#b3261e}
+`;document.head.appendChild(st);})();
+/* 角色選擇：復古選角視窗，頭像框加資料欄，延續藍紫窗口配色 */
+(function(){const st=document.createElement('style');st.textContent=`
+#mbody .char-card .chars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#mbody .char-card .chr{display:flex!important;flex-direction:row!important;align-items:stretch!important;gap:8px;min-height:84px;padding:5px!important;text-align:left;white-space:normal;background:#d9dff0!important;color:#1d2552!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:0 2px 0 #8c9bd0!important}
+#mbody .char-card .chr .chr-pic{flex:0 0 66px;width:66px;height:66px;align-self:center;background:linear-gradient(180deg,#b8c8ee,#8fa3d8);border:2px solid #5c6a8e;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 #33407f;overflow:hidden;display:block}
+#mbody .char-card .chr .chr-pic img{width:100%;height:100%;display:block}
+#mbody .char-card .chr .chr-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:3px}
+#mbody .char-card .chr .chr-info b{display:block;color:#1d2552;padding:2px 4px;background:#fff;border:1px solid #8c9bd0;font-size:14px;line-height:1.15}
+#mbody .char-card .chr .chr-info b small{margin-left:4px;font-size:11px;opacity:.7}
+#mbody .char-card .chr .chr-info i{font-style:normal;font-size:12px;line-height:1.25}
+#mbody .char-card .chr .chr-info em{font-style:normal;align-self:flex-start;padding:1px 5px;font-size:12px;background:#ffe45c;color:#1d2552;border:1px solid #1d2552}
+#mbody .char-card .chr.on{background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;outline:2px solid #1d2552}
+#mbody .char-card .chr.on .chr-pic{border-color:#ffe45c}
+#mbody .char-card .chr.lock{opacity:.6}#mbody .char-card .chr.lock .chr-pic img{filter:grayscale(1) brightness(.6)}
+#mbody .chr-data{margin:8px 0 4px;padding:8px 10px;background:#05060d;border:3px solid #8c9bd0;outline:1px solid #1d2552;color:#fff;font-family:var(--ux-body,system-ui)}
+#mbody .chr-data p{display:flex;gap:10px;margin:0;line-height:1.5}#mbody .chr-data p span{flex:0 0 3em;color:#9fb4ff;letter-spacing:.1em}#mbody .chr-data p b{font-weight:normal;min-width:0}
+@media(max-width:420px){#mbody .char-card .chr .chr-pic{flex-basis:52px;width:52px;height:52px}#mbody .char-card .chr{gap:6px;padding:4px!important}#mbody .char-card .chr .chr-info b{font-size:13px}}
+`;document.head.appendChild(st);})();
+/* 統一窗口風：區塊標題變標題列、摺疊列變小視窗列、數據列變黑底資料欄、日誌與空狀態變卡片 */
+(function(){const st=document.createElement('style');st.textContent=`
+#mbody .ui-section>h3,#mbody .ui-map-state h3,#mbody .mct,#uisettings h3,#mbody .rc>.rh{display:flex;align-items:center;gap:6px;margin:10px 0 6px;padding:3px 8px;font:14px var(--ux-body,system-ui);letter-spacing:.06em;color:#fff;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);border:2px solid #fff;outline:1px solid #1d2552;box-shadow:0 2px 0 #8c9bd0}
+#mbody .ui-section>h3::before,#mbody .ui-map-state h3::before,#mbody .mct::before,#uisettings h3::before{content:"";width:8px;height:8px;background:#ffe45c;border:1px solid #1d2552;flex:none}
+#mbody .ui-map-state{align-items:center}
+#mbody details>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;margin:6px 0 2px;padding:5px 8px;color:#1d2552;background:linear-gradient(#f2f4fa,#c3cbdc);border:2px solid #fff;outline:1px solid #5c6a8e;box-shadow:0 2px 0 #8c9bd0}
+#mbody details>summary::-webkit-details-marker{display:none}
+#mbody details>summary::before{content:"▶";font-size:10px;color:#33407f}
+#mbody details[open]>summary::before{content:"▼"}
+#mbody details[open]>summary{background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);color:#fff}#mbody details[open]>summary::before{color:#ffe45c}
+#mbody .ui-stat-list{margin:6px 0;padding:6px 10px;background:#05060d;border:3px solid #8c9bd0;outline:1px solid #1d2552}
+#mbody .ui-stat-list>div{display:flex;justify-content:space-between;gap:10px;padding:2px 0;border:0!important;line-height:1.5}
+#mbody .ui-stat-list dt{color:#9fb4ff;letter-spacing:.08em}#mbody .ui-stat-list dd{margin:0;color:#fff;font-variant-numeric:tabular-nums}
+#mbody .lg{margin:8px 0;padding:6px 10px 8px;background:#f4f6ff;border:2px solid #fff;outline:1px solid #8c9bd0;box-shadow:0 2px 0 #c3cbdc}
+#mbody .lg>b{display:inline-block;padding:1px 8px;margin-right:6px;background:#33407f;color:#fff;border:1px solid #1d2552}
+#mbody .lg ul{margin:6px 0 0;padding-left:16px;list-style:square}
+#mbody .ui-grid-empty{display:flex;flex-direction:column;align-items:center;gap:8px;margin:8px 0;padding:18px 12px!important;text-align:center;color:#33407f;background:#f4f6ff;border:2px dashed #8c9bd0}
+#mbody .ui-grid-empty::before{content:"";width:34px;height:34px;background:linear-gradient(#b8c8ee,#8fa3d8);border:2px solid #5c6a8e;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 #33407f}
+#mbody .rpgm .rc,#mbody .ui-section{background:transparent}
+`;document.head.appendChild(st);})();
+(function(){const st=document.createElement('style');st.textContent=`#mbody .rc>.rh,#mbody .rc.wide>.rh{border-radius:0!important;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;border:2px solid #fff!important;padding:3px 8px!important}`;document.head.appendChild(st);})();
 
 </script>
 <script>
@@ -4619,6 +4795,7 @@ function viewRenderHUD(){
   const setBar=(el,ratio,now,max)=>{const percent=String(Math.round(ratio*100)),pixel=Math.ceil(ratio*50)*2+'%';if(el.getAttribute('aria-valuenow')!==percent){el.setAttribute('aria-valuenow',percent);el.style.setProperty('--fill',percent+'%');}if(el.style.getPropertyValue('--pixel-fill')!==pixel)el.style.setProperty('--pixel-fill',pixel);const text=`${now}／${max}`;if(el.getAttribute('aria-valuetext')!==text)el.setAttribute('aria-valuetext',text);};
   setBar(hpBar,hpRatio,hp,max);setBar(xpBar,xpRatio,xp,need);
   GAME_VIEW.hud.classList.toggle('hud-danger',hpRatio<.3&&G.h.dead<=0);GAME_VIEW.hud.classList.toggle('hud-dead',G.h.dead>0);
+  if(typeof deathFxUpdate==='function')deathFxUpdate();
 }
 function viewBlocked(){
   const active=document.activeElement;
@@ -4702,6 +4879,7 @@ body.ui-material .battle-hud .hud-level{height:48px}
 body.ui-material .battle-hud .hud-level span{font-size:12px!important;line-height:18px}
 body.ui-material .battle-hud .hud-level b{font-size:20px!important;line-height:28px}
 @media(min-width:1180px){body.ui-material .battle-hud .hud-left{grid-template-columns:56px minmax(100px,260px);max-width:324px}body.ui-material .battle-hud .hud-level{height:58px}body.ui-material .battle-hud .hud-level span{font-size:16px!important;line-height:24px}body.ui-material .battle-hud .hud-level b{font-size:26px!important;line-height:34px}body.ui-material .battle-hud .hud-meter{height:22px}body.ui-material .battle-hud .hud-meter.hud-xp{height:14px}}
+@media(min-width:1180px){body.ui-material .battle-hud .hud-left,body.ui-material .battle-hud .hud-right{zoom:1.45}body.ui-material .battle-hud .hud-left{max-width:324px}}
 body.ui-material.m .stage{padding-top:72px!important}body.ui-material.m .stage #loot{top:80px!important}
 
 /* 覆蓋原先 STATUS 櫃體。HUD 是世界上方的獨立讀數；共用色階不改變字形與位置。 */
@@ -4813,6 +4991,14 @@ function wireSelCard(){
   }
   const first = B.pieces.some(p => p.kind === 'active');
   return first ? '' : `<p class="uxgrid-help">點右邊的插槽，選一個技能裝上。</p>`;
+}
+
+function wireGuideHtml(){
+  const B = G.board, res = GridLab.resolve(B, G.lvl), hasSkill = B.pieces.some(p => p.kind === 'active'), wired = res.some(r => r.wired), parts = res.some(r => r.linked.length);
+  const step = !hasSkill ? 1 : !wired ? 2 : !parts ? 3 : 4;
+  const txt = ['', '第 1 步：點右邊的「S1」插槽，選一個技能裝上。', '第 2 步：從最左邊一排的格子，拖一條線到右邊的技能晶片。不想拉線就按下面的「自動配置」。', '第 3 步：點下面的一個配件，再點板上「有線經過」的空格放上去。線上的配件才有效。', '完成了！線上的配件正在強化技能。想更強：多拉幾條線、換更好的配件。'][step];
+  const chips = ['裝技能', '拉線', '放配件'].map((n, i) => `<li class="${step > i + 1 ? 'done' : step === i + 1 ? 'now' : ''}"><b>${step > i + 1 ? '✓' : i + 1}</b>${n}</li>`).join('');
+  return `<section class="wguide${step === 4 ? ' ok' : ''}" aria-label="新手引導"><ol>${chips}</ol><p>${txt}</p></section>`;
 }
 function wireTopHtml(){
   wireInstallStyles();
@@ -5013,7 +5199,7 @@ function uiInventoryHtml(){
   const head = uiSegments('inventory', [['support', '輔助配件', '放在接線上強化技能；點選後再點板上的格子'], ['active', '主動技能', '點選後裝到選取的插槽'], ['cart', '模式卡匣', '改變技能的出手方式，裝在技能晶片上']], '機件庫存分類');
   let content = '';
   if (kind === 'active') content = `<div class="ui-inventory-grid">${Object.entries(SKILLS).map(([id, K]) => { const unlocked = G.lvl >= K.lvl, at = G.board.pieces.find(p => p.kind === 'active' && p.key === id); return `<button class="gt" data-focus="active-${id}" data-availability="${unlocked ? 'available' : 'unavailable'}" aria-label="${uxEsc(K.n + '：' + K.d)}" onclick="uiInventoryPick('active','${id}')">${sico(id, 26)}<b>${K.n}</b><small>${!unlocked ? `Lv. ${K.lvl}` : at ? `插槽 ${GridLab.sockIndex(at) + 1}` : '點選裝上'}</small></button>`; }).join('')}</div>`;
-  else if (kind === 'support') content = `<div class="ui-inventory-grid">${Object.entries(SUPPS).flatMap(([id, S]) => [1, 2, 3].filter(t => t === 1 || gemOwnT(id, t) > 0).map(t => { const n = gemOwnT(id, t), f = gemFreeT(id, t), tn = TIER_NAME[t - 1], on = held?.key === id && (held.t || 1) === t; return `<button class="gt${on ? ' on' : ''}${t > 1 ? ' tier' + t : ''}" data-focus="support-${id}${t > 1 ? '-' + t : ''}" data-availability="${f ? 'available' : 'unavailable'}" aria-label="${uxEsc(S.n + tn)}，${f}／${n}，${uxEsc(S.d)}" onclick="uiInventoryPick('support','${id}',${t})">${t === 1 && G.newSnap && n > (G.newSnap.g[id] || 0) ? '<i class="nw">NEW</i>' : ''}${gemIco(id, 26)}<b>${S.n}${tn}</b><small>可用 ${f}／${n}</small></button>`; })).join('')}</div>${wireForgeHtml()}`;
+  else if (kind === 'support') content = `<div class="ui-inventory-grid">${Object.entries(SUPPS).flatMap(([id, S]) => [1, 2, 3].filter(t => t === 1 || gemOwnT(id, t) > 0).map(t => { const n = gemOwnT(id, t), f = gemFreeT(id, t), tn = TIER_NAME[t - 1], on = held?.key === id && (held.t || 1) === t; return `<button class="gt${on ? ' on' : ''}${t > 1 ? ' tier' + t : ''}" data-focus="support-${id}${t > 1 ? '-' + t : ''}" data-availability="${f ? 'available' : 'unavailable'}" aria-label="${uxEsc(S.n + tn)}，${f}／${n}，${uxEsc(S.d)}" onclick="uiInventoryPick('support','${id}',${t})">${t === 1 && G.newSnap && n > (G.newSnap.g[id] || 0) ? '<i class="nw">NEW</i>' : ''}${gemIco(id, 26)}<b>${S.n}${tn}</b><small>剩 ${f} 個</small></button>`; })).join('')}</div>${wireForgeHtml()}`;
   else content = cartsHtml();
   return `<section id="uxinventory" class="ui-inventory" aria-label="機件庫存">${head}${content}</section>`;
 }
@@ -5086,6 +5272,32 @@ body #mbody .dpsbar{padding:5px 8px;margin:4px 0}.ui-inventory{margin:8px 0}
 .wstat{font-size:11px;margin-left:auto}
 /* 板邊的復位開關 */
 #mbody .wreset{display:inline-flex;align-items:center;gap:6px}#mbody .wreset i{display:inline-block;width:16px;height:9px;border-radius:5px;background:#9aa6c4;box-shadow:inset 0 0 0 1px #5d6c7c;position:relative}#mbody .wreset i::after{content:"";position:absolute;left:1px;top:1px;width:7px;height:7px;border-radius:50%;background:#e8eef9;box-shadow:0 0 0 1px #5d6c7c}
+
+/* 新手引導：三步驟，只亮目前一步 */
+.wguide{margin:4px 0 6px;padding:7px 9px;background:#fffbe0;border:2px solid #e2b93b;box-shadow:2px 2px 0 #b6892355}
+.wguide ol{display:flex;gap:6px;margin:0 0 5px;padding:0;list-style:none}.wguide li{flex:1;display:flex;align-items:center;gap:5px;padding:3px 5px;background:#eef0f7;color:#8a93ad;font-size:13px}
+.wguide li b{display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;background:#c8cfe3;color:#fff;font-size:12px}
+.wguide li.now{background:#fff;color:#172751;outline:2px solid #e2b93b}.wguide li.now b{background:#d79a00}.wguide li.done{color:#3a7a52}.wguide li.done b{background:#3fa76a}
+.wguide p{margin:0;font-size:15px;line-height:1.55;color:#3d2a00;font-weight:650}.wguide.ok{background:#e6f7ec;border-color:#6bbf8a;box-shadow:2px 2px 0 #3a7a5233}.wguide.ok p{color:#1d5d3a;font-size:13px}.wguide.ok ol{display:none}
+.ui-inventory .nw{display:none}
+details.ui-adv{margin:10px 0}details.ui-adv>summary{cursor:pointer;padding:8px 4px;font-size:14px;font-weight:650}
+#mbody .pzbar .mb:first-child{background:linear-gradient(180deg,#ffd86a,#e0a020)!important;color:#3d2a00!important;border-color:#8a5d00!important}
+/* 板子的低解析感：硬邊角、實心色塊、無發光、掃描線 */
+#mbody .pz.wb,#mbody .pz.wb button.pc,#mbody .pz.wb button.pc.ac,#mbody .pz.wb button.pc.chip{border-radius:0!important}
+#mbody .pz.wb{image-rendering:pixelated;outline-offset:0}
+#mbody .pz.wb::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;background:repeating-linear-gradient(0deg,#0000 0 3px,#0000001c 3px 4px)}
+#mbody .pz.wb button.pc.chip::after,#mbody .pz.wb button.pc.ac.lnk::after{border-radius:0;box-shadow:0 0 0 1px #0008!important;width:5px;height:5px}
+.wsvg{shape-rendering:crispEdges}.wsvg .wf{stroke-dasharray:.1 .4}
+body.d #mbody .pz.wb{max-width:min(100%,620px)!important;padding:12px}
+body.d #mbody .pz.wb button.pc{font-size:11px}body.d #mbody .pz.wb button.pc span{font-size:11px}
+body.d .wsvg{inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
+#mbody .pz.wb button.pc.sk:not(.empty):not(.lock){background:linear-gradient(#2b3a63,#1b2644)!important;box-shadow:inset 0 0 0 2px #7fe3b0,0 1px 0 #0006!important;color:#fff!important;border-radius:3px!important}
+#mbody .pz.wb button.pc.sk:not(.empty):not(.lock) span{color:#fff!important;font-size:12px!important;font-weight:700;line-height:1.15;text-shadow:1px 1px 0 #0a1230;letter-spacing:0;white-space:normal;word-break:break-all;font-size:11px!important}
+#mbody .pz.wb button.pc.sk.empty,#mbody .pz.wb button.pc.lock{background:#12302a!important;box-shadow:inset 0 0 0 2px #7fe3b0!important;color:#d9fff0!important}
+#mbody .pz.wb button.pc.sk.empty span,#mbody .pz.wb button.pc.lock span,#mbody .pz.wb button.pc.sk.empty,#mbody .pz.wb button.pc.lock{color:#d9fff0!important;font-size:12px!important;font-weight:700;letter-spacing:0}
+#mbody .pz.wb button.pc.bus,#mbody .pz.wb button.pc.bus span{font-size:12px!important;font-weight:800}
+#mbody .pz.wb button.pc.chip,#mbody .pz.wb button.pc.chip span,#mbody .pz.wb button.pc.ac,#mbody .pz.wb button.pc.ac span{font-size:12px!important;font-weight:700}
+body.d #mbody .pz.wb button.pc.sk:not(.empty):not(.lock) span,body.d #mbody .pz.wb button.pc.sk.empty span,body.d #mbody .pz.wb button.pc.lock span{font-size:13px!important}
 `;
 
 </script>
@@ -5148,12 +5360,12 @@ const PHONE_GLB = 'Z2xURgIAAABMMg8AIAgAAEpTT057ImFzc2V0Ijp7ImdlbmVyYXRvciI6ImdsV
 /* 角色手機：從角色頁開啟的全屏 3D 手機（CSS 3D，貼圖見 phone-assets.js），螢幕顯示角色資訊。
    不改任何遊戲規則，只讀 G；關閉後回到原頁面。 */
 const PH = { open:false, tab:0, zoom:false, drag:null, face:0, rx:0, ry:0, tx:0, ty:0, raf:0, t0:0, timer:0, scroll:0, closing:false };
-const PH_TABS = ['名片', '裝備', '屬性', '技能', '連結'];
+const PH_TABS = ['名片', '戰績', '收藏', '全息'];
 /* 版面座標（單位＝貼圖像素，畫布 640×960） */
 const PH_SCREEN = { x:156, y:164, w:328, h:431 };
 const PH_KEYS = [  // 按鍵熱區：中心座標與大小，act 為動作
   { id:'back', x:192, y:675, w:76, h:68, act:'close', tip:'返回' },
-  { id:'call', x:449, y:675, w:76, h:68, act:'links', tip:'連結' },
+  { id:'call', x:449, y:675, w:76, h:68, act:'links', tip:'全息掃描' },
   { id:'up', x:320, y:628, w:50, h:34, act:'up', tip:'上捲' },
   { id:'down', x:320, y:731, w:50, h:34, act:'down', tip:'下捲' },
   { id:'left', x:267, y:679, w:34, h:50, act:'prev', tip:'上一頁' },
@@ -5185,29 +5397,65 @@ Object.assign(SFXS, {
 const phSfx = n => { try { SFX(n); } catch (e) {} };
 function phoneProfile(){ return (typeof CHARACTER_PROFILES !== 'undefined' && CHARACTER_PROFILES[G.char]) || {}; }
 function phoneHead(){
-  const P = phoneProfile(), need = xpNeed(G.lvl), xp = Math.max(0, Math.min(1, G.xp / need)), hp = Math.max(0, Math.min(1, G.h.hp / G.st.life));
+  const P = phoneProfile();
   return `<div class="phs-hello"><span class="phs-star">♥</span> 歡迎光臨 <b>${phEsc(G.heroName || P.n || '阿街')}</b> 的主頁 <span class="phs-star">♥</span></div>
    <div class="phs-rainbow"></div>
-   <table class="phs-card"><tr><td class="phs-av">${spr('role', 44)}</td><td><b>${phEsc(P.n || '')}</b><br><small>${phEsc(P.title || '')}</small><br><span class="phs-lv">LV ${G.lvl}</span></td></tr></table>
-   <div class="phs-bar" title="經驗"><i style="width:${(xp * 100).toFixed(1)}%"></i><span>EXP ${(xp * 100).toFixed(0)}%</span></div>
-   <div class="phs-bar hp" title="生命"><i style="width:${(hp * 100).toFixed(1)}%"></i><span>HP ${tFmt(Math.max(0, G.h.hp))}／${tFmt(G.st.life)}</span></div>`;
+   <table class="phs-card"><tr><td class="phs-av">${spr('role', 44)}</td><td><b>${phEsc(P.n || '')}</b><br><small>${phEsc(P.title || '')}</small><br><span class="phs-lv">LV ${G.lvl}</span></td></tr></table>`;
+}
+const phTime = t => { const m = Math.floor(t / 60); return m >= 60 ? Math.floor(m / 60) + ' 小時 ' + (m % 60) + ' 分' : m + ' 分鐘'; };
+function phBar(label, n, total){ const u = total ? Math.max(0, Math.min(1, n / total)) : 0; return `<div class="phs-prog"><span>${label}</span><div class="phs-bar"><i style="width:${(u * 100).toFixed(1)}%"></i><span>${n}／${total}</span></div></div>`; }
+function phoneCounts(){
+  const ach = Object.keys(ACHS), legends = Object.keys(LEGEND_BY), relics = Object.keys(RELICS), radio = typeof FIELD_STORIES !== 'undefined' ? FIELD_STORIES : [];
+  let cosAll = 0, cosOwn = 0; for (const c in COS) for (const e of COS[c]) if (e[3] > 0) { cosAll++; if (G.own[c + ':' + e[0]]) cosOwn++; }
+  return { ach:[ach.filter(k => G.ach[k]).length, ach.length], leg:[legends.filter(k => G.armory[k]).length, legends.length], rel:[relics.filter(k => G.relics[k]).length, relics.length], radio:[radio.filter((_, i) => G.storyFlags['p' + i]).length, radio.length], cos:[cosOwn, cosAll] };
 }
 function phonePage(){
-  const s = G.st, P = phoneProfile();
+  const P = phoneProfile();
   if (PH.tab === 0) return `${phoneHead()}
     <fieldset><legend>自我介紹</legend><p>${phEsc(P.identity || '')}</p><p class="phs-q">「${phEsc(P.quote || '…')}」</p></fieldset>
-    <fieldset><legend>冒險紀錄</legend><dl class="phs-dl"><dt>目前深度</dt><dd>${G.depth}</dd><dt>最深紀錄</dt><dd>${G.maxDepth}</dd><dt>累計擊殺</dt><dd>${tFmt(G.totalKills)}</dd><dt>金幣</dt><dd>${tFmt(G.gold)}</dd></dl></fieldset>`;
-  if (PH.tab === 1) return `<div class="phs-hello">★ 隨身裝備 ★</div><div class="phs-rainbow"></div>` + Object.keys(SLOTN).map(k => {
-    const it = G.equip[k];
-    if (!it) return `<fieldset><legend>${SLOTN[k]}</legend><p class="phs-dim">（空）</p></fieldset>`;
-    return `<fieldset><legend>${SLOTN[k]}</legend><div class="phs-gear">${eqico(k, it.r, 28)}<div><b style="color:${phRar(it.r)}">${phEsc(it.name)}</b><br><small>${RAR[it.r].n} · Lv.${it.il}</small></div></div><ul class="phs-ul">${itemLines(it).slice(0, 5).map(l => `<li>${phEsc(l.t)}</li>`).join('')}</ul></fieldset>`;
-  }).join('');
-  if (PH.tab === 2) {
-    const rows = [['單體直傷預估', tFmt(s.dps) + ' DPS'], ['最大生命', tFmt(s.life)], ['暴擊率', s.crit.toFixed(0) + '%'], ['暴擊傷害', Math.round(s.cm) + '%'], ['攻擊速度', s.aps ? s.aps.toFixed(2) + ' 次／秒' : '—'], ['傷害減免', (s.red * 100).toFixed(0) + '%'], ['每秒回復', tFmt(s.regen || 0)], ['吸血', (s.leech || 0) + '%'], ['戰力評分', tFmt(s.power)]];
-    return `<div class="phs-hello">◆ 能力值 ◆</div><div class="phs-rainbow"></div><table class="phs-tbl">${rows.map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join('')}</table>`;
+    <fieldset><legend>基本資料</legend><dl class="phs-dl"><dt>生日</dt><dd>${(G.born || [1, 1]).join(' 月 ')} 日</dd><dt>遊戲時間</dt><dd>${phTime(G.time)}</dd><dt>倒下次數</dt><dd>${G.deaths || 0}</dd></dl></fieldset>`;
+  if (PH.tab === 1) {
+    const rows = [['累計擊殺', tFmt(G.totalKills)], ['首領擊破', G.bossKills || 0], ['最深深度', G.maxDepth], ['無限之塔最高', (G.towerBest || 0) + ' 層'], ['完成地圖', G.mapsDone || 0], ['打造次數', G.craftN || 0], ['遊戲時間', phTime(G.time)], ['倒下次數', G.deaths || 0]];
+    return `<div class="phs-hello">★ 歷年戰績 ★</div><div class="phs-rainbow"></div><table class="phs-tbl">${rows.map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join('')}</table>`;
   }
-  if (PH.tab === 3) return `<div class="phs-hello">✦ 技能一覽 ✦</div><div class="phs-rainbow"></div>` + (G.slots.length ? G.slots.map(id => { const k = SKILLS[id]; return k ? `<fieldset><legend style="color:${k.col}">${phEsc(k.n)}</legend><p>${phEsc(k.d)}</p><small class="phs-dim">冷卻 ${k.cd} 秒</small></fieldset>` : ''; }).join('') : '<p class="phs-dim">還沒有技能，繼續冒險吧。</p>');
-  return `<div class="phs-hello">♪ 友情連結 ♪</div><div class="phs-rainbow"></div><p class="phs-dim">點一下就會關掉手機，直接前往：</p><ul class="phs-links">${[['tree', '天賦盤'], ['dress', '角色與裝扮'], ['warehouse', '背包'], ['skills', '技能接線板'], ['craft', '打造與補給站'], ['maps', '冒險地圖']].map(([k, n]) => `<li><a href="#" data-go="${k}">» ${n}</a></li>`).join('')}</ul>`;
+  if (PH.tab === 2) {
+    const c = phoneCounts();
+    return `<div class="phs-hello">◆ 收藏進度 ◆</div><div class="phs-rainbow"></div>${phBar('成就', ...c.ach)}${phBar('傳奇核心', ...c.leg)}${phBar('遺物', ...c.rel)}${phBar('電台手記', ...c.radio)}${phBar('裝扮', ...c.cos)}`;
+  }
+  const w = G.equip.weapon;
+  return `<div class="phs-hello">✦ 全息掃描 ✦</div><div class="phs-rainbow"></div><div class="phs-scanbox"><div id="phs-scan" class="phs-scan"></div><span class="phs-scanlbl">SCAN</span></div><p class="phs-dim phs-cap">${w ? phEsc(w.name) + ' · ' + RAR[w.r].n + ' · Lv.' + w.il : '尚未裝備武器，掃描空白台座'}</p>`;
+}
+/* 全息掃描：螢幕內的小型 3D（目前裝備的武器放在旋轉的全息台座上），低解析像素化 */
+function phoneScanMount(){
+  const el = document.getElementById('phs-scan');
+  if (PH.scan && PH.scan.el !== el) phoneScanDispose();
+  if (!el || PH.scan || typeof T3 === 'undefined') return;
+  try {
+    const cv = document.createElement('canvas'), rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true }), S = 144;
+    rd.setPixelRatio(1); rd.setSize(S, S, false); rd.setClearColor(0x000000, 0); rd.outputColorSpace = T3.SRGBColorSpace; cv.style.imageRendering = 'pixelated';
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(30, 1, .1, 100), root = new T3.Group(), W = G.equip.weapon;
+    sc.add(new T3.HemisphereLight(0xffffff, 0x4466aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2); dl.position.set(-1, 2, 2); sc.add(dl);
+    const cy = new T3.MeshBasicMaterial({ color:0x5ae8ff, transparent:true, opacity:.85 }), wire = new T3.MeshBasicMaterial({ color:0x5ae8ff, wireframe:true, transparent:true, opacity:.55 });
+    const base = new T3.Mesh(new T3.CylinderGeometry(1.9, 2.1, .18, 10), new T3.MeshLambertMaterial({ color:0x1d2f6e, flatShading:true })); base.position.y = -1.9; sc.add(base);
+    const ring = new T3.Mesh(new T3.TorusGeometry(1.9, .05, 4, 24), cy); ring.rotation.x = Math.PI / 2; ring.position.y = -1.78; sc.add(ring);
+    const scan = new T3.Mesh(new T3.TorusGeometry(1.5, .04, 4, 24), cy); scan.rotation.x = Math.PI / 2; sc.add(scan);
+    const gem = new T3.Mesh(new T3.OctahedronGeometry(.32, 0), wire); sc.add(gem);
+    if (W && typeof buildWeapon === 'function') {
+      const g = new T3.Group(); buildWeapon(g, typeof aTier === 'function' ? aTier(W) : 0, W.r | 0);
+      const b = new T3.Box3().setFromObject(g), sz = b.getSize(new T3.Vector3()), ax = sz.x >= sz.y && sz.x >= sz.z ? new T3.Vector3(1, 0, 0) : sz.z >= sz.y ? new T3.Vector3(0, 0, 1) : new T3.Vector3(0, 1, 0);
+      const h = new T3.Group(); h.add(g); h.quaternion.setFromUnitVectors(ax, new T3.Vector3(0, 1, 0)); root.add(h); root.updateMatrixWorld(true);
+      const b2 = new T3.Box3().setFromObject(root), c = b2.getCenter(new T3.Vector3()), k = 3.4 / Math.max(.01, b2.getSize(new T3.Vector3()).y); h.scale.setScalar(k); h.position.set(-c.x * k, -c.y * k, -c.z * k); sc.add(root);
+    }
+    cam.position.set(0, .9, 8.4); cam.lookAt(0, -.2, 0); el.appendChild(cv);
+    PH.scan = { el, rd, sc, cam, root, gem, scan, ring, t0:performance.now() };
+  } catch (e) { PH.scan = null; }
+}
+function phoneScanDispose(){ const S = PH.scan; if (!S) return; PH.scan = null; try { S.rd.dispose(); S.rd.forceContextLoss?.(); } catch (e) {} S.el.replaceChildren?.(); }
+function phoneScanTick(now){
+  const S = PH.scan; if (!S) return; if (!S.el.isConnected) return phoneScanDispose();
+  const t = (now - S.t0) / 1000; S.root.rotation.y = t * .9; S.gem.rotation.y = -t * 1.6; S.gem.rotation.x = t * .7; S.gem.position.set(Math.cos(t * 1.1) * 1.9, .6 + Math.sin(t * 1.7) * .3, Math.sin(t * 1.1) * 1.9);
+  S.scan.position.y = -1.7 + (Math.sin(t * 1.4) * .5 + .5) * 3.8; S.scan.material.opacity = .85 - (S.scan.position.y + 1.7) / 3.8 * .6; S.ring.rotation.z = t * .5;
+  S.rd.render(S.sc, S.cam);
 }
 function phRar(r){ return ['#9fb3c8', '#6fb0ff', '#ffd45a', '#ff8a4c'][r] || '#cfeaff'; }
 function phoneScreenHtml(){
@@ -5262,7 +5510,7 @@ function phoneModelLoad(){
 }
 function phoneGLInit(root){
   const M = phoneModelLoad(), cv = document.createElement('canvas'); cv.id = 'ph-gl';
-  const rd = new T3.WebGLRenderer({ canvas:cv, antialias:true, alpha:true }); rd.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); rd.outputColorSpace = T3.SRGBColorSpace;
+  const rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true }); cv.style.imageRendering = 'pixelated'; rd.outputColorSpace = T3.SRGBColorSpace;
   const K = PHG.K, sc = new T3.Scene(), cam = new T3.PerspectiveCamera(30, 1, 10, 30000), pivot = new T3.Group(), mesh = new T3.Mesh(M.g, M.mat);
   sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.1)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl); const rim = new T3.DirectionalLight(0x8fd0ff, 1.2); rim.position.set(2, .5, -1.5); sc.add(rim);
   mesh.rotation.x = Math.PI / 2; mesh.scale.setScalar(K); mesh.position.set(-M.c.x * K, M.c.z * K, -M.c.y * K); pivot.add(mesh); sc.add(pivot);
@@ -5274,7 +5522,7 @@ function phoneGLInit(root){
 }
 function phoneFitGL(){
   const G3 = PH.gl; if (!G3) return; const w = innerWidth, h = innerHeight, K = PHG.K, th = Math.tan(G3.cam.fov * Math.PI / 360);
-  G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
+  G3.rd.setPixelRatio(r3BufferSize(w, h, devicePixelRatio || 1, false, r3ViewQuality(), innerWidth).width / w); G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
   const asp = w / h, rN = Math.max(1.16 * K / (2 * th * .94), .72 * K / (2 * th * asp * .94)), rZ = Math.max(PHG_SCREEN.h * K * 1.14 / (2 * th), PHG_SCREEN.w * K / (2 * th * asp * .98));
   G3.pivot.updateMatrixWorld(true); const sp = new T3.Vector3(); G3.sA.getWorldPosition(sp);
   G3.tgtR = PH.zoom ? rZ : rN; G3.tgtX = PH.zoom ? sp.x : 0; G3.tgtY = PH.zoom ? sp.y : 0;
@@ -5310,7 +5558,7 @@ function phoneLoopGL(now){
     const n = new T3.Vector3(0, 0, 1).transformDirection(G3.sA.matrixWorld), p = new T3.Vector3().setFromMatrixPosition(G3.sA.matrixWorld), v = G3.cam.position.clone().sub(p).normalize(), d = n.dot(v);
     css.style.opacity = d < .12 ? 0 : Math.min(1, (d - .12) / .25); css.style.pointerEvents = d < .12 ? 'none' : '';
   }
-  PH.raf = requestAnimationFrame(phoneLoopGL);
+  phoneScanTick(now); PH.raf = requestAnimationFrame(phoneLoopGL);
 }
 function phoneBuildGL(){
   return `<div class="ph-root" id="ph-root" role="dialog" aria-modal="true" aria-label="角色手機">
@@ -5338,9 +5586,10 @@ function phoneRender(keepScroll){
   const crt = document.getElementById('ph-crt'); sc.innerHTML = ''; sc.appendChild(crt);
   const wrap = document.createElement('div'); wrap.className = 'phs'; wrap.innerHTML = phoneScreenHtml(); sc.appendChild(wrap);
   const nb = document.getElementById('ph-body'); if (nb && keepScroll) nb.scrollTop = top;
+  phoneScanMount();
 }
 function phoneRefresh(){   // 每秒只更新內容，不重建按鈕與分頁
-  const b = document.getElementById('ph-body'); if (!b || PH.drag) return;
+  const b = document.getElementById('ph-body'); if (!b || PH.drag || PH.tab === 3) return;
   const top = b.scrollTop; b.innerHTML = phonePage(); b.scrollTop = top;
   const st = document.querySelector('.phs-status b'); if (st) st.textContent = phNum(G.totalKills + G.lvl * 7);
 }
@@ -5390,7 +5639,7 @@ function phoneLoop(now){
   const el = document.getElementById('ph-tilt'); if (!el) return;
   const [rx, ry] = phoneTilt(now);
   el.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
-  PH.raf = requestAnimationFrame(phoneLoop);
+  phoneScanTick(now); PH.raf = requestAnimationFrame(phoneLoop);
 }
 function phoneOpen(){
   if (PH.open || typeof PHONE_IMG === 'undefined') return;
@@ -5409,7 +5658,7 @@ function phoneOpen(){
 }
 function phoneClose(instant){
   if (!PH.open || PH.closing) return;
-  const done = () => { PH.open = false; if (PH.gl) { PH.gl.rd.dispose(); PH.gl.rd.forceContextLoss?.(); PH.gl = null; } clearInterval(PH.timer); cancelAnimationFrame(PH.raf); document.removeEventListener('keydown', phoneKey, true); removeEventListener('resize', phoneFit); document.getElementById('ph-host')?.remove(); };
+  const done = () => { PH.open = false; phoneScanDispose(); if (PH.gl) { PH.gl.rd.dispose(); PH.gl.rd.forceContextLoss?.(); PH.gl = null; } clearInterval(PH.timer); cancelAnimationFrame(PH.raf); document.removeEventListener('keydown', phoneKey, true); removeEventListener('resize', phoneFit); document.getElementById('ph-host')?.remove(); };
   PH.closing = true;
   if (instant === true) { done(); return; }
   phSfx('ph_off');
@@ -5422,7 +5671,7 @@ function phoneMini(){
   return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span></span>`;
 }
 function phoneButtonHtml(){
-  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
+  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" aria-label="開啟角色手機" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
 }
 
 (function(){ const s = document.createElement('style'); s.textContent = `
@@ -5458,14 +5707,14 @@ function phoneButtonHtml(){
 #ph-root .ph-key:hover{background:#ffffff26!important;box-shadow:0 0 12px #8ff8!important}#ph-root .ph-key.hit,#ph-root .ph-key:active{background:#0004!important;box-shadow:inset 0 3px 8px #0008!important}
 #ph-root .ph-key:focus-visible{outline:3px solid #ffe45c}
 .ui-character-head{position:relative;min-height:158px}
-.ph-open{position:absolute;right:6px;top:4px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0;width:112px;margin:0;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;cursor:pointer;overflow:visible}
+.ph-open{position:absolute;right:8px;top:8px;bottom:8px;z-index:2;display:flex;align-items:center;justify-content:center;width:104px;margin:0;padding:0!important;min-height:0!important;background:linear-gradient(#d9dfe9,#bcc5d3)!important;border:1px solid #8793a6!important;box-shadow:inset 0 2px 5px #5d6a7f88,inset 0 -1px 0 #fff!important;border-radius:6px!important;cursor:pointer;overflow:hidden}
 .ph-open:hover{filter:brightness(1.12)}.ph-open:active{transform:translateY(2px)}
-.ph-mini{position:relative;flex:none;width:112px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
-.ph-mini-s{position:absolute;left:56px;top:70px;width:0;height:0;transform-style:preserve-3d;transform:scale(.135)}
-.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;animation:phMiniSpin 4.8s ease-in-out infinite}
-@keyframes phMiniSpin{0%{transform:rotateY(-48deg) rotateX(6deg) translateY(0)}50%{transform:rotateY(48deg) rotateX(-4deg) translateY(-30px)}100%{transform:rotateY(-48deg) rotateX(6deg) translateY(0)}}
-.ph-open:hover .ph-mini-spin{animation-duration:1.6s}
-.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
+.ph-mini{position:relative;flex:none;width:104px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
+.ph-mini-s{position:absolute;left:52px;top:76px;width:0;height:0;transform-style:preserve-3d;transform:scale(.118)}
+.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;transform:rotateX(4deg) rotateY(-24deg);animation:phMiniSpin 48s linear infinite}
+@keyframes phMiniSpin{from{transform:rotateX(4deg) rotateY(-24deg)}to{transform:rotateX(4deg) rotateY(336deg)}}
+
+.ph-mini .ph-plane,.ph-plane{image-rendering:pixelated}.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
 @keyframes phSpk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
 .ph-rb{font:15px/1.2 "Cubic 11",system-ui!important;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8,#ff5a5a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;animation:phRb 2s linear infinite;filter:drop-shadow(1px 1px 0 #000)}
 .ph-new{position:absolute;right:-4px;top:-6px;z-index:2;padding:7px 8px;font:700 12px "Cubic 11",system-ui;font-style:normal;color:#d00;background:#ffe45c;clip-path:polygon(50% 0,61% 20%,82% 8%,80% 32%,100% 38%,84% 55%,96% 78%,72% 74%,64% 100%,50% 82%,36% 100%,28% 74%,4% 78%,16% 55%,0 38%,20% 32%,18% 8%,39% 20%);animation:phNew .9s steps(2) infinite;transform:rotate(12deg)}
@@ -5491,6 +5740,10 @@ function phoneButtonHtml(){
 .phs-tbl{width:100%;border-collapse:collapse}.phs-tbl th,.phs-tbl td{padding:3px 4px;border:1px solid #3a63a8;font-weight:400;font-size:14px}.phs-tbl th{text-align:left;color:#9fd6ff;background:#0a2a5c}.phs-tbl td{text-align:right;color:#fff}
 .phs-gear{display:flex;align-items:center;gap:6px}.phs-ul{margin:3px 0 0;padding-left:16px;font-size:13px;color:#cfeaff}
 .phs-links{list-style:none;margin:0;padding:0}.phs-links li{padding:4px 0}.phs a{color:#7fc4ff;text-decoration:underline;cursor:pointer;font-size:16px}.phs a:visited,.phs a:hover{color:#d49cff}
+.phs-prog{margin:5px 0}.phs-prog>span{color:#9fd6ff;font-size:13px}
+.phs-scanbox{position:relative;margin:2px 0;background:radial-gradient(circle at 50% 60%,#13408f,#06132e 75%);border:1px solid #5ae8ff88;box-shadow:inset 0 0 14px #000}
+.phs-scan{width:100%;aspect-ratio:1/1;max-height:250px;display:flex;justify-content:center}.phs-scan canvas{height:100%;width:auto;aspect-ratio:1/1;image-rendering:pixelated}
+.phs-scanlbl{position:absolute;left:6px;top:4px;color:#5ae8ff;font-size:12px;letter-spacing:.2em;animation:phBlink 1.2s steps(2) infinite}@keyframes phBlink{50%{opacity:.25}}.phs-cap{text-align:center}
 /* 參考美學：銀灰掌機皮膚、果凍按鈕、粉紅寶石愛心、液晶綠狀態列 */
 .phs-title{background:linear-gradient(#f4f7fb,#c4ccd8 55%,#aab4c4);color:#1b2433;text-shadow:0 1px 0 #fff;border-bottom:1px solid #7d8899;box-shadow:inset 0 1px 0 #fff}
 #ph-root .phs-title button{width:19px;height:19px;border-radius:50%!important;border:1px solid #5d7fa8;background:radial-gradient(circle at 35% 28%,#fff 0,#bfe0ff 30%,#5b9ae0 75%,#3a6db5);color:#0b2a55;line-height:16px;box-shadow:0 1px 2px #0006,inset 0 -2px 3px #2a5aa066}
@@ -5510,6 +5763,279 @@ function phoneButtonHtml(){
 @media (prefers-reduced-motion:reduce){.ph-open,.ph-mini-spin,.ph-new,.ph-rb,.ph-open-txt small{animation:none}.ph-enter.in{animation-duration:.01s}.ph-grid,.ph-stars,.ph-mq span,.phs-tick span,.phs-rainbow{animation:none}}
 `; document.head.appendChild(s);
  const f = document.createElement('style'); f.textContent = typeof PHONE_IMG === 'undefined' ? '' : `.ph-front{background-image:url(${PHONE_IMG.front})}.ph-back{background-image:url(${PHONE_IMG.back})}.ph-side{background-image:url(${PHONE_IMG.side})}.ph-sideL{background-image:url(${PHONE_IMG.side});transform-style:preserve-3d}.ph-slice{background-image:url(${PHONE_IMG.slice})}`; document.head.appendChild(f); })();
+
+</script>
+<script>
+/* ---------- 下方工作列：開始選單、音效切換、時鐘與小彩蛋 ---------- */
+(function(){
+  function init(){
+  const tb = document.querySelector('.tfoot'); if (!tb) return false;
+  const NAV = [['char', '角色'], ['warehouse', '背包'], ['skills', '技能'], ['craft', '打造'], ['maps', '冒險'], ['settings', '設定']];
+  const sfx = n => { try { if (typeof SFX === 'function') SFX(n); } catch (e) {} };
+  const snd = () => (typeof AUD !== 'undefined' && AUD.mode === 'off') ? '♪×' : '♪';
+  tb.innerHTML = '<span class="start" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" id="tb-start">★ Start</span><span class="task" role="button" tabindex="0" id="tb-task">Idle Hero</span><span class="tray"><span class="tb-snd" role="button" tabindex="0" id="tb-snd" aria-label="切換音效" data-tip="音效開關"></span><span class="clk" id="clk" role="button" tabindex="0" aria-label="時間"></span></span>';
+  const css = document.createElement('style'); css.textContent = `
+.tfoot .start,.tfoot .task,.tfoot .tb-snd,.tfoot .clk{cursor:pointer;user-select:none}
+.tfoot .start:active,.tfoot .start[aria-expanded=true]{filter:brightness(.82)}
+.tfoot .task:hover{background:#ffffff48}
+.tfoot .tray{margin-left:auto;display:flex;align-items:center;gap:2px;background:#1f3fb040;border-left:1px solid #ffffff50}
+.tfoot .tray .clk{margin:0;background:none;border:0}.tfoot .tb-snd{padding:6px 6px}.tfoot .tb-snd:hover,.tfoot .tray .clk:hover{background:#ffffff30}
+.tb-menu{position:fixed;left:0;bottom:30px;z-index:9100;width:210px;display:flex;background:#e9eefb;border:2px solid #fff;outline:1px solid #5b6fb8;box-shadow:3px -3px 0 #2f3f8f55;font:14px/1.2 "Cubic 11",system-ui,sans-serif;color:#172751}
+.tb-menu[hidden]{display:none}
+.tb-side{width:26px;flex:none;background:linear-gradient(0deg,#2f5fd0,#7fa8f5);color:#fff;writing-mode:vertical-rl;transform:rotate(180deg);text-align:left;padding:8px 5px;font-size:15px;letter-spacing:.12em;text-shadow:0 1px 0 #1a3a99}
+.tb-list{flex:1;display:flex;flex-direction:column;padding:3px 0}
+.tb-menu .tb-list button{all:unset;box-sizing:border-box;display:block;padding:9px 12px;cursor:pointer;color:#172751;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;text-shadow:none!important;min-height:0!important;font:14px/1.2 "Cubic 11",system-ui,sans-serif!important}
+.tb-menu .tb-list button:hover,.tb-menu .tb-list button:focus-visible{background:#2f5fd0!important;color:#fff!important;text-shadow:none!important}
+.tb-list hr{margin:3px 6px;border:0;border-top:1px solid #9ca9c8;border-bottom:1px solid #fff}
+.tb-pop{position:fixed;right:6px;bottom:36px;z-index:9100;max-width:260px;padding:8px 12px;background:#fffbd8;border:1px solid #7a6a2a;box-shadow:2px 2px 0 #0003;font:13px/1.5 "Cubic 11",system-ui,sans-serif;color:#2a2410;animation:tbPop .2s ease-out}
+@keyframes tbPop{from{opacity:0;transform:translateY(6px)}}
+.tb-off{position:fixed;inset:0;z-index:9500;background:#000;color:#ffb000;display:flex;align-items:center;justify-content:center;text-align:center;font:18px/1.9 "Cubic 11",monospace;cursor:pointer;animation:tbOff .7s ease-in both}
+@keyframes tbOff{0%{clip-path:inset(0 0 0 0);filter:brightness(2.2)}55%{clip-path:inset(48% 0 48% 0)}100%{clip-path:inset(0 0 0 0);filter:none}}
+.tb-off small{display:block;color:#a07000;font-size:13px}
+.tb-rb{position:fixed;inset:0;z-index:9400;pointer-events:none;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8);opacity:0;mix-blend-mode:soft-light;animation:tbRb 2.4s ease-in-out}
+@keyframes tbRb{50%{opacity:.75}}
+@media(prefers-reduced-motion:reduce){.tb-off,.tb-rb,.tb-pop{animation:none}}`;
+  document.head.appendChild(css);
+  const menu = document.createElement('div'); menu.className = 'tb-menu'; menu.hidden = true; menu.setAttribute('role', 'menu');
+  const ver = (typeof CHANGELOG !== 'undefined' && CHANGELOG[0]) ? CHANGELOG[0].v : '';
+  menu.innerHTML = '<div class="tb-side">Idle Hero</div><div class="tb-list">' + NAV.map(([k, n]) => `<button role="menuitem" data-nav="${k}">${n}</button>`).join('') + '<hr><button role="menuitem" data-act="about">關於 Idle Hero…</button><button role="menuitem" data-act="off">關機…</button></div>';
+  document.body.appendChild(menu);
+  const $s = document.getElementById('tb-start'), $snd = document.getElementById('tb-snd'), $clk = document.getElementById('clk'), $task = document.getElementById('tb-task');
+  const setMenu = on => { menu.hidden = !on; $s.setAttribute('aria-expanded', String(on)); if (on) sfx('ph_tab'); };
+  const act = fn => e => { if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return; e.preventDefault(); e.stopPropagation(); fn(); };
+  [$s, $snd, $clk, $task].forEach(el => { el.addEventListener('click', e => e.stopPropagation()); });
+  const bind = (el, fn) => { el.addEventListener('click', act(fn)); el.addEventListener('keydown', act(fn)); };
+  bind($s, () => setMenu(menu.hidden));
+  document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target)) setMenu(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { setMenu(false); $s.focus(); } });
+  let pop = null, popT = 0;
+  const say = html => { pop?.remove(); pop = document.createElement('div'); pop.className = 'tb-pop'; pop.setAttribute('role', 'status'); pop.innerHTML = html; document.body.appendChild(pop); clearTimeout(popT); popT = setTimeout(() => { pop?.remove(); pop = null; }, 4200); };
+  const rainbow = () => { const d = document.createElement('div'); d.className = 'tb-rb'; document.body.appendChild(d); setTimeout(() => d.remove(), 2500); sfx('ph_key'); };
+  const shutdown = () => {
+    const d = document.createElement('div'); d.className = 'tb-off'; d.tabIndex = 0; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '現在可以安全地關閉電腦了');
+    d.innerHTML = '<div>現在可以安全地關閉電腦了。<small>（點一下任何地方，重新開機）</small></div>'; document.body.appendChild(d); sfx('ph_off'); d.focus();
+    const back = () => { d.remove(); sfx('ph_on'); }; d.addEventListener('click', back); d.addEventListener('keydown', back);
+  };
+  menu.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return; setMenu(false);
+    if (b.dataset.nav) { if (typeof openModal === 'function') openModal(b.dataset.nav); return; }
+    if (b.dataset.act === 'about') say(`<b>Idle Hero</b> ${ver}<br>一個掛機也能玩的小冒險。<br>祝你刷到好東西。`);
+    if (b.dataset.act === 'off') shutdown();
+  });
+  // 工作列按鈕：點「Idle Hero」回到角色頁；右下角音效鍵與時鐘
+  bind($task, () => { if (typeof openModal === 'function') openModal('char'); sfx('ph_tab'); });
+  const paintSnd = () => { $snd.textContent = snd(); $snd.setAttribute('aria-pressed', String(!(typeof AUD !== 'undefined' && AUD.mode === 'off'))); };
+  bind($snd, () => { if (typeof audMode !== 'function') return; audInit?.(); audMode(AUD.mode === 'off' ? 'all' : 'off'); paintSnd(); if (AUD.mode !== 'off') sfx('ph_tab'); });
+  paintSnd();
+  const pad = n => String(n).padStart(2, '0');
+  const tick = () => { const d = new Date(); $clk.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()); }; tick(); setInterval(tick, 20000);
+  let clicks = 0, clickT = 0; const days = '日一二三四五六';
+  bind($clk, () => {
+    const d = new Date(); clicks++; clearTimeout(clickT); clickT = setTimeout(() => { clicks = 0; }, 900);
+    if (clicks >= 7) { clicks = 0; rainbow(); say('★ 時間是彩虹色的 ★'); return; }
+    say(`${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日 星期${days[d.getDay()]}`);
+  });
+  // 彩蛋：↑↑↓↓←→←→ 讓畫面閃一道彩虹
+  const seq = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight']; let at = 0;
+  document.addEventListener('keydown', e => { if (e.target.closest?.('input,textarea,select')) return; at = e.key === seq[at] ? at + 1 : (e.key === seq[0] ? 1 : 0); if (at === seq.length) { at = 0; rainbow(); say('★ 隱藏彩蛋：歡迎回到 2000 年代 ★'); } });
+  return true;
+  }
+  if (!init()){ const t = setInterval(() => { if (init()) clearInterval(t); }, 150); }
+})();
+
+</script>
+<script>
+/* ---------- 裝備圖示：用低面數 3D 模型離屏渲染成小圖（平塗、低解析、像素化放大） ---------- */
+const ICON3D = { cache:{}, rd:null, fail:false, S:48 };
+const ICON3D_RAR = [['#e8eef5', '#cfdcf0'], ['#8fd0ff', '#4aa8ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff5a8a']];
+function icon3dJacket(tier, C){
+  const g = new T3.Group(), body = ['#7a86b4', '#3f6fb5', '#e9edf6', '#2b2f45'][tier], dark = m3('#243046'), main = m3(body), acc = m3(C[1], { emissive:C[1], emissiveIntensity:.35 });
+  mk(new T3.BoxGeometry(2.4, 2.8, 1.3), main, 0, 0, 0, g);
+  if (tier !== 2) for (const s of [-1, 1]){ const a = mk(new T3.BoxGeometry(.85, 2.5, .95), main, s * 1.6, -.1, 0, g); a.rotation.z = -s * .22; mk(new T3.BoxGeometry(.9, .35, 1), dark, s * 1.78, -1.3, 0, g).rotation.z = -s * .22; }
+  if (tier === 0){ mk(ico(.95, 0), main, 0, 1.55, -.35, g).scale.set(1.2, .8, .9); mk(new T3.BoxGeometry(1.2, .7, .15), dark, 0, -.7, .7, g); }
+  if (tier === 1){ for (const s of [-1, 1]) mk(new T3.BoxGeometry(.7, .5, .5), main, s * .5, 1.5, .25, g).rotation.z = s * .5; mk(new T3.BoxGeometry(2.4, .12, 1.35), dark, 0, -.8, 0, g); }
+  if (tier === 2){ mk(new T3.BoxGeometry(2.5, .3, 1.4), dark, 0, 1.3, 0, g); mk(new T3.BoxGeometry(2.5, .3, 1.4), dark, 0, -1.3, 0, g); }
+  if (tier === 3){ mk(new T3.BoxGeometry(2.6, .5, 1.4), dark, 0, 1.5, 0, g); for (const y of [-.5, .5]) mk(new T3.BoxGeometry(2.45, .2, 1.34), acc, 0, y, 0, g); }
+  mk(new T3.BoxGeometry(.14, 2.7, .1), acc, 0, 0, .69, g);
+  return g;
+}
+function icon3dGadget(tier, C){
+  const g = new T3.Group(), dark = m3('#334358'), silver = m3('#bbc8d2'), screen = m3('#85bcb8', { emissive:'#85bcb8', emissiveIntensity:.5 }), acc = m3(C[1], { emissive:C[1], emissiveIntensity:.4 });
+  if (tier === 0){ mk(new T3.BoxGeometry(2.6, 1.9, .8), dark, 0, 0, 0, g); mk(new T3.BoxGeometry(1.7, .7, .1), screen, 0, .25, .43, g); mk(new T3.BoxGeometry(.5, 1.1, .3), silver, 1.45, 0, 0, g); for (const x of [-.7, 0, .7]) mk(new T3.BoxGeometry(.4, .25, .1), acc, x, -.6, .43, g); }
+  if (tier === 1){ mk(new T3.BoxGeometry(1.7, 1.7, .4), dark, 0, -.9, 0, g); const up = new T3.Group(); up.position.set(0, -.05, 0); up.rotation.x = -.45; mk(new T3.BoxGeometry(1.7, 1.6, .35), silver, 0, .8, 0, up); mk(new T3.BoxGeometry(1.2, .9, .1), screen, 0, .8, .2, up); g.add(up); for (const x of [-.5, 0, .5]) for (const y of [-1.2, -.7]) mk(new T3.BoxGeometry(.3, .25, .1), acc, x, y, .22, g); }
+  if (tier === 2){ mk(new T3.BoxGeometry(2.2, 2.2, .6), silver, 0, 0, 0, g); mk(new T3.CylinderGeometry(.8, .8, .12, 10), dark, 0, .2, .35, g).rotation.x = Math.PI / 2; mk(new T3.CylinderGeometry(.3, .3, .14, 8), acc, 0, .2, .38, g).rotation.x = Math.PI / 2; mk(new T3.BoxGeometry(1.4, .4, .1), screen, 0, -.8, .33, g); }
+  if (tier === 3){ mk(ico(1.2, 1), m3('#f4f0ff'), 0, 0, 0, g).scale.set(1, 1.2, .55); mk(new T3.BoxGeometry(1.1, .9, .1), screen, 0, .3, .72, g); for (const x of [-.55, 0, .55]) mk(new T3.CylinderGeometry(.18, .18, .12, 8), acc, x, -.7, .7, g).rotation.x = Math.PI / 2; mk(new T3.TorusGeometry(.3, .08, 4, 8), dark, 0, 1.55, 0, g); }
+  return g;
+}
+function icon3dModel(slot, tier, r){
+  const C = ICON3D_RAR[Math.max(0, Math.min(r | 0, 3))], t = Math.max(0, Math.min(tier | 0, 3));
+  if (slot === 'weapon'){ const g = new T3.Group(); buildWeapon(g, t, r | 0); const b = new T3.Box3().setFromObject(g), s = b.getSize(new T3.Vector3()), ax = s.x >= s.y && s.x >= s.z ? new T3.Vector3(1, 0, 0) : s.z >= s.y ? new T3.Vector3(0, 0, 1) : new T3.Vector3(0, 1, 0); const w = new T3.Group(); w.add(g); w.quaternion.setFromUnitVectors(ax, new T3.Vector3(.72, .72, 0)); return w; }
+  const g = slot === 'armor' ? icon3dJacket(t, C) : icon3dGadget(t, C), w = new T3.Group(); w.add(g); w.rotation.set(.22, -.5, 0); return w;
+}
+function icon3dUrl(slot, tier, r){
+  const key = slot + tier + '_' + r; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof T3.WebGLRenderer !== 'function') return '';
+  try {
+    if (!ICON3D.rd){ const cv = document.createElement('canvas'); ICON3D.rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true, preserveDrawingBuffer:true }); ICON3D.rd.setPixelRatio(1); ICON3D.rd.setSize(ICON3D.S, ICON3D.S, false); ICON3D.rd.setClearColor(0x000000, 0); ICON3D.rd.outputColorSpace = T3.SRGBColorSpace; }
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200), m = icon3dModel(slot, tier, r); sc.add(m);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    m.updateMatrixWorld(true); const b = new T3.Box3().setFromObject(m), c = b.getCenter(new T3.Vector3()), rad = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
+    cam.position.set(0, 0, rad / Math.sin(28 * Math.PI / 360) * .78); cam.lookAt(0, 0, 0);
+    ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[key] = url; return url;
+  } catch (e) { ICON3D.fail = true; return ''; }
+}
+
+/* 暗金核心：依插槽與序號選模型，固定稀有度最高色並加金色光環與寶石，和一般裝備區隔 */
+function icon3dLegendUrl(id){
+  const key = 'L_' + id; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof LEGENDS === 'undefined') return '';
+  let slot = '', idx = 0; for (const sl in LEGENDS){ const i = LEGENDS[sl].findIndex(L => L.id === id); if (i >= 0){ slot = sl; idx = i; } } if (!slot) return '';
+  try {
+    if (!ICON3D.rd) { if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200), m = icon3dModel(slot, idx + 1, 3), halo = new T3.Group(), gold = new T3.MeshBasicMaterial({ color:0xffd24d });
+    sc.add(m); m.updateMatrixWorld(true); let b = new T3.Box3().setFromObject(m); const c = b.getCenter(new T3.Vector3()), rad0 = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
+    const ring = new T3.Mesh(new T3.TorusGeometry(rad0 * 1.08, rad0 * .035, 4, 20), gold); ring.rotation.x = 1.1; halo.add(ring);
+    const gem = new T3.Mesh(new T3.OctahedronGeometry(rad0 * .2, 0), gold); gem.position.set(rad0 * .95, rad0 * .75, 0); halo.add(gem); sc.add(halo);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    cam.position.set(0, 0, rad0 * 1.2 / Math.sin(28 * Math.PI / 360) * .86); cam.lookAt(0, 0, 0);
+    ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[key] = url; return url;
+  } catch (e) { return ''; }
+}
+
+/* 地圖縮圖：低面數 3D 小島，依地貌配色，離屏渲染後像素化放大 */
+function icon3dMapUrl(m){
+  const key = 'M_' + m.id + '_' + m.biome; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof BIOMES === 'undefined') return '';
+  try {
+    if (!ICON3D.rd) { if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const B = BIOMES[m.biome], blocky = m.biome >= 4, g = new T3.Group(); let h = 0; for (const ch of String(m.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    mk(new T3.BoxGeometry(5, .7, 5), m3(B.board.l), 0, .35, 0, g); mk(new T3.BoxGeometry(5.02, .55, 5.02), m3(B.board.m), 0, -.2, 0, g); mk(new T3.BoxGeometry(4.2, .6, 4.2), m3(B.board.d), 0, -.75, 0, g);
+    mk(new T3.CylinderGeometry(.9, .9, .08, 10), m3(B.portal, { emissive:B.portal, emissiveIntensity:.5 }), 0, .72, 0, g); mk(new T3.CylinderGeometry(.45, .45, .1, 8), m3(B.glow, { emissive:B.glow, emissiveIntensity:.8 }), 0, .76, 0, g);
+    const sp = [[-1.6, -1.4], [1.5, -1.2], [-1.2, 1.4], [1.7, 1.3], [-1.9, .2], [.3, -1.9]];
+    for (let i = 0; i < 4; i++){ const [x, z] = sp[(h + i * 2) % sp.length], big = (h >> (i + 3)) & 1 ? 1.2 : .9, c = m3(i % 2 ? B.t1 : B.t2);
+      if (blocky){ mk(new T3.BoxGeometry(.7 * big, 1.6 * big, .7 * big), c, x, .7 + .8 * big, z, g); mk(new T3.BoxGeometry(.8 * big, .2, .8 * big), m3(B.board.l), x, .7 + 1.6 * big, z, g); }
+      else { mk(new T3.CylinderGeometry(.08, .1, .5, 5), m3('#8a6a48'), x, .95, z, g); mk(new T3.ConeGeometry(.6 * big, 1.5 * big, 5), c, x, 1.6 + .3 * big, z, g); } }
+    g.rotation.set(.5, -.6, 0);
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(26, 78 / 56, .1, 200); sc.add(g);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    g.updateMatrixWorld(true); const bx = new T3.Box3().setFromObject(g), c0 = bx.getCenter(new T3.Vector3()), rad = bx.getBoundingSphere(new T3.Sphere()).radius; g.position.sub(c0);
+    cam.position.set(0, 0, rad / Math.sin(26 * Math.PI / 360) * .74); cam.lookAt(0, 0, 0);
+    ICON3D.rd.setSize(56, 40, false); ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.rd.setSize(ICON3D.S, ICON3D.S, false);
+    ICON3D.cache[key] = url; return url;
+  } catch (e) { return ''; }
+}
+
+/* 冒險頁情境小圖：城市遠征三區、無限之塔、訓練假人，離屏渲染後像素化放大 */
+function icon3dSceneModel(key, nArg){
+  const g = new T3.Group(), slab = (c1, c2) => { mk(new T3.BoxGeometry(5.4, .5, 4.2), m3(c1), 0, -.25, 0, g); mk(new T3.BoxGeometry(5.42, .4, 4.22), m3(c2), 0, -.7, 0, g); };
+  const glow = c => m3(c, { emissive:c, emissiveIntensity:.7 });
+  if (key === 'route_signal'){ slab('#5b4fa8', '#3a3278'); for (const [x, z, h] of [[-1.6, -.6, 3.4], [0, .6, 4.4], [1.6, -.4, 2.8]]){ mk(new T3.CylinderGeometry(.08, .16, h, 5), m3('#c9d3ff'), x, h / 2, z, g); mk(new T3.OctahedronGeometry(.28, 0), glow('#00e5ff'), x, h + .2, z, g); mk(new T3.TorusGeometry(.55, .04, 4, 14), glow('#ff4fd8'), x, h * .72, z, g).rotation.x = 1.4; } }
+  else if (key === 'route_memory'){ slab('#d98cb8', '#a85f8c'); mk(new T3.BoxGeometry(3.6, 2.3, .5), m3('#f4e6ee'), 0, 1.3, 0, g); mk(new T3.BoxGeometry(3.0, .9, .06), m3('#3a3050'), 0, 1.2, .3, g); for (const s of [-1, 1]) mk(new T3.CylinderGeometry(.42, .42, .1, 10), glow('#ffd24d'), s * .8, 1.2, .35, g).rotation.x = Math.PI / 2; mk(new T3.BoxGeometry(2, .4, .06), m3('#ff7ab8'), 0, .45, .3, g); }
+  else if (key === 'route_power'){ slab('#b9803a', '#7a5224'); for (const [x, z, s] of [[-1.5, 0, 1.6], [0, -.3, 2.2], [1.5, .2, 1.3]]){ mk(new T3.BoxGeometry(1.1, s, 1.1), m3('#d8dde8'), x, s / 2, z, g); mk(new T3.BoxGeometry(1.15, .25, 1.15), m3('#454a60'), x, s + .1, z, g); mk(new T3.BoxGeometry(.5, .5, .1), glow('#ffd24d'), x, s * .55, z + .58, g); } mk(new T3.BoxGeometry(5, .08, .2), glow('#ff9a3d'), 0, .06, 1.6, g); }
+  else if (key === 'tower'){ const n = Math.max(3, Math.min(12, (nArg | 0) || 3)); slab('#7a86b4', '#4a5480'); for (let i = 0; i < n; i++){ const w = 2.6 - i * .1; mk(new T3.BoxGeometry(w, .62, w), m3(i % 2 ? '#8fa0d8' : '#aab8e8'), 0, .35 + i * .68, 0, g); mk(new T3.BoxGeometry(w + .12, .1, w + .12), m3('#2f3556'), 0, .72 + i * .68, 0, g); mk(new T3.BoxGeometry(.5, .25, .08), glow(i === n - 1 ? '#ffd24d' : '#5dffa3'), 0, .35 + i * .68, w / 2 + .02, g); } mk(new T3.OctahedronGeometry(.4, 0), glow('#ffd24d'), 0, .9 + n * .68, 0, g); }
+  else { const cnt = key === 'dummy1' ? 1 : 5; slab('#8fb4d8', '#5f82a8'); const pos = cnt === 1 ? [[0, 0]] : [[-1.7, -.8], [0, -1], [1.7, -.8], [-.9, .8], [.9, .8]];
+    for (const [x, z] of pos){ const s = cnt === 1 ? 1.7 : 1; mk(new T3.CylinderGeometry(.5 * s, .6 * s, .2, 8), m3('#454a60'), x, .1, z, g); mk(new T3.CylinderGeometry(.1 * s, .1 * s, 1.4 * s, 5), m3('#8a6a48'), x, .8 * s, z, g); mk(new T3.BoxGeometry(.9 * s, 1.1 * s, .5 * s), m3('#e8c27a'), x, 1.5 * s, z, g); mk(new T3.BoxGeometry(.6 * s, .6 * s, .1 * s), glow('#ff5a5a'), x, 1.5 * s, z + .3 * s, g); mk(new T3.IcosahedronGeometry(.4 * s, 0), m3('#f2d9a0'), x, 2.35 * s, z, g); } }
+  g.rotation.set(.45, -.55, 0); return g;
+}
+function icon3dSceneUrl(key, arg){
+  const ck = 'S_' + key + (arg || ''); if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined') return '';
+  try {
+    if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const tall = key === 'tower', W = tall ? 40 : 64, H = tall ? 64 : 44, m = icon3dSceneModel(key, arg), sc = new T3.Scene(), cam = new T3.PerspectiveCamera(26, W / H, .1, 200);
+    const mm = m; sc.add(mm);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    mm.updateMatrixWorld(true); const bx = new T3.Box3().setFromObject(mm), c0 = bx.getCenter(new T3.Vector3()), rad = bx.getBoundingSphere(new T3.Sphere()).radius; mm.position.sub(c0);
+    cam.position.set(0, 0, rad / Math.sin(26 * Math.PI / 360) * .6); cam.lookAt(0, 0, 0);
+    ICON3D.rd.setSize(W, H, false); ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.rd.setSize(ICON3D.S, ICON3D.S, false);
+    ICON3D.cache[ck] = url; return url;
+  } catch (e) { return ''; }
+}
+
+/* 選單小物件：設定頁各入口的 3D 小圖示 */
+function icon3dObjModel(kind){
+  const g = new T3.Group(), glow = c => m3(c, { emissive:c, emissiveIntensity:.6 }), silver = m3('#c7d0dc'), dark = m3('#334358');
+  if (kind === 'settings'){ mk(new T3.CylinderGeometry(1.2, 1.2, .6, 10), silver, 0, 0, 0, g).rotation.x = Math.PI / 2; for (let i = 0; i < 8; i++){ const a = i * Math.PI / 4; mk(new T3.BoxGeometry(.55, .55, .6), silver, Math.cos(a) * 1.45, Math.sin(a) * 1.45, 0, g); } mk(new T3.CylinderGeometry(.5, .5, .7, 8), dark, 0, 0, 0, g).rotation.x = Math.PI / 2; }
+  else if (kind === 'save'){ mk(new T3.BoxGeometry(2.6, 2.6, .35), m3('#4a6fd6'), 0, 0, 0, g); mk(new T3.BoxGeometry(1.6, .9, .4), silver, 0, .8, .02, g); mk(new T3.BoxGeometry(1.7, 1.1, .4), m3('#f2f4fa'), 0, -.55, .02, g); mk(new T3.BoxGeometry(.3, .6, .42), dark, .5, .8, .03, g); }
+  else if (kind === 'goals'){ mk(new T3.CylinderGeometry(.07, .07, 3, 5), silver, -.7, 0, 0, g); mk(new T3.BoxGeometry(1.8, 1.2, .1), glow('#ff5a8a'), .2, .9, 0, g); mk(new T3.BoxGeometry(1.2, .1, 1.2), dark, -.7, -1.5, 0, g); }
+  else if (kind === 'ach'){ mk(new T3.CylinderGeometry(1.1, .6, 1.6, 8), glow('#ffd24d'), 0, .6, 0, g); mk(new T3.CylinderGeometry(.18, .18, .8, 6), m3('#e0a82a'), 0, -.6, 0, g); mk(new T3.BoxGeometry(1.5, .35, 1.5), dark, 0, -1.15, 0, g); for (const s of [-1, 1]) mk(new T3.TorusGeometry(.5, .08, 4, 8), m3('#e0a82a'), s * 1.25, .7, 0, g); }
+  else if (kind === 'dex'){ mk(new T3.BoxGeometry(2.2, 2.8, .7), m3('#6a4fd0'), 0, 0, 0, g); mk(new T3.BoxGeometry(2, 2.6, .5), m3('#f2f4fa'), .08, 0, .02, g); mk(new T3.BoxGeometry(.9, .9, .1), glow('#5dffa3'), -.2, .5, .38, g); mk(new T3.BoxGeometry(1.3, .15, .1), dark, 0, -.5, .38, g); mk(new T3.BoxGeometry(1.3, .15, .1), dark, 0, -.85, .38, g); }
+  else if (kind === 'log'){ mk(new T3.CylinderGeometry(.7, .7, 2.8, 10), m3('#f2e6c0'), 0, 0, 0, g).rotation.z = Math.PI / 2; mk(new T3.BoxGeometry(3, .1, 1.3), m3('#fff6d8'), 0, -.1, .5, g); for (const y of [.1, -.2, -.5]) mk(new T3.BoxGeometry(2, .08, .05), dark, 0, y, 1.16, g); }
+  else if (kind === 'feedback'){ mk(new T3.BoxGeometry(2.8, 1.9, .5), glow('#8fe8ff'), 0, .3, 0, g); mk(new T3.ConeGeometry(.5, .9, 3), glow('#8fe8ff'), -.7, -.9, 0, g).rotation.z = Math.PI; for (const x of [-.7, 0, .7]) mk(new T3.BoxGeometry(.3, .3, .1), dark, x, .3, .3, g); }
+  else if (kind.startsWith('medal:')){ const c = kind.slice(6); mk(new T3.CylinderGeometry(1.4, 1.4, .4, 10), glow(c), 0, 0, 0, g).rotation.x = Math.PI / 2; mk(new T3.CylinderGeometry(1, 1, .5, 10), m3('#fff6d8'), 0, 0, 0, g).rotation.x = Math.PI / 2; mk(new T3.OctahedronGeometry(.6, 0), glow(c), 0, 0, .3, g).scale.set(1, 1, .5); mk(new T3.BoxGeometry(.9, 1.3, .15), m3('#3a4a9a'), -.5, -1.7, -.1, g).rotation.z = .35; mk(new T3.BoxGeometry(.9, 1.3, .15), m3('#c8341f'), .5, -1.7, -.1, g).rotation.z = -.35; }
+  else if (kind.startsWith('orb:')){ const c = kind.slice(4); mk(new T3.IcosahedronGeometry(1.4, 0), glow(c), 0, 0, 0, g); mk(new T3.TorusGeometry(1.9, .06, 4, 16), m3('#ffffff'), 0, 0, 0, g).rotation.x = 1.2; }
+  else { mk(new T3.OctahedronGeometry(1.5, 0), glow('#ffd24d'), 0, 0, 0, g).scale.set(1, 1.1, .6); mk(new T3.TorusGeometry(1.9, .06, 4, 16), glow('#ff9ad0'), 0, 0, 0, g).rotation.x = 1.2; }
+  g.rotation.set(.25, -.5, 0); return g;
+}
+function icon3dObjUrl(kind){
+  const ck = 'O_' + kind; if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined') return '';
+  try {
+    if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const m = icon3dObjModel(kind), sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200); sc.add(m);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    m.updateMatrixWorld(true); const b = new T3.Box3().setFromObject(m), c = b.getCenter(new T3.Vector3()), rad = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
+    cam.position.set(0, 0, rad / Math.sin(28 * Math.PI / 360) * .85); cam.lookAt(0, 0, 0);
+    ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[ck] = url; return url;
+  } catch (e) { return ''; }
+}
+function obj3d(kind, size){ const u = typeof icon3dObjUrl === 'function' ? icon3dObjUrl(kind) : ''; return u ? `<img class="ui-obj3d" alt="" aria-hidden="true" src="${u}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated">` : ''; }
+
+/* 角色選擇用的頭像：把角色模型放進離屏畫面，拍頭肩特寫並快取；貼圖還沒載入完就先回傳空字串，稍後自動重畫角色頁 */
+function icon3dPortraitUrl(key){
+  const ck = 'P_' + key; if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof buildHero !== 'function' || !CHARS[key] || !CHARS[key].model) return '';
+  try {
+    if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const asset = characterAsset(CHARS[key].model), img = asset.material.map && asset.material.map.image;
+    if (!img){ if (!ICON3D.portWait){ ICON3D.portWait = setTimeout(() => { ICON3D.portWait = 0; if (typeof modalTab !== 'undefined' && !$('modal').hidden && modalTab === 'char') renderModal(); }, 350); } return ''; }
+    const prev = G.char; let g; G.char = key; try { g = buildHero(0, 0, 0, 0, G.cos); } finally { G.char = prev; }
+    g.userData.mixer && g.userData.mixer.update(.02); g.scale.setScalar(1); g.rotation.y = 0;
+    for (const o of g.children) if (o.isMesh && o.geometry && o.geometry.type === 'RingGeometry') o.visible = false;
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(24, 1, .1, 400); sc.add(g);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.4)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.6, 1.2, 2); sc.add(dl);
+    g.updateMatrixWorld(true); const hp = new T3.Vector3(); g.userData.B.head.getWorldPosition(hp);
+    cam.position.set(hp.x, hp.y + 1, hp.z + 50); cam.lookAt(hp.x, hp.y - 1.5, hp.z);
+    ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[ck] = url; return url;
+  } catch (e) { return ''; }
+}
+
+</script>
+<script>
+/* ---------- 倒下畫面：戰場上方的「死亡」大字與復活倒數（不擋操作、不暫停掛機） ---------- */
+const DEATHFX = { el:null, shown:false, sec:-1, total:3, hideT:0 };
+(function(){
+  const css = document.createElement('style'); css.textContent = `
+#deathfx{position:fixed;z-index:12;pointer-events:none;display:none;align-items:center;justify-content:center;overflow:hidden;font-family:"Cubic 11",system-ui,sans-serif;user-select:none}
+#deathfx.on{display:flex}
+#deathfx .df-veil{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,#0b153500 0,#0b153566 55%,#0b1535cc 100%),repeating-linear-gradient(0deg,#0000 0 2px,#00000026 2px 3px);backdrop-filter:grayscale(.5) brightness(.8);-webkit-backdrop-filter:grayscale(.5) brightness(.8);animation:dfVeil .5s ease-out both}
+@keyframes dfVeil{from{opacity:0}}
+#deathfx .df-win{position:relative;width:min(86%,330px);background:#e6e8f6;border:2px solid #fff;outline:2px solid #5c6a8e;box-shadow:3px 3px 0 #0b153599;animation:dfPop .45s steps(6,end) both}
+@keyframes dfPop{0%{transform:scale(.3,.05);opacity:0}60%{transform:scale(1.06,1.02);opacity:1}100%{transform:none}}
+#deathfx .df-title{display:flex;align-items:center;gap:6px;padding:4px 7px;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);color:#fff;font-size:13px;letter-spacing:.06em;border-bottom:2px solid #1d2552}
+#deathfx .df-title i{margin-left:auto;font-style:normal;width:16px;height:14px;line-height:12px;text-align:center;background:linear-gradient(#f2f4fa,#c3cbdc);color:#333;border:1px solid;border-color:#fff #6d788a #6d788a #fff;font-size:12px}
+#deathfx .df-body{padding:10px 12px 12px;text-align:center;background:#e6e8f6}
+#deathfx .df-big{display:block;font-size:clamp(48px,11vw,76px);line-height:1.05;letter-spacing:.12em;padding-left:.12em;color:#c8341f;text-shadow:2px 2px 0 #fff,4px 4px 0 #1d2552;animation:dfGlitch 2.4s steps(1) infinite}
+@keyframes dfGlitch{0%,86%,100%{transform:none}88%{transform:translate(-3px,0) skewX(-6deg)}90%{transform:translate(3px,1px)}92%{transform:translate(-1px,-1px) skewX(4deg)}}
+#deathfx .df-sub{display:block;margin:2px 0 8px;color:#5c6a8e;font-size:12px;letter-spacing:.3em}
+#deathfx .df-count{display:flex;align-items:baseline;justify-content:center;gap:8px;color:#1d2552;font-size:15px}
+#deathfx .df-count b{display:inline-block;min-width:1.2em;font-size:34px;line-height:1;color:#1d2552;text-shadow:2px 2px 0 #fff;font-variant-numeric:tabular-nums}
+#deathfx .df-bar{position:relative;height:14px;margin:8px 0 2px;background:#18233de8;border:2px solid #17203b;box-shadow:1px 1px #ffffff90,inset 0 1px #030b23;overflow:hidden}
+#deathfx .df-bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:repeating-linear-gradient(90deg,transparent 0 6px,#17203b 6px 8px),linear-gradient(180deg,#fff3bf 0 2px,#efce68 2px 4px,#a38c3b 4px 100%)}
+#deathfx .df-note{margin-top:4px;color:#5c6a8e;font-size:12px}#deathfx .df-note::after{content:"_";animation:dfBlink 1s steps(1) infinite}
+@keyframes dfBlink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){#deathfx .df-big,#deathfx .df-win,#deathfx .df-veil{animation:none}}`;
+  document.head.appendChild(css);
+})();
+function deathFxEl(){
+  if (DEATHFX.el) return DEATHFX.el; const el = DEATHFX.el = document.createElement('div'); el.id = 'deathfx'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+  el.innerHTML = '<div class="df-veil"></div><div class="df-win"><div class="df-title">▣ SYSTEM.EXE<i>×</i></div><div class="df-body"><span class="df-big">死亡</span><span class="df-sub">YOU DIED</span><div class="df-count">復活倒數<b id="df-n">3</b>秒</div><div class="df-bar"><i id="df-fill"></i></div><div class="df-note">重新開機中</div></div></div>';
+  document.body.appendChild(el); return el;
+}
+function deathFxUpdate(){
+  const d = G.h.dead, D = DEATHFX;
+  if (d > 0 && !G.offline) {
+    const el = deathFxEl(), cv = typeof R3 !== 'undefined' && R3.rd ? R3.rd.domElement : document.getElementById('fig'), r = cv.getBoundingClientRect();
+    if (!D.shown) { D.shown = true; D.total = Math.max(d, 3); D.sec = -1; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); }
+    el.style.left = r.left + 'px'; el.style.top = r.top + 'px'; el.style.width = r.width + 'px'; el.style.height = r.height + 'px';
+    const n = Math.max(1, Math.ceil(d)); if (n !== D.sec) { D.sec = n; document.getElementById('df-n').textContent = n; el.setAttribute('aria-label', '你倒下了，' + n + ' 秒後復活'); }
+    document.getElementById('df-fill').style.width = (Math.max(0, Math.min(1, 1 - d / D.total)) * 100).toFixed(1) + '%';
+  } else if (D.shown) { D.shown = false; D.el?.classList.remove('on'); }
+}
 
 </script>
 <script>

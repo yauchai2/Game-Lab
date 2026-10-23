@@ -1,12 +1,12 @@
 /* 角色手機：從角色頁開啟的全屏 3D 手機（CSS 3D，貼圖見 phone-assets.js），螢幕顯示角色資訊。
    不改任何遊戲規則，只讀 G；關閉後回到原頁面。 */
 const PH = { open:false, tab:0, zoom:false, drag:null, face:0, rx:0, ry:0, tx:0, ty:0, raf:0, t0:0, timer:0, scroll:0, closing:false };
-const PH_TABS = ['名片', '裝備', '屬性', '技能', '連結'];
+const PH_TABS = ['名片', '戰績', '收藏', '全息'];
 /* 版面座標（單位＝貼圖像素，畫布 640×960） */
 const PH_SCREEN = { x:156, y:164, w:328, h:431 };
 const PH_KEYS = [  // 按鍵熱區：中心座標與大小，act 為動作
   { id:'back', x:192, y:675, w:76, h:68, act:'close', tip:'返回' },
-  { id:'call', x:449, y:675, w:76, h:68, act:'links', tip:'連結' },
+  { id:'call', x:449, y:675, w:76, h:68, act:'links', tip:'全息掃描' },
   { id:'up', x:320, y:628, w:50, h:34, act:'up', tip:'上捲' },
   { id:'down', x:320, y:731, w:50, h:34, act:'down', tip:'下捲' },
   { id:'left', x:267, y:679, w:34, h:50, act:'prev', tip:'上一頁' },
@@ -38,29 +38,65 @@ Object.assign(SFXS, {
 const phSfx = n => { try { SFX(n); } catch (e) {} };
 function phoneProfile(){ return (typeof CHARACTER_PROFILES !== 'undefined' && CHARACTER_PROFILES[G.char]) || {}; }
 function phoneHead(){
-  const P = phoneProfile(), need = xpNeed(G.lvl), xp = Math.max(0, Math.min(1, G.xp / need)), hp = Math.max(0, Math.min(1, G.h.hp / G.st.life));
+  const P = phoneProfile();
   return `<div class="phs-hello"><span class="phs-star">♥</span> 歡迎光臨 <b>${phEsc(G.heroName || P.n || '阿街')}</b> 的主頁 <span class="phs-star">♥</span></div>
    <div class="phs-rainbow"></div>
-   <table class="phs-card"><tr><td class="phs-av">${spr('role', 44)}</td><td><b>${phEsc(P.n || '')}</b><br><small>${phEsc(P.title || '')}</small><br><span class="phs-lv">LV ${G.lvl}</span></td></tr></table>
-   <div class="phs-bar" title="經驗"><i style="width:${(xp * 100).toFixed(1)}%"></i><span>EXP ${(xp * 100).toFixed(0)}%</span></div>
-   <div class="phs-bar hp" title="生命"><i style="width:${(hp * 100).toFixed(1)}%"></i><span>HP ${tFmt(Math.max(0, G.h.hp))}／${tFmt(G.st.life)}</span></div>`;
+   <table class="phs-card"><tr><td class="phs-av">${spr('role', 44)}</td><td><b>${phEsc(P.n || '')}</b><br><small>${phEsc(P.title || '')}</small><br><span class="phs-lv">LV ${G.lvl}</span></td></tr></table>`;
+}
+const phTime = t => { const m = Math.floor(t / 60); return m >= 60 ? Math.floor(m / 60) + ' 小時 ' + (m % 60) + ' 分' : m + ' 分鐘'; };
+function phBar(label, n, total){ const u = total ? Math.max(0, Math.min(1, n / total)) : 0; return `<div class="phs-prog"><span>${label}</span><div class="phs-bar"><i style="width:${(u * 100).toFixed(1)}%"></i><span>${n}／${total}</span></div></div>`; }
+function phoneCounts(){
+  const ach = Object.keys(ACHS), legends = Object.keys(LEGEND_BY), relics = Object.keys(RELICS), radio = typeof FIELD_STORIES !== 'undefined' ? FIELD_STORIES : [];
+  let cosAll = 0, cosOwn = 0; for (const c in COS) for (const e of COS[c]) if (e[3] > 0) { cosAll++; if (G.own[c + ':' + e[0]]) cosOwn++; }
+  return { ach:[ach.filter(k => G.ach[k]).length, ach.length], leg:[legends.filter(k => G.armory[k]).length, legends.length], rel:[relics.filter(k => G.relics[k]).length, relics.length], radio:[radio.filter((_, i) => G.storyFlags['p' + i]).length, radio.length], cos:[cosOwn, cosAll] };
 }
 function phonePage(){
-  const s = G.st, P = phoneProfile();
+  const P = phoneProfile();
   if (PH.tab === 0) return `${phoneHead()}
     <fieldset><legend>自我介紹</legend><p>${phEsc(P.identity || '')}</p><p class="phs-q">「${phEsc(P.quote || '…')}」</p></fieldset>
-    <fieldset><legend>冒險紀錄</legend><dl class="phs-dl"><dt>目前深度</dt><dd>${G.depth}</dd><dt>最深紀錄</dt><dd>${G.maxDepth}</dd><dt>累計擊殺</dt><dd>${tFmt(G.totalKills)}</dd><dt>金幣</dt><dd>${tFmt(G.gold)}</dd></dl></fieldset>`;
-  if (PH.tab === 1) return `<div class="phs-hello">★ 隨身裝備 ★</div><div class="phs-rainbow"></div>` + Object.keys(SLOTN).map(k => {
-    const it = G.equip[k];
-    if (!it) return `<fieldset><legend>${SLOTN[k]}</legend><p class="phs-dim">（空）</p></fieldset>`;
-    return `<fieldset><legend>${SLOTN[k]}</legend><div class="phs-gear">${eqico(k, it.r, 28)}<div><b style="color:${phRar(it.r)}">${phEsc(it.name)}</b><br><small>${RAR[it.r].n} · Lv.${it.il}</small></div></div><ul class="phs-ul">${itemLines(it).slice(0, 5).map(l => `<li>${phEsc(l.t)}</li>`).join('')}</ul></fieldset>`;
-  }).join('');
-  if (PH.tab === 2) {
-    const rows = [['單體直傷預估', tFmt(s.dps) + ' DPS'], ['最大生命', tFmt(s.life)], ['暴擊率', s.crit.toFixed(0) + '%'], ['暴擊傷害', Math.round(s.cm) + '%'], ['攻擊速度', s.aps ? s.aps.toFixed(2) + ' 次／秒' : '—'], ['傷害減免', (s.red * 100).toFixed(0) + '%'], ['每秒回復', tFmt(s.regen || 0)], ['吸血', (s.leech || 0) + '%'], ['戰力評分', tFmt(s.power)]];
-    return `<div class="phs-hello">◆ 能力值 ◆</div><div class="phs-rainbow"></div><table class="phs-tbl">${rows.map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join('')}</table>`;
+    <fieldset><legend>基本資料</legend><dl class="phs-dl"><dt>生日</dt><dd>${(G.born || [1, 1]).join(' 月 ')} 日</dd><dt>遊戲時間</dt><dd>${phTime(G.time)}</dd><dt>倒下次數</dt><dd>${G.deaths || 0}</dd></dl></fieldset>`;
+  if (PH.tab === 1) {
+    const rows = [['累計擊殺', tFmt(G.totalKills)], ['首領擊破', G.bossKills || 0], ['最深深度', G.maxDepth], ['無限之塔最高', (G.towerBest || 0) + ' 層'], ['完成地圖', G.mapsDone || 0], ['打造次數', G.craftN || 0], ['遊戲時間', phTime(G.time)], ['倒下次數', G.deaths || 0]];
+    return `<div class="phs-hello">★ 歷年戰績 ★</div><div class="phs-rainbow"></div><table class="phs-tbl">${rows.map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join('')}</table>`;
   }
-  if (PH.tab === 3) return `<div class="phs-hello">✦ 技能一覽 ✦</div><div class="phs-rainbow"></div>` + (G.slots.length ? G.slots.map(id => { const k = SKILLS[id]; return k ? `<fieldset><legend style="color:${k.col}">${phEsc(k.n)}</legend><p>${phEsc(k.d)}</p><small class="phs-dim">冷卻 ${k.cd} 秒</small></fieldset>` : ''; }).join('') : '<p class="phs-dim">還沒有技能，繼續冒險吧。</p>');
-  return `<div class="phs-hello">♪ 友情連結 ♪</div><div class="phs-rainbow"></div><p class="phs-dim">點一下就會關掉手機，直接前往：</p><ul class="phs-links">${[['tree', '天賦盤'], ['dress', '角色與裝扮'], ['warehouse', '背包'], ['skills', '技能接線板'], ['craft', '打造與補給站'], ['maps', '冒險地圖']].map(([k, n]) => `<li><a href="#" data-go="${k}">» ${n}</a></li>`).join('')}</ul>`;
+  if (PH.tab === 2) {
+    const c = phoneCounts();
+    return `<div class="phs-hello">◆ 收藏進度 ◆</div><div class="phs-rainbow"></div>${phBar('成就', ...c.ach)}${phBar('傳奇核心', ...c.leg)}${phBar('遺物', ...c.rel)}${phBar('電台手記', ...c.radio)}${phBar('裝扮', ...c.cos)}`;
+  }
+  const w = G.equip.weapon;
+  return `<div class="phs-hello">✦ 全息掃描 ✦</div><div class="phs-rainbow"></div><div class="phs-scanbox"><div id="phs-scan" class="phs-scan"></div><span class="phs-scanlbl">SCAN</span></div><p class="phs-dim phs-cap">${w ? phEsc(w.name) + ' · ' + RAR[w.r].n + ' · Lv.' + w.il : '尚未裝備武器，掃描空白台座'}</p>`;
+}
+/* 全息掃描：螢幕內的小型 3D（目前裝備的武器放在旋轉的全息台座上），低解析像素化 */
+function phoneScanMount(){
+  const el = document.getElementById('phs-scan');
+  if (PH.scan && PH.scan.el !== el) phoneScanDispose();
+  if (!el || PH.scan || typeof T3 === 'undefined') return;
+  try {
+    const cv = document.createElement('canvas'), rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true }), S = 144;
+    rd.setPixelRatio(1); rd.setSize(S, S, false); rd.setClearColor(0x000000, 0); rd.outputColorSpace = T3.SRGBColorSpace; cv.style.imageRendering = 'pixelated';
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(30, 1, .1, 100), root = new T3.Group(), W = G.equip.weapon;
+    sc.add(new T3.HemisphereLight(0xffffff, 0x4466aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2); dl.position.set(-1, 2, 2); sc.add(dl);
+    const cy = new T3.MeshBasicMaterial({ color:0x5ae8ff, transparent:true, opacity:.85 }), wire = new T3.MeshBasicMaterial({ color:0x5ae8ff, wireframe:true, transparent:true, opacity:.55 });
+    const base = new T3.Mesh(new T3.CylinderGeometry(1.9, 2.1, .18, 10), new T3.MeshLambertMaterial({ color:0x1d2f6e, flatShading:true })); base.position.y = -1.9; sc.add(base);
+    const ring = new T3.Mesh(new T3.TorusGeometry(1.9, .05, 4, 24), cy); ring.rotation.x = Math.PI / 2; ring.position.y = -1.78; sc.add(ring);
+    const scan = new T3.Mesh(new T3.TorusGeometry(1.5, .04, 4, 24), cy); scan.rotation.x = Math.PI / 2; sc.add(scan);
+    const gem = new T3.Mesh(new T3.OctahedronGeometry(.32, 0), wire); sc.add(gem);
+    if (W && typeof buildWeapon === 'function') {
+      const g = new T3.Group(); buildWeapon(g, typeof aTier === 'function' ? aTier(W) : 0, W.r | 0);
+      const b = new T3.Box3().setFromObject(g), sz = b.getSize(new T3.Vector3()), ax = sz.x >= sz.y && sz.x >= sz.z ? new T3.Vector3(1, 0, 0) : sz.z >= sz.y ? new T3.Vector3(0, 0, 1) : new T3.Vector3(0, 1, 0);
+      const h = new T3.Group(); h.add(g); h.quaternion.setFromUnitVectors(ax, new T3.Vector3(0, 1, 0)); root.add(h); root.updateMatrixWorld(true);
+      const b2 = new T3.Box3().setFromObject(root), c = b2.getCenter(new T3.Vector3()), k = 3.4 / Math.max(.01, b2.getSize(new T3.Vector3()).y); h.scale.setScalar(k); h.position.set(-c.x * k, -c.y * k, -c.z * k); sc.add(root);
+    }
+    cam.position.set(0, .9, 8.4); cam.lookAt(0, -.2, 0); el.appendChild(cv);
+    PH.scan = { el, rd, sc, cam, root, gem, scan, ring, t0:performance.now() };
+  } catch (e) { PH.scan = null; }
+}
+function phoneScanDispose(){ const S = PH.scan; if (!S) return; PH.scan = null; try { S.rd.dispose(); S.rd.forceContextLoss?.(); } catch (e) {} S.el.replaceChildren?.(); }
+function phoneScanTick(now){
+  const S = PH.scan; if (!S) return; if (!S.el.isConnected) return phoneScanDispose();
+  const t = (now - S.t0) / 1000; S.root.rotation.y = t * .9; S.gem.rotation.y = -t * 1.6; S.gem.rotation.x = t * .7; S.gem.position.set(Math.cos(t * 1.1) * 1.9, .6 + Math.sin(t * 1.7) * .3, Math.sin(t * 1.1) * 1.9);
+  S.scan.position.y = -1.7 + (Math.sin(t * 1.4) * .5 + .5) * 3.8; S.scan.material.opacity = .85 - (S.scan.position.y + 1.7) / 3.8 * .6; S.ring.rotation.z = t * .5;
+  S.rd.render(S.sc, S.cam);
 }
 function phRar(r){ return ['#9fb3c8', '#6fb0ff', '#ffd45a', '#ff8a4c'][r] || '#cfeaff'; }
 function phoneScreenHtml(){
@@ -115,7 +151,7 @@ function phoneModelLoad(){
 }
 function phoneGLInit(root){
   const M = phoneModelLoad(), cv = document.createElement('canvas'); cv.id = 'ph-gl';
-  const rd = new T3.WebGLRenderer({ canvas:cv, antialias:true, alpha:true }); rd.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); rd.outputColorSpace = T3.SRGBColorSpace;
+  const rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true }); cv.style.imageRendering = 'pixelated'; rd.outputColorSpace = T3.SRGBColorSpace;
   const K = PHG.K, sc = new T3.Scene(), cam = new T3.PerspectiveCamera(30, 1, 10, 30000), pivot = new T3.Group(), mesh = new T3.Mesh(M.g, M.mat);
   sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.1)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl); const rim = new T3.DirectionalLight(0x8fd0ff, 1.2); rim.position.set(2, .5, -1.5); sc.add(rim);
   mesh.rotation.x = Math.PI / 2; mesh.scale.setScalar(K); mesh.position.set(-M.c.x * K, M.c.z * K, -M.c.y * K); pivot.add(mesh); sc.add(pivot);
@@ -127,7 +163,7 @@ function phoneGLInit(root){
 }
 function phoneFitGL(){
   const G3 = PH.gl; if (!G3) return; const w = innerWidth, h = innerHeight, K = PHG.K, th = Math.tan(G3.cam.fov * Math.PI / 360);
-  G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
+  G3.rd.setPixelRatio(r3BufferSize(w, h, devicePixelRatio || 1, false, r3ViewQuality(), innerWidth).width / w); G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
   const asp = w / h, rN = Math.max(1.16 * K / (2 * th * .94), .72 * K / (2 * th * asp * .94)), rZ = Math.max(PHG_SCREEN.h * K * 1.14 / (2 * th), PHG_SCREEN.w * K / (2 * th * asp * .98));
   G3.pivot.updateMatrixWorld(true); const sp = new T3.Vector3(); G3.sA.getWorldPosition(sp);
   G3.tgtR = PH.zoom ? rZ : rN; G3.tgtX = PH.zoom ? sp.x : 0; G3.tgtY = PH.zoom ? sp.y : 0;
@@ -163,7 +199,7 @@ function phoneLoopGL(now){
     const n = new T3.Vector3(0, 0, 1).transformDirection(G3.sA.matrixWorld), p = new T3.Vector3().setFromMatrixPosition(G3.sA.matrixWorld), v = G3.cam.position.clone().sub(p).normalize(), d = n.dot(v);
     css.style.opacity = d < .12 ? 0 : Math.min(1, (d - .12) / .25); css.style.pointerEvents = d < .12 ? 'none' : '';
   }
-  PH.raf = requestAnimationFrame(phoneLoopGL);
+  phoneScanTick(now); PH.raf = requestAnimationFrame(phoneLoopGL);
 }
 function phoneBuildGL(){
   return `<div class="ph-root" id="ph-root" role="dialog" aria-modal="true" aria-label="角色手機">
@@ -191,9 +227,10 @@ function phoneRender(keepScroll){
   const crt = document.getElementById('ph-crt'); sc.innerHTML = ''; sc.appendChild(crt);
   const wrap = document.createElement('div'); wrap.className = 'phs'; wrap.innerHTML = phoneScreenHtml(); sc.appendChild(wrap);
   const nb = document.getElementById('ph-body'); if (nb && keepScroll) nb.scrollTop = top;
+  phoneScanMount();
 }
 function phoneRefresh(){   // 每秒只更新內容，不重建按鈕與分頁
-  const b = document.getElementById('ph-body'); if (!b || PH.drag) return;
+  const b = document.getElementById('ph-body'); if (!b || PH.drag || PH.tab === 3) return;
   const top = b.scrollTop; b.innerHTML = phonePage(); b.scrollTop = top;
   const st = document.querySelector('.phs-status b'); if (st) st.textContent = phNum(G.totalKills + G.lvl * 7);
 }
@@ -243,7 +280,7 @@ function phoneLoop(now){
   const el = document.getElementById('ph-tilt'); if (!el) return;
   const [rx, ry] = phoneTilt(now);
   el.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
-  PH.raf = requestAnimationFrame(phoneLoop);
+  phoneScanTick(now); PH.raf = requestAnimationFrame(phoneLoop);
 }
 function phoneOpen(){
   if (PH.open || typeof PHONE_IMG === 'undefined') return;
@@ -262,7 +299,7 @@ function phoneOpen(){
 }
 function phoneClose(instant){
   if (!PH.open || PH.closing) return;
-  const done = () => { PH.open = false; if (PH.gl) { PH.gl.rd.dispose(); PH.gl.rd.forceContextLoss?.(); PH.gl = null; } clearInterval(PH.timer); cancelAnimationFrame(PH.raf); document.removeEventListener('keydown', phoneKey, true); removeEventListener('resize', phoneFit); document.getElementById('ph-host')?.remove(); };
+  const done = () => { PH.open = false; phoneScanDispose(); if (PH.gl) { PH.gl.rd.dispose(); PH.gl.rd.forceContextLoss?.(); PH.gl = null; } clearInterval(PH.timer); cancelAnimationFrame(PH.raf); document.removeEventListener('keydown', phoneKey, true); removeEventListener('resize', phoneFit); document.getElementById('ph-host')?.remove(); };
   PH.closing = true;
   if (instant === true) { done(); return; }
   phSfx('ph_off');
@@ -275,7 +312,7 @@ function phoneMini(){
   return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span></span>`;
 }
 function phoneButtonHtml(){
-  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
+  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" aria-label="開啟角色手機" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
 }
 
 (function(){ const s = document.createElement('style'); s.textContent = `
@@ -311,14 +348,14 @@ function phoneButtonHtml(){
 #ph-root .ph-key:hover{background:#ffffff26!important;box-shadow:0 0 12px #8ff8!important}#ph-root .ph-key.hit,#ph-root .ph-key:active{background:#0004!important;box-shadow:inset 0 3px 8px #0008!important}
 #ph-root .ph-key:focus-visible{outline:3px solid #ffe45c}
 .ui-character-head{position:relative;min-height:158px}
-.ph-open{position:absolute;right:6px;top:4px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0;width:112px;margin:0;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;cursor:pointer;overflow:visible}
+.ph-open{position:absolute;right:8px;top:8px;bottom:8px;z-index:2;display:flex;align-items:center;justify-content:center;width:104px;margin:0;padding:0!important;min-height:0!important;background:linear-gradient(#d9dfe9,#bcc5d3)!important;border:1px solid #8793a6!important;box-shadow:inset 0 2px 5px #5d6a7f88,inset 0 -1px 0 #fff!important;border-radius:6px!important;cursor:pointer;overflow:hidden}
 .ph-open:hover{filter:brightness(1.12)}.ph-open:active{transform:translateY(2px)}
-.ph-mini{position:relative;flex:none;width:112px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
-.ph-mini-s{position:absolute;left:56px;top:70px;width:0;height:0;transform-style:preserve-3d;transform:scale(.135)}
-.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;animation:phMiniSpin 4.8s ease-in-out infinite}
-@keyframes phMiniSpin{0%{transform:rotateY(-48deg) rotateX(6deg) translateY(0)}50%{transform:rotateY(48deg) rotateX(-4deg) translateY(-30px)}100%{transform:rotateY(-48deg) rotateX(6deg) translateY(0)}}
-.ph-open:hover .ph-mini-spin{animation-duration:1.6s}
-.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
+.ph-mini{position:relative;flex:none;width:104px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
+.ph-mini-s{position:absolute;left:52px;top:76px;width:0;height:0;transform-style:preserve-3d;transform:scale(.118)}
+.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;transform:rotateX(4deg) rotateY(-24deg);animation:phMiniSpin 48s linear infinite}
+@keyframes phMiniSpin{from{transform:rotateX(4deg) rotateY(-24deg)}to{transform:rotateX(4deg) rotateY(336deg)}}
+
+.ph-mini .ph-plane,.ph-plane{image-rendering:pixelated}.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
 @keyframes phSpk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
 .ph-rb{font:15px/1.2 "Cubic 11",system-ui!important;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8,#ff5a5a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;animation:phRb 2s linear infinite;filter:drop-shadow(1px 1px 0 #000)}
 .ph-new{position:absolute;right:-4px;top:-6px;z-index:2;padding:7px 8px;font:700 12px "Cubic 11",system-ui;font-style:normal;color:#d00;background:#ffe45c;clip-path:polygon(50% 0,61% 20%,82% 8%,80% 32%,100% 38%,84% 55%,96% 78%,72% 74%,64% 100%,50% 82%,36% 100%,28% 74%,4% 78%,16% 55%,0 38%,20% 32%,18% 8%,39% 20%);animation:phNew .9s steps(2) infinite;transform:rotate(12deg)}
@@ -344,6 +381,10 @@ function phoneButtonHtml(){
 .phs-tbl{width:100%;border-collapse:collapse}.phs-tbl th,.phs-tbl td{padding:3px 4px;border:1px solid #3a63a8;font-weight:400;font-size:14px}.phs-tbl th{text-align:left;color:#9fd6ff;background:#0a2a5c}.phs-tbl td{text-align:right;color:#fff}
 .phs-gear{display:flex;align-items:center;gap:6px}.phs-ul{margin:3px 0 0;padding-left:16px;font-size:13px;color:#cfeaff}
 .phs-links{list-style:none;margin:0;padding:0}.phs-links li{padding:4px 0}.phs a{color:#7fc4ff;text-decoration:underline;cursor:pointer;font-size:16px}.phs a:visited,.phs a:hover{color:#d49cff}
+.phs-prog{margin:5px 0}.phs-prog>span{color:#9fd6ff;font-size:13px}
+.phs-scanbox{position:relative;margin:2px 0;background:radial-gradient(circle at 50% 60%,#13408f,#06132e 75%);border:1px solid #5ae8ff88;box-shadow:inset 0 0 14px #000}
+.phs-scan{width:100%;aspect-ratio:1/1;max-height:250px;display:flex;justify-content:center}.phs-scan canvas{height:100%;width:auto;aspect-ratio:1/1;image-rendering:pixelated}
+.phs-scanlbl{position:absolute;left:6px;top:4px;color:#5ae8ff;font-size:12px;letter-spacing:.2em;animation:phBlink 1.2s steps(2) infinite}@keyframes phBlink{50%{opacity:.25}}.phs-cap{text-align:center}
 /* 參考美學：銀灰掌機皮膚、果凍按鈕、粉紅寶石愛心、液晶綠狀態列 */
 .phs-title{background:linear-gradient(#f4f7fb,#c4ccd8 55%,#aab4c4);color:#1b2433;text-shadow:0 1px 0 #fff;border-bottom:1px solid #7d8899;box-shadow:inset 0 1px 0 #fff}
 #ph-root .phs-title button{width:19px;height:19px;border-radius:50%!important;border:1px solid #5d7fa8;background:radial-gradient(circle at 35% 28%,#fff 0,#bfe0ff 30%,#5b9ae0 75%,#3a6db5);color:#0b2a55;line-height:16px;box-shadow:0 1px 2px #0006,inset 0 -2px 3px #2a5aa066}

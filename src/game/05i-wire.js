@@ -76,6 +76,14 @@ function wireSelCard(){
   const first = B.pieces.some(p => p.kind === 'active');
   return first ? '' : `<p class="uxgrid-help">點右邊的插槽，選一個技能裝上。</p>`;
 }
+
+function wireGuideHtml(){
+  const B = G.board, res = GridLab.resolve(B, G.lvl), hasSkill = B.pieces.some(p => p.kind === 'active'), wired = res.some(r => r.wired), parts = res.some(r => r.linked.length);
+  const step = !hasSkill ? 1 : !wired ? 2 : !parts ? 3 : 4;
+  const txt = ['', '第 1 步：點右邊的「S1」插槽，選一個技能裝上。', '第 2 步：從最左邊一排的格子，拖一條線到右邊的技能晶片。不想拉線就按下面的「自動配置」。', '第 3 步：點下面的一個配件，再點板上「有線經過」的空格放上去。線上的配件才有效。', '完成了！線上的配件正在強化技能。想更強：多拉幾條線、換更好的配件。'][step];
+  const chips = ['裝技能', '拉線', '放配件'].map((n, i) => `<li class="${step > i + 1 ? 'done' : step === i + 1 ? 'now' : ''}"><b>${step > i + 1 ? '✓' : i + 1}</b>${n}</li>`).join('');
+  return `<section class="wguide${step === 4 ? ' ok' : ''}" aria-label="新手引導"><ol>${chips}</ol><p>${txt}</p></section>`;
+}
 function wireTopHtml(){
   wireInstallStyles();
   return `${wireBoardHtml()}${wireBar()}`;
@@ -275,7 +283,7 @@ function uiInventoryHtml(){
   const head = uiSegments('inventory', [['support', '輔助配件', '放在接線上強化技能；點選後再點板上的格子'], ['active', '主動技能', '點選後裝到選取的插槽'], ['cart', '模式卡匣', '改變技能的出手方式，裝在技能晶片上']], '機件庫存分類');
   let content = '';
   if (kind === 'active') content = `<div class="ui-inventory-grid">${Object.entries(SKILLS).map(([id, K]) => { const unlocked = G.lvl >= K.lvl, at = G.board.pieces.find(p => p.kind === 'active' && p.key === id); return `<button class="gt" data-focus="active-${id}" data-availability="${unlocked ? 'available' : 'unavailable'}" aria-label="${uxEsc(K.n + '：' + K.d)}" onclick="uiInventoryPick('active','${id}')">${sico(id, 26)}<b>${K.n}</b><small>${!unlocked ? `Lv. ${K.lvl}` : at ? `插槽 ${GridLab.sockIndex(at) + 1}` : '點選裝上'}</small></button>`; }).join('')}</div>`;
-  else if (kind === 'support') content = `<div class="ui-inventory-grid">${Object.entries(SUPPS).flatMap(([id, S]) => [1, 2, 3].filter(t => t === 1 || gemOwnT(id, t) > 0).map(t => { const n = gemOwnT(id, t), f = gemFreeT(id, t), tn = TIER_NAME[t - 1], on = held?.key === id && (held.t || 1) === t; return `<button class="gt${on ? ' on' : ''}${t > 1 ? ' tier' + t : ''}" data-focus="support-${id}${t > 1 ? '-' + t : ''}" data-availability="${f ? 'available' : 'unavailable'}" aria-label="${uxEsc(S.n + tn)}，${f}／${n}，${uxEsc(S.d)}" onclick="uiInventoryPick('support','${id}',${t})">${t === 1 && G.newSnap && n > (G.newSnap.g[id] || 0) ? '<i class="nw">NEW</i>' : ''}${gemIco(id, 26)}<b>${S.n}${tn}</b><small>可用 ${f}／${n}</small></button>`; })).join('')}</div>${wireForgeHtml()}`;
+  else if (kind === 'support') content = `<div class="ui-inventory-grid">${Object.entries(SUPPS).flatMap(([id, S]) => [1, 2, 3].filter(t => t === 1 || gemOwnT(id, t) > 0).map(t => { const n = gemOwnT(id, t), f = gemFreeT(id, t), tn = TIER_NAME[t - 1], on = held?.key === id && (held.t || 1) === t; return `<button class="gt${on ? ' on' : ''}${t > 1 ? ' tier' + t : ''}" data-focus="support-${id}${t > 1 ? '-' + t : ''}" data-availability="${f ? 'available' : 'unavailable'}" aria-label="${uxEsc(S.n + tn)}，${f}／${n}，${uxEsc(S.d)}" onclick="uiInventoryPick('support','${id}',${t})">${t === 1 && G.newSnap && n > (G.newSnap.g[id] || 0) ? '<i class="nw">NEW</i>' : ''}${gemIco(id, 26)}<b>${S.n}${tn}</b><small>剩 ${f} 個</small></button>`; })).join('')}</div>${wireForgeHtml()}`;
   else content = cartsHtml();
   return `<section id="uxinventory" class="ui-inventory" aria-label="機件庫存">${head}${content}</section>`;
 }
@@ -348,4 +356,30 @@ body #mbody .dpsbar{padding:5px 8px;margin:4px 0}.ui-inventory{margin:8px 0}
 .wstat{font-size:11px;margin-left:auto}
 /* 板邊的復位開關 */
 #mbody .wreset{display:inline-flex;align-items:center;gap:6px}#mbody .wreset i{display:inline-block;width:16px;height:9px;border-radius:5px;background:#9aa6c4;box-shadow:inset 0 0 0 1px #5d6c7c;position:relative}#mbody .wreset i::after{content:"";position:absolute;left:1px;top:1px;width:7px;height:7px;border-radius:50%;background:#e8eef9;box-shadow:0 0 0 1px #5d6c7c}
+
+/* 新手引導：三步驟，只亮目前一步 */
+.wguide{margin:4px 0 6px;padding:7px 9px;background:#fffbe0;border:2px solid #e2b93b;box-shadow:2px 2px 0 #b6892355}
+.wguide ol{display:flex;gap:6px;margin:0 0 5px;padding:0;list-style:none}.wguide li{flex:1;display:flex;align-items:center;gap:5px;padding:3px 5px;background:#eef0f7;color:#8a93ad;font-size:13px}
+.wguide li b{display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;background:#c8cfe3;color:#fff;font-size:12px}
+.wguide li.now{background:#fff;color:#172751;outline:2px solid #e2b93b}.wguide li.now b{background:#d79a00}.wguide li.done{color:#3a7a52}.wguide li.done b{background:#3fa76a}
+.wguide p{margin:0;font-size:15px;line-height:1.55;color:#3d2a00;font-weight:650}.wguide.ok{background:#e6f7ec;border-color:#6bbf8a;box-shadow:2px 2px 0 #3a7a5233}.wguide.ok p{color:#1d5d3a;font-size:13px}.wguide.ok ol{display:none}
+.ui-inventory .nw{display:none}
+details.ui-adv{margin:10px 0}details.ui-adv>summary{cursor:pointer;padding:8px 4px;font-size:14px;font-weight:650}
+#mbody .pzbar .mb:first-child{background:linear-gradient(180deg,#ffd86a,#e0a020)!important;color:#3d2a00!important;border-color:#8a5d00!important}
+/* 板子的低解析感：硬邊角、實心色塊、無發光、掃描線 */
+#mbody .pz.wb,#mbody .pz.wb button.pc,#mbody .pz.wb button.pc.ac,#mbody .pz.wb button.pc.chip{border-radius:0!important}
+#mbody .pz.wb{image-rendering:pixelated;outline-offset:0}
+#mbody .pz.wb::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;background:repeating-linear-gradient(0deg,#0000 0 3px,#0000001c 3px 4px)}
+#mbody .pz.wb button.pc.chip::after,#mbody .pz.wb button.pc.ac.lnk::after{border-radius:0;box-shadow:0 0 0 1px #0008!important;width:5px;height:5px}
+.wsvg{shape-rendering:crispEdges}.wsvg .wf{stroke-dasharray:.1 .4}
+body.d #mbody .pz.wb{max-width:min(100%,620px)!important;padding:12px}
+body.d #mbody .pz.wb button.pc{font-size:11px}body.d #mbody .pz.wb button.pc span{font-size:11px}
+body.d .wsvg{inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
+#mbody .pz.wb button.pc.sk:not(.empty):not(.lock){background:linear-gradient(#2b3a63,#1b2644)!important;box-shadow:inset 0 0 0 2px #7fe3b0,0 1px 0 #0006!important;color:#fff!important;border-radius:3px!important}
+#mbody .pz.wb button.pc.sk:not(.empty):not(.lock) span{color:#fff!important;font-size:12px!important;font-weight:700;line-height:1.15;text-shadow:1px 1px 0 #0a1230;letter-spacing:0;white-space:normal;word-break:break-all;font-size:11px!important}
+#mbody .pz.wb button.pc.sk.empty,#mbody .pz.wb button.pc.lock{background:#12302a!important;box-shadow:inset 0 0 0 2px #7fe3b0!important;color:#d9fff0!important}
+#mbody .pz.wb button.pc.sk.empty span,#mbody .pz.wb button.pc.lock span,#mbody .pz.wb button.pc.sk.empty,#mbody .pz.wb button.pc.lock{color:#d9fff0!important;font-size:12px!important;font-weight:700;letter-spacing:0}
+#mbody .pz.wb button.pc.bus,#mbody .pz.wb button.pc.bus span{font-size:12px!important;font-weight:800}
+#mbody .pz.wb button.pc.chip,#mbody .pz.wb button.pc.chip span,#mbody .pz.wb button.pc.ac,#mbody .pz.wb button.pc.ac span{font-size:12px!important;font-weight:700}
+body.d #mbody .pz.wb button.pc.sk:not(.empty):not(.lock) span,body.d #mbody .pz.wb button.pc.sk.empty span,body.d #mbody .pz.wb button.pc.lock span{font-size:13px!important}
 `;
