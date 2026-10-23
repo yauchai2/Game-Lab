@@ -7,6 +7,7 @@
   const ROCKS = [[3, 1], [4, 6], [5, 0], [2, 7]];      // 壞軌：固定不變，不能放配件也不能走線
   const BOOSTS = [[2, 4], [5, 3], [3, 2], [4, 5]];             // 強化格：放在這裡的配件效果 ×1.4
   const BOOST_LV = 6;
+  const TIER_MUL = [1, 1.5, 2];                          // 配件階級：Ⅰ、Ⅱ、Ⅲ
   const ADJ_BONUS = 1.2, ADJ_CAP = 1.6, BOOST_MUL = 1.4;
 
   // 主動機件：mult、cd 與 src/game/01-data.js 的 SKILLS 相同；原型獨立，所以在這裡複製一份
@@ -157,6 +158,7 @@
   function place(b, kind, key, x, y, rot, opts) {
     if (!canPlace(b, kind, key, x, y)) return null;
     const p = { id: b.nextId++, kind, key, x, y, rot: 0 };
+    if (kind === 'support' && opts && opts.t > 1) p.t = Math.min(3, opts.t | 0);
     b.pieces.push(p);
     if (kind === 'active') { const i = sockIndex(p); if (!connected(b, i) && !(opts && opts.noWire)) autoWire(b, i, opts && opts.lvl); }
     return p;
@@ -177,7 +179,7 @@
     for (const [dx, dy] of DIRS) { const n = pieceAt(b, p.x + dx, p.y + dy, 'support'); if (n && n.key === p.key) f *= ADJ_BONUS; }
     f = Math.min(ADJ_CAP, f);
     if (lvl >= BOOST_LV && isBoost(p.x, p.y)) f *= BOOST_MUL;
-    return f;
+    return f * TIER_MUL[Math.min(3, p.t || 1) - 1];
   }
   // 每個主動機件的結算：線經過、標籤相符的輔助，依序取到上限為止，數值乘上強度後加總（冷卻有下限）
   function resolve(b, lvl = 99) {
@@ -235,6 +237,7 @@
       if (p.kind === 'active' && b.pieces.some(q => q.kind === 'active' && q.key === p.key)) continue;
       const q = { id: b.nextId++, kind: p.kind, key: p.key, x: p.x, y: p.y, rot: 0 };
       if (p.mode) q.mode = p.mode;
+      if (p.kind === 'support' && p.t > 1 && p.t <= 3) q.t = p.t | 0;
       b.pieces.push(q);
     }
     const used = new Set();
@@ -291,7 +294,7 @@
   // 任何版本的接線板都收成最新版
   function adopt(raw, lvl = 1) { return raw && raw.v === 4 ? normalize(raw) : raw && raw.pieces ? migrate(raw, lvl) : migrate({ pieces: [] }, lvl); }
 
-  const api = { W, H, SOCKS, SOCK_LV, ROCKS, BOOSTS, BOOST_LV, ADJ_BONUS, ADJ_CAP, BOOST_MUL, LIMITS, ACTIVES, SUPPORTS,
+  const api = { TIER_MUL, W, H, SOCKS, SOCK_LV, ROCKS, BOOSTS, BOOST_LV, ADJ_BONUS, ADJ_CAP, BOOST_MUL, LIMITS, ACTIVES, SUPPORTS,
     skillMods, cooldown, gemCap, wireMax, unlockedCount, levelSockets, isInner, isRock, isBoost, sockIndex, sockAtY, pieceAt, getWire, connected, wireLen, wireOf, wireCellSet,
     createBoard, extend, shrink, cut, clearWire, route, autoWire, autoWireAll, shapeOf, cellsOf, canPlace, place, remove, rotate, fits, strength, resolve, findSpot, dps,
     normalize, migrate, fromLegacy, adopt, dress };

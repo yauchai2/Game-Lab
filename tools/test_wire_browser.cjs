@@ -33,5 +33,17 @@ console.log('PASS auto layout and undo');
 const mig=await p.evaluate(()=>{const old={w:6,h:6,pieces:[{id:1,kind:'active',key:'FIRE',x:0,y:0,rot:0},{id:2,kind:'support',key:'HASTE',x:1,y:0,rot:0}],nextId:3};const nb=GridLab.adopt(old,16);return {v:nb.v,act:nb.pieces.filter(q=>q.kind==='active').map(q=>q.key)}});
 assert.equal(mig.v,4);assert.deepEqual(mig.act,['FIRE']);
 console.log('PASS legacy board migration');
+// 6 合成升階與超頻：三個同階合成一個高階，高階強度較高；超頻只在庫存內增減
+const mg=await p.evaluate(()=>{uxCancelPiece();wireClearAll();G.gems.HEAVY=4;G.gemTier={};G.parts=100;G.chips=50;recalc();renderModal();
+ const total0=G.gems.HEAVY;wireMerge('HEAVY',1);
+ const a={total:G.gems.HEAVY,t2:gemOwnT('HEAVY',2),t1:gemOwnT('HEAVY',1)};
+ const B=G.board,w=B.wires[0]||(wireAuto(),G.board.wires[0]);G.board.pieces=G.board.pieces.filter(q=>q.kind!=='support');const c=G.board.wires[0].cells.find(q=>!GridLab.isRock(q[0],q[1]));
+ const piece=GridLab.place(G.board,'support','HEAVY',c[0],c[1],0,{t:2});recalc();
+ const r=GridLab.resolve(G.board,G.lvl).find(q=>q.linked.includes(piece.id));
+ return {total0,a,weight:r&&r.weights[r.linked.indexOf(piece.id)],parts:G.parts}});
+assert.deepEqual(mg.a,{total:2,t2:1,t1:1});assert.equal(mg.parts,90);assert(Math.abs(mg.weight-1.5)<.001||mg.weight>=1.5,'tier II strength '+mg.weight);
+const oc=await p.evaluate(()=>{const before=G.gems.HEAVY;let ok=0;for(let i=0;i<30;i++){G.gems.HEAVY=5;G.gemTier={};G.chips=50;G.board.pieces=G.board.pieces.filter(q=>q.kind!=='support');wireOver('HEAVY',1);if(gemOwnT('HEAVY',2)===1)ok++;}return {ok,chips:G.chips}});
+assert(oc.ok>5&&oc.ok<25,'overclock odds '+oc.ok);
+console.log('PASS merge to tier II and overclock');
 assert.deepEqual(errs.filter(e=>!/404/.test(e)),[]);
 }finally{await b.close()}})().catch(e=>{console.error(e);process.exit(1)});

@@ -154,6 +154,16 @@ assert.strictEqual(G.unlockedCount(keep, 1), 3);
 const lg = G.fromLegacy(['FIRE'], { FIRE: ['HEAVY', 'CRITS'] }, 1);
 assert.deepStrictEqual(G.resolve(lg, 1)[0].linked.length, 2);
 
+// 配件階級：Ⅱ ×1.5、Ⅲ ×2，存進棋盤並能通過正規化
+{
+  const b = G.createBoard(); G.place(b, 'active', 'FIRE', G.W - 1, 3, 0, { lvl: 1 });
+  const w = G.getWire(b, 0), c = w.cells.find(q => !G.isRock(q[0], q[1]) && !G.isBoost(q[0], q[1]));
+  const p2 = G.place(b, 'support', 'HEAVY', c[0], c[1], 0, { t: 2 });
+  assert.deepStrictEqual(G.resolve(b, 1)[0].weights, [1.5]);
+  p2.t = 3; assert.deepStrictEqual(G.resolve(b, 1)[0].weights, [2]);
+  assert.strictEqual(G.adopt(JSON.parse(JSON.stringify(b)), 1).pieces.find(q => q.kind === 'support').t, 3);
+}
+
 // 與遊戲資料不漂移：技能倍率與冷卻要和 01-data.js 一致
 const vm = require('vm'), fs = require('fs');
 const ctx = {}; vm.createContext(ctx);
