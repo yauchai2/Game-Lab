@@ -2,15 +2,15 @@
 
 固定試玩：https://yauchai2.github.io/Game-Lab/  
 版本紀錄與單檔下載：https://github.com/yauchai2/Game-Lab/releases  
-程式及目前 review：https://github.com/yauchai2/Game-Lab/pull/6
+程式主線：https://github.com/yauchai2/Game-Lab/tree/main
 
-網站由 gh-pages 分支的根目錄發佈。包含 index.html、version.json、.nojekyll 及帶內容雜湊名稱的 vendor／game 腳本，不包含內部文件或參考圖。既有雜湊腳本保留，避免舊快取入口請求失效。來源工作分支為 codex/ux-optimization；不刪除任何既有分支。main 的後續合併經 PR review。
+網站由 gh-pages 分支的根目錄發佈。包含 index.html、version.json、.nojekyll 及帶內容雜湊名稱的 vendor／game 腳本，不包含內部文件或參考圖。既有雜湊腳本保留，避免舊快取入口請求失效。來源先在任務分支提交並經 PR 合併 main；不刪除任何既有分支。
 
 ## 發佈流程
 
 1. 在 src/game/01-data.js 的 CHANGELOG 最前面新增版本，完成測試。
 2. python3 tools/build.py 重建單檔，將來源及產物一起提交。
-3. git push origin codex/ux-optimization，先推送來源。
+3. 推送目前來源分支，先完成來源同步；publish_pages.py 要求目前分支遠端與 HEAD 一致。
 4. python3 tools/publish_pages.py。腳本檢查來源已推送、遊戲及打包檔沒有未提交修改，再更新入口、版本資料與雜湊腳本的 gh-pages 提交；不切換或清理工作區，不強制推送。
 5. 等候 GitHub Pages 完成，查驗線上 version.json、index.html 與 assets 各腳本的 SHA-256 與該版本一致，然後以瀏覽器試玩。
 6. 為已發佈來源提交建立 v0.主要.小修 標籤與 Release，提供該標籤 dist/idle-hero.html 的下載連結。標籤不可移動覆蓋。
@@ -42,3 +42,10 @@ v0.26.0，來源提交 56b401ee7d33a9cba13dd1612b96e5e54d19b0a0，部署提交 c
 ## 0.27.1 全介面像素風格
 
 正文／輸入、標題／讀數及輔助標籤分別使用 16／24／12px 共用像素字模。網站仍以相同的分離雜湊腳本流程發佈，三維渲染策略不變；沒有新增外部字體請求。字體新增 LCD 光學版本與嵌入授權，首次下載量會增加，不能把這次改動當成載入時間已改善。驗證及截圖見 [全介面像素掌機](lcd-ui-0.27.1.md)。
+
+
+## v0.42.0 整合發佈（2026-10-24，香港時間）
+
+PR #31 已合併；來源／標籤提交 b7f795fb51960bbc2642f80a7e273f153c1dd552，部署提交 ca48d2accbf62e2e29bd82ac196182ee29838cb7。Pages built；version.json、入口與兩個雜湊腳本已透過 HTTPS 逐一核對 SHA-256。證據見 [整合發佈目錄](release-0.42.0/integration.md) 與 [線上核對](release-0.42.0/live-verification.json)。
+
+直接上傳 Release 資產收到 401，因此現有 release workflow 增加可選 upload_standalone；從指定 target 提交取出 dist/idle-hero.html，使用 Actions 的儲存庫 token 上傳。發佈說明仍從預設分支讀取，標籤不移動。

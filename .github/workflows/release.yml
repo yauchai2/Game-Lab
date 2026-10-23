@@ -16,6 +16,11 @@ on:
         description: '說明檔路徑，例如 docs/release-notes/v0.38.4.md'
         required: true
 
+      upload_standalone:
+        description: '附上指定來源提交的離線單檔'
+        type: boolean
+        default: false
+
 permissions:
   contents: write
 
@@ -35,3 +40,13 @@ jobs:
           test -f "$NOTES"
           if gh release view "$TAG" >/dev/null 2>&1; then echo "Release $TAG already exists"; exit 1; fi
           gh release create "$TAG" --target "$TARGET" --title "$TITLE" --notes-file "$NOTES"
+      - name: Attach exact standalone build
+        if: ${{ inputs.upload_standalone }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          TARGET: ${{ inputs.target }}
+        run: |
+          git fetch --depth=1 origin "$TARGET"
+          git show "$TARGET:dist/idle-hero.html" > "$RUNNER_TEMP/idle-hero.html"
+          gh release upload "$TAG" "$RUNNER_TEMP/idle-hero.html"
