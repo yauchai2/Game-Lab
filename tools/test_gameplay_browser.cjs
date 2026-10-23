@@ -7,7 +7,7 @@ const out=process.env.GAME_LAB_GAMEPLAY_OUTPUT||'/tmp/game-lab-gameplay-validati
  p.on('pageerror',e=>errors.push(e.message));
  async function check(n,fn){await fn();passed.push(n);console.log('PASS',n)}
  async function shot(n){await p.waitForTimeout(380);await p.screenshot({path:path.join(out,n+'.png')})}
- await p.goto(url+'?fresh&lvl=30&static');await p.evaluate(()=>GAME_VIEW.ready);await p.evaluate(()=>document.fonts.ready);
+ await p.goto(url+'?fresh&lvl=30&static');await p.evaluate(()=>GAME_VIEW.ready);await p.evaluate(()=>{GAME_FEATURES.cardChoices=true});await p.evaluate(()=>document.fonts.ready);
  await check('core collection, native equip and restore preserve resources and active effects',async()=>{
   await p.evaluate(()=>{for(const id of ['W_ECHO','W_FORK']){const L=LEGEND_BY[id],it={...makeItem('weapon',3,10),lg:id,name:L.name,aff:L.aff.map(k=>rollAff(k,10,1.35))};pickup({kind:'item',it});}openModal('char')});
   await p.locator('.ui-core-collection>summary').click();assert(await p.getByText('回音光劍',{exact:true}).last().isVisible());
@@ -27,7 +27,7 @@ const out=process.env.GAME_LAB_GAMEPLAY_OUTPUT||'/tmp/game-lab-gameplay-validati
   assert.equal(await p.evaluate(()=>G.relicPicks),1);assert.equal(await p.evaluate(()=>G.deferChoices),true);
  });
  await check('deferred queues and collected equipment survive save/reload and permit watch mode',async()=>{
-  assert(await p.evaluate(()=>saveGame()));await p.goto(url+'?static');await p.evaluate(()=>GAME_VIEW.ready);
+  assert(await p.evaluate(()=>saveGame()));await p.goto(url+'?static');await p.evaluate(()=>GAME_VIEW.ready);await p.evaluate(()=>{GAME_FEATURES.cardChoices=true});
   assert.deepEqual(await p.evaluate(()=>({p:G.picks,r:G.relicPicks,d:G.deferChoices,core:G.equip.weapon.lg,n:Object.keys(G.armory).length})),{p:2,r:1,d:true,core:'W_ECHO',n:2});
   assert(await p.evaluate(()=>viewEnterWatch()));await p.keyboard.press('Escape');assert(!await p.evaluate(()=>GAME_VIEW.watch));
   assert.equal(await p.evaluate(()=>G.picks),2);assert.equal(await p.evaluate(()=>G.relicPicks),1);

@@ -10,7 +10,7 @@ for(const width of [390,1440]){const p=await browser.newPage({viewport:{width,he
  await p.getByRole('button',{name:'構築 1',exact:true}).click();assert.deepEqual(await p.evaluate(()=>({uid:G.equip.weapon.uid,char:G.char,policy:G.castPolicy,auto:G.autoEquip})),{uid:uidA,char:'frost',policy:'combo',auto:false});
  await p.getByRole('button',{name:'構築 2',exact:true}).click();assert.equal(await p.evaluate(()=>G.equip.weapon.uid),uidB);
  // Referenced warehouse items cannot be recycled through the actual management dialog.
- await p.evaluate(uid=>{G.equipBackup={};openModal('warehouse');uiInspectGear(uid)},uidA);assert(await p.getByRole('dialog').isVisible());assert.equal(await p.getByRole('button',{name:/回收/}).last().isDisabled(),true);await p.keyboard.press('Escape');
+ await p.evaluate(uid=>{G.equipBackup={};openModal('warehouse');uiInspectGear(uid)},uidA);assert(await p.locator('#whcard').isVisible());assert.equal(await p.getByRole('button',{name:/回收/}).last().isDisabled(),true);await p.keyboard.press('Escape');
  // Missing target keeps the entire build unchanged until explicit fallback.
  await p.evaluate(uid=>{G.inventory=G.inventory.filter(x=>x.uid!==uid);openModal('skills')},uidA);await p.getByRole('button',{name:'構築 1',exact:true}).click();assert(await p.getByRole('dialog').isVisible());assert.equal(await p.evaluate(()=>G.bi),1);await p.keyboard.press('Escape');assert.equal(await p.evaluate(()=>BUILD_PENDING),null);
  await p.getByRole('button',{name:'構築 1',exact:true}).click();await p.getByRole('button',{name:'缺件沿用目前裝備',exact:true}).click();assert.equal(await p.evaluate(()=>G.bi),0);assert.equal(await p.evaluate(()=>G.equip.weapon.uid),uidB);

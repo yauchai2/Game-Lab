@@ -14,7 +14,7 @@ function wireInstallStyles(){
 }
 function wireStatus(){
   const B = G.board, used = GridLab.wireLen(B), max = GridLab.wireMax(B, G.lvl);
-  return `線 ${used} / ${max} 格　每條線最多 ${GridLab.gemCap(G.lvl)} 個配件生效`;
+  return `線 ${used}/${max}　每線 ${GridLab.gemCap(G.lvl)} 件`;
 }
 function wireSvg(){
   const B = G.board, pt = (x, y) => `${(x + .5).toFixed(2)},${(y + .5).toFixed(2)}`;
@@ -54,8 +54,8 @@ function wireBoardHtml(){
   return `<div class="pz wb" role="group" aria-label="接線板，方向鍵移動，Enter 選取或放置" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">${cells}${wireSvg()}</div>`;
 }
 function wireBar(){
-  const sel = selSock >= 0, held0 = !!held, btn = (t, fn, on = true) => `<button class="mb" ${on ? '' : 'disabled'} onclick="${fn}">${t}</button>`;
-  return `<div class="pzbar">${btn('自動配置', 'wireAuto()')}${WIRE_UNDO ? btn('復原', 'wireUndo()') : ''}<button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回"><i></i>全部清空</button>${btn('取消選取', 'uxCancelPiece()', sel || held0 || selPiece != null)}<span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
+  const sel = selSock >= 0, held0 = !!held, btn = (t, fn, on = true) => `<button class="mb" data-tip="${{'自動配置':'替所有技能自動接線，並把可用配件放到最合適的位置','復原':'還原上一次的自動配置或清空','取消選取':'放下手上的配件或取消選取的插槽'}[t] || ''}" ${on ? '' : 'disabled'} onclick="${fn}">${t}</button>`;
+  return `<div class="pzbar">${btn('自動配置', 'wireAuto()')}${WIRE_UNDO ? btn('復原', 'wireUndo()') : ''}<button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回" data-tip="清掉所有接線，配件收回庫存；可按復原還原"><i></i>全部清空</button>${btn('取消選取', 'uxCancelPiece()', sel || held0 || selPiece != null)}<span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
 }
 function wireSelCard(){
   const B = G.board;
@@ -74,11 +74,11 @@ function wireSelCard(){
     return `<section class="uxinspect wsel" aria-label="選中的配件"><div class="uxinspect-head">${gemIco(p.key, 24)}<b>${uxEsc(S.n + TIER_NAME[(p.t || 1) - 1])}</b><button class="uxquiet" onclick="uxCancelPiece()">取消</button></div><div class="uxeffect">${uxEsc(S.d)}</div><div class="uxmeta">${uxEsc(why)}${bonus}</div><div class="uxactions"><button class="mb" onclick="wireTake(${p.id})">收回庫存</button></div></section>`;
   }
   const first = B.pieces.some(p => p.kind === 'active');
-  return `<p class="uxgrid-help">${first ? '點右邊的插槽選取技能，再沿著格子畫線到它；線經過的輔助配件才會生效。' : '點右邊的插槽，選一個技能裝上。'}</p>`;
+  return first ? '' : `<p class="uxgrid-help">點右邊的插槽，選一個技能裝上。</p>`;
 }
 function wireTopHtml(){
   wireInstallStyles();
-  return `<p class="uxgrid-help">從左邊電源拉線到技能插槽，經過的輔助配件會強化那個技能。紅叉是壞軌，不能走也不能放。</p>${wireBoardHtml()}${wireBar()}`;
+  return `${wireBoardHtml()}${wireBar()}`;
 }
 
 /* ---------- 說明與可及性 ---------- */
@@ -264,20 +264,20 @@ function wireForgeHtml(){
     if (gemFreeT(id, t) >= 3) m.push(`<button class="mb" ${(G.parts || 0) >= MERGE_COST[t - 1] ? '' : 'disabled'} onclick="wireMerge('${id}',${t})">${S.n}${TIER_NAME[t - 1]} ×3 → ${TIER_NAME[t]}（零件 ${MERGE_COST[t - 1]}）</button>`);
     if (G.lvl >= FORGE_LV.over && gemFreeT(id, t) >= 1) o.push(`<button class="mb" ${G.chips >= OVER_COST ? '' : 'disabled'} onclick="wireOver('${id}',${t})">${S.n}${TIER_NAME[t - 1]}</button>`);
   }
-  h += `<div class="uxforge"><h4>合成</h4><p class="uxmeta">三個同款同階配件合成一個更高階（Ⅱ 強度 ×1.5、Ⅲ ×2），需要零件。目前零件 ${G.parts || 0}。</p>${m.length ? `<div class="uxactions">${m.join('')}</div>` : '<p class="uxmeta">還沒有三個一樣的可用配件。</p>'}`;
-  if (G.lvl >= FORGE_LV.over) h += `<h4>超頻賭一把</h4><p class="uxmeta">選一個配件，獻祭最低階的另一個配件，花 ${OVER_COST} 電路點數（目前 ${G.chips}）：50% 升階、35% 沒變、15% 燒毀。</p>${o.length ? `<div class="uxactions">${o.join('')}</div>` : '<p class="uxmeta">需要至少兩個可用配件。</p>'}`;
-  return h + '</div>';
+  h += `<details class="uxforge"><summary>合成${G.lvl >= FORGE_LV.over ? '與超頻' : ''}　零件 ${G.parts || 0}${G.lvl >= FORGE_LV.over ? `　電路點數 ${G.chips}` : ''}</summary><h4 title="三個同款同階合成一個更高階，Ⅱ ×1.5、Ⅲ ×2">合成</h4>${m.length ? `<div class="uxactions">${m.join('')}</div>` : '<p class="uxmeta">需要三個同款同階的可用配件</p>'}`;
+  if (G.lvl >= FORGE_LV.over) h += `<h4 title="獻祭最低階的另一個配件，花 ${OVER_COST} 電路點數：50% 升階、35% 沒變、15% 燒毀">超頻（${OVER_COST} 點）</h4>${o.length ? `<div class="uxactions">${o.join('')}</div>` : '<p class="uxmeta">需要至少兩個可用配件</p>'}`;
+  return h + '</details>';
 }
 
 /* ---------- 庫存與目前生效 ---------- */
 function uiInventoryHtml(){
   const kind = UI_WORK.inventory;
-  const head = uiSegments('inventory', [['support', '輔助配件'], ['active', '主動技能'], ['cart', '模式卡匣']], '機件庫存分類');
+  const head = uiSegments('inventory', [['support', '輔助配件', '放在接線上強化技能；點選後再點板上的格子'], ['active', '主動技能', '點選後裝到選取的插槽'], ['cart', '模式卡匣', '改變技能的出手方式，裝在技能晶片上']], '機件庫存分類');
   let content = '';
   if (kind === 'active') content = `<div class="ui-inventory-grid">${Object.entries(SKILLS).map(([id, K]) => { const unlocked = G.lvl >= K.lvl, at = G.board.pieces.find(p => p.kind === 'active' && p.key === id); return `<button class="gt" data-focus="active-${id}" data-availability="${unlocked ? 'available' : 'unavailable'}" aria-label="${uxEsc(K.n + '：' + K.d)}" onclick="uiInventoryPick('active','${id}')">${sico(id, 26)}<b>${K.n}</b><small>${!unlocked ? `Lv. ${K.lvl}` : at ? `插槽 ${GridLab.sockIndex(at) + 1}` : '點選裝上'}</small></button>`; }).join('')}</div>`;
   else if (kind === 'support') content = `<div class="ui-inventory-grid">${Object.entries(SUPPS).flatMap(([id, S]) => [1, 2, 3].filter(t => t === 1 || gemOwnT(id, t) > 0).map(t => { const n = gemOwnT(id, t), f = gemFreeT(id, t), tn = TIER_NAME[t - 1], on = held?.key === id && (held.t || 1) === t; return `<button class="gt${on ? ' on' : ''}${t > 1 ? ' tier' + t : ''}" data-focus="support-${id}${t > 1 ? '-' + t : ''}" data-availability="${f ? 'available' : 'unavailable'}" aria-label="${uxEsc(S.n + tn)}，${f}／${n}，${uxEsc(S.d)}" onclick="uiInventoryPick('support','${id}',${t})">${t === 1 && G.newSnap && n > (G.newSnap.g[id] || 0) ? '<i class="nw">NEW</i>' : ''}${gemIco(id, 26)}<b>${S.n}${tn}</b><small>可用 ${f}／${n}</small></button>`; })).join('')}</div>${wireForgeHtml()}`;
   else content = cartsHtml();
-  return `<section id="uxinventory" class="ui-inventory" aria-label="機件庫存"><h3>機件庫存</h3><p class="uxmeta">點選配件再點接線板放置；數量為可用／持有。</p>${head}${content}</section>`;
+  return `<section id="uxinventory" class="ui-inventory" aria-label="機件庫存">${head}${content}</section>`;
 }
 function uiInventoryPick(kind, key, t = 1){
   const def = kind === 'active' ? SKILLS[key] : SUPPS[key]; if (!def) return;
@@ -289,12 +289,12 @@ function uiResolvedHtml(){
   const B = G.board, res = GridLab.resolve(B, G.lvl), pieces = new Map(B.pieces.map(p => [p.id, p]));
   const effective = new Set(res.flatMap(r => r.linked)), unused = B.pieces.filter(p => p.kind === 'support' && !effective.has(p.id));
   const reason = p => { const r = res.find(q => q.over.includes(p.id) || q.missed.includes(p.id)); return r ? (r.over.includes(p.id) ? `${SKILLS[r.key].n}的配件已達上限` : `${SKILLS[r.key].n}的標籤不符`) : GridLab.wireOf(B, p.x, p.y) ? '線還沒接通' : '沒有線經過'; };
-  return `<section class="ui-section ui-resolved" aria-label="目前生效技能"><h3>目前生效</h3>${res.length ? res.map(r => { const s = G.st.sk[r.key]; return `<article><div>${sico(r.key, 24)}<b>${SKILLS[r.key].n}</b><span>${s ? `冷卻 ${s.cd.toFixed(1)} 秒` : ''}</span></div><p>${!r.wired ? '尚未接線，不會出手' : r.linked.length ? r.linked.map((id, k) => SUPPS[pieces.get(id).key].n + (Math.abs(r.weights[k] - 1) > .005 ? `×${r.weights[k].toFixed(2)}` : '')).join('、') : '線上沒有輔助配件'}</p>${s?.mode ? `<p>模式：${MODES[s.mode].n}</p>` : ''}</article>`; }).join('') : '<p>接線板上沒有技能，點右邊的插槽裝上一個即可開始構築。</p>'}${unused.length ? `<details><summary>未生效配件 ${unused.length} 件</summary><ul>${unused.map(p => `<li><b>${SUPPS[p.key].n}</b>：${reason(p)}</li>`).join('')}</ul></details>` : ''}<p class="uxmeta">單體直傷預估包含模式與共享出手時間，不含燃燒、條件連動、角色專屬及擊殺收益。實測可前往冒險的訓練場。</p></section>`;
+  return `<section class="ui-section ui-resolved" aria-label="目前生效技能"><h3>目前生效</h3>${res.length ? res.map(r => { const s = G.st.sk[r.key]; return `<article><div>${sico(r.key, 24)}<b>${SKILLS[r.key].n}</b><span>${s ? `冷卻 ${s.cd.toFixed(1)} 秒` : ''}</span></div><p>${!r.wired ? '尚未接線，不會出手' : r.linked.length ? r.linked.map((id, k) => SUPPS[pieces.get(id).key].n + (Math.abs(r.weights[k] - 1) > .005 ? `×${r.weights[k].toFixed(2)}` : '')).join('、') : '線上沒有輔助配件'}</p>${s?.mode ? `<p>模式：${MODES[s.mode].n}</p>` : ''}</article>`; }).join('') : ''}${unused.length ? `<details><summary>未生效配件 ${unused.length} 件</summary><ul>${unused.map(p => `<li><b>${SUPPS[p.key].n}</b>：${reason(p)}</li>`).join('')}</ul></details>` : ''}</section>`;
 }
 
 const WIRE_CSS = `
 /* 電路板：粉綠 PCB 底、銅線、晶片與貼片元件；完整色彩只在這塊板子上使用，其他介面維持原本的銀灰液晶 */
-body #mbody .pz.wb{position:relative;padding:8px;gap:0;max-width:440px!important;margin:8px auto;touch-action:pan-y;border:3px solid #c9d0dc!important;border-radius:10px;outline:1px solid #7d8bbd;box-shadow:inset 0 0 0 2px #4f9e80,0 2px 0 #8c9bd0!important;
+body #mbody .pz.wb{position:relative;padding:8px;gap:0;max-width:340px!important;margin:6px auto;touch-action:pan-y;border:3px solid #c9d0dc!important;border-radius:10px;outline:1px solid #7d8bbd;box-shadow:inset 0 0 0 2px #4f9e80,0 2px 0 #8c9bd0!important;
  background:radial-gradient(circle at 8px 8px,#e9eef5 0 2.5px,#5d6c7c 3px 4px,transparent 4.5px),radial-gradient(circle at calc(100% - 8px) 8px,#e9eef5 0 2.5px,#5d6c7c 3px 4px,transparent 4.5px),radial-gradient(circle at 8px calc(100% - 8px),#e9eef5 0 2.5px,#5d6c7c 3px 4px,transparent 4.5px),radial-gradient(circle at calc(100% - 8px) calc(100% - 8px),#e9eef5 0 2.5px,#5d6c7c 3px 4px,transparent 4.5px),
  repeating-linear-gradient(0deg,#ffffff10 0 1px,transparent 1px 11px),repeating-linear-gradient(90deg,#ffffff10 0 1px,transparent 1px 11px),linear-gradient(160deg,#a6e6c9,#7fcba9)!important}
 #mbody .pz.wb button.pc{margin:1.5px;min-width:0;font-size:9px;line-height:1.05;position:relative;z-index:1;border:0!important;border-radius:3px!important;background:radial-gradient(circle,#e3b24a 0 13%,#b98427 15%,#b9842700 19%)!important;box-shadow:none!important}
@@ -326,6 +326,11 @@ body #mbody .pz.wb{position:relative;padding:8px;gap:0;max-width:440px!important
 #mbody .pz.wb button.pc.ac.t2{box-shadow:inset 3px 0 0 #ffd24d,inset -3px 0 0 #ffd24d,0 1px 0 #0003!important}
 #mbody .pz.wb button.pc.ac.t3{box-shadow:inset 3px 0 0 #ff6ad5,inset -3px 0 0 #ff6ad5,0 1px 0 #0003!important}
 .ui-inventory-grid .gt.tier2{box-shadow:inset 0 0 0 2px #ffd24d}.ui-inventory-grid .gt.tier3{box-shadow:inset 0 0 0 2px #ff6ad5}.uxforge h4{margin:10px 0 2px}
+/* 精簡：配件庫存四欄小卡、DPS 條縮小，讓板子、庫存同屏 */
+body.ui-material #mbody .ui-inventory-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+body.ui-material #mbody .ui-inventory-grid .gt{min-height:64px;padding:16px 2px 3px!important;gap:2px}
+body #mbody .dpsbar{padding:5px 8px;margin:4px 0}.ui-inventory{margin:8px 0}
+.uxforge summary{cursor:pointer;padding:4px 0}
 #mbody .pz.wb button.pc.fill.off{filter:saturate(.3) brightness(1.05);opacity:.8}
 #mbody .pz.wb button.pc.pv.ok{box-shadow:inset 0 0 0 2px #19865a!important;background-color:#b8f5d055!important}
 #mbody .pz.wb button.pc.pv.bad{box-shadow:inset 0 0 0 2px #bd342b!important;background-color:#ffc4c455!important}
