@@ -483,6 +483,13 @@ function monLook(m, g){
     wu = !m.dead && m.fight && !m.warning && m.lunge < 0 && m.atkCd > 0 && m.atkCd < .4 ? 1 - m.atkCd/.4 : 0, kb = m.hurtT > 0 && !m.dead ? Math.min(1, m.hurtT/.12)*2.2 : 0;
   at3(g, lx - kb*(G.h.x - m.x)/dl, y - kb*(G.h.y - m.y)/dl, BZ + terrainHeight(m.x,m.y) + (m.fall > 0 ? 70*Math.pow(m.fall/.9, 2) : 0)); g.rotation.y = Math.atan2(G.h.x - m.x, G.h.y - m.y);   // 面向主角
   if(ps.simple){g.scale.setScalar(base*(m.type==='crab'?1.15:1));g.position.y+=(m.type==='wisp'?7+Math.sin(t*3)*2:Math.abs(Math.sin(t*7))*.8)+lg*3;g.rotation.x=lg*.3;}
+  if (ps.simple && !m.dead){ const mv = m.fight ? 0 : 1, q = m.type;
+    if (q === 'crab'){ g.rotation.z = Math.sin(t*8)*.12*mv; g.rotation.y += Math.sin(t*4)*.15*mv; }
+    else if (q === 'spider'){ g.rotation.y += Math.sin(t*14)*.18*mv; g.position.y += Math.abs(Math.sin(t*16))*.6*mv; }
+    else if (q === 'speaker'){ const bs = 1 + .09*Math.abs(Math.sin(t*6)) + lg*.12; g.scale.set(base/Math.sqrt(bs), base*bs, base/Math.sqrt(bs)); g.rotation.z = Math.sin(t*3)*.05; }
+    else if (q === 'wisp'){ g.rotation.y += t*2.2; g.rotation.z = Math.sin(t*2.4)*.25; }
+    else if (q === 'mole'){ g.position.y -= (.5 + .5*Math.sin(t*4))*1.2*mv; g.rotation.x += Math.sin(t*4 + 1)*.12*mv; }
+    else if (q === 'golem'){ const st = Math.abs(Math.sin(t*3)); g.scale.y *= 1 - .08*st*mv; g.position.y += (1 - st)*.6*mv; g.rotation.z = Math.sin(t*3)*.06*mv; } }
   else if (m.type === 'slime'){ g.scale.setScalar(base); const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
   else if (m.type === 'drone'){ g.scale.setScalar(base); g.position.y += 5 + Math.sin(t*4 + m.ph)*1.6 + lg*3; g.rotation.x = .25 + lg*.5; for (const r of ps.rotors) r.rotation.y = t*40; }
   else if (m.type === 'bomb'){ const low = 1 - tClamp(m.hp/m.hpMax), sq = 1 + .06*Math.sin(t*(5 + low*14)); g.scale.set(base*sq, base/sq, base*sq); g.position.y += Math.abs(Math.sin(t*5))*1.2 + lg*3; g.rotation.x = lg*.4; ps.spark.scale.setScalar(.7 + .5*Math.abs(Math.sin(t*12))); ps.spark.material.color.set(Math.sin(t*(8 + low*20)) > 0 ? '#ff3a2a' : '#ffd35a'); }
@@ -559,6 +566,9 @@ function updateFx(){
     if(e.k==='ring'||e.k==='nova'){const r=tLerp(2,e.k==='nova'?48:24,ease(e.t)),x=e.k==='nova'?G.h.x:e.x,y=e.k==='nova'?G.h.y:e.y;add(ring,e.col||'#9fe0ff',fade*.95,x,y,BZ+.6,r);add(disc,e.col||'#9fe0ff',fade*.16,x,y,BZ+.4,r*.9);}
     if(e.k==='pillar'){const o=add(geo('fxp',()=>new T3.CylinderGeometry(1,1,1,8,1,true)),e.col,fade*.55,e.x,e.y,BZ+14*e.t+8);o.scale.set(4*fade+1,22+14*e.t,4*fade+1);}
     if(e.k==='shard'||e.k==='nova'){const n=e.k==='nova'?8:5;for(let i=0;i<n;i++){const a=i*6.283/n+e.t,d=tLerp(1,e.k==='nova'?40:12,ease(e.t));const o=add(box,i%2?e.col||'#9fe0ff':'#ffffff',fade*.9,(e.x??G.h.x)+Math.cos(a)*d,(e.y??G.h.y)+Math.sin(a)*d,(e.z??BZ)+2+Math.sin(e.t*3.14)*8,fade+1);o.rotation.y=a;}}
+    if(e.k==='embers')for(let i=0;i<6;i++){const a=i*1.047+i*i,d=2+i*.9*e.t*3,o=add(box,i%2?'#ffd35a':e.col||'#ff7a2a',fade*.9,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,e.z+e.t*(10+i*2.5),1.1*fade+.3);o.rotation.set(a,e.t*5,0);}
+    if(e.k==='snow')for(let i=0;i<7;i++){const a=i*.9+i*i,d=3+i*1.1,o=add(box,i%2?'#ffffff':e.col||'#7fd3ff',fade*.9,e.x+Math.cos(a+e.t*2)*d,e.y+Math.sin(a+e.t*2)*d,e.z+9-e.t*(7+i),1.3*fade+.3);o.rotation.set(e.t*6,a,e.t*4);}
+    if(e.k==='zap')for(let i=0;i<4;i++){const a=i*1.571+e.t*6,r=tLerp(2,9,e.t),o=add(geo('fxz',()=>new T3.BoxGeometry(1,.3,.3)),i%2?'#ffffff':e.col||'#ffe45c',fade,e.x+Math.cos(a)*r,e.y+Math.sin(a)*r,e.z+Math.sin(a*2)*2,3.4*fade+.6);o.rotation.set(0,-a,Math.sin(e.t*30)*.6);}
     if(e.k==='ghost')for(let i=0;i<4;i++){const u=i/3;add(geo('fxg',()=>new T3.CylinderGeometry(1.6,2.2,1,6)),e.col,fade*(.1+.35*u),tLerp(e.x,e.x2,u),tLerp(e.y,e.y2,u),BZ+8).scale.set(1,15,1);}
     if(e.k==='boom'){const r=tLerp(2,e.big?20:11,ease(e.t));add(sph,e.col||'#ff9a3c',fade*.75,e.x,e.y,e.z,r);add(sph,'#ffe08a',fade,e.x,e.y,e.z,r*.5);add(ring,e.col||'#ff9a3c',fade,e.x,e.y,BZ+.5,r*1.4);}
     if(e.k==='slash')for(let i=0;i<5;i++){const a=i*1.2566+.4,r=tLerp(4,11,e.t),o=add(geo('fxb',()=>new T3.BoxGeometry(1,.22,.22)),'#ffffff',fade,e.x+2+Math.cos(a)*r*.7,e.y,e.z+Math.sin(a)*r*.7,r*.7);o.rotation.z=a;}

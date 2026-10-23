@@ -229,7 +229,7 @@ function skillDmg(id){ const k = G.st.sk[id]; return k; }
 function applySkillHit(id,m,mult=1,origin=G.eventOrigin||'primary'){
   const k=G.st.sk[id];if(!k||!m||m.dead||m.fall>0)return 0;
   const source=SKILLS[id].n+(origin==='primary'?'':origin==='repeat'?'·回放':'·觸發');G.src=source;
-  if (G.fx.length < 36) addFx({ k:'shard', x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, t:0, dur:.4 });
+  if (G.fx.length < 36){ const el = SKILLS[id].el, k = el === 'fire' ? 'embers' : el === 'cold' ? 'snow' : Math.random() < .5 ? 'zap' : 'shard'; addFx({ k, x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, t:0, dur:k === 'embers' ? .7 : k === 'snow' ? .8 : .4 }); }
   if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
   const el = SKILLS[id].el; let rx = null;   /* 元素反應：火燒、閃電標記，加上冰凍，三者互相放大 */
   if (m.frozen > 0 && el === 'fire'){ mult *= 1.4; m.frozen = 0; rx = '融化'; } else if (m.frozen > 0 && el === 'light'){ mult *= 1.3; rx = '超導'; } else if (m.burn > 0 && el === 'cold') rx = '蒸氣';
