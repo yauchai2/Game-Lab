@@ -1,0 +1,114 @@
+{
+  "passed": true,
+  "checks": "12 deterministic scene pairs, six behavior changes, cycles, disconnection, overheat, chip synergy, connectivity, config isolation",
+  "results": {
+    "circuit": {
+      "swarm": {
+        "kills": 12,
+        "damage": 576,
+        "hp": 0,
+        "time": 29,
+        "combos": 12,
+        "downtime": 0
+      },
+      "boss": {
+        "kills": 0,
+        "damage": 354,
+        "hp": 120,
+        "time": 30,
+        "combos": 12,
+        "downtime": 0
+      }
+    },
+    "tape": {
+      "swarm": {
+        "kills": 18,
+        "damage": 886,
+        "hp": 120,
+        "time": 30,
+        "combos": 6,
+        "downtime": 0
+      },
+      "boss": {
+        "kills": 0,
+        "damage": 513,
+        "hp": 120,
+        "time": 30,
+        "combos": 6,
+        "downtime": 0
+      }
+    },
+    "overclock": {
+      "swarm": {
+        "kills": 23,
+        "damage": 1154,
+        "hp": 120,
+        "time": 30,
+        "combos": 4,
+        "downtime": 12.5
+      },
+      "boss": {
+        "kills": 0,
+        "damage": 595,
+        "hp": 0,
+        "time": 27,
+        "combos": 4,
+        "downtime": 11.5
+      }
+    },
+    "frequency": {
+      "swarm": {
+        "kills": 23,
+        "damage": 1109,
+        "hp": 120,
+        "time": 30,
+        "combos": 12,
+        "downtime": 0
+      },
+      "boss": {
+        "kills": 1,
+        "damage": 900,
+        "hp": 15,
+        "time": 26.3,
+        "combos": 11,
+        "downtime": 0
+      }
+    },
+    "firmware": {
+      "swarm": {
+        "kills": 26,
+        "damage": 1389,
+        "hp": 1,
+        "time": 30,
+        "combos": 0,
+        "downtime": 0
+      },
+      "boss": {
+        "kills": 0,
+        "damage": 88,
+        "hp": 0,
+        "time": 27,
+        "combos": 0,
+        "downtime": 0
+      }
+    },
+    "city": {
+      "swarm": {
+        "kills": 21,
+        "damage": 1013,
+        "hp": 106,
+        "time": 30,
+        "combos": 21,
+        "downtime": 0
+      },
+      "boss": {
+        "kills": 0,
+        "damage": 725,
+        "hp": 0,
+        "time": 27,
+        "combos": 19,
+        "downtime": 0
+      }
+    }
+  }
+}

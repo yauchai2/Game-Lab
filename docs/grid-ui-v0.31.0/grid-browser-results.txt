@@ -1,0 +1,2 @@
+PASS grid browsing and settings at 390
+PASS grid browsing and settings at 1440

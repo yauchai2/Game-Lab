@@ -1,0 +1,11 @@
+{
+  "passed": [
+    "core collection, native equip and restore preserve resources and active effects",
+    "real offline settlement retains manual choices and the summary offers a direct resume",
+    "deferred queues and collected equipment survive save/reload and permit watch mode",
+    "native pending selection grants one choice and later defers the remainder",
+    "explicit automatic offline choices complete once and retain their existing behavior",
+    "ordinary map completion increments once in the packaged runtime"
+  ],
+  "errors": []
+}

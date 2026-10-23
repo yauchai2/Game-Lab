@@ -1,0 +1,17 @@
+{
+  "passed": [
+    "mobile role cards and no overflow",
+    "touch details, placement, inventory and cancellation",
+    "keyboard grid and failed placement preserve state",
+    "pointercancel restores the original piece and mode",
+    "dialog focus containment and return",
+    "craft state reasons, confirmation and one-time charge",
+    "complete modifier categories and honest summary",
+    "blocked popup fallback, IME-safe search and clear",
+    "new cartridge badges and legacy save migration",
+    "360px role and full six-row board",
+    "desktop chronicle search, headers, no-results and reset",
+    "offline summary and one-way navigation without duplicate rewards"
+  ],
+  "errors": []
+}

@@ -1,0 +1,7 @@
+PASS core collection, native equip and restore preserve resources and active effects
+PASS real offline settlement retains manual choices and the summary offers a direct resume
+PASS deferred queues and collected equipment survive save/reload and permit watch mode
+PASS native pending selection grants one choice and later defers the remainder
+PASS explicit automatic offline choices complete once and retain their existing behavior
+PASS ordinary map completion increments once in the packaged runtime
+6 gameplay browser checks passed

@@ -1,0 +1,12 @@
+{
+  "result": {
+    "sameNode": true,
+    "expanded": true,
+    "scroll": true,
+    "focus": "nav-char",
+    "progress": "深度 1 · 累計擊殺 10",
+    "expected": "10",
+    "spriteBytes": 175
+  },
+  "errors": []
+}

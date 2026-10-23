@@ -1,0 +1,11 @@
+PASS finite migration/cancel/restore, targeted forging, branch/save/settle, nexus stale/cancel/retreat at 390
+page.goto: Timeout 30000ms exceeded.
+Call log:
+[2m  - navigating to "http://127.0.0.1:8780/dist/idle-hero.html?fresh&lvl=60&static", waiting until "load"[22m
+
+    at /workspace/Game-Lab/tools/test_progression_browser.cjs:5:10 {
+  log: [
+    '  - navigating to "http://127.0.0.1:8780/dist/idle-hero.html?fresh&lvl=60&static", waiting until "load"'
+  ],
+  name: 'TimeoutError'
+}

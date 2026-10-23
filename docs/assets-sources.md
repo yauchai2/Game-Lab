@@ -1,6 +1,30 @@
 # 美術素材來源
 
-遊戲內的點陣圖素材都記在這裡。模型（`src/game/models*.js`）由 Blender 腳本產生，不在此列，見 `tools/model/`。
+## 目前使用：Signal 24 簡約向量素材（2026-10-21）
+
+Alan 要求所有 icon／image 重做且簡約。目前八組靜態 UI 資產已全部改為本專案新繪的 SVG，舊 PNG 只保留歷史來源，不參與 ASSET 或執行期備援。不是在舊圖上加像素濾鏡。
+
+來源為 tools/draw_icons.mjs，使用 24px 邏輯網格、2px 基本線寬、平面幾何與最多四色；不使用外部圖形、字型、圖示套件或生圖服務。字標使用自繪 5×7 字模。色票與切格順序產出到 src/assets/icon-manifest.json。
+
+| 目前檔案 | 數量 | 內容 |
+| --- | --- | --- |
+| src/assets/icons.svg | 20 | 12 個通用圖示＋六入口功能符號＋鎖定／解鎖 |
+| src/assets/skills.svg | 9 | 電池、冷氣、紅外線、衛星、喇叭、磁鐵、郵件、相機、雷射筆 |
+| src/assets/gems.svg | 12 | 原八種符號，加鎖頻、分線、備用電池、延遲緩衝四個新繪符號 |
+| src/assets/relics.svg | 12 | 各遺物的簡化物件剪影 |
+| src/assets/legends.svg | 9 | 傳奇武器／外套／配件，不靠光暈辨識 |
+| src/assets/badges.svg | 12 | 八角徽章與不同主符號 |
+| src/assets/equips.svg | 12 | 三部位×四稀有度，保留剪影與重點色差異 |
+| src/assets/wordmark.svg | 1 | 簡潔 IDLE HERO 像素字標 |
+
+重建順序：node tools/draw_icons.mjs → python3 tools/pack_assets.py → python3 tools/build.py。SVG、索引與 assets.js 是產物，不能各自修改一份。執行期 helpers 與像素快取皆讀取同一 ART_SHEETS；22–36px 使用同一份資產。
+
+即使關閉像素圖示，備援也使用新 SVG，不會回到舊塑膠高光圖。像素模式會由同一 SVG 產生 24px 快取；編年史分頁共用新圖集，透明背景可搭配選中、鎖定與全 UI 效果。
+
+完整圖集及驗收見 [重繪紀錄](icon-redraw-2026-10-21.md)。以下紀錄是已被替換的歷史素材來源，保留追溯。
+
+
+遊戲內的靜態圖像素材都記在這裡。模型（`src/game/models*.js`）由 Blender 腳本產生，不在此列，見 `tools/model/`。
 
 ## GPT Image 生成的素材
 
@@ -42,3 +66,8 @@
 
 ## 裝備圖示（equips.png，0.25.2）
 GPT Image 於 Figma 草稿檔生成 4×3 圖集（列：武器、外套、配件；欄：普通、魔法、稀有、暗金），經 tools/cut_sheet.py 去背切格。商用條款上架前要確認。
+
+
+## 介面字體：Cubic 11 與 LCD 光學子集（0.27.1）
+
+來源：[ACh-K／Cubic-11](https://github.com/ACh-K/Cubic-11)。完整上游授權保存在 tools/font/Cubic-OFL.txt；包含作者及 M+ 衍生來源說明與 SIL OFL 1.1。tools/pack_font.py 從同一份 TTF 生成原字模子集及 LCD 16px 格線對齊版本，字形／字寬／基線的修改只用於 LCD 版本。兩份內嵌 WOFF2 都保留原始版權並內嵌完整授權，可隨單檔遊戲分發。

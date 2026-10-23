@@ -324,8 +324,8 @@ function mountFigure(cfg){
     toast.style.top = ((document.getElementById('btns') ? document.getElementById('btns').offsetTop + document.getElementById('btns').offsetHeight : 0) + 8) + 'px'; toast.classList.add('show');
     clearTimeout(flashT); flashT = setTimeout(() => { ui._flash = false; toast.classList.remove('show'); ui.render(); }, ms); };
   // animations run on a ~60 fps timer rather than requestAnimationFrame, so they also run in headless test shots
-  ui.animate = step => { let last = performance.now();
-    const loop = () => { const now = performance.now(), dt = Math.max(0, Math.min(.05,(now-last)/1000)); last = now; const more = step(dt) !== false; ui.render(); if (more) (navigator.webdriver || document.hidden ? setTimeout(loop, 16) : requestAnimationFrame(loop)); };
+  ui.animate = step => { let last = performance.now(), lastRender = -Infinity;
+    const loop = () => { const now = performance.now(), dt = Math.max(0, Math.min(.05,(now-last)/1000)); last = now; const more = step(dt) !== false; if ((!ui.suspendRender || !ui.suspendRender()) && now-lastRender >= (ui.renderInterval || 0)){lastRender=now;ui.render();} if (more) (navigator.webdriver || document.hidden ? setTimeout(loop, 16) : requestAnimationFrame(loop)); };
     setTimeout(loop, 16); };
 
   // clickable parts react on press, not on click: while something animates, the scene is redrawn every frame, so the
@@ -340,7 +340,8 @@ function mountFigure(cfg){
     el.innerHTML = `${b.label}${b.choices ? '<span class="car">▾</span>' : ''}`;
     wrap.appendChild(el); btns.appendChild(wrap); stepEls.push(el);
     if (!b.choices){ el.onclick = () => { closeChips(); b.onClick(st, ui); ui.render(); }; return; }
-    const chips = document.createElement('div'); chips.className = 'chips'; wrap.appendChild(chips);
+    const chips = document.createElement('div'); chips.className = 'chips'; wrap.appendChild(chips);chips.id=`choices-${cfg.fig}-${i}`;chips.setAttribute('role','group');chips.setAttribute('aria-label',b.label);el.setAttribute('aria-controls',chips.id);el.setAttribute('aria-expanded','false');
+    wrap.addEventListener('keydown',e=>{if(e.key==='Escape'&&wrap.classList.contains('open')){e.preventDefault();e.stopPropagation();closeChips();el.focus();}});
     el.onclick = e => { e.stopPropagation(); const open = !wrap.classList.contains('open'); closeChips();
       if (!open) return;
       chips.innerHTML = '';
@@ -348,14 +349,14 @@ function mountFigure(cfg){
       //   current:true  = the one in use (shown selected); a press just says so
       //   disabled:true = not possible right now (shown faded); a press says why (c.why, or a generic note)
       for (const c of b.choices(st)){ const ch = document.createElement('button'); ch.className = 'chip' + (c.current ? ' current' : c.disabled ? ' off' : ''); ch.textContent = c.label;
-        if (c.current) ch.setAttribute('aria-pressed', 'true');
-        ch.onclick = ev => { ev.stopPropagation(); closeChips();
-          if (c.current) return ui.flash(`${c.label} — already set`);
-          if (c.disabled) return ui.flash(c.why || `${c.label} isn't possible right now`);
-          c.onClick(st, ui); ui.render(); }; chips.appendChild(ch); }
-      wrap.classList.add('open'); };
+        ch.setAttribute('aria-pressed',String(!!c.current));
+        ch.onclick = ev => { ev.stopPropagation(); closeChips();el.focus();
+          if (c.current) return ui.flash(cfg.choiceMessages?.current?.(c.label)||`${c.label} — already set`);
+          if (c.disabled) return ui.flash(c.why || cfg.choiceMessages?.unavailable?.(c.label) || `${c.label} isn't possible right now`);
+          c.onClick(st, ui);cfg.onChoiceChange?.(); ui.render(); }; chips.appendChild(ch); }
+      wrap.classList.add('open');el.setAttribute('aria-expanded','true'); };
   });
-  function closeChips(){ document.querySelectorAll('.stepwrap.open').forEach(w => w.classList.remove('open')); }
+  function closeChips(){ document.querySelectorAll('.stepwrap.open').forEach(w => {w.classList.remove('open');w.querySelector('.act')?.setAttribute('aria-expanded','false');}); }
   document.addEventListener('click', closeChips);
 
   document.getElementById('wb').oninput = e => document.getElementById('wob').setAttribute('scale', (e.target.value * INK_K).toFixed(2));

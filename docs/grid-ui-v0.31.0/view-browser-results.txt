@@ -1,0 +1,11 @@
+PASS one battlefield HUD, bounded HP/XP and real run progress
+PASS all seven pixel atlases, original fallback and saved preference
+PASS idle threshold, activity reset and disabled auto mode
+PASS editing, held pieces, pointer drag, boss mode and reward dialogs block auto entry
+PASS first tap and release restore without triggering world or a hidden action; next click works
+PASS return restores focus, scroll, draft and removes inert; dialog opens above watch safely
+PASS responsive HUD and full viewport scene at narrow, short and wide sizes
+PASS reduced motion and explicit effects preference suppress decorative glitch
+PASS touch return consumes tap, preserves page and supports a following touch navigation
+PASS live battle continues while watching and no Fullscreen API is needed
+10 view checks passed; no page errors

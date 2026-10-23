@@ -1,0 +1,152 @@
+{
+  "style": "Signal 24",
+  "cell": 24,
+  "palette": {
+    "ink": "#223149",
+    "paper": "#edf3f5",
+    "slate": "#8c9bac",
+    "cyan": "#81cbd1",
+    "gold": "#e4c379",
+    "hot": "#df917e",
+    "blue": "#89a8d0",
+    "violet": "#aa98c5"
+  },
+  "sheets": {
+    "icons": {
+      "file": "icons.svg",
+      "cols": 6,
+      "rows": 4,
+      "ids": [
+        "fire",
+        "ice",
+        "bolt",
+        "meteor",
+        "shield",
+        "sword",
+        "shoe",
+        "headphones",
+        "coin",
+        "star",
+        "heart",
+        "potion",
+        "role",
+        "battle",
+        "craft",
+        "growth",
+        "adventure",
+        "more",
+        "lock",
+        "unlock"
+      ]
+    },
+    "skills": {
+      "file": "skills.svg",
+      "cols": 3,
+      "rows": 3,
+      "ids": [
+        "FIRE",
+        "FROST",
+        "CHAIN",
+        "METEOR",
+        "PULSE",
+        "MAGNET",
+        "SPAM",
+        "FLICKER",
+        "BEAM"
+      ]
+    },
+    "gems": {
+      "file": "gems.svg",
+      "cols": 4,
+      "rows": 3,
+      "ids": [
+        "HEAVY",
+        "AREA",
+        "HASTE",
+        "TWIN",
+        "CRITS",
+        "LEECH",
+        "COOL",
+        "CRYSTAL",
+        "FOCUS",
+        "FORK",
+        "RECOVER",
+        "DELAY"
+      ]
+    },
+    "relics": {
+      "file": "relics.svg",
+      "cols": 4,
+      "rows": 3,
+      "ids": [
+        "FAN",
+        "LENS",
+        "CHARM",
+        "DRINK",
+        "BATT",
+        "VEST",
+        "CALC",
+        "PIG",
+        "LUCK",
+        "FOOD",
+        "BOMB",
+        "SUN"
+      ]
+    },
+    "legends": {
+      "file": "legends.svg",
+      "cols": 3,
+      "rows": 3,
+      "ids": [
+        "W_ECHO",
+        "W_FORK",
+        "W_MULTI",
+        "A_PHOENIX",
+        "A_RIPOSTE",
+        "A_RESET",
+        "R_LAST",
+        "R_LINK",
+        "R_DIAL"
+      ]
+    },
+    "badges": {
+      "file": "badges.svg",
+      "cols": 4,
+      "rows": 3,
+      "ids": [
+        "k100",
+        "k2000",
+        "boss1",
+        "boss10",
+        "d10",
+        "d20",
+        "l20",
+        "l30",
+        "map5",
+        "legend",
+        "card10",
+        "survive"
+      ]
+    },
+    "equips": {
+      "file": "equips.svg",
+      "cols": 4,
+      "rows": 3,
+      "ids": [
+        "weapon-0",
+        "weapon-1",
+        "weapon-2",
+        "weapon-3",
+        "armor-0",
+        "armor-1",
+        "armor-2",
+        "armor-3",
+        "ring-0",
+        "ring-1",
+        "ring-2",
+        "ring-3"
+      ]
+    }
+  },
+  "wordmark": "wordmark.svg"
+}

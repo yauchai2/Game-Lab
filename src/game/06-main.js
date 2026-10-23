@@ -6,15 +6,16 @@ recalc(); G.h.hp = G.st.life;
 let loadedT = 0;
 if (!Q.has('fresh')){ const o = loadGame(); if (o && applySave(o)) loadedT = o.t || 0; }
 G.speed = 1;   // 已拿掉遊戲速度選項
-if (!loadedT) logLine('冒險開始！英雄會自動戰鬥、撿裝備、換更強的。', '#2b2552');
+if (!loadedT) logLine('冒險開始！英雄會自動戰鬥並走近拾取掉落物，裝備可到角色的倉庫管理。', '#2b2552');
 
 let ui;
-const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++){ while (G.picks > 0){ const c = rollCards(1)[0]; if (!c) break; takeCard(c); } while (G.relicPicks > 0){ const r = rollRelics(1)[0]; if (!r){ G.relicPicks = 0; break; } takeRelic(r); } update(.05); } G.offline = false; G.floats = []; G.fx = []; };
+const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++){ while (GAME_FEATURES.cardChoices && G.picks > 0){ const c = rollCards(1)[0]; if (!c) break; takeCard(c); } while (GAME_FEATURES.cardChoices && G.relicPicks > 0){ const r = rollRelics(1)[0]; if (!r){ G.relicPicks = 0; break; } takeRelic(r); } update(.05); } G.offline = false; G.floats = []; G.fx = []; };
 ui = mountFigure({
   fig:'06', title:'Idle Hero', hint:'', size:[BXW, BYW, 36], palette:'mint', state:G, credit:false,
   scene, buttonsLabel:'英雄指令',
-  stats: () => { const xp = tClamp(G.xp/xpNeed(G.lvl)), hp = tClamp(G.h.hp/G.st.life), bar = (p, c) => `<span class="hbar"><i style="width:${(p*100).toFixed(0)}%;background:${c}"></i></span>`;
-    return [ { label:'等級', value:G.lvl + bar(xp, '#43c25c') }, { label:'生命', value:tFmt(Math.max(0, G.h.hp)) + bar(hp, '#e2483d'), small:true }, { label:G.run ? '地圖' : '深度', value:lvlNow(), small:true }, { label:'金幣', value:tFmt(G.gold), small:true }, MOB() ? { label:'DPS', value:tFmt(G.st.dps), small:true } : null ]; },
+  onChoiceChange:()=>uiSyncSettings(),
+  choiceMessages:{current:label=>label+'：目前設定。',unavailable:label=>label+'：目前無法使用。'},
+  stats: () => [], // HUD 的唯一呈現由 viewRenderHUD 管理。
   buttons:[
     { label:'技能', onClick:() => openModal('skills') },
     { label:'編年史', onClick:() => wikiOpen() },
@@ -60,16 +61,19 @@ if (Q.has('picks')) G.picks = +Q.get('picks');
 if (Q.has('modal')) openModal(Q.get('modal'));
 const gap0 = Q.has('away') ? +Q.get('away') : loadedT ? (Date.now() - loadedT)/1000 : 0;
 if (gap0 > 20) catchUp(gap0, true);
+ui.renderInterval=1000/30;
+ui.suspendRender=()=>G.offline||document.hidden||FXO.stop>0;
 ui.animate(dt => {
   const now = Date.now(), gap = (now - G.lastWall)/1000; G.lastWall = now;
   if (G.paused) return true;
-  if (FXO.stop > 0){ FXO.stop -= dt; dt *= .1; }
-  if (G.relicPicks > 0 && !G.offline && (G.autoCard || (!G.offerR && $('ovl').hidden))) openRelics();
-  else if (G.picks > 0 && !G.offline && (G.autoCard || (!G.offer && $('ovl').hidden))) openCards();
+  if (FXO.stop > 0) FXO.stop -= dt;
+  if (GAME_FEATURES.cardChoices && G.relicPicks > 0 && !G.offline && (G.autoCard || (!G.deferChoices && !G.offerR && $('ovl').hidden))) openRelics();
+  else if (GAME_FEATURES.cardChoices && G.picks > 0 && !G.offline && (G.autoCard || (!G.deferChoices && !G.offer && $('ovl').hidden))) openCards();
   if (gap > 3){ catchUp(gap, gap > 20); return true; }
-  stepSim(dt); return true;
+  stepSim(gap>=0?gap:dt); return true;
 });
 setInterval(() => { if (!G.paused) saveGame(); }, 5000);
 addEventListener('pagehide', () => { if (!G.paused) saveGame(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && !G.paused) saveGame(); });
+document.getElementById('boot')?.remove();
 
