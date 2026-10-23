@@ -12,7 +12,7 @@ async function shot(p,name){await p.screenshot({path:path.join(out,name+'.png')}
 async function check(name,fn){await fn();results.push(name);console.log('PASS',name);}
 let {p,c}=await page();
 await check('mobile role cards and no overflow',async()=>{const r=await p.locator('.char-card').boundingBox();assert(r.width>340);const btn=await p.getByRole('button',{name:/阿街.*✓/}).boundingBox();assert(btn.width>100);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth),390);await p.locator('.char-card').scrollIntoViewIfNeeded();await shot(p,'01-mobile-role');});
-await p.getByRole('button',{name:'戰鬥',exact:true}).click();
+await p.locator('[data-focus="nav-skills"]').click();
 await check('touch placement on a wire, hold card and cancellation',async()=>{
  await p.evaluate(()=>{G.lvl=Math.max(G.lvl,12);G.gems.HASTE=Math.max(G.gems.HASTE||0,3);recalc();wireAuto();renderModal();});
  const cell=await p.evaluate(()=>{const B=G.board;for(const w of B.wires)for(const c of w.cells)if(!B.pieces.some(q=>q.kind==='support'&&q.x===c[0]&&q.y===c[1])&&!GridLab.isRock(c[0],c[1]))return c;});
@@ -57,7 +57,7 @@ await p.getByRole('button',{name:'冒險',exact:true}).click();
 await check('complete modifier categories and honest summary',async()=>{
  await p.evaluate(()=>{G.maps=[{id:'ux-map',biome:0,lvl:1,mods:['elite','swarm','wise']}];renderModal();});assert(await p.getByText('挑戰詞綴 2',{exact:true}).isVisible());await p.locator('[data-focus="map-ux-map"]').click();await shot(p,'04-map-summary');await p.keyboard.press('Escape');
 });
-await p.getByRole('button',{name:'更多',exact:true}).click();
+await p.locator('[data-focus="nav-menu"]').click();
 await check('blocked popup fallback, IME-safe search and clear',async()=>{
  await p.evaluate(()=>window.open=()=>null);await p.getByRole('button',{name:'編年史',exact:true}).click();assert(await p.getByRole('dialog',{name:'編年史'}).isVisible());
  const input=p.getByRole('textbox',{name:'搜尋全部分類'});await input.fill('zzzz不存在');assert.equal(await p.locator('#wiki [data-wk-cat][aria-pressed="true"]').count(),0);assert(await p.getByText('找不到符合「zzzz不存在」的資料',{exact:true}).isVisible());await p.getByRole('button',{name:'清除搜尋',exact:true}).first().click();assert.equal(await input.inputValue(),'');assert.equal(await p.locator('#wiki [data-wk-cat][aria-pressed="true"]').count(),1);
@@ -70,7 +70,7 @@ await c.close();({p,c}=await page(true,360));
 await check('360px role and full six-row board',async()=>{await shot(p,'06-mobile-360');assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth),360);await p.evaluate(()=>{G.lvl=30;recalc();openModal('skills');});assert.equal(await p.locator('.pz button.pc').count(),64);await p.locator('[data-focus="cell-5-5"]').focus();await p.keyboard.press('ArrowRight');assert.equal(await p.evaluate(()=>document.activeElement.dataset.x),'6');});await c.close();
 ({p,c}=await page(false,1440));
 await check('desktop chronicle search, headers, no-results and reset',async()=>{
- await p.getByRole('button',{name:'更多',exact:true}).click();const opened=p.waitForEvent('popup');await p.getByRole('button',{name:'編年史',exact:true}).click();const w=await opened;w.on('pageerror',e=>errors.push(e.message));await w.waitForLoadState('domcontentloaded');await w.getByRole('textbox',{name:'搜尋全部分類'}).fill('寬頻');assert.equal(await w.locator('nav a[aria-current]').count(),0);assert(await w.getByText('找到 1 筆，搜尋全部分類',{exact:true}).isVisible());await shot(w,'07-chronicle-desktop');
+ await p.locator('[data-focus="nav-menu"]').click();const opened=p.waitForEvent('popup');await p.getByRole('button',{name:'編年史',exact:true}).click();const w=await opened;w.on('pageerror',e=>errors.push(e.message));await w.waitForLoadState('domcontentloaded');await w.getByRole('textbox',{name:'搜尋全部分類'}).fill('寬頻');assert.equal(await w.locator('nav a[aria-current]').count(),0);assert(await w.getByText('找到 1 筆，搜尋全部分類',{exact:true}).isVisible());await shot(w,'07-chronicle-desktop');
  await w.getByRole('textbox',{name:'搜尋全部分類'}).fill('zzzz不存在');assert(await w.getByText('找不到符合「zzzz不存在」的資料',{exact:true}).isVisible());await w.getByRole('button',{name:'清除搜尋',exact:true}).first().click();assert.equal(await w.locator('nav a[aria-current]').count(),1);await w.getByRole('link',{name:'輔助配件',exact:true}).click();
  const geometry=await w.evaluate(()=>({header:document.querySelector('header').getBoundingClientRect().bottom,section:document.getElementById('c-supp').getBoundingClientRect().top}));assert(geometry.section>=geometry.header-1);await w.setViewportSize({width:390,height:844});await w.getByRole('link',{name:'技能',exact:true}).click();await shot(w,'08-chronicle-mobile');assert.equal(await w.evaluate(()=>document.documentElement.scrollWidth),390);await w.close();assert(await p.getByRole('button',{name:'編年史',exact:true}).isVisible());
 });await c.close();

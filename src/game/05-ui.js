@@ -81,10 +81,10 @@ function uiConfirmBuildFallback(){const p=BUILD_PENDING;BUILD_PENDING=null;hideO
 function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、角色、策略及三件裝備；引用裝備受回收保護。');}
 function skillsHtml(){
   // 接線板放最上面，收起戰場時一打開就能直接編輯；構築管理與電路合成放在下面
-  return wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + buildBar() + circuitShopHtml() + uiResolvedHtml() + uiCombatHtml();
+  return wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + buildBar() + uiResolvedHtml() + uiCombatHtml();
 }
 function treeHtml(){
-  return buildBar() + treeHtml0();
+  return charSegHtml() + buildBar() + treeHtml0();
 }
 /* 天賦盤：畫在 160×160 的小畫布上再用最近鄰放大，保持低解像像素風；互動靠上面一層透明的 SVG 熱區 */
 const TREE_PX = 160, TREE_STAR = ['....#....', '....#....', '...###...', '#########', '.#######.', '..#####..', '..##.##..', '.##...##.', '.#.....#.'];

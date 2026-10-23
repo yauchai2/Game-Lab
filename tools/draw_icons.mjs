@@ -27,6 +27,7 @@ g.role=oct(12,7,4,C.paper)+p('M8 14H16L21 18V21H3V18Z',C.cyan)+dot(3,7,2,4,C.cya
 g.battle=p('M3 3H7L19 16L16 19L3 7Z',C.paper)+p('M17 3H21V7L8 20L5 17Z',C.cyan)+line('M3 15L9 21M15 15L21 21',C.ink,2);
 g.craft=p('M14 3H20L16 7L17 10L20 11L23 7V13L19 17H14L7 23L2 18L10 11V7Z',C.paper)+dot(5,17,3,3,C.cyan);
 g.growth=line('M12 9V14M5 17V13H19V17')+box(9,2,6,6,C.cyan)+box(2,17,6,5,C.paper)+box(9,17,6,5,C.paper)+box(16,17,6,5,C.paper);
+g.bag=p('M7 8V5L9 3H15L17 5V8',C.slate,C.ink,2)+p('M4 8H20L21 21H3Z',C.paper)+box(8,13,8,6,C.cyan)+line('M4 12H20',C.slate,1)+dot(11,15,2,2,C.ink);
 g.adventure=p('M3 5L9 2L15 5L21 2V19L15 22L9 19L3 22Z',C.paper)+line('M9 3V19M15 5V21',C.slate,1)+line('M5 15L10 10L14 13L19 8',C.cyan,2)+dot(17,6,3,3,C.ink);
 g.more=box(3,3,7,7,C.paper)+box(14,3,7,7,C.cyan)+box(3,14,7,7,C.cyan)+box(14,14,7,7,C.paper);
 g.lock=line('M8 11V6L10 4H14L16 6V11')+box(5,11,14,11,C.paper)+dot(10,14,4,5,C.cyan);
@@ -89,7 +90,7 @@ for(let r=0;r<4;r++){
   equipment['ring-'+r]=r===0?oct(12,13,7,C.paper)+oct(12,13,3,C.paper):r===1?box(9,1,6,22,C.slate)+box(5,6,14,12,C.paper)+box(8,9,8,6,C.cyan):r===2?g.headphones.replaceAll(C.cyan,C.gold):g.phone.replaceAll(C.cyan,C.violet);
 }
 const sheets={
- icons:{cols:6,ids:['fire','ice','bolt','meteor','shield','sword','shoe','headphones','coin','star','heart','potion','role','battle','craft','growth','adventure','more','lock','unlock'],draw:id=>g[id]},
+ icons:{cols:6,ids:['fire','ice','bolt','meteor','shield','sword','shoe','headphones','coin','star','heart','potion','role','battle','craft','growth','adventure','more','lock','unlock','bag'],draw:id=>g[id]},
  skills:{cols:3,ids:['FIRE','FROST','CHAIN','METEOR','PULSE','MAGNET','SPAM','FLICKER','BEAM'],draw:id=>g[{FIRE:'battery',FROST:'cooler',CHAIN:'chain',METEOR:'satellite',PULSE:'speaker',MAGNET:'magnet',SPAM:'mail',FLICKER:'camera',BEAM:'laser'}[id]]},
  gems:{cols:4,ids:['HEAVY','AREA','HASTE','TWIN','CRITS','LEECH','COOL','CRYSTAL','FOCUS','FORK','RECOVER','DELAY'],draw:id=>g[{HEAVY:'chip',AREA:'broadcast',HASTE:'broadband',TWIN:'dual',CRITS:'crit',LEECH:'charge',COOL:'heatsink',CRYSTAL:'crystal',FOCUS:'focus',FORK:'fork',RECOVER:'recover',DELAY:'delay'}[id]]},
  relics:{cols:4,ids:['FAN','LENS','CHARM','DRINK','BATT','VEST','CALC','PIG','LUCK','FOOD','BOMB','SUN'],draw:id=>g[{FAN:'fan',LENS:'lens',CHARM:'charm',DRINK:'drink',BATT:'batt',VEST:'vest',CALC:'calculator',PIG:'pig',LUCK:'luck',FOOD:'food',BOMB:'bomb',SUN:'sun'}[id]]},

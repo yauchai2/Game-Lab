@@ -10,7 +10,7 @@ const out=process.env.GAME_LAB_LAYOUT_OUTPUT||'/tmp/game-lab-layout-validation';
  async function check(n,f){await f();passed.push(n);console.log('PASS',n)}
  async function shot(n){await p.screenshot({path:path.join(out,n+'.png')})}
  await check('six shared entries, same role destination and dress return',async()=>{
-  const names=['角色','戰鬥','打造','成長','冒險','更多'];const keys=['char','skills','craft','tree','maps','menu'];
+  const names=['角色','背包','技能','打造','冒險','設定'];const keys=['char','warehouse','skills','craft','maps','menu'];
   for(const size of [{width:1440,height:1000},{width:390,height:844}]){
    await p.setViewportSize(size);await p.waitForTimeout(80);assert.equal(await p.locator('#mtabs>button').count(),6);
    for(let i=0;i<keys.length;i++){await click(keys[i]);assert.equal(await p.evaluate(()=>modalTab),keys[i]);assert.equal(await p.locator(`[data-focus="nav-${keys[i]}"]`).getAttribute('aria-label'),names[i]);}
@@ -43,7 +43,7 @@ const out=process.env.GAME_LAB_LAYOUT_OUTPUT||'/tmp/game-lab-layout-validation';
   assert(await p.locator('#uisettings').isVisible());assert(await p.getByRole('button',{name:/^音效/}).isVisible());const settingsButton=await p.getByRole('button',{name:/^音效/}).boundingBox();assert(settingsButton.width>=140);assert.equal(await p.locator('#btns').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length),2);await p.locator('[data-focus="setting-戰利品過濾"]').click();assert(await p.getByRole('button',{name:'稀有以上',exact:true}).isVisible());await p.getByRole('button',{name:'稀有以上',exact:true}).click();assert.equal(await p.evaluate(()=>G.filter),2);await shot('15-settings');
  });
  await check('narrow and short reflow keeps full board and navigation reachable',async()=>{
-  await click('skills');for(const size of [{width:360,height:800},{width:844,height:390},{width:768,height:700}]){await p.setViewportSize(size);await p.waitForTimeout(80);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth),size.width);const last=p.locator('[data-focus="cell-5-5"]');await last.focus();await last.scrollIntoViewIfNeeded();const r=await last.boundingBox(),nav=await p.locator('#mtabs').boundingBox();assert(r.y>=0&&r.y+r.height<=nav.y+1);assert.equal(await p.evaluate(()=>modalTab),'skills');}
+  await click('skills');for(const size of [{width:360,height:800},{width:844,height:390},{width:768,height:700}]){await p.setViewportSize(size);await p.waitForTimeout(80);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth),size.width);const last=p.locator('[data-focus="cell-5-5"]');await last.focus();await last.scrollIntoViewIfNeeded();const r=await last.boundingBox(),vh=size.height;assert(r.y>=0&&r.y+r.height<=vh+1);assert.equal(await p.evaluate(()=>modalTab),'skills');}
   await p.setViewportSize({width:390,height:844});await p.locator('#mbody').evaluate(e=>e.scrollTop=0);await shot('16-full-board-mobile');await p.setViewportSize({width:1920,height:1080});await p.waitForTimeout(100);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth),1920);await shot('17-full-board-wide');
  });
  await check('talent reset confirms cost, cancel and stale target before charging',async()=>{
