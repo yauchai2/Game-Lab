@@ -162,6 +162,7 @@ body.ui-material .battle-hud .hud-level{height:48px}
 body.ui-material .battle-hud .hud-level span{font-size:12px!important;line-height:18px}
 body.ui-material .battle-hud .hud-level b{font-size:20px!important;line-height:28px}
 @media(min-width:1180px){body.ui-material .battle-hud .hud-left{grid-template-columns:56px minmax(100px,260px);max-width:324px}body.ui-material .battle-hud .hud-level{height:58px}body.ui-material .battle-hud .hud-level span{font-size:16px!important;line-height:24px}body.ui-material .battle-hud .hud-level b{font-size:26px!important;line-height:34px}body.ui-material .battle-hud .hud-meter{height:22px}body.ui-material .battle-hud .hud-meter.hud-xp{height:14px}}
+@media(min-width:1180px){body.ui-material .battle-hud .hud-left,body.ui-material .battle-hud .hud-right{zoom:1.45}body.ui-material .battle-hud .hud-left{max-width:324px}}
 body.ui-material.m .stage{padding-top:72px!important}body.ui-material.m .stage #loot{top:80px!important}
 
 /* 覆蓋原先 STATUS 櫃體。HUD 是世界上方的獨立讀數；共用色階不改變字形與位置。 */

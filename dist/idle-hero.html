@@ -791,6 +791,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.39.4',d:'2026-10-23',t:['桌面版戰鬥畫面上方的等級、生命與經驗條、深度、金幣與 DPS 整體放大，更好讀；手機版不變']},
   { v:'0.39.3',d:'2026-10-23',t:['技能頁改成三步引導（裝技能、拉線、放配件），目前該做哪一步會高亮；進階說明收進摺疊區，格子改標「剩 N 個」','桌面版技能棋盤放大，並加上像素顆粒與掃描線質感','傳奇核心改為 3D 圖示；裝備詳情卡的圖示放大']},
   { v:'0.39.2',d:'2026-10-23',t:['倒下時戰場上方改顯示系統視窗風的大字「死亡」，附復活倒數與進度條；不擋操作、不需要點擊，倒數結束自動復活續打','移除倒下時的黑底對話框，避免重複']},
   { v:'0.39.1',d:'2026-10-23',t:['角色手機螢幕改成顯示畫面外看不到的資訊：歷年戰績、收藏進度（成就、傳奇核心、遺物、電台手記、裝扮），與外面重複的裝備、屬性、技能、連結頁已移除','新增「全息」頁：目前武器放在旋轉的全息台座上掃描，帶低解析像素 3D 質感']},
@@ -4718,6 +4719,7 @@ body.ui-material .battle-hud .hud-level{height:48px}
 body.ui-material .battle-hud .hud-level span{font-size:12px!important;line-height:18px}
 body.ui-material .battle-hud .hud-level b{font-size:20px!important;line-height:28px}
 @media(min-width:1180px){body.ui-material .battle-hud .hud-left{grid-template-columns:56px minmax(100px,260px);max-width:324px}body.ui-material .battle-hud .hud-level{height:58px}body.ui-material .battle-hud .hud-level span{font-size:16px!important;line-height:24px}body.ui-material .battle-hud .hud-level b{font-size:26px!important;line-height:34px}body.ui-material .battle-hud .hud-meter{height:22px}body.ui-material .battle-hud .hud-meter.hud-xp{height:14px}}
+@media(min-width:1180px){body.ui-material .battle-hud .hud-left,body.ui-material .battle-hud .hud-right{zoom:1.45}body.ui-material .battle-hud .hud-left{max-width:324px}}
 body.ui-material.m .stage{padding-top:72px!important}body.ui-material.m .stage #loot{top:80px!important}
 
 /* 覆蓋原先 STATUS 櫃體。HUD 是世界上方的獨立讀數；共用色階不改變字形與位置。 */
