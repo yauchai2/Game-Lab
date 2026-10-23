@@ -260,3 +260,11 @@
 - charHtml／pickChar 沿用選擇、鎖定原因及原生按鈕；characters-data 的故事為原生 details，沒有抵達 popup 或新 modal。
 - 新人物走 characters-render 的共用 build／animate／dispose；純外觀配件不修改裝備或戰鬥數值，人物專屬技能規則集中在 characters-data，與外觀 owner 分開。
 - 來源合併完成後才重建 dist，不能以生成檔覆蓋 Claude 的來源更新；本次無 release。
+
+## Y2K 專裝候選（PR #15，未合併／未發佈）
+
+- `SIGNATURE_GEAR` 擁有角色、欄位、模型鍵與待補狀態；`rollSignatureGear` 擁有獨立極低機率判定，普通暗金生成不抽專裝。
+- `canUseGear` 同時供屬性計算、手動換裝、上一件、拾取自動換裝與收藏詳情判斷。角色不符時按鈕顯示原因且不可執行；切換角色後物品保留收藏，不刪除、不轉賣。
+- `G.armory` 仍是收藏唯一持久化 owner，裝備及構築引用同一件物品；收藏數量由資料衍生，原九款核心之外增加二十款專裝。
+- `equipment-render.js` 擁有模型快取與骨架掛點，`equipment-assets.js` 由驗證後 GLB 與縮圖產生；模型鍵變動須重建場景外觀。專裝使用實際模型，普通裝備用簡模並保留原純外觀選擇與統計分離。
+- 缺少 3D 的四項在詳情標示暫用簡模；後續補檔保留既有物品 ID。獨立 `equipment-review.html` 不讀寫遊戲進度。驗證見 `docs/y2k-equipment.md`。

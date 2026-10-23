@@ -1,5 +1,7 @@
 # Y2K 角色專裝整合
 
+狀態：已實作、已驗證、已推送；未合併、未發佈。分支 `codex/y2k-signature-equipment`；[PR #15](https://github.com/yauchai2/Game-Lab/pull/15)。2026-10-23（Asia/Taipei）。
+
 本次 Google Drive ZIP 的 16 件匿名 GLB 已按 `asset_list.zip` 圖片逐件對照，接入 AKI、MILO、PING、NULL 的裝備、地面掉落與收藏圖示。原始 ZIP 和高面數 GLB 留在工作區，不提交進 Git。這是開發候選，未更新公開 Pages 或建立 Release。
 
 獨立開啟 `dist/equipment-review.html` 可逐件旋轉檢查原模型、角色骨架位置及普通裝備簡模，不啟動遊戲、不讀寫進度。`dist/idle-hero-review.html` 是使用獨立存檔鍵的整合試玩。

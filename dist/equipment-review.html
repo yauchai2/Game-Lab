@@ -3069,7 +3069,7 @@ function characterEquipment(g,cos,wt,wr){
  const grip=new T3.Group();B.handR.add(grip);grip.rotation.x=Math.PI/2;g.userData.sword=grip;
  for(const slot of Object.keys(SLOTN)){
   const it=G.equip[slot];if(it&&attachSignatureGear(g,it))continue;
-  if(slot==='weapon'){const w=buildSimpleEquipment(slot,wt,wr);grip.add(w);}
+  if(slot==='weapon'){const style={umbrella:0,bat:1,tube:2,saber:3}[cos.weaponStyle]??wt;const w=buildSimpleEquipment(slot,style,wr);grip.add(w);}
   else if(it){const item=buildSimpleEquipment(slot,Math.min(3,Math.floor(it.il/6)),it.r);item.position.set(slot==='armor'?0:3,slot==='armor'?3:0,3.3);B.torso.add(item);}
  }
  if(g.userData.id==='null'&&!g.userData.pet){const pet=buildSimpleEquipment('ring',0,0);pet.position.set(8,13,-2);g.add(pet);g.userData.pet=pet;}
