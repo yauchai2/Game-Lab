@@ -7,7 +7,7 @@ const UI_NAV = [
   {k:'maps',n:'冒險',icon:'adventure',pages:['maps']},
   {k:'menu',n:'設定',icon:'more',pages:['menu','goals','ach','dex','rank','log','save','settings','feedback']}
 ];
-const UI_TITLE = {warehouse:'背包',char:'角色',dress:'角色與裝扮',skills:'技能',craft:'打造',tree:'天賦',maps:'冒險',menu:'設定',goals:'目標',ach:'成就',dex:'圖鑑',rank:'排行榜',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定',feedback:'意見回饋'};
+const UI_TITLE = {warehouse:'背包',char:'角色',dress:'裝扮',skills:'技能',craft:'打造',tree:'天賦',maps:'冒險',menu:'設定',goals:'目標',ach:'成就',dex:'圖鑑',rank:'排行榜',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定',feedback:'意見回饋'};
 const UI_WORK = {inventory:'support',craftSlot:'weapon',craftAct:'upgrade',adventure:'maps'};
 function uiNavHtml(){
   return UI_NAV.map(g=>{const current=g.pages.includes(modalTab),locked=!tabOpen(g.k),dot=g.k==='menu' ? dotOn('col')||logNew() : g.k==='char' ? passPoints()>0&&tabOpen('tree') : dotOn(g.k);
@@ -30,12 +30,40 @@ function uiMenuHtml(){
   const group=(name,items)=>`<section class="ui-menu-group"><h3>${name}</h3><div class="ui-directory">${items.map(([k,n,d])=>`<button onclick="openModal('${k}')">${obj3d(k==='rank'?'ach':k,44)}<b>${n}</b><span>${d}</span><i aria-hidden="true">↗</i></button>`).join('')}</div></section>`;
   return group('遊戲',[['settings','遊戲設定','戰鬥規則、拾取與音效'],['save','存檔與備份','本機保存、匯入及匯出']])+group('進度與收藏',[['goals','目標','下一個里程碑與獎勵'],['ach','成就','已達成的挑戰'],['dex','圖鑑','技能、卡匣與收藏紀錄'],['rank','排行榜','歷史最佳與構築']])+group('其他',[['log','更新日誌','查看版本與更新'],['feedback','意見回饋','回報問題、平衡與玩法建議']])+`<button class="ui-wiki" aria-label="編年史" onclick="wikiOpen()">${obj3d('wiki',44)||spr('star',24)}<span><b>編年史</b><small>查看所有遊戲資訊</small></span><i aria-hidden="true">↗</i></button>`;
 }
-function charSegHtml(){return `<div class="ui-segments" role="group" aria-label="角色分頁"><button aria-pressed="${modalTab==='char'}" data-focus="char-stats" onclick="openModal('char')">屬性</button><button aria-pressed="${modalTab==='tree'}" data-focus="char-talent"${tabOpen('tree')?'':' class="lock"'} onclick="${tabOpen('tree')?"openModal('tree')":"lockTip('tree')"}">${tabOpen('tree')?'天賦':'天賦 Lv'+TAB_LVL.tree}${passPoints()>0&&tabOpen('tree')?' ●':''}</button></div>`;}
-function uiCharacterHtml(){
-  const s=G.st;
-  const rows=[['單體直傷預估',tFmt(s.dps)+' DPS'],['最大生命',tFmt(s.life)],['暴擊率',s.crit.toFixed(0)+'%'],['傷害減免',(s.red*100).toFixed(0)+'%']];
-  return `${charSegHtml()}<section class="ui-character-head">${phoneButtonHtml()}<span class="ui-eyebrow">${CHARS[G.char].n}</span><h3>${uxEsc(G.heroName||'阿街')}<small>LV. ${G.lvl}</small></h3><p id="ui-char-progress">深度 ${G.depth} · 累計擊殺 ${tFmt(G.totalKills)}</p><button class="mb" onclick="openModal('dress')">角色與裝扮 ↗</button></section><div class="ui-equipment">${Object.keys(SLOTN).map(uiEquippedTile).join('')}</div>${uiCoreCollection()}<section class="ui-section"><h3>戰鬥狀態</h3><dl class="ui-stat-list">${rows.map(([n,v])=>`<div><dt>${n}</dt><dd>${v}</dd></div>`).join('')}</dl></section>${charHtml()}${cardsHtml()}<details class="ui-section"><summary>事件紀錄</summary><ol class="log">${G.log.map(l=>`<li>${uxEsc(l.txt)}</li>`).join('')}</ol></details>`;
+function charSegHtml(){return `<div class="ui-segments" role="group" aria-label="角色分頁"><button aria-pressed="${modalTab==='char'}" data-focus="char-stats" onclick="openModal('char')">總覽</button><button aria-pressed="${modalTab==='tree'}" data-focus="char-talent"${tabOpen('tree')?'':' class="lock"'} onclick="${tabOpen('tree')?"openModal('tree')":"lockTip('tree')"}">${tabOpen('tree')?'天賦':'天賦 Lv'+TAB_LVL.tree}${passPoints()>0&&tabOpen('tree')?' ●':''}</button><button aria-pressed="${modalTab==='dress'}" data-focus="char-dress" onclick="openModal('dress')">裝扮</button></div>`;}
+let UI_CHARACTER_PICK = null, UI_CHARACTER_STAGE_VISIT = '';
+function uiCharacterCode(id=G.char){return String(CHARS[id]?.model||String(CHARS[id]?.n||'').split(' ').at(-1)||'').toUpperCase();}
+function uiCharacterIdentity(){
+  const c=CHARS[G.char];
+  return `<div class="cv-identity" role="group" aria-label="目前角色"><div><span class="cv-kicker">${uxEsc(c.title||c.d)}</span><h3>${uxEsc(c.n.split(' ')[0])}<span>Lv. ${G.lvl}</span></h3></div><button class="mb" data-focus="character-switch" onclick="uiChooseCharacter()">切換角色 ↗</button></div>`;
 }
+function uiCharacterStage(dress=false){
+  const c=CHARS[G.char],visit=modalTab+':'+G.char,arrive=UI_CHARACTER_STAGE_VISIT!==visit;UI_CHARACTER_STAGE_VISIT=visit;
+  return `<div class="cv-stage${arrive?' cv-arrive':''}" aria-label="${uxEsc(c.n)}角色展示"><span class="cv-code" aria-hidden="true">${uxEsc(uiCharacterCode())}</span><span class="cv-stage-label" aria-hidden="true">${dress?'STYLE / 外觀':'CHARACTER / 角色'}</span><div id="pvhost" class="cv-preview" aria-label="${dress?'外觀試穿':'目前角色'}3D 預覽"><div class="cv-fallback"><span>${uxEsc(c.n)}</span><small id="cv-preview-status">正在準備角色…</small><button class="mb" hidden id="cv-preview-retry" onclick="dressRetry()">重試預覽</button></div></div><div class="cv-phone">${phoneButtonHtml()}<span>個人手機</span></div><blockquote class="cv-quote">「${uxEsc(c.quote||c.title||c.d)}」</blockquote><div class="cv-stage-footer"><span>${uxEsc(c.role||c.title||'')}</span>${dressPreviewControls()}</div></div>`;
+}
+function uiCharacterProfile(){
+  const [bm,bd]=G.born;
+  return `<details class="cv-profile"><summary>個人資料</summary><label for="hname">玩家暱稱<input id="hname" maxlength="8" value="${uxEsc(G.heroName||'阿街')}" onchange="setName(this.value)"></label><p>生日 ${bm} / ${bd} · ${STAR_SIGNS[bm-1]}</p><p>${rankOf()}</p></details>`;
+}
+function uiCharacterStats(){
+  const s=G.st;
+  return `<section class="cv-performance" aria-label="戰鬥能力摘要"><div class="cv-stat cv-stat-main"><span>單體直傷預估</span><strong>${tFmt(s.dps)}<small>DPS</small></strong></div><div class="cv-stat"><span>最大生命</span><strong>${tFmt(s.life)}</strong></div><div class="cv-stat"><span>暴擊率</span><strong>${s.crit.toFixed(0)}<small>%</small></strong></div><div class="cv-stat"><span>傷害減免</span><strong>${(s.red*100).toFixed(0)}<small>%</small></strong></div></section><details class="cv-detail"><summary>完整能力與計算說明</summary><dl class="ui-stat-list">${[['普通攻擊傷害',tFmt(s.hit)],['每秒普通攻擊',s.aps.toFixed(2)+' 次'],['暴擊傷害',s.cm.toFixed(0)+'%'],['護甲',tFmt(s.armor)],['基礎生命回復',s.regen.toFixed(1)+' / 秒']].map(([n,v])=>`<div><dt>${n}</dt><dd>${v}</dd></div>`).join('')}</dl><p class="uxmeta">直傷預估不含持續傷害、條件連動及角色專技。回復仍受戰鬥上限影響，實際傷害可到冒險的訓練場測量。</p></details>`;
+}
+function uiChooseCharacter(id=G.char){
+  if(!CHARS[id])return;UI_CHARACTER_PICK=id;const c=CHARS[id],ok=charOk(id),on=G.char===id;
+  const reason=ok?'已解鎖':c.ach?'成就「'+ACHS[c.ach].n+'」解鎖':'最深 '+c.need+' 層解鎖';
+  showOverlay(`<h2 class="uxdialog-title">選擇角色</h2><p class="uxmeta">先查看角色，按下使用才會切換。</p><div class="cv-roster" role="group" aria-label="角色預覽">${Object.entries(CHARS).map(([key,p])=>{const u=typeof icon3dPortraitUrl==='function'?icon3dPortraitUrl(key):'';return `<button class="mb" data-focus="character-pick-${key}" aria-pressed="${id===key}" onclick="uiChooseCharacter('${key}')">${u?`<img src="${u}" alt="" width="72" height="72">`:''}<span>${uxEsc(p.n)}</span><small>${key===G.char?'使用中':charOk(key)?'已解鎖':'未解鎖'}</small></button>`;}).join('')}</div><div class="cv-roster-detail"><h3>${uxEsc(c.n)} · ${uxEsc(c.title||c.d)}</h3><p>${uxEsc(c.role||'')}</p><p>專屬技能「${uxEsc(c.sig.n)}」：${uxEsc(c.sig.d)}</p>${c.passive?`<p>${uxEsc(c.passive)}</p>`:''}<p>${uxEsc(reason)}</p></div><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回角色</button><button class="mb pri" ${!ok||on?'disabled':''} onclick="uiConfirmCharacter()">${on?'目前使用中':!ok?'尚未解鎖':'使用 '+uxEsc(c.n)}</button></div>`);
+  requestAnimationFrame(()=>document.querySelector(`[data-focus="character-pick-${id}"]`)?.focus({preventScroll:true}));
+}
+function uiConfirmCharacter(){
+  const id=UI_CHARACTER_PICK;if(!id||!CHARS[id]||!charOk(id)||id===G.char)return;
+  UI_CHARACTER_PICK=null;pickChar(id);G.dirty=true;PV.yaw=.5;hideOverlay();renderModal();uxAnnounce('已切換為'+CHARS[id].n+'。');
+}
+function uiCharacterHtml(){
+  const c=CHARS[G.char];
+  return `<div class="character-view" data-character="${G.char}">${charSegHtml()}${uiCharacterIdentity()}${uiCharacterStage()}<div class="cv-loadout"><div class="cv-section-label"><span>隨身裝備</span><button class="mb" onclick="openModal('warehouse')">管理背包 ↗</button></div><div class="ui-equipment">${Object.keys(SLOTN).map(uiEquippedTile).join('')}</div></div>${uiCharacterStats()}<section class="cv-signature"><span class="cv-kicker">專屬技能</span><h3>${uxEsc(c.sig.n)}</h3><p>${uxEsc(c.sig.d)}</p>${c.passive?`<details><summary>角色被動</summary><p>${uxEsc(c.passive)}</p></details>`:''}</section><p id="ui-char-progress" class="cv-progress">深度 ${G.depth} · 累計擊殺 ${tFmt(G.totalKills)}</p>${uiCoreCollection()}${cardsHtml()}${typeof characterStoryHtml==='function'?characterStoryHtml():''}${uiCharacterProfile()}<details class="cv-detail"><summary>事件紀錄</summary><ol class="log">${G.log.map(l=>`<li>${uxEsc(l.txt)}</li>`).join('')}</ol></details></div>`;
+}
+
 /* 共用物品格：精簡讀數，完整名稱與屬性由點選詳情取得。 */
 function uiMapThumbSvg(m){const B=BIOMES[m.biome],blocky=m.biome>=4;let h=0;for(const ch of String(m.id))h=(h*31+ch.charCodeAt(0))>>>0;const sp=[[26,22],[50,18],[36,30],[56,27],[20,27],[44,25]];let o='';for(let i=0;i<4;i++){const [x,y]=sp[(h+i*2)%sp.length],big=(h>>(i+3))&1?1:0.8;o+=blocky?`<path d="M${x-4*big} ${y}h${8*big}v${-7*big}h${-8*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-4*big} ${y-7*big}l${4*big} ${-3*big}l${4*big} ${3*big}z" fill="${B.board.l}"/>`:`<path d="M${x} ${y-12*big}l${5*big} ${12*big}h${-10*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-1} ${y}h2v3h-2z" fill="${B.board.d}"/>`;}return `<svg class="ui-mapthumb" viewBox="0 0 80 56" aria-hidden="true"><ellipse cx="40" cy="50" rx="34" ry="5" fill="#0002"/><path d="M4 24L40 42v9L4 33z" fill="${B.board.d}"/><path d="M76 24L40 42v9l36-18z" fill="${B.board.m}" opacity=".85"/><path d="M40 6L76 24L40 42L4 24z" fill="${B.board.l}" stroke="${B.board.d}" stroke-width="1"/><ellipse cx="40" cy="24" rx="7" ry="3.5" fill="${B.portal}" opacity=".75"/><ellipse cx="40" cy="23" rx="3.5" ry="1.8" fill="${B.glow}"/>${o}</svg>`;}
 const UI_THUMB={};
@@ -49,7 +77,7 @@ function uiMapCard(m){const B=BIOMES[m.biome],c=mapChallenge(m.mods);return `<bu
 function uiItemTile({focus,icon,name,meta='',state='',action,rarity=0,tip=''}){return `<button type="button" class="ui-item-tile"${tip?` data-tip="${uxEsc(tip)}"`:''} data-rarity="${rarity}" style="--item-rarity:${RAR[rarity]?.c||'var(--ux-edge)'}" data-focus="${uxEsc(focus)}" aria-label="${uxEsc(name)}，${RAR[rarity]?RAR[rarity].n+'，':''}${uxEsc(meta)}${state?'，'+uxEsc(state):''}，查看詳情" onclick="${action}"><span class="ui-item-state">${uxEsc(state)}</span>${icon}<b>${uxEsc(name)}</b><small>${uxEsc(meta)}</small></button>`;}
 function uiGearState(it){return G.equip[it.slot]===it?'穿著':it.kept?'鎖定':gearReferenced(it)?'構築':G.equipBackup[it.slot]===it?'上一件':it.cr?'腐化':it.lk!=null?'詞綴鎖':'';}
 function uiGearTile(it,core=false){return uiItemTile({focus:core?'core-'+it.lg:'gear-'+it.uid,icon:core?xico('legend',it.lg,28):eqico(it.slot,it.r,52,it),name:it.name,meta:`Lv. ${it.il} · ${it.aff.length?'T'+Math.min(...it.aff.map(a=>affTier(a,it.il))):RAR[it.r].n}`,state:uiGearState(it)||RAR[it.r].n,action:core?`uiInspectCore('${it.lg}')`:`uiInspectGear(${it.uid})`,rarity:it.r,tip:[it.name+'（'+SLOTN[it.slot]+' · '+RAR[it.r].n+'）',...itemLines(it).map(l=>l.t)].join('\n')});}
-function uiEquippedTile(slot){const it=G.equip[slot];return it?uiItemTile({focus:'equipped-'+slot,icon:it.lg?xico('legend',it.lg,28):eqico(slot,it.r,52,it),name:it.name,meta:`${SLOTN[slot]} · Lv. ${it.il}`,state:'穿著',action:`uiInspectEquipped('${slot}')`,rarity:it.r}):`<div class="ui-item-tile ui-item-empty">${spr(SLOT_ICON[slot],28)}<b>${SLOTN[slot]}</b><small>空欄位</small></div>`;}
+function uiEquippedTile(slot){const it=G.equip[slot];return it?uiItemTile({focus:'equipped-'+slot,icon:it.lg?xico('legend',it.lg,28):eqico(slot,it.r,52,it),name:it.name,meta:`${SLOTN[slot]} · Lv. ${it.il}`,state:'穿著',action:`uiInspectEquipped('${slot}')`,rarity:it.r}):`<button class="ui-item-tile ui-item-empty" data-focus="equipped-${slot}" aria-label="${SLOTN[slot]}空欄位，前往背包選擇裝備" onclick="openModal('warehouse')">${spr(SLOT_ICON[slot],52)}<b>${SLOTN[slot]}</b><small>空欄位 · 選擇裝備</small></button>`;}
 function uiInspectEquipped(slot){const it=G.equip[slot];if(!it)return;if(it.lg)return uiInspectCore(it.lg);if(G.inventory.includes(it))return uiInspectGear(it.uid);showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[slot]} · ${RAR[it.r].n} · 物品等級 ${it.il} · 穿著中</p><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><button class="mb" data-initial-focus onclick="hideOverlay()">返回角色</button>`);}
 function uiGearComparison(it){const next=calc({...G.equip,[it.slot]:it}),current=G.st;return `<dl class="ui-stat-list"><div><dt>預估傷害</dt><dd>${tFmt(current.dps)} → ${tFmt(next.dps)}</dd></div><div><dt>最大生命</dt><dd>${tFmt(current.life)} → ${tFmt(next.life)}</dd></div><div><dt>暴擊率</dt><dd>${current.crit.toFixed(1)}% → ${next.crit.toFixed(1)}%</dd></div></dl>`;}
 function uiInspectCore(id){const it=G.armory[id];if(!it)return;const on=G.equip[it.slot]===it,back=modalTab==='warehouse'?'返回倉庫':'返回收藏';showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[it.slot]} · 暗金 · 物品等級 ${it.il}${on?' · 穿著中':''}</p><p>${uxEsc(LEGEND_BY[id].d)}</p>${uiGearComparison(it)}<ul>${itemLines(it).filter(l=>!l.lg||l.t==='已腐化').map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">${back}</button><button class="mb pri" ${on?'disabled':''} onclick="uiEquipCore('${id}')">${on?'已裝備':'換上'+uxEsc(it.name)}</button></div>`);}
@@ -75,6 +103,101 @@ function uiInitLayout(){
   addEventListener('resize',()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>uiApplyLayout());});
 }
 const UI_LAYOUT_CSS=`
+/* Character cover: scoped business variant; the global blue-violet shell stays unchanged. */
+.character-view{--cv-ink:#241d59;--cv-blue:#4141bb;--cv-signal:#8bdeff;--cv-accent:#e4ff74;--cv-paper:#f4f5ff;container-type:inline-size}
+.character-view[data-character="frost"]{--cv-signal:#bdb3ff;--cv-accent:#9bffe1}
+.character-view[data-character="beep"]{--cv-signal:#ffc7b0;--cv-accent:#ffec7c}
+.character-view[data-character="volt"]{--cv-signal:#a5eed3;--cv-accent:#ffd178}
+body.ui-material #mbody .character-view .ui-segments{margin-bottom:10px}
+body.ui-material #mbody .cv-identity{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:3px 0 10px;min-width:0;color:var(--cv-ink)}
+body.ui-material #mbody .cv-identity>div{min-width:0}
+body.ui-material #mbody .cv-kicker{font:12px/1.4 var(--ux-body);letter-spacing:.08em;color:var(--cv-blue)}
+body.ui-material #mbody .cv-identity h3{display:flex;align-items:baseline;gap:10px;margin:2px 0 0;font:27px/1.25 var(--ux-display);color:var(--cv-ink)}
+body.ui-material #mbody .cv-identity h3>span{font:13px var(--ux-body);white-space:nowrap}
+body.ui-material #mbody .cv-identity>.mb{font-size:13px!important;min-height:44px;flex:none;padding:7px!important}
+body.ui-material #mbody .cv-stage{position:relative;isolation:isolate;height:330px;overflow:hidden;background:linear-gradient(155deg,var(--cv-signal) 0 47%,#e8edff 47% 100%);border:2px solid var(--cv-ink);box-shadow:3px 3px 0 var(--cv-ink);margin:0 3px 0 0;color:var(--cv-ink)}
+.cv-stage::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.25;background:repeating-linear-gradient(135deg,transparent 0 28px,#ffffffb0 28px 30px);pointer-events:none}
+.character-view[data-character="frost"] .cv-stage::before{background:repeating-radial-gradient(circle at 32% 48%,transparent 0 20px,#ffffffc0 21px 23px,transparent 24px 38px)}
+.character-view[data-character="beep"] .cv-stage::before{background:repeating-linear-gradient(0deg,transparent 0 35px,#ffffffd0 35px 37px),repeating-linear-gradient(90deg,transparent 0 35px,#ffffffd0 35px 37px)}
+.character-view[data-character="volt"] .cv-stage::before{background:repeating-linear-gradient(90deg,transparent 0 30px,#ffffffd0 30px 45px,transparent 45px 70px);transform:skewY(-18deg)}
+body.ui-material #mbody .cv-code{position:absolute;left:3%;top:23px;right:0;z-index:0;font:clamp(80px,29cqw,152px)/1 var(--ux-display);letter-spacing:-.08em;color:var(--cv-blue);transform:skewY(-8deg);white-space:nowrap;pointer-events:none;user-select:none}
+body.ui-material #mbody .cv-stage-label{position:absolute;left:10px;top:9px;z-index:3;font:11px/1 var(--ux-body);letter-spacing:.1em}
+body.ui-material #mbody .cv-preview{position:absolute;left:0;right:68px;top:30px;bottom:42px;z-index:1}
+.cv-preview canvas{position:relative;z-index:1}
+.cv-fallback{position:absolute;inset:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px;text-align:center;background:var(--cv-paper);font:14px/1.5 var(--ux-body)}
+.cv-preview[data-preview="ready"] .cv-fallback{display:none}
+.cv-preview[data-preview="failed"] .cv-fallback{z-index:4}
+.cv-fallback [hidden]{display:none!important}
+body.ui-material #mbody .cv-phone{position:absolute;right:10px;top:56px;z-index:2;width:76px;display:flex;flex-direction:column;gap:5px;align-items:center}
+body.ui-material #mbody .cv-phone .ph-open{position:relative;inset:auto;width:76px;height:108px;min-height:108px!important;border:1px solid #fff!important;outline:1px solid var(--cv-ink);border-radius:0!important;background:#eef0ff8c!important;box-shadow:2px 2px 0 #241d5933!important}
+.cv-phone .ph-mini2{transform:scale(.7)}
+.cv-phone>span{font:11px/1.3 var(--ux-body);background:var(--cv-paper);padding:3px 5px}
+body.ui-material #mbody .cv-quote{position:absolute;right:10px;top:189px;width:90px;margin:0;z-index:3;padding:7px 5px;background:var(--cv-accent);font:12px/1.55 var(--ux-body);color:var(--cv-ink);border:1px solid var(--cv-ink);box-shadow:2px 2px 0 #241d5926;transform:rotate(-3deg)}
+body.ui-material #mbody .cv-stage-footer{position:absolute;inset:auto 0 0;min-height:44px;padding:0 8px;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:5px;background:var(--cv-blue);color:#fff}
+.cv-stage-footer>span{font:11px/1.5 var(--ux-body);min-width:0;max-width:58%;overflow-wrap:anywhere}
+.cv-rotate{display:flex;align-items:center;gap:3px;flex:none}
+body.ui-material #mbody .cv-rotate>.mb{min-width:44px;min-height:44px;height:auto!important;padding:2px 5px!important;font:12px var(--ux-body)!important;background:transparent!important;border:0!important;box-shadow:none!important;color:#fff!important}
+body.ui-material #mbody .cv-rotate>.mb:hover{background:#ffffff26!important}
+body.ui-material #mbody .cv-rotate>.mb:focus-visible{outline:2px solid var(--cv-accent)!important;outline-offset:-3px}
+body.ui-material #mbody .cv-loadout{padding:14px 0 8px}
+.cv-section-label{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--cv-ink);font:14px/1.4 var(--ux-body)}
+body.ui-material #mbody .cv-section-label>h3{font:17px/1.4 var(--ux-display);margin:0;color:var(--cv-ink)}
+body.ui-material #mbody .cv-section-label>.mb{font-size:12px!important;min-height:44px;padding:4px 6px!important}
+body.ui-material #mbody .character-view .ui-equipment{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:5px 0 0}
+body.ui-material #mbody .character-view .ui-equipment .ui-item-tile{position:relative;min-width:0;min-height:124px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding:7px 5px 5px!important;background:linear-gradient(#f7f9ff 0 65%,#dfe4f5 65%)!important;border:1px solid #fff!important;border-bottom:3px solid var(--item-rarity,var(--ux-edge))!important;border-radius:0!important;outline:1px solid #7f88ae;box-shadow:2px 2px 0 #7f88ae44!important;color:var(--cv-ink)!important}
+body.ui-material #mbody .character-view .ui-equipment .ui-item-state{position:static;align-self:flex-start;font:10px/1.4 var(--ux-body);color:#445274;background:none;min-height:14px;padding:0}
+body.ui-material #mbody .character-view .ui-equipment .ui-item-tile>.spr{flex:none;width:52px!important;height:52px!important;margin:0!important;object-fit:contain}
+body.ui-material #mbody .character-view .ui-equipment .ui-item-tile>b{font:12px/1.4 var(--ux-body)!important;color:var(--cv-ink)!important;white-space:normal;overflow-wrap:anywhere;max-width:100%;text-align:center;display:block;-webkit-line-clamp:unset;min-height:1.4em}
+body.ui-material #mbody .character-view .ui-equipment .ui-item-tile>small{margin-top:auto;font:10px/1.4 var(--ux-body)!important;color:#445274!important;text-align:center}
+body.ui-material #mbody .character-view .ui-equipment button:hover{outline:2px solid var(--cv-blue);transform:translateY(-1px)}
+body.ui-material #mbody .character-view .ui-equipment button:focus-visible{outline:3px solid var(--ux-focus)!important;outline-offset:2px}
+body.ui-material #mbody .cv-performance{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--cv-ink);border:2px solid var(--cv-ink);margin:10px 0 8px}
+body.ui-material #mbody .cv-stat{padding:11px 12px;background:#f3f3ff;color:var(--cv-ink);min-width:0}
+body.ui-material #mbody .cv-stat-main{background:var(--cv-blue);color:#fff}
+.cv-stat>span{display:block;font:12px/1.4 var(--ux-body)}
+body.ui-material #mbody .cv-stat>strong{display:block;margin-top:3px;font:25px/1.2 var(--ux-display);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.cv-stat strong>small{font:12px var(--ux-body);margin-left:5px}
+body.ui-material #mbody .cv-signature{margin:18px 0;padding:10px 12px 12px;border-left:5px solid var(--cv-blue);background:linear-gradient(110deg,#ffffffb0,transparent);color:var(--cv-ink)}
+body.ui-material #mbody .cv-signature>h3{font:22px/1.3 var(--ux-display);margin:4px 0 6px;background:none;border:0;color:var(--cv-ink)}
+.cv-signature>p,.cv-roster-detail>p{font:14px/1.65 var(--ux-body);margin:5px 0}
+body.ui-material #mbody .cv-progress{font:12px/1.6 var(--ux-body);color:var(--ux-muted);margin:12px 0}
+.cv-detail>p,.cv-profile>p{font:13px/1.6 var(--ux-body)}
+.cv-profile label{display:block;font:14px/1.5 var(--ux-body);padding:10px 0}
+body.ui-material #mbody .cv-profile input{display:block;max-width:100%;width:240px;min-height:44px;font:16px var(--ux-body);margin-top:5px}
+.cv-wardrobe{padding-top:15px}
+.cv-wardrobe .dcats{display:flex;gap:5px;margin:8px 0}
+body.ui-material #mbody .cv-wardrobe .dcats>.mb{flex:1;min-height:44px;font:14px var(--ux-body)!important}
+body.ui-material #mbody .cv-wardrobe .dcats>.mb[aria-pressed="true"]{background:var(--cv-blue)!important;color:#fff!important}
+.cv-styles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+body.ui-material #mbody .cv-style{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:120px;padding:7px 5px!important;white-space:normal;font:12px/1.4 var(--ux-body)!important;min-width:0;border-radius:0!important}
+.cv-style-art{height:56px;display:flex;align-items:center;justify-content:center}
+.cv-style-art>img{object-fit:contain;image-rendering:pixelated}
+.cv-style>small{font:11px/1.3 var(--ux-body);margin-top:auto}
+body.ui-material #mbody .cv-style[aria-pressed="true"]{outline:2px solid var(--cv-blue)!important;background:var(--cv-blue)!important;color:#fff!important}
+body.ui-material #mbody .cv-style[aria-pressed="true"]>small{color:#fff}
+body.ui-material #mbody .cv-dress-action{margin:14px 0 10px;padding:12px;border-left:5px solid var(--cv-blue);background:#f4f6ff}
+.cv-dress-action strong{font:18px var(--ux-display)}
+.cv-dress-action p{font:13px/1.5 var(--ux-body);margin:6px 0 10px}
+.cv-dress-action .uxactions{display:flex;flex-wrap:wrap;gap:7px}
+body.ui-material #mbody .cv-dress-action .pri{background:var(--cv-blue)!important;color:#fff!important}
+body.ui-material #mbody .cv-dress-action button:disabled{background:#ccd3e1!important;color:#596880!important}
+body.ui-material #ovl .cv-roster{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+body.ui-material #ovl .cv-roster>.mb{min-width:0;min-height:130px;display:flex;flex-direction:column;align-items:center;gap:4px;white-space:normal;padding:8px!important;font:14px/1.5 var(--ux-body)!important}
+.cv-roster img{image-rendering:pixelated;object-fit:contain;background:#c9d5f7;flex:none}
+.cv-roster small{font:12px var(--ux-body)}
+body.ui-material #ovl .cv-roster>.mb[aria-pressed="true"]{background:var(--ux-blue-face)!important;color:#fff!important;outline:2px solid var(--ux-focus)}
+.cv-roster-detail{padding:10px;background:#edf0fc;color:var(--ux-ink);border-left:4px solid var(--ux-blue)}
+.cv-roster-detail h3{font:18px/1.5 var(--ux-display);margin:0 0 6px}
+@keyframes cv-cover-enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes cv-code-enter{from{opacity:0;transform:translateX(-14px) skewY(-8deg)}to{opacity:1;transform:skewY(-8deg)}}
+.cv-arrive .cv-preview{animation:cv-cover-enter .5s ease-out both}
+.cv-arrive .cv-code{animation:cv-code-enter .4s ease-out both}
+@media(max-width:559px){body.ui-material #mbody .cv-stage{height:260px}body.ui-material #mbody .cv-preview{right:62px;top:22px;bottom:40px}body.ui-material #mbody .cv-phone{right:7px;top:39px;width:65px}body.ui-material #mbody .cv-phone .ph-open{width:65px;height:96px;min-height:96px!important}body.ui-material #mbody .cv-quote{right:7px;top:165px;width:75px;font-size:11px;padding:4px;line-height:1.4}.cv-stage-footer>span{max-width:55%;font-size:10px}body.ui-material #mbody .cv-identity h3{font-size:24px}body.ui-material #mbody .character-view .ui-equipment .ui-item-tile{min-height:117px}.cv-rotate{gap:0}}
+@media(max-height:680px) and (max-width:559px){body.ui-material #mbody .cv-stage{height:215px}body.ui-material #mbody .cv-quote{display:none}body.ui-material #mbody .cv-phone{top:35px}}
+@media(max-width:359px){body.ui-material #mbody .cv-identity h3{font-size:22px;gap:6px}body.ui-material #mbody .cv-identity>.mb{font-size:12px!important}body.ui-material #mbody .cv-stat{padding:9px}body.ui-material #mbody .cv-stat>strong{font-size:22px}.cv-styles{grid-template-columns:repeat(2,minmax(0,1fr))}body.ui-material #mbody .cv-rotate>.mb{min-width:44px;padding:2px 4px!important}}
+@media(prefers-reduced-motion:reduce){.cv-arrive .cv-preview,.cv-arrive .cv-code{animation:none}body.ui-material #mbody .character-view .ui-equipment button:hover{transform:none}}
+@media(forced-colors:active){body.ui-material #mbody .cv-stage,body.ui-material #mbody .cv-stat,body.ui-material #mbody .cv-stage-footer{background:Canvas;color:CanvasText;border:1px solid CanvasText}.cv-stage::before,.cv-code{display:none}body.ui-material #mbody .cv-rotate>.mb{color:ButtonText!important;border:1px solid ButtonText!important}}
+
 .ui-feedback{display:grid;gap:12px;max-width:680px;margin:auto}.ui-feedback label{display:grid;gap:6px}.ui-feedback input,.ui-feedback textarea,.ui-feedback select{width:100%;min-height:44px;padding:10px;border:1px solid var(--ux-frame);background:var(--ux-lcd);color:var(--ux-ink)}.ui-feedback textarea{resize:none;min-height:160px}.ui-feedback .ui-feedback-consent{display:flex;align-items:center;gap:8px}.ui-feedback-consent input{width:24px;min-height:24px}.ui-feedback-error{color:#982b25;min-height:24px}.ui-feedback-preview{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--ux-lcd);padding:12px;border:1px solid var(--ux-edge)}
 
 body.d{grid-template-columns:minmax(0,1fr) clamp(480px,34vw,620px)!important;grid-template-areas:"hd rt" "st rt"!important;grid-template-rows:48px minmax(0,1fr);height:100dvh;max-width:1920px;overflow:hidden;padding:16px 18px 34px!important;gap:12px 16px}
@@ -179,13 +302,15 @@ let UI_LIVE_SIGNATURE='';
 function uiLiveSignature(){
   if(modalTab==='warehouse')return JSON.stringify([G.inventoryRevision,G.autoEquip,G.storageRecycled,G.armory,G.equip,G.builds]);
   if(modalTab==='skills')return JSON.stringify([G.lvl,G.board,G.gems,G.carts,G.seen,G.st.dps,G.chips]);
-  if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.cards,G.picks,G.relicPicks]);
+  if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.st,G.cos,G.cards,G.picks,G.relicPicks]);
+  if(modalTab==='dress'){const e=cosGet(dSel.cat,dSel.id);return JSON.stringify([G.lvl,G.equip,G.char,G.cos,G.own,e?G.gold>=e[3]:true]);}
   if(modalTab==='craft')return JSON.stringify([G.parts,G.equip,G.coreDust,G.city?.fragments,G.city?.maxTier,G.maxDepth,!!G.run,!!G.train]);
   if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,G.run?.city,G.city,G.towerBest,!!G.train,G.trainLast,G.maxDepth]);
   return modalTab;
 }
 function uiRefreshLive(){
   if(modalTab==='settings')uiSyncSettings();
+  const gold=$('cv-gold');if(gold)gold.textContent=tFmt(G.gold);
   if(G.offline||document.body.classList.contains('watch-mode'))return;
   if(!$('modal')||$('modal').hidden)return;
   const signature=uiLiveSignature();
