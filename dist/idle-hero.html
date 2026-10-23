@@ -835,7 +835,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  { v:'0.41.4', d:'2026-10-23', t:['接線板改成和遊戲一致的深藍紫窗口色：深藍底、凹下去的格子，電線與起點、終點用亮色，主體和背景一眼分得開','裝了技能的終點仍保留顏色：粗色框、顏色標籤和底部色條；選取改成白色外框，不再和黃色提示閃光混淆'] },
+  { v:'0.41.4', d:'2026-10-23', t:['接線板改成和遊戲一致的深藍紫窗口色：深藍底、凹下去的格子，電線與起點、終點用亮色，主體和背景一眼分得開','裝了技能的終點仍保留顏色：粗色框、顏色標籤和底部色條；選取改成白色外框，不再和黃色提示閃光混淆','電線經過的空配件位會在線上留一個帶色環的小孔，看得出這格還能放配件'] },
   { v:'0.41.3', d:'2026-10-23', t:['接線板可以直接按住起點，拉到終點就接好：不用先選插槽，沒裝技能的插槽會自動補上技能，重新拉會取代舊線','接線板格子之間留出空隙，畫面不再擠在一起'] },
   { v:'0.41.2', d:'2026-10-23', t:['接線板的電線改成一條連續的粗電纜，帶高光；沿路的配件襯墊改成低調的淡色小圓點，畫面焦點放在電線、起點與終點','接線板起點（電源）與終點（技能插槽）都直接標上文字，一眼看得出線從哪裡接到哪裡'] },
   { v:'0.41.1', d:'2026-10-23', t:['技能頁新手引導重做：開頭一句話講明接線板是什麼，每一步只講一件事，並讓下一步要點的格子閃爍提示','第 2、3 步多了「一鍵幫我設好」按鈕，不想研究的人一按就完成','接線板下方加了圖例：電源、技能插槽、色塊各代表什麼'] },
@@ -5038,15 +5038,16 @@ function wireStatus(){
 }
 function wireSvg(){
   const B = G.board, pt = (x, y) => `${(x + .5).toFixed(2)},${(y + .5).toFixed(2)}`;
-  let o = '';
+  let o = '', holes = '';
   for (const w of B.wires){
     if (!w.cells.length) continue;
     const done = GridLab.connected(B, w.sock), col = GridLab.SOCK_COL[w.sock], s = GridLab.SRCS[w.sock], k = GridLab.SOCKS[w.sock], pts = [pt(s[0], s[1]), ...w.cells.map(c => pt(c[0], c[1]))];
     if (done) pts.push(pt(k[0], k[1]));
     const p = pts.join(' '), sel = w.sock === selSock;
+    for (const c of w.cells) if (GridLab.isPad(c[0], c[1]) && !wSupportAt(c[0], c[1])) holes += `<circle class="wk k${GridLab.padColor(c[0], c[1])}" cx="${c[0] + .5}" cy="${c[1] + .5}" r=".15"/>`;
     o += `<polyline class="wo" points="${p}"/><polyline class="wl c-${col} ${done ? 'done' : 'part'}${sel ? ' sel' : ''}" points="${p}"/><polyline class="wh" points="${p}"/>${sel || !done ? `<polyline class="wf" points="${p}"/>` : ''}`;
   }
-  return `<svg class="wsvg" viewBox="0 0 ${GridLab.W} ${GridLab.H}" preserveAspectRatio="none" aria-hidden="true">${o}</svg>`;
+  return `<svg class="wsvg" viewBox="0 0 ${GridLab.W} ${GridLab.H}" preserveAspectRatio="none" aria-hidden="true">${o}${holes}</svg>`;
 }
 function wireStep(){
   const B = G.board, res = GridLab.resolve(B, G.lvl), hasSkill = B.pieces.some(p => p.kind === 'active'), wired = res.some(r => r.wired), parts = res.some(r => r.linked.length);
@@ -5423,6 +5424,7 @@ body #mbody .dpsbar{padding:5px 8px;margin:4px 0}.ui-inventory{margin:8px 0}
 .wsvg polyline{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .wsvg .wo{stroke:#070b26;stroke-width:.4}.wsvg .wh{stroke:#ffffff99;stroke-width:.07;transform:translate(-.04px,-.04px)}
 .wsvg .wl{stroke-width:.28}.wsvg .wl.c-r{stroke:#ff5a3c}.wsvg .wl.c-b{stroke:#3c7dff}.wsvg .wl.c-g{stroke:#2fd08a}.wsvg .wl.part{stroke-dasharray:.34 .16}.wsvg .wl.sel{stroke-width:.3}
+.wsvg .wk{fill:#141a4a;stroke-width:.06}.wsvg .wk.kr{stroke:#ff9a80}.wsvg .wk.kb{stroke:#8ab4ff}.wsvg .wk.kg{stroke:#7be8b4}
 .wsvg .wf{stroke:#fff;stroke-width:.07;stroke-dasharray:.07 .5;animation:wireflow 1s linear infinite}
 @keyframes wireflow{to{stroke-dashoffset:-1.14}}
 @media(prefers-reduced-motion:reduce){.wsvg .wf{animation:none}#mbody .pz.wb button.pc.chip.blink::after{animation:none}}

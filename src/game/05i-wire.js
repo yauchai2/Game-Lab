@@ -19,15 +19,16 @@ function wireStatus(){
 }
 function wireSvg(){
   const B = G.board, pt = (x, y) => `${(x + .5).toFixed(2)},${(y + .5).toFixed(2)}`;
-  let o = '';
+  let o = '', holes = '';
   for (const w of B.wires){
     if (!w.cells.length) continue;
     const done = GridLab.connected(B, w.sock), col = GridLab.SOCK_COL[w.sock], s = GridLab.SRCS[w.sock], k = GridLab.SOCKS[w.sock], pts = [pt(s[0], s[1]), ...w.cells.map(c => pt(c[0], c[1]))];
     if (done) pts.push(pt(k[0], k[1]));
     const p = pts.join(' '), sel = w.sock === selSock;
+    for (const c of w.cells) if (GridLab.isPad(c[0], c[1]) && !wSupportAt(c[0], c[1])) holes += `<circle class="wk k${GridLab.padColor(c[0], c[1])}" cx="${c[0] + .5}" cy="${c[1] + .5}" r=".15"/>`;
     o += `<polyline class="wo" points="${p}"/><polyline class="wl c-${col} ${done ? 'done' : 'part'}${sel ? ' sel' : ''}" points="${p}"/><polyline class="wh" points="${p}"/>${sel || !done ? `<polyline class="wf" points="${p}"/>` : ''}`;
   }
-  return `<svg class="wsvg" viewBox="0 0 ${GridLab.W} ${GridLab.H}" preserveAspectRatio="none" aria-hidden="true">${o}</svg>`;
+  return `<svg class="wsvg" viewBox="0 0 ${GridLab.W} ${GridLab.H}" preserveAspectRatio="none" aria-hidden="true">${o}${holes}</svg>`;
 }
 function wireStep(){
   const B = G.board, res = GridLab.resolve(B, G.lvl), hasSkill = B.pieces.some(p => p.kind === 'active'), wired = res.some(r => r.wired), parts = res.some(r => r.linked.length);
@@ -404,6 +405,7 @@ body #mbody .dpsbar{padding:5px 8px;margin:4px 0}.ui-inventory{margin:8px 0}
 .wsvg polyline{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .wsvg .wo{stroke:#070b26;stroke-width:.4}.wsvg .wh{stroke:#ffffff99;stroke-width:.07;transform:translate(-.04px,-.04px)}
 .wsvg .wl{stroke-width:.28}.wsvg .wl.c-r{stroke:#ff5a3c}.wsvg .wl.c-b{stroke:#3c7dff}.wsvg .wl.c-g{stroke:#2fd08a}.wsvg .wl.part{stroke-dasharray:.34 .16}.wsvg .wl.sel{stroke-width:.3}
+.wsvg .wk{fill:#141a4a;stroke-width:.06}.wsvg .wk.kr{stroke:#ff9a80}.wsvg .wk.kb{stroke:#8ab4ff}.wsvg .wk.kg{stroke:#7be8b4}
 .wsvg .wf{stroke:#fff;stroke-width:.07;stroke-dasharray:.07 .5;animation:wireflow 1s linear infinite}
 @keyframes wireflow{to{stroke-dashoffset:-1.14}}
 @media(prefers-reduced-motion:reduce){.wsvg .wf{animation:none}#mbody .pz.wb button.pc.chip.blink::after{animation:none}}
