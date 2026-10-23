@@ -225,10 +225,10 @@ const HELP = {
 const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
 const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
 // 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
-const uiBattleSize=()=>{if(G.userCz)return G.cz==null?1:G.cz;if(modalTab==='skills')return G.autoFold===false?2:3;if(['craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
-const CZN = ['大', '中', '小', '收'];
+const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(modalTab==='skills')return G.autoFold===false?2:3;if(['craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
+const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
-function cycleCz(){ const current = uiBattleSize(); G.cz = (current + 1) % 4; G.userCz = true; G.dirty = true; mobTitle(); }
+function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
 const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
 const RISKM = Object.keys(MODS).filter(k => ['challenge','mixed'].includes(MODS[k].kind));
 function runMods(R){
