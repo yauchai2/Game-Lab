@@ -791,6 +791,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.39.16',d:'2026-10-23',t:['介面配色改成亮銀外殼、白色閱讀面、鮮藍選中與檸檬黃主要按鈕','角色與裝扮預覽加入四位角色各自的待機小動作','角色頁小手機改成緩慢單向自轉']},
   { v:'0.39.15',d:'2026-10-23',t:['巨像、螃蟹、蜘蛛、鼹鼠的手腳可以各自擺動：巨像走路擺臂、出手舉臂砸下，螃蟹鉗子開闔、八腳橫行，蜘蛛八腳輪流點地，鼹鼠雙爪挖掘']},
   { v:'0.39.14',d:'2026-10-23',t:['技能出手範圍再縮短，只打得到主角身邊的怪；撿東西也要走到更近才會撿起','修正少數怪物倒下時可能出現的畫面錯誤']},
   { v:'0.39.13',d:'2026-10-23',t:['怪物移動與待機更有個性：螃蟹橫行、蜘蛛急竄、喇叭隨節拍脹縮、鬼火旋轉飄動、鼹鼠起伏鑽行、巨像沉重踏步','技能命中特效依元素區分：火焰迸出火星、冰霜落下冰晶、閃電放出電弧']},
@@ -3119,6 +3120,8 @@ function characterPlay(g,name,fade=.1){
 }
 function characterAnimate(g,dt,state={}){
  const u=g.userData;if(!u.y2k)return;dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));
+ // Preview offsets are temporary: remove them before the mixer writes the next pose.
+ if(u.previewApplied){for(const [name,q]of Object.entries(u.previewPose))u.B[name].quaternion.copy(q);u.previewApplied=false;}
  const mode=state.dead?'death':state.hurt?'hurt':state.dash?'dash':state.attack?'attack':state.cast?'cast':state.speed>7?'run':state.speed>1?'walk':'idle';
  if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack')u.actions.attack.reset().play();u.lastSwing=state.swing;
  if(state.cast&&u.lastCast!=null&&state.castTime<u.lastCast&&u.animation==='cast')u.actions.cast.reset().play();u.lastCast=state.castTime;
@@ -3126,12 +3129,59 @@ function characterAnimate(g,dt,state={}){
  u.mixer.update(dt);if(u.pet){const t=u.mixer.time;u.pet.position.set(8+Math.sin(t*1.7)*.6,13+Math.sin(t*3)*.8,-2);u.pet.rotation.y=Math.sin(t)*.25;}
  g.updateMatrixWorld(true);u.skeleton.update();
 }
+// Presentation only. No game clocks, combat flags, save data or model assets change.
+function characterPreviewAnimate(g,dt,reduced=false){
+ if(!g?.userData.y2k)return;
+ const u=g.userData;
+ characterAnimate(g,reduced?0:dt);
+ if(reduced)return;
+ dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));
+ u.previewTime=(u.previewTime||0)+dt;
+ const phase={aki:0,milo:1.7,ping:3.1,null:4.6}[u.id]||0,t=u.previewTime+phase;
+ const smooth=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);};
+ // Long rests between gestures, with soft acceleration and a separate return.
+ const gesture=(period,start,hold,end)=>{const p=t%period;return smooth((p-start)/.8)*(1-smooth((p-hold)/(end-hold)));};
+ if(!u.previewPose)u.previewPose={};
+ if(!u.previewEuler)u.previewEuler=new T3.Euler();
+ if(!u.previewOffset)u.previewOffset=new T3.Quaternion();
+ const turn=(name,x=0,y=0,z=0)=>{
+  const bone=u.B[name];if(!bone)return;
+  (u.previewPose[name]||(u.previewPose[name]=new T3.Quaternion())).copy(bone.quaternion);
+  bone.quaternion.multiply(u.previewOffset.setFromEuler(u.previewEuler.set(x,y,z)));
+ };
+ const breath=Math.sin(t*1.55);
+ if(u.id==='aki'){
+  const look=gesture(11,2,3.8,5.8);
+  turn('torso',.008*breath,0,-.025);
+  turn('head',-.025*look,0,.16*look);
+  turn('foreR',-.10*look);turn('handR',0,.09*look,0);
+ }else if(u.id==='milo'){
+  const beat=Math.sin(t*2.5),tap=gesture(9,3,4.4,6.2);
+  turn('torso',.012*breath,0,.04*beat);
+  turn('head',.055*Math.sin(t*2.5-.45),0,-.025*beat);
+  turn('foreL',-.16*tap);turn('handL',.04*tap,0,.07*tap);
+ }else if(u.id==='ping'){
+  const check=gesture(12,2,4.8,7);
+  turn('torso',.035*check,0,0);
+  turn('head',.13*check,0,-.10*check);
+  turn('armL',-.25*check,0,-.04*check);
+  turn('foreL',-.42*check);turn('handL',0,.06*check,0);
+ }else if(u.id==='null'){
+  const greet=gesture(13,2.5,5.3,7.8);
+  turn('torso',.015*breath,0,-.04*greet);
+  turn('head',.065*greet,0,.18*greet);
+  turn('armR',-.20*greet,0,.08*greet);
+  turn('foreR',-.26*greet);turn('handR',0,.08*Math.sin(t*2)*greet,0);
+ }
+ u.previewApplied=true;g.updateMatrixWorld(true);u.skeleton.update();
+}
 function characterHeroLook(g){
  const h=G.h,u=g.userData;characterAnimate(g,R3.frameDt||1/60,{dead:h.dead>0,hurt:h.hurtT>0,dash:!!h.dash,attack:h.swingT>=0,swing:h.swingT,cast:h.castT>=0||G.time<(h.characterCastUntil||0),castTime:h.castT,speed:h.mv||0});
  at3(g,h.x,h.y,BZ+terrainHeight(h.x,h.y));const target=nearestMon(false);if(target&&h.dead<=0)u.face=Math.atan2(target.x-h.x,target.y-h.y);const d=Math.atan2(Math.sin(u.face-g.rotation.y),Math.cos(u.face-g.rotation.y));g.rotation.y+=d*(1-Math.exp(-12*(R3.frameDt||1/60)));
  g.scale.setScalar(.85*CK);u.orb.visible=h.castT>=0&&h.dead<=0;
 }
 function characterDispose(g){if(!g?.userData.y2k)return;const u=g.userData;u.mixer.stopAllAction();u.mixer.uncacheRoot(g);u.skeleton.dispose();}
+
 
 </script>
 <script>
@@ -3659,7 +3709,7 @@ function uiConfirmForgetBuild(){const p=FORGET_BUILD_PENDING;FORGET_BUILD_PENDIN
 <script>
 /* ---------- 角色頁與裝扮：資料卡、3D 預覽與三類公開裝扮 ---------- */
 let dSel = { cat:'weaponStyle', id:null };   // 目前選中（預覽中）的部位與顏色；id 為 null 代表預覽目前穿的
-const PV = { cv:null, rd:null, sc:null, cam:null, hero:null, sig:'', yaw:.5, auto:true, drag:null };
+const PV = { cv:null, rd:null, sc:null, cam:null, hero:null, sig:'', yaw:.5, drag:null, lastTime:null };
 const cosGet = (cat, id) => (COS[cat]||[]).find(x => x[0] === id);
 const cosOwned = (cat, id) => !!cosGet(cat,id)&&(cosGet(cat,id)[3]===0||!!G.own[cat+':'+id]);
 function cosPreview(){ const c = Object.assign({}, G.cos); if (dSel.id&&cosAvailable(dSel.cat)&&cosGet(dSel.cat,dSel.id)) c[dSel.cat] = dSel.id; return c; }
@@ -3700,25 +3750,27 @@ function dressMount(){
     PV.rd = new T3.WebGLRenderer({ canvas:PV.cv, antialias:false, alpha:true }); PV.rd.setPixelRatio(1); PV.rd.setClearColor(0x000000, 0); PV.rd.outputColorSpace = T3.SRGBColorSpace;
     PV.sc = new T3.Scene(); PV.sc.add(new T3.HemisphereLight(0xeaf5ff, 0xd8c8f0, 1.55)); const sun = new T3.DirectionalLight(0xfff6ea, 1.5); sun.position.set(30, 60, 50); PV.sc.add(sun); PV.sc.add(new T3.AmbientLight(0xffffff, .25));
     PV.cam = new T3.OrthographicCamera(-1, 1, 1, -1, -100, 100);
-    PV.cv.addEventListener('pointerdown', e => { PV.drag = { x:e.clientX, y:PV.yaw }; PV.auto = false; PV.cv.style.cursor = 'grabbing'; });
+    PV.cv.addEventListener('pointerdown', e => { PV.drag = { x:e.clientX, y:PV.yaw }; PV.cv.style.cursor = 'grabbing'; });
     addEventListener('pointermove', e => { if (PV.drag) PV.yaw = PV.drag.y + (e.clientX - PV.drag.x)*.012; });
     addEventListener('pointerup', () => { PV.drag = null; if (PV.cv) PV.cv.style.cursor = 'grab'; });
     setInterval(dressTick, 40);
   }
-  host.appendChild(PV.cv); PV.sig = '';
+  host.appendChild(PV.cv); PV.lastTime = null;
 }
 function dressTick(){
-  if (!PV.rd || !PV.cv.isConnected || (modalTab !== 'dress') || $('modal').hidden) return;
+  if (!PV.rd || !PV.cv.isConnected || (modalTab !== 'dress') || $('modal').hidden || document.hidden){ PV.lastTime=null; return; }
+  const now=performance.now(),dt=PV.lastTime===null?0:Math.min(.1,(now-PV.lastTime)/1000);PV.lastTime=now;
   const w = PV.cv.clientWidth, h = PV.cv.clientHeight; if (w < 4 || h < 4) return;
   const A = G.equip.armor, W = G.equip.weapon, cos = cosPreview(), sig = [aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, G.char, JSON.stringify(cos)].join();
   if (sig !== PV.sig){ PV.sig = sig; if (PV.hero){if(typeof characterDispose==='function')characterDispose(PV.hero);PV.sc.remove(PV.hero);} const g = buildHero(aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, cos); g.scale.setScalar(1); g.traverse(o => { if (o.isMesh && o.material && o.material.transparent && o.material.opacity < .9 && o.geometry.type !== 'SphereGeometry') o.visible = false; }); PV.hero = g; PV.sc.add(g); PV.sc.updateMatrixWorld(true); PV.box = new T3.Box3(); g.traverse(o => { if (o.isMesh && o.visible && o.geometry.type !== 'RingGeometry' && o.geometry.type !== 'CircleGeometry'){ o.geometry.computeBoundingBox(); PV.box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld)); } }); }
-  if(PV.hero.userData.y2k)characterAnimate(PV.hero,.04);
-  if (PV.auto) PV.yaw += .02; PV.hero.rotation.y = PV.yaw;
+  if(PV.hero.userData.y2k)characterPreviewAnimate(PV.hero,dt,matchMedia('(prefers-reduced-motion: reduce)').matches);
+  PV.hero.rotation.y = PV.yaw;
   const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=R3.clean?'auto':'pixelated';
   if(PV.cv.width!==buffer.width||PV.cv.height!==buffer.height)PV.rd.setSize(buffer.width,buffer.height,false);
   const bx = PV.box, cy = (bx.min.y + bx.max.y)/2, vh = (bx.max.y - bx.min.y)*1.2, vw = vh*w/h; PV.cam.left = -vw/2; PV.cam.right = vw/2; PV.cam.top = vh/2; PV.cam.bottom = -vh/2; PV.cam.position.set(0, cy, 40); PV.cam.lookAt(0, cy, 0); PV.cam.updateProjectionMatrix();
   PV.rd.render(PV.sc, PV.cam);
 }
+
 
 </script>
 <script>
@@ -3908,16 +3960,33 @@ function toggleBoss(on){
 </script>
 <script>
 /* 共用操作契約：液晶詳情、盤面鍵盤及視窗焦點。暫存 UI 狀態不寫入遊戲存檔。 */
-const UX_THEME = `:root{--ux-ink:#172751;--ux-muted:#475778;--ux-screen:#e6e8f7;--ux-blue:#303d9b;--ux-edge:#9ca9c8;--ux-accent:#b94732;--ux-focus:#1f3fb0;--ux-scroll:#8297c6;--ux-track:#e3ebfa;--ux-face:#c8cedc;--ux-key:#dae1ed;--ux-lcd:#edf4f1;--ux-frame:#5b6781;--ux-rule:#b9c2d7;--ux-body:"Cubic 11",system-ui,sans-serif;--ux-display:"Cubic 11",system-ui,sans-serif;--ux-text:16px;--ux-line:24px;--ux-small:14px;--ux-small-line:20px;--ux-heading:20px;--ux-heading-line:28px;--ux-shell-radius:10px;--ux-key-radius:4px;--ux-metal:linear-gradient(180deg,#f1f4fb 0%,#d2d9e7 8%,#c8cedc 50%,#aeb9cf 100%) #c8cedc;--ux-key-face:linear-gradient(180deg,#fff 0px,#e9eef7 2px,#d5dfed 48%,#c9d4e6 50%,#d7dfed 100%) #dae1ed;--ux-key-hover:linear-gradient(180deg,#fff 0px,#edf8ff 2px,#daeafa 48%,#c0d9ed 50%,#d4e7f7 100%) #e6f1ff;--ux-blue-face:linear-gradient(180deg,#8f9de6 0%,#5567bf 8%,#4858af 46%,#303d9b 48%,#334794 100%) #303d9b;--ux-title-face:linear-gradient(180deg,#b9c6f0 0px,#6575be 2px,#4858a9 3px,#303d86 100%) #303d86;--ux-key-shadow:inset 1px 1px #fff,inset -1px -1px #8492b0,0 2px #727f9c;--ux-inset:inset 1px 1px #677694,inset -1px -1px #fff}`;
-/* 銀灰掌機外殼、藍紫液晶與短鍵程按鍵；內容不疊卡，兩種編年史共用。 */
+const UX_THEME = `:root{
+ --ux-ink:#17243e;--ux-muted:#4b5c75;--ux-screen:#f9fcff;--ux-blue:#174fe6;
+ --ux-edge:#9aafca;--ux-accent:#ffe34d;--ux-focus:#174fe6;--ux-scroll:#6f93bf;--ux-track:#edf5fc;
+ --ux-face:#e8eef4;--ux-key:#f5f9ff;--ux-lcd:#fff;--ux-frame:#607b9d;--ux-rule:#d4e1ed;
+ --ux-sky:#e4f4ff;--ux-selected:#dceeff;--ux-pink:#c32877;
+ --ux-body:"Cubic 11",system-ui,sans-serif;--ux-display:"Cubic 11",system-ui,sans-serif;
+ --ux-text:16px;--ux-line:24px;--ux-small:14px;--ux-small-line:20px;--ux-heading:20px;--ux-heading-line:28px;
+ --ux-shell-radius:10px;--ux-key-radius:4px;
+ --ux-metal:linear-gradient(180deg,#fff 0 3px,#edf3f8 3px 50%,#dbe5ef 100%) #e8eef4;
+ --ux-key-face:linear-gradient(180deg,#fff 0 3px,#f5f9ff 3px 70%,#e7eff8 100%) #f5f9ff;
+ --ux-key-hover:linear-gradient(180deg,#fff 0 3px,#e8f6ff 3px 70%,#d3eaff 100%) #e8f6ff;
+ --ux-blue-face:linear-gradient(180deg,#5986ff 0 2px,#245ff4 2px 50%,#174fe6 50% 100%) #174fe6;
+ --ux-title-face:linear-gradient(90deg,#174fe6 0%,#2676f5 70%,#59c4ff 100%) #174fe6;
+ --ux-action-face:linear-gradient(180deg,#fff7b2 0 3px,#ffe34d 3px 72%,#f7ce36 72% 100%) #ffe34d;
+ --ux-key-shadow:inset 1px 1px #fff,inset -1px -1px #b3c5d9,0 2px #829bb9;
+ --ux-inset:inset 1px 1px #829bb9,inset -1px -1px #fff
+}`;
+/* 亮銀視窗、白色閱讀面、鮮藍選中與檸檬黃動作；兩種編年史共用。 */
 const UX_MATERIAL_CSS=`
 /* 像素字只有常規字重，禁止瀏覽器合成粗體破壞格線。 */
+body.ui-material{--ink:var(--ux-ink);--paper:var(--ux-screen);color:var(--ux-ink)}
 body.ui-material,body.ui-material *{font-family:var(--ux-body)!important;font-weight:400!important;font-synthesis:none!important}
 
 body.ui-material :is(#modal>.mbox,#ovl>.mbox,#wiki>.wkb){border:2px solid var(--ux-frame)!important;border-radius:var(--ux-shell-radius)!important;outline:none!important;background:var(--ux-metal)!important;box-shadow:inset 1px 1px #fff,inset -1px -1px #8794ad,3px 3px 0 #34446780!important}
 body.ui-material #modal>.mbox{padding:4px!important}
 body.ui-material :is(#mttl,.wkt){background:var(--ux-title-face)!important;border-radius:5px 5px 0 0!important;box-shadow:inset 1px 0 #d5dfff,inset -1px 0 #24366d!important;border:1px solid #293a78;border-bottom:2px solid #1c2c66;color:#fff}
-body.ui-material :is(#mttl h2,.wkt h2){font-family:var(--ux-display);font-weight:400;text-shadow:1px 1px #1c2c66}
+body.ui-material :is(#mttl h2,.wkt h2){font-family:var(--ux-display);font-weight:400;text-shadow:none}
 body.ui-material #mttl::before{display:block;content:"";width:5px;height:20px;flex:none;background:linear-gradient(#b9f1f0 0 40%,#6bbacb 40% 65%,#b9f1f0 65%);box-shadow:1px 0 #1c2c66}
 body.ui-material :is(#modal,#ovl,#wiki) :where(button:not(.pc):not(.gt)){background:var(--ux-key-face)!important;border:1px solid var(--ux-frame)!important;border-radius:var(--ux-key-radius)!important;box-shadow:var(--ux-key-shadow)!important;text-shadow:none!important;color:var(--ux-ink)!important;transform:none!important;font-family:var(--ux-body)!important}
 body.ui-material :is(#modal,#ovl,#wiki) :where(button:not(.pc):not(.gt)):enabled:hover{background:var(--ux-key-hover)!important}
@@ -3925,13 +3994,13 @@ body.ui-material :is(#modal,#ovl,#wiki) :where(button:not(.pc):not(.gt)):enabled
 body.ui-material #mtabs{background:var(--ux-metal)!important;box-shadow:inset 0 1px #fff!important;border:0!important;gap:4px!important}
 body.ui-material #mtabs button.tab{background:var(--ux-key-face)!important;border:1px solid #8492ae!important;border-radius:4px 4px 6px 6px!important;box-shadow:var(--ux-key-shadow)!important;text-shadow:none!important;color:var(--ux-ink)!important}
 body.ui-material #mtabs button.tab:hover{background:var(--ux-key-hover)!important}
-body.ui-material #mtabs button.tab.on{background:linear-gradient(180deg,#f1f5ff,#c1cef3)!important;color:#243884!important;border-color:#4c60a5!important;box-shadow:inset 1px 1px #fff,inset -1px -1px #8096d1,inset 0 -3px #4057aa!important}
+body.ui-material #mtabs button.tab.on{background:var(--ux-selected)!important;color:#243884!important;border-color:#4c60a5!important;box-shadow:inset 1px 1px #fff,inset -1px -1px #8096d1,inset 0 -3px #4057aa!important}
 body.ui-material :is(#modal,#ovl,#wiki) button[aria-pressed="true"],body.ui-material #mbody button.on:not(.pc):not(.gt),body.ui-material #wiki button.wkc.on{background:var(--ux-blue-face)!important;border:1px solid #26357e!important;box-shadow:inset 1px 1px #9ba9eb,inset -1px -1px #1c2d70!important;color:#fff!important}
-body.ui-material :is(#mbody,#ovl) button.mb.pri{background:linear-gradient(180deg,#eeb39e 0%,#c45b42 10%,#b94732 55%,#a1392e 56%,#b94732 100%)!important;border:1px solid #79382e!important;color:#fff!important;box-shadow:inset 1px 1px #f4c5af,inset -1px -1px #7e392d,0 2px #643527!important}
-body.ui-material :is(#modal,#ovl,#wiki) button:disabled{background:#ccd3e1!important;color:#596880!important;border-color:#9ba7bd!important;box-shadow:inset 1px 1px #edf0f8!important;text-shadow:none!important;opacity:1}
+body.ui-material :is(#mbody,#ovl) button.mb.pri{background:var(--ux-action-face)!important;border:1px solid #9a771d!important;color:var(--ux-ink)!important;box-shadow:inset 1px 1px #fff9d5,inset -1px -1px #d8ad25,0 2px #9a771d!important}
+body.ui-material :is(#modal,#ovl,#wiki) button:disabled{background:var(--ux-face)!important;color:#596880!important;border-color:#9ba7bd!important;box-shadow:inset 1px 1px #edf0f8!important;text-shadow:none!important;opacity:1}
 body.ui-material :is(#mbody,#uisettings){background:var(--ux-screen)!important;border:1px solid #9ba7c5;border-top:0;box-shadow:inset 1px 0 #fff,inset -1px 0 #b5bdd6}
 body.ui-material #mbody :is(.rc,.mc,.ui-section,.ui-menu-group,.ui-character-head,.ui-build),body.ui-material .view-settings{background:transparent!important;border:0!important;border-bottom:1px solid var(--ux-rule)!important;border-radius:0!important;box-shadow:none!important;outline:none;padding:12px 0!important;margin:0 0 14px}
-body.ui-material #mbody .ui-character-head{background:linear-gradient(110deg,#d4dcf1,var(--ux-screen))!important;border-left:3px solid #8091c0!important;padding:10px!important}
+body.ui-material #mbody .ui-character-head{background:linear-gradient(110deg,var(--ux-sky),var(--ux-screen))!important;border-left:3px solid var(--ux-blue)!important;padding:10px!important}
 body.ui-material #mbody .ui-build{padding:4px 0 12px!important}
 body.ui-material #mbody .ui-core-collection>summary{min-height:44px;padding:10px 0;font-family:var(--ux-display)}
 body.ui-material #mbody .ui-core-item{padding:12px 0;border-bottom:1px solid var(--ux-rule)}
@@ -3949,7 +4018,7 @@ body.ui-material #mbody svg.tree .tn.open :is(circle,polygon){fill:#edf7ff;strok
 body.ui-material #mbody .idc{background:var(--ux-metal);border:1px solid var(--ux-frame);border-radius:5px;box-shadow:inset 1px 1px #fff,inset -1px -1px #8794ad;color:var(--ux-ink)}
 body.ui-material #mbody .idh{font-family:var(--ux-display);font-weight:400}
 body.ui-material #mbody .ids{background:var(--ux-title-face);color:#fff;border-radius:2px}
-body.ui-material #mbody .idp{background:#c6ddeb;border:2px solid #7181a2;box-shadow:var(--ux-inset)}
+body.ui-material #mbody .idp{background:var(--ux-sky);border:2px solid #7181a2;box-shadow:var(--ux-inset)}
 body.ui-material #mbody .idt{border-color:var(--ux-rule)}
 body.ui-material #mbody .idr{border-bottom:1px solid var(--ux-rule)}
 body.ui-material #mbody .isr i{background:#a4aec4}body.ui-material #mbody .isr i.on{background:#b07830}
@@ -3965,22 +4034,22 @@ body.ui-material #mbody .gl{border:0;border-bottom:1px solid var(--ux-rule);bord
 body.ui-material #mbody .rc ul.ach{background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
 body.ui-material #mbody .ach li{padding:10px 0;border-bottom:1px solid var(--ux-rule)}
 
-body.ui-material #mbody :is(.dpsbar,.uxinspect){background:#d8e0f2!important;border:1px solid #8e9cbe!important;border-radius:3px!important;box-shadow:var(--ux-inset)!important}
+body.ui-material #mbody :is(.dpsbar,.uxinspect){background:var(--ux-sky)!important;border:1px solid #8e9cbe!important;border-radius:3px!important;box-shadow:var(--ux-inset)!important}
 body.ui-material #mbody .uxinspect{padding:10px!important;margin-top:8px}
 body.ui-material #mbody .dpsbar .uxinspect{border:0!important;border-top:1px solid #a9b6d5!important;padding:10px 0 0!important;box-shadow:none!important}
 body.ui-material #mbody .shares span{background:#bbc9e8;color:var(--ux-ink);border-left:2px solid #677fbb}
 body.ui-material #mbody .ui-segments{padding:4px;gap:4px;background:var(--ux-face);border:1px solid #9ba8c1;border-radius:5px;box-shadow:var(--ux-inset)}
 body.ui-material #mbody .ui-segments>button{background:var(--ux-key-face)!important;border:1px solid #8b99b5!important;border-radius:3px!important;box-shadow:inset 1px 1px #fff,inset -1px -1px #a4b0c7!important;color:var(--ux-ink)!important;font-family:var(--ux-body)!important;padding:6px 3px!important}
 body.ui-material #mbody .ui-segments>button[aria-pressed="true"]{background:var(--ux-blue-face)!important;color:#fff!important;border-color:#26357e!important;box-shadow:inset 1px 1px #9ba9eb,inset -1px -1px #1c2d70!important}
-body.ui-material #mbody :is(.ui-directory button,.ui-wiki){background:linear-gradient(90deg,#d5deef,var(--ux-screen))!important;border:0!important;border-bottom:1px solid #a5b2cf!important;border-left:3px solid #97a8cc!important;border-radius:0!important;box-shadow:none!important;padding-inline:10px}
+body.ui-material #mbody :is(.ui-directory button,.ui-wiki){background:linear-gradient(90deg,var(--ux-sky),var(--ux-screen))!important;border:0!important;border-bottom:1px solid #a5b2cf!important;border-left:3px solid #97a8cc!important;border-radius:0!important;box-shadow:none!important;padding-inline:10px}
 body.ui-material #mbody :is(.ui-directory button,.ui-wiki):hover{background:#d2e1f4!important}
 body.ui-material #mbody .ui-craft-slots>button{background:var(--ux-key-face)!important;border:1px solid #8b99b5!important;border-radius:5px!important;box-shadow:var(--ux-key-shadow)!important}
-body.ui-material #mbody .ui-craft-slots>button[aria-pressed="true"]{background:linear-gradient(#d2dcf8,#bac9ee)!important;border-color:#41589c!important;box-shadow:inset 1px 1px #7185b6,inset -1px -1px #fff,inset 0 -3px #4057aa!important;color:var(--ux-ink)!important}
-body.ui-material #mbody .ui-map-card{border:1px solid #8f9cbb;border-radius:5px;background:#d8e0f0;box-shadow:inset 1px 1px #fff}
+body.ui-material #mbody .ui-craft-slots>button[aria-pressed="true"]{background:var(--ux-selected)!important;border-color:#41589c!important;box-shadow:inset 1px 1px #7185b6,inset -1px -1px #fff,inset 0 -3px #4057aa!important;color:var(--ux-ink)!important}
+body.ui-material #mbody .ui-map-card{border:1px solid #8f9cbb;border-radius:5px;background:var(--ux-screen);box-shadow:inset 1px 1px #fff}
 body.ui-material #mbody .rchips>*{border:0!important;border-radius:0!important;box-shadow:none!important;background:none!important;padding:2px 8px 2px 0!important}
-body.ui-material #mbody .ui-map-banner{background:linear-gradient(120deg,#273961,#435582);border:0;border-left:6px solid var(--land);box-shadow:inset 0 1px #8294bd;color:#f0f4ff}
+body.ui-material #mbody .ui-map-banner{background:var(--ux-sky);border:0;border-left:6px solid var(--land);box-shadow:inset 0 1px #8294bd;color:var(--ux-ink)}
 body.ui-material #mbody .ui-map-banner::after{display:none}
-body.ui-material #mbody .ui-map-banner :is(h3,span){background:none;color:#f0f4ff;padding:0;border-radius:0}
+body.ui-material #mbody .ui-map-banner :is(h3,span){background:none;color:var(--ux-ink);padding:0;border-radius:0}
 body.ui-material #mbody button.gt{background:linear-gradient(135deg,#f2f5ff,#d8e2f3)!important;border:1px solid #9baac8!important;border-radius:3px!important;box-shadow:inset 1px 1px #fff,inset -1px -1px #bbc7dc!important}
 body.ui-material #mbody button.gt.on{outline:2px solid var(--ux-blue);outline-offset:1px}
 body.ui-material #mbody .pz{border-radius:6px;border:2px solid #7181a2;background:#bec9dd;box-shadow:inset 1px 1px #edf3ff,inset -1px -1px #6b7a9b,0 1px #fff!important}
@@ -4019,15 +4088,9 @@ body.ui-material #nexthint{background:var(--ux-key-face)!important;border:1px so
 /* LCD pixel mode. Geometry stays native; the 16px optical face is baked on a
    one CSS-pixel grid. No live DOM rasterizer, full-panel filter or pointer proxy. */
 body.ui-material.ui-pixelfx{
- --ux-body:"Cubic 11",system-ui,sans-serif;--ux-display:"Cubic 11",system-ui,sans-serif;
  --ux-shell-radius:2px;--ux-key-radius:0px;
- --ux-metal:linear-gradient(180deg,#f1f4fb 0 4px,#dce2ed 4px 12px,#c8cedc 12px 62%,#b7c2d5 62% 94%,#9baac4 94% 100%) #c8cedc;
- --ux-key-face:linear-gradient(180deg,#fff 0 2px,#e9eef7 2px 6px,#d5dfed 6px 52%,#c5d1e3 52% 80%,#d7dfed 80% 100%) #dae1ed;
- --ux-key-hover:linear-gradient(180deg,#fff 0 2px,#edf8ff 2px 6px,#daeafa 6px 52%,#c0d9ed 52% 80%,#d4e7f7 80% 100%) #e6f1ff;
- --ux-blue-face:linear-gradient(180deg,#8f9de6 0 2px,#6574c9 2px 6px,#4858af 6px 48%,#303d9b 48% 84%,#334794 84% 100%) #303d9b;
- --ux-title-face:linear-gradient(180deg,#b9c6f0 0 2px,#6575be 2px 6px,#4858a9 6px 48%,#303d86 48% 100%) #303d86;
- --ux-key-shadow:inset 2px 2px #fff,inset -2px -2px #8492b0,0 2px #727f9c;
- --ux-inset:inset 2px 2px #677694,inset -2px -2px #fff;
+ --ux-key-shadow:inset 2px 2px #fff,inset -2px -2px #b3c5d9,0 2px #829bb9;
+ --ux-inset:inset 2px 2px #829bb9,inset -2px -2px #fff;
 }
 body.ui-material,body.ui-material :is(p,li,label,button,input,textarea,select,summary,td,th){font-size:var(--ux-text)!important;line-height:var(--ux-line);letter-spacing:.015em!important}
 body.ui-material :is(h1,h2,h3,.hud-level b,.hud-right b){font-family:"Cubic 11",system-ui,sans-serif!important;font-size:var(--ux-heading)!important;line-height:var(--ux-heading-line)}
@@ -4041,13 +4104,13 @@ body.ui-material.ui-pixelfx :is(.toast,.chips){background:var(--ux-screen);borde
 body.ui-material.ui-pixelfx .modal{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 body.ui-material.ui-pixelfx :is(header,.tfoot,#readout) :is(button,a){background:var(--ux-key-face)!important;box-shadow:var(--ux-key-shadow)!important;color:var(--ux-ink)!important}
 body.ui-material.ui-pixelfx ::-webkit-scrollbar-thumb{border-radius:0}
-body.ui-material.ui-pixelfx #mtabs button.tab.on{background:linear-gradient(180deg,#f1f5ff 0 4px,#d9e2fa 4px 52%,#c1cef3 52% 100%)!important}
-body.ui-material.ui-pixelfx :is(#mbody,#ovl) button.mb.pri{background:linear-gradient(180deg,#eeb39e 0 2px,#c45b42 2px 6px,#b94732 6px 56%,#a1392e 56% 84%,#b94732 84% 100%)!important}
-body.ui-material.ui-pixelfx #mbody .ui-character-head{background:#d4dcf1!important;border-left-width:4px!important}
-body.ui-material.ui-pixelfx #mbody :is(.ui-directory button,.ui-wiki){background:#d5deef!important;border-left-width:4px!important}
-body.ui-material.ui-pixelfx #mbody .ui-map-banner{background:#273961!important}
-body.ui-material.ui-pixelfx #mbody button.gt{background:#d8e2f3!important}
-body.ui-material.ui-pixelfx #mbody .ui-craft-slots>button[aria-pressed="true"]{background:#bac9ee!important}
+body.ui-material.ui-pixelfx #mtabs button.tab.on{background:var(--ux-selected)!important}
+body.ui-material.ui-pixelfx :is(#mbody,#ovl) button.mb.pri{background:var(--ux-action-face)!important}
+body.ui-material.ui-pixelfx #mbody .ui-character-head{background:var(--ux-sky)!important;border-left-width:4px!important}
+body.ui-material.ui-pixelfx #mbody :is(.ui-directory button,.ui-wiki){background:var(--ux-sky)!important;border-left-width:4px!important}
+body.ui-material.ui-pixelfx #mbody .ui-map-banner{background:var(--ux-sky)!important}
+body.ui-material.ui-pixelfx #mbody button.gt{background:var(--ux-key)!important}
+body.ui-material.ui-pixelfx #mbody .ui-craft-slots>button[aria-pressed="true"]{background:var(--ux-selected)!important}
 body.ui-material.ui-pixelfx.ui-fx-document :is(header,h2,nav,nav a,main>section,input,button){border-radius:0!important}
 body.ui-material.ui-pixelfx:not(.ui-fx-document) :is(header,.tfoot,#readout,#ctxbtn){background:var(--ux-metal)!important;color:var(--ux-ink)!important;text-shadow:none!important}
 body.ui-material.ui-pixelfx.ui-fx-document header{background:var(--ux-title-face)!important;color:#fff!important}
@@ -5550,7 +5613,7 @@ function phoneMini(){
   return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span></span>`;
 }
 function phoneButtonHtml(){
-  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
+  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" aria-label="開啟角色手機" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
 }
 
 (function(){ const s = document.createElement('style'); s.textContent = `
@@ -5590,8 +5653,8 @@ function phoneButtonHtml(){
 .ph-open:hover{filter:brightness(1.12)}.ph-open:active{transform:translateY(2px)}
 .ph-mini{position:relative;flex:none;width:104px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
 .ph-mini-s{position:absolute;left:52px;top:76px;width:0;height:0;transform-style:preserve-3d;transform:scale(.118)}
-.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;animation:phMiniSpin 12s ease-in-out infinite}
-@keyframes phMiniSpin{0%,100%{transform:rotateY(-30deg) rotateX(4deg)}50%{transform:rotateY(30deg) rotateX(4deg)}}
+.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;transform:rotateX(4deg) rotateY(-24deg);animation:phMiniSpin 48s linear infinite}
+@keyframes phMiniSpin{from{transform:rotateX(4deg) rotateY(-24deg)}to{transform:rotateX(4deg) rotateY(336deg)}}
 
 .ph-mini .ph-plane,.ph-plane{image-rendering:pixelated}.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
 @keyframes phSpk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
