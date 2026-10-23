@@ -5,14 +5,14 @@ vm.runInNewContext(fs.readFileSync('src/game/04-render.js','utf8')+'\nthis.buffe
 const size=(...args)=>JSON.parse(JSON.stringify(ctx.bufferSize(...args)));
 assert.equal(ctx.quality('auto',390),'medium');assert.equal(ctx.quality('auto',1440),'high');
 assert.equal(ctx.quality('low',1440),'low');assert.equal(ctx.quality('high',390),'high');
-assert.deepEqual(size(1920,1080,1),{width:1600,height:900});
+assert.deepEqual(size(1920,1080,1),{width:720,height:405});
 assert.deepEqual(size(1920,1080,3),size(1920,1080,1));
-assert.deepEqual(size(390,260,3),{width:292,height:195});
-assert.deepEqual(size(390,844,3),{width:292,height:633});
-assert.deepEqual(size(3840,2160,2),{width:1600,height:900});
+assert.deepEqual(size(390,260,3),{width:156,height:104});
+assert.deepEqual(size(390,844,3),{width:156,height:337});
+assert.deepEqual(size(3840,2160,2),{width:720,height:405});
 assert.deepEqual(size(390,260,3,true),{width:780,height:520});
 for(const [w,h]of [[320,568],[768,1024],[898.40625,749.984375],[2560,1080],[844,390]])for(const q of ['low','medium','high']){
- const s=size(w,h,3,false,q),cap={low:720,medium:1100,high:1600}[q];assert(s.width<=cap&&s.height<=cap);assert(s.width<=w&&s.height<=h);assert(Math.abs(s.width/s.height-w/h)<.02,`${w}x${h} ${q} aspect`);
+ const s=size(w,h,3,false,q),cap={low:420,medium:560,high:720}[q];assert(s.width<=cap&&s.height<=cap);assert(s.width<=w&&s.height<=h);assert(Math.abs(s.width/s.height-w/h)<.02,`${w}x${h} ${q} aspect`);
 }
 for(const [w,h]of [[390,260],[1440,900]]){const low=size(w,h,3,false,'low'),medium=size(w,h,3,false,'medium'),high=size(w,h,3,false,'high');assert(low.width<medium.width&&medium.width<high.width);}
 assert.deepEqual(size(0,NaN),{width:1,height:1});
