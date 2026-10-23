@@ -1,0 +1,110 @@
+{
+  "provenance": "User supplied Character.zip; derived locally, originals unchanged. No third-party generation.",
+  "pipeline": "Blender 4.3.2 decimate, original UV/base-colour, region-constrained weights; procedural authored clips.",
+  "assets": [
+    {
+      "id": "aki",
+      "source": "Character/glb/1.glb",
+      "source_sha256": "7f99b08bc6f28f58074a03c7a9c7ffb5d1133de02e2c66a6366d38fc70a9171b",
+      "source_triangles": 50000,
+      "triangles": 14000,
+      "vertices": 6994,
+      "bones": 16,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "attack",
+        "cast",
+        "hurt",
+        "dash",
+        "death",
+        "victory"
+      ],
+      "texture": [
+        1024,
+        1024
+      ],
+      "bytes": 943980,
+      "sha256": "969f738536a3e6a1a8de916477eaba97b9b684f3de8243a427afb043f32752d1"
+    },
+    {
+      "id": "milo",
+      "source": "Character/glb/2.glb",
+      "source_sha256": "f83d9b1ecbd7c4367c58ab513bf084250ad36e3d499b436abf19af36e94a384f",
+      "source_triangles": 50000,
+      "triangles": 14000,
+      "vertices": 6998,
+      "bones": 16,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "attack",
+        "cast",
+        "hurt",
+        "dash",
+        "death",
+        "victory"
+      ],
+      "texture": [
+        1024,
+        1024
+      ],
+      "bytes": 1001776,
+      "sha256": "8a9260c6c1cc2ae13935d7792af03dfc041765b849e0c7ddbeef0c4ac6481d24"
+    },
+    {
+      "id": "ping",
+      "source": "Character/glb/3.glb",
+      "source_sha256": "07ddbf6c3409d30ccf3fdd535f222e81dd17427556f05a13578d725ceb3ac8d4",
+      "source_triangles": 1500000,
+      "triangles": 13998,
+      "vertices": 6993,
+      "bones": 16,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "attack",
+        "cast",
+        "hurt",
+        "dash",
+        "death",
+        "victory"
+      ],
+      "texture": [
+        1024,
+        1024
+      ],
+      "bytes": 1241932,
+      "sha256": "0d85e40be44591afeeace2d8b9946d0a5775abaed7eaaf6fad23260b6eb9b52d"
+    },
+    {
+      "id": "null",
+      "source": "Character/glb/4.glb",
+      "source_sha256": "59a88464a654295fbcd27f7774438638b2d040336c214a33409fcecd9691b9db",
+      "source_triangles": 1500000,
+      "triangles": 13998,
+      "vertices": 6979,
+      "bones": 16,
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "attack",
+        "cast",
+        "hurt",
+        "dash",
+        "death",
+        "victory"
+      ],
+      "texture": [
+        1024,
+        1024
+      ],
+      "bytes": 1259652,
+      "sha256": "e8597f5f9784617cc5d6e35af34b0e0581e491039fd7697873d8adc16e8b910f"
+    }
+  ]
+}

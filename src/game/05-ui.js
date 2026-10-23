@@ -63,16 +63,10 @@ function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); set
   uxRestorePanel(uxPanel,resetScroll);if(resetScroll)uxAnimatePanel();
   UI_LIVE_SIGNATURE=uiLiveSignature();uiCityRevealCheckpoint();
 }
-let held = null, heldRot = 0, selPiece = null;   // 拼圖頁：held 是從清單選起、準備放下的機件；selPiece 是面板上被選取的機件 id
+let held = null, heldRot = 0, selPiece = null, selSock = -1;   // 接線板：held 是手上準備放下的配件；selPiece 是選取的機件 id；selSock 是選取的插槽
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff', COOL:'#6fd6e8', CRYSTAL:'#d99bff' };
 const GEM_IDX=ART_SHEETS.gems.ids;
 const gemIco=(id,size=22)=>uiSprite('gems',id,size,'','i');
-function shapeIcon(kind, key, rot = 0, col){
-  const cs = GridLab.shapeOf(kind, key, rot), w = Math.max(...cs.map(c => c[0])) + 1, h = Math.max(...cs.map(c => c[1])) + 1, c = col || (kind === 'active' ? '#ff9ec7' : GEM_COL[key] || '#a87bf0');
-  let o = `<span class="shp" style="grid-template-columns:repeat(${w},9px)">`;
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) o += cs.some(q => q[0] === x && q[1] === y) ? `<i style="background:${c}"></i>` : '<i class="e"></i>';
-  return o + '</span>';
-}
 function buildBar(){
   return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><p class="uxmeta">切換時保存目前配置；裝備記住同一實體，改機後各引用同步。</p><button class="mb" data-focus="build-save" onclick="uiSaveBuild()">更新目前構築</button><p class="uxmeta">${G.builds[G.bi||0]?.equipment?'已記住角色與三件裝備，引用物品受回收保護。':'此配置尚未記住裝備；可按更新保存。'}</p>${uiBuildGearHtml()}${uiPolicyHtml()}</section>`;
 }
@@ -86,41 +80,38 @@ function uiFinishBuild(result,i){if(!result.ok){uxAnnounce(result.reason);return
 function uiConfirmBuildFallback(){const p=BUILD_PENDING;BUILD_PENDING=null;hideOverlay();if(!p||JSON.stringify(G.builds[p.index])!==p.target){uxAnnounce('配置已變動，請重新確認。');return;}uiFinishBuild(restoreBuild(p.index,true),p.index);}
 function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、角色、策略及三件裝備；引用裝備受回收保護。');}
 function skillsHtml(){
-  return buildBar() + dpsBar() + circuitShopHtml() + skillsHtml0();
-}
-function skillsHtml0(){
-  const B = G.board, at = {}, linked = new Set(GridLab.resolve(B).flatMap(r => r.linked));
-  for (const p of B.pieces) GridLab.cellsOf(p).forEach((c, i) => { at[c[0] + ',' + c[1]] = { p, first:i === 0 }; });
-  let h = '<p class="uxgrid-help">選機件，再點格子放置。輔助只強化相鄰且標籤相符的技能。</p>'
-    + `<div class="pz" role="group" aria-label="技能拼圖，方向鍵移動，Enter 放置" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">`;
-  for (let y = 0; y < SLOT_LV.length; y++) for (let x = 0; x < B.w; x++){
-    if (y >= B.h){ h += `<div class="pc lock">${x === 0 ? 'Lv. ' + SLOT_LV[y] : ''}</div>`; continue; }
-    const c = at[x + ',' + y], ev = `data-x="${x}" data-y="${y}" data-focus="cell-${x}-${y}" tabindex="${UX_GRID.x === x && Math.min(UX_GRID.y,B.h-1) === y ? 0 : -1}" aria-label="${uxEsc(uxGridLabel(x,y))}" onfocus="uxGridFocus(this)" onclick="uxGridActivate(${x},${y})" onmouseenter="pzHover(${x},${y})"`;
-    if (!c){ h += `<button type="button" class="pc" ${ev}></button>`; continue; }
-    const act = c.p.kind === 'active', col = act ? '#ff9ec7' : GEM_COL[c.p.key] || '#a87bf0', same = (dx, dy) => (at[(x + dx) + ',' + (y + dy)] || {}).p === c.p;
-    h += `<button type="button" class="pc fill${c.p.id === selPiece ? ' sel' : ''}${linked.has(c.p.id) ? ' lnk' : ''}${same(1, 0) ? ' jr' : ''}${same(0, 1) ? ' jb' : ''}" style="--pc:${col}" ${ev} onpointerdown="pzDown(event,null,null,${c.p.id})">${c.first ? (act ? sico(c.p.key, 22) : gemIco(c.p.key, 16)) + `<span>${act ? SKILLS[c.p.key].n : SUPPS[c.p.key].n}</span>` : ''}</button>`;
-  }
-  const bb = boardBonus(), rz = [bb.rows && `整列滿 ×${bb.rows}：全隊傷害 +${12*bb.rows}%`, bb.cols && `整欄滿 ×${bb.cols}：暴擊率 +${5*bb.cols}%`, Object.keys(bb.pair).length && `${Object.keys(bb.pair).map(k => SKILLS[k].n).join('、')}：同元素緊貼 +15%`].filter(Boolean);
-  h += `</div><div class="rz">${rz.length ? '共鳴　' + rz.join('　') : '共鳴：塞滿整列、整欄，或同元素技能緊貼，有額外加成'}</div>`;
-  const hd = held ? (held.kind === 'active' ? SKILLS[held.key].n : SUPPS[held.key].n) : '';
-  h += `<div class="pzbar"><button ${held || selPiece != null ? '' : 'disabled'} onclick="pzRot()">旋轉</button><button ${selPiece == null ? 'disabled' : ''} onclick="pzDel()">移除</button>${held ? `<span class="mute">手上：${hd} ${shapeIcon(held.kind, held.key, heldRot)}</span>` : ''}<span id="pzmsg" class="mute"></span></div>`;
-  h+=uiInventoryHtml()+uiResolvedHtml()+uiCombatHtml();
-  return h;
+  // 接線板放最上面，收起戰場時一打開就能直接編輯；構築管理與電路合成放在下面
+  return wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + buildBar() + circuitShopHtml() + uiResolvedHtml() + uiCombatHtml();
 }
 function treeHtml(){
   return buildBar() + treeHtml0();
 }
+/* 天賦盤：畫在 160×160 的小畫布上再用最近鄰放大，保持低解像像素風；互動靠上面一層透明的 SVG 熱區 */
+const TREE_PX = 160, TREE_STAR = ['....#....', '....#....', '...###...', '#########', '.#######.', '..#####..', '..##.##..', '.##...##.', '.#.....#.'];
+function treePixelArt(){
+  if (typeof document === 'undefined') return '';
+  const cv = document.createElement('canvas'); cv.width = cv.height = TREE_PX; const c = cv.getContext('2d'); if (!c) return '';
+  const P = n => [Math.round((n.x + 125)/250*TREE_PX), Math.round((n.y + 125)/250*TREE_PX)];
+  c.fillStyle = '#dfe9ff'; c.fillRect(0, 0, TREE_PX, TREE_PX); c.fillStyle = '#c9d7f5'; for (let y = 4; y < TREE_PX; y += 8) for (let x = 4; x < TREE_PX; x += 8) c.fillRect(x, y, 1, 1);
+  const px = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(x, y, w, h); };
+  const line = (a, b, w, col) => { let [x0, y0] = a; const [x1, y1] = b, dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let err = dx + dy; for (;;){ px(x0 - (w >> 1), y0 - (w >> 1), w, w, col); if (x0 === x1 && y0 === y1) break; const e2 = 2*err; if (e2 >= dy){ err += dy; x0 += sx; } if (e2 <= dx){ err += dx; y0 += sy; } } };
+  const lit = id => id === 'S' || G.pass.includes(id), pairs = [];
+  for (const id in TREE) for (const l of TREE[id].links) if (id < l) pairs.push([id, l]);
+  for (const [i, j] of pairs) if (!(lit(i) && lit(j))) line(P(TREE[i]), P(TREE[j]), 1, '#a9b8de');
+  for (const [i, j] of pairs) if (lit(i) && lit(j)){ const n = TREE[i], m = TREE[j]; line(P(n), P(m), 3, '#2b2552'); line(P(n), P(m), 1, n.col === '#e8e2d4' ? m.col : n.col); }
+  for (const id in TREE){
+    const n = TREE[id], [x, y] = P(n), got = lit(id), open = canAllocateTalent(id), col = got ? n.col : open ? '#ffffff' : '#eef3ff', edge = got ? '#2b2552' : open ? '#2b2552' : '#8d9cc4';
+    if (n.big){ const o = 4; for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) TREE_STAR.forEach((row, r) => [...row].forEach((ch, k) => { if (ch === '#') px(x - o + k + dx, y - o + r + dy, 1, 1, edge); })); TREE_STAR.forEach((row, r) => [...row].forEach((ch, k) => { if (ch === '#') px(x - o + k, y - o + r, 1, 1, got ? col : open ? '#fff7b0' : '#c7d1ee'); })); }
+    else { const h = 3; if (got) px(x - h - 1, y - h - 1, 2*h + 3, 2*h + 3, col + '55'); px(x - h, y - h, 2*h + 1, 2*h + 1, edge); px(x - h + 1, y - h + 1, 2*h - 1, 2*h - 1, col); if (got) px(x - h + 1, y - h + 1, 2, 1, '#ffffff'); }
+  }
+  return cv.toDataURL('image/png');
+}
 function treeHtml0(){
-  const pts = passPoints(); let lines = '', nodes = '';
-  for (const id in TREE){ const n = TREE[id]; for (const l of n.links) if (id < l){ const m = TREE[l], on2 = (id === 'S' || G.pass.includes(id)) && (l === 'S' || G.pass.includes(l));
-    lines += `<line class="${on2 ? 'connected' : 'inactive'}" x1="${n.x.toFixed(1)}" y1="${n.y.toFixed(1)}" x2="${m.x.toFixed(1)}" y2="${m.y.toFixed(1)}" stroke="${on2 ? n.col === '#e8e2d4' ? m.col : n.col : '#d3daf0'}" stroke-width="${on2 ? 3.4 : 1.6}" stroke-linecap="round"/>`; } }
-  const star = (x, y, R, r) => Array.from({ length: 10 }, (_, i) => { const a = -Math.PI/2 + i*Math.PI/5, k = i % 2 ? r : R; return `${(x + Math.cos(a)*k).toFixed(1)},${(y + Math.sin(a)*k).toFixed(1)}`; }).join(' ');
-  for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = canAllocateTalent(id), x = n.x.toFixed(1), y = n.y.toFixed(1), r = n.big ? 6.6 : 4;
-    const fill = got ? n.col : '#eef3ff', stroke = got ? '#ffffff' : open ? '#2b2552' : '#c3cbe8', sw = got ? 2 : open ? 1.8 : 1.2;
-    const shape = n.big ? `<polygon points="${star(+x, +y, r + 1.6, r*.55)}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>` : `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>`;
-    nodes += `<g class="tn ${got ? 'got' : open ? 'open' : 'locked'}" data-tree="${id}" role="button" tabindex="${open?0:-1}" aria-disabled="${!open}" aria-label="${uxEsc(talentName(id))}，${got?'已點亮':open?'可點亮':'未連到或點數不足'}" onfocus="treeInfo('${id}')" onmouseover="treeInfo('${id}')" onclick="treeInfo('${id}');allocPass('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();allocPass('${id}')}" style="cursor:${open ? 'pointer' : 'default'}"><title>${talentName(id)}</title>${got ? `<circle cx="${x}" cy="${y}" r="${r + 2.4}" fill="${n.col}" opacity=".28"/>` : ''}${shape}${got && !n.big ? `<circle cx="${(+x - r*.3).toFixed(1)}" cy="${(+y - r*.35).toFixed(1)}" r="${(r*.28).toFixed(1)}" fill="#fff" opacity=".8"/>` : ''}</g>`; }
+  const pts = passPoints(); let nodes = '';
+  for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = canAllocateTalent(id), x = n.x.toFixed(1), y = n.y.toFixed(1), r = n.big ? 8 : 6;
+    nodes += `<g class="tn ${got ? 'got' : open ? 'open' : 'locked'}" data-tree="${id}" role="button" tabindex="${open?0:-1}" aria-disabled="${!open}" aria-label="${uxEsc(talentName(id))}，${got?'已點亮':open?'可點亮':'未連到或點數不足'}" onfocus="treeInfo('${id}')" onmouseover="treeInfo('${id}')" onclick="treeInfo('${id}');allocPass('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();allocPass('${id}')}" style="cursor:${open ? 'pointer' : 'default'}"><title>${talentName(id)}</title><circle cx="${x}" cy="${y}" r="${r + 2}" fill="transparent"/>${open ? `<rect class="tnb" x="${(+x - r).toFixed(1)}" y="${(+y - r).toFixed(1)}" width="${2*r}" height="${2*r}" fill="none" stroke="#2b2552" stroke-width="1.6" shape-rendering="crispEdges"/>` : ''}</g>`; }
   return `${uiTalentBudget()}<div class="hint">可用天賦點：<b>${pts}</b>（最多 36 點，最多兩個韌體）。點亮與已點亮節點相連的點。</div>
-    <svg viewBox="-125 -125 250 250" class="tree">${lines}${nodes}</svg>${treeAvailableHtml()}
+    <div class="treebox"><img class="treecv" alt="" src="${treePixelArt()}"><svg viewBox="-125 -125 250 250" class="tree" role="group" aria-label="天賦盤">${nodes}</svg></div>${treeAvailableHtml()}
     <div id="tinfo" class="hint">滑過節點看效果。<span style="color:#e2584d">紅：力量</span> <span style="color:#3f86e6">藍：智慧</span> <span style="color:#3bb552">綠：敏捷</span></div>
     <button class="mb" ${G.run?.city||G.train?'disabled':''} onclick="uiRespec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
 }
@@ -176,66 +167,6 @@ function equipCart(id){
   if (!G.seen[id]){ G.seen[id] = 1; logLine(`鑑定完成：${MODES[id].n}，${MODES[id].d}`, '#1f9bbf'); checkGoals(); }
   recalc(); renderModal();
 }
-function pzMsg(t){ renderModal(); const e = $('pzmsg'); if (e) e.textContent = t || ''; uxAnnounce(t || ''); }
-let noClick = false;   // 剛拖曳完的那一下 click 要略過
-function pzHold(kind, key){ if (noClick) return; UX_LAST_SOURCE = uxFocusToken(); held = held && held.key === key ? null : { kind, key }; heldRot = 0; selPiece = null; renderModal(); if(held)uiRevealSelection(); }
-function pzCell(x, y){
-  if (noClick) return;
-  const hit = G.board.pieces.find(p => GridLab.cellsOf(p).some(c => c[0] === x && c[1] === y));
-  if (hit && held){ pzMsg('這格已有機件，請選擇空白位置。'); return; }
-  if (hit){ selPiece = hit.id; held = null; renderModal(); uiRevealSelection(); return; }
-  if (!held) return;
-  const p = GridLab.place(G.board, held.kind, held.key, x, y, heldRot);
-  if (!p){ pzMsg('這裡放不下（重疊或超出面板）'); return; }
-  if (held.kind === 'active') held = null; else if (gemFree(held.key) <= 0) held = null;
-  recalc(); renderModal(); uxAnnounce('已放置機件，目前預估 DPS ' + tFmt(G.st.dps));
-}
-/* 拖曳：從清單拖機件到面板放下，或拖面板上的機件換位置（滑鼠與觸控皆可）。沒有移動超過 6px 就當成點擊 */
-let drag = null;
-function cellAt(px, py){ const e = document.elementFromPoint(px, py), c = e && e.closest && e.closest('.pc[data-x]'); return c ? [+c.dataset.x, +c.dataset.y] : null; }
-function pzDown(ev, kind, key, pieceId){
-  if (ev.button > 0 || drag) return;
-  let from = null;
-  if (pieceId != null){ const p = G.board.pieces.find(q => q.id === pieceId); if (!p) return; from = { ...p }; kind = p.kind; key = p.key; }
-  drag = { kind, key, from, fromIndex:from ? G.board.pieces.findIndex(p => p.id === from.id) : -1, sx:ev.clientX, sy:ev.clientY, moved:false, rot:from ? from.rot || 0 : (held && held.key === key ? heldRot : 0), ghost:null };
-  document.addEventListener('pointermove', pzMove); document.addEventListener('pointerup', pzUp); document.addEventListener('pointercancel', pzUp);
-}
-function pzMove(ev){
-  const d = drag; if (!d) return;
-  if (!d.moved){ if (Math.hypot(ev.clientX - d.sx, ev.clientY - d.sy) < 6) return;
-    d.moved = true; held = { kind:d.kind, key:d.key }; heldRot = d.rot;
-    if (d.from){ GridLab.remove(G.board, d.from.id); selPiece = null; recalc(); }   // 拿起來：先從面板拿掉，放不下再還原
-    renderModal();
-    d.ghost = document.createElement('div'); d.ghost.className = 'pzghost'; d.ghost.innerHTML = shapeIcon(d.kind, d.key, heldRot); document.body.appendChild(d.ghost); }
-  d.ghost.style.left = ev.clientX + 'px'; d.ghost.style.top = (ev.clientY - 30) + 'px';
-  d.at = cellAt(ev.clientX, ev.clientY - 30) || cellAt(ev.clientX, ev.clientY); d.at ? pzHover(d.at[0], d.at[1]) : pzHover(-1, -1);
-}
-function pzUp(ev){
-  document.removeEventListener('pointermove', pzMove); document.removeEventListener('pointerup', pzUp); document.removeEventListener('pointercancel', pzUp);
-  const d = drag; drag = null; if (!d || !d.moved) return;
-  if (d.ghost) d.ghost.remove();
-  noClick = true; setTimeout(() => { noClick = false; }, 0);
-  const cancelled = ev && ev.type === 'pointercancel';
-  const valid = !cancelled && d.at && GridLab.canPlace(G.board,d.kind,d.key,d.at[0],d.at[1],heldRot);
-  let p = null;
-  if (d.from){
-    p = { ...d.from };
-    if (valid) Object.assign(p,{ x:d.at[0], y:d.at[1], rot:heldRot });
-    G.board.pieces.splice(d.fromIndex,0,p);   // 保留識別、卡匣及原排序；失敗完整還原。
-  } else if (valid) p = GridLab.place(G.board,d.kind,d.key,d.at[0],d.at[1],heldRot);
-  if (d.from) held = null; else if (!p || gemFree(d.key) <= 0 || d.kind === 'active') held = null;
-  recalc(); renderModal(); if (!valid && d.at && !cancelled) pzMsg('這裡放不下（重疊或超出面板），已還原');
-}
-function pzHover(x, y){
-  document.querySelectorAll('.pc.pv').forEach(e => e.classList.remove('pv', 'ok', 'bad'));
-  if (!held || x < 0) return;
-  const cs = GridLab.shapeOf(held.kind, held.key, heldRot).map(([dx, dy]) => [x + dx, y + dy]), ok = GridLab.canPlace(G.board, held.kind, held.key, x, y, heldRot);
-  for (const [cx, cy] of cs){ const e = document.querySelector(`.pc[data-x="${cx}"][data-y="${cy}"]`); if (e) e.classList.add('pv', ok ? 'ok' : 'bad'); }
-  const el = $('pzdelta'); if (el){ el.innerHTML = ''; if (ok){ const B = JSON.parse(JSON.stringify(G.board)); if (GridLab.place(B, held.kind, held.key, x, y, heldRot)){ const d = dpsWith(B) - G.st.dps, pc = G.st.dps > 0 ? Math.round(d/G.st.dps*100) : 0; el.innerHTML = `放這裡：傷害 <b class="${d >= 0 ? 'up' : 'dn'}">${d >= 0 ? '+' : ''}${pc}%</b>`; } } }
-}
-function dpsWith(B){ const keep = G.board; G.board = B; syncBoard(); const d = calc().dps; G.board = keep; syncBoard(); return d; }
-function pzRot(){ if (held){ heldRot = (heldRot + 1) % 4; if (drag && drag.ghost) drag.ghost.innerHTML = shapeIcon(held.kind, held.key, heldRot); else renderModal(); return; } if (selPiece == null) return; const ok = GridLab.rotate(G.board, selPiece); recalc(); pzMsg(ok ? '' : '旋轉後放不下'); }
-function pzDel(){ if (selPiece != null) GridLab.remove(G.board, selPiece); selPiece = null; recalc(); renderModal(); }
 function allocPass(id){ if (G.run?.city||G.train||!canAllocateTalent(id)) return; G.pass.push(id); recalc(); logLine(`天賦：${talentName(id)}`, '#2f7fc4'); renderModal(); }
 function respec(){if(G.run?.city||G.train)return; const cost = 100*G.lvl; if (!G.pass.length || G.gold < cost) return; G.gold -= cost; G.pass = [];G.legacyMode=false; recalc(); renderModal(); }
 function enterMap(id){
@@ -271,7 +202,7 @@ function openRelics(){ if(!GAME_FEATURES.cardChoices)return;
 function pickRelic(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
 function pickCard(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
 function charHtml(){
-  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true"><b>${c.n}${G.char === id ? ' ✓' : ''}</b>${charOk(id) ? '' : `<span class="mute">${c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖'}</span>`}</button>`).join('')}</div><div class="char-description">${CHARS[G.char].d}<br>專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}</div></div>`;
+  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => `<button class="chr${G.char === id ? ' on' : ''}" ${charOk(id) ? '' : 'disabled'} onclick="pickChar('${id}');G.dirty=true"><b>${c.n}${G.char === id ? ' ✓' : ''}</b>${charOk(id) ? '' : `<span class="mute">${c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖'}</span>`}</button>`).join('')}</div><div class="char-description">${CHARS[G.char].d}<br>專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
 }
 function achHtml(){
   const n = achCount(), tot = Object.keys(ACHS).filter(id=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).length;
@@ -284,18 +215,19 @@ function cardsHtml(){
 
 /* offline progress */
 const HELP = {
-  skills:['拼圖說明', '主動技能自己施放，輔助配件只強化上下左右相鄰、標籤相符的主動技能。<br>把機件拖到格子上，放不下會顯示紅色；按「旋轉」換方向。<br>放下前，下方會顯示放上去之後傷害的變化。<br>連到 3 個以上輔助會「滿載」，每多一個傷害 +8%。<br>共鳴：塞滿整列全隊傷害 +12%，塞滿整欄暴擊率 +5%，同元素技能緊貼各自傷害 +15%。<br>面板 6×6，隨等級逐列解鎖。構築 1 至 3 各存一套拼圖與天賦。'],
+  skills:['接線板說明', '主動技能自己施放。從左邊電源拉一條線到右邊的技能插槽，線經過的輔助配件才會強化那個技能。<br>點插槽選技能，再沿著格子點或拖曳畫線；點線尾可以收回一格。<br>點庫存裡的配件，再點線上的空格放置；放下前會顯示傷害變化。<br>相鄰的同款配件各 ×1.2；等級 6 起，金色強化格上的配件 ×1.4。<br>紅叉是壞軌，固定不變，不能放配件也不能走線。<br>等級 8 起可以在機件庫存把三個同款同階配件合成更高階（Ⅱ 強度 ×1.5、Ⅲ ×2）；等級 12 起可以超頻賭一把。燈號顏色：綠是一般，黃是 Ⅱ，粉紅是 Ⅲ。<br>線的總長度與每條線能生效的配件數隨等級增加。構築 1 至 3 各存一套接線板與天賦。'],
   craft:['改機說明', '用不到的裝備會自動拆成零件。零件可以重新校準數值、改裝詞綴、升級稀有度，或賭一把腐化。<br>鎖定一條詞綴可以保住它；已腐化的裝備不能再改。'],
   maps:['冒險說明', '挑戰詞綴只表示敵人強化或取捨詞綴的數量，不是難度評分。<br>地圖詞綴讓敵人更強，但戰利品更好；每張卡下方的標籤是風險與回報彙總。<br>無限之塔每層殺滿怪上樓，每 10 層是守關者，死亡就結束。<br>訓練場用不還手的假人量 30 秒傷害。'],
   goals:['任務與目標', '新手任務一次一個，完成後解鎖新系統。目標達成會自動給獎勵，不用手動領取。']
 };
 const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
 const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
-const uiBattleSize=()=>['skills','craft','warehouse','settings'].includes(modalTab)&&!G.userCz?2:G.cz==null?1:G.cz;
-const CZN = ['大', '中', '小'];
+// 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
+const uiBattleSize=()=>{if(G.userCz)return G.cz==null?1:G.cz;if(modalTab==='skills')return G.autoFold===false?2:3;if(['craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
+const CZN = ['大', '中', '小', '收'];
 function mobTitle(){ uiTitle(); }
-function cycleCz(){ const current = uiBattleSize(); G.cz = (current + 1) % 3; G.userCz = true; G.dirty = true; mobTitle(); }
-const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; return Math.min([340,260,168][i],h*[.5,.36,.25][i])/Math.max(1,innerWidth); };
+function cycleCz(){ const current = uiBattleSize(); G.cz = (current + 1) % 4; G.userCz = true; G.dirty = true; mobTitle(); }
+const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
 const RISKM = Object.keys(MODS).filter(k => ['challenge','mixed'].includes(MODS[k].kind));
 function runMods(R){
   const mods = R.map.mods || []; if (!mods.length) return '';
@@ -312,19 +244,41 @@ const qm = k => `<button aria-label="${HELP[k] ? HELP[k][0] : '說明'}" class="
 function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; uxOpenDialog(o, o.querySelector('h2,b,.mct')?.textContent || '遊戲提示', hideOverlay); }
 function hideOverlay(){ UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
+const offYield = fn => { if (typeof MessageChannel === 'function'){ const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); fn(); }; c.port2.postMessage(0); } else setTimeout(fn, 0); };
+const OFF_WINDOW = 600;   // 離線只精確模擬前 10 分鐘，其餘用這段的收益率放大
+function offlineBulk(R, f, w){
+  // 放大段遞減：前 2 小時 ×0.5、之後 2 小時 ×0.3、其餘 ×0.15，離線越久越不划算，上班族不會因為關機一晚爆賺
+  const eff = Math.min(R, 7200)*.5 + Math.max(0, Math.min(R - 7200, 7200))*.3 + Math.max(0, R - 14400)*.15;
+  f *= eff/Math.max(1, R);
+  const K = Math.round(w.kills*f), d = lvlNow(), q = runQ();
+  G.totalKills += K; G.gold += Math.round(w.gold*f); G.chips += Math.round(w.chips*f); G.deaths += Math.round(w.deaths*f);
+  if (w.xp > 0) gainXp(w.xp*f);
+  const hit = p => { let n = 0; for (let i = 0; i < K; i++) if (Math.random() < p) n++; return n; };
+  const nItems = Math.min(800, hit(HORDE.drop*(1 + q)*(offPen() ? .25 : 1)));
+  for (let i = 0; i < nItems; i++) pickup({ kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(false), d) });
+  for (let i = hit(.012); i > 0; i--) pickup({ kind:'cart', id:tPick(Object.keys(MODES)) });
+  for (let i = hit(.025); i > 0; i--) pickup({ kind:'gem', id:tPick(Object.keys(SUPPS)) });
+  for (let i = Math.min(15, hit(.03)); i > 0; i--) pickup({ kind:'map', map:makeMap(d) });
+  const boss = Math.min(Math.floor(w.boss*f), Math.floor(R/3600)); if (boss > 0){ G.bossKills = (G.bossKills || 0) + boss; if (G.push && !G.run){ G.depth += boss; G.maxDepth = Math.max(G.maxDepth, G.depth); } }
+}
 function catchUp(sec, report){
   if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
   const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths, inventory:G.inventory.length,chips:G.chips, gems:{...G.gems}, carts:{...G.carts} };
-  G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
-  let left = sec; const total = sec;
+  G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
+  const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };
+  let left = simSec; const total = simSec;
   if (report) showOverlay(`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
     const t0 = performance.now();
-    while (left > 0 && performance.now() - t0 < 8){
+    while (left > 0 && performance.now() - t0 < 30){
       update(.2); left -= .2;
     }
-    if (left > 0){ if (report && $('oprog')) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; setTimeout(chunk, 0); return; }
+    if (left > 0){ if (report && $('oprog')) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; offYield(chunk); return; }
     for (const d of G.drops) if (!d.done){ d.done = true; pickup(d); } G.drops = []; G.proj = []; G.timers = []; G.mons = []; G.spawnCd = .5; G.h.swingT = -1; G.h.castT = -1; G.h.dead = 0;
+    if (sec > simSec){
+      const w = { gold:G.gold - w0.gold, kills:G.totalKills - w0.kills, chips:G.chips - w0.chips, deaths:G.deaths - w0.deaths, boss:(G.bossKills || 0) - w0.boss, xp:G.off.xp };
+      offlineBulk(sec - simSec, (sec - simSec)/simSec, w);
+    }
     resolveOfflineChoices(G.off);
     if (G.h.hp <= 0) G.h.hp = G.st.life;
     G.offline = false; G.paused = false; G.lastWall = Date.now(); const o = G.off; G.off = null; G.dirty = true; const saved = saveGame();
@@ -351,7 +305,7 @@ function setupPanel(){
     .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px} .mc{border:1.5px solid var(--ink);border-radius:14px;padding:8px 10px;box-shadow:0 2px 0 #b9c6ee} .mc.dim{opacity:.5} .mc.run{margin-bottom:10px;border-style:dashed}
     .mc ul{margin:4px 0 6px;padding-left:16px} .hint{color:var(--muted);font-size:11.5px;margin:4px 0 8px;line-height:1.5} .hint b{color:var(--ink)}
     .srow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px} select,.sv{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:3px 6px;max-width:100%}
-    .mc>select{display:block;margin:6px 0} .tree{width:100%;max-width:520px;display:block;margin:0 auto 6px;background:radial-gradient(circle,rgba(111,196,245,.22) 1.6px,transparent 2px) 0 0/16px 16px,linear-gradient(#ffffff,#e6f1ff);border:3px solid #fff;box-shadow:0 0 0 2px #aab8ee;border-radius:18px} .tn.open circle,.tn.open polygon{animation:tp 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center} @keyframes tp{50%{transform:scale(1.12)}}
+    .mc>select{display:block;margin:6px 0} .treebox{position:relative;width:100%;max-width:520px;margin:0 auto 6px} .treebox .treecv{display:block;width:100%;aspect-ratio:1;image-rendering:pixelated;image-rendering:crisp-edges;border:3px solid #fff;box-shadow:0 0 0 2px #7d8bbd;box-sizing:border-box;background:#dfe9ff} body #mbody .treebox svg.tree{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);margin:0!important;max-width:none;background:none!important;border:0!important;box-shadow:none!important;outline:none} body.ui-material #mbody .treebox svg.tree{background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important} body.ui-material #mbody .treebox svg.tree .tn :is(circle,polygon){fill:transparent!important;stroke:none!important;animation:none!important} body.ui-material #mbody .treebox svg.tree>line{display:none} .treebox .tn.open .tnb{animation:tnblink 1s steps(2) infinite} .treebox .tn:focus-visible .tnb,.treebox .tn:focus-visible circle{outline:none;stroke:#e2583d} @keyframes tnblink{50%{opacity:0}} @media(prefers-reduced-motion:reduce){.treebox .tn.open .tnb{animation:none}} .tree{width:100%;max-width:520px;display:block;margin:0 auto 6px;background:radial-gradient(circle,rgba(111,196,245,.22) 1.6px,transparent 2px) 0 0/16px 16px,linear-gradient(#ffffff,#e6f1ff);border:3px solid #fff;box-shadow:0 0 0 2px #aab8ee;border-radius:18px} .tn.open circle,.tn.open polygon{animation:tp 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center} @keyframes tp{50%{transform:scale(1.12)}}
     .ach{padding-left:0;list-style:none;margin:6px 0 0}.ach li{margin:3px 0}.ach .got{color:#a87400}
     .chars{display:flex;gap:6px;margin:4px 0}.chr{font:inherit;flex:1;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:4px;cursor:pointer;display:flex;flex-direction:column;font-size:13px}.chr.on{background:#d9e6ff;box-shadow:inset 0 0 0 2px #4a7fdc}.chr[disabled]{opacity:.5;cursor:default}.chr .mute{font-size:10px}
     .cards{display:flex;gap:8px;margin:10px 0}.mbox.small:has(.cards){width:min(470px,94vw)}

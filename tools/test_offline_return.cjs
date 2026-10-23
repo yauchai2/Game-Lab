@@ -59,7 +59,7 @@ check('an overlapping catch-up request cannot simulate, report or save twice', (
   r.evaluate('catchUp(1800,true);catchUp(1800,true)');
   r.drain();
   assert.equal(r.reports.length, 1); assert.equal(r.saves, 1);
-  assert(Math.abs(r.evaluate('G.time') - 1800) < .201);
+  assert(Math.abs(r.evaluate('G.time') - r.evaluate('OFF_WINDOW')) < .201);   // 只精確模擬前段，其餘按比例放大
 });
 check('no-report return still saves once and leaves no settlement lock', () => {
   const r = createRuntime(); r.settle(120, false);

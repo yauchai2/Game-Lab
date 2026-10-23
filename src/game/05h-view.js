@@ -1,6 +1,6 @@
 /* 戰場讀數、像素圖集及全視窗觀戰。只保存本機呈現偏好，不改遊戲存檔。 */
 const VIEW_KEY='idle-hero-view-v1', VIEW_ATLASES=Object.fromEntries(Object.entries(ART_SHEETS).map(([key,s])=>[key,[s.cols,s.rows]]));
-const GAME_VIEW={prefs:{idle:60,pixels:true,glitch:true,uiFx:2},atlases:{},ready:Promise.resolve(),watch:false,last:performance.now(),pointers:new Set(),swallow:new Set(),clickUntil:0,trigger:null,inert:new Map(),scroll:[],tab:null,initialized:false,pulseAt:-1000,pulseTimer:0};
+const GAME_VIEW={prefs:{idle:60,pixels:true,glitch:true,uiFx:2,quality:'auto'},atlases:{},ready:Promise.resolve(),watch:false,last:performance.now(),pointers:new Set(),swallow:new Set(),clickUntil:0,trigger:null,inert:new Map(),scroll:[],tab:null,initialized:false,pulseAt:-1000,pulseTimer:0};
 const UI_FX_NAMES=['關閉','輕微','標準','強烈'];
 const UI_FX_CSS=`
 :root{--ui-fx-cyan:#57efff;--ui-fx-magenta:#ff73be}
@@ -41,6 +41,8 @@ function viewApplyPrefs(){
   if(!GAME_VIEW.prefs.glitch||matchMedia('(prefers-reduced-motion: reduce)').matches){FXO.shake=0;FXO.flash=0;FXO.punch=0;FXO.stop=0;}
   if(!motion){clearTimeout(GAME_VIEW.pulseTimer);document.body.classList.remove('ui-fx-pulse');}
   const range=$('ui-fx-level'),name=$('ui-fx-name');if(range){range.value=GAME_VIEW.prefs.uiFx;range.setAttribute('aria-valuetext',UI_FX_NAMES[GAME_VIEW.prefs.uiFx]);}if(name)name.textContent=UI_FX_NAMES[GAME_VIEW.prefs.uiFx];
+  document.querySelectorAll('[data-view-quality]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.viewQuality===GAME_VIEW.prefs.quality)));
+  const qualityLabel=$('view-quality-summary');if(qualityLabel)qualityLabel.textContent='目前：'+({low:'低',medium:'中',high:'高'}[r3Quality(GAME_VIEW.prefs.quality,innerWidth)])+(GAME_VIEW.prefs.quality==='auto'?'（依裝置自動）':'');
   document.body.classList.toggle('pixel-icons',GAME_VIEW.prefs.pixels);
   for(const key of Object.keys(VIEW_ATLASES)){
     if(GAME_VIEW.prefs.pixels&&GAME_VIEW.atlases[key])document.documentElement.style.setProperty('--pixel-'+key,`url("${GAME_VIEW.atlases[key]}")`);
@@ -108,8 +110,15 @@ function viewTick(now=performance.now()){
   if(!GAME_VIEW.watch&&GAME_VIEW.prefs.idle>0&&now-GAME_VIEW.last>=GAME_VIEW.prefs.idle*1000)viewEnterWatch();
   if(GAME_VIEW.tab!==modalTab){GAME_VIEW.tab=modalTab;viewFxPulse();}
 }
+function viewRestorePrefs(prefs){
+ if(!prefs||typeof prefs!=='object')return;
+ GAME_VIEW.prefs.quality=['auto','low','medium','high'].includes(prefs.quality)?prefs.quality:'auto';
+ if([0,30,60,120].includes(prefs.idle))GAME_VIEW.prefs.idle=prefs.idle;
+ if([0,1,2,3].includes(prefs.uiFx))GAME_VIEW.prefs.uiFx=prefs.uiFx;
+ for(const k of ['pixels','glitch'])if(typeof prefs[k]==='boolean')GAME_VIEW.prefs[k]=prefs[k];
+}
 function viewInit(){
-  try{const prefs=JSON.parse(localStorage.getItem(VIEW_KEY));if(prefs){if([0,30,60,120].includes(prefs.idle))GAME_VIEW.prefs.idle=prefs.idle;if([0,1,2,3].includes(prefs.uiFx))GAME_VIEW.prefs.uiFx=prefs.uiFx;for(const k of ['pixels','glitch'])if(typeof prefs[k]==='boolean')GAME_VIEW.prefs[k]=prefs[k];}}catch(_){}
+  try{viewRestorePrefs(JSON.parse(localStorage.getItem(VIEW_KEY)));}catch(_){}
   document.body.insertAdjacentHTML('beforeend',viewFxDefs());
   const style=document.createElement('style');style.id='viewstyles';style.textContent=VIEW_CSS+UI_FX_CSS+UX_MATERIAL_CSS;document.body.classList.add('ui-material');document.head.appendChild(style);
   const hud=$('stats');hud.className='stats battle-hud';hud.setAttribute('role','group');hud.setAttribute('aria-label','戰場狀態');
@@ -118,10 +127,12 @@ function viewInit(){
   const back=document.createElement('button');back.id='watch-return';back.type='button';back.hidden=true;back.setAttribute('aria-label','返回操作台');back.innerHTML='<span><i aria-hidden="true"></i>觀戰中 · 點一下返回<span class="watch-key"> ／ Esc</span></span>';back.onclick=()=>viewExitWatch();document.body.appendChild(back);
   const settings=document.createElement('section');settings.className='view-settings';settings.setAttribute('aria-label','畫面與觀戰');settings.innerHTML='<h3>畫面與觀戰</h3><div class="ui-setting-grid"><div class="view-options" role="group" aria-label="圖示與動態效果"><button type="button" data-view-setting="pixels"></button><button type="button" data-view-setting="glitch"></button></div><div class="ui-setting-block"><h4>自動觀戰</h4><div class="view-options" role="group" aria-label="自動觀戰等待時間">'+[[0,'關閉'],[30,'30 秒'],[60,'60 秒'],[120,'2 分鐘']].map(([s,t])=>`<button type="button" data-view-idle="${s}">${t}</button>`).join('')+'</div></div><button type="button" id="watch-now">立即觀戰 ↗</button></div><details class="ui-rules"><summary>畫面與觀戰說明</summary><p>像素質感套用整個操作介面。震動、衝擊與訊號可獨立關閉；系統減少動態效果時會停用動畫。觀戰填滿遊戲視窗，點一下或按 Esc 返回；編輯、拖曳及選獎勵時不自動切換。</p></details>';
   $('uisettings').append(settings);
+  const quality=document.createElement('section');quality.className='ui-setting-block view-quality';quality.innerHTML='<h4>3D 畫質</h4><div class="view-options" role="group" aria-label="3D 畫質">'+[['auto','自動'],['low','低'],['medium','中'],['high','高']].map(([key,label])=>`<button type="button" data-view-quality="${key}" aria-pressed="false">${label}</button>`).join('')+'</div><p id="view-quality-summary" class="uxmeta"></p><p class="uxmeta">自動：手機中畫質，桌機高畫質。只調整 3D 清晰度，像素字體保持不變。</p>';settings.querySelector('.ui-setting-grid').prepend(quality);
   const control=document.createElement('div');control.className='view-fx-control ui-setting-block';control.innerHTML='<div><label for="ui-fx-level">介面像素質感</label><output for="ui-fx-level" id="ui-fx-name"></output></div><input id="ui-fx-level" type="range" min="0" max="3" step="1" aria-describedby="ui-fx-help"><div class="view-fx-ticks" aria-hidden="true"><span>關閉</span><span>輕微</span><span>標準</span><span>強烈</span></div><p id="ui-fx-help" class="uxsr">調整外殼訊號紋理。關閉時保留像素字體，恢復平滑按鍵與連續血條。</p>';
   settings.querySelector('.ui-setting-grid').prepend(control);
   control.addEventListener('input',()=>{GAME_VIEW.prefs.uiFx=+$('ui-fx-level').value;GAME_VIEW.last=performance.now();viewSavePrefs();viewApplyPrefs();viewFxPulse();});
-  settings.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='watch-now'){if(!viewEnterWatch())uxAnnounce('請先完成目前的輸入、機件放置或選擇，再開始觀戰。');return;}if(b.dataset.viewSetting)GAME_VIEW.prefs[b.dataset.viewSetting]=!GAME_VIEW.prefs[b.dataset.viewSetting];else if(b.dataset.viewIdle!==undefined)GAME_VIEW.prefs.idle=+b.dataset.viewIdle;GAME_VIEW.last=performance.now();viewSavePrefs();viewApplyPrefs();});
+  settings.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='watch-now'){if(!viewEnterWatch())uxAnnounce('請先完成目前的輸入、機件放置或選擇，再開始觀戰。');return;}if(b.dataset.viewQuality)GAME_VIEW.prefs.quality=b.dataset.viewQuality;else if(b.dataset.viewSetting)GAME_VIEW.prefs[b.dataset.viewSetting]=!GAME_VIEW.prefs[b.dataset.viewSetting];else if(b.dataset.viewIdle!==undefined)GAME_VIEW.prefs.idle=+b.dataset.viewIdle;GAME_VIEW.last=performance.now();viewSavePrefs();viewApplyPrefs();});
+  addEventListener('resize',viewApplyPrefs);
   matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',viewApplyPrefs);
   // capture 在世界及盤面輸入之前執行。首次點擊的 down/up/click 都被消耗。
   const eat=e=>{e.preventDefault();e.stopImmediatePropagation();};
@@ -142,16 +153,15 @@ function viewInit(){
   GAME_VIEW.initialized=true;GAME_VIEW.last=performance.now();viewApplyPrefs();viewRenderHUD();GAME_VIEW.ready=viewPreparePixels();
 }
 const VIEW_CSS=`
-.world-travel{position:fixed;z-index:25;transform:translateX(-50%);width:min(480px,calc(100vw - 32px));box-sizing:border-box;max-height:calc(100dvh - 24px);overflow:auto;padding:18px 22px;background:var(--ux-screen);color:var(--ux-ink);border:2px solid var(--ux-edge);box-shadow:5px 5px 0 #17275155;font-family:var(--ux-body)}.world-travel[hidden]{display:none}.world-travel h2{font-size:24px!important;line-height:32px;margin:6px 0 12px}.world-travel p{margin:0;font-size:16px!important;line-height:24px}.world-travel .world-travel-call{color:var(--ux-muted);font-size:14px!important}.world-travel button{margin-top:12px;cursor:pointer;min-height:40px}.world-travel button:hover{background:var(--ux-edge)}.world-travel button:focus-visible{outline:3px solid var(--ux-blue);outline-offset:3px}.world-travel button:active{transform:translateY(1px)}.world-travel-route{position:relative;display:flex;justify-content:space-between;width:120px;margin-top:18px;border-bottom:1px dashed var(--ux-muted);height:12px}.world-travel-route i{display:block;width:14px;height:8px;background:var(--ux-blue);clip-path:polygon(0 0,100% 0,70% 100%,30% 100%)}.world-travel-route span{position:absolute;left:calc(var(--travel)*100%);bottom:0;width:4px;height:4px;background:var(--ux-accent)}
-@media(min-width:1180px){.world-travel{width:min(600px,calc(100vw - 32px));padding:22px 28px}.world-travel h2{font-size:32px!important;line-height:40px}.world-travel p{font-size:20px!important;line-height:28px}}
-@media(prefers-reduced-motion:reduce){.world-travel-route span{left:50%}}
+.world-travel{position:fixed;z-index:5;pointer-events:none;overflow:hidden;contain:paint}.world-travel[hidden]{display:none}.world-travel::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 10%,#a8bbd244 43%,#e6edf777 50%,#a8bbd244 57%,transparent 90%);transform:translateX(calc(-160% + var(--travel)*320%));opacity:calc(.65 - var(--travel)*.65)}.world-travel::after{content:"";position:absolute;inset:0;border-block:2px solid #a4b6ca;opacity:calc(.32 - var(--travel)*.32)}
+@media(prefers-reduced-motion:reduce){.world-travel{display:none!important}}
 
 /* Responsive pixel-text metrics also own the surrounding HUD geometry. */
-body.ui-material .battle-hud .hud-level{height:66px}
+body.ui-material .battle-hud .hud-level{height:48px}
 body.ui-material .battle-hud .hud-level span{font-size:12px!important;line-height:18px}
-body.ui-material .battle-hud .hud-level b{font-size:24px!important;line-height:32px}
-@media(min-width:1180px){body.ui-material .battle-hud .hud-left{grid-template-columns:72px minmax(100px,280px);max-width:360px}body.ui-material .battle-hud .hud-level{height:82px}body.ui-material .battle-hud .hud-level span{font-size:16px!important;line-height:24px}body.ui-material .battle-hud .hud-level b{font-size:36px!important;line-height:44px}body.ui-material .battle-hud .hud-meter{height:22px}body.ui-material .battle-hud .hud-meter.hud-xp{height:14px}}
-body.ui-material.m .stage{padding-top:92px!important}body.ui-material.m .stage #loot{top:100px!important}
+body.ui-material .battle-hud .hud-level b{font-size:20px!important;line-height:28px}
+@media(min-width:1180px){body.ui-material .battle-hud .hud-left{grid-template-columns:56px minmax(100px,260px);max-width:324px}body.ui-material .battle-hud .hud-level{height:58px}body.ui-material .battle-hud .hud-level span{font-size:16px!important;line-height:24px}body.ui-material .battle-hud .hud-level b{font-size:26px!important;line-height:34px}body.ui-material .battle-hud .hud-meter{height:22px}body.ui-material .battle-hud .hud-meter.hud-xp{height:14px}}
+body.ui-material.m .stage{padding-top:72px!important}body.ui-material.m .stage #loot{top:80px!important}
 
 /* 覆蓋原先 STATUS 櫃體。HUD 是世界上方的獨立讀數；共用色階不改變字形與位置。 */
 .stage #stats.battle-hud{position:absolute!important;inset:8px 8px auto!important;display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;min-height:0!important;max-width:none!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;pointer-events:none;z-index:6;color:#f6f9ff;font-family:"Cubic 11",monospace;text-align:left;text-shadow:1px 1px #151c38,-1px 0 #151c38,0 -1px #151c38;line-height:1.1}
@@ -173,12 +183,12 @@ body.watch-mode .stage #stats.battle-hud{inset:max(16px,env(safe-area-inset-top)
 
 `;
 
-/* Non-modal arrival card: the field journal retains every discovered line. */
+/* Decorative travel sweep; all narrative stays in the field journal. */
 function worldTravelRender(){
  let el=document.getElementById('world-travel');
- if(!el){el=document.createElement('section');el.id='world-travel';el.className='world-travel';el.hidden=true;el.setAttribute('aria-label','抵達新地區');document.body.appendChild(el);}
- const travel=WORLD_TRAVEL;if(travel.remaining<=0){if(!el.hidden&&el.contains(document.activeElement)){const before=travel.previousFocus;if(before?.isConnected)before.focus({preventScroll:true});}el.hidden=true;return;}
+ if(!el){el=document.createElement('div');el.id='world-travel';el.className='world-travel';el.hidden=true;el.setAttribute('aria-hidden','true');document.body.appendChild(el);}
+ const travel=WORLD_TRAVEL,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(travel.remaining<=0||reduced||!GAME_VIEW.prefs.glitch){el.hidden=true;return;}
  const rect=document.getElementById('fig')?.getBoundingClientRect();if(!rect)return;
- if(el.dataset.place!==travel.key){el.dataset.place=travel.key;travel.previousFocus=document.activeElement;const note=travel.note;el.innerHTML=`<p class="world-travel-call">▸ 訊號接通 · ${uxEsc(note[1])}</p><h2>${uxEsc(travel.title)}</h2><p class="world-travel-note" role="status">${uxEsc(note[2])}</p><div class="world-travel-route" aria-hidden="true"><i></i><i></i><i></i><span></span></div><button type="button" class="mb" onclick="worldTravelSkip();worldTravelRender()">繼續行程</button>`;}
- el.hidden=false;el.style.left=Math.max(16,Math.min(innerWidth-16,rect.left+rect.width/2))+'px';el.style.top=Math.max(12,Math.min(innerHeight-270,rect.top+rect.height*.22))+'px';el.style.setProperty('--travel',String(1-travel.remaining/travel.duration));
+ el.hidden=false;el.style.left=rect.left+'px';el.style.top=rect.top+'px';el.style.width=rect.width+'px';el.style.height=rect.height+'px';el.style.setProperty('--travel',String(1-travel.remaining/travel.duration));
 }

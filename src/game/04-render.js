@@ -5,12 +5,15 @@
    血條與傷害數字仍用 SVG 疊在最上層（座標由同一台相機投影而來）。
    ============================================================ */
 const T3 = THREE, R3 = { clean:new URLSearchParams(location.search).has('clean'), ready:false, cache:{}, ent:new Map(), W:0, H:0 };
-// 全尺寸共用像素格：至少每 2 CSS px 一格，長邊最多 640 個樣本；不乘 Retina DPR。
-function r3BufferSize(width,height,dpr=1,clean=false){
+// Canvas samples are independent of Retina DPR; each quality has a bounded budget.
+function r3Quality(quality='auto',viewportWidth=1024){return ['low','medium','high'].includes(quality)?quality:(viewportWidth<768||typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches&&viewportWidth<1180)?'medium':'high';}
+function r3BufferSize(width,height,dpr=1,clean=false,quality='auto',viewportWidth=width){
   const W=Math.max(2,Number.isFinite(width)?width:2),H=Math.max(2,Number.isFinite(height)?height:2);
-  const scale=clean?1/Math.max(1,Math.min(2,Number.isFinite(dpr)?dpr:1)):Math.max(2,Math.ceil(Math.max(W,H)/640));
-  return {width:Math.max(1,Math.floor(W/scale)),height:Math.max(1,Math.floor(H/scale))};
+  const q=r3Quality(quality,viewportWidth),policy={low:[.5,720],medium:[.75,1100],high:[1,1600]}[q];
+  const ratio=clean?Math.max(1,Math.min(2,Number.isFinite(dpr)?dpr:1)):Math.min(policy[0],policy[1]/Math.max(W,H));
+  return {width:Math.max(1,Math.floor(W*ratio)),height:Math.max(1,Math.floor(H*ratio))};
 }
+function r3ViewQuality(){return typeof GAME_VIEW==='undefined'?'auto':GAME_VIEW.prefs.quality||'auto';}
 const aTier = it => it ? Math.min(3, Math.floor(it.il/6)) : 0;
 const aRnd = i => { const s = Math.sin(i*127.1 + 311.7)*43758.5453; return s - Math.floor(s); };
 const D2R = Math.PI/180;
@@ -81,6 +84,7 @@ function rigModel(def, recolor, mf){   // 依 BONES 的階層組成骨架：子�
   return b;
 }
 function buildHero(at, ar, wt, wr, cos){
+  if(typeof buildY2KHero==='function'&&typeof CHARACTER_GLB!=='undefined')return buildY2KHero(at,ar,wt,wr,cos);
   cos = cos || G.cos;
   const g = new T3.Group(), steel = ['#cfd6e0', '#bcd0f0', '#f4e3a8', '#f2b09a'][ar];
   const recolor = { '#e9edf6':['#e8eef5', '#9fb8e8', '#f2d27a', '#f09a8a'][ar], '#6f8f4a':at >= 1 ? '#7d8fb8' : '#6f8f4a', '#2b2552':at >= 2 ? '#3a3f8f' : '#2b2552' };
@@ -122,11 +126,19 @@ function buildHero(at, ar, wt, wr, cos){
   const mo = new T3.Mesh(new T3.PlaneGeometry(.7, .13), basic('#7a3a4a')); mo.position.set(0, 2.4 - 1.25, 3.3); mo.rotation.x = -.25; head.add(mo);
   const hand = new T3.Group(); hand.position.set(.6, -4.5, .8); B.foreR.add(hand);
   const sw = new T3.Group(); sw.rotation.x = 2.1; hand.add(sw); g.userData.sword = sw;
-  buildWeapon(sw, wt, wr);
+  const cosmeticTier={umbrella:0,bat:1,tube:2,saber:3}[cos.weaponStyle];buildWeapon(sw,cosmeticTier??wt,wr);
+  buildHeroAccessories(B,cos);
   mk(new T3.RingGeometry(9, 11, 28).rotateX(-Math.PI/2), basic('#7ef0ff', .85), 0, .35, 0, g); mk(new T3.CircleGeometry(9, 24).rotateX(-Math.PI/2), basic('#7ef0ff', .18), 0, .3, 0, g);   /* 腳下的青色光圈，人多時一眼找到主角 */
   const orb = mk(ico(1.9, 1), basic('#ffb347', .95), 6, 13, 5.5, g); orb.visible = false; g.userData.orb = orb;
   g.scale.setScalar(.85*CK); g.rotation.order = 'YXZ'; addShadow(g, 5.5);
   return g;
+}
+function buildHeroAccessories(B,cos){
+ const silver=m3('#bbc8d2'),dark=m3('#334358'),screen=m3('#85bcb8');
+ if(cos.offhandStyle==='disc'){mk(new T3.CylinderGeometry(3,3,.6,12),dark,0,-4,1.5,B.foreL).rotation.x=Math.PI/2;mk(new T3.TorusGeometry(2.4,.25,4,12),silver,0,-4,1.9,B.foreL);mk(new T3.CylinderGeometry(.65,.65,.65,8),screen,0,-4,1.9,B.foreL).rotation.x=Math.PI/2;}
+ if(cos.offhandStyle==='radio'){mk(new T3.BoxGeometry(3.6,4.6,1.8),dark,0,-4,1.3,B.foreL);mk(new T3.BoxGeometry(2.5,1.3,.2),screen,0,-2.8,2.3,B.foreL);mk(new T3.CylinderGeometry(.85,.85,.3,8),silver,0,-4.5,2.3,B.foreL).rotation.x=Math.PI/2;mk(new T3.BoxGeometry(.2,3,.2),silver,1.3,-.7,1.3,B.foreL);}
+ if(cos.accessoryStyle==='pager'){mk(new T3.BoxGeometry(2.8,2.1,1),dark,4,1,3.5,B.torso);mk(new T3.BoxGeometry(1.8,.8,.15),screen,4,1.3,4.1,B.torso);}
+ if(cos.accessoryStyle==='charm'){mk(new T3.TorusGeometry(1.8,.13,4,10),silver,0,6.8,3.3,B.torso).scale.y=1.3;mk(new T3.OctahedronGeometry(.7,0),screen,0,4.5,3.8,B.torso);}
 }
 // Y2K 城市武器（依武器階級）：0 摺疊傘、1 鋁製球棒、2 霓虹光管、3 雷射光劍；稀有度決定主色與發光
 const WOV = new URLSearchParams(location.search);   // 測試用：?wt=0..3&wr=0..3 直接指定武器外觀
@@ -435,8 +447,8 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   const frameRatio=document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig0.getBoundingClientRect().width):MOB()?mobRatio():Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig0.getBoundingClientRect().width)));
   if(vb0.width && Math.abs(vb0.height/vb0.width-frameRatio)>.01)fig0.setAttribute('viewBox',`0 0 ${vb0.width} ${vb0.width*frameRatio}`);
   const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
-  const cv = R3.rd.domElement; cv.style.imageRendering = R3.clean ? 'auto' : 'pixelated'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
-  const buffer=r3BufferSize(W,H,dpr,R3.clean);
+  const cv = R3.rd.domElement; cv.style.imageRendering = !R3.clean&&r3Quality(r3ViewQuality(),innerWidth)==='low'?'pixelated':'auto'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const buffer=r3BufferSize(W,H,dpr,R3.clean,r3ViewQuality(),innerWidth);
   R3.W=W;R3.H=H;R3.dpr=dpr;
   if(buffer.width!==cv.width||buffer.height!==cv.height)R3.rd.setSize(buffer.width,buffer.height,false);
   const now = performance.now(), fdt = Math.min(.1, (now - (R3.tPrev || now))/1000); R3.tPrev = now;R3.frameDt=fdt;
@@ -502,6 +514,7 @@ function applyPose(B, pose, k){   // k：向目標姿勢靠近的速度，讓切
   for (const n in pose){ if (!B[n]) continue; const r = B[n].rotation, p = pose[n]; r.x += (p[0] - r.x)*k; r.y += (p[1] - r.y)*k; r.z += (p[2] - r.z)*k; }
 }
 function heroLook(g){
+  if(g.userData.y2k){characterHeroLook(g);return;}
   const h = G.h, t = G.time, ps = g.userData, B = ps.B, sw = h.swingT >= 0 ? tClamp(h.swingT/.3) : -1, SC = .85*CK;
   let pose, k = .5, hop = 0, st = 1;
   if (sw >= 0){   // 蓄力（0 到 .3）、劈砍（.3 到 .55）、停頓後收招
@@ -587,6 +600,8 @@ function disposeWorldObject(root){
 function scene(){
   if (window.BOSSON) return '';
   if (!R3.ready) r3init();
+  if (document.body.classList.contains('battle-fold')){ if (R3.rd) R3.rd.domElement.style.display = 'none'; return ''; }   // 戰場收起時整個不畫，省電
+  if (R3.rd && R3.rd.domElement.style.display === 'none') R3.rd.domElement.style.display = '';
   r3frame();
   const bi = biomeNow();
   if (R3.bi !== bi || R3.terrainKey!==terrainKey()){
@@ -604,9 +619,9 @@ function scene(){
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
   pu.glows.forEach(gl => gl.scale.setScalar(1 + (pulse ? .35*Math.sin(pulse.t*3.14) : 0))); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
   // 主角
-  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead > 0, G.char, JSON.stringify(G.cos)].join();
-  if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero) R3.world.remove(R3.hero); R3.hero = G.h.dead > 0 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
-  if (G.h.dead > 0){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
+  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos)].join();
+  if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero){if(typeof characterDispose==='function')characterDispose(R3.hero);R3.world.remove(R3.hero);} R3.hero = G.h.dead>0&&G.h.dead<=2.15 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
+  if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 怪物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
   for (const m of G.mons){ const g = entFor(m, () => m.boss?buildCircuitBoss(biomeNow(),m.bossForm):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g); }

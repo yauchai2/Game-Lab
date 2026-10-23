@@ -18,7 +18,7 @@ function uiTitle(){
   const box=document.querySelector('#modal > .mbox');if(!box)return;
   let el=$('mttl');if(!el){el=document.createElement('div');el.id='mttl';box.insertBefore(el,$('mbody'));}
   const root=UI_NAV.find(g=>g.pages.includes(modalTab)),back=root&&modalTab!==root.k;
-  const hk=MHELP[modalTab],cz=uiBattleSize();
+  const hk=MHELP[modalTab],cz=uiBattleSize();document.body.classList.toggle('battle-fold',MOB()&&cz===3);
   el.innerHTML=`${back?`<button class="ui-back" aria-label="返回${root.n}" onclick="openModal('${root.k}')">返回</button>`:''}<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="切換戰場大小，目前${CZN[cz]}" onclick="cycleCz()">${CZN[cz]}</button>`:''}`;
 }
 function uiSegments(key,items,label){return `<div class="ui-segments" role="group" aria-label="${label}">${items.map(([id,name])=>`<button aria-pressed="${UI_WORK[key]===id}" data-focus="${key}-${id}" onclick="uiWork('${key}','${id}')">${name}</button>`).join('')}</div>`;}
@@ -46,24 +46,6 @@ function uiInspectCore(id){const it=G.armory[id];if(!it)return;const on=G.equip[
 function uiCoreCollection(){const ids=Object.keys(LEGEND_BY).filter(id=>G.armory[id]);return `<button class="mb" onclick="uiCityGo()">城市遠征 · 定向追求核心</button><details class="ui-section ui-core-collection"><summary>傳奇核心收藏 ${ids.length}／${Object.keys(LEGEND_BY).length}</summary>${ids.length?`<div class="ui-item-grid ui-core-grid" role="group" aria-label="核心收藏">${ids.map(id=>uiGearTile(G.armory[id],true)).join('')}</div>`:'<p>尚未收藏核心。冒險掉落或城市定向合成都會加入這裡。</p>'}<details><summary>收藏與重複品規則</summary><p>同款保留一件。穿著、構築引用、詞綴鎖定或腐化的核心不會自動替換。重複品提供零件及殘晶，打造可提高核心等級。</p></details><div class="uxactions">${Object.keys(SLOTN).filter(slot=>G.equipBackup[slot]).map(slot=>`<button class="mb" onclick="uiRestoreEquipment('${slot}')">切回上一件${SLOTN[slot]}</button>`).join('')}</div></details>`;}
 function uiEquipCore(id){ if(equipCore(id)){hideOverlay();renderModal();uxAnnounce(`已換上${LEGEND_BY[id].name}，可切回上一件裝備。`);} }
 function uiRestoreEquipment(slot){ if(restoreEquipment(slot)){renderModal();uxAnnounce(`已切回上一件${SLOTN[slot]}。`);} }
-function uiInventoryHtml(){
-  const kind=UI_WORK.inventory;
-  const head=uiSegments('inventory',[['active','主動技能'],['support','輔助配件'],['cart','模式卡匣']],'機件庫存分類');
-  let content='';
-  if(kind==='active')content=`<div class="ui-inventory-grid">${Object.entries(SKILLS).map(([id,K])=>{const unlocked=G.lvl>=K.lvl,used=G.slots.includes(id);return `<button class="gt${held?.key===id?' on':''}" data-focus="active-${id}" data-availability="${!unlocked||used?'unavailable':'available'}" aria-label="${uxEsc(K.n+'：'+K.d)}" onclick="uiInventoryPick('active','${id}')" ${unlocked&&!used?`onpointerdown="pzDown(event,'active','${id}')"`:''}>${sico(id,26)}<b>${K.n}</b>${shapeIcon('active',id)}<small>${!unlocked?`Lv. ${K.lvl}`:used?'已放置':'點選放置'}</small></button>`}).join('')}</div>`;
-  else if(kind==='support')content=`<div class="ui-inventory-grid">${Object.entries(SUPPS).map(([id,S])=>{const n=G.gems[id]||0,f=gemFree(id);return `<button class="gt${held?.key===id?' on':''}" data-focus="support-${id}" data-availability="${f?'available':'unavailable'}" aria-label="${uxEsc(S.n)}，${f}／${n}，${uxEsc(S.d)}" onclick="uiInventoryPick('support','${id}')" ${f?`onpointerdown="pzDown(event,'support','${id}')"`:''}>${G.newSnap&&n>(G.newSnap.g[id]||0)?'<i class="nw">NEW</i>':''}${gemIco(id,26)}<b>${S.n}</b><small>可用 ${f}／${n}</small>${shapeIcon('support',id)}</button>`}).join('')}</div>`;
-  else content=cartsHtml();
-  return `<section id="uxinventory" class="ui-inventory" aria-label="機件庫存"><h3>機件庫存</h3><p class="uxmeta">點選查看效果與放置；數量為可用／持有。</p>${head}${content}</section>`;
-}
-function uiInventoryPick(kind,key){const def=kind==='active'?SKILLS[key]:SUPPS[key];if(!def)return;const reason=kind==='active'?(G.lvl<def.lvl?`等級 ${def.lvl} 解鎖`:G.slots.includes(key)?'已放在盤面，可點選盤面上的技能調整':''):gemFree(key)<=0?(G.gems[key]?'全部已放置，先從盤面取下':'尚未持有，可繼續冒險或查看電路合成'):'';if(!reason)return pzHold(kind,key);showOverlay(`<h2 class="uxdialog-title">${uxEsc(def.n)}</h2><p>${uxEsc(def.d)}</p>${shapeIcon(kind,key)}<p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回機件庫存</button>`);}
-function uiResolvedHtml(){
-  const resolved=GridLab.resolve(G.board),pieces=new Map(G.board.pieces.map(p=>[p.id,p]));
-  const supports=G.board.pieces.filter(p=>p.kind==='support');
-  const linked=new Set(resolved.flatMap(r=>r.linked));
-  const adjacent=(a,b)=>GridLab.cellsOf(a).some(([x,y])=>GridLab.cellsOf(b).some(([u,v])=>Math.abs(x-u)+Math.abs(y-v)===1));
-  const unused=supports.filter(p=>!linked.has(p.id));
-  return `<section class="ui-section ui-resolved" aria-label="目前生效技能"><h3>目前生效</h3>${resolved.length?resolved.map(r=>{const s=G.st.sk[r.key];return `<article><div>${sico(r.key,24)}<b>${SKILLS[r.key].n}</b><span>${s?`冷卻 ${s.cd.toFixed(1)} 秒`:''}</span></div><p>${r.linked.length?r.linked.map(id=>SUPPS[pieces.get(id).key].n).join('、'):'尚未連接輔助配件'}</p>${s?.mode?`<p>模式：${MODES[s.mode].n}</p>`:''}</article>`}).join(''):'<p>盤面沒有主動技能，放置一個即可開始構築。</p>'}${unused.length?`<details><summary>未生效配件 ${unused.length} 件</summary><ul>${unused.map(p=>`<li><b>${SUPPS[p.key].n}</b>：${G.board.pieces.some(a=>a.kind==='active'&&adjacent(a,p))?'相鄰技能的標籤不符':'未與主動技能相鄰'}</li>`).join('')}</ul></details>`:''}<p class="uxmeta">單體直傷預估包含模式與共享出手時間，不含燃燒、條件連動、角色專屬及擊殺收益。實測可前往冒險的訓練場。</p></section>`;
-}
 function uiRevealSelection(){requestAnimationFrame(()=>{const el=document.querySelector('.uxinspect');if(el){el.scrollIntoView({block:'start'});el.querySelector('.uxboard-link,button')?.focus({preventScroll:true});}});}
 function uiApplyLayout(initial=false){
   const desktop=innerWidth>=1180,wasDesktop=DESK();
@@ -120,13 +102,14 @@ body.d .stats{position:absolute;left:8px;right:8px;top:4px;margin:0;max-width:no
 .ui-map-banner h3,.ui-map-banner>span{background:#ffffffdd;padding:3px 7px;border-radius:4px;width:fit-content}.ui-map-banner>span{display:inline-block}
 @media(max-width:1179px){body.m #mbody{padding:10px}#mbody .pz{max-width:300px}.ui-segments>button{min-height:44px}body.m .ui-inventory-grid{gap:7px}}
 @media(min-width:560px) and (max-width:1179px){body.m #mbody{padding:14px 24px}.ui-inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ui-equipment{grid-template-columns:repeat(3,minmax(0,1fr))}.ui-character-head,.ui-menu-group,.ui-wiki{max-width:900px;margin-left:auto;margin-right:auto}}
+body.m.battle-fold .stage{height:96px;min-height:96px;padding:0}body.m.battle-fold #fig,body.m.battle-fold #nexthint,body.m.battle-fold #ctxbtn,body.m.battle-fold #fxo{display:none!important}body.m.battle-fold .stats{position:static!important;margin:4px 6px!important}
 @media(max-height:500px){body.m .stats{top:0}body.m #mttl{min-height:40px}body.m .stage{padding-bottom:30px}body.m #fig{max-height:110px}body.m #mbody{padding:8px}body.m #mtabs{height:48px}body.m{padding-bottom:calc(48px + env(safe-area-inset-bottom))!important}}
 body.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:repeat(2,minmax(0,1fr))}
 body.ui-material #mbody .ui-map-grid .ui-item-state{font-size:var(--ux-small)!important}
 /* Compact inventory cells share the console material and native button semantics. */
 body.ui-material #mbody .ui-item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:6px;margin:8px 0}
 body.ui-material #mbody .ui-equipment{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0}
-body.ui-material #mbody .ui-item-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;gap:4px;min-width:0;min-height:110px;padding:28px 3px 6px!important;white-space:normal;text-align:center;border-bottom:3px solid var(--item-rarity,var(--ux-edge))!important;scroll-margin:8px;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important;overflow-wrap:anywhere}
+body.ui-material #mbody .ui-item-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;gap:4px;min-width:0;min-height:94px;padding:24px 3px 5px!important;white-space:normal;text-align:center;border-bottom:3px solid var(--item-rarity,var(--ux-edge))!important;scroll-margin:8px;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important;overflow-wrap:anywhere}
 body.ui-material #mbody .ui-item-tile b{font-family:var(--ux-body)!important;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:calc(var(--ux-small-line) * 2);max-width:100%}
 body.ui-material #mbody .ui-item-tile small,body.ui-material #mbody .ui-item-state{font-family:var(--ux-body)!important;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important}
 .ui-item-state{position:absolute;top:2px;left:3px;right:3px;text-align:left;color:var(--ux-muted);pointer-events:none}
@@ -135,7 +118,7 @@ body.ui-material #mbody .ui-item-tile small,body.ui-material #mbody .ui-item-sta
 .ui-warehouse-summary{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.ui-warehouse-summary b{font-size:16px}.ui-warehouse-tools .ui-segments{margin:6px 0}.ui-warehouse-tools .uxmeta{margin:6px 0}
 body.ui-material #mbody .ui-inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 body.ui-material #mbody .ui-cart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:116px;padding:28px 4px 6px!important;white-space:normal;text-align:center;scroll-margin:8px;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important}
+body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:100px;padding:24px 4px 5px!important;white-space:normal;text-align:center;scroll-margin:8px;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important}
 body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt :is(b,small){font-family:var(--ux-body)!important;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important;max-width:100%;overflow-wrap:anywhere}
 body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 body.ui-material #mbody .ui-inventory-grid .gt .shp{margin:2px 0 0;padding:0!important;align-self:center}
@@ -296,9 +279,9 @@ function uiCityHtml(){const C=G.city||(G.city=newCity());CITY_UI.tier=Math.min(C
 let CITY_CHECKPOINT_REVEALED=null;
 function uiCityRevealCheckpoint(){const c=G.run?.city;if(modalTab!=='maps'||!c?.awaitChoice||UX_LAYERS.length)return;const key=G.run.map.id+':'+c.stage;if(CITY_CHECKPOINT_REVEALED===key)return;CITY_CHECKPOINT_REVEALED=key;requestAnimationFrame(()=>{if(modalTab!=='maps'||!G.run?.city?.awaitChoice)return;$('mbody').scrollTop=0;document.querySelector('[data-focus="city-branch-safe"]')?.focus({preventScroll:true});});}
 
-const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰守關者':['守關者條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
+const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰守關者':['守關者條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'戰鬥畫面':['戰鬥畫面（手機）',()=>G.userCz?['大','中','小','收起'][G.cz==null?1:G.cz]:'自動'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
 function uiInstallSettings(){const root=$('uisettings');if(!root||root.dataset.gridReady)return;root.dataset.gridReady='true';for(const wrap of root.querySelectorAll('#btns .stepwrap')){const button=wrap.querySelector('.act'),label=button.textContent.replace('▾','').trim();if(UI_SETTING_LABELS[label]){wrap.dataset.setting=label;button.dataset.focus='setting-'+label;}}
- const order=['模式','挑戰守關者','戰利品過濾','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
+ const order=['模式','挑戰守關者','戰利品過濾','戰鬥畫面','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
  uiSyncSettings();}
 function uiSyncSettings(){for(const wrap of document.querySelectorAll('#uisettings [data-setting]')){const [label,value]=UI_SETTING_LABELS[wrap.dataset.setting],button=wrap.querySelector('.act'),text=value(),html=`<span class="ui-setting-copy"><b>${label}</b><small>${uxEsc(text)}</small></span>${wrap.querySelector('.chips')?'<span aria-hidden="true">▾</span>':'<span aria-hidden="true">↗</span>'}`;if(button.innerHTML!==html)button.innerHTML=html;}}
 
@@ -320,5 +303,6 @@ function feedbackPreview(){
 let FEEDBACK_PREVIEW=null;
 function feedbackDownload(){if(!FEEDBACK_PREVIEW)return;const p=FEEDBACK_PREVIEW,url=URL.createObjectURL(new Blob([p.title+'\n\n'+p.body],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='game-lab-feedback.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);uxAnnounce('已下載回饋文字，尚未提交。');}
 
-function fieldJournalHtml(){return `<details class="ui-rules"><summary>斷線年代 · 電台手記</summary><p>停電後第七年。你帶著舊卡匣，沿各島微弱的訊號尋找山頂電台。</p>${FIELD_STORIES.map((e,i)=>{const f=G.storyFlags['p'+i]||0;return f?`<article><h4>${uxEsc(e[0])}</h4><p class="uxmeta">${uxEsc(e[1])}</p><p>${uxEsc(e[2])}</p>${f&2?`<p>歸途：${uxEsc(e[3])}</p>`:''}</article>`:'';}).join('')||'<p>到達新的地景後，會收錄當地留言。</p>'}</details>`;}
+function fieldJournalHtml(){const count=FIELD_STORIES.filter((_,i)=>G.storyFlags['p'+i]).length;return `<details class="ui-rules"><summary>電台手記 · 已收錄 ${count}／${FIELD_STORIES.length}</summary><p>停電後第七年。你帶著舊卡匣，沿各島微弱的訊號尋找山頂電台。</p>${FIELD_STORIES.map((e,i)=>{const f=G.storyFlags['p'+i]||0;return f?`<details class="field-entry"><summary>${uxEsc(e[0])}${f&2?' · 歸途已收錄':''}</summary><p class="uxmeta">${uxEsc(e[1])}</p><p>${uxEsc(e[2])}</p>${f&2?`<p>歸途：${uxEsc(e[3])}</p>`:''}</details>`:'';}).join('')||'<p>到達新的地景後，會收錄當地留言。</p>'}</details>`;}
+
 function uiWorldViewHtml(){const p=terrainNow(),size={regular:'一般地圖',medium:'中型地圖',large:'大型地圖',giant:'巨型地圖',training:'訓練場'}[p.sizeClass];return `<section class="ui-section"><h3>${p.name} · ${size}</h3><p class="uxmeta">${p.bounds[1]-p.bounds[0]} × ${p.bounds[3]-p.bounds[2]} · ${FXO.overview?'全景鏡頭':'自動取景'} · 怪物由遠處入場</p><button class="mb" type="button" aria-pressed="${!!FXO.overview}" onclick="toggleWorldOverview()">${FXO.overview?'返回戰鬥鏡頭':'查看全景地圖'}</button>${fieldJournalHtml()}</section>`;}
