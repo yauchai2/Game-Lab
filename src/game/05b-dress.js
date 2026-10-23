@@ -1,21 +1,22 @@
-/* ---------- 角色頁與裝扮：身分證資料卡、3D 預覽、換髮色與衣褲鞋色 ---------- */
-let dSel = { cat:'hair', id:null };   // 目前選中（預覽中）的部位與顏色；id 為 null 代表預覽目前穿的
+/* ---------- 角色頁與裝扮：資料卡、3D 預覽與三類公開裝扮 ---------- */
+let dSel = { cat:'weaponStyle', id:null };   // 目前選中（預覽中）的部位與顏色；id 為 null 代表預覽目前穿的
 const PV = { cv:null, rd:null, sc:null, cam:null, hero:null, sig:'', yaw:.5, auto:true, drag:null };
-const cosGet = (cat, id) => COS[cat].find(x => x[0] === id);
-const cosOwned = (cat, id) => cosGet(cat, id)[3] === 0 || !!G.own[cat + ':' + id];
-function cosPreview(){ const c = Object.assign({}, G.cos); if (dSel.id) c[dSel.cat] = dSel.id; return c; }
+const cosGet = (cat, id) => (COS[cat]||[]).find(x => x[0] === id);
+const cosOwned = (cat, id) => !!cosGet(cat,id)&&(cosGet(cat,id)[3]===0||!!G.own[cat+':'+id]);
+function cosPreview(){ const c = Object.assign({}, G.cos); if (dSel.id&&cosAvailable(dSel.cat)&&cosGet(dSel.cat,dSel.id)) c[dSel.cat] = dSel.id; return c; }
 function rankOf(){ let r = RANKS[0][1]; for (const [l, n] of RANKS) if (G.lvl >= l) r = n; return r; }
 function setName(v){ G.heroName = (v || '').trim().slice(0, 8) || '阿街'; G.dirty = true; }
-function dressPick(cat, id){ dSel = { cat, id }; renderModal(); }
-function dressCat(cat){ dSel = { cat, id:null }; renderModal(); }
+function dressPick(cat, id){ if(!cosAvailable(cat)||!cosGet(cat,id))return;dSel = { cat, id }; renderModal(); }
+function dressCat(cat){ if(!cosAvailable(cat))return;dSel = { cat, id:null }; renderModal(); }
 function dressBuy(){
-  const { cat, id } = dSel; if (!id) return; const e = cosGet(cat, id);
+  const { cat, id } = dSel; if (!cosAvailable(cat)||!cosGet(cat,id))return;if (!id) return; const e = cosGet(cat, id);
   if (!cosOwned(cat, id)){ if (G.gold < e[3]){ logLine('金幣不夠', '#e2483d'); return; } G.gold -= e[3]; G.own[cat + ':' + id] = 1; logLine(`買下裝扮：${e[1]}`, '#c28a00'); SFX('rare'); }
   G.cos[cat] = id; dSel = { cat, id:null }; G.dirty = true; renderModal();
 }
 function dressHtml(){
+  if(!cosAvailable(dSel.cat))dSel={cat:'weaponStyle',id:null};
   G.cos = Object.assign({ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, G.cos);
-  const cat = dSel.cat, cur = G.cos[cat], sel = dSel.id || cur, e = cosGet(cat, sel), owned = cosOwned(cat, sel), tot = Object.keys(ACHS).length;
+  const cat = dSel.cat, cur = cosGet(cat,G.cos[cat])?G.cos[cat]:'0', sel = dSel.id || cur, e = cosGet(cat, sel), owned = cosOwned(cat, sel), tot = Object.keys(ACHS).length;
   const smalls = Math.min(10, Math.floor(G.maxDepth/3)), bigs = Math.min(5, Math.floor(achCount()/tot*5 + .0001));
   const star = (n, k, c) => Array.from({ length:k }, (_, i) => `<i class="${i < n ? 'on' : ''} ${c}"></i>`).join('');
   const [bm, bd] = G.born;
@@ -29,8 +30,8 @@ function dressHtml(){
       <div class="idr"><span>等級</span><b>Lv. ${G.lvl}</b></div></div></div>
     <div class="idt">${rankOf()}</div><div class="isr">${star(smalls, 10, 's')}</div><div class="isr big">${star(bigs, 5, 'b')}</div></div>
   <div class="rc wide"><div class="rh">裝扮 <span class="mute">金幣 ${tFmt(G.gold)}　拖曳預覽可旋轉</span></div>
-    <div class="dcats">${COS_CATS.map(([k, n]) => `<button class="mb${k === cat ? ' on' : ''}" onclick="dressCat('${k}')">${n}</button>`).join('')}</div>
-    <div class="dsw">${COS[cat].map(([id, n, col, pr]) => `<button class="sw${id === sel ? ' on' : ''}${id === cur ? ' cur' : ''}" title="${n}" onclick="dressPick('${cat}','${id}')"><i style="background:${'hstyle,tstyle,hat,glasses,pack'.includes(cat) ? '#fff0d8' : col}">${'hstyle,tstyle,hat,glasses,pack'.includes(cat) ? n[0] : ''}</i><span>${n}</span><em>${id === cur ? '穿著' : cosOwned(cat, id) ? '已有' : pr + 'g'}</em></button>`).join('')}</div>
+    <p class="uxmeta">武器、副手與飾品只改變外觀，不影響能力。</p><div class="dcats" role="group" aria-label="裝扮部位">${COS_CATS.map(([k, n]) => `<button class="mb${k === cat ? ' on' : ''}" aria-pressed="${k===cat}" onclick="dressCat('${k}')">${n}</button>`).join('')}</div>
+    <div class="dsw">${COS[cat].map(([id, n, col, pr]) => `<button class="sw${id === sel ? ' on' : ''}${id === cur ? ' cur' : ''}" title="${n}" onclick="dressPick('${cat}','${id}')"><i style="background:${['weaponStyle','offhandStyle','accessoryStyle'].includes(cat) ? '#fff0d8' : col}">${['weaponStyle','offhandStyle','accessoryStyle'].includes(cat) ? n[0] : ''}</i><span>${n}</span><em>${id === cur ? '穿著' : cosOwned(cat, id) ? '已有' : pr + 'g'}</em></button>`).join('')}</div>
     <div class="dact"><b>${e[1]}</b> ${act}</div></div>`;
 }
 function dressMount(){
@@ -53,7 +54,7 @@ function dressTick(){
   const A = G.equip.armor, W = G.equip.weapon, cos = cosPreview(), sig = [aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, G.char, JSON.stringify(cos)].join();
   if (sig !== PV.sig){ PV.sig = sig; if (PV.hero) PV.sc.remove(PV.hero); const g = buildHero(aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, cos); g.scale.setScalar(1); g.traverse(o => { if (o.isMesh && o.material && o.material.transparent && o.material.opacity < .9 && o.geometry.type !== 'SphereGeometry') o.visible = false; }); PV.hero = g; PV.sc.add(g); PV.sc.updateMatrixWorld(true); PV.box = new T3.Box3(); g.traverse(o => { if (o.isMesh && o.visible && o.geometry.type !== 'RingGeometry' && o.geometry.type !== 'CircleGeometry'){ o.geometry.computeBoundingBox(); PV.box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld)); } }); }
   if (PV.auto) PV.yaw += .02; PV.hero.rotation.y = PV.yaw;
-  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean);PV.cv.style.imageRendering=R3.clean?'auto':'pixelated';
+  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=!R3.clean&&r3Quality(r3ViewQuality(),innerWidth)==='low'?'pixelated':'auto';
   if(PV.cv.width!==buffer.width||PV.cv.height!==buffer.height)PV.rd.setSize(buffer.width,buffer.height,false);
   const bx = PV.box, cy = (bx.min.y + bx.max.y)/2, vh = (bx.max.y - bx.min.y)*1.2, vw = vh*w/h; PV.cam.left = -vw/2; PV.cam.right = vw/2; PV.cam.top = vh/2; PV.cam.bottom = -vh/2; PV.cam.position.set(0, cy, 40); PV.cam.lookAt(0, cy, 0); PV.cam.updateProjectionMatrix();
   PV.rd.render(PV.sc, PV.cam);

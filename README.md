@@ -1,9 +1,9 @@
 # Game Lab：Idle Hero
 
-一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。目前開發版本：**v0.32.0**。
+一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。目前開發版本：**v0.32.1**。
 
 
-**[直接試玩](https://yauchai2.github.io/Game-Lab/) · [版本紀錄與下載](https://github.com/yauchai2/Game-Lab/releases) · [目前改動 review](https://github.com/yauchai2/Game-Lab/pull/6)**
+**[直接試玩](https://yauchai2.github.io/Game-Lab/) · [版本紀錄與下載](https://github.com/yauchai2/Game-Lab/releases) · [開發分支](https://github.com/yauchai2/Game-Lab/tree/codex/ux-optimization)**
 
 固定網址會更新至最新試玩版本。進度保存在目前瀏覽器；從舊網址或本機檔案搬入，請先匯出存檔碼，再在固定網址匯入。
 

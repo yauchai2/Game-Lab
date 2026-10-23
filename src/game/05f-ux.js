@@ -1,5 +1,5 @@
 /* 共用操作契約：液晶詳情、盤面鍵盤及視窗焦點。暫存 UI 狀態不寫入遊戲存檔。 */
-const UX_THEME = `:root{--ux-ink:#172751;--ux-muted:#475778;--ux-screen:#e6e8f7;--ux-blue:#303d9b;--ux-edge:#9ca9c8;--ux-accent:#b94732;--ux-focus:#1f3fb0;--ux-scroll:#8297c6;--ux-track:#e3ebfa;--ux-face:#c8cedc;--ux-key:#dae1ed;--ux-lcd:#edf4f1;--ux-frame:#5b6781;--ux-rule:#b9c2d7;--ux-body:"Cubic 11",system-ui,sans-serif;--ux-display:"Cubic 11",system-ui,sans-serif;--ux-text:18px;--ux-line:28px;--ux-small:16px;--ux-small-line:24px;--ux-heading:24px;--ux-heading-line:32px;--ux-shell-radius:10px;--ux-key-radius:4px;--ux-metal:linear-gradient(180deg,#f1f4fb 0%,#d2d9e7 8%,#c8cedc 50%,#aeb9cf 100%) #c8cedc;--ux-key-face:linear-gradient(180deg,#fff 0px,#e9eef7 2px,#d5dfed 48%,#c9d4e6 50%,#d7dfed 100%) #dae1ed;--ux-key-hover:linear-gradient(180deg,#fff 0px,#edf8ff 2px,#daeafa 48%,#c0d9ed 50%,#d4e7f7 100%) #e6f1ff;--ux-blue-face:linear-gradient(180deg,#8f9de6 0%,#5567bf 8%,#4858af 46%,#303d9b 48%,#334794 100%) #303d9b;--ux-title-face:linear-gradient(180deg,#b9c6f0 0px,#6575be 2px,#4858a9 3px,#303d86 100%) #303d86;--ux-key-shadow:inset 1px 1px #fff,inset -1px -1px #8492b0,0 2px #727f9c;--ux-inset:inset 1px 1px #677694,inset -1px -1px #fff}`;
+const UX_THEME = `:root{--ux-ink:#172751;--ux-muted:#475778;--ux-screen:#e6e8f7;--ux-blue:#303d9b;--ux-edge:#9ca9c8;--ux-accent:#b94732;--ux-focus:#1f3fb0;--ux-scroll:#8297c6;--ux-track:#e3ebfa;--ux-face:#c8cedc;--ux-key:#dae1ed;--ux-lcd:#edf4f1;--ux-frame:#5b6781;--ux-rule:#b9c2d7;--ux-body:"Cubic 11",system-ui,sans-serif;--ux-display:"Cubic 11",system-ui,sans-serif;--ux-text:16px;--ux-line:24px;--ux-small:14px;--ux-small-line:20px;--ux-heading:20px;--ux-heading-line:28px;--ux-shell-radius:10px;--ux-key-radius:4px;--ux-metal:linear-gradient(180deg,#f1f4fb 0%,#d2d9e7 8%,#c8cedc 50%,#aeb9cf 100%) #c8cedc;--ux-key-face:linear-gradient(180deg,#fff 0px,#e9eef7 2px,#d5dfed 48%,#c9d4e6 50%,#d7dfed 100%) #dae1ed;--ux-key-hover:linear-gradient(180deg,#fff 0px,#edf8ff 2px,#daeafa 48%,#c0d9ed 50%,#d4e7f7 100%) #e6f1ff;--ux-blue-face:linear-gradient(180deg,#8f9de6 0%,#5567bf 8%,#4858af 46%,#303d9b 48%,#334794 100%) #303d9b;--ux-title-face:linear-gradient(180deg,#b9c6f0 0px,#6575be 2px,#4858a9 3px,#303d86 100%) #303d86;--ux-key-shadow:inset 1px 1px #fff,inset -1px -1px #8492b0,0 2px #727f9c;--ux-inset:inset 1px 1px #677694,inset -1px -1px #fff}`;
 /* 銀灰掌機外殼、藍紫液晶與短鍵程按鍵；內容不疊卡，兩種編年史共用。 */
 const UX_MATERIAL_CSS=`
 /* 像素字只有常規字重，禁止瀏覽器合成粗體破壞格線。 */
@@ -120,11 +120,12 @@ body.ui-material.ui-pixelfx{
  --ux-key-shadow:inset 2px 2px #fff,inset -2px -2px #8492b0,0 2px #727f9c;
  --ux-inset:inset 2px 2px #677694,inset -2px -2px #fff;
 }
-body.ui-material,body.ui-material *{font-size:var(--ux-text)!important;line-height:var(--ux-line);letter-spacing:.015em!important}
+body.ui-material,body.ui-material :is(p,li,label,button,input,textarea,select,summary,td,th){font-size:var(--ux-text)!important;line-height:var(--ux-line);letter-spacing:.015em!important}
 body.ui-material :is(h1,h2,h3,.hud-level b,.hud-right b){font-family:"Cubic 11",system-ui,sans-serif!important;font-size:var(--ux-heading)!important;line-height:var(--ux-heading-line)}
 body.ui-material :is(small,.mute,.hint,.wkstate,.wkm,.wkcount,.view-fx-ticks,.hud-progress,.hud-healthline,.hud-healthline *, .hud-level span,.hud-right span,#mtabs button,#mtabs button *,#watch-return>span){font-family:var(--ux-body)!important;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)}
 body.ui-material :is(input,textarea,select){font-size:var(--ux-text)!important;line-height:var(--ux-line);letter-spacing:.015em!important}
-@media(min-width:1180px){:root{--ux-text:24px;--ux-line:36px;--ux-small:18px;--ux-small-line:28px;--ux-heading:36px;--ux-heading-line:44px}}
+@media(min-width:768px){:root{--ux-text:17px;--ux-line:24px;--ux-small:15px;--ux-small-line:22px;--ux-heading:24px;--ux-heading-line:32px}}
+@media(min-width:1180px){:root{--ux-text:18px;--ux-line:26px;--ux-small:16px;--ux-small-line:22px;--ux-heading:26px;--ux-heading-line:34px}}
 body.ui-material.ui-pixelfx :is(#mttl,.wkt,#mtabs button.tab,#wiki .wkn,#wiki .wkc,#wiki .wke,#wiki input,#wiki .wkempty,#mbody .ui-segments,#mbody .ui-segments>button,#mbody .ui-craft-slots>button,#mbody .ui-map-card,#mbody .pz,#mbody button.pc,#mbody button.gt,#mbody svg.tree,#mbody .idc,#mbody .ids,#mbody .dpsbar,#mbody .uxinspect,#nexthint,#ctxbtn,#loot,header,.tfoot){border-radius:0!important}
 body.ui-material.ui-pixelfx :is(button,input,textarea,select,.toast,.chips),body.ui-material.ui-pixelfx #mbody button{border-radius:0!important}
 body.ui-material.ui-pixelfx :is(.toast,.chips){background:var(--ux-screen);border:2px solid var(--ux-frame);box-shadow:2px 2px #172751}
@@ -151,7 +152,7 @@ body.ui-material.ui-pixelfx .hud-level{height:52px}
 body.ui-material.ui-pixelfx .hud-right b{line-height:24px}
 body.ui-material.ui-pixelfx .hud-right>div{padding:2px 4px;gap:4px}
 body.ui-material.ui-pixelfx #watch-return i{font-size:0!important;line-height:0}
-@media(max-width:480px){body.ui-material.ui-pixelfx .hud-right b{font-size:24px!important}body.ui-material.ui-pixelfx .hud-right{gap:4px}}
+@media(max-width:480px){body.ui-material.ui-pixelfx .hud-right b{font-size:20px!important}body.ui-material.ui-pixelfx .hud-right{gap:4px}}
 @media(forced-colors:active){body.ui-material :is(#modal,#ovl,#wiki) :where(button,input,textarea),body.ui-material.ui-fx-document :is(a,button,input){border:1px solid ButtonText!important}body.ui-material #wiki button.wkc.on,body.ui-material.ui-fx-document nav a[aria-current="location"]{outline:2px solid Highlight}body.ui-material #mttl::before{background:Highlight}}
 `;
 const uxEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
