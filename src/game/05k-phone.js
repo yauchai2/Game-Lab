@@ -311,13 +311,13 @@ function phoneButtonHtml(){
 #ph-root .ph-key:hover{background:#ffffff26!important;box-shadow:0 0 12px #8ff8!important}#ph-root .ph-key.hit,#ph-root .ph-key:active{background:#0004!important;box-shadow:inset 0 3px 8px #0008!important}
 #ph-root .ph-key:focus-visible{outline:3px solid #ffe45c}
 .ui-character-head{position:relative;min-height:158px}
-.ph-open{position:absolute;right:6px;top:4px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0;width:112px;margin:0;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;cursor:pointer;overflow:visible}
+.ph-open{position:absolute;right:8px;top:8px;bottom:8px;z-index:2;display:flex;align-items:center;justify-content:center;width:104px;margin:0;padding:0!important;min-height:0!important;background:linear-gradient(#d9dfe9,#bcc5d3)!important;border:1px solid #8793a6!important;box-shadow:inset 0 2px 5px #5d6a7f88,inset 0 -1px 0 #fff!important;border-radius:6px!important;cursor:pointer;overflow:hidden}
 .ph-open:hover{filter:brightness(1.12)}.ph-open:active{transform:translateY(2px)}
-.ph-mini{position:relative;flex:none;width:112px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
-.ph-mini-s{position:absolute;left:56px;top:70px;width:0;height:0;transform-style:preserve-3d;transform:scale(.135)}
-.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;animation:phMiniSpin 4.8s ease-in-out infinite}
-@keyframes phMiniSpin{0%{transform:rotateY(-48deg) rotateX(6deg) translateY(0)}50%{transform:rotateY(48deg) rotateX(-4deg) translateY(-30px)}100%{transform:rotateY(-48deg) rotateX(6deg) translateY(0)}}
-.ph-open:hover .ph-mini-spin{animation-duration:1.6s}
+.ph-mini{position:relative;flex:none;width:104px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
+.ph-mini-s{position:absolute;left:52px;top:76px;width:0;height:0;transform-style:preserve-3d;transform:scale(.118)}
+.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;animation:phMiniSpin 12s ease-in-out infinite}
+@keyframes phMiniSpin{0%,100%{transform:rotateY(-30deg) rotateX(4deg)}50%{transform:rotateY(30deg) rotateX(4deg)}}
+
 .ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
 @keyframes phSpk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
 .ph-rb{font:15px/1.2 "Cubic 11",system-ui!important;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8,#ff5a5a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;animation:phRb 2s linear infinite;filter:drop-shadow(1px 1px 0 #000)}
