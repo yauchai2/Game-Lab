@@ -100,3 +100,29 @@ function icon3dSceneUrl(key, arg){
     ICON3D.cache[ck] = url; return url;
   } catch (e) { return ''; }
 }
+
+/* 選單小物件：設定頁各入口的 3D 小圖示 */
+function icon3dObjModel(kind){
+  const g = new T3.Group(), glow = c => m3(c, { emissive:c, emissiveIntensity:.6 }), silver = m3('#c7d0dc'), dark = m3('#334358');
+  if (kind === 'settings'){ mk(new T3.CylinderGeometry(1.2, 1.2, .6, 10), silver, 0, 0, 0, g).rotation.x = Math.PI / 2; for (let i = 0; i < 8; i++){ const a = i * Math.PI / 4; mk(new T3.BoxGeometry(.55, .55, .6), silver, Math.cos(a) * 1.45, Math.sin(a) * 1.45, 0, g); } mk(new T3.CylinderGeometry(.5, .5, .7, 8), dark, 0, 0, 0, g).rotation.x = Math.PI / 2; }
+  else if (kind === 'save'){ mk(new T3.BoxGeometry(2.6, 2.6, .35), m3('#4a6fd6'), 0, 0, 0, g); mk(new T3.BoxGeometry(1.6, .9, .4), silver, 0, .8, .02, g); mk(new T3.BoxGeometry(1.7, 1.1, .4), m3('#f2f4fa'), 0, -.55, .02, g); mk(new T3.BoxGeometry(.3, .6, .42), dark, .5, .8, .03, g); }
+  else if (kind === 'goals'){ mk(new T3.CylinderGeometry(.07, .07, 3, 5), silver, -.7, 0, 0, g); mk(new T3.BoxGeometry(1.8, 1.2, .1), glow('#ff5a8a'), .2, .9, 0, g); mk(new T3.BoxGeometry(1.2, .1, 1.2), dark, -.7, -1.5, 0, g); }
+  else if (kind === 'ach'){ mk(new T3.CylinderGeometry(1.1, .6, 1.6, 8), glow('#ffd24d'), 0, .6, 0, g); mk(new T3.CylinderGeometry(.18, .18, .8, 6), m3('#e0a82a'), 0, -.6, 0, g); mk(new T3.BoxGeometry(1.5, .35, 1.5), dark, 0, -1.15, 0, g); for (const s of [-1, 1]) mk(new T3.TorusGeometry(.5, .08, 4, 8), m3('#e0a82a'), s * 1.25, .7, 0, g); }
+  else if (kind === 'dex'){ mk(new T3.BoxGeometry(2.2, 2.8, .7), m3('#6a4fd0'), 0, 0, 0, g); mk(new T3.BoxGeometry(2, 2.6, .5), m3('#f2f4fa'), .08, 0, .02, g); mk(new T3.BoxGeometry(.9, .9, .1), glow('#5dffa3'), -.2, .5, .38, g); mk(new T3.BoxGeometry(1.3, .15, .1), dark, 0, -.5, .38, g); mk(new T3.BoxGeometry(1.3, .15, .1), dark, 0, -.85, .38, g); }
+  else if (kind === 'log'){ mk(new T3.CylinderGeometry(.7, .7, 2.8, 10), m3('#f2e6c0'), 0, 0, 0, g).rotation.z = Math.PI / 2; mk(new T3.BoxGeometry(3, .1, 1.3), m3('#fff6d8'), 0, -.1, .5, g); for (const y of [.1, -.2, -.5]) mk(new T3.BoxGeometry(2, .08, .05), dark, 0, y, 1.16, g); }
+  else if (kind === 'feedback'){ mk(new T3.BoxGeometry(2.8, 1.9, .5), glow('#8fe8ff'), 0, .3, 0, g); mk(new T3.ConeGeometry(.5, .9, 3), glow('#8fe8ff'), -.7, -.9, 0, g).rotation.z = Math.PI; for (const x of [-.7, 0, .7]) mk(new T3.BoxGeometry(.3, .3, .1), dark, x, .3, .3, g); }
+  else { mk(new T3.OctahedronGeometry(1.5, 0), glow('#ffd24d'), 0, 0, 0, g).scale.set(1, 1.1, .6); mk(new T3.TorusGeometry(1.9, .06, 4, 16), glow('#ff9ad0'), 0, 0, 0, g).rotation.x = 1.2; }
+  g.rotation.set(.25, -.5, 0); return g;
+}
+function icon3dObjUrl(kind){
+  const ck = 'O_' + kind; if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined') return '';
+  try {
+    if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const m = icon3dObjModel(kind), sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200); sc.add(m);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    m.updateMatrixWorld(true); const b = new T3.Box3().setFromObject(m), c = b.getCenter(new T3.Vector3()), rad = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
+    cam.position.set(0, 0, rad / Math.sin(28 * Math.PI / 360) * .85); cam.lookAt(0, 0, 0);
+    ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[ck] = url; return url;
+  } catch (e) { return ''; }
+}
+function obj3d(kind, size){ const u = typeof icon3dObjUrl === 'function' ? icon3dObjUrl(kind) : ''; return u ? `<img class="ui-obj3d" alt="" aria-hidden="true" src="${u}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated">` : ''; }
