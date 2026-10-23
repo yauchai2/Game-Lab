@@ -260,3 +260,11 @@
 - charHtml／pickChar 沿用選擇、鎖定原因及原生按鈕；characters-data 的故事為原生 details，沒有抵達 popup 或新 modal。
 - 新人物走 characters-render 的共用 build／animate／dispose；純外觀配件不修改裝備或戰鬥數值，人物專屬技能規則集中在 characters-data，與外觀 owner 分開。
 - 來源合併完成後才重建 dist，不能以生成檔覆蓋 Claude 的來源更新；本次無 release。
+
+
+## 四角色預覽待機（2026-10-23，候選）
+
+- dressTick 使用 characterPreviewAnimate，只作用 PV.hero；戰場繼續呼叫 characterAnimate。模型、存檔、解鎖、裝扮購買及戰鬥計算不變。
+- 額外骨骼偏移在下一次 mixer 更新前還原，避免累積或帶入戰鬥；動作使用獨立展示時間，不讀寫 G.time。
+- 實際經過時間最多計 100ms，隱藏頁／離開裝扮時清除上一幀時間；重新掛載相同模型不重建骨架，保留動作進度。
+- prefers-reduced-motion 即時停用展示動作及寵機浮動；仍可手動拖曳旋轉。取消預覽自動轉圈。

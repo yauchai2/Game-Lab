@@ -231,3 +231,8 @@ Alan 希望中央更空曠而過渡自然、修正試玩數字、加入有趣過
 ## 四主角模型與動作候選（2026-10-23）
 
 Alan 提供的 Character.zip 取代舊共用角色造型，人物原始比例與服裝輪廓以實際 GLB 為準。AKI／MILO／PING／NULL 共用 32 單位高度、16 骨架節點與 9 個動作名，保留各自原色圖；霧面材質與低面數配件沿用場景方向。characters-render.js 為新人物呈現 owner，characters-assets.js 由本地 Blender 衍生 GLB 生成；戰場、裝扮及獨立動作審核共用。原 GUI 字體、密度、畫質 owner 不變。詳見 docs/y2k-characters-handoff.md；此為候選，未發佈。
+
+
+## 四角色預覽待機（2026-10-23，候選）
+
+角色與裝扮的展示由 characterPreviewAnimate 擁有，沿用既有 idle clip 加上各自骨骼小動作：AKI 轉頭／手腕，MILO 跟拍點頭，PING 抬左手查看裝置，NULL 看向寵機／右手互動。手勢以平滑進出及停頓形成 9–13 秒週期，不新增素材或改動戰鬥動畫。預覽保持展示角，拖曳仍可轉動；不再自動持續旋轉。減少動態設定停止展示動畫，背景分頁暫停更新。來源及驗證限制見 docs/character-preview-idles-2026-10-23.md。
