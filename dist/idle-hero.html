@@ -791,6 +791,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.39.6',d:'2026-10-23',t:['冒險頁地圖卡的小島縮圖改成 3D 低面數小島，依地貌配色（含樹木、傳送門），並維持像素顆粒感']},
   { v:'0.39.5',d:'2026-10-23',t:['技能棋盤上的文字提高對比並放大：技能插槽改深色底淺色字，空槽與鎖定槽、電源列、配件與晶片字級加大']},
   { v:'0.39.4',d:'2026-10-23',t:['桌面版戰鬥畫面上方的等級、生命與經驗條、深度、金幣與 DPS 整體放大，更好讀；手機版不變']},
   { v:'0.39.3',d:'2026-10-23',t:['技能頁改成三步引導（裝技能、拉線、放配件），目前該做哪一步會高亮；進階說明收進摺疊區，格子改標「剩 N 個」','桌面版技能棋盤放大，並加上像素顆粒與掃描線質感','傳奇核心改為 3D 圖示；裝備詳情卡的圖示放大']},
@@ -4267,7 +4268,7 @@ function uiCharacterHtml(){
 /* 共用物品格：精簡讀數，完整名稱與屬性由點選詳情取得。 */
 function uiMapThumbSvg(m){const B=BIOMES[m.biome],blocky=m.biome>=4;let h=0;for(const ch of String(m.id))h=(h*31+ch.charCodeAt(0))>>>0;const sp=[[26,22],[50,18],[36,30],[56,27],[20,27],[44,25]];let o='';for(let i=0;i<4;i++){const [x,y]=sp[(h+i*2)%sp.length],big=(h>>(i+3))&1?1:0.8;o+=blocky?`<path d="M${x-4*big} ${y}h${8*big}v${-7*big}h${-8*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-4*big} ${y-7*big}l${4*big} ${-3*big}l${4*big} ${3*big}z" fill="${B.board.l}"/>`:`<path d="M${x} ${y-12*big}l${5*big} ${12*big}h${-10*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-1} ${y}h2v3h-2z" fill="${B.board.d}"/>`;}return `<svg class="ui-mapthumb" viewBox="0 0 80 56" aria-hidden="true"><ellipse cx="40" cy="50" rx="34" ry="5" fill="#0002"/><path d="M4 24L40 42v9L4 33z" fill="${B.board.d}"/><path d="M76 24L40 42v9l36-18z" fill="${B.board.m}" opacity=".85"/><path d="M40 6L76 24L40 42L4 24z" fill="${B.board.l}" stroke="${B.board.d}" stroke-width="1"/><ellipse cx="40" cy="24" rx="7" ry="3.5" fill="${B.portal}" opacity=".75"/><ellipse cx="40" cy="23" rx="3.5" ry="1.8" fill="${B.glow}"/>${o}</svg>`;}
 const UI_THUMB={};
-function uiMapThumb(m){   // 地圖縮圖：向量圖先縮成 40×28 再像素化放大，和 3D 畫面的低畫質感一致
+function uiMapThumb(m){const u3=typeof icon3dMapUrl==='function'?icon3dMapUrl(m):'';if(u3)return `<img class="ui-mapthumb" alt="" aria-hidden="true" src="${u3}" style="image-rendering:pixelated">`;   // 地圖縮圖：向量圖先縮成 40×28 再像素化放大，和 3D 畫面的低畫質感一致
   const svg=uiMapThumbSvg(m),key=m.id+':'+m.biome,url=UI_THUMB[key];
   if(url)return `<img class="ui-mapthumb" alt="" aria-hidden="true" src="${url}" style="image-rendering:pixelated">`;
   if(url===undefined){UI_THUMB[key]='';const img=new Image();img.onload=()=>{try{const c=document.createElement('canvas');c.width=40;c.height=28;const x=c.getContext('2d');x.imageSmoothingEnabled=true;x.drawImage(img,0,0,40,28);UI_THUMB[key]=c.toDataURL('image/png');if(typeof renderModal==='function'&&!$('modal').hidden)renderModal();}catch(e){UI_THUMB[key]=null;}};img.onerror=()=>{UI_THUMB[key]=null;};img.src='data:image/svg+xml;charset=utf8,'+encodeURIComponent(svg.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" width="80" height="56" '));}
@@ -5738,6 +5739,28 @@ function icon3dLegendUrl(id){
     sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
     cam.position.set(0, 0, rad0 * 1.2 / Math.sin(28 * Math.PI / 360) * .86); cam.lookAt(0, 0, 0);
     ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[key] = url; return url;
+  } catch (e) { return ''; }
+}
+
+/* 地圖縮圖：低面數 3D 小島，依地貌配色，離屏渲染後像素化放大 */
+function icon3dMapUrl(m){
+  const key = 'M_' + m.id + '_' + m.biome; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof BIOMES === 'undefined') return '';
+  try {
+    if (!ICON3D.rd) { if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const B = BIOMES[m.biome], blocky = m.biome >= 4, g = new T3.Group(); let h = 0; for (const ch of String(m.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    mk(new T3.BoxGeometry(5, .7, 5), m3(B.board.l), 0, .35, 0, g); mk(new T3.BoxGeometry(5.02, .55, 5.02), m3(B.board.m), 0, -.2, 0, g); mk(new T3.BoxGeometry(4.2, .6, 4.2), m3(B.board.d), 0, -.75, 0, g);
+    mk(new T3.CylinderGeometry(.9, .9, .08, 10), m3(B.portal, { emissive:B.portal, emissiveIntensity:.5 }), 0, .72, 0, g); mk(new T3.CylinderGeometry(.45, .45, .1, 8), m3(B.glow, { emissive:B.glow, emissiveIntensity:.8 }), 0, .76, 0, g);
+    const sp = [[-1.6, -1.4], [1.5, -1.2], [-1.2, 1.4], [1.7, 1.3], [-1.9, .2], [.3, -1.9]];
+    for (let i = 0; i < 4; i++){ const [x, z] = sp[(h + i * 2) % sp.length], big = (h >> (i + 3)) & 1 ? 1.2 : .9, c = m3(i % 2 ? B.t1 : B.t2);
+      if (blocky){ mk(new T3.BoxGeometry(.7 * big, 1.6 * big, .7 * big), c, x, .7 + .8 * big, z, g); mk(new T3.BoxGeometry(.8 * big, .2, .8 * big), m3(B.board.l), x, .7 + 1.6 * big, z, g); }
+      else { mk(new T3.CylinderGeometry(.08, .1, .5, 5), m3('#8a6a48'), x, .95, z, g); mk(new T3.ConeGeometry(.6 * big, 1.5 * big, 5), c, x, 1.6 + .3 * big, z, g); } }
+    g.rotation.set(.5, -.6, 0);
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(26, 78 / 56, .1, 200); sc.add(g);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    g.updateMatrixWorld(true); const bx = new T3.Box3().setFromObject(g), c0 = bx.getCenter(new T3.Vector3()), rad = bx.getBoundingSphere(new T3.Sphere()).radius; g.position.sub(c0);
+    cam.position.set(0, 0, rad / Math.sin(26 * Math.PI / 360) * .74); cam.lookAt(0, 0, 0);
+    ICON3D.rd.setSize(56, 40, false); ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.rd.setSize(ICON3D.S, ICON3D.S, false);
+    ICON3D.cache[key] = url; return url;
   } catch (e) { return ''; }
 }
 

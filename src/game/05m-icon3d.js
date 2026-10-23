@@ -52,3 +52,25 @@ function icon3dLegendUrl(id){
     ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[key] = url; return url;
   } catch (e) { return ''; }
 }
+
+/* 地圖縮圖：低面數 3D 小島，依地貌配色，離屏渲染後像素化放大 */
+function icon3dMapUrl(m){
+  const key = 'M_' + m.id + '_' + m.biome; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof BIOMES === 'undefined') return '';
+  try {
+    if (!ICON3D.rd) { if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const B = BIOMES[m.biome], blocky = m.biome >= 4, g = new T3.Group(); let h = 0; for (const ch of String(m.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    mk(new T3.BoxGeometry(5, .7, 5), m3(B.board.l), 0, .35, 0, g); mk(new T3.BoxGeometry(5.02, .55, 5.02), m3(B.board.m), 0, -.2, 0, g); mk(new T3.BoxGeometry(4.2, .6, 4.2), m3(B.board.d), 0, -.75, 0, g);
+    mk(new T3.CylinderGeometry(.9, .9, .08, 10), m3(B.portal, { emissive:B.portal, emissiveIntensity:.5 }), 0, .72, 0, g); mk(new T3.CylinderGeometry(.45, .45, .1, 8), m3(B.glow, { emissive:B.glow, emissiveIntensity:.8 }), 0, .76, 0, g);
+    const sp = [[-1.6, -1.4], [1.5, -1.2], [-1.2, 1.4], [1.7, 1.3], [-1.9, .2], [.3, -1.9]];
+    for (let i = 0; i < 4; i++){ const [x, z] = sp[(h + i * 2) % sp.length], big = (h >> (i + 3)) & 1 ? 1.2 : .9, c = m3(i % 2 ? B.t1 : B.t2);
+      if (blocky){ mk(new T3.BoxGeometry(.7 * big, 1.6 * big, .7 * big), c, x, .7 + .8 * big, z, g); mk(new T3.BoxGeometry(.8 * big, .2, .8 * big), m3(B.board.l), x, .7 + 1.6 * big, z, g); }
+      else { mk(new T3.CylinderGeometry(.08, .1, .5, 5), m3('#8a6a48'), x, .95, z, g); mk(new T3.ConeGeometry(.6 * big, 1.5 * big, 5), c, x, 1.6 + .3 * big, z, g); } }
+    g.rotation.set(.5, -.6, 0);
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(26, 78 / 56, .1, 200); sc.add(g);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    g.updateMatrixWorld(true); const bx = new T3.Box3().setFromObject(g), c0 = bx.getCenter(new T3.Vector3()), rad = bx.getBoundingSphere(new T3.Sphere()).radius; g.position.sub(c0);
+    cam.position.set(0, 0, rad / Math.sin(26 * Math.PI / 360) * .74); cam.lookAt(0, 0, 0);
+    ICON3D.rd.setSize(56, 40, false); ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.rd.setSize(ICON3D.S, ICON3D.S, false);
+    ICON3D.cache[key] = url; return url;
+  } catch (e) { return ''; }
+}
