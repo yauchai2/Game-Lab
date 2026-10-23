@@ -791,6 +791,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.39.17', d:'2026-10-23', t:['冒險頁「可用地圖」改成方塊卡網格：放大 3D 小島、同款地圖合併顯示數量、等級與詞綴一眼看到','大型守關者的手腳會擺動，近戰怪物戰鬥中偶爾舉臂嘶吼','範圍衝擊的碎片不再從角色身上冒出來繞圈','角色專屬技、太陽遺物與回聲也受施放距離限制，不再打到畫面另一端','死亡視窗配色改成與亮色介面一致，目標頁說明按鈕移到標題旁'] },
   { v:'0.39.16',d:'2026-10-23',t:['介面配色改成亮銀外殼、白色閱讀面、鮮藍選中與檸檬黃主要按鈕','角色與裝扮預覽加入四位角色各自的待機小動作','角色頁小手機改成緩慢單向自轉']},
   { v:'0.39.15',d:'2026-10-23',t:['巨像、螃蟹、蜘蛛、鼹鼠的手腳可以各自擺動：巨像走路擺臂、出手舉臂砸下，螃蟹鉗子開闔、八腳橫行，蜘蛛八腳輪流點地，鼹鼠雙爪挖掘']},
   { v:'0.39.14',d:'2026-10-23',t:['技能出手範圍再縮短，只打得到主角身邊的怪；撿東西也要走到更近才會撿起','修正少數怪物倒下時可能出現的畫面錯誤']},
@@ -2236,7 +2237,7 @@ function update(dt){
   }
   if (h.phx > 0) h.phx -= dt;
   if(typeof characterCombatTick==='function')characterCombatTick(dt);
-  { const sg = CHARS[G.char] && CHARS[G.char].sig, al = aliveMons().filter(m => !(m.fall > 0));
+  { const sg = CHARS[G.char] && CHARS[G.char].sig, al = castMons().filter(m => !(m.fall > 0));
     if (sg && al.length && !G.train){ G.sigT = (G.sigT || 0) + dt; if (G.sigT >= sg.cd){ G.sigT = 0; G.src = '專屬：' + sg.n; const hit = s.hit, pick = n => al.slice().sort(() => Math.random() - .5).slice(0, n); SFX('boom');
       if(typeof y2kSignature==='function')y2kSignature(al,s);
       else if (G.char === 'street'){ addFx({ k:'ring', x:G.h.x, y:G.h.y, col:'#ff9a3c', t:0, dur:.5 }); kick(.8, .2, '#ff9a3c', .5); for (const m of al) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 24){ const a = Math.atan2(m.y - G.h.y, m.x - G.h.x); m.x += Math.cos(a)*5; m.y += Math.sin(a)*5; hitMon(m, hit*7, false); } }
@@ -2244,14 +2245,14 @@ function update(dt){
       else if (G.char === 'beep'){ for (const m of pick(6)){ addFx({ k:'bolt', pts:[[G.h.x + 3.4, G.h.y - 3.6, BZ + 9.2], [m.x, m.y, BZ + 8]], t:0, dur:.3 }); hitMon(m, hit*5, false); } }
       else if (G.char === 'volt'){ for (const m of pick(5)){ addFx({ k:'bolt', pts:[[m.x, m.y, BZ + 60], [m.x, m.y, BZ + 6]], t:0, dur:.35 }); addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 6, col:'#e0b020', t:0, dur:.3 }); m.shock = 4; hitMon(m, hit*2.2, true); } }
     } } }
-  if (G.relics.SUN && G.slots[0] && aliveMons().length && (G.sunT += dt) >= 10){ G.sunT = 0; addFx({ k:'nova', t:0, dur:.55 }); for (const m of aliveMons()) applySkillHit(G.slots[0], m, 1.2,'proc'); }
+  if (G.relics.SUN && G.slots[0] && castMons().length && (G.sunT += dt) >= 10){ G.sunT = 0; addFx({ k:'nova', t:0, dur:.55 }); for (const m of castMons()) applySkillHit(G.slots[0], m, 1.2,'proc'); }
   if (h.castT < 0 && castMons().length){ const id=chooseReadySkill(); if (id){ h.castReadySince=G.readySince[id]??G.time;h.castT = 0; h.castFired = false; h.castSk = id; G.cds[id] = s.sk[id].cd; } }
   if (h.castT >= 0){
     h.castT += dt;
     if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk,1,'primary');delete G.readySince[h.castSk]; G.lgC = (G.lgC || 0) + 1; if ((lgOn('W_ECHO') && G.lgC % 4 === 0) || (lgOn('R_DIAL') && Math.random() < .2)) G.timers.push({ t:.3, id:h.castSk, rep:1 }); if (s.sk[h.castSk] && s.sk[h.castSk].twin) for (let i = 0; i < s.sk[h.castSk].twin; i++) G.timers.push({ t:.25*(i + 1), id:h.castSk }); }
     if(h.castT>=GridLab.LIMITS.castTime-1e-9) h.castT = -1;
   }
-  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = aliveMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({k:'meteor',x:q.x,y:q.y,t:0,dur:.9,mul:t.mul,origin:'repeat'}); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id,m,s.sk[t.id].pattern.crush,'repeat'); } } else if (t.flick){ const k = s.sk[t.id], al = aliveMons().filter(m => !(m.fall > 0)).sort((a, b) => Math.hypot(a.x - G.h.x, a.y - G.h.y) - Math.hypot(b.x - G.h.x, b.y - G.h.y)).slice(0, 5);
+  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = castMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({k:'meteor',x:q.x,y:q.y,t:0,dur:.9,mul:t.mul,origin:'repeat'}); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id,m,s.sk[t.id].pattern.crush,'repeat'); } } else if (t.flick){ const k = s.sk[t.id], al = aliveMons().filter(m => !(m.fall > 0)).sort((a, b) => Math.hypot(a.x - G.h.x, a.y - G.h.y) - Math.hypot(b.x - G.h.x, b.y - G.h.y)).slice(0, 5);
         if (k && al.length){ const q = al[t.flick.i % al.length], a = Math.random()*6.28; addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.2 }); addFx({ k:'ghost', x:G.h.x, y:G.h.y, x2:q.x, y2:q.y, col:'#ff9ae0', t:0, dur:.35 });
           [G.h.x,G.h.y]=terrainProject(q.x+Math.cos(a)*3.5,q.y+Math.sin(a)*3.5); G.h.vx = G.h.vy = 0; G.h.dash = null; G.h.gx = G.h.x; G.h.gy = G.h.y;
           addFx({ k:'slash', x:q.x, y:q.y, z:BZ + 7, t:0, dur:.22 }); SFX('crit'); kick(.12);
@@ -2816,7 +2817,7 @@ function monLook(m, g){
     wu = !m.dead && m.fight && !m.warning && m.lunge < 0 && m.atkCd > 0 && m.atkCd < .4 ? 1 - m.atkCd/.4 : 0, kb = m.hurtT > 0 && !m.dead ? Math.min(1, m.hurtT/.12)*2.2 : 0;
   at3(g, lx - kb*(G.h.x - m.x)/dl, y - kb*(G.h.y - m.y)/dl, BZ + terrainHeight(m.x,m.y) + (m.fall > 0 ? 70*Math.pow(m.fall/.9, 2) : 0)); g.rotation.y = Math.atan2(G.h.x - m.x, G.h.y - m.y);   // 面向主角
   if(ps.simple){g.scale.setScalar(base*(m.type==='crab'?1.15:1));g.position.y+=(m.type==='wisp'?7+Math.sin(t*3)*2:Math.abs(Math.sin(t*7))*.8)+lg*3;g.rotation.x=lg*.3;}
-  if (ps.simple){ const mv = m.fight || m.dead ? 0 : 1, q = m.type;
+  if (ps.simple){ const mv = m.fight || m.dead ? 0 : 1, q = m.boss ? 'golem' : m.type;
     if (q === 'crab'){ g.rotation.z = Math.sin(t*8)*.12*mv; g.rotation.y += Math.sin(t*4)*.15*mv; }
     else if (q === 'spider'){ g.rotation.y += Math.sin(t*14)*.18*mv; g.position.y += Math.abs(Math.sin(t*16))*.6*mv; }
     else if (q === 'speaker'){ const bs = 1 + .09*Math.abs(Math.sin(t*6)) + lg*.12; g.scale.set(base/Math.sqrt(bs), base*bs, base/Math.sqrt(bs)); g.rotation.z = Math.sin(t*3)*.05; }
@@ -2840,6 +2841,7 @@ function monLook(m, g){
     else if (m.lunge >= 0) pose = poseMix(MPOSE_FIGHT, MPOSE_ATK, lg);   // 蓄勢後大幅前撲、手臂掄過頭
     else if (m.fight) pose = poseMix(MPOSE_FIGHT, MPOSE_FIGHT, 0, MPOSE_TMP), pose.torso = [.15 + f*.06, f*.1, 0], pose.armR = [-1.2 + f*.35, 0, .2], pose.foreR = [-.8, 0, 0], pose.armL = [-.6 - f*.3, 0, -.3], pose.head = [f*.05, Math.sin(t*1.5)*.15, 0];
     else pose = poseMix(MPOSE_WALK, MPOSE_WALK, 0, MPOSE_TMP), pose.legL = [-w*.95, 0, 0], pose.legR = [w*.95, 0, 0], pose.shinL = [.2 + Math.max(0, w)*.9, 0, 0], pose.shinR = [.2 + Math.max(0, -w)*.9, 0, 0], pose.armL = [w*.9, 0, -.15], pose.armR = [-w*.9 - .2, 0, .15], pose.foreR = [-.7, 0, 0], pose.torso = [.16*lean, w*.12, 0], pose.hips = [0, -w*.1, 0], pose.head = [-.1 + Math.abs(w)*.1, Math.sin(t*2)*.1, 0];
+    if (m.fight){ const cy = (t + m.ph*3) % (big ? 4 : 5), tau = cy < .8 ? Math.sin(cy/.8*Math.PI) : 0; if (tau > 0){ pose.armL = [-2.5*tau - .6, 0, -.3 - .5*tau], pose.armR = [-2.5*tau - 1.2, 0, .2 + .5*tau], pose.foreL = [-.4, 0, 0], pose.foreR = [-.4, 0, 0], pose.torso = [.15 - .4*tau, 0, 0], pose.head = [-.5*tau, 0, 0]; } }   // 戰鬥中偶爾舉臂嘶吼
     applyPose(B, pose, m.lunge >= 0 ? .8 : .5);
     const tilt = m.hurtT > 0 ? -.35 : lg*.35;   // 整體前傾、受擊後仰（細節由骨架負責）
     ps.tilt = (ps.tilt || 0) + (tilt - (ps.tilt || 0))*.4; g.rotation.x = ps.tilt;
@@ -2903,7 +2905,7 @@ function updateFx(){
     if(e.k==='warning'){add(ring,e.col||'#ff8a4a',.75,e.x,e.y,BZ+.4,9);continue;}
     if(e.k==='ring'||e.k==='nova'){const r=tLerp(2,e.k==='nova'?48:24,ease(e.t)),x=e.k==='nova'?G.h.x:e.x,y=e.k==='nova'?G.h.y:e.y;add(ring,e.col||'#9fe0ff',fade*.95,x,y,BZ+.6,r);add(disc,e.col||'#9fe0ff',fade*.16,x,y,BZ+.4,r*.9);}
     if(e.k==='pillar'){const o=add(geo('fxp',()=>new T3.CylinderGeometry(1,1,1,8,1,true)),e.col,fade*.55,e.x,e.y,BZ+14*e.t+8);o.scale.set(4*fade+1,22+14*e.t,4*fade+1);}
-    if(e.k==='shard'||e.k==='nova'){const n=e.k==='nova'?8:5;for(let i=0;i<n;i++){const a=i*6.283/n+e.t,d=tLerp(1,e.k==='nova'?40:12,ease(e.t));const o=add(box,i%2?e.col||'#9fe0ff':'#ffffff',fade*.9,(e.x??G.h.x)+Math.cos(a)*d,(e.y??G.h.y)+Math.sin(a)*d,(e.z??BZ)+2+Math.sin(e.t*3.14)*8,fade+1);o.rotation.y=a;}}
+    if(e.k==='shard'||e.k==='nova'){const n=e.k==='nova'?8:5;for(let i=0;i<n;i++){const a=i*6.283/n+e.t,d=tLerp(e.k==='nova'?9:1,e.k==='nova'?40:12,ease(e.t));const o=add(box,i%2?e.col||'#9fe0ff':'#ffffff',fade*.9,(e.x??G.h.x)+Math.cos(a)*d,(e.y??G.h.y)+Math.sin(a)*d,(e.z??BZ)+2+Math.sin(e.t*3.14)*8,fade+1);o.rotation.y=a;}}
     if(e.k==='embers')for(let i=0;i<6;i++){const a=i*1.047+i*i,d=2+i*.9*e.t*3,o=add(box,i%2?'#ffd35a':e.col||'#ff7a2a',fade*.9,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,e.z+e.t*(10+i*2.5),1.1*fade+.3);o.rotation.set(a,e.t*5,0);}
     if(e.k==='snow')for(let i=0;i<7;i++){const a=i*.9+i*i,d=3+i*1.1,o=add(box,i%2?'#ffffff':e.col||'#7fd3ff',fade*.9,e.x+Math.cos(a+e.t*2)*d,e.y+Math.sin(a+e.t*2)*d,e.z+9-e.t*(7+i),1.3*fade+.3);o.rotation.set(e.t*6,a,e.t*4);}
     if(e.k==='zap')for(let i=0;i<4;i++){const a=i*1.571+e.t*6,r=tLerp(2,9,e.t),o=add(geo('fxz',()=>new T3.BoxGeometry(1,.3,.3)),i%2?'#ffffff':e.col||'#ffe45c',fade,e.x+Math.cos(a)*r,e.y+Math.sin(a)*r,e.z+Math.sin(a*2)*2,3.4*fade+.6);o.rotation.set(0,-a,Math.sin(e.t*30)*.6);}
@@ -3035,13 +3037,15 @@ function buildFieldMonster(type,variant=0){
  const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildCircuitBoss(bi,form=bi%3){
- const root=new T3.Group(),body=buildFieldMonster('golem',form);root.add(body);
+ const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);
  const dark=m3('#394d61'),silver=m3('#bdc8cf'),signal=m3(form===0?'#9dbda1':form===1?'#8cb9d0':'#bba8cb');
- if(form===0){for(const x of [-12,12]){mk(new T3.IcosahedronGeometry(6,0),dark,x,26,0,root);mk(new T3.ConeGeometry(3,12,5),signal,x,32,0,root);}}
- if(form===1){for(const x of [-12,12]){mk(new T3.BoxGeometry(7,22,12),dark,x,24,0,root);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,root).rotation.x=Math.PI/2;}mk(new T3.BoxGeometry(1,18,1),silver,0,39,0,root);}
- if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,root);for(const x of [-13,13])mk(new T3.BoxGeometry(5,18,3),silver,x,21,3,root);}
- const out=bake(root);out.userData.simple=true;out.userData.s=4;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});disposeWorldObject(body);return out;
+ if(form===0){for(const x of [-12,12]){mk(new T3.IcosahedronGeometry(6,0),dark,x,26,0,ex);mk(new T3.ConeGeometry(3,12,5),signal,x,32,0,ex);}}
+ if(form===1){for(const x of [-12,12]){mk(new T3.BoxGeometry(7,22,12),dark,x,24,0,ex);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,ex).rotation.x=Math.PI/2;}mk(new T3.BoxGeometry(1,18,1),silver,0,39,0,ex);}
+ if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,ex);for(const x of [-13,13])mk(new T3.BoxGeometry(5,18,3),silver,x,21,3,ex);}
+ root.add(bake(ex));   // 肩甲與光環另外合併；手腳保持獨立，才能跟著擺動
+ root.userData.limbs=body.userData.limbs;root.userData.simple=true;root.userData.s=4;root.userData.mats=[];root.traverse(o=>{if(o.isMesh){o.material=o.material.clone();root.userData.mats.push(o.material);}});return root;
 }
+
 
 </script>
 <script>
@@ -3322,7 +3326,7 @@ function questHtml(){
 }
 function goalsHtml(){
   const done = GOALS.filter(a => G.goals[a.id]).length;
-  return questHtml() + `<div class="mct">目標　${done}${qm('goals')}/${GOALS.length}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
+  return questHtml() + `<div class="mct">目標　${done}/${GOALS.length}${qm('goals')}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
     return `<div class="gl${ok ? ' ok' : ''}"><b>${obj3d(ok?'ach':'goals',30)}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
 }
 function mapsHtml(){ return uiAdventureHtml(); }
@@ -4493,7 +4497,7 @@ function uiAdventureHtml(){
     const L=G.trainLast,mx=L?.rows.length?L.rows[0][1]:1;
     return current+nav+`<section class="ui-section"><h3>訓練場</h3><p class="uxmeta">選目標，測 30 秒傷害。</p><div class="view-options ui-scenes" role="group" aria-label="訓練目標">${[['single','單體假人','dummy1'],['crowd','群體假人','dummy5']].map(([id,name,k])=>`<button class="mb ui-scenebtn" aria-pressed="${(G.trainingPreset||'crowd')===id}" ${G.train?'disabled':''} onclick="uiTrainingPreset('${id}')">${(u=>u?`<img class="ui-scene" alt="" aria-hidden="true" src="${u}" style="image-rendering:pixelated">`:'')(icon3dSceneUrl(k))}<span>${name}</span></button>`).join('')}</div>${G.train?`<p id="ui-train-time">測量中，剩 ${Math.ceil(G.train.t)} 秒</p><button class="mb" onclick="trainEnd(true)">取消測量</button>`:`<button class="mb pri" ${R?'disabled':''} onclick="trainStart()">開始測量</button>`}<details><summary>測量說明</summary><p class="uxmeta">測試不掉落獎勵；開始時清空測試電荷，結束或取消後還原原有電荷。單體預估不等同多目標實測。</p></details>${L?`<p>上次結果：每秒約 <b>${tFmt(L.dps)}</b>（${L.n||5} 隻合計）</p>${L.rows.map(([k,v])=>`<div class="gl"><b>${uxEsc(k)}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${L.total?Math.round(v/L.total*100):0}%　${tFmt(v/(L.duration||30))}／秒</em></div>`).join('')}<details><summary>出手與連動結果</summary>${Object.entries(L.stats||{}).map(([id,row])=>`<p>${SKILLS[id].n}：${row.casts} 次出手／${row.repeats} 次回放，最長等候 ${row.maxWait.toFixed(1)} 秒</p>`).join('')}${uiComboSummary(L.combos)}</details>`:'<p class="uxmeta">完成測量後，保留傷害分布、出手次數與連動結果。</p>'}</section>`;
   }
-  return uiWorldViewHtml()+current+nav+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><div class="ui-item-grid ui-map-grid" role="group" aria-label="地圖庫存">${G.maps.length?G.maps.map(m=>uiMapCard(m)).join(''):'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏守關者便有機會取得。</p>'}</div>`;
+  return uiWorldViewHtml()+current+nav+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><div class="ui-mgroups" role="group" aria-label="地圖庫存">${G.maps.length?uiMapGroups():'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏守關者便有機會取得。</p>'}</div>`;
 }
 let UI_MAP_PENDING=null;
 function uiInspectMap(encoded){let id;try{id=decodeURIComponent(encoded);}catch(_){return;}const m=G.maps.find(x=>x.id===id);if(!m)return;UI_MAP_PENDING={id,stamp:JSON.stringify(m)};const biome=BIOMES[m.biome],land=terrainBuild('map:'+m.id+':0'),q=m.mods.reduce((sum,k)=>sum+(MODS[k]?.q||0),0);showOverlay(`<h2 class="uxdialog-title">${biome.n} · Lv. ${m.lvl}</h2><div class="ui-map-banner" style="--land:${biome.board.l};--land2:${biome.board.m}"><span>挑戰詞綴 ${mapChallenge(m.mods)} · 戰利品 +${Math.round(q*100)}%</span></div><p>${land.name} · ${land.bounds[1]-land.bounds[0]} × ${land.bounds[3]-land.bounds[2]} · 起伏最高 ${land.amplitude} 單位</p><ul>${m.mods.length?m.mods.map(k=>`<li>${mapKind(k)} · ${MODS[k].n}</li>`).join(''):'<li>沒有額外詞綴</li>'}</ul>${m.mods.includes('rich')?'<p>金幣 +60%</p>':''}${m.mods.includes('lucky')?'<p>稀有度提升</p>':''}<p>進入會消耗這張地圖，離開不退還。${G.run||G.train?'先結束目前挑戰或訓練。':''}</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回地圖</button><button class="mb pri" ${G.run||G.train?'disabled':''} onclick="uiUseMapPreview()">進入 · 消耗這張地圖</button></div>`);}
@@ -4654,6 +4658,29 @@ function feedbackDownload(){if(!FEEDBACK_PREVIEW)return;const p=FEEDBACK_PREVIEW
 function fieldJournalHtml(){const count=FIELD_STORIES.filter((_,i)=>G.storyFlags['p'+i]).length;return `<details class="ui-rules"><summary>電台手記 · 已收錄 ${count}／${FIELD_STORIES.length}</summary><p>停電後第七年。你帶著舊卡匣，沿各島微弱的訊號尋找山頂電台。</p>${FIELD_STORIES.map((e,i)=>{const f=G.storyFlags['p'+i]||0;return f?`<details class="field-entry"><summary>${uxEsc(e[0])}${f&2?' · 歸途已收錄':''}</summary><p class="uxmeta">${uxEsc(e[1])}</p><p>${uxEsc(e[2])}</p>${f&2?`<p>歸途：${uxEsc(e[3])}</p>`:''}</details>`:'';}).join('')||'<p>到達新的地景後，會收錄當地留言。</p>'}</details>`;}
 
 function uiWorldViewHtml(){const p=terrainNow(),size={regular:'一般地圖',medium:'中型地圖',large:'大型地圖',giant:'巨型地圖',training:'訓練場'}[p.sizeClass];return `<section class="ui-section"><h3>${p.name} · ${size}</h3><button class="mb" type="button" aria-pressed="${!!FXO.overview}" onclick="toggleWorldOverview()">${FXO.overview?'返回戰鬥鏡頭':'查看全景地圖'}</button>${fieldJournalHtml()}</section>`;}
+
+/* 可用地圖：依地貌分組、同款（地貌＋等級＋詞綴）合併成一張並標示數量，方塊卡放大 3D 小島 */
+function uiMapGroups(){
+  const by=new Map();
+  for(const m of G.maps){const key=m.biome+'|'+m.lvl+'|'+m.mods.slice().sort().join(','),g=by.get(key);if(g){g.n++;}else by.set(key,{m,n:1});}
+  const list=[...by.values()].sort((a,b)=>a.m.biome-b.m.biome||b.m.lvl-a.m.lvl);
+  return `<div class="ui-mgrid">`+list.map(({m,n})=>{const B=BIOMES[m.biome],c=mapChallenge(m.mods),pips='◆'.repeat(c)+'◇'.repeat(Math.max(0,3-c));
+    return `<button type="button" class="ui-mtile" data-focus="map-${uxEsc(m.id)}" aria-label="${uxEsc(B.n)}，等級 ${m.lvl}，挑戰詞綴 ${c}，共 ${n} 張，查看詳情" style="--b1:${B.board.l};--b2:${B.board.m};--b3:${B.board.d}" onclick="uiInspectMap('${encodeURIComponent(m.id).replace(/'/g,'%27')}')">${uiMapThumb(m)}<span class="lv">Lv.${m.lvl}</span>${n>1?`<span class="cnt">×${n}</span>`:''}<b>${uxEsc(B.n)}</b><span class="pip" title="挑戰詞綴 ${c}">${pips}</span></button>`;}).join('')+`</div>`;
+}
+(function(){const st=document.createElement('style');st.textContent=`
+#mbody .ui-mgroups{display:flex;flex-direction:column;gap:12px;margin:8px 0}
+#mbody .ui-mgroup h4{display:flex;align-items:center;gap:8px;margin:0 0 6px;padding:3px 8px;font:15px var(--ux-body,system-ui);color:#12202a;background:linear-gradient(90deg,var(--b1),#ffffff00);border-left:6px solid var(--b3)}
+#mbody .ui-mgroup h4 i{display:none}#mbody .ui-mgroup h4 small{margin-left:auto;font-size:12px;opacity:.7}
+#mbody .ui-mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+#mbody .ui-mtile{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:flex-end;min-height:132px;padding:6px 4px 4px!important;border:2px solid #fff!important;outline:1px solid #7d8bbd;border-radius:0!important;background:linear-gradient(180deg,var(--b1) 0 55%,var(--b2) 55% 100%)!important;color:#12202a!important;box-shadow:0 2px 0 #8c9bd0!important;overflow:hidden}
+#mbody .ui-mtile .ui-mapthumb{width:92px;height:auto;margin:0 0 2px;image-rendering:pixelated}
+#mbody .ui-mtile:hover,#mbody .ui-mtile:focus-visible{outline:2px solid #2f6bff;transform:translateY(-1px)}
+#mbody .ui-mtile span{font-family:var(--ux-body,system-ui)!important;text-shadow:1px 1px 0 #ffffffb0;line-height:1}
+#mbody .ui-mtile .lv{position:absolute;left:4px;top:4px;padding:2px 4px;font-size:12px;background:#12202acc;color:#fff;text-shadow:none}
+#mbody .ui-mtile .cnt{position:absolute;right:4px;top:4px;padding:2px 4px;font-size:13px;background:#ffe45c;color:#12202a;border:1px solid #12202a;text-shadow:none}
+#mbody .ui-mtile b{font:13px var(--ux-body,system-ui);text-shadow:1px 1px 0 #ffffffb0;margin-bottom:3px}
+#mbody .ui-mtile .pip{font-size:12px;letter-spacing:2px;color:#b3261e}
+`;document.head.appendChild(st);})();
 
 </script>
 <script>
@@ -5928,11 +5955,11 @@ const DEATHFX = { el:null, shown:false, sec:-1, total:3, hideT:0 };
 #deathfx.on{display:flex}
 #deathfx .df-veil{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,#0b153500 0,#0b153566 55%,#0b1535cc 100%),repeating-linear-gradient(0deg,#0000 0 2px,#00000026 2px 3px);backdrop-filter:grayscale(.5) brightness(.8);-webkit-backdrop-filter:grayscale(.5) brightness(.8);animation:dfVeil .5s ease-out both}
 @keyframes dfVeil{from{opacity:0}}
-#deathfx .df-win{position:relative;width:min(86%,330px);background:#e6e8f6;border:2px solid #fff;outline:2px solid #5c6a8e;box-shadow:3px 3px 0 #0b153599;animation:dfPop .45s steps(6,end) both}
+#deathfx .df-win{position:relative;width:min(86%,330px);background:#f4f8ff;border:2px solid #fff;outline:2px solid #3b6fd8;box-shadow:3px 3px 0 #0b153599;animation:dfPop .45s steps(6,end) both}
 @keyframes dfPop{0%{transform:scale(.3,.05);opacity:0}60%{transform:scale(1.06,1.02);opacity:1}100%{transform:none}}
 #deathfx .df-title{display:flex;align-items:center;gap:6px;padding:4px 7px;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);color:#fff;font-size:13px;letter-spacing:.06em;border-bottom:2px solid #1d2552}
 #deathfx .df-title i{margin-left:auto;font-style:normal;width:16px;height:14px;line-height:12px;text-align:center;background:linear-gradient(#f2f4fa,#c3cbdc);color:#333;border:1px solid;border-color:#fff #6d788a #6d788a #fff;font-size:12px}
-#deathfx .df-body{padding:10px 12px 12px;text-align:center;background:#e6e8f6}
+#deathfx .df-body{padding:10px 12px 12px;text-align:center;background:#f4f8ff}
 #deathfx .df-big{display:block;font-size:clamp(48px,11vw,76px);line-height:1.05;letter-spacing:.12em;padding-left:.12em;color:#c8341f;text-shadow:2px 2px 0 #fff,4px 4px 0 #1d2552;animation:dfGlitch 2.4s steps(1) infinite}
 @keyframes dfGlitch{0%,86%,100%{transform:none}88%{transform:translate(-3px,0) skewX(-6deg)}90%{transform:translate(3px,1px)}92%{transform:translate(-1px,-1px) skewX(4deg)}}
 #deathfx .df-sub{display:block;margin:2px 0 8px;color:#5c6a8e;font-size:12px;letter-spacing:.3em}

@@ -6,11 +6,11 @@ const DEATHFX = { el:null, shown:false, sec:-1, total:3, hideT:0 };
 #deathfx.on{display:flex}
 #deathfx .df-veil{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,#0b153500 0,#0b153566 55%,#0b1535cc 100%),repeating-linear-gradient(0deg,#0000 0 2px,#00000026 2px 3px);backdrop-filter:grayscale(.5) brightness(.8);-webkit-backdrop-filter:grayscale(.5) brightness(.8);animation:dfVeil .5s ease-out both}
 @keyframes dfVeil{from{opacity:0}}
-#deathfx .df-win{position:relative;width:min(86%,330px);background:#e6e8f6;border:2px solid #fff;outline:2px solid #5c6a8e;box-shadow:3px 3px 0 #0b153599;animation:dfPop .45s steps(6,end) both}
+#deathfx .df-win{position:relative;width:min(86%,330px);background:#f4f8ff;border:2px solid #fff;outline:2px solid #3b6fd8;box-shadow:3px 3px 0 #0b153599;animation:dfPop .45s steps(6,end) both}
 @keyframes dfPop{0%{transform:scale(.3,.05);opacity:0}60%{transform:scale(1.06,1.02);opacity:1}100%{transform:none}}
 #deathfx .df-title{display:flex;align-items:center;gap:6px;padding:4px 7px;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);color:#fff;font-size:13px;letter-spacing:.06em;border-bottom:2px solid #1d2552}
 #deathfx .df-title i{margin-left:auto;font-style:normal;width:16px;height:14px;line-height:12px;text-align:center;background:linear-gradient(#f2f4fa,#c3cbdc);color:#333;border:1px solid;border-color:#fff #6d788a #6d788a #fff;font-size:12px}
-#deathfx .df-body{padding:10px 12px 12px;text-align:center;background:#e6e8f6}
+#deathfx .df-body{padding:10px 12px 12px;text-align:center;background:#f4f8ff}
 #deathfx .df-big{display:block;font-size:clamp(48px,11vw,76px);line-height:1.05;letter-spacing:.12em;padding-left:.12em;color:#c8341f;text-shadow:2px 2px 0 #fff,4px 4px 0 #1d2552;animation:dfGlitch 2.4s steps(1) infinite}
 @keyframes dfGlitch{0%,86%,100%{transform:none}88%{transform:translate(-3px,0) skewX(-6deg)}90%{transform:translate(3px,1px)}92%{transform:translate(-1px,-1px) skewX(4deg)}}
 #deathfx .df-sub{display:block;margin:2px 0 8px;color:#5c6a8e;font-size:12px;letter-spacing:.3em}

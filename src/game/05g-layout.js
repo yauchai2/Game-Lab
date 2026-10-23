@@ -164,7 +164,7 @@ function uiAdventureHtml(){
     const L=G.trainLast,mx=L?.rows.length?L.rows[0][1]:1;
     return current+nav+`<section class="ui-section"><h3>訓練場</h3><p class="uxmeta">選目標，測 30 秒傷害。</p><div class="view-options ui-scenes" role="group" aria-label="訓練目標">${[['single','單體假人','dummy1'],['crowd','群體假人','dummy5']].map(([id,name,k])=>`<button class="mb ui-scenebtn" aria-pressed="${(G.trainingPreset||'crowd')===id}" ${G.train?'disabled':''} onclick="uiTrainingPreset('${id}')">${(u=>u?`<img class="ui-scene" alt="" aria-hidden="true" src="${u}" style="image-rendering:pixelated">`:'')(icon3dSceneUrl(k))}<span>${name}</span></button>`).join('')}</div>${G.train?`<p id="ui-train-time">測量中，剩 ${Math.ceil(G.train.t)} 秒</p><button class="mb" onclick="trainEnd(true)">取消測量</button>`:`<button class="mb pri" ${R?'disabled':''} onclick="trainStart()">開始測量</button>`}<details><summary>測量說明</summary><p class="uxmeta">測試不掉落獎勵；開始時清空測試電荷，結束或取消後還原原有電荷。單體預估不等同多目標實測。</p></details>${L?`<p>上次結果：每秒約 <b>${tFmt(L.dps)}</b>（${L.n||5} 隻合計）</p>${L.rows.map(([k,v])=>`<div class="gl"><b>${uxEsc(k)}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${L.total?Math.round(v/L.total*100):0}%　${tFmt(v/(L.duration||30))}／秒</em></div>`).join('')}<details><summary>出手與連動結果</summary>${Object.entries(L.stats||{}).map(([id,row])=>`<p>${SKILLS[id].n}：${row.casts} 次出手／${row.repeats} 次回放，最長等候 ${row.maxWait.toFixed(1)} 秒</p>`).join('')}${uiComboSummary(L.combos)}</details>`:'<p class="uxmeta">完成測量後，保留傷害分布、出手次數與連動結果。</p>'}</section>`;
   }
-  return uiWorldViewHtml()+current+nav+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><div class="ui-item-grid ui-map-grid" role="group" aria-label="地圖庫存">${G.maps.length?G.maps.map(m=>uiMapCard(m)).join(''):'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏守關者便有機會取得。</p>'}</div>`;
+  return uiWorldViewHtml()+current+nav+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><div class="ui-mgroups" role="group" aria-label="地圖庫存">${G.maps.length?uiMapGroups():'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏守關者便有機會取得。</p>'}</div>`;
 }
 let UI_MAP_PENDING=null;
 function uiInspectMap(encoded){let id;try{id=decodeURIComponent(encoded);}catch(_){return;}const m=G.maps.find(x=>x.id===id);if(!m)return;UI_MAP_PENDING={id,stamp:JSON.stringify(m)};const biome=BIOMES[m.biome],land=terrainBuild('map:'+m.id+':0'),q=m.mods.reduce((sum,k)=>sum+(MODS[k]?.q||0),0);showOverlay(`<h2 class="uxdialog-title">${biome.n} · Lv. ${m.lvl}</h2><div class="ui-map-banner" style="--land:${biome.board.l};--land2:${biome.board.m}"><span>挑戰詞綴 ${mapChallenge(m.mods)} · 戰利品 +${Math.round(q*100)}%</span></div><p>${land.name} · ${land.bounds[1]-land.bounds[0]} × ${land.bounds[3]-land.bounds[2]} · 起伏最高 ${land.amplitude} 單位</p><ul>${m.mods.length?m.mods.map(k=>`<li>${mapKind(k)} · ${MODS[k].n}</li>`).join(''):'<li>沒有額外詞綴</li>'}</ul>${m.mods.includes('rich')?'<p>金幣 +60%</p>':''}${m.mods.includes('lucky')?'<p>稀有度提升</p>':''}<p>進入會消耗這張地圖，離開不退還。${G.run||G.train?'先結束目前挑戰或訓練。':''}</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回地圖</button><button class="mb pri" ${G.run||G.train?'disabled':''} onclick="uiUseMapPreview()">進入 · 消耗這張地圖</button></div>`);}
@@ -325,3 +325,26 @@ function feedbackDownload(){if(!FEEDBACK_PREVIEW)return;const p=FEEDBACK_PREVIEW
 function fieldJournalHtml(){const count=FIELD_STORIES.filter((_,i)=>G.storyFlags['p'+i]).length;return `<details class="ui-rules"><summary>電台手記 · 已收錄 ${count}／${FIELD_STORIES.length}</summary><p>停電後第七年。你帶著舊卡匣，沿各島微弱的訊號尋找山頂電台。</p>${FIELD_STORIES.map((e,i)=>{const f=G.storyFlags['p'+i]||0;return f?`<details class="field-entry"><summary>${uxEsc(e[0])}${f&2?' · 歸途已收錄':''}</summary><p class="uxmeta">${uxEsc(e[1])}</p><p>${uxEsc(e[2])}</p>${f&2?`<p>歸途：${uxEsc(e[3])}</p>`:''}</details>`:'';}).join('')||'<p>到達新的地景後，會收錄當地留言。</p>'}</details>`;}
 
 function uiWorldViewHtml(){const p=terrainNow(),size={regular:'一般地圖',medium:'中型地圖',large:'大型地圖',giant:'巨型地圖',training:'訓練場'}[p.sizeClass];return `<section class="ui-section"><h3>${p.name} · ${size}</h3><button class="mb" type="button" aria-pressed="${!!FXO.overview}" onclick="toggleWorldOverview()">${FXO.overview?'返回戰鬥鏡頭':'查看全景地圖'}</button>${fieldJournalHtml()}</section>`;}
+
+/* 可用地圖：依地貌分組、同款（地貌＋等級＋詞綴）合併成一張並標示數量，方塊卡放大 3D 小島 */
+function uiMapGroups(){
+  const by=new Map();
+  for(const m of G.maps){const key=m.biome+'|'+m.lvl+'|'+m.mods.slice().sort().join(','),g=by.get(key);if(g){g.n++;}else by.set(key,{m,n:1});}
+  const list=[...by.values()].sort((a,b)=>a.m.biome-b.m.biome||b.m.lvl-a.m.lvl);
+  return `<div class="ui-mgrid">`+list.map(({m,n})=>{const B=BIOMES[m.biome],c=mapChallenge(m.mods),pips='◆'.repeat(c)+'◇'.repeat(Math.max(0,3-c));
+    return `<button type="button" class="ui-mtile" data-focus="map-${uxEsc(m.id)}" aria-label="${uxEsc(B.n)}，等級 ${m.lvl}，挑戰詞綴 ${c}，共 ${n} 張，查看詳情" style="--b1:${B.board.l};--b2:${B.board.m};--b3:${B.board.d}" onclick="uiInspectMap('${encodeURIComponent(m.id).replace(/'/g,'%27')}')">${uiMapThumb(m)}<span class="lv">Lv.${m.lvl}</span>${n>1?`<span class="cnt">×${n}</span>`:''}<b>${uxEsc(B.n)}</b><span class="pip" title="挑戰詞綴 ${c}">${pips}</span></button>`;}).join('')+`</div>`;
+}
+(function(){const st=document.createElement('style');st.textContent=`
+#mbody .ui-mgroups{display:flex;flex-direction:column;gap:12px;margin:8px 0}
+#mbody .ui-mgroup h4{display:flex;align-items:center;gap:8px;margin:0 0 6px;padding:3px 8px;font:15px var(--ux-body,system-ui);color:#12202a;background:linear-gradient(90deg,var(--b1),#ffffff00);border-left:6px solid var(--b3)}
+#mbody .ui-mgroup h4 i{display:none}#mbody .ui-mgroup h4 small{margin-left:auto;font-size:12px;opacity:.7}
+#mbody .ui-mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+#mbody .ui-mtile{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:flex-end;min-height:132px;padding:6px 4px 4px!important;border:2px solid #fff!important;outline:1px solid #7d8bbd;border-radius:0!important;background:linear-gradient(180deg,var(--b1) 0 55%,var(--b2) 55% 100%)!important;color:#12202a!important;box-shadow:0 2px 0 #8c9bd0!important;overflow:hidden}
+#mbody .ui-mtile .ui-mapthumb{width:92px;height:auto;margin:0 0 2px;image-rendering:pixelated}
+#mbody .ui-mtile:hover,#mbody .ui-mtile:focus-visible{outline:2px solid #2f6bff;transform:translateY(-1px)}
+#mbody .ui-mtile span{font-family:var(--ux-body,system-ui)!important;text-shadow:1px 1px 0 #ffffffb0;line-height:1}
+#mbody .ui-mtile .lv{position:absolute;left:4px;top:4px;padding:2px 4px;font-size:12px;background:#12202acc;color:#fff;text-shadow:none}
+#mbody .ui-mtile .cnt{position:absolute;right:4px;top:4px;padding:2px 4px;font-size:13px;background:#ffe45c;color:#12202a;border:1px solid #12202a;text-shadow:none}
+#mbody .ui-mtile b{font:13px var(--ux-body,system-ui);text-shadow:1px 1px 0 #ffffffb0;margin-bottom:3px}
+#mbody .ui-mtile .pip{font-size:12px;letter-spacing:2px;color:#b3261e}
+`;document.head.appendChild(st);})();
