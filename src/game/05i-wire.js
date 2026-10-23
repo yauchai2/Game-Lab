@@ -241,9 +241,16 @@ function wireUndo(){
 /* ---------- 拖曳畫線（滑鼠與觸控） ---------- */
 function wireCellAt(px, py){ const e = document.elementFromPoint(px, py), c = e && e.closest && e.closest('.wb .pc[data-x]'); return c ? [+c.dataset.x, +c.dataset.y] : null; }
 function wireDown(ev, x, y){
-  if (ev.button > 0 || drag || selSock < 0 || held || !wActive(selSock)) return;
+  if (ev.button > 0 || drag || held) return;
+  const si = GridLab.SRCS.findIndex(c => c[0] === x && c[1] === y);
+  if (si >= 0 && wOpen(si)){   // 按住起點：自動選好這條線（沒技能就先裝一個），清掉舊線，直接往終點拉
+    drag = { sx:ev.clientX, sy:ev.clientY, moved:false, at:[x, y], src:si };
+    document.addEventListener('pointermove', wireMove); document.addEventListener('pointerup', wireUp); document.addEventListener('pointercancel', wireUp);
+    return;
+  }
+  if (selSock < 0 || !wActive(selSock)) return;
   const w = GridLab.getWire(G.board, selSock), last = w && w.cells[w.cells.length - 1];
-  const sc = GridLab.SRCS[selSock], st = GridLab.startOf(selSock), ok = (!w && ((x === sc[0] && y === sc[1]) || (x === st[0] && y === st[1]))) || (last && last[0] === x && last[1] === y && !GridLab.connected(G.board, selSock));
+  const st = GridLab.startOf(selSock), ok = (!w && x === st[0] && y === st[1]) || (last && last[0] === x && last[1] === y && !GridLab.connected(G.board, selSock));
   if (!ok) return;
   drag = { sx:ev.clientX, sy:ev.clientY, moved:false, at:[x, y] };
   document.addEventListener('pointermove', wireMove); document.addEventListener('pointerup', wireUp); document.addEventListener('pointercancel', wireUp);
@@ -252,6 +259,16 @@ function wireMove(ev){
   const d = drag; if (!d) return;
   if (!d.moved && Math.hypot(ev.clientX - d.sx, ev.clientY - d.sy) < 8) return;
   d.moved = true; ev.preventDefault();
+  if (d.src != null){   // 從起點開拉：此時才選線、補技能、清掉舊線（單純點一下不會動到現有的線）
+    const si = d.src; selSock = si; selPiece = null;
+    if (!wActive(si)){
+      const used = new Set(G.board.pieces.filter(p => p.kind === 'active').map(p => p.key)), key = Object.keys(SKILLS).find(k => G.lvl >= SKILLS[k].lvl && !used.has(k));
+      if (!key){ pzMsg('技能都裝滿了，先點終點換技能'); drag = null; return; }
+      wireAssign(key);
+    }
+    if (GridLab.getWire(G.board, si)) GridLab.clearWire(G.board, si);
+    d.src = null; recalc(); wireRedrawLive();
+  }
   const c = wireCellAt(ev.clientX, ev.clientY); if (!c || (c[0] === d.at[0] && c[1] === d.at[1])) return;
   const B = G.board, w = GridLab.getWire(B, selSock);
   if (w && w.cells.length >= 2 && w.cells[w.cells.length - 2][0] === c[0] && w.cells[w.cells.length - 2][1] === c[1]){ GridLab.shrink(B, selSock); d.at = c; recalc(); wireRedrawLive(); return; }
@@ -342,7 +359,7 @@ const WIRE_CSS = `
 body #mbody .pz.wb{--cr:#ff6a3d;--cb:#3f86ff;--cg:#35d493;--ink:#14204f;position:relative;padding:8px;gap:0;max-width:360px!important;margin:6px auto;touch-action:pan-y;border:3px solid var(--ink)!important;border-radius:0;outline:2px solid #fff;box-shadow:3px 3px 0 #33407f!important;
  background:radial-gradient(ellipse 30% 7% at 24% 16%,#fff 0 62%,#fff0 66%),radial-gradient(ellipse 22% 6% at 80% 42%,#fff 0 62%,#fff0 66%),radial-gradient(ellipse 28% 7% at 32% 84%,#fff 0 62%,#fff0 66%),radial-gradient(ellipse 18% 5% at 74% 72%,#fff 0 62%,#fff0 66%),linear-gradient(#45b2ff,#8fd6ff 52%,#e4f5ff)!important}
 #mbody .pz.wb .pc.pr,#mbody .pz.wb .pc.sr,#mbody .pz.wb .pc.kr{--padc:var(--cr)}#mbody .pz.wb .pc.pb,#mbody .pz.wb .pc.sb,#mbody .pz.wb .pc.kb{--padc:var(--cb)}#mbody .pz.wb .pc.pg,#mbody .pz.wb .pc.sg,#mbody .pz.wb .pc.kg{--padc:var(--cg)}
-#mbody .pz.wb button.pc{margin:1px;min-width:0;font-size:9px;line-height:1.05;position:relative;border:0!important;border-radius:0!important;background:#ffffff3d!important;box-shadow:inset 0 0 0 1px #ffffff80!important}
+#mbody .pz.wb button.pc{margin:3px;min-width:0;font-size:9px;line-height:1.05;position:relative;border:0!important;border-radius:0!important;background:#ffffff3d!important;box-shadow:inset 0 0 0 1px #ffffff80!important}
 #mbody .pz.wb button.pc span{pointer-events:none;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:9px;line-height:1.1;max-width:100%;word-break:break-all;white-space:normal;overflow:hidden}
 #mbody .pz.wb button.pc.fill{gap:1px;padding:1px!important}
 #mbody .pz.wb button.pc.dead{background:transparent!important;box-shadow:none!important;opacity:0}
@@ -353,7 +370,7 @@ body #mbody .pz.wb{--cr:#ff6a3d;--cb:#3f86ff;--cg:#35d493;--ink:#14204f;position
 #mbody .pz.wb button.pc.pd:not(.fill) span{display:none}
 #mbody .pz.wb button.pc.pd.wr:not(.fill){background:radial-gradient(circle,color-mix(in srgb,var(--padc) 55%,#fff) 0 24%,#fff0 28%),#ffffff2e!important}
 /* 電源：同色的插頭方塊 */
-#mbody .pz.wb button.pc.src{background:linear-gradient(#ffffff90,#fff0 52%),var(--padc)!important;box-shadow:inset 0 0 0 2px var(--ink),inset 0 -3px 0 #0003!important;color:#fff!important}
+#mbody .pz.wb button.pc.src{touch-action:none;cursor:grab;background:linear-gradient(#ffffff90,#fff0 52%),var(--padc)!important;box-shadow:inset 0 0 0 2px var(--ink),inset 0 -3px 0 #0003!important;color:#fff!important}
 #mbody .pz.wb button.pc.src span{font-size:15px;font-weight:800;text-shadow:1px 1px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink);-webkit-line-clamp:1}
 #mbody .pz.wb button.pc.src.off{opacity:.35;filter:saturate(.4)}
 /* 技能插槽：深藍晶片，邊框顏色就是它要接的電源顏色，右上角 LED（接通亮綠燈，出手時閃一下） */

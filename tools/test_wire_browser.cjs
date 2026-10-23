@@ -14,7 +14,7 @@ await p.locator('.wsel button',{hasText:'清除接線'}).click();assert.equal((a
 console.log('PASS select socket, assign skill, clear wire');
 // 2 拖曳接線：從同色電源沿著路徑拉到插槽
 const box=async(x,y)=>cell(x,y).boundingBox(),sock=1;
-await p.evaluate(s=>{selSock=-1;wireSelectSock(s)},sock);
+await p.evaluate(()=>{selSock=-1;uxCancelPiece();renderModal()});
 const path=await p.evaluate(s=>{const t=GridLab.createBoard();GridLab.place(t,'active','FIRE',...GridLab.SOCKS[s],0,{noWire:true,lvl:30});GridLab.autoWire(t,s,30);return [GridLab.SRCS[s],...GridLab.getWire(t,s).cells]},sock);
 await cell(path[0][0],path[0][1]).scrollIntoViewIfNeeded();
 const s0=await box(path[0][0],path[0][1]);await p.mouse.move(s0.x+s0.width/2,s0.y+s0.height/2);await p.mouse.down();
