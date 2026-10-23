@@ -489,7 +489,12 @@ function monLook(m, g){
     else if (q === 'speaker'){ const bs = 1 + .09*Math.abs(Math.sin(t*6)) + lg*.12; g.scale.set(base/Math.sqrt(bs), base*bs, base/Math.sqrt(bs)); g.rotation.z = Math.sin(t*3)*.05; }
     else if (q === 'wisp'){ g.rotation.y += t*2.2; g.rotation.z = Math.sin(t*2.4)*.25; }
     else if (q === 'mole'){ g.position.y -= (.5 + .5*Math.sin(t*4))*1.2*mv; g.rotation.x += Math.sin(t*4 + 1)*.12*mv; }
-    else if (q === 'golem'){ const st = Math.abs(Math.sin(t*3)); g.scale.y *= 1 - .08*st*mv; g.position.y += (1 - st)*.6*mv; g.rotation.z = Math.sin(t*3)*.06*mv; } }
+    else if (q === 'golem'){ const st = Math.abs(Math.sin(t*3)); g.scale.y *= 1 - .08*st*mv; g.position.y += (1 - st)*.6*mv; g.rotation.z = Math.sin(t*3)*.06*mv; }
+    const L = ps.limbs; if (L && !m.dead){ const w = Math.sin(t*(q === 'golem' ? 3.2 : q === 'spider' ? 14 : q === 'crab' ? 9 : 8));
+      if (q === 'golem'){ const sw = mv ? w*.65 : 0, up = m.lunge >= 0 ? -2.3*lg : m.fight ? -.35 + Math.sin(t*2)*.12 : 0; L.legL.rotation.x = -sw; L.legR.rotation.x = sw; L.armL.rotation.x = sw*.8 + up; L.armR.rotation.x = -sw*.8 + up; L.armL.rotation.z = .08 + lg*.2; L.armR.rotation.z = -.08 - lg*.2; }
+      else if (q === 'spider'){ for (const k in L){ const lb = L[k], i = +k.slice(-1), a = i*1.7 + (k[3] === 'R' ? 0 : 3.1); lb.rotation.y = lb.userData.ry + Math.sin(t*14 + a)*(mv ? .5 : .08) - (m.lunge >= 0 ? lg*.5 : 0); lb.rotation.z = Math.max(0, Math.sin(t*14 + a))*(mv ? .35 : 0)*(k[3] === 'R' ? 1 : -1); } }
+      else if (q === 'crab'){ const sn = Math.sin(t*(m.fight ? 7 : 3)); L.clawL.rotation.z = (.1 + (m.fight ? .35 : .12)*sn)*-1 + lg*.8; L.clawR.rotation.z = (.1 + (m.fight ? .35 : .12)*sn) - lg*.8; L.clawL.rotation.y = L.clawR.rotation.y = Math.sin(t*2)*.1; for (const k in L){ if (k.startsWith('leg')){ const i = +k.slice(-1); L[k].rotation.y = Math.sin(t*12 + i*2.1 + (k[3] === 'R' ? 0 : 1.6))*(mv ? .45 : .05); } } }
+      else if (q === 'mole'){ const dg = Math.sin(t*(m.fight ? 10 : 6)); L.pawL.rotation.x = dg*.8 - lg; L.pawR.rotation.x = -dg*.8 - lg; } } }
   else if (m.type === 'slime'){ g.scale.setScalar(base); const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
   else if (m.type === 'drone'){ g.scale.setScalar(base); g.position.y += 5 + Math.sin(t*4 + m.ph)*1.6 + lg*3; g.rotation.x = .25 + lg*.5; for (const r of ps.rotors) r.rotation.y = t*40; }
   else if (m.type === 'bomb'){ const low = 1 - tClamp(m.hp/m.hpMax), sq = 1 + .06*Math.sin(t*(5 + low*14)); g.scale.set(base*sq, base/sq, base*sq); g.position.y += Math.abs(Math.sin(t*5))*1.2 + lg*3; g.rotation.x = lg*.4; ps.spark.scale.setScalar(.7 + .5*Math.abs(Math.sin(t*12))); ps.spark.material.color.set(Math.sin(t*(8 + low*20)) > 0 ? '#ff3a2a' : '#ffd35a'); }
@@ -658,11 +663,12 @@ function scene(){
 /* 新怪物以少數合批網格形成完全不同的輪廓，不增加骨架負擔。 */
 function buildCircuitMon(type){
  const g=new T3.Group(),dark=m3('#27364d'),silver=m3('#a3b9ca'),glow=m3(type==='wisp'?'#b99af0':'#67d5d5');
- if(type==='spider'){mk(ico(4,0),dark,0,4,0,g).scale.set(1.2,.7,1.4);for(const sx of[-1,1])for(let i=0;i<4;i++){const leg=mk(new T3.BoxGeometry(7,.7,.7),silver,sx*5,2,(i-1.5)*2,g);leg.rotation.z=sx*.35;leg.rotation.y=(i-1.5)*.25;}mk(ico(1.6,0),glow,0,4,4,g);}
+ let limbs=null;
+ if(type==='spider'){mk(ico(4,0),dark,0,4,0,g).scale.set(1.2,.7,1.4);mk(ico(1.6,0),glow,0,4,4,g);limbs={};for(const sx of[-1,1])for(let i=0;i<4;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4,3,(i-1.5)*2,l=>{const leg=mk(new T3.BoxGeometry(7,.7,.7),silver,sx*3.5,-1,0,l);leg.rotation.z=sx*.35;},(i-1.5)*.25];}
  if(type==='speaker'){mk(new T3.BoxGeometry(7,11,5),dark,0,5.5,0,g);for(const y of[3,8])mk(cylG(2.3,2.3,.7,10),glow,0,y,2.7,g).rotation.x=Math.PI/2;mk(new T3.BoxGeometry(9,1,6),silver,0,11,0,g);}
  if(type==='wisp'){mk(new T3.OctahedronGeometry(4,0),glow,0,5,0,g).scale.set(.7,1.8,.7);mk(new T3.TorusGeometry(4.8,.5,4,12),silver,0,5,0,g).rotation.x=.7;for(const sx of[-1,1])mk(ico(.8,0),dark,sx*1.3,6,2,g);}
- if(type==='crab'){mk(cylG(5,6,4,6),silver,0,3,0,g);for(const sx of[-1,1]){mk(new T3.BoxGeometry(6,2,2),dark,sx*6,3,0,g);mk(new T3.ConeGeometry(2,5,4),glow,sx*8,4,2,g).rotation.z=-sx*.7;}mk(new T3.BoxGeometry(6,1,1),dark,0,5,4,g);}
- const out=bake(g);out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh&&o.material.emissive){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+ if(type==='crab'){mk(cylG(5,6,4,6),silver,0,3,0,g);mk(new T3.BoxGeometry(6,1,1),dark,0,5,4,g);limbs={};for(const sx of[-1,1]){limbs['claw'+(sx>0?'R':'L')]=[sx*5,3,1,l=>{mk(new T3.BoxGeometry(6,2,2),dark,sx*3,0,0,l);mk(new T3.ConeGeometry(2,5,4),glow,sx*5,1,1.5,l).rotation.z=-sx*.7;}];for(let i=0;i<3;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4.5,2,(i-1)*2.4,l=>{mk(new T3.BoxGeometry(4,.8,.8),silver,sx*2,-.5,0,l).rotation.z=sx*.5;}];}}
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn,ry]=limbs[k];const lb=monLimb(out,px,py,pz,fn);lb.userData.ry=ry||0;out.userData.limbs[k]=lb;}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh&&o.material.emissive){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildRegionLandmark(bi){
  const g=new T3.Group(),B=BIOMES[bi],steel=m3('#43516a'),silver=m3('#a5b8c9'),light=m3(B.glow,{emissive:B.glow,emissiveIntensity:.25});
@@ -675,12 +681,15 @@ function buildRegionLandmark(bi){
  if(bi===11){for(const x of[-24,56]){for(let i=0;i<9;i++)block(x+i*.9,BZ+i*.8,75+i*.8,8,.8,2,silver);block(x,BZ+15,85,14,4,3,light);block(x,BZ+7,85,2,14,2);}}
  return g;
 }
+/* 可獨立擺動的肢體：以關節為原點合批，再掛到怪物身上旋轉 */
+function monLimb(root,px,py,pz,fn){const lg=new T3.Group();fn(lg);const b=bake(lg);b.position.set(px,py,pz);root.add(b);return b;}
 function buildFieldMonster(type,variant=0){
- const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
+ let limbs=null;const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
  const box=(w,h,d,mat,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),mat,x,y,z,g);
  if(type==='golem'){
-  for(const x of [-5,5]){box(6,9,7,dark,x,4.5,0);box(8,5,10,stone,x,2,2);box(8,16,9,stone,x*2,17,0);box(9,7,10,silver,x*2,11,1);}
   box(15,17,10,stone,0,17,0);box(11,7,9,silver,0,28,0);box(7,2,1,signal,0,29,4.7);mk(new T3.OctahedronGeometry(3,0),signal,0,19,5.5,g);
+  limbs={legL:[-5,9,0,l=>{mk(new T3.BoxGeometry(6,9,7),dark,0,-4.5,0,l);mk(new T3.BoxGeometry(8,5,10),stone,0,-7,2,l);}],legR:[5,9,0,l=>{mk(new T3.BoxGeometry(6,9,7),dark,0,-4.5,0,l);mk(new T3.BoxGeometry(8,5,10),stone,0,-7,2,l);}],
+    armL:[-10,25,0,l=>{mk(new T3.BoxGeometry(8,16,9),stone,0,-8,0,l);mk(new T3.BoxGeometry(9,7,10),silver,0,-14,1,l);}],armR:[10,25,0,l=>{mk(new T3.BoxGeometry(8,16,9),stone,0,-8,0,l);mk(new T3.BoxGeometry(9,7,10),silver,0,-14,1,l);}]};
  }else if(type==='ranger'){
   for(const x of [-2,2])box(2,7,3,dark,x,3.5,0);box(8,7,5,wood,0,10,0);mk(new T3.ConeGeometry(6,5,5),dark,0,16,0,g);box(5,2,1,signal,0,13,3);box(2,2,13,silver,4,10,4);box(3,5,4,dark,-5,9,0);
  }else if(type==='lantern'){
@@ -688,9 +697,9 @@ function buildFieldMonster(type,variant=0){
   for(const x of [-3,3])box(.5,10,.5,dark,x,13,3);mk(new T3.TorusGeometry(3,.5,4,8),silver,0,22,0,g);
  }else if(type==='mole'){
   mk(new T3.IcosahedronGeometry(6,0),wood,0,5,0,g).scale.set(1,.8,1.4);mk(new T3.ConeGeometry(3,7,6),silver,0,5,8,g).rotation.x=Math.PI/2;
-  for(const x of [-5,5]){box(5,3,6,dark,x,2,3);box(3,1,4,silver,x,2,7);}box(7,1.5,1,signal,0,7,5);
+  box(7,1.5,1,signal,0,7,5);limbs={pawL:[-5,3,3,l=>{mk(new T3.BoxGeometry(5,3,6),dark,0,-1,0,l);mk(new T3.BoxGeometry(3,1,4),silver,0,-1,4,l);}],pawR:[5,3,3,l=>{mk(new T3.BoxGeometry(5,3,6),dark,0,-1,0,l);mk(new T3.BoxGeometry(3,1,4),silver,0,-1,4,l);}]};
  }
- const out=bake(g);out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildCircuitBoss(bi,form=bi%3){
  const root=new T3.Group(),body=buildFieldMonster('golem',form);root.add(body);
