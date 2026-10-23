@@ -466,7 +466,7 @@ const MPOSE_ATK = { hips:[.25, 0, 0], torso:[.65, 0, 0], head:[.35, 0, 0], armL:
 const MPOSE_HURT = { hips:[-.2, 0, 0], torso:[-.55, .2, .1], head:[-.55, 0, .25], armL:[-.7, 0, -1.1], foreL:[-.4, 0, 0], armR:[-1.1, 0, 1.1], foreR:[-.5, 0, 0], legL:[-.3, 0, 0], shinL:[.5, 0, 0], legR:[.3, 0, 0], shinR:[.6, 0, 0] };
 const MPOSE_TMP = {};
 function monLook(m, g){
-  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, dl = Math.hypot(G.h.x - m.x, G.h.y - m.y) || 1, y = m.y + 3*lg*(G.h.y - m.y)/dl, lx = m.x + 3*lg*(G.h.x - m.x)/dl, ps = g.userData, base = (ps.s || 1)*CK;
+  const t = G.time + m.ph, lg = m.lunge >= 0 ? Math.sin(Math.PI*m.lunge/.3) : 0, dl = Math.hypot(G.h.x - m.x, G.h.y - m.y) || 1, y = m.y + 3*lg*(G.h.y - m.y)/dl, lx = m.x + 3*lg*(G.h.x - m.x)/dl, ps = g.userData, base = (ps.s || 1)*CK*(MONSTER_TRAITS[m.type]?.scale||1);
   at3(g, lx, y, BZ + terrainHeight(m.x,m.y) + (m.fall > 0 ? 70*Math.pow(m.fall/.9, 2) : 0)); g.rotation.y = Math.atan2(G.h.x - m.x, G.h.y - m.y);   // 面向主角
   if(ps.simple){g.scale.setScalar(base*(m.type==='crab'?1.15:1));g.position.y+=(m.type==='wisp'?7+Math.sin(t*3)*2:Math.abs(Math.sin(t*7))*.8)+lg*3;g.rotation.x=lg*.3;}
   else if (m.type === 'slime'){ g.scale.setScalar(base); const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
@@ -529,8 +529,15 @@ function updateFx(){
     o.visible=true;o.geometry=geom;o.material.color.set(col||'#ffffff');o.material.opacity=Math.max(0,Math.min(1,opacity));o.position.set(x,z+terrainHeight(x,y),y);o.scale.setScalar(s);o.rotation.set(0,0,0);return o;
   };
   const sph=geo('fxs',()=>ico(1,1)),disc=geo('fxd',()=>new T3.CircleGeometry(1,20).rotateX(-Math.PI/2)),ring=geo('fxr',()=>new T3.RingGeometry(.83,1,24).rotateX(-Math.PI/2)),box=geo('fxf',()=>new T3.BoxGeometry(1,.25,1));
-  for(const e of G.fx){const fade=1-e.t;
+  const warnings=G.mons.filter(m=>!m.dead&&m.warning&&!(m.frozen>0)).map(m=>({k:'danger',...m.warning,t:1-m.warning.t/m.warning.duration,col:m.boss?'#c45b64':'#c87e48'}));
+  for(const e of warnings.concat(G.fx)){const fade=1-e.t;
     if(e.k==='pickup'){const x=tLerp(e.x,e.x2,ease(e.t)),y=tLerp(e.y,e.y2,ease(e.t));add(sph,e.col,1-e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,.8);continue;}
+    if(e.k==='danger'){
+      if(e.owner&&(e.owner.dead||!e.owner.warning||e.owner.frozen>0))continue;
+      if(e.shape==='line'){const dx=e.x2-e.x,dy=e.y2-e.y,len=Math.hypot(dx,dy),o=add(box,e.col,.28,e.x+dx/2,e.y+dy/2,BZ+.45);o.scale.set(len,.3,e.radius*2);o.rotation.y=-Math.atan2(dy,dx);}
+      else for(const [x,y]of e.points){add(ring,e.col,.85,x,y,BZ+.5,e.radius);}
+      continue;
+    }
     if(e.k==='warning'){add(ring,e.col||'#ff8a4a',.75,e.x,e.y,BZ+.4,9);continue;}
     if(e.k==='ring'||e.k==='nova'){const r=tLerp(2,e.k==='nova'?48:24,ease(e.t)),x=e.k==='nova'?G.h.x:e.x,y=e.k==='nova'?G.h.y:e.y;add(ring,e.col||'#9fe0ff',fade*.95,x,y,BZ+.6,r);add(disc,e.col||'#9fe0ff',fade*.16,x,y,BZ+.4,r*.9);}
     if(e.k==='pillar'){const o=add(geo('fxp',()=>new T3.CylinderGeometry(1,1,1,8,1,true)),e.col,fade*.55,e.x,e.y,BZ+14*e.t+8);o.scale.set(4*fade+1,22+14*e.t,4*fade+1);}
@@ -562,7 +569,7 @@ function overlay(){
   const k = pxu(); let s = '';
   const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = w*k*.8, H2 = 1.5*k; return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
   if (G.h.dead <= 0) s += bar(G.h.x, G.h.y, BZ + 36*CK, 9, G.h.hp/G.st.life, '#ff6a8a');
-  for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)) s += bar(m.x, m.y, BZ + (m.type === 'slime' ? 11 : m.boss ? 40 : m.type === 'brute' ? 32 : m.type === 'drone' ? 24 : m.type === 'bomb' ? 20 : 28)*CK, 8, m.hp/m.hpMax, '#ff6a8a');
+  for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)) s += bar(m.x, m.y, BZ + (m.boss?140:m.type==='golem'?48:m.type==='lantern'?38:(m.type==='slime'?11:m.type==='brute'?32:m.type==='drone'?24:m.type==='bomb'?20:28)*(MONSTER_TRAITS[m.type]?.scale||1))*CK, m.boss?26:8, m.hp/m.hpMax, '#ff6a8a');
   if(G.h.dead<=0&&G.time<(G.h.bufferUntil||0)&&G.h.buffer>0)s+=bar(G.h.x,G.h.y,BZ+40*CK,9,G.h.buffer/(G.st.life*.12),'#57dce8');
   for(const m of G.mons)if(!m.dead&&m.shield>0)s+=bar(m.x,m.y,BZ+(m.boss?44:32)*CK,8,m.shield/m.shieldMax,'#57dce8');
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + terrainHeight(fl.x,fl.y) + fl.t*9);
@@ -583,7 +590,9 @@ function scene(){
   r3frame();
   const bi = biomeNow();
   if (R3.bi !== bi || R3.terrainKey!==terrainKey()){
-    R3.terrainKey=terrainKey();
+    R3.terrainKey=terrainKey();worldTravelStart(terrainNow());
+    [G.h.x,G.h.y]=terrainProject(G.h.x,G.h.y);G.h.gx=G.h.x;G.h.gy=G.h.y;
+    for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y);
     R3.bi = bi; { const SK = BIOMES[bi].sky || [['#8fcdf7', '#c9e9ff', '#f5fbff'], ['#ffc98a', '#ffe6bf', '#fff7ea'], ['#a9d8ff', '#d9efff', '#ffffff'], ['#c07a9a', '#e9b4cc', '#ffe2ee'], ['#141450', '#3a3a8c', '#7a6ad0'], ['#ffa6d6', '#ffd0ee', '#fff0fa']][bi%6] || []; SK.forEach((c, i) => document.documentElement.style.setProperty('--sk' + i, c)); }
     for (const o of [R3.gnd, R3.portal, ...R3.decor]) if(o){R3.world.remove(o);disposeWorldObject(o);}
     R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];const staticDecor=new T3.Group();
@@ -600,7 +609,7 @@ function scene(){
   if (G.h.dead > 0){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 怪物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
-  for (const m of G.mons){ const g = entFor(m, () => m.boss?buildCircuitBoss(biomeNow()):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g); }
+  for (const m of G.mons){ const g = entFor(m, () => m.boss?buildCircuitBoss(biomeNow(),m.bossForm):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; let x = d.x, y = d.y, z = BZ;
@@ -610,6 +619,7 @@ function scene(){
   }
   for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); R3.ent.delete(k); }
   updateFx();
+  if(typeof worldTravelRender==='function')worldTravelRender();
   updateSceneryOcclusion(R3.scenery,R3.cam,R3.hero,R3.frameDt||0);
   R3.rd.render(R3.sc, R3.cam);
   return overlay();
@@ -635,4 +645,28 @@ function buildRegionLandmark(bi){
  if(bi===11){for(const x of[-24,56]){for(let i=0;i<9;i++)block(x+i*.9,BZ+i*.8,75+i*.8,8,.8,2,silver);block(x,BZ+15,85,14,4,3,light);block(x,BZ+7,85,2,14,2);}}
  return g;
 }
-function buildCircuitBoss(bi){const g=buildCircuitMon(['speaker','crab','wisp','spider'][bi%4]);g.userData.s=2.4;return g;}
+function buildFieldMonster(type,variant=0){
+ const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
+ const box=(w,h,d,mat,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),mat,x,y,z,g);
+ if(type==='golem'){
+  for(const x of [-5,5]){box(6,9,7,dark,x,4.5,0);box(8,5,10,stone,x,2,2);box(8,16,9,stone,x*2,17,0);box(9,7,10,silver,x*2,11,1);}
+  box(15,17,10,stone,0,17,0);box(11,7,9,silver,0,28,0);box(7,2,1,signal,0,29,4.7);mk(new T3.OctahedronGeometry(3,0),signal,0,19,5.5,g);
+ }else if(type==='ranger'){
+  for(const x of [-2,2])box(2,7,3,dark,x,3.5,0);box(8,7,5,wood,0,10,0);mk(new T3.ConeGeometry(6,5,5),dark,0,16,0,g);box(5,2,1,signal,0,13,3);box(2,2,13,silver,4,10,4);box(3,5,4,dark,-5,9,0);
+ }else if(type==='lantern'){
+  mk(new T3.CylinderGeometry(4,3,8,6),signal,0,13,0,g);mk(new T3.ConeGeometry(6,4,6),dark,0,19,0,g);mk(new T3.ConeGeometry(5,5,6),silver,0,7,0,g).rotation.z=Math.PI;
+  for(const x of [-3,3])box(.5,10,.5,dark,x,13,3);mk(new T3.TorusGeometry(3,.5,4,8),silver,0,22,0,g);
+ }else if(type==='mole'){
+  mk(new T3.IcosahedronGeometry(6,0),wood,0,5,0,g).scale.set(1,.8,1.4);mk(new T3.ConeGeometry(3,7,6),silver,0,5,8,g).rotation.x=Math.PI/2;
+  for(const x of [-5,5]){box(5,3,6,dark,x,2,3);box(3,1,4,silver,x,2,7);}box(7,1.5,1,signal,0,7,5);
+ }
+ const out=bake(g);out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+}
+function buildCircuitBoss(bi,form=bi%3){
+ const root=new T3.Group(),body=buildFieldMonster('golem',form);root.add(body);
+ const dark=m3('#394d61'),silver=m3('#bdc8cf'),signal=m3(form===0?'#9dbda1':form===1?'#8cb9d0':'#bba8cb');
+ if(form===0){for(const x of [-12,12]){mk(new T3.IcosahedronGeometry(6,0),dark,x,26,0,root);mk(new T3.ConeGeometry(3,12,5),signal,x,32,0,root);}}
+ if(form===1){for(const x of [-12,12]){mk(new T3.BoxGeometry(7,22,12),dark,x,24,0,root);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,root).rotation.x=Math.PI/2;}mk(new T3.BoxGeometry(1,18,1),silver,0,39,0,root);}
+ if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,root);for(const x of [-13,13])mk(new T3.BoxGeometry(5,18,3),silver,x,21,3,root);}
+ const out=bake(root);out.userData.simple=true;out.userData.s=4;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});disposeWorldObject(body);return out;
+}

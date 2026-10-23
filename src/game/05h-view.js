@@ -142,6 +142,10 @@ function viewInit(){
   GAME_VIEW.initialized=true;GAME_VIEW.last=performance.now();viewApplyPrefs();viewRenderHUD();GAME_VIEW.ready=viewPreparePixels();
 }
 const VIEW_CSS=`
+.world-travel{position:fixed;z-index:25;transform:translateX(-50%);width:min(480px,calc(100vw - 32px));box-sizing:border-box;max-height:calc(100dvh - 24px);overflow:auto;padding:18px 22px;background:var(--ux-screen);color:var(--ux-ink);border:2px solid var(--ux-edge);box-shadow:5px 5px 0 #17275155;font-family:var(--ux-body)}.world-travel[hidden]{display:none}.world-travel h2{font-size:24px!important;line-height:32px;margin:6px 0 12px}.world-travel p{margin:0;font-size:16px!important;line-height:24px}.world-travel .world-travel-call{color:var(--ux-muted);font-size:14px!important}.world-travel button{margin-top:12px;cursor:pointer;min-height:40px}.world-travel button:hover{background:var(--ux-edge)}.world-travel button:focus-visible{outline:3px solid var(--ux-blue);outline-offset:3px}.world-travel button:active{transform:translateY(1px)}.world-travel-route{position:relative;display:flex;justify-content:space-between;width:120px;margin-top:18px;border-bottom:1px dashed var(--ux-muted);height:12px}.world-travel-route i{display:block;width:14px;height:8px;background:var(--ux-blue);clip-path:polygon(0 0,100% 0,70% 100%,30% 100%)}.world-travel-route span{position:absolute;left:calc(var(--travel)*100%);bottom:0;width:4px;height:4px;background:var(--ux-accent)}
+@media(min-width:1180px){.world-travel{width:min(600px,calc(100vw - 32px));padding:22px 28px}.world-travel h2{font-size:32px!important;line-height:40px}.world-travel p{font-size:20px!important;line-height:28px}}
+@media(prefers-reduced-motion:reduce){.world-travel-route span{left:50%}}
+
 /* Responsive pixel-text metrics also own the surrounding HUD geometry. */
 body.ui-material .battle-hud .hud-level{height:66px}
 body.ui-material .battle-hud .hud-level span{font-size:12px!important;line-height:18px}
@@ -168,3 +172,13 @@ body.watch-mode .stage #stats.battle-hud{inset:max(16px,env(safe-area-inset-top)
 @media(max-width:480px){.stage #stats.battle-hud{gap:8px!important}.battle-hud .hud-left{grid-template-columns:40px minmax(70px,1fr);gap:5px 6px;max-width:240px}.battle-hud .hud-level{height:48px}.hud-level b{font-size:23px}.hud-healthline{font-size:12px}.battle-hud .hud-right{min-width:65px;gap:8px}.hud-right b{font-size:20px}.hud-right span{font-size:11px}.hud-progress{font-size:11px}.watch-key{display:none}body.watch-mode .stage #stats.battle-hud{inset:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) auto max(10px,env(safe-area-inset-left))!important}}
 
 `;
+
+/* Non-modal arrival card: the field journal retains every discovered line. */
+function worldTravelRender(){
+ let el=document.getElementById('world-travel');
+ if(!el){el=document.createElement('section');el.id='world-travel';el.className='world-travel';el.hidden=true;el.setAttribute('aria-label','抵達新地區');document.body.appendChild(el);}
+ const travel=WORLD_TRAVEL;if(travel.remaining<=0){if(!el.hidden&&el.contains(document.activeElement)){const before=travel.previousFocus;if(before?.isConnected)before.focus({preventScroll:true});}el.hidden=true;return;}
+ const rect=document.getElementById('fig')?.getBoundingClientRect();if(!rect)return;
+ if(el.dataset.place!==travel.key){el.dataset.place=travel.key;travel.previousFocus=document.activeElement;const note=travel.note;el.innerHTML=`<p class="world-travel-call">▸ 訊號接通 · ${uxEsc(note[1])}</p><h2>${uxEsc(travel.title)}</h2><p class="world-travel-note" role="status">${uxEsc(note[2])}</p><div class="world-travel-route" aria-hidden="true"><i></i><i></i><i></i><span></span></div><button type="button" class="mb" onclick="worldTravelSkip();worldTravelRender()">繼續行程</button>`;}
+ el.hidden=false;el.style.left=Math.max(16,Math.min(innerWidth-16,rect.left+rect.width/2))+'px';el.style.top=Math.max(12,Math.min(innerHeight-270,rect.top+rect.height*.22))+'px';el.style.setProperty('--travel',String(1-travel.remaining/travel.duration));
+}

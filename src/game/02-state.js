@@ -22,7 +22,7 @@ const TREE = (() => {
 
 /* ---------- game state ---------- */
 const G = {
-  city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
+  storyFlags:{},city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
   coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:true, storageRecycled:0, chips:0, equip:{ weapon:null, armor:null, ring:null }, armory:{}, equipBackup:{}, deferChoices:false, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
   pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'阿街', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
   h:{ x:HX, y:HY, vx:0, vy:0, gx:HX, gy:HY, aiT:0, mv:0, hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
@@ -249,11 +249,12 @@ function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
-function serialize(){ return { v:2, progressionVersion:1,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
+function serialize(){ return { v:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 function applySave(o){
   if (!o || o.v !== 2) return false;
   const uidSeen=new Set(),uidConflicts=new Set();for(const it of Array.isArray(o.inventory)?o.inventory:[]){if(uidSeen.has(it.uid))uidConflicts.add(it.uid);uidSeen.add(it.uid);}
+  G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>/^p(?:[0-9]|1[01])$/.test(k)&&Number.isInteger(v)&&v>=0&&v<=3));
   G.castPolicy=o.castPolicy==='combo'?'combo':'balanced';G.signalCharge=0;G.readySince={};G.combat=null;G.castSerial=0;G.signalGainRoot=null;G.h.castT=-1;G.h.swingT=-1;
   for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','carts','seen','goals','mapsDone','pass','ach','legSeen','pity','parts','bossHp','towerBest','quest','craftN','mk','seenG','seenC','cz','userCz','dmgNum','seenInv','seenParts','seenGoals','builds','bi','relics','relicPicks','cos','own','heroName','born','autoCard','bossKills','char','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
   G.builds=Array.isArray(o.builds)?o.builds.slice(0,3):[null,null,null];G.bi=[0,1,2].includes(o.bi)?o.bi:0;
@@ -486,7 +487,7 @@ function terrainBuild(key){
   const nx=training?17:Math.round(span/cell),ny=training?17:Math.round(span*(shapeClass==='square'?1:.78+(seed>>>11)%23/100)/cell);
   const ox=HX-Math.floor(nx/2)*cell-cell/2,oy=HY-Math.floor(ny/2)*cell-cell/2,w=nx*cell/2,h=ny*cell/2;
   const names=['林間海岸','起伏山丘','寬闊河灣','高原盆地','海岸台地','城市綠洲','山麓營地','古城廣場','風車高地','雪嶺低谷','石柱遺跡','工業庭院'];
-  const clearRadius=training?24:Math.max(28,Math.min(48,Math.min(w,h)*.3));
+  const clearRadius=training?24:Math.max(34,Math.min(56,Math.min(w,h)*.34));
   const groundCells=[],lookup=new Map();
   for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
     const x=ox+(i+.5)*cell,y=oy+(j+.5)*cell,u=(x-HX)/w,v=(y-HY)/h,angle=Math.atan2(v,u);
@@ -574,6 +575,7 @@ function terrainScenery(p=terrainNow()){
   if(p.key==='training')return [];const out=p.landmarks.map(o=>({...o})),occupied=(x,y,r)=>p.landmarks.some(o=>Math.hypot(o.x-x,o.y-y)<o.radius+r+4);
   const count=Math.min(260,Math.round(p.groundCells.length*.15));
   for(let i=0;i<count;i++){const c=p.cells[terrainHash(p.key+':detail:'+i)%p.cells.length];if(Math.hypot(c.x-HX,c.y-HY)<p.clearRadius+5||occupied(c.x,c.y,3))continue;
+    const feather=Math.max(0,Math.min(1,(Math.hypot(c.x-HX,c.y-HY)-p.clearRadius)/32));if(terrainHash(p.key+':density:'+i)%1000/1000>feather*feather*(3-2*feather))continue;
     const n=terrainHash(p.key+':kind:'+i),urban=[5,7,11].includes(p.profile);
     const palette=urban?['bike','lamp','bench','planter','crate','grass','grass']:p.profile===6?['tent','log','rock','bush','grass','grass']:p.profile===10?['column','rock','bush','grass','grass']:['rock','log','flowers','bush','grass','grass','grass'];
     const kind=palette[n%palette.length];
@@ -584,3 +586,25 @@ function terrainScenery(p=terrainNow()){
     items.forEach((kind,i)=>{const a=(o.variant%628)/100+i*2.1,r=o.radius+7+i*2,x=o.x+Math.cos(a)*r,y=o.y+Math.sin(a)*r;if(terrainCell(x,y,p)&&Math.hypot(x-HX,y-HY)>p.clearRadius+5&&!occupied(x,y,1))out.push({x,y,kind,scale:kind==='flowers'?1.2:1,rotation:a});});
   }return out;
 }
+
+
+/* 斷線年代：短篇地方記憶，不以對話框打斷掛機。只保存已發現的章節。 */
+const FIELD_STORIES=[
+ ['潮聲裡的呼號','渡船員 阿澄','停電後第七年，海邊的樹仍替電台擋風。有人把回家的頻率刻在樹幹上。','巨像倒下時，舊收音機傳來一句：下一班船，還會回來。'],
+ ['山路沒有盡頭','巡山員 留言','山丘上的路牌已經褪色。跟著風聲走，能找到仍在轉動的天線。','守關者胸口掉出一張車票。終點寫著：山頂電台。'],
+ ['河灣的晚班','渡船員 阿澄','河水淹過了舊月台。那盞靠岸燈一直亮著，像在等最後一位乘客。','水面靜下來後，你聽見遠處有人試著呼叫這座島。'],
+ ['盆地裡的回音','修理工 小禾','所有鐘都停在同一分鐘。只有地下電纜，偶爾還會傳來腳步般的脈衝。','電纜重新亮起了一小段。訊號向山那邊延伸。'],
+ ['海岸的備忘錄','渡船員 阿澄','海風帶來別座島的聲音。別丟掉舊卡匣，也許裡面還留著某人的地址。','守關者終於停止巡邏。遠方海岸亮起一盞很小的燈。'],
+ ['沒有關門的城市','街坊廣播','樓宇裡已經沒有人，街角電單車的方向燈卻仍在閃。這座城似乎還沒下班。','街角喇叭播出了一段走調的收工音樂。'],
+ ['營火熄滅之後','修理工 小禾','帳篷裡的地圖圈著同一座山。大家說，只要電台還亮，迷路的人就不算失蹤。','營地的短波機又響了。這次，另一端有人回答。'],
+ ['舊城的約定','鐘樓留言','廣場上的長椅留著一個空位。從前每逢黃昏，修理工們會在這裡交換零件與消息。','鐘樓響了一次，像有人終於記起了約定。'],
+ ['風仍記得名字','巡山員 留言','風車替早已空掉的村子發電。小禾說，別停下它，那是通往山頂的路標。','風車重新對準了山頂。被雜音蓋住的呼號清楚了一點。'],
+ ['雪線以外','巡山員 留言','雪埋住了高山與低谷之間的舊路。山頂電台仍亮著，卻沒有收到任何回程訊號。','雪裡露出一塊路牌：回程請沿燈光前進。'],
+ ['石柱間的雜音','修理工 小禾','這些石柱比電台更古老。卡匣靠近時會發熱，彷彿廢墟也記得昔日的聲音。','石拱之間傳來短短三聲。那是舊時代表示平安的暗號。'],
+ ['最後一批貨物','倉庫值班紀錄','貨倉裡剩下未送出的收音機。搬運機仍照著停電前的排程，等待永遠沒到的列車。','貨倉門開了。箱子上寫著：送往各島，讓大家能聽見彼此。']
+];
+const WORLD_TRAVEL={key:null,remaining:0,duration:2.6,note:null,title:'',previousFocus:null};
+function fieldDiscover(profile,boss=false){if(G.offline||profile<0||profile>=FIELD_STORIES.length)return;const key='p'+profile,bit=boss?2:1,old=G.storyFlags[key]||0;if(old&bit)return;G.storyFlags[key]=old|bit;const entry=FIELD_STORIES[profile];logLine((boss?'歸途留言':'電台留言')+' · '+entry[0]+'：'+entry[boss?3:2],'#52749a');G.dirty=true;}
+function worldTravelStart(plan){if(G.offline||plan.key==='training')return;const changed=WORLD_TRAVEL.key!==plan.key;if(!changed)return;WORLD_TRAVEL.key=plan.key;WORLD_TRAVEL.title=plan.name;WORLD_TRAVEL.note=FIELD_STORIES[plan.profile];WORLD_TRAVEL.remaining=WORLD_TRAVEL.duration;fieldDiscover(plan.profile);}
+function worldTravelAdvance(dt){if(G.offline){WORLD_TRAVEL.remaining=0;return false;}const active=WORLD_TRAVEL.remaining>0;WORLD_TRAVEL.remaining=Math.max(0,WORLD_TRAVEL.remaining-dt);return active;}
+function worldTravelSkip(){WORLD_TRAVEL.remaining=0;}

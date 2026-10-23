@@ -2,7 +2,7 @@
 const fs=require('node:fs'),vm=require('node:vm');
 const ctx={console,Math,Date,URLSearchParams,location:{search:''},GridLab:require('../src/game/00-grid.js')};
 const noop=()=>{};ctx.document={createElement:()=>({width:64,height:64,getContext:()=>new Proxy({measureText:s=>({width:s.length*12}),createLinearGradient:()=>({addColorStop:noop}),createRadialGradient:()=>({addColorStop:noop})},{get:(o,k)=>o[k]||noop,set:(o,k,v)=>(o[k]=v,true)})})};
-vm.createContext(ctx);for(const f of ['src/vendor/three.min.js','src/game/01-data.js','src/game/02-state.js','src/game/models.js','src/game/models-mon.js','src/game/models-weapon.js','src/game/04-render.js'])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+vm.createContext(ctx);for(const f of ['src/vendor/three.min.js','src/game/01-data.js','src/game/02-state.js','src/game/03-combat.js','src/game/models.js','src/game/models-mon.js','src/game/models-weapon.js','src/game/04-render.js'])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
 const panels=vm.runInContext(`(()=>{
  const output=[];
  for(const spec of [{name:'square',profile:0,size:'regular',shape:'square',bi:0},{name:'camp',profile:6,size:'medium',bi:0},{name:'city',profile:7,size:'medium',bi:6},{name:'windmill',profile:8,size:'medium',bi:0},{name:'ruins',profile:10,size:'large',bi:0},{name:'giant',profile:9,size:'giant',bi:2}]){

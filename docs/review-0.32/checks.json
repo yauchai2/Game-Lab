@@ -3,6 +3,12 @@
   "browser_verified": false,
   "checks": [
     {
+      "command": "node tools/test_field_update.cjs",
+      "exit_code": 0,
+      "stdout": "PASS arrival pauses only foreground simulation, skip and offline resume, story discovery persists and deduplicates\nPASS every regional pool and guide resolves to a stat block, size and distinct skill\nPASS salvo commits three avoidable targets, charge respects land and attacks cannot damage outside warnings\nPASS guard reduces direct damage, healing is bounded and bosses rotate attacks then accelerate below half life\nPASS four new real low-poly creatures and three giant boss silhouettes exceed 3× hero height within a 12-mesh budget\nPASS review uses real progress with an explicit boss encounter control\nPASS 42 simultaneous three-target warnings render before an overloaded ordinary effect pool within 160 meshes\n",
+      "stderr": "Scripts \"build/three.js\" and \"build/three.min.js\" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation\n"
+    },
+    {
       "command": "node tools/test_grid.js",
       "exit_code": 0,
       "stdout": "grid tests ok\n",
@@ -77,7 +83,7 @@
     {
       "command": "python tools/test_font_grid.py",
       "exit_code": 0,
-      "stdout": "PASS native 12px face preserved; 1321 LCD glyphs, advances and baselines align to the 16px grid\n",
+      "stdout": "PASS native 12px face preserved; 1375 LCD glyphs, advances and baselines align to the 16px grid\n",
       "stderr": ""
     },
     {

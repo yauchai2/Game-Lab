@@ -42,7 +42,7 @@ run('microscopic hits cannot freeze a boss and adaptation cannot be refreshed aw
 `);
 run('high-haste storm leaves real boss action windows instead of permanent control',`
  board(['FROST'],{FROST:'FROST_STORM'});G.st.sk.FROST.hit=10000;G.st.sk.FROST.cd=1.68;const m=target(true);m.hp=m.hpMax=100000;G.cds.FROST=0;
- let controlled=0;for(let i=0;i<1200;i++){update(.05);if(m.frozen>0)controlled++;}assert(controlled/1200<.35);assert((G.train.combos?.freezes||0)>0);assert(m.skillCd<3||m.warning);
+ let controlled=0;for(let i=0;i<1200;i++){update(.05);if(m.frozen>0)controlled++;}assert(controlled/1200<.35);assert((G.train.combos?.freezes||0)>0);assert((m.skillsUsed||0)>0);
 `);
 run('only original unique infrared hits charge; forks and repeats cannot feed themselves',`
  board(['CHAIN','BEAM'],{BEAM:'BEAM_CAPACITOR'});const m=target(true);castSkill('CHAIN');assert.equal(G.signalCharge,2);
