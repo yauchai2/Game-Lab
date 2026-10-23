@@ -74,3 +74,29 @@ function icon3dMapUrl(m){
     ICON3D.cache[key] = url; return url;
   } catch (e) { return ''; }
 }
+
+/* 冒險頁情境小圖：城市遠征三區、無限之塔、訓練假人，離屏渲染後像素化放大 */
+function icon3dSceneModel(key, nArg){
+  const g = new T3.Group(), slab = (c1, c2) => { mk(new T3.BoxGeometry(5.4, .5, 4.2), m3(c1), 0, -.25, 0, g); mk(new T3.BoxGeometry(5.42, .4, 4.22), m3(c2), 0, -.7, 0, g); };
+  const glow = c => m3(c, { emissive:c, emissiveIntensity:.7 });
+  if (key === 'route_signal'){ slab('#5b4fa8', '#3a3278'); for (const [x, z, h] of [[-1.6, -.6, 3.4], [0, .6, 4.4], [1.6, -.4, 2.8]]){ mk(new T3.CylinderGeometry(.08, .16, h, 5), m3('#c9d3ff'), x, h / 2, z, g); mk(new T3.OctahedronGeometry(.28, 0), glow('#00e5ff'), x, h + .2, z, g); mk(new T3.TorusGeometry(.55, .04, 4, 14), glow('#ff4fd8'), x, h * .72, z, g).rotation.x = 1.4; } }
+  else if (key === 'route_memory'){ slab('#d98cb8', '#a85f8c'); mk(new T3.BoxGeometry(3.6, 2.3, .5), m3('#f4e6ee'), 0, 1.3, 0, g); mk(new T3.BoxGeometry(3.0, .9, .06), m3('#3a3050'), 0, 1.2, .3, g); for (const s of [-1, 1]) mk(new T3.CylinderGeometry(.42, .42, .1, 10), glow('#ffd24d'), s * .8, 1.2, .35, g).rotation.x = Math.PI / 2; mk(new T3.BoxGeometry(2, .4, .06), m3('#ff7ab8'), 0, .45, .3, g); }
+  else if (key === 'route_power'){ slab('#b9803a', '#7a5224'); for (const [x, z, s] of [[-1.5, 0, 1.6], [0, -.3, 2.2], [1.5, .2, 1.3]]){ mk(new T3.BoxGeometry(1.1, s, 1.1), m3('#d8dde8'), x, s / 2, z, g); mk(new T3.BoxGeometry(1.15, .25, 1.15), m3('#454a60'), x, s + .1, z, g); mk(new T3.BoxGeometry(.5, .5, .1), glow('#ffd24d'), x, s * .55, z + .58, g); } mk(new T3.BoxGeometry(5, .08, .2), glow('#ff9a3d'), 0, .06, 1.6, g); }
+  else if (key === 'tower'){ const n = Math.max(3, Math.min(12, (nArg | 0) || 3)); slab('#7a86b4', '#4a5480'); for (let i = 0; i < n; i++){ const w = 2.6 - i * .1; mk(new T3.BoxGeometry(w, .62, w), m3(i % 2 ? '#8fa0d8' : '#aab8e8'), 0, .35 + i * .68, 0, g); mk(new T3.BoxGeometry(w + .12, .1, w + .12), m3('#2f3556'), 0, .72 + i * .68, 0, g); mk(new T3.BoxGeometry(.5, .25, .08), glow(i === n - 1 ? '#ffd24d' : '#5dffa3'), 0, .35 + i * .68, w / 2 + .02, g); } mk(new T3.OctahedronGeometry(.4, 0), glow('#ffd24d'), 0, .9 + n * .68, 0, g); }
+  else { const cnt = key === 'dummy1' ? 1 : 5; slab('#8fb4d8', '#5f82a8'); const pos = cnt === 1 ? [[0, 0]] : [[-1.7, -.8], [0, -1], [1.7, -.8], [-.9, .8], [.9, .8]];
+    for (const [x, z] of pos){ const s = cnt === 1 ? 1.7 : 1; mk(new T3.CylinderGeometry(.5 * s, .6 * s, .2, 8), m3('#454a60'), x, .1, z, g); mk(new T3.CylinderGeometry(.1 * s, .1 * s, 1.4 * s, 5), m3('#8a6a48'), x, .8 * s, z, g); mk(new T3.BoxGeometry(.9 * s, 1.1 * s, .5 * s), m3('#e8c27a'), x, 1.5 * s, z, g); mk(new T3.BoxGeometry(.6 * s, .6 * s, .1 * s), glow('#ff5a5a'), x, 1.5 * s, z + .3 * s, g); mk(new T3.IcosahedronGeometry(.4 * s, 0), m3('#f2d9a0'), x, 2.35 * s, z, g); } }
+  g.rotation.set(.45, -.55, 0); return g;
+}
+function icon3dSceneUrl(key, arg){
+  const ck = 'S_' + key + (arg || ''); if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined') return '';
+  try {
+    if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
+    const tall = key === 'tower', W = tall ? 40 : 64, H = tall ? 64 : 44, m = icon3dSceneModel(key, arg), sc = new T3.Scene(), cam = new T3.PerspectiveCamera(26, W / H, .1, 200);
+    const mm = m; sc.add(mm);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    mm.updateMatrixWorld(true); const bx = new T3.Box3().setFromObject(mm), c0 = bx.getCenter(new T3.Vector3()), rad = bx.getBoundingSphere(new T3.Sphere()).radius; mm.position.sub(c0);
+    cam.position.set(0, 0, rad / Math.sin(26 * Math.PI / 360) * .6); cam.lookAt(0, 0, 0);
+    ICON3D.rd.setSize(W, H, false); ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.rd.setSize(ICON3D.S, ICON3D.S, false);
+    ICON3D.cache[ck] = url; return url;
+  } catch (e) { return ''; }
+}
