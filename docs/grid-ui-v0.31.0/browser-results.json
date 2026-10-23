@@ -4,7 +4,7 @@
     "geometry": {
       "cols": 4,
       "min": 84.5,
-      "visible": 8,
+      "visible": 4,
       "overflow": false,
       "battle": 2
     },
@@ -24,7 +24,7 @@
     "geometry": {
       "cols": 6,
       "min": 70.265625,
-      "visible": 18,
+      "visible": 12,
       "overflow": false,
       "battle": 2
     },
@@ -44,7 +44,7 @@
     "geometry": {
       "cols": 3,
       "min": 91.328125,
-      "visible": 3,
+      "visible": 0,
       "overflow": false,
       "battle": 2
     },

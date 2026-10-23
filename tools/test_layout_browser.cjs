@@ -5,7 +5,7 @@ const out=process.env.GAME_LAB_LAYOUT_OUTPUT||'/tmp/game-lab-layout-validation';
 (async()=>{
  const b=await chromium.launch({executablePath:process.env.GAME_LAB_CHROMIUM||'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});
  const errors=[],passed=[];const c=await b.newContext({viewport:{width:1440,height:1000}}),p=await c.newPage();p.on('pageerror',e=>errors.push(e.message));
- await p.goto(url+'?fresh&lvl=12&give&static');
+ await p.goto(url+'?fresh&lvl=12&give&static');await p.evaluate(()=>{WORLD_TRAVEL.remaining=0});
  const click=k=>p.locator(`[data-focus="nav-${k}"]`).click();
  async function check(n,f){await f();passed.push(n);console.log('PASS',n)}
  async function shot(n){await p.screenshot({path:path.join(out,n+'.png')})}
@@ -27,8 +27,8 @@ const out=process.env.GAME_LAB_LAYOUT_OUTPUT||'/tmp/game-lab-layout-validation';
  });
  await check('inventory classification preserves held piece and shows real linkage reasons',async()=>{
   await click('skills');await p.locator('[data-focus="inventory-active"]').click();await p.locator('[data-focus="active-FROST"]').click();const heldBefore=await p.evaluate(()=>JSON.stringify(held));await p.locator('[data-focus="inventory-cart"]').click();assert.equal(await p.evaluate(()=>JSON.stringify(held)),heldBefore);await p.keyboard.press('Escape');
-  await p.evaluate(()=>{G.lvl=30;G.board=GridLab.createBoard(6,6);GridLab.place(G.board,'active','PULSE',0,0);GridLab.place(G.board,'support','AREA',2,1);GridLab.place(G.board,'support','HASTE',0,4);recalc();renderModal()});
-  await p.locator('.ui-resolved details summary').click();assert(await p.getByText('相鄰技能的標籤不符',{exact:false}).isVisible());assert(await p.getByText('未與主動技能相鄰',{exact:false}).isVisible());await shot('12-linkage-reasons');
+  await p.evaluate(()=>{G.lvl=30;G.board=GridLab.createBoard();selSock=0;wireAssign('PULSE');wireAutoOne();const B=G.board,w=B.wires[0],tags=SKILLS.PULSE;const bad=Object.keys(SUPPS).find(k=>{const t=GridLab.createBoard();return GridLab.SUPPORTS[k].needs.length&&!GridLab.SUPPORTS[k].needs.some(n=>(GridLab.ACTIVES.PULSE.tags||[]).includes(n))});const onWire=w.cells.find(c=>!GridLab.isRock(c[0],c[1]));GridLab.place(B,'support',bad||'AREA',onWire[0],onWire[1]);const off=[1,2,3,4,5,6].flatMap(x=>[0,1,2,3,4,5,6,7].map(y=>[x,y])).find(c=>!GridLab.isRock(c[0],c[1])&&!GridLab.wireOf(B,c[0],c[1]));GridLab.place(B,'support','HASTE',off[0],off[1]);recalc();renderModal()});
+  await p.locator('.ui-resolved details summary').click();assert(await p.getByText('標籤不符',{exact:false}).isVisible());assert(await p.getByText('沒有線經過',{exact:false}).isVisible());await shot('12-linkage-reasons');
  });
  await check('map details do not consume, entry and explicit exit keep original rules',async()=>{
   await p.evaluate(()=>{UI_WORK.adventure='maps';G.maps=[{id:'layout-map',biome:4,lvl:8,mods:['elite','swarm','rich']}];openModal('maps')});const before=await p.evaluate(()=>JSON.stringify(G.maps));await p.locator('[data-focus="map-layout-map"]').click();assert.equal(await p.evaluate(()=>JSON.stringify(G.maps)),before);assert(await p.getByText('挑戰詞綴 2',{exact:true}).isVisible());await shot('13-map-details');

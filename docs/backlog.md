@@ -536,5 +536,6 @@ Alan 欣賞參考截圖的技能組裝思考，但不希望照搬；本輪僅發
 
 - [x] 技能頁拼圖整個換成電路板接線（0.33.0），見 docs/wire-board-design.md。
 - [ ] 手機真機驗證拖曳接線與吸附手感。
-- [ ] 改寫 test_ux_browser／test_grid_ui_browser 中仍指向拼圖的檢查。
+- [x] 瀏覽器測試改寫成接線板版本（test_ux_browser、test_layout_browser），新增 test_wire_browser；其餘瀏覽器測試的舊版本號斷言改為不綁版本。
+- [ ] test_gameplay_browser 的「查看待選內容」檢查與升級卡片暫停（0.32.0）衝突，原本就會失敗，待 Codex 或原型確認要刪還是恢復。
 - [ ] 配件階級、三合一、第二塊板、每日板面變化、技能串聯、電量。

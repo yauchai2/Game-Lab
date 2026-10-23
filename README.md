@@ -36,7 +36,7 @@
 
   然後開 `http://localhost:8000/`。
 - 重新打包單檔：`python3 tools/build.py`
-- 接線板邏輯測試：`node tools/test_grid.js`
+- 接線板邏輯測試：`node tools/test_grid.js`；瀏覽器測試：`node tools/test_wire_browser.cjs`（需先 `python3 -m http.server 8780`）
 - 離線結算回歸（不需瀏覽器）：`node tools/test_offline_return.cjs`
 - 多種子長時回訪：`node tools/probe_offline_returns.cjs /tmp/game-lab-offline-return.json`。直接執行正式模擬函式，驗證兩分鐘／六小時回訪、十二小時上限及城市單次出發；以四個工作執行緒運算，中斷後重跑同一輸出路徑可沿用已完成情境。結果不代表手機效能或真人長期體驗。
 
