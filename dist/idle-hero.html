@@ -835,6 +835,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.41.7', d:'2026-10-23', t:['撿取範圍放遠；掉落物改成慢慢飛向角色，距離愈遠飛得愈久，收益結算不變'] },
   { v:'0.41.6', d:'2026-10-23', t:['技能頁難度循序漸進：Lv1–3 只看到一個終點，電線自動接好，沒有色塊和工具；Lv4 起解鎖色塊與配件擺放；Lv9 起顯示完整的多終點接線玩法','說明文字會提示下一個終點在幾級解鎖'] },
   { v:'0.41.5', d:'2026-10-23', t:['接線板操作簡化：點終點直接跳出技能選單，選了就裝上並自動接好電線；點電線上的色塊直接跳出配件選單，選了就放上去；點已放的配件可以收回','修正終點格的文字與標籤重疊'] },
   { v:'0.41.4', d:'2026-10-23', t:['接線板改成和遊戲一致的深藍紫窗口色：深藍底、凹下去的格子，電線與起點、終點用亮色，主體和背景一眼分得開','裝了技能的終點仍保留顏色：粗色框、顏色標籤和底部色條；選取改成白色外框，不再和黃色提示閃光混淆','電線經過的空配件位會在線上留一個帶色環的小孔，看得出這格還能放配件'] },
@@ -1425,6 +1426,7 @@ function resolveOfflineChoices(summary){ if(!GAME_FEATURES.cardChoices)return;
 const xpNeed = L => Math.round(30 * Math.pow(1.32, L-1));
 function logLine(txt, col){ if (G.offline) return; if (typeof bossPush === 'function') bossPush(txt, col && col.length === 7 && col.toLowerCase() === '#2b2552' ? null : col, 'INFO'); G.log.unshift({ txt, col:col || '#2b2552' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
 function addFloat(x, y, z, txt, col, size=3.6, kind='event'){ if (G.offline) return; if(G.floats.length>=20)G.floats.shift(); G.floats.push({ x, y, z, txt, col, size, kind, t:0 }); }
+const PICKUP_RANGE = 12;   // 撿取範圍：收益在進入範圍時結算，吸附動畫只是視覺，距離愈遠飛得愈久
 function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
 
 /* ---------- save / load ---------- */
@@ -1505,7 +1507,7 @@ function dropGround(d){
   G.drops.push(d);
 }
 function collectNearby(dt){
-  for(const d of G.drops){d.t+=dt;if(!d.done&&d.t>=.35&&G.h.dead<=0&&Math.hypot(d.x-G.h.x,d.y-G.h.y)<=4){d.done=true;addFx({k:'pickup',x:d.x,y:d.y,x2:G.h.x,y2:G.h.y,col:d.kind==='gold'?'#e4c379':'#81cbd1',t:0,dur:.35});pickup(d);}}
+  for(const d of G.drops){d.t+=dt;if(!d.done&&d.t>=.35&&G.h.dead<=0&&Math.hypot(d.x-G.h.x,d.y-G.h.y)<=PICKUP_RANGE){d.done=true;addFx({k:'pickup',x:d.x,y:d.y,x2:G.h.x,y2:G.h.y,col:d.kind==='gold'?'#e4c379':'#81cbd1',t:0,dur:.35+Math.min(.65,Math.hypot(d.x-G.h.x,d.y-G.h.y)/PICKUP_RANGE*.65)});pickup(d);}}
   G.drops=G.drops.filter(d=>!d.done);
 }
 
@@ -2957,7 +2959,7 @@ function updateFx(){
   const sph=geo('fxs',()=>ico(1,1)),disc=geo('fxd',()=>new T3.CircleGeometry(1,20).rotateX(-Math.PI/2)),ring=geo('fxr',()=>new T3.RingGeometry(.83,1,24).rotateX(-Math.PI/2)),box=geo('fxf',()=>new T3.BoxGeometry(1,.25,1));
   const warnings=G.mons.filter(m=>!m.dead&&m.warning&&!(m.frozen>0)).map(m=>({k:'danger',...m.warning,t:1-m.warning.t/m.warning.duration,col:m.boss?'#c45b64':'#c87e48'}));
   for(const e of warnings.concat(G.fx)){const fade=1-e.t;
-    if(e.k==='pickup'){const x=tLerp(e.x,e.x2,ease(e.t)),y=tLerp(e.y,e.y2,ease(e.t));add(sph,e.col,1-e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,.8);continue;}
+    if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}
     if(e.k==='danger'){
       if(e.owner&&(e.owner.dead||!e.owner.warning||e.owner.frozen>0))continue;
       if(e.shape==='line'){const dx=e.x2-e.x,dy=e.y2-e.y,len=Math.hypot(dx,dy),o=add(box,e.col,.28,e.x+dx/2,e.y+dy/2,BZ+.45);o.scale.set(len,.3,e.radius*2);o.rotation.y=-Math.atan2(dy,dx);}
