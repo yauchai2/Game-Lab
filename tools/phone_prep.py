@@ -62,6 +62,9 @@ meta = json.load(open(os.path.join(assets, 'meta.json')))
 out = ['/* 由 tools/phone_prep.py 產生，請勿手改。 */', 'const PHONE_META = ' + json.dumps(meta) + ';', 'const PHONE_IMG = {']
 for k in ('front', 'back', 'side', 'slice'):
     out.append(f"  {k}: 'data:image/webp;base64,{base64.b64encode(open(os.path.join(assets, k + '.webp'), 'rb').read()).decode()}',")
-out.append('};\n')
+out.append('};')
+glb = os.path.join(assets, 'phone.glb')
+if os.path.exists(glb): out.append("const PHONE_GLB = '" + base64.b64encode(open(glb, 'rb').read()).decode() + "';")
+out.append('')
 open(os.path.join(root, 'src', 'game', 'phone-assets.js'), 'w').write('\n'.join(out))
 print('wrote src/game/phone-assets.js', meta)

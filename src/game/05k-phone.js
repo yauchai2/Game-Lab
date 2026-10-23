@@ -89,7 +89,95 @@ function phoneBuild(){
     </div></div></div></div></div>
    <div class="ph-hint">拖曳轉動 · 雙擊翻面 · 方向鍵換頁 · ✦ 放大螢幕</div></div>`;
 }
+
+/* ---- 真 3D 模型後端：three.js 繪製 GLB，螢幕與按鍵用 CSS3D 貼在模型表面（失敗時退回圖片版） ---- */
+const PHG = { model:null, K:1000 };
+const PHG_SCREEN = { c:[0.0025, 0.078, -0.6209], w:0.4053, h:0.5278 };            // 模型座標（公尺感單位）
+const PHG_KEYS = { c:[0.0006, 0.1, -0.4903], sx:0.00123, sz:0.001253 };            // 640×960 圖面座標 → 模型座標
+function phoneModelLoad(){
+  if (PHG.model) return PHG.model;
+  const bin = Uint8Array.from(atob(PHONE_GLB), c => c.charCodeAt(0)), buf = bin.buffer, dv = new DataView(buf);
+  if (dv.getUint32(0, true) !== 0x46546c67) throw new Error('bad glb');
+  const size = dv.getUint32(12, true), doc = JSON.parse(new TextDecoder().decode(bin.subarray(20, 20 + size))), start = 28 + size;
+  const W = { SCALAR:1, VEC2:2, VEC3:3 }, views = {}, view = i => views[i] || (views[i] = (v => new T3.InterleavedBuffer(new Float32Array(buf.slice(start + (v.byteOffset || 0), start + (v.byteOffset || 0) + v.byteLength)), v.byteStride / 4))(doc.bufferViews[i]));
+  const prim = doc.meshes[0].primitives[0], g = new T3.BufferGeometry();
+  for (const [f, t] of [['POSITION', 'position'], ['NORMAL', 'normal'], ['TEXCOORD_0', 'uv']]) { const a = doc.accessors[prim.attributes[f]]; g.setAttribute(t, new T3.InterleavedBufferAttribute(view(a.bufferView), W[a.type], (a.byteOffset || 0) / 4)); }
+  const ia = doc.accessors[prim.indices], iv = doc.bufferViews[ia.bufferView], off = start + (iv.byteOffset || 0) + (ia.byteOffset || 0);
+  g.setIndex(new T3.BufferAttribute(ia.componentType === 5125 ? new Uint32Array(buf.slice(off, off + ia.count * 4)) : new Uint16Array(buf.slice(off, off + ia.count * 2)), 1));
+  g.computeBoundingBox();
+  const tex = (idx, srgb) => {
+    const td = doc.textures[idx], im = doc.images[td.source ?? td.extensions.EXT_texture_webp.source], v = doc.bufferViews[im.bufferView];
+    const t = new T3.Texture(), img = new Image(); t.flipY = false; if (srgb) t.colorSpace = T3.SRGBColorSpace; t.minFilter = T3.LinearMipmapLinearFilter; t.anisotropy = 4;
+    img.onload = () => { t.image = img; t.needsUpdate = true; }; img.src = URL.createObjectURL(new Blob([bin.subarray(start + (v.byteOffset || 0), start + (v.byteOffset || 0) + v.byteLength)], { type:im.mimeType })); return t;
+  };
+  const md = doc.materials[0], mat = new T3.MeshStandardMaterial({ map:tex(md.pbrMetallicRoughness.baseColorTexture.index, true), normalMap:md.normalTexture ? tex(md.normalTexture.index, false) : null, roughness:.55, metalness:.08, side:T3.DoubleSide });
+  return PHG.model = { g, mat, c:g.boundingBox.getCenter(new T3.Vector3()) };
+}
+function phoneGLInit(root){
+  const M = phoneModelLoad(), cv = document.createElement('canvas'); cv.id = 'ph-gl';
+  const rd = new T3.WebGLRenderer({ canvas:cv, antialias:true, alpha:true }); rd.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); rd.outputColorSpace = T3.SRGBColorSpace;
+  const K = PHG.K, sc = new T3.Scene(), cam = new T3.PerspectiveCamera(30, 1, 10, 30000), pivot = new T3.Group(), mesh = new T3.Mesh(M.g, M.mat);
+  sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.1)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl); const rim = new T3.DirectionalLight(0x8fd0ff, 1.2); rim.position.set(2, .5, -1.5); sc.add(rim);
+  mesh.rotation.x = Math.PI / 2; mesh.scale.setScalar(K); mesh.position.set(-M.c.x * K, M.c.z * K, -M.c.y * K); pivot.add(mesh); sc.add(pivot);
+  const anchor = (c, sx, sy) => { const o = new T3.Object3D(); o.matrixAutoUpdate = true; o.position.set(c[0], c[1], c[2]); o.quaternion.setFromRotationMatrix(new T3.Matrix4().makeBasis(new T3.Vector3(1, 0, 0), new T3.Vector3(0, 0, -1), new T3.Vector3(0, 1, 0))); o.scale.set(sx, sy, 1); mesh.add(o); return o; };
+  const sA = anchor(PHG_SCREEN.c, PHG_SCREEN.w / PH_SCREEN.w, PHG_SCREEN.h / PH_SCREEN.h), kA = anchor(PHG_KEYS.c, PHG_KEYS.sx, PHG_KEYS.sz);
+  root.querySelector('#ph-gl-slot').replaceWith(cv);
+  PH.gl = { rd, sc, cam, pivot, mesh, sA, kA, camR:3000, tx:0, ty:0, tgtR:3000, tgtX:0, tgtY:0, scrW:0, scrH:0 };
+  phoneFitGL();
+}
+function phoneFitGL(){
+  const G3 = PH.gl; if (!G3) return; const w = innerWidth, h = innerHeight, K = PHG.K, th = Math.tan(G3.cam.fov * Math.PI / 360);
+  G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
+  const asp = w / h, rN = Math.max(1.16 * K / (2 * th * .94), .72 * K / (2 * th * asp * .94)), rZ = Math.max(PHG_SCREEN.h * K * 1.14 / (2 * th), PHG_SCREEN.w * K / (2 * th * asp * .98));
+  G3.pivot.updateMatrixWorld(true); const sp = new T3.Vector3(); G3.sA.getWorldPosition(sp);
+  G3.tgtR = PH.zoom ? rZ : rN; G3.tgtX = PH.zoom ? sp.x : 0; G3.tgtY = PH.zoom ? sp.y : 0;
+  document.getElementById('ph-root')?.classList.toggle('zoom', PH.zoom);
+}
+const phE = v => Math.abs(v) < 1e-10 ? 0 : v;
+function phCamCss(m){ const e = m.elements; return `matrix3d(${phE(e[0])},${phE(-e[1])},${phE(e[2])},${phE(e[3])},${phE(e[4])},${phE(-e[5])},${phE(e[6])},${phE(e[7])},${phE(e[8])},${phE(-e[9])},${phE(e[10])},${phE(e[11])},${phE(e[12])},${phE(-e[13])},${phE(e[14])},${phE(e[15])})`; }
+function phObjCss(m){ const e = m.elements; return `translate(-50%,-50%) matrix3d(${phE(e[0])},${phE(e[1])},${phE(e[2])},${phE(e[3])},${phE(-e[4])},${phE(-e[5])},${phE(-e[6])},${phE(-e[7])},${phE(e[8])},${phE(e[9])},${phE(e[10])},${phE(e[11])},${phE(e[12])},${phE(e[13])},${phE(e[14])},${phE(e[15])})`; }
+const phEase = t => 1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3), phLerp = (a, b, t) => a + (b - a) * t;
+const PHG_FLY = [[0, -2.5, -.9, -220, 40], [.55, .18, .03, -24, -8], [.78, -.03, -.006, 8, 3], [1, 0, 0, 0, 0]];   // 進場關鍵格：t, z, y（以 K 為單位）, 繞 Y 角度, 繞 X 角度
+function phFly(t){   // 0→1 進場；回傳 [z, y, ry, rx]
+  for (let i = 1; i < PHG_FLY.length; i++) if (t <= PHG_FLY[i][0]) { const a = PHG_FLY[i - 1], b = PHG_FLY[i], u = phEase((t - a[0]) / (b[0] - a[0])); return [1, 2, 3, 4].map(k => phLerp(a[k], b[k], u)); }
+  return [0, 0, 0, 0];
+}
+function phoneLoopGL(now){
+  const G3 = PH.gl; if (!PH.open || !G3) return;
+  if (G3.scrW !== innerWidth || G3.scrH !== innerHeight) phoneFitGL();
+  const K = PHG.K, [rx, ry] = phoneTilt(now);
+  let fz = 0, fy = 0, fry = 0, frx = 0;
+  if (PH.closing) { const u = Math.min(1, (now - PH.closeAt) / 500), e = u * u * u; fz = -2.2 * e; fy = .8 * e; fry = 200 * e; frx = -30 * e; }
+  else { const t = (now - PH.t0) / 1150; if (t < 1) [fz, fy, fry, frx] = phFly(t); }
+  G3.pivot.position.set(0, fy * K, fz * K); G3.pivot.rotation.set((rx + frx) * Math.PI / 180, (ry + fry) * Math.PI / 180, 0, 'YXZ');
+  G3.camR += (G3.tgtR - G3.camR) * .12; G3.tx += (G3.tgtX - G3.tx) * .12; G3.ty += (G3.tgtY - G3.ty) * .12;
+  G3.cam.position.set(G3.tx, G3.ty, G3.camR); G3.cam.updateMatrixWorld(); G3.pivot.updateMatrixWorld(true);
+  G3.rd.render(G3.sc, G3.cam);
+  const w = innerWidth, h = innerHeight, fov = .5 / Math.tan(G3.cam.fov * Math.PI / 360) * h, css = document.getElementById('ph-css'), cel = document.getElementById('ph-camel');
+  if (css && cel) {
+    css.style.perspective = fov + 'px'; cel.style.width = w + 'px'; cel.style.height = h + 'px';
+    cel.style.transform = `translateZ(${fov}px) ${phCamCss(G3.cam.matrixWorldInverse)} translate(${w / 2}px,${h / 2}px)`;
+    const sc = document.getElementById('ph-screen'), ks = document.getElementById('ph-keys');
+    G3.sA.updateMatrixWorld(true); G3.kA.updateMatrixWorld(true);
+    if (sc) sc.style.transform = phObjCss(G3.sA.matrixWorld); if (ks) ks.style.transform = phObjCss(G3.kA.matrixWorld);
+    const n = new T3.Vector3(0, 0, 1).transformDirection(G3.sA.matrixWorld), p = new T3.Vector3().setFromMatrixPosition(G3.sA.matrixWorld), v = G3.cam.position.clone().sub(p).normalize(), d = n.dot(v);
+    css.style.opacity = d < .12 ? 0 : Math.min(1, (d - .12) / .25); css.style.pointerEvents = d < .12 ? 'none' : '';
+  }
+  PH.raf = requestAnimationFrame(phoneLoopGL);
+}
+function phoneBuildGL(){
+  return `<div class="ph-root" id="ph-root" role="dialog" aria-modal="true" aria-label="角色手機">
+   <div class="ph-bg"><div class="ph-stars"></div><div class="ph-grid"></div><div class="ph-mq"><span>★ 歡迎來到角色手機 ★ BEST VIEWED WITH ANY BROWSER ★ 請勿關閉電源 ★ UNDER CONSTRUCTION ★ 拖曳可以轉動手機 ★ 按 ESC 離開 ★</span></div></div>
+   <div id="ph-gl-slot"></div>
+   <div class="ph-css" id="ph-css"><div class="ph-camel" id="ph-camel">
+    <div class="ph-screen ph-glel" id="ph-screen" style="width:${PH_SCREEN.w}px;height:${PH_SCREEN.h}px"><div class="ph-crt" id="ph-crt"></div></div>
+    <div class="ph-keys ph-glel" id="ph-keys" style="width:${PHONE_META.w}px;height:${PHONE_META.h}px">${PH_KEYS.map(k => `<button class="ph-key" data-act="${k.act}" aria-label="${k.tip}" data-tip="${k.tip}" style="left:${k.x - k.w / 2}px;top:${k.y - k.h / 2}px;width:${k.w}px;height:${k.h}px"></button>`).join('')}</div>
+   </div></div>
+   <button class="ph-close" data-act="close" aria-label="關閉手機">× 關閉</button>
+   <div class="ph-hint">拖曳轉動 · 雙擊翻面 · 方向鍵換頁 · ✦ 放大螢幕</div></div>`;
+}
 function phoneFit(){
+  if (PH.gl) return phoneFitGL();
   const root = document.getElementById('ph-root'); if (!root) return;
   const vw = innerWidth, vh = innerHeight, M = PHONE_META;
   const sN = Math.min(vw * .94 / (M.body[1] - M.body[0]), vh * .92 / 830, 1.5), sZ = Math.min(vw * .98 / PH_SCREEN.w, vh * .96 / (PH_SCREEN.h + 60), 3);
@@ -137,43 +225,48 @@ function phoneDown(ev){
   PH.drag = { x:ev.clientX, y:ev.clientY, ox:PH.ry, oy:PH.rx, moved:0 }; ev.currentTarget.setPointerCapture?.(ev.pointerId);
 }
 function phoneMove(ev){
-  if (PH.drag) { PH.drag.moved = Math.max(PH.drag.moved, Math.abs(ev.clientX - PH.drag.x) + Math.abs(ev.clientY - PH.drag.y)); PH.ry = Math.max(PH.face - 68, Math.min(PH.face + 68, PH.drag.ox + (ev.clientX - PH.drag.x) * .45)); PH.rx = Math.max(-35, Math.min(35, PH.drag.oy - (ev.clientY - PH.drag.y) * .3)); }
+  if (PH.drag) { PH.drag.moved = Math.max(PH.drag.moved, Math.abs(ev.clientX - PH.drag.x) + Math.abs(ev.clientY - PH.drag.y)); PH.ry = PH.drag.ox + (ev.clientX - PH.drag.x) * .45; if (!PH.gl) PH.ry = Math.max(PH.face - 68, Math.min(PH.face + 68, PH.ry)); PH.rx = Math.max(-45, Math.min(45, PH.drag.oy - (ev.clientY - PH.drag.y) * .3)); }
   else if (!PH.zoom && ev.pointerType === 'mouse') { PH.ty = (ev.clientX / innerWidth - .5) * 14; PH.tx = -(ev.clientY / innerHeight - .5) * 8; }
 }
 function phoneUp(){ if (PH.drag) { PH.drag = null; PH.release = performance.now(); } }
 function phoneFlip(ev){ if (ev.target.closest('.ph-screen,.ph-key,.ph-close')) return; PH.face = PH.face ? 0 : 180; PH.flipping = true; PH.drag = null; phSfx('ph_zoom'); }
-function phoneLoop(now){
-  if (!PH.open) return;
-  const el = document.getElementById('ph-tilt'); if (!el) return;
-  if (!PH.drag) {   // 放開後緩緩回正，再輕輕晃動
+function phoneTilt(now){
+  if (!PH.drag) {   // 放開後緩緩回正（或翻面），再輕輕晃動
     const settle = PH.release ? Math.min(1, (now - PH.release) / 900) : 1;
     PH.ry += (PH.face - PH.ry) * (PH.flipping ? .1 : .06 * settle); PH.rx *= 1 - .06 * settle; if (PH.flipping && Math.abs(PH.face - PH.ry) < 1) PH.flipping = false;
   }
   const sway = PH.zoom ? 0 : 1, t = (now - PH.t0) / 1000;
-  const ry = PH.ry + PH.ty * sway + Math.sin(t * .9) * 4 * sway, rx = PH.rx + PH.tx * sway + Math.sin(t * .7) * 2 * sway;
+  return [PH.rx + PH.tx * sway + Math.sin(t * .7) * 2 * sway, PH.ry + PH.ty * sway + Math.sin(t * .9) * 4 * sway];
+}
+function phoneLoop(now){
+  if (!PH.open) return;
+  const el = document.getElementById('ph-tilt'); if (!el) return;
+  const [rx, ry] = phoneTilt(now);
   el.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
   PH.raf = requestAnimationFrame(phoneLoop);
 }
 function phoneOpen(){
   if (PH.open || typeof PHONE_IMG === 'undefined') return;
   PH.open = true; PH.closing = false; PH.tab = 0; PH.zoom = false; PH.rx = PH.ry = PH.tx = PH.ty = 0; PH.face = 0; PH.flipping = false; PH.release = 0; PH.t0 = performance.now();
-  const host = document.createElement('div'); host.id = 'ph-host'; host.innerHTML = phoneBuild(); document.body.appendChild(host);
+  const host = document.createElement('div'); host.id = 'ph-host'; PH.gl = null;
+  let glOk = false; if (typeof PHONE_GLB !== 'undefined' && typeof T3 !== 'undefined') { try { host.innerHTML = phoneBuildGL(); document.body.appendChild(host); phoneGLInit(host.querySelector('#ph-root')); glOk = true; } catch (e) { PH.gl = null; host.remove(); } }
+  if (!glOk) { host.innerHTML = phoneBuild(); document.body.appendChild(host); }
   const root = document.getElementById('ph-root');
   root.addEventListener('click', phonePress); root.addEventListener('pointerdown', phoneDown); root.addEventListener('pointermove', phoneMove); root.addEventListener('pointerup', phoneUp); root.addEventListener('dblclick', phoneFlip); root.addEventListener('pointercancel', phoneUp);
   document.addEventListener('keydown', phoneKey, true); addEventListener('resize', phoneFit);
-  phoneFit(); phoneRender(false); document.getElementById('ph-enter').classList.add('in');
+  phoneFit(); phoneRender(false); if (!PH.gl) document.getElementById('ph-enter').classList.add('in');
   setTimeout(() => { if (PH.open) { document.getElementById('ph-crt')?.classList.add('on'); phSfx('ph_on'); } }, 900);
   phSfx('ph_open');
-  PH.timer = setInterval(phoneRefresh, 1000); PH.raf = requestAnimationFrame(phoneLoop);
+  PH.timer = setInterval(phoneRefresh, 1000); PH.raf = requestAnimationFrame(PH.gl ? phoneLoopGL : phoneLoop);
   root.querySelector('.ph-close')?.focus({ preventScroll:true });
 }
 function phoneClose(instant){
   if (!PH.open || PH.closing) return;
-  const done = () => { PH.open = false; clearInterval(PH.timer); cancelAnimationFrame(PH.raf); document.removeEventListener('keydown', phoneKey, true); removeEventListener('resize', phoneFit); document.getElementById('ph-host')?.remove(); };
+  const done = () => { PH.open = false; if (PH.gl) { PH.gl.rd.dispose(); PH.gl.rd.forceContextLoss?.(); PH.gl = null; } clearInterval(PH.timer); cancelAnimationFrame(PH.raf); document.removeEventListener('keydown', phoneKey, true); removeEventListener('resize', phoneFit); document.getElementById('ph-host')?.remove(); };
   PH.closing = true;
   if (instant === true) { done(); return; }
   phSfx('ph_off');
-  document.getElementById('ph-crt')?.classList.remove('on'); const en = document.getElementById('ph-enter'); en.classList.remove('in'); en.classList.add('out');
+  document.getElementById('ph-crt')?.classList.remove('on'); PH.closeAt = performance.now(); const en = document.getElementById('ph-enter'); if (en) { en.classList.remove('in'); en.classList.add('out'); }
   document.getElementById('ph-root').classList.add('leaving');
   setTimeout(done, 520);
 }
@@ -234,6 +327,9 @@ function phoneButtonHtml(){
 .ph-open-txt small{font:12px/1.3 "Cubic 11",system-ui!important;color:#d8e6ff;animation:phBlink 1.1s steps(2) infinite}@keyframes phBlink{50%{opacity:.45}}
 .ph-new{position:absolute;right:6px;top:-12px;z-index:2;padding:7px 8px;font:700 12px "Cubic 11",system-ui;font-style:normal;color:#d00;background:#ffe45c;clip-path:polygon(50% 0,61% 20%,82% 8%,80% 32%,100% 38%,84% 55%,96% 78%,72% 74%,64% 100%,50% 82%,36% 100%,28% 74%,4% 78%,16% 55%,0 38%,20% 32%,18% 8%,39% 20%);animation:phNew .9s steps(2) infinite;transform:rotate(12deg)}
 @keyframes phNew{50%{background:#fff;color:#06f}}
+.ph-css{position:absolute;inset:0;perspective:1000px;pointer-events:none;overflow:hidden}.ph-camel{position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none}
+.ph-glel{position:absolute;left:0;top:0;pointer-events:auto;transform-origin:50% 50%}.ph-keys.ph-glel{pointer-events:none}.ph-keys .ph-key{pointer-events:auto;transform:none}
+#ph-gl{position:absolute;inset:0;width:100%;height:100%;display:block}
 /* 螢幕內：舊網路時代網頁風 */
 .phs{position:absolute;inset:0;font:15px/1.4 "Cubic 11",system-ui,sans-serif;color:#d8efff;background:#06214a;display:flex;flex-direction:column}
 .phs-win{display:flex;flex-direction:column;height:100%}
