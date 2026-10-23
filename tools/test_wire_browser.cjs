@@ -8,10 +8,10 @@ await p.goto(url+'?fresh&static');await p.waitForTimeout(800);
 await p.evaluate(()=>{try{hideOverlay()}catch(e){};WORLD_TRAVEL.remaining=0;G.lvl=16;for(const k of Object.keys(SUPPS))G.gems[k]=3;recalc();openModal('skills');ui.render()});
 const cell=(x,y)=>p.locator(`.pz.wb [data-x="${x}"][data-y="${y}"]`),state=()=>p.evaluate(()=>({slots:G.slots.filter(Boolean).length,wires:G.board.wires.map(w=>[w.sock,w.cells.length,GridLab.connected(G.board,w.sock)])}));
 // 1 點插槽、選技能、清除接線
-const S=await p.evaluate(()=>GridLab.SOCKS[1]);await cell(S[0],S[1]).click();await p.locator('.wsel .wch').nth(1).click();
-assert((await state()).slots>=2);
-await p.locator('.wsel button',{hasText:'清除接線'}).click();assert.equal((await state()).wires.some(w=>w[0]===1),false);
-console.log('PASS select socket, assign skill, clear wire');
+const S=await p.evaluate(()=>GridLab.SOCKS[1]);await cell(S[0],S[1]).click();await p.locator('.wpick .wpi').nth(1).click();
+{const st1=await state();assert(st1.slots>=2);assert(st1.wires.some(w=>w[0]===1&&w[2]),'picking a skill auto-wires it');}
+await p.evaluate(()=>{selSock=1;wireClear();selSock=-1;renderModal()});assert.equal((await state()).wires.some(w=>w[0]===1),false);
+console.log('PASS tap terminal, pick skill, auto wire, clear wire');
 // 2 拖曳接線：從同色電源沿著路徑拉到插槽
 const box=async(x,y)=>cell(x,y).boundingBox(),sock=1;
 await p.evaluate(()=>{selSock=-1;uxCancelPiece();renderModal()});
@@ -28,6 +28,8 @@ const pad=await p.evaluate(s=>GridLab.getWire(G.board,s).cells.find(c=>GridLab.i
 const before=await p.evaluate(()=>({d:G.st.dps,n:gemFree('HEAVY')}));
 await p.locator('[data-focus="support-HEAVY"]').click();await cell(pad[0],pad[1]).click();
 const after=await p.evaluate(()=>({d:G.st.dps,n:gemFree('HEAVY')}));assert.equal(after.n,before.n-1);assert(after.d>=before.d);
+{const pad2=await p.evaluate(()=>{const B=G.board;for(const w of B.wires)for(const c of w.cells)if(GridLab.isPad(c[0],c[1])&&!B.pieces.some(q=>q.kind==='support'&&q.x===c[0]&&q.y===c[1]))return c;});
+ await p.evaluate(()=>uxCancelPiece());await cell(pad2[0],pad2[1]).click();const n0=await p.evaluate(()=>G.board.pieces.length);await p.locator('.wpick .wpi:not([disabled])').first().click();assert.equal(await p.evaluate(()=>G.board.pieces.length),n0+1);assert.equal(await p.locator('#wpick').count(),0);}
 console.log('PASS place a support on a pad of the wire');
 // 4 自動配置與復原
 const pre=await p.evaluate(()=>G.board.pieces.length);await p.evaluate(()=>wireAuto());const mid=await p.evaluate(()=>G.board.pieces.length);assert(mid>=pre);await p.evaluate(()=>wireUndo());assert.equal(await p.evaluate(()=>G.board.pieces.length),pre);
