@@ -275,7 +275,7 @@ function phoneMini(){
   return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span></span>`;
 }
 function phoneButtonHtml(){
-  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
+  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" aria-label="開啟角色手機" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
 }
 
 (function(){ const s = document.createElement('style'); s.textContent = `
@@ -315,8 +315,8 @@ function phoneButtonHtml(){
 .ph-open:hover{filter:brightness(1.12)}.ph-open:active{transform:translateY(2px)}
 .ph-mini{position:relative;flex:none;width:104px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
 .ph-mini-s{position:absolute;left:52px;top:76px;width:0;height:0;transform-style:preserve-3d;transform:scale(.118)}
-.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;animation:phMiniSpin 12s ease-in-out infinite}
-@keyframes phMiniSpin{0%,100%{transform:rotateY(-30deg) rotateX(4deg)}50%{transform:rotateY(30deg) rotateX(4deg)}}
+.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;transform:rotateX(4deg) rotateY(-24deg);animation:phMiniSpin 48s linear infinite}
+@keyframes phMiniSpin{from{transform:rotateX(4deg) rotateY(-24deg)}to{transform:rotateX(4deg) rotateY(336deg)}}
 
 .ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
 @keyframes phSpk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
