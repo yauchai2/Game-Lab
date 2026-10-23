@@ -791,7 +791,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  { v:'0.40.0', d:'2026-10-23', t:['新增「排行榜」（更多 → 排行榜）：自動記下最深層數與無限之塔最高層，連同當時的完整構築','可以隨時記錄目前構築，點開能看到技能、配件接線、裝備與遺物','構築可以複製成構築碼傳給朋友，貼上就能觀摩對方怎麼砌','目前只存在這台瀏覽器，全球榜之後開放'] },
+  { v:'0.40.0', d:'2026-10-23', t:['新增「排行榜」（更多 → 排行榜），先放了幾筆標示「示範」的假排名讓你看版面：自動記下最深層數與無限之塔最高層，連同當時的完整構築','可以隨時記錄目前構築，點開能看到技能、配件接線、裝備與遺物','構築可以複製成構築碼傳給朋友，貼上就能觀摩對方怎麼砌','目前只存在這台瀏覽器，全球榜之後開放'] },
   { v:'0.39.25', d:'2026-10-23', t:['角色頁的小手機改成等距視角的低解像度 3D 模型，慢速自轉，不再有誇張的透視'] },
   { v:'0.39.24', d:'2026-10-23', t:['角色頁只保留一個「角色與裝扮」入口','修正：還沒拾取的掉落物不再飄到角色頭上打轉，會留在原地等拾取','「更多」選單的分組與入口卡片改成藍紫窗口風：標題列、淡紫卡片與硬陰影','編年史入口改為檸檬黃卡片'] },
   { v:'0.39.23', d:'2026-10-23', t:['技能頁：配件可以直接從庫存拖到接線板格子，技能可以拖到右邊插槽（手機長按後拖曳）','強化格改成低調的淡灰「×1.4」字樣，不再是醒目的金色圓點'] },
@@ -6181,6 +6181,37 @@ function rankClean(o){
   }
   return r;
 }
+
+/* 示範排名：讓榜單一開始就有東西可以看。不是真人，不存檔、不能刪、不會上傳；有真實紀錄後會依分數混排 */
+function rankDemoBoard(rows){
+  const pieces = [], wires = [];
+  rows.forEach(([skill, sup], i) => { const y = GridLab.SOCKS[i][1]; pieces.push({ kind:'active', key:skill, x:GridLab.W - 1, y }); sup.forEach((k, j) => pieces.push({ kind:'support', key:k, x:1 + j, y })); wires.push({ sock:i, cells:[1, 2, 3, 4, 5, 6].map(x => [x, y]) }); });
+  return { pieces, wires };
+}
+function rankDemos(){
+  if (RANK.demos) return RANK.demos;
+  const D = [
+    ['depth', 41, '藍天99', 'frost', 58, 21400, 6.8, [['FROST', ['HEAVY', 'COOL', 'FOCUS']], ['METEOR', ['AREA', 'HASTE']], ['PULSE', ['CRITS']]], ['FAN', 'LENS', 'SUN'], ['回音光劍', '反光風衣', '撥號連線']],
+    ['depth', 36, '電車男', 'volt', 52, 15800, 14.2, [['CHAIN', ['FORK', 'HEAVY', 'CRITS']], ['FLICKER', ['HASTE', 'LEECH']]], ['LENS', 'CALC'], ['脈衝短劍', '防水外套', '傳呼機']],
+    ['depth', 29, 'MilkTea', 'beep', 47, 9300, 9.1, [['FIRE', ['HEAVY', 'TWIN']], ['BEAM', ['FOCUS', 'CRITS']], ['MAGNET', ['COOL']]], ['CHARM', 'DRINK'], ['新手短劍', '街頭外套', '耳機']],
+    ['depth', 22, '阿豪', 'street', 41, 5200, 5.0, [['FIRE', ['HEAVY']], ['SPAM', ['HASTE']]], ['FAN'], ['新手短劍', '街頭外套', '耳機']],
+    ['depth', 14, 'NeoTokyo', 'street', 33, 2100, 6.5, [['FLICKER', ['HASTE']]], ['PIG'], ['新手短劍', '街頭外套', '耳機']],
+    ['tower', 64, 'Zero_Cool', 'volt', 55, 18600, 11.3, [['CHAIN', ['FORK', 'HEAVY', 'CRITS']], ['PULSE', ['AREA', 'COOL']], ['BEAM', ['FOCUS']]], ['LENS', 'SUN', 'CALC'], ['回音光劍', '防水外套', '撥號連線']],
+    ['tower', 48, '小丸子', 'frost', 49, 12100, 4.7, [['FROST', ['HEAVY', 'COOL']], ['METEOR', ['AREA', 'HASTE']]], ['FAN', 'LUCK'], ['脈衝短劍', '反光風衣', '耳機']],
+    ['tower', 31, 'SilverFox', 'beep', 44, 7000, 8.8, [['FIRE', ['TWIN', 'HEAVY']], ['FLICKER', ['LEECH']]], ['CHARM'], ['新手短劍', '街頭外套', '傳呼機']],
+    ['tower', 17, '路人乙', 'street', 36, 3000, 5.2, [['SPAM', ['HASTE']]], [], ['新手短劍', '街頭外套', '耳機']],
+    ['shared', 0, '示範：範圍清場', 'frost', 50, 14000, 6, [['METEOR', ['AREA', 'HEAVY', 'COOL']], ['PULSE', ['AREA', 'HASTE']], ['FROST', ['FOCUS']]], ['FAN', 'SUN'], ['回音光劍', '反光風衣', '撥號連線']],
+    ['shared', 0, '示範：單體爆發', 'volt', 50, 17000, 18, [['BEAM', ['FOCUS', 'CRITS', 'HEAVY']], ['CHAIN', ['CRITS']]], ['LENS', 'CALC'], ['脈衝短劍', '防水外套', '傳呼機']],
+  ];
+  RANK.demos = D.map(([cat, score, name, ch, lvl, dps, crit, rows, relics, eqn], i) => {
+    const r = rankClean({ id:'demo' + i, cat, score, name, char:ch, lvl, t:Date.UTC(2026, 9, 1 + i), ver:'示範', dps, life:Math.round(dps / 18), crit, pass:Math.round(lvl * 1.6), relics,
+      depth:cat === 'depth' ? score : 18 + i, tower:cat === 'tower' ? score : 0, board:rankDemoBoard(rows),
+      equip:Object.keys(SLOTN).map((slot, k) => ({ slot, name:eqn[k], r:Math.min(3, 1 + (i < 3 ? 2 : i < 7 ? 1 : 0)), il:Math.max(1, lvl - 2 - k), lines:[] })) });
+    r.demo = true; return r;
+  });
+  return RANK.demos;
+}
+const rankAll = () => RANK.recs.concat(rankDemos());
 function rankLoad(){
   try { const o = JSON.parse(localStorage.getItem(RANK_KEY) || 'null'); if (o && Array.isArray(o.recs)) RANK.recs = o.recs.map(rankClean).filter(Boolean).slice(0, RANK_MAX); } catch (e) { RANK.recs = []; }
 }
@@ -6240,31 +6271,31 @@ function rankDetail(r){
     const sock = GridLab.sockAtY(p.y), w = r.board.wires.find(x => x.sock === sock), sup = w ? w.cells.map(c => r.board.pieces.find(q => q.kind === 'support' && q.x === c[0] && q.y === c[1])).filter(Boolean) : [];
     return `<li>${sico(p.key, 20)}<b>${uxEsc(SKILLS[p.key].n)}</b><span>${sup.length ? sup.map(s => uxEsc(SUPPS[s.key].n)).join('、') : '沒有配件'}</span></li>`;
   }).join('') || '<li>沒有技能紀錄</li>';
-  const code = rankCode(r), pic = icon3dPortraitUrl(r.char);
+  const code = rankCode(r), del = r.demo ? '' : `<button class="mb" onclick="rankDel('${r.id}')">刪除這筆</button>`, pic = icon3dPortraitUrl(r.char);
   return `<section class="rk-detail"><button class="mb" onclick="rankOpen(null)">返回排行榜</button>
-   <div class="ui-section"><h3>構築檔案</h3><div class="rk-head">${pic ? `<img class="rk-pic" alt="" src="${pic}">` : ''}<div class="chr-data"><p><span>NAME</span><b>${uxEsc(r.name)}</b></p><p><span>LV</span><b>${r.lvl}　${uxEsc(CHARS[r.char].n)}</b></p><p><span>DEPTH</span><b>${r.depth}</b></p><p><span>TOWER</span><b>${r.tower}</b></p><p><span>DPS</span><b>${tFmt(r.dps)}</b></p><p><span>DATE</span><b>${rankDate(r.t)}　v${uxEsc(r.ver)}</b></p></div></div></div>
+   <div class="ui-section"><h3>構築檔案</h3><div class="rk-head">${pic ? `<img class="rk-pic" alt="" src="${pic}">` : ''}<div class="chr-data"><p><span>NAME</span><b>${uxEsc(r.name)}</b></p><p><span>LV</span><b>${r.lvl}　${uxEsc(CHARS[r.char].n)}</b></p><p><span>DEPTH</span><b>${r.depth}</b></p><p><span>TOWER</span><b>${r.tower}</b></p><p><span>DPS</span><b>${tFmt(r.dps)}</b></p><p><span>DATE</span><b>${rankDate(r.t)}${r.demo ? '　示範資料' : '　v' + uxEsc(r.ver)}</b></p></div></div></div>
    <div class="ui-section"><h3>技能與配件</h3><ul class="rk-list">${sk}</ul>${rankMini(r.board)}</div>
    <div class="ui-section"><h3>裝備</h3><ul class="rk-eq">${eq}</ul></div>
    <div class="ui-section"><h3>遺物與天賦</h3><p>${r.relics.length ? r.relics.map(id => uxEsc(RELICS[id].n)).join('、') : '沒有遺物'}　天賦 ${r.pass} 點</p></div>
-   <div class="ui-section"><h3>構築碼</h3><p>複製下面的碼傳給朋友，對方在「收到的構築」貼上就能看到這個構築。</p><textarea class="rk-code" readonly rows="3" onclick="this.select()">${code}</textarea><div class="uxactions"><button class="mb pri" onclick="rankCopy('${r.id}')">複製構築碼</button><button class="mb" onclick="rankDel('${r.id}')">刪除這筆</button></div></div></section>`;
+   <div class="ui-section"><h3>構築碼</h3><p>複製下面的碼傳給朋友，對方在「收到的構築」貼上就能看到這個構築。</p><textarea class="rk-code" readonly rows="3" onclick="this.select()">${code}</textarea><div class="uxactions"><button class="mb pri" onclick="rankCopy('${r.id}')">複製構築碼</button>${del}</div></div></section>`;
 }
 function rankHtml(){
-  const open = RANK.recs.find(r => r.id === RANK_UI.open); if (open) return rankDetail(open);
+  const open = rankAll().find(r => r.id === RANK_UI.open); if (open) return rankDetail(open);
   const cat = RANK_UI.cat, seg = `<div class="ui-segments" role="group" aria-label="排行榜分類">${RANK_CATS.map(([k, n]) => `<button aria-pressed="${cat === k}" onclick="rankCat('${k}')">${n}</button>`).join('')}</div>`;
-  const recs = RANK.recs.filter(r => r.cat === cat).sort((a, b) => cat === 'depth' || cat === 'tower' ? b.score - a.score : b.t - a.t);
+  const recs = rankAll().filter(r => r.cat === cat).sort((a, b) => cat === 'depth' || cat === 'tower' ? b.score - a.score : b.t - a.t);
   const unit = cat === 'tower' ? '層' : cat === 'depth' ? '層' : '';
-  const rows = recs.map((r, i) => { const pic = icon3dPortraitUrl(r.char); return `<button class="rk-row" onclick="rankOpen('${r.id}')"><b class="rk-no">${cat === 'depth' || cat === 'tower' ? i + 1 : '•'}</b>${pic ? `<img alt="" src="${pic}">` : '<span class="rk-nopic"></span>'}<span class="rk-who"><b>${uxEsc(r.name)}</b><small>Lv.${r.lvl} · ${rankDate(r.t)}</small></span><span class="rk-score">${cat === 'depth' || cat === 'tower' ? r.score + unit : tFmt(r.dps)}</span></button>`; }).join('');
+  const rows = recs.map((r, i) => { const pic = icon3dPortraitUrl(r.char); return `<button class="rk-row" onclick="rankOpen('${r.id}')"><b class="rk-no">${cat === 'depth' || cat === 'tower' ? i + 1 : '•'}</b>${pic ? `<img alt="" src="${pic}">` : '<span class="rk-nopic"></span>'}<span class="rk-who"><b>${uxEsc(r.name)}${r.demo ? '<i class="rk-demo">示範</i>' : ''}</b><small>Lv.${r.lvl} · ${rankDate(r.t)}</small></span><span class="rk-score">${cat === 'depth' || cat === 'tower' ? r.score + unit : tFmt(r.dps)}</span></button>`; }).join('');
   const hint = { depth:'每次刷新最深層數，會自動記下當時的構築。', tower:'每次刷新無限之塔最高層，會自動記下當時的構築。', mine:'按下面的按鈕，把目前的構築存起來。', shared:'貼上朋友的構築碼，就能看到對方怎麼砌。' }[cat];
   const empty = `<div class="ui-grid-empty"><b>還沒有紀錄</b><small>${hint}</small></div>`;
   const tools = cat === 'mine' ? `<button class="mb pri" onclick="rankMine()">記錄目前構築</button>` : cat === 'shared' ? `<textarea class="rk-code" id="rk-in" rows="3" placeholder="在這裡貼上構築碼（IHB1:…）" oninput="RANK_UI.code=this.value">${uxEsc(RANK_UI.code)}</textarea><button class="mb pri" onclick="rankPaste()">加入構築</button>` : '';
-  return `${seg}<section class="ui-section"><h3>${RANK_CATS.find(c => c[0] === cat)[1]}</h3><p class="rk-note">只存在這台瀏覽器。全球榜之後開放，可以看到其他玩家的構築。</p><div class="rk-rows">${rows || empty}</div>${tools}</section>`;
+  return `${seg}<section class="ui-section"><h3>${RANK_CATS.find(c => c[0] === cat)[1]}</h3><p class="rk-note">只存在這台瀏覽器。全球榜之後開放，可以看到其他玩家的構築。標示「示範」的是假資料，只用來看版面。</p><div class="rk-rows">${rows || empty}</div>${tools}</section>`;
 }
 function rankCat(k){ RANK_UI.cat = k; RANK_UI.open = null; renderModal(true); }
 function rankOpen(id){ RANK_UI.open = id; renderModal(true); }
 function rankMine(){ rankAdd(rankSnap('mine', 0)); renderModal(); uxAnnounce('已記錄目前構築'); }
 function rankPaste(){ if (rankImport(RANK_UI.code)){ RANK_UI.code = ''; renderModal(true); uxAnnounce('已加入構築'); } else uxAnnounce('構築碼無法讀取，請確認有完整複製'); }
 function rankDel(id){ RANK.recs = RANK.recs.filter(r => r.id !== id); rankSave(); RANK_UI.open = null; renderModal(true); }
-function rankCopy(id){ const r = RANK.recs.find(x => x.id === id); if (!r) return; const code = rankCode(r); (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(code) : Promise.reject()).then(() => uxAnnounce('已複製構築碼'), () => { const t = document.querySelector('.rk-code'); if (t){ t.select(); uxAnnounce('請手動複製選取的構築碼'); } }); }
+function rankCopy(id){ const r = rankAll().find(x => x.id === id); if (!r) return; const code = rankCode(r); (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(code) : Promise.reject()).then(() => uxAnnounce('已複製構築碼'), () => { const t = document.querySelector('.rk-code'); if (t){ t.select(); uxAnnounce('請手動複製選取的構築碼'); } }); }
 rankLoad();
 
 (function(){ const st = document.createElement('style'); st.textContent = `
@@ -6274,7 +6305,7 @@ rankLoad();
 .rk-row:active{transform:translate(1px,1px)}
 .rk-no{font-size:16px;color:#33407f;text-align:center}.rk-row img,.rk-nopic{width:44px;height:44px;object-fit:cover;object-position:50% 20%;image-rendering:pixelated;background:#cfd6ee;border:2px solid #fff;outline:1px solid #5c6a8e}
 .rk-who{display:grid;min-width:0}.rk-who b{font-weight:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rk-who small{color:#5c6a8e;font-size:12px}
-.rk-score{padding:2px 8px;background:#05060d;color:#ffe45c;border:2px solid #8c9bd0;font-size:15px}
+.rk-demo{margin-left:6px;padding:0 4px;font-style:normal;font-size:11px;color:#fff;background:#8c9bd0;border:1px solid #1d2552}.rk-score{padding:2px 8px;background:#05060d;color:#ffe45c;border:2px solid #8c9bd0;font-size:15px}
 .rk-head{display:flex;gap:10px;align-items:stretch}.rk-pic{flex:none;width:88px;height:112px;object-fit:cover;object-position:50% 15%;image-rendering:pixelated;background:#cfd6ee;border:3px solid #fff;outline:1px solid #5c6a8e}
 .rk-head .chr-data{flex:1;min-width:0;margin:0}#mbody .rk-head .chr-data p span{flex:0 0 5em}
 .rk-list,.rk-eq{margin:0 0 8px;padding:0;list-style:none;display:grid;gap:6px}
