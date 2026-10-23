@@ -603,8 +603,8 @@ const FIELD_STORIES=[
  ['石柱間的雜音','修理工 小禾','這些石柱比電台更古老。卡匣靠近時會發熱，彷彿廢墟也記得昔日的聲音。','石拱之間傳來短短三聲。那是舊時代表示平安的暗號。'],
  ['最後一批貨物','倉庫值班紀錄','貨倉裡剩下未送出的收音機。搬運機仍照著停電前的排程，等待永遠沒到的列車。','貨倉門開了。箱子上寫著：送往各島，讓大家能聽見彼此。']
 ];
-const WORLD_TRAVEL={key:null,remaining:0,duration:2.6,note:null,title:'',previousFocus:null};
-function fieldDiscover(profile,boss=false){if(G.offline||profile<0||profile>=FIELD_STORIES.length)return;const key='p'+profile,bit=boss?2:1,old=G.storyFlags[key]||0;if(old&bit)return;G.storyFlags[key]=old|bit;const entry=FIELD_STORIES[profile];logLine((boss?'歸途留言':'電台留言')+' · '+entry[0]+'：'+entry[boss?3:2],'#52749a');G.dirty=true;}
-function worldTravelStart(plan){if(G.offline||plan.key==='training')return;const changed=WORLD_TRAVEL.key!==plan.key;if(!changed)return;WORLD_TRAVEL.key=plan.key;WORLD_TRAVEL.title=plan.name;WORLD_TRAVEL.note=FIELD_STORIES[plan.profile];WORLD_TRAVEL.remaining=WORLD_TRAVEL.duration;fieldDiscover(plan.profile);}
-function worldTravelAdvance(dt){if(G.offline){WORLD_TRAVEL.remaining=0;return false;}const active=WORLD_TRAVEL.remaining>0;WORLD_TRAVEL.remaining=Math.max(0,WORLD_TRAVEL.remaining-dt);return active;}
+const WORLD_TRAVEL={key:null,remaining:0,duration:.7};
+function fieldDiscover(profile,boss=false){if(G.offline||profile<0||profile>=FIELD_STORIES.length)return;const key='p'+profile,bit=boss?2:1,old=G.storyFlags[key]||0;if(old&bit)return;G.storyFlags[key]=old|bit;G.dirty=true;}
+function worldTravelStart(plan){if(G.offline||plan.key==='training')return;const changed=WORLD_TRAVEL.key!==plan.key;if(!changed)return;WORLD_TRAVEL.key=plan.key;WORLD_TRAVEL.remaining=WORLD_TRAVEL.duration;fieldDiscover(plan.profile);}
+function worldTravelAdvance(dt){if(G.offline){WORLD_TRAVEL.remaining=0;return false;}WORLD_TRAVEL.remaining=Math.max(0,WORLD_TRAVEL.remaining-dt);return false;}
 function worldTravelSkip(){WORLD_TRAVEL.remaining=0;}
