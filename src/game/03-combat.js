@@ -235,6 +235,7 @@ function applySkillHit(id,m,mult=1,origin=G.eventOrigin||'primary'){
 }
 const safeLife=()=>G.st.life;
 function castSkill(id,repeat=1,origin=repeat===1?'primary':'repeat'){
+  if(typeof wireBlink==='function'&&repeat===1)wireBlink(id);
   const oldOrigin=G.eventOrigin,oldRoot=G.eventRoot;G.eventOrigin=origin;G.eventRoot=++G.castSerial;
   try{return performSkill(id,repeat,origin);}finally{G.eventOrigin=oldOrigin;G.eventRoot=oldRoot;}
 }

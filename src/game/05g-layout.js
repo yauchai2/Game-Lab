@@ -46,24 +46,6 @@ function uiInspectCore(id){const it=G.armory[id];if(!it)return;const on=G.equip[
 function uiCoreCollection(){const ids=Object.keys(LEGEND_BY).filter(id=>G.armory[id]);return `<button class="mb" onclick="uiCityGo()">城市遠征 · 定向追求核心</button><details class="ui-section ui-core-collection"><summary>傳奇核心收藏 ${ids.length}／${Object.keys(LEGEND_BY).length}</summary>${ids.length?`<div class="ui-item-grid ui-core-grid" role="group" aria-label="核心收藏">${ids.map(id=>uiGearTile(G.armory[id],true)).join('')}</div>`:'<p>尚未收藏核心。冒險掉落或城市定向合成都會加入這裡。</p>'}<details><summary>收藏與重複品規則</summary><p>同款保留一件。穿著、構築引用、詞綴鎖定或腐化的核心不會自動替換。重複品提供零件及殘晶，打造可提高核心等級。</p></details><div class="uxactions">${Object.keys(SLOTN).filter(slot=>G.equipBackup[slot]).map(slot=>`<button class="mb" onclick="uiRestoreEquipment('${slot}')">切回上一件${SLOTN[slot]}</button>`).join('')}</div></details>`;}
 function uiEquipCore(id){ if(equipCore(id)){hideOverlay();renderModal();uxAnnounce(`已換上${LEGEND_BY[id].name}，可切回上一件裝備。`);} }
 function uiRestoreEquipment(slot){ if(restoreEquipment(slot)){renderModal();uxAnnounce(`已切回上一件${SLOTN[slot]}。`);} }
-function uiInventoryHtml(){
-  const kind=UI_WORK.inventory;
-  const head=uiSegments('inventory',[['active','主動技能'],['support','輔助配件'],['cart','模式卡匣']],'機件庫存分類');
-  let content='';
-  if(kind==='active')content=`<div class="ui-inventory-grid">${Object.entries(SKILLS).map(([id,K])=>{const unlocked=G.lvl>=K.lvl,used=G.slots.includes(id);return `<button class="gt${held?.key===id?' on':''}" data-focus="active-${id}" data-availability="${!unlocked||used?'unavailable':'available'}" aria-label="${uxEsc(K.n+'：'+K.d)}" onclick="uiInventoryPick('active','${id}')" ${unlocked&&!used?`onpointerdown="pzDown(event,'active','${id}')"`:''}>${sico(id,26)}<b>${K.n}</b>${shapeIcon('active',id)}<small>${!unlocked?`Lv. ${K.lvl}`:used?'已放置':'點選放置'}</small></button>`}).join('')}</div>`;
-  else if(kind==='support')content=`<div class="ui-inventory-grid">${Object.entries(SUPPS).map(([id,S])=>{const n=G.gems[id]||0,f=gemFree(id);return `<button class="gt${held?.key===id?' on':''}" data-focus="support-${id}" data-availability="${f?'available':'unavailable'}" aria-label="${uxEsc(S.n)}，${f}／${n}，${uxEsc(S.d)}" onclick="uiInventoryPick('support','${id}')" ${f?`onpointerdown="pzDown(event,'support','${id}')"`:''}>${G.newSnap&&n>(G.newSnap.g[id]||0)?'<i class="nw">NEW</i>':''}${gemIco(id,26)}<b>${S.n}</b><small>可用 ${f}／${n}</small>${shapeIcon('support',id)}</button>`}).join('')}</div>`;
-  else content=cartsHtml();
-  return `<section id="uxinventory" class="ui-inventory" aria-label="機件庫存"><h3>機件庫存</h3><p class="uxmeta">點選查看效果與放置；數量為可用／持有。</p>${head}${content}</section>`;
-}
-function uiInventoryPick(kind,key){const def=kind==='active'?SKILLS[key]:SUPPS[key];if(!def)return;const reason=kind==='active'?(G.lvl<def.lvl?`等級 ${def.lvl} 解鎖`:G.slots.includes(key)?'已放在盤面，可點選盤面上的技能調整':''):gemFree(key)<=0?(G.gems[key]?'全部已放置，先從盤面取下':'尚未持有，可繼續冒險或查看電路合成'):'';if(!reason)return pzHold(kind,key);showOverlay(`<h2 class="uxdialog-title">${uxEsc(def.n)}</h2><p>${uxEsc(def.d)}</p>${shapeIcon(kind,key)}<p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回機件庫存</button>`);}
-function uiResolvedHtml(){
-  const resolved=GridLab.resolve(G.board),pieces=new Map(G.board.pieces.map(p=>[p.id,p]));
-  const supports=G.board.pieces.filter(p=>p.kind==='support');
-  const linked=new Set(resolved.flatMap(r=>r.linked));
-  const adjacent=(a,b)=>GridLab.cellsOf(a).some(([x,y])=>GridLab.cellsOf(b).some(([u,v])=>Math.abs(x-u)+Math.abs(y-v)===1));
-  const unused=supports.filter(p=>!linked.has(p.id));
-  return `<section class="ui-section ui-resolved" aria-label="目前生效技能"><h3>目前生效</h3>${resolved.length?resolved.map(r=>{const s=G.st.sk[r.key];return `<article><div>${sico(r.key,24)}<b>${SKILLS[r.key].n}</b><span>${s?`冷卻 ${s.cd.toFixed(1)} 秒`:''}</span></div><p>${r.linked.length?r.linked.map(id=>SUPPS[pieces.get(id).key].n).join('、'):'尚未連接輔助配件'}</p>${s?.mode?`<p>模式：${MODES[s.mode].n}</p>`:''}</article>`}).join(''):'<p>盤面沒有主動技能，放置一個即可開始構築。</p>'}${unused.length?`<details><summary>未生效配件 ${unused.length} 件</summary><ul>${unused.map(p=>`<li><b>${SUPPS[p.key].n}</b>：${G.board.pieces.some(a=>a.kind==='active'&&adjacent(a,p))?'相鄰技能的標籤不符':'未與主動技能相鄰'}</li>`).join('')}</ul></details>`:''}<p class="uxmeta">單體直傷預估包含模式與共享出手時間，不含燃燒、條件連動、角色專屬及擊殺收益。實測可前往冒險的訓練場。</p></section>`;
-}
 function uiRevealSelection(){requestAnimationFrame(()=>{const el=document.querySelector('.uxinspect');if(el){el.scrollIntoView({block:'start'});el.querySelector('.uxboard-link,button')?.focus({preventScroll:true});}});}
 function uiApplyLayout(initial=false){
   const desktop=innerWidth>=1180,wasDesktop=DESK();
