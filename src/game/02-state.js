@@ -79,7 +79,7 @@ function rollAff(k, il, boost=1){
 }
 function makeItem(slot, rar, il, forcedCore=null){
   const n = rar === 0 ? 0 : rar === 1 ? (Math.random() < .5 ? 1 : 2) : rar === 2 ? (Math.random() < .5 ? 3 : 4) : 4;
-  const LG = rar === 3 ? (coreSlot(forcedCore)===slot?LEGEND_BY[forcedCore]:tPick(LEGENDS[slot])) : null, keys = rar === 3 ? LG.aff.slice() : POOL[slot].slice().sort(() => Math.random() - .5).slice(0, n);
+  const LG = rar === 3 ? (coreSlot(forcedCore)===slot?LEGEND_BY[forcedCore]:tPick(LEGENDS[slot].filter(L=>!L.owner))) : null, keys = rar === 3 ? LG.aff.slice() : POOL[slot].slice().sort(() => Math.random() - .5).slice(0, n);
   const aff = keys.map(k => rollAff(k, il, rar === 3 ? 1.35 : 1));
   const tier = Math.min(3, Math.floor(il/6));
   const imp = slot === 'weapon' ? { k:'dmg', v:Math.round(4 + il*1.5) } : slot === 'armor' ? { k:'armor', v:Math.round(5 + il*3) } : { k:'crit', v:2 };
@@ -87,6 +87,10 @@ function makeItem(slot, rar, il, forcedCore=null){
   if (rar === 1) name = PREF[aff[0].k] + name; else if (rar === 2) name = tPick(RARE_NAMES[slot]); else if (rar === 3) name = LG.name;
   if (LG) G.legSeen[LG.id] = 1;
   return LG ? { slot, r:rar, il, name, imp, aff, lg:LG.id } : { slot, r:rar, il, name, imp, aff };
+}
+function rollSignatureGear(kind,il){
+  if(Math.random() >= (SIGNATURE_DROP[kind]||0))return null;
+  const gear=tPick(Object.values(SIGNATURE_GEAR));return makeItem(gear.slot,3,il,gear.id);
 }
 function rarityRoll(boss){
   const bonus = Math.min(8, lvlNow()*.25) + runQ()*6 + (G.run && G.run.map.mods.includes('lucky') ? 4 : 0), w = [RAR[0].w - bonus*2, RAR[1].w, RAR[2].w + bonus, RAR[3].w + bonus*.3];
@@ -110,7 +114,7 @@ function syncCoreCollection(){
 }
 function equipCore(id){
   const slot = coreSlot(id), it = G.armory?.[id];
-  if (!slot || !it || G.equip[slot]?.lg === id) return false;
+  if (!slot || !it || !canUseGear(it) || G.equip[slot]?.lg === id) return false;
   if(G.equip[slot]&&!G.equip[slot].lg)storeGear(G.equip[slot]);
   G.autoEquip=false;G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
   recalc(); G.dirty = true; return true;
@@ -119,7 +123,7 @@ function restoreEquipment(slot){
   const last = G.equipBackup?.[slot];
   if (!last || last.slot !== slot) return false;
   const it = last.lg ? G.armory[last.lg] : last;
-  if (!it) return false;
+  if (!it || !canUseGear(it)) return false;
   G.autoEquip=false;G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
   recalc(); G.dirty = true; return true;
 }
@@ -154,7 +158,7 @@ function checkGoals(){
 function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, forceModern=false){
   const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:10 };
   const baseLife = 90 + 14*G.lvl;
-  for (const k in equip){ const it = equip[k]; if (!it) continue; for (const a of [it.imp, ...it.aff]) s[STAT_KEY[a.k]] += a.v; }
+  for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; for (const a of [it.imp, ...it.aff]) s[STAT_KEY[a.k]] += a.v; }
   for (const [k, v] of Object.entries(CHARS[G.char].eff)) s[k] += v;
   s.inc += achCount();
   for (const [id, n] of Object.entries(G.cards)){ const c = CARDS[id]; if (c && c.st) s[c.st] += c.v*n; }
@@ -197,7 +201,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, fo
   s.power = s.dps * Math.sqrt(s.life / (1 - s.red));
   return s;
 }
-function recalc(){ syncBoard(); syncCoreCollection(); const old = G.st; G.st = calc(); if(old?.sk?.BEAM?.mode!==G.st.sk.BEAM?.mode)G.signalCharge=0; const h=G.h;if(!G.st.firmware.includes('AK'))h.buffer=0;else h.buffer=Math.min(h.buffer||0,G.st.life*.12); h.hp = old ? h.hp * G.st.life / old.life : G.st.life; G.dirty = true; }
+function recalc(){ syncBoard(); syncCoreCollection(); for(const slot of Object.keys(SLOTN))if(!canUseGear(G.equip[slot]))G.equip[slot]=null; const old = G.st; G.st = calc(); if(old?.sk?.BEAM?.mode!==G.st.sk.BEAM?.mode)G.signalCharge=0; const h=G.h;if(!G.st.firmware.includes('AK'))h.buffer=0;else h.buffer=Math.min(h.buffer||0,G.st.life*.12); h.hp = old ? h.hp * G.st.life / old.life : G.st.life; G.dirty = true; }
 const achCount = () => Object.keys(G.ach).length;
 function checkAch(){ for (const [id, a] of Object.entries(ACHS)) if ((GAME_FEATURES.cardChoices||id!=='card10') && !G.ach[id] && a.ok()){ G.ach[id] = 1; recalc(); logLine(`成就解鎖：${a.n}（永久傷害 +1%）`, '#c28a00'); addFloat(HX, HY, BZ + 26 + 2, a.n, '#c28a00', 4); SFX('rare'); G.dirty = true; } }
 const charOk = id => CHARS[id].ach ? !!G.ach[CHARS[id].ach] : G.maxDepth >= CHARS[id].need;

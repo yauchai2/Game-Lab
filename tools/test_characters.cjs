@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),fs=require('fs'),vm=require('vm');
 const noop=()=>{},ctx={console,Math,Date,URLSearchParams,TextDecoder,atob,btoa,location:{search:''},GridLab:require('../src/game/00-grid.js'),tPick:a=>a[0],tRand:(a,b)=>(a+b)/2,tClamp:(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),tFmt:String,SFX:noop,ease:x=>x};
 ctx.document={createElement:tag=>tag==='img'?{}:{getContext:()=>new Proxy({createLinearGradient:()=>({addColorStop:noop})},{get:(o,k)=>o[k]||noop})}};vm.createContext(ctx);
-for(const f of ['vendor/three.min.js','game/01-data.js','game/characters-data.js','game/02-state.js','game/03-combat.js','game/models.js','game/models-mon.js','game/models-weapon.js','game/04-render.js','game/characters-assets.js','game/characters-render.js'])vm.runInContext(fs.readFileSync('src/'+f,'utf8'),ctx);
+for(const f of ['vendor/three.min.js','game/01-data.js','game/characters-data.js','game/02-state.js','game/03-combat.js','game/models.js','game/models-mon.js','game/models-weapon.js','game/04-render.js','game/characters-assets.js','game/equipment-assets.js','game/equipment-render.js','game/characters-render.js'])vm.runInContext(fs.readFileSync('src/'+f,'utf8'),ctx);
 ctx.assert=assert;
 vm.runInContext(`
 const expected=['idle','walk','run','attack','cast','hurt','dash','death','victory'];

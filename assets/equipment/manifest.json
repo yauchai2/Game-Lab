@@ -1,0 +1,150 @@
+{
+  "provenance": "User supplied Google Drive folder 12jSqAuk-xeRhGiEn-ciTk_OWUiqgZaQ0; original GLBs from two ZIPs, names matched against asset_list.zip reference images.",
+  "pipeline": "Blender: centered max-span 1, welded mesh, ~3000 triangles, 512px original base-color map, static GLB.",
+  "assets": [
+    {
+      "id": "milo_disc",
+      "source": "257e607b99c353bab7118c893e9eed40.glb",
+      "source_sha256": "e75d9bde325305bee44ae7a611644831ae77fc0ada8d1f0976941629e083aef3",
+      "source_triangles": 1500000,
+      "triangles": 3000,
+      "bytes": 173944,
+      "sha256": "7edc058f4395f4b1253ea5b65b2ac7bb7aca258e393617f1fa2354bf9d2f3629"
+    },
+    {
+      "id": "ping_bag",
+      "source": "2f3200dd96c28b0a722b7dcba64b021a.glb",
+      "source_sha256": "e21a532383e840e4844bba51a0d24a85b057e44a6e505c4923b978f0e06659db",
+      "source_triangles": 1500000,
+      "triangles": 3000,
+      "bytes": 175404,
+      "sha256": "6b8f00bc1aa8346cf439b94719d96b09b225001c74a8d566d46e81390b276984"
+    },
+    {
+      "id": "aki_chain",
+      "source": "390b4112ee406a45ec61d6845cbf2a44.glb",
+      "source_sha256": "49c077ffe26315389da0be1616386a6cf734af45469bfd7597b6c6ad54f014e7",
+      "source_triangles": 1498270,
+      "triangles": 3000,
+      "bytes": 211124,
+      "sha256": "d6095f7308d29741a83a8a60bbdb4d8588a04ac931cdf9aa6f0a94c14f0b8afb"
+    },
+    {
+      "id": "ping_phone",
+      "source": "3a0840f46a579b5ca0eb2d2a97479344.glb",
+      "source_sha256": "519560001b6845f9d107c85e08938accfddca0b673b4efc9b55654d1517b5410",
+      "source_triangles": 1499738,
+      "triangles": 3000,
+      "bytes": 203708,
+      "sha256": "7a6828db2e79b65f99fb232d4c392eeb12a607927db4b95ad03ad931cd469f2c"
+    },
+    {
+      "id": "milo_belt",
+      "source": "439b9f421960ab7477077dffad11d0be.glb",
+      "source_sha256": "f033d625e45663c52367cbe4193e9aa3e0b0e540f8bb9e3d59d542a6a684f48e",
+      "source_triangles": 1500004,
+      "triangles": 2998,
+      "bytes": 210292,
+      "sha256": "fd8e2365d76adb415dbaf43efdd5391531ad192d5fefd1270d2d301423a7f1bb"
+    },
+    {
+      "id": "null_pet",
+      "source": "5b60561fd013dd83d20d4e9b6040af7c.glb",
+      "source_sha256": "7b885bd088101fc5b44cd485075e6931a0230ec19d8624065ac435bb4c3cf929",
+      "source_triangles": 1500000,
+      "triangles": 2998,
+      "bytes": 184348,
+      "sha256": "8d06861ce8c822c3acbaa2814e092cb3fb5e4fa327690ea7143428061178d5ec"
+    },
+    {
+      "id": "ping_launcher",
+      "source": "33517d01693a0cf11ccec107fe7b7fb2.glb",
+      "source_sha256": "7cadc14f92e6d7f27ae873879961286a0a163e473ec842fd3ffae98956e1c84e",
+      "source_triangles": 1499982,
+      "triangles": 3000,
+      "bytes": 233644,
+      "sha256": "c8b7aa81d72345cfc08e76eea92f4c2713e39905bde1b08ce8a65b7c54439f07"
+    },
+    {
+      "id": "aki_baton",
+      "source": "a54f88c019f6e164b4691ec40511e827.glb",
+      "source_sha256": "f52681210328940e4dc72a253134de1183b170e1ad2f631e111a1412e2791807",
+      "source_triangles": 1498008,
+      "triangles": 2998,
+      "bytes": 187776,
+      "sha256": "0581444f378a11dd44b243f038fa6d8bb7a51a69db5b44f5693c77b93e6a5133"
+    },
+    {
+      "id": "aki_headphones",
+      "source": "a74bb85f6a83501d49d59c270e4e2628.glb",
+      "source_sha256": "8db536c2a6229b84c211c4069db7b2c691322ffc1a9e5bf13ba123433fdcbc3e",
+      "source_triangles": 1499944,
+      "triangles": 3000,
+      "bytes": 204816,
+      "sha256": "59798344af1f27702b3e2e2f37357971bf66fb36f3803ad86b44bf14427d0a70"
+    },
+    {
+      "id": "null_box",
+      "source": "ab144832db4fcd749a1880d0d39af6a3.glb",
+      "source_sha256": "98a1e434007ddc0cbd8a7cdfaeacec791838535780949850b1c336391741515d",
+      "source_triangles": 1500000,
+      "triangles": 3000,
+      "bytes": 209668,
+      "sha256": "a917d5a71c06c47dd703747f8fcaa95431dc56ef88004b15896dad6f945e8c8f"
+    },
+    {
+      "id": "ping_comm",
+      "source": "dc7a31671a9b83ab771fa04b292826bb.glb",
+      "source_sha256": "a4856e44487b68a4e0d21bd1f527567da1944ed43093c5f27165d6c8e5bc6323",
+      "source_triangles": 1500000,
+      "triangles": 3000,
+      "bytes": 180572,
+      "sha256": "9d9ccac015ea9d064128715f69818281fac23fd1f16c1475ba587d087d9d5d28"
+    },
+    {
+      "id": "milo_md",
+      "source": "e0709aafb5202b37024f9c10cea54d29.glb",
+      "source_sha256": "c7fc1e7bee462c7feb6ed56a342d5198b5831af6afbf0adf6d134c23c1b1a8a6",
+      "source_triangles": 1500000,
+      "triangles": 3000,
+      "bytes": 188504,
+      "sha256": "d71484a807bfb4232dc789fd5c036d81bdc174d25f69cfea3d3583994a12fece"
+    },
+    {
+      "id": "aki_charm",
+      "source": "7cb915a8459fb3ba2253b1adc8bf2c64.glb",
+      "source_sha256": "8029a6a762db4e03be3d78c68433dc2f0280795872caf4004200484df9934ee7",
+      "source_triangles": 1499998,
+      "triangles": 2998,
+      "bytes": 162428,
+      "sha256": "c2164d5ac12e3028444bb5dc0eef24f706e0fe58e81dbf014fc71aa24d34f00a"
+    },
+    {
+      "id": "milo_headphones",
+      "source": "ee559f65aa01ece340f8a065be023610.glb",
+      "source_sha256": "eaf87351ca29aa2c9be51ce400c38ed3ac2a8ecac1adb6b2ca25f79c6cd3a40c",
+      "source_triangles": 1500000,
+      "triangles": 3000,
+      "bytes": 205124,
+      "sha256": "09cedc8cef7fbfbb94febae308f0c39bad883146c5d05edb3e940ad5ecf99f7b"
+    },
+    {
+      "id": "null_controller",
+      "source": "f889881f6f948979dcea00dd41580574.glb",
+      "source_sha256": "52c7d58ae32b0380392ba2cbde5ba960ec907b450b9dfc9459f40306a48a80c6",
+      "source_triangles": 1500000,
+      "triangles": 3000,
+      "bytes": 172388,
+      "sha256": "6b2532b57be08bfb163c9fe8b0f0884439047d88bedbb665c9a7a10b87243033"
+    },
+    {
+      "id": "null_goggles",
+      "source": "f9b0bd7225a34379864292dece8a6de9.glb",
+      "source_sha256": "470d3dcf55462ef7730f2c1425145a22d077563fea4e1d14472162bc166d25d5",
+      "source_triangles": 1500000,
+      "triangles": 3000,
+      "bytes": 194120,
+      "sha256": "6b8caf6b07c51f4d817835f4bb41b3fa6d14115a169c24a6a28b004e1fcf0d02"
+    }
+  ]
+}

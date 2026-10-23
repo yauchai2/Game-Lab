@@ -47,6 +47,7 @@ function killMon(m){
   if (lgOn('A_RESET') && ++G.lgK % 25 === 0){ for (const id of G.slots) G.cds[id] = 0; addFloat(G.h.x, G.h.y, BZ + 24, '冷卻完畢', '#4a8fe0', 3.6); }
   if (lgOn('R_LINK')){ const o = G.mons.filter(x => !x.dead && x !== m && !(x.fall > 0)).sort((a, b) => Math.hypot(a.x - m.x, a.y - m.y) - Math.hypot(b.x - m.x, b.y - m.y))[0]; if (o){ addFx({ k:'bolt', pts:[[m.x, m.y, BZ + 8], [o.x, o.y, BZ + 8]], t:0, dur:.2 }); hitMon(o, m.hpMax*.5, false); } }
   if (m.type === 'bomb' && !G.offline){ addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 6, t:0, dur:.4, big:true, col:'#ff5a3a' }); kick(1.1, .3, '#ff9a3c', .6); if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 12 && G.h.dead <= 0){ const bd = Math.max(1, m.dmg*1.6*(1 - G.st.red)); heroDamage(bd); G.h.hurtT = .15; addFloat(G.h.x + 3, G.h.y, BZ + 16, tFmt(bd), '#e2483d', 3.6); } for (const o of G.mons) if (!o.dead && o !== m && !(o.fall > 0) && Math.hypot(o.x - m.x, o.y - m.y) < 10) hitMon(o, m.hpMax*.6, false); }
+  const signature=rollSignatureGear(m.boss?'boss':m.elite?'elite':'normal',d);if(signature)dropItem(m,signature);
   const nItems = m.boss ? 2 + (Math.random() < .5 ? 1 : 0) : m.elite ? 1 + (Math.random() < .5 ? 1 : 0) : Math.random() < HORDE.drop*(1 + q)*(offPen() ? .25 : 1) ? 1 : 0;   // 離線：掉落 25%
   for (let i = 0; i < nItems; i++) dropItem(m, makeItem(tPick(['weapon','armor','ring']), rarityRoll(m.boss), d));
   if (Math.random() < (m.boss ? .3 : .012)) dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'cart', id:tPick(Object.keys(MODES)), t:0 });
@@ -115,7 +116,7 @@ function pickup(d){
     G.armory[it.lg] = it;
     if (!old && G.off) G.off.cores = (G.off.cores || 0) + 1;
     logLine(`${old?'更新':'收藏'}傳奇核心：${it.name}`, rc);
-    if (G.autoEquip && !cur?.lg && (!cur || cand.power > G.st.power*1.02)){
+    if (G.autoEquip && canUseGear(it) && !cur?.lg && (!cur || cand.power > G.st.power*1.02)){
       // 收藏裝備永不作自動拆解來源；一般裝備仍使用原本的自動比較。
       if(cur){if(!cur.lg)storeGear(cur);G.equipBackup[it.slot]=cur;}
       G.equip[it.slot] = it; recalc(); if (G.off) G.off.eq++;

@@ -9,7 +9,7 @@ const ICON_IDX=ART_SHEETS.icons.ids,SK_IDX=ART_SHEETS.skills.ids;
 function spr(name,size=30){return uiSprite('icons',name,size);}
 function sico(id,size=30){return uiSprite('skills',id,size);}
 const SHEETS={relic:['relics'],legend:['legends'],badge:['badges']};
-function xico(kind,id,size=24){return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
+function xico(kind,id,size=24){if(kind==='legend'&&typeof EQUIPMENT_ICONS!=='undefined'&&SIGNATURE_GEAR[id]&&EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model])return `<img src="${EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model]}" width="${size}" height="${size}" alt="" style="vertical-align:middle;margin-right:4px;object-fit:contain">`;return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
 function eqico(slot,r,size=32){return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
 const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
 function slotHtml(slot){
@@ -255,6 +255,8 @@ function offlineBulk(R, f, w){
   if (w.xp > 0) gainXp(w.xp*f);
   const hit = p => { let n = 0; for (let i = 0; i < K; i++) if (Math.random() < p) n++; return n; };
   const nItems = Math.min(800, hit(HORDE.drop*(1 + q)*(offPen() ? .25 : 1)));
+  // Bulk kills use the conservative normal-monster rate; never multiply an observed rare item.
+  for(let i=hit(SIGNATURE_DROP.normal);i>0;i--){const gear=tPick(Object.values(SIGNATURE_GEAR));pickup({kind:'item',it:makeItem(gear.slot,3,d,gear.id)});}
   for (let i = 0; i < nItems; i++) pickup({ kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(false), d) });
   for (let i = hit(.012); i > 0; i--) pickup({ kind:'cart', id:tPick(Object.keys(MODES)) });
   for (let i = hit(.025); i > 0; i--) pickup({ kind:'gem', id:tPick(Object.keys(SUPPS)) });
