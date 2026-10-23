@@ -366,3 +366,24 @@ function uiMapGroups(){
 #mbody .chr-data p{display:flex;gap:10px;margin:0;line-height:1.5}#mbody .chr-data p span{flex:0 0 3em;color:#9fb4ff;letter-spacing:.1em}#mbody .chr-data p b{font-weight:normal;min-width:0}
 @media(max-width:420px){#mbody .char-card .chr .chr-pic{flex-basis:52px;width:52px;height:52px}#mbody .char-card .chr{gap:6px;padding:4px!important}#mbody .char-card .chr .chr-info b{font-size:13px}}
 `;document.head.appendChild(st);})();
+/* 統一窗口風：區塊標題變標題列、摺疊列變小視窗列、數據列變黑底資料欄、日誌與空狀態變卡片 */
+(function(){const st=document.createElement('style');st.textContent=`
+#mbody .ui-section>h3,#mbody .ui-map-state h3,#mbody .mct,#uisettings h3,#mbody .rc>.rh{display:flex;align-items:center;gap:6px;margin:10px 0 6px;padding:3px 8px;font:14px var(--ux-body,system-ui);letter-spacing:.06em;color:#fff;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);border:2px solid #fff;outline:1px solid #1d2552;box-shadow:0 2px 0 #8c9bd0}
+#mbody .ui-section>h3::before,#mbody .ui-map-state h3::before,#mbody .mct::before,#uisettings h3::before{content:"";width:8px;height:8px;background:#ffe45c;border:1px solid #1d2552;flex:none}
+#mbody .ui-map-state{align-items:center}
+#mbody details>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;margin:6px 0 2px;padding:5px 8px;color:#1d2552;background:linear-gradient(#f2f4fa,#c3cbdc);border:2px solid #fff;outline:1px solid #5c6a8e;box-shadow:0 2px 0 #8c9bd0}
+#mbody details>summary::-webkit-details-marker{display:none}
+#mbody details>summary::before{content:"▶";font-size:10px;color:#33407f}
+#mbody details[open]>summary::before{content:"▼"}
+#mbody details[open]>summary{background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);color:#fff}#mbody details[open]>summary::before{color:#ffe45c}
+#mbody .ui-stat-list{margin:6px 0;padding:6px 10px;background:#05060d;border:3px solid #8c9bd0;outline:1px solid #1d2552}
+#mbody .ui-stat-list>div{display:flex;justify-content:space-between;gap:10px;padding:2px 0;border:0!important;line-height:1.5}
+#mbody .ui-stat-list dt{color:#9fb4ff;letter-spacing:.08em}#mbody .ui-stat-list dd{margin:0;color:#fff;font-variant-numeric:tabular-nums}
+#mbody .lg{margin:8px 0;padding:6px 10px 8px;background:#f4f6ff;border:2px solid #fff;outline:1px solid #8c9bd0;box-shadow:0 2px 0 #c3cbdc}
+#mbody .lg>b{display:inline-block;padding:1px 8px;margin-right:6px;background:#33407f;color:#fff;border:1px solid #1d2552}
+#mbody .lg ul{margin:6px 0 0;padding-left:16px;list-style:square}
+#mbody .ui-grid-empty{display:flex;flex-direction:column;align-items:center;gap:8px;margin:8px 0;padding:18px 12px!important;text-align:center;color:#33407f;background:#f4f6ff;border:2px dashed #8c9bd0}
+#mbody .ui-grid-empty::before{content:"";width:34px;height:34px;background:linear-gradient(#b8c8ee,#8fa3d8);border:2px solid #5c6a8e;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 #33407f}
+#mbody .rpgm .rc,#mbody .ui-section{background:transparent}
+`;document.head.appendChild(st);})();
+(function(){const st=document.createElement('style');st.textContent=`#mbody .rc>.rh,#mbody .rc.wide>.rh{border-radius:0!important;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;border:2px solid #fff!important;padding:3px 8px!important}`;document.head.appendChild(st);})();
