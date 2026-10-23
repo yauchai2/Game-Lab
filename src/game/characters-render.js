@@ -26,7 +26,7 @@ function buildY2KHero(at,ar,wt,wr,cos){
  const nodes=doc.nodes.map((n,i)=>{const o=joints.has(i)?new T3.Bone():new T3.Group();o.name=n.name||'node_'+i;if(n.translation)o.position.fromArray(n.translation);if(n.rotation)o.quaternion.fromArray(n.rotation);if(n.scale)o.scale.fromArray(n.scale);if(n.matrix)new T3.Matrix4().fromArray(n.matrix).decompose(o.position,o.quaternion,o.scale);if(joints.has(i))B[o.name]=o;return o;});
  doc.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>nodes[i].add(nodes[c])));for(const i of doc.scenes[doc.scene||0].nodes)g.add(nodes[i]);
  const s=doc.skins[0],inv=asset.access(s.inverseBindMatrices).array,skeleton=new T3.Skeleton(s.joints.map(i=>nodes[i]),s.joints.map((_,i)=>new T3.Matrix4().fromArray(inv,i*16)));
- const mesh=new T3.SkinnedMesh(asset.geometry,asset.material);mesh.name=id+'_skin';mesh.frustumCulled=false;
+ const mesh=new T3.SkinnedMesh(characterEquipmentGeometry(asset,id),asset.material);mesh.name=id+'_skin';mesh.frustumCulled=false;
  const meshNode=doc.nodes.findIndex(n=>n.mesh===0);nodes[meshNode].add(mesh);g.updateMatrixWorld(true);mesh.bind(skeleton,mesh.matrixWorld);mesh.normalizeSkinWeights();
  const mixer=new T3.AnimationMixer(g),actions=Object.fromEntries(asset.clips.map(clip=>[clip.name,mixer.clipAction(clip)]));
  for(const [name,action]of Object.entries(actions)){if(!['idle','walk','run'].includes(name)){action.setLoop(T3.LoopOnce,1);action.clampWhenFinished=true;}}
@@ -37,30 +37,19 @@ function buildY2KHero(at,ar,wt,wr,cos){
  addShadow(g,5.5);g.scale.setScalar(.85*CK);return g;
 }
 function characterEquipment(g,cos,wt,wr){
- const B=g.userData.B,id=g.userData.id,silver=m3('#c5ced2'),dark=m3('#34435a'),blue=m3('#79c9df'),screen=m3('#8dc4b7');
+ const B=g.userData.B;
  const grip=new T3.Group();B.handR.add(grip);grip.rotation.x=Math.PI/2;g.userData.sword=grip;
- if(cos.weaponStyle&&cos.weaponStyle!=='0'){grip.scale.setScalar(.7);buildWeapon(grip,{umbrella:0,bat:1,tube:2,saber:3}[cos.weaponStyle]??wt,wr);}
- else if(id==='aki'){
-  for(let i=0;i<6;i++)mk(new T3.TorusGeometry(.3,.08,3,6),silver,3.6+i*.15,-2-i*.3,2.2,B.hips).rotation.y=i%2?Math.PI/2:0;mk(new T3.BoxGeometry(.6,.9,.5),silver,4.5,-4,2.2,B.hips);
-  mk(new T3.CylinderGeometry(.48,.55,2.6,8),dark,0,0,0,grip);mk(new T3.CylinderGeometry(.3,.4,7,8),silver,0,4.4,0,grip);for(const y of[2,5,7.7])mk(new T3.TorusGeometry(.43,.12,4,8).rotateX(Math.PI/2),blue,0,y,0,grip);
- }else if(id==='milo'){
-  mk(new T3.TorusGeometry(2.35,.28,4,12).rotateX(Math.PI/2),dark,0,4.8,.5,B.torso);for(const sx of[-1,1])mk(new T3.BoxGeometry(.9,1.6,1.4),silver,sx*2.3,4.8,.7,B.torso);
-  for(const sx of[-1,1]){const disc=new T3.Group();disc.position.set(sx*3.3,-2,2.7);B.torso.add(disc);mk(new T3.CylinderGeometry(1.6,1.6,.45,12),dark,0,0,0,disc).rotation.x=Math.PI/2;mk(new T3.TorusGeometry(1.1,.18,4,12),silver,0,0,.3,disc);}
-  mk(new T3.BoxGeometry(2.1,2.8,.6),m3('#98aeb8'),0,2,3,B.torso);mk(new T3.BoxGeometry(1.4,.9,.1),screen,0,2.5,3.35,B.torso);
- }else if(id==='ping'){
-  mk(new T3.BoxGeometry(.4,2,.4),silver,-3.8,1,1.1,B.head);mk(new T3.BoxGeometry(.2,1.8,.5),blue,-3.8,2.6,1.1,B.head);
-  mk(new T3.BoxGeometry(1.8,2.1,2),silver,0,-.4,.8,B.foreR);mk(new T3.BoxGeometry(.8,.7,.2),blue,0,-.2,1.85,B.foreR);
-  mk(new T3.BoxGeometry(3,3.4,1.4),dark,-3.3,-1.1,2,B.torso);mk(new T3.BoxGeometry(.8,.35,.15),m3('#d78a51'),-3.3,-.8,2.8,B.torso);
-  mk(new T3.BoxGeometry(1.2,1.9,.3),silver,0,-.1,.8,B.handL).rotation.x=-.5;
- }else if(id==='null'){
-  for(const x of[-1.3,1.3])mk(new T3.TorusGeometry(1,.13,4,10),silver,x,7.5,1.4,B.head);mk(new T3.BoxGeometry(.7,.15,.15),silver,0,7.5,1.4,B.head);
-  mk(new T3.BoxGeometry(1.7,2.3,.6),screen,0,1.1,3.3,B.torso);mk(new T3.BoxGeometry(1,.9,.1),dark,0,1.2,3.65,B.torso);
-  mk(new T3.BoxGeometry(2.4,2,1.5),silver,3.6,-2,.6,B.torso);
-  const pet=new T3.Group();mk(new T3.BoxGeometry(3.4,2.8,2.4),silver,0,0,0,pet);mk(new T3.BoxGeometry(2.5,1.5,.12),dark,0,.1,1.25,pet);for(const x of[-.65,.65])mk(new T3.BoxGeometry(.35,.45,.15),screen,x,.2,1.35,pet);mk(new T3.BoxGeometry(.2,1.3,.2),dark,0,2,0,pet);for(const x of[-1,1])mk(new T3.BoxGeometry(.8,.3,1.1),dark,x,-1.6,.3,pet);g.add(pet);g.userData.pet=pet;
+ for(const slot of Object.keys(SLOTN)){
+  const it=G.equip[slot];if(it&&attachSignatureGear(g,it))continue;
+  if(slot==='weapon'){const style={umbrella:0,bat:1,tube:2,saber:3}[cos.weaponStyle]??wt;const w=buildSimpleEquipment(slot,style,wr);grip.add(w);}
+  else if(it){const item=buildSimpleEquipment(slot,Math.min(3,Math.floor(it.il/6)),it.r);item.position.set(slot==='armor'?0:3,slot==='armor'?3:0,3.3);B.torso.add(item);}
  }
+ if(g.userData.id==='null'&&!g.userData.pet){const pet=buildSimpleEquipment('ring',0,0);pet.position.set(8,13,-2);g.add(pet);g.userData.pet=pet;}
  // Existing cosmetic owner expects forearm origins. Socket adapters put the item in the palm.
  const proxy={...B};for(const side of['L','R']){const socket=new T3.Group();socket.position.set(0,4,-1);B['hand'+side].add(socket);proxy['fore'+side]=socket;}
- buildHeroAccessories(proxy,cos);
+ const occupiedLeft=(g.userData.equipment||[]).some(e=>e.id==='ping_phone');
+ g.userData.offhandCosmeticSuppressed=occupiedLeft&&!!cos.offhandStyle&&cos.offhandStyle!=='0';
+ buildHeroAccessories(proxy,occupiedLeft?{...cos,offhandStyle:'0'}:cos);
 }
 function characterPlay(g,name,fade=.1){
  const u=g.userData,next=u.actions[name];if(!next||u.animation===name)return;
@@ -74,7 +63,7 @@ function characterAnimate(g,dt,state={}){
  if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack')u.actions.attack.reset().play();u.lastSwing=state.swing;
  if(state.cast&&u.lastCast!=null&&state.castTime<u.lastCast&&u.animation==='cast')u.actions.cast.reset().play();u.lastCast=state.castTime;
  characterPlay(g,mode,mode==='hurt'?.045:.1);const action=u.actions[mode];if(action&&mode==='attack')action.timeScale=.6/.3;if(action&&mode==='cast')action.timeScale=.8/.45;
- u.mixer.update(dt);if(u.pet){const t=u.mixer.time;u.pet.position.set(8+Math.sin(t*1.7)*.6,13+Math.sin(t*3)*.8,-2);u.pet.rotation.y=Math.sin(t)*.25;}
+ u.mixer.update(dt);animateEquipment(g,state);
  g.updateMatrixWorld(true);u.skeleton.update();
 }
 // Presentation only. No game clocks, combat flags, save data or model assets change.

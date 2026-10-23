@@ -11,7 +11,7 @@ class Scripts(HTMLParser):
   if tag=='script':self.inside=False
  def handle_data(self,data):
   if self.inside:self.parts[-1]+=data
-for name in ['idle-hero.html','idle-hero-review.html','character-review.html']:
+for name in ['idle-hero.html','idle-hero-review.html','character-review.html','equipment-review.html']:
  text=(root/'dist'/name).read_text();parser=Scripts();parser.feed(text)
  for script in parser.parts:
   with tempfile.NamedTemporaryFile(mode='w',suffix='.js') as f:

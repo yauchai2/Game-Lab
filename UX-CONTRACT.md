@@ -261,23 +261,13 @@
 - 新人物走 characters-render 的共用 build／animate／dispose；純外觀配件不修改裝備或戰鬥數值，人物專屬技能規則集中在 characters-data，與外觀 owner 分開。
 - 來源合併完成後才重建 dist，不能以生成檔覆蓋 Claude 的來源更新；本次無 release。
 
+## Y2K 專裝候選（PR #15，未合併／未發佈）
 
-## 四角色預覽待機（2026-10-23，候選）
+- `SIGNATURE_GEAR` 擁有角色、欄位、模型鍵與待補狀態；`rollSignatureGear` 擁有獨立極低機率判定，普通暗金生成不抽專裝。
+- `canUseGear` 同時供屬性計算、手動換裝、上一件、拾取自動換裝與收藏詳情判斷。角色不符時按鈕顯示原因且不可執行；切換角色後物品保留收藏，不刪除、不轉賣。
+- `G.armory` 仍是收藏唯一持久化 owner，裝備及構築引用同一件物品；收藏數量由資料衍生，原九款核心之外增加二十款專裝。
+- `equipment-render.js` 擁有模型快取與骨架掛點，`equipment-assets.js` 由驗證後 GLB 與縮圖產生；模型鍵變動須重建場景外觀。專裝使用實際模型，普通裝備用簡模並保留原純外觀選擇與統計分離。
+- 缺少 3D 的四項在詳情標示暫用簡模；後續補檔保留既有物品 ID。獨立 `equipment-review.html` 不讀寫遊戲進度。驗證見 `docs/y2k-equipment.md`。
 
-- dressTick 使用 characterPreviewAnimate，只作用 PV.hero；戰場繼續呼叫 characterAnimate。模型、存檔、解鎖、裝扮購買及戰鬥計算不變。
-- 額外骨骼偏移在下一次 mixer 更新前還原，避免累積或帶入戰鬥；動作使用獨立展示時間，不讀寫 G.time。
-- 實際經過時間最多計 100ms，隱藏頁／離開裝扮時清除上一幀時間；重新掛載相同模型不重建骨架，保留動作進度。
-- prefers-reduced-motion 即時停用展示動作及寵機浮動；仍可手動拖曳旋轉。取消預覽自動轉圈。
 
-
-## 角色封面與裝扮（2026-10-23，0.40.2 候選）
-
-- uiCharacterStage／uiCharacterIdentity／charSegHtml 是總覽與裝扮共用呈現，PV／dressMount／dressTick 為唯一預覽。UI_LAYOUT_CSS 擁有布局；UX_THEME 保留全局色彩。資料仍由 CHARS／CHARACTER_PROFILES、G.equip／G.st／G.cos 擁有。
-- uiChooseCharacter 只寫 UI_CHARACTER_PICK；可以查看未解鎖角色及原因。uiConfirmCharacter 再驗 charOk 後呼叫 pickChar，取消／Escape 清空 pending 並回觸發按鈕；查看不改存檔角色或金幣。
-- dSel 是單部位暫時試穿，總覽只讀 G.cos；取消不改所有權、金幣、能力。dressBuy 執行時再驗公開部位、款式與金幣，成功後清空 pending，防止重複扣款。公開部位仍只有武器／副手／飾品，不加入能力裝備槽。
-- 金幣文字局部更新，只有支付資格改變才重繪裝扮；同物件預覽重掛不重建骨架。相機角度與待機時間不寫遊戲存檔。預覽具按鈕旋轉、還原與取消指標手勢，垂直觸控可捲頁。
-- 模型錯誤顯示文字及重試，保持裝備／外觀管理可用。離頁、背景與舞台捲出工作區時停更；重試重建 renderer，替換人物釋放預覽擁有的配件幾何與骨架，保留共用 GLB 幾何及材質。
-- 能力摘要明示單體直傷預估，不假冒完整 DPS 或戰力。空裝備格可前往背包，稀有度及詞綴仍由既有裝備詳情與比較函式決定。未持有專武不標已擁有。
-- 手機角色／裝扮預設小戰場，但明確 G.userCz 優先；resize 不重新載入或清空試穿／輸入。仍沿用原單一捲動與共用 dialog／toast／焦點恢復。
-
-驗證：tools/test_character_stage.cjs、tools/test_character_stage_browser.cjs，加既有角色骨架、裝備與 UX 回歸。瀏覽器證據不是 Safari 真機、完整報讀器或長時間 FPS 認證。
+Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與物件接觸點，`animateEquipment` 在既有動作混合器之後套用有限手腕偏移，不能影響命中與掉落。`characterEquipmentGeometry` 依實際佩戴選取原幾何或快取遮罩變體，不修改共用原網格。左手手機與左手純外觀裝扮互斥呈現，保留原裝扮設定。整套參考只存在獨立預覽，不寫進度；九動作／四視角與時間拖桿共用同一套場景及掛點。

@@ -54,6 +54,38 @@ const LEGENDS = {
            { id:'R_LINK', name:'訊號滿格',     aff:['crit','inc','fire','light'], d:'擊殺怪物時，其生命的 50% 變成傷害轉給最近的敵人' },
            { id:'R_DIAL', name:'撥號連線',     aff:['cm','aps','haste','inc'],  d:'每次施放技能有 20% 機率免費再施放一次' } ],
 };
+// User supplied Y2K signature gear: kept out of ordinary rarity/pity/forge pools.
+const SIGNATURE_DROP = {normal:.00001, elite:.0001, boss:.001};
+const SIGNATURE_PENDING = new Set(['ping_clip','milo_md_strap','ping_bag_strap','null_lanyard']);
+const SIGNATURE_GEAR = Object.fromEntries([
+ ["aki_headphones", "street", "armor", "修補耳機"],
+ ["aki_baton", "street", "weapon", "改裝伸縮電棍"],
+ ["aki_chain", "street", "ring", "銀色腰鏈"],
+ ["aki_charm", "street", "ring", "插頭吊飾"],
+ ["milo_headphones", "frost", "armor", "DJ 耳機"],
+ ["milo_md", "frost", "ring", "MD 隨身聽"],
+ ["milo_disc", "frost", "weapon", "音波發射盤"],
+ ["milo_belt", "frost", "ring", "條紋腰帶布帶"],
+ ["milo_md_strap", "frost", "armor", "MD 機肩帶"],
+ ["ping_clip", "beep", "armor", "金屬髮夾"],
+ ["ping_comm", "beep", "ring", "通訊耳機"],
+ ["ping_bag", "beep", "armor", "硬殼郵差包"],
+ ["ping_launcher", "beep", "weapon", "前臂發射器"],
+ ["ping_phone", "beep", "ring", "翻蓋手機"],
+ ["ping_bag_strap", "beep", "armor", "郵差包肩帶"],
+ ["null_goggles", "volt", "armor", "防護眼鏡"],
+ ["null_controller", "volt", "weapon", "電子寵物控制器"],
+ ["null_box", "volt", "ring", "備用電池盒"],
+ ["null_pet", "volt", "ring", "浮游寵機"],
+ ["null_lanyard", "volt", "armor", "控制器頸繩"]
+].map(([model,owner,slot,label])=>{
+ const who={street:'AKI',frost:'MILO',beep:'PING',volt:'NULL'}[owner],id='Y2K_'+model.toUpperCase();
+ return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅本人可裝備。'+(SIGNATURE_PENDING.has(model)?'目前只有參考圖，暫用簡模。':'')+'小怪 0.001%、菁英 0.01%、首領 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
+}));
+for(const gear of Object.values(SIGNATURE_GEAR))LEGENDS[gear.slot].push(gear);
+const signatureOf = it => it && SIGNATURE_GEAR[it.lg] || null;
+const canUseGear = (it,character=G.char) => !signatureOf(it)||signatureOf(it).owner===character;
+
 const LEGEND_BY = {}; for (const sl in LEGENDS) for (const L of LEGENDS[sl]) LEGEND_BY[L.id] = L;
 
 const SKILLS = {

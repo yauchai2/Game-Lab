@@ -31,7 +31,7 @@ function dressPreviewFailure(host){
 function dressDisposePreview(){
   const hero=PV.hero;if(!hero)return;
   const shared=hero.userData.mesh?.geometry,owned=new Set();
-  hero.traverse(o=>{if(o.isMesh&&o.geometry!==shared)owned.add(o.geometry);});
+  hero.traverse(o=>{if(o.isMesh&&o.geometry!==shared&&!o.geometry.userData.equipmentShared)owned.add(o.geometry);});
   if(typeof characterDispose==='function')characterDispose(hero);
   for(const geometry of owned)geometry.dispose();PV.sc?.remove(hero);PV.hero=null;PV.sig='';
 }
@@ -67,7 +67,7 @@ function dressTick(){
   const now=performance.now(),dt=PV.lastTime===null?0:Math.min(.1,(now-PV.lastTime)/1000);PV.lastTime=now;
   const w=PV.cv.clientWidth,h=PV.cv.clientHeight;if(w<4||h<4)return;
   try{
-    const A=G.equip.armor,W=G.equip.weapon,cos=modalTab==='dress'?cosPreview():G.cos,sig=[aTier(A),A?A.r:0,aTier(W),W?W.r:0,G.char,JSON.stringify(cos)].join();
+    const A=G.equip.armor,W=G.equip.weapon,cos=modalTab==='dress'?cosPreview():G.cos,sig=[aTier(A),A?A.r:0,aTier(W),W?W.r:0,...Object.values(G.equip).map(it=>it?.lg||''),G.char,JSON.stringify(cos)].join();
     if(sig!==PV.sig){
       dressDisposePreview();
       const g=buildHero(aTier(A),A?A.r:0,aTier(W),W?W.r:0,cos);g.scale.setScalar(1);PV.hero=g;PV.sc.add(g);g.updateMatrixWorld(true);
