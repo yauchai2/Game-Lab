@@ -45,7 +45,7 @@ function wireCell(x, y, ctx){
     const lk = ctx.linked.has(s.id), cls = ['pc', 'fill', 'ac', lk ? 'lnk' : w ? 'off' : '', s.id === selPiece ? 'sel' : '', boost ? 'bs' : '', (s.t || 1) > 1 ? 't' + s.t : ''].filter(Boolean).join(' ');
     return `<button type="button" class="${cls}" style="--pc:${GEM_COL[s.key] || '#a87bf0'}" ${ev}>${gemIco(s.key, 20)}<span>${SUPPS[s.key].n}${TIER_NAME[(s.t || 1) - 1]}</span></button>`;
   }
-  return `<button type="button" class="pc${w ? ' wr' : ''}${boost ? ' bs' : ''}" ${ev}>${boost ? '<span>★</span>' : ''}</button>`;
+  return `<button type="button" class="pc${w ? ' wr' : ''}${boost ? ' bs' : ''}" ${ev}>${boost ? '<span>×1.4</span>' : ''}</button>`;
 }
 function wireBoardHtml(){
   const B = G.board, res = GridLab.resolve(B, G.lvl), ctx = { linked:new Set(res.flatMap(r => r.linked)) };
@@ -288,6 +288,7 @@ function uiInventoryHtml(){
   return `<section id="uxinventory" class="ui-inventory" aria-label="機件庫存">${head}${content}</section>`;
 }
 function uiInventoryPick(kind, key, t = 1){
+  if (noClick) return;
   const def = kind === 'active' ? SKILLS[key] : SUPPS[key]; if (!def) return;
   const reason = kind === 'active' ? (G.lvl < def.lvl ? `等級 ${def.lvl} 解鎖` : '') : gemFreeT(key, t) <= 0 ? (gemOwnT(key, t) ? '全部已放在接線板上，先收回一個' : '尚未持有，可繼續冒險或用合成取得') : '';
   if (!reason){ if (kind === 'active') return wireAssign(key); return pzHold(kind, key, t); }
@@ -311,8 +312,8 @@ body #mbody .pz.wb{position:relative;padding:8px;gap:0;max-width:340px!important
 #mbody .pz.wb button.pc.bus{background:linear-gradient(90deg,#c58f2c,#f1cd6a 45%,#c58f2c)!important;color:#5a3a00!important;font-size:10px;letter-spacing:-1px;font-weight:700;border-radius:2px!important}
 #mbody .pz.wb button.pc.dead{background:#6aa98d33!important;opacity:.5}
 #mbody .pz.wb button.pc.rk{background:repeating-linear-gradient(45deg,#2c2a2a 0 5px,#e6a02a 5px 10px)!important;box-shadow:inset 0 0 0 2px #d9534a!important;color:#fff!important;font-size:16px;font-weight:700;text-shadow:0 0 3px #000,0 0 3px #000}
-#mbody .pz.wb button.pc.bs:not(.fill){background:radial-gradient(circle,#fff3b8 0 22%,#ffd24d 25%,#e2a21f 62%,#e2a21f00 66%)!important;color:#7a4a00!important;font-size:14px}
-#mbody .pz.wb button.pc.fill.bs{box-shadow:0 0 0 2px #ffd24d!important}
+#mbody .pz.wb button.pc.bs:not(.fill){color:#1d2552!important;opacity:1;font-size:11px;letter-spacing:0}#mbody .pz.wb button.pc.bs:not(.fill) span{opacity:.35}
+#mbody .pz.wb button.pc.fill.bs{box-shadow:inset 0 0 0 1px #ffd24daa!important}
 #mbody .pz.wb button.pc.wr:not(.fill){background:radial-gradient(circle,#f4d37a 0 11%,#b98427 13%,#b9842700 17%)!important}
 /* 技能晶片：深色封裝、兩側銅針腳、右上角 LED（接通亮綠燈，出手時閃一下） */
 #mbody .pz.wb button.pc.chip,#mbody .pz.wb button.pc.sk.empty,#mbody .pz.wb button.pc.lock{border-radius:3px!important}
@@ -383,3 +384,34 @@ body.d .wsvg{inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
 #mbody .pz.wb button.pc.chip,#mbody .pz.wb button.pc.chip span,#mbody .pz.wb button.pc.ac,#mbody .pz.wb button.pc.ac span{font-size:12px!important;font-weight:700}
 body.d #mbody .pz.wb button.pc.sk:not(.empty):not(.lock) span,body.d #mbody .pz.wb button.pc.sk.empty span,body.d #mbody .pz.wb button.pc.lock span{font-size:13px!important}
 `;
+
+/* ---------- 從庫存直接拖到接線板：配件拖到格子、技能拖到右邊插槽（滑鼠移動 6 像素或觸控長按後開始） ---------- */
+(function(){
+  let dr = null, ghost = null, timer = 0;
+  const parse = b => { const m = /uiInventoryPick\('(active|support)','([^']+)'(?:,(\d))?\)/.exec(b.getAttribute('onclick') || ''); return m ? { kind:m[1], key:m[2], t:+(m[3] || 1) } : null; };
+  const cellAt = (x, y) => { if (ghost) ghost.style.display = 'none'; const c = wireCellAt(x, y); if (ghost) ghost.style.display = ''; return c; };
+  const hot = c => { document.querySelectorAll('.wb .pc.dropok').forEach(e => e.classList.remove('dropok')); if (c){ const e = document.querySelector(`.wb .pc[data-x="${c[0]}"][data-y="${c[1]}"]`); if (e) e.classList.add('dropok'); } };
+  function start(){ if (!dr) return; dr.on = true; ghost = document.createElement('div'); ghost.className = 'wdrag'; ghost.innerHTML = dr.el.innerHTML; document.body.appendChild(ghost); move(dr.last); }
+  function move(ev){ dr.last = ev; if (!dr.on){ if (Math.hypot(ev.clientX - dr.sx, ev.clientY - dr.sy) > 8 && ev.pointerType === 'touch') end(true); else if (ev.pointerType !== 'touch' && Math.hypot(ev.clientX - dr.sx, ev.clientY - dr.sy) > 6) start(); return; }
+    ghost.style.left = ev.clientX + 'px'; ghost.style.top = ev.clientY + 'px'; hot(cellAt(ev.clientX, ev.clientY)); ev.cancelable && ev.preventDefault(); }
+  function end(cancel){ document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', cancelUp); document.removeEventListener('touchmove', tm); clearTimeout(timer);
+    const d = dr; dr = null; if (ghost){ ghost.remove(); ghost = null; } hot(null); if (!d || !d.on || cancel) return;
+    noClick = true; setTimeout(() => { noClick = false; }, 60); d.drop && d.drop(); }
+  function up(ev){ if (dr && dr.on){ const info = dr.info, cc = cellAt(ev.clientX, ev.clientY); dr.drop = () => dropOn(info, cc); } end(false); }
+  function cancelUp(){ end(true); }
+  function tm(ev){ if (dr && dr.on) ev.preventDefault(); }
+  function dropOn(info, c){
+    if (!c){ uxAnnounce('沒有放到格子上'); return; }
+    if (info.kind === 'support'){ if (gemFreeT(info.key, info.t) <= 0){ pzMsg('這個配件都已經放在板上了'); return; } held = { kind:'support', key:info.key, t:info.t }; heldRot = 0; selPiece = null; selSock = -1; wirePlace(c[0], c[1]); held = null; renderModal(); }
+    else { if (c[0] !== GridLab.W - 1){ pzMsg('技能要拖到右邊的插槽上'); return; } const i = GridLab.sockAtY(c[1]); if (i < 0 || !wOpen(i)){ pzMsg('這個插槽還沒解鎖'); return; } selSock = i; held = null; wireAssign(info.key); }
+  }
+  document.addEventListener('pointerdown', ev => {
+    if (dr || ev.button > 0) return; const b = ev.target.closest && ev.target.closest('#mbody .ui-inventory-grid .gt'); if (!b) return;
+    const info = parse(b); if (!info) return;
+    dr = { el:b, info, sx:ev.clientX, sy:ev.clientY, on:false, last:ev };
+    document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', cancelUp); document.addEventListener('touchmove', tm, { passive:false });
+    if (ev.pointerType === 'touch') timer = setTimeout(() => { if (dr && !dr.on) start(); }, 220);
+  });
+  const st = document.createElement('style'); st.textContent = '.wdrag{position:fixed;z-index:60;pointer-events:none;transform:translate(-50%,-60%) scale(1.1);padding:6px 10px;background:#e6e8f6;border:2px solid #fff;outline:2px solid #33407f;box-shadow:3px 3px 0 #1d2552aa;color:#1d2552;font-size:13px;opacity:.95;display:flex;align-items:center;gap:6px}.wdrag *{pointer-events:none}.wb .pc.dropok{outline:2px solid #ffe45c!important;outline-offset:-2px}'; document.head.appendChild(st);
+})();
+(function(){const st=document.createElement('style');st.textContent='#mbody .ui-inventory-grid .gt,.wb .pc{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}';document.head.appendChild(st);})();
