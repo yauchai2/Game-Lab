@@ -53,7 +53,7 @@ function phonePage(){
   if (PH.tab === 1) return `<div class="phs-hello">★ 隨身裝備 ★</div><div class="phs-rainbow"></div>` + Object.keys(SLOTN).map(k => {
     const it = G.equip[k];
     if (!it) return `<fieldset><legend>${SLOTN[k]}</legend><p class="phs-dim">（空）</p></fieldset>`;
-    return `<fieldset><legend>${SLOTN[k]}</legend><div class="phs-gear">${eqico(k, it.r, 28)}<div><b style="color:${phRar(it.r)}">${phEsc(it.name)}</b><br><small>${RAR[it.r].n} · Lv.${it.il}</small></div></div><ul class="phs-ul">${itemLines(it).slice(0, 5).map(l => `<li>${phEsc(l.t)}</li>`).join('')}</ul></fieldset>`;
+    return `<fieldset><legend>${SLOTN[k]}</legend><div class="phs-gear">${eqico(k, it.r, 28, it)}<div><b style="color:${phRar(it.r)}">${phEsc(it.name)}</b><br><small>${RAR[it.r].n} · Lv.${it.il}</small></div></div><ul class="phs-ul">${itemLines(it).slice(0, 5).map(l => `<li>${phEsc(l.t)}</li>`).join('')}</ul></fieldset>`;
   }).join('');
   if (PH.tab === 2) {
     const rows = [['單體直傷預估', tFmt(s.dps) + ' DPS'], ['最大生命', tFmt(s.life)], ['暴擊率', s.crit.toFixed(0) + '%'], ['暴擊傷害', Math.round(s.cm) + '%'], ['攻擊速度', s.aps ? s.aps.toFixed(2) + ' 次／秒' : '—'], ['傷害減免', (s.red * 100).toFixed(0) + '%'], ['每秒回復', tFmt(s.regen || 0)], ['吸血', (s.leech || 0) + '%'], ['戰力評分', tFmt(s.power)]];
@@ -115,7 +115,7 @@ function phoneModelLoad(){
 }
 function phoneGLInit(root){
   const M = phoneModelLoad(), cv = document.createElement('canvas'); cv.id = 'ph-gl';
-  const rd = new T3.WebGLRenderer({ canvas:cv, antialias:true, alpha:true }); rd.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); rd.outputColorSpace = T3.SRGBColorSpace;
+  const rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true }); cv.style.imageRendering = 'pixelated'; rd.outputColorSpace = T3.SRGBColorSpace;
   const K = PHG.K, sc = new T3.Scene(), cam = new T3.PerspectiveCamera(30, 1, 10, 30000), pivot = new T3.Group(), mesh = new T3.Mesh(M.g, M.mat);
   sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.1)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl); const rim = new T3.DirectionalLight(0x8fd0ff, 1.2); rim.position.set(2, .5, -1.5); sc.add(rim);
   mesh.rotation.x = Math.PI / 2; mesh.scale.setScalar(K); mesh.position.set(-M.c.x * K, M.c.z * K, -M.c.y * K); pivot.add(mesh); sc.add(pivot);
@@ -127,7 +127,7 @@ function phoneGLInit(root){
 }
 function phoneFitGL(){
   const G3 = PH.gl; if (!G3) return; const w = innerWidth, h = innerHeight, K = PHG.K, th = Math.tan(G3.cam.fov * Math.PI / 360);
-  G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
+  G3.rd.setPixelRatio(r3BufferSize(w, h, devicePixelRatio || 1, false, r3ViewQuality(), innerWidth).width / w); G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
   const asp = w / h, rN = Math.max(1.16 * K / (2 * th * .94), .72 * K / (2 * th * asp * .94)), rZ = Math.max(PHG_SCREEN.h * K * 1.14 / (2 * th), PHG_SCREEN.w * K / (2 * th * asp * .98));
   G3.pivot.updateMatrixWorld(true); const sp = new T3.Vector3(); G3.sA.getWorldPosition(sp);
   G3.tgtR = PH.zoom ? rZ : rN; G3.tgtX = PH.zoom ? sp.x : 0; G3.tgtY = PH.zoom ? sp.y : 0;
@@ -318,7 +318,7 @@ function phoneButtonHtml(){
 .ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;animation:phMiniSpin 12s ease-in-out infinite}
 @keyframes phMiniSpin{0%,100%{transform:rotateY(-30deg) rotateX(4deg)}50%{transform:rotateY(30deg) rotateX(4deg)}}
 
-.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
+.ph-mini .ph-plane,.ph-plane{image-rendering:pixelated}.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
 @keyframes phSpk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
 .ph-rb{font:15px/1.2 "Cubic 11",system-ui!important;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8,#ff5a5a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;animation:phRb 2s linear infinite;filter:drop-shadow(1px 1px 0 #000)}
 .ph-new{position:absolute;right:-4px;top:-6px;z-index:2;padding:7px 8px;font:700 12px "Cubic 11",system-ui;font-style:normal;color:#d00;background:#ffe45c;clip-path:polygon(50% 0,61% 20%,82% 8%,80% 32%,100% 38%,84% 55%,96% 78%,72% 74%,64% 100%,50% 82%,36% 100%,28% 74%,4% 78%,16% 55%,0 38%,20% 32%,18% 8%,39% 20%);animation:phNew .9s steps(2) infinite;transform:rotate(12deg)}

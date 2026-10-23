@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Idle Hero</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABQ0lEQVR4nNWXP26DMBSHv1Y9RI/A1DVzL0EkysCAVEVI2bJ1YKi6sEVCVSQGhhQpXKJ36MTaLbegk1PUAgY/J1Z+E5Zsfx+PP9YDx7nRTVjGaSsBHIp0lHGnAz/HvoQP0I6J3I6ttADX7tFrtYzTVi30o1eRQF2+ALAr6t4qDD6CbvzywwwePWnnjD6CS8SaQL6A/D5zI5AvgO+M5Li5vIAELhaQwkUCNuAw8TP8B99m8IYYDgYVsAmHmRXItxnJegNHK2xgZgWStZ277mZSBab8Us8moA6Tc+W6z4KoComq0I1AVIV4gYcXeCIJIwEFV5FIXOc7UAZ7mqo5jZuqoQz2RgJGZ4GSUGU3hYsEpOBZAo/vX6frz9WD1fnOX8LBtqnbG6jsihr4bTZ04+66oc5oVKBvs7lRUrMF/oqYRtecOs8Prtt2KehE4U4AAAAASUVORK5CYII=">
 <style>#boot{position:fixed;inset:0;z-index:100;background:#d2d9e7;color:#172751;display:grid;place-content:center;text-align:center;font:16px/1.8 monospace}#boot p{margin:4px}#boot small{font-size:13px;color:#475778}</style>
 </head>
 <body>
@@ -790,6 +791,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.39.0',d:'2026-10-23',t:['3D 畫質整體調低：高畫質改為原本的低畫質等級，中與低畫質再更低，畫面統一帶像素顆粒感','地圖預覽、3D 手機與角色預覽一起套用低畫質風格','裝備與武器圖示改成 3D 模型渲染的小圖，依裝備階級與稀有度換造型和顏色','下方工作列加入開始選單、音效開關與可點擊的時鐘，並藏了幾個小彩蛋','瀏覽器分頁加上遊戲圖示']},
   { v:'0.38.5',d:'2026-10-23',t:['角色頁右側的手機入口回歸簡約：一支輕輕自轉的 3D 手機放在銀灰凹槽底框裡']},
   { v:'0.38.4',d:'2026-10-23',t:['手機螢幕改成銀灰掌機質感：果凍圓鈕、粉紅寶石愛心、液晶綠跑馬燈與底部選單列']},
   { v:'0.38.3',d:'2026-10-23',t:['角色頁的手機入口改成簡潔的小 3D 手機，放在角色資訊卡右側的空位，點一下就開機']},
@@ -2321,7 +2323,7 @@ const T3 = THREE, R3 = { clean:new URLSearchParams(location.search).has('clean')
 function r3Quality(quality='auto',viewportWidth=1024){return ['low','medium','high'].includes(quality)?quality:(viewportWidth<768||typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches&&viewportWidth<1180)?'medium':'high';}
 function r3BufferSize(width,height,dpr=1,clean=false,quality='auto',viewportWidth=width){
   const W=Math.max(2,Number.isFinite(width)?width:2),H=Math.max(2,Number.isFinite(height)?height:2);
-  const q=r3Quality(quality,viewportWidth),policy={low:[.5,720],medium:[.75,1100],high:[1,1600]}[q];
+  const q=r3Quality(quality,viewportWidth),policy={low:[.3,420],medium:[.4,560],high:[.5,720]}[q];
   const ratio=clean?Math.max(1,Math.min(2,Number.isFinite(dpr)?dpr:1)):Math.min(policy[0],policy[1]/Math.max(W,H));
   return {width:Math.max(1,Math.floor(W*ratio)),height:Math.max(1,Math.floor(H*ratio))};
 }
@@ -2759,7 +2761,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   const frameRatio=document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig0.getBoundingClientRect().width):MOB()?mobRatio():Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig0.getBoundingClientRect().width)));
   if(vb0.width && Math.abs(vb0.height/vb0.width-frameRatio)>.01)fig0.setAttribute('viewBox',`0 0 ${vb0.width} ${vb0.width*frameRatio}`);
   const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
-  const cv = R3.rd.domElement; cv.style.imageRendering = !R3.clean&&r3Quality(r3ViewQuality(),innerWidth)==='low'?'pixelated':'auto'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const cv = R3.rd.domElement; cv.style.imageRendering = R3.clean?'auto':'pixelated'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
   const buffer=r3BufferSize(W,H,dpr,R3.clean,r3ViewQuality(),innerWidth);
   R3.W=W;R3.H=H;R3.dpr=dpr;
   if(buffer.width!==cv.width||buffer.height!==cv.height)R3.rd.setSize(buffer.width,buffer.height,false);
@@ -3103,13 +3105,15 @@ function spr(name,size=30){return uiSprite('icons',name,size);}
 function sico(id,size=30){return uiSprite('skills',id,size);}
 const SHEETS={relic:['relics'],legend:['legends'],badge:['badges']};
 function xico(kind,id,size=24){return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
-function eqico(slot,r,size=32){return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
+function eqico(slot,r,size=32,it){
+  if(typeof icon3dUrl==='function'){const url=icon3dUrl(slot,it&&typeof aTier==='function'?aTier(it):0,r|0);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}
+  return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
 const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
 function slotHtml(slot){
   const it = G.equip[slot];
   if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${spr(SLOT_ICON[slot], 32)}<div class="mute">空</div></div></div>`;
   const lines = itemLines(it).slice(0, 3).map(l => `<li class="${l.imp ? 'imp' : l.lg ? 'lgd' : ''}">${l.t}</li>`).join('');
-  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${it.lg && xico('legend', it.lg, 34) ? xico('legend', it.lg, 34) : eqico(slot, it.r, 34)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
+  return `<div class="rc item" style="--rc:${RAR[it.r].c}"><div class="rh"><span>${SLOTN[slot]}</span><span class="mute">ilvl ${it.il}</span></div><div class="nm">${it.lg && xico('legend', it.lg, 34) ? xico('legend', it.lg, 34) : eqico(slot, it.r, 34, it)}<div><b style="color:${RAR[it.r].c}">${it.name}</b><div class="mute">${RAR[it.r].n}</div></div></div><ul>${lines}</ul></div>`;
 }
 function panelHtml(){
   const s = G.st, h = G.h, R = G.run;
@@ -3235,7 +3239,7 @@ function lootToast(it){
   let box = $('loot'); const host = document.querySelector('.stage') || document.body; if (!box){ box = document.createElement('div'); box.id = 'loot'; } if (box.parentNode !== host) host.appendChild(box);
   const R = RAR[it.r], ls = itemLines(it).filter(l => l.lg).slice(0, 1).concat(itemLines(it).filter(l => !l.lg).slice(0, 1)).slice(0, it.lg ? 2 : 1), d = document.createElement('div');
   d.className = 'lt r' + it.r; d.style.setProperty('--rc', R.c); d.style.setProperty('--rg', R.g);
-  d.innerHTML = `<div class="lh">${it.lg && xico('legend', it.lg, 24) ? xico('legend', it.lg, 24) : eqico(it.slot || it.sl, it.r, 24)}<b>${it.name}</b></div>`;
+  d.innerHTML = `<div class="lh">${it.lg && xico('legend', it.lg, 24) ? xico('legend', it.lg, 24) : eqico(it.slot || it.sl, it.r, 24, it)}<b>${it.name}</b></div>`;
   box.prepend(d); while (box.children.length > 2) box.lastChild.remove();
   setTimeout(() => d.classList.add('out'), it.r >= 3 ? 3200 : 1800); setTimeout(() => d.remove(), it.r >= 3 ? 3800 : 2400);
 }
@@ -3667,7 +3671,7 @@ function dressTick(){
   if (sig !== PV.sig){ PV.sig = sig; if (PV.hero){if(typeof characterDispose==='function')characterDispose(PV.hero);PV.sc.remove(PV.hero);} const g = buildHero(aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, cos); g.scale.setScalar(1); g.traverse(o => { if (o.isMesh && o.material && o.material.transparent && o.material.opacity < .9 && o.geometry.type !== 'SphereGeometry') o.visible = false; }); PV.hero = g; PV.sc.add(g); PV.sc.updateMatrixWorld(true); PV.box = new T3.Box3(); g.traverse(o => { if (o.isMesh && o.visible && o.geometry.type !== 'RingGeometry' && o.geometry.type !== 'CircleGeometry'){ o.geometry.computeBoundingBox(); PV.box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld)); } }); }
   if(PV.hero.userData.y2k)characterAnimate(PV.hero,.04);
   if (PV.auto) PV.yaw += .02; PV.hero.rotation.y = PV.yaw;
-  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=!R3.clean&&r3Quality(r3ViewQuality(),innerWidth)==='low'?'pixelated':'auto';
+  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=R3.clean?'auto':'pixelated';
   if(PV.cv.width!==buffer.width||PV.cv.height!==buffer.height)PV.rd.setSize(buffer.width,buffer.height,false);
   const bx = PV.box, cy = (bx.min.y + bx.max.y)/2, vh = (bx.max.y - bx.min.y)*1.2, vw = vh*w/h; PV.cam.left = -vw/2; PV.cam.right = vw/2; PV.cam.top = vh/2; PV.cam.bottom = -vh/2; PV.cam.position.set(0, cy, 40); PV.cam.lookAt(0, cy, 0); PV.cam.updateProjectionMatrix();
   PV.rd.render(PV.sc, PV.cam);
@@ -3759,13 +3763,13 @@ function goldShopHtml(){
 }
 function craftHtml(){
   const sl=UI_WORK.craftSlot,act=UI_WORK.craftAct,it=G.equip[sl],op=CRAFT[act],state=craftState(sl,act);
-  const slots=`<div class="ui-craft-slots" role="group" aria-label="改機裝備">${Object.keys(SLOTN).map(k=>`<button aria-pressed="${sl===k}" onclick="uiWork('craftSlot','${k}')" data-focus="craftSlot-${k}">${eqico(k,G.equip[k]?.r||0,24)}<b>${SLOTN[k]}</b><small>${G.equip[k]?RAR[G.equip[k].r].n:'尚未裝備'}</small></button>`).join('')}</div>`;
+  const slots=`<div class="ui-craft-slots" role="group" aria-label="改機裝備">${Object.keys(SLOTN).map(k=>`<button aria-pressed="${sl===k}" onclick="uiWork('craftSlot','${k}')" data-focus="craftSlot-${k}">${eqico(k,G.equip[k]?.r||0,24,G.equip[k])}<b>${SLOTN[k]}</b><small>${G.equip[k]?RAR[G.equip[k].r].n:'尚未裝備'}</small></button>`).join('')}</div>`;
   const tabs=uiSegments('craftAct',Object.entries(CRAFT).map(([k,c])=>[k,k==='upgrade'&&it?.lg?'核心重構':c.n,c.d]),'改機動作');
   let detail='<section class="ui-section"><h3>尚未裝備道具</h3><p>繼續冒險，自動換上裝備後即可改機。</p></section>';
   if(it){
     const lines=[`<li><span>${AFF[it.imp.k].t(it.imp.v)}</span><small>固定屬性</small></li>`].concat(it.aff.map((a,i)=>`<li><span>T${affTier(a,it.il)} · ${AFF[a.k].t(a.v)}<br><small>同階區間 ${affRange(a,it).min}–${affRange(a,it).max}${a.v>affRange(a,it).max?' · 舊值高於區間，校準可能降低':''}</small></span><button class="mb lk${it.lk===i?' on':''}" ${it.cr?'disabled':''} aria-label="${it.lk===i?'解除鎖定':'鎖定'}${uxEsc(AFF[a.k].t(a.v))}" onclick="craftLock('${sl}',${i})">${spr(it.lk===i?'lock':'unlock',20)}</button></li>`));
     const result=CRAFT_RESULTS[sl];
-    detail=`<section class="ui-section ui-craft-detail"><div class="nm">${eqico(sl,it.r,36)}<div><h3>${uxEsc(it.name)}</h3><span class="uxmeta">${RAR[it.r].n} · 等級 ${it.il}${it.cr?' · 已腐化':''}</span></div></div><ul>${lines.join('')}</ul>${act==='upgrade'&&it.lg?coreRefineHtml(sl,it):`<div class="ui-craft-operation"><p class="uxmeta">${op.d}</p>${!state.ok?`<p id="craft-reason" class="uxwarning">${state.reason}</p>`:'<span id="craft-reason" hidden></span>'}<button class="mb pri" data-focus="craft-${sl}-${act}" aria-describedby="craft-reason" ${state.ok?'':'disabled'} onclick="craftDo('${sl}','${act}')">${act==='corrupt'?'確認腐化風險':op.n} · ${state.cost} 零件</button></div>`}${act==='recal'?affTierHtml(sl,it):''}${result&&result.it===it?`<div class="uxcraft-result" role="status"><b>${uxEsc(result.msg)}</b> · 消耗 ${result.cost} 零件<details><summary>查看變化</summary><p>之前：${uxEsc(result.before)}</p><p>之後：${uxEsc(result.after)}</p></details></div>`:''}</section>`;
+    detail=`<section class="ui-section ui-craft-detail"><div class="nm">${eqico(sl,it.r,36,it)}<div><h3>${uxEsc(it.name)}</h3><span class="uxmeta">${RAR[it.r].n} · 等級 ${it.il}${it.cr?' · 已腐化':''}</span></div></div><ul>${lines.join('')}</ul>${act==='upgrade'&&it.lg?coreRefineHtml(sl,it):`<div class="ui-craft-operation"><p class="uxmeta">${op.d}</p>${!state.ok?`<p id="craft-reason" class="uxwarning">${state.reason}</p>`:'<span id="craft-reason" hidden></span>'}<button class="mb pri" data-focus="craft-${sl}-${act}" aria-describedby="craft-reason" ${state.ok?'':'disabled'} onclick="craftDo('${sl}','${act}')">${act==='corrupt'?'確認腐化風險':op.n} · ${state.cost} 零件</button></div>`}${act==='recal'?affTierHtml(sl,it):''}${result&&result.it===it?`<div class="uxcraft-result" role="status"><b>${uxEsc(result.msg)}</b> · 消耗 ${result.cost} 零件<details><summary>查看變化</summary><p>之前：${uxEsc(result.before)}</p><p>之後：${uxEsc(result.after)}</p></details></div>`:''}</section>`;
   }
   return `<div class="ui-craft-wallet"><span>可用零件</span><strong>${G.parts||0}</strong><span>核心殘晶 ${G.coreDust||0}</span><span>電路點數 ${G.chips||0}</span></div>${slots}${tabs}${detail}<details class="ui-rules"><summary>拾取與自動拆解規則</summary><p class="uxmeta">回收裝備得到零件：普通 1、魔法 2、稀有 5、暗金 12。重複核心另外得到一枚殘晶；構築引用的裝備不會被回收。</p>${rulesBar()}</details>${goldShopHtml()}${circuitShopHtml()}`;
 }
@@ -4256,12 +4260,19 @@ function uiCharacterHtml(){
   return `${charSegHtml()}<section class="ui-character-head">${phoneButtonHtml()}<span class="ui-eyebrow">${CHARS[G.char].n}</span><h3>${uxEsc(G.heroName||'阿街')}<small>LV. ${G.lvl}</small></h3><p id="ui-char-progress">深度 ${G.depth} · 累計擊殺 ${tFmt(G.totalKills)}</p><button class="mb" onclick="openModal('dress')">角色與裝扮 ↗</button></section><div class="ui-equipment">${Object.keys(SLOTN).map(uiEquippedTile).join('')}</div>${uiCoreCollection()}<section class="ui-section"><h3>戰鬥狀態</h3><dl class="ui-stat-list">${rows.map(([n,v])=>`<div><dt>${n}</dt><dd>${v}</dd></div>`).join('')}</dl></section>${charHtml()}${cardsHtml()}<details class="ui-section"><summary>事件紀錄</summary><ol class="log">${G.log.map(l=>`<li>${uxEsc(l.txt)}</li>`).join('')}</ol></details>`;
 }
 /* 共用物品格：精簡讀數，完整名稱與屬性由點選詳情取得。 */
-function uiMapThumb(m){const B=BIOMES[m.biome],blocky=m.biome>=4;let h=0;for(const ch of String(m.id))h=(h*31+ch.charCodeAt(0))>>>0;const sp=[[26,22],[50,18],[36,30],[56,27],[20,27],[44,25]];let o='';for(let i=0;i<4;i++){const [x,y]=sp[(h+i*2)%sp.length],big=(h>>(i+3))&1?1:0.8;o+=blocky?`<path d="M${x-4*big} ${y}h${8*big}v${-7*big}h${-8*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-4*big} ${y-7*big}l${4*big} ${-3*big}l${4*big} ${3*big}z" fill="${B.board.l}"/>`:`<path d="M${x} ${y-12*big}l${5*big} ${12*big}h${-10*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-1} ${y}h2v3h-2z" fill="${B.board.d}"/>`;}return `<svg class="ui-mapthumb" viewBox="0 0 80 56" aria-hidden="true"><ellipse cx="40" cy="50" rx="34" ry="5" fill="#0002"/><path d="M4 24L40 42v9L4 33z" fill="${B.board.d}"/><path d="M76 24L40 42v9l36-18z" fill="${B.board.m}" opacity=".85"/><path d="M40 6L76 24L40 42L4 24z" fill="${B.board.l}" stroke="${B.board.d}" stroke-width="1"/><ellipse cx="40" cy="24" rx="7" ry="3.5" fill="${B.portal}" opacity=".75"/><ellipse cx="40" cy="23" rx="3.5" ry="1.8" fill="${B.glow}"/>${o}</svg>`;}
+function uiMapThumbSvg(m){const B=BIOMES[m.biome],blocky=m.biome>=4;let h=0;for(const ch of String(m.id))h=(h*31+ch.charCodeAt(0))>>>0;const sp=[[26,22],[50,18],[36,30],[56,27],[20,27],[44,25]];let o='';for(let i=0;i<4;i++){const [x,y]=sp[(h+i*2)%sp.length],big=(h>>(i+3))&1?1:0.8;o+=blocky?`<path d="M${x-4*big} ${y}h${8*big}v${-7*big}h${-8*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-4*big} ${y-7*big}l${4*big} ${-3*big}l${4*big} ${3*big}z" fill="${B.board.l}"/>`:`<path d="M${x} ${y-12*big}l${5*big} ${12*big}h${-10*big}z" fill="${i%2?B.t1:B.t2}"/><path d="M${x-1} ${y}h2v3h-2z" fill="${B.board.d}"/>`;}return `<svg class="ui-mapthumb" viewBox="0 0 80 56" aria-hidden="true"><ellipse cx="40" cy="50" rx="34" ry="5" fill="#0002"/><path d="M4 24L40 42v9L4 33z" fill="${B.board.d}"/><path d="M76 24L40 42v9l36-18z" fill="${B.board.m}" opacity=".85"/><path d="M40 6L76 24L40 42L4 24z" fill="${B.board.l}" stroke="${B.board.d}" stroke-width="1"/><ellipse cx="40" cy="24" rx="7" ry="3.5" fill="${B.portal}" opacity=".75"/><ellipse cx="40" cy="23" rx="3.5" ry="1.8" fill="${B.glow}"/>${o}</svg>`;}
+const UI_THUMB={};
+function uiMapThumb(m){   // 地圖縮圖：向量圖先縮成 40×28 再像素化放大，和 3D 畫面的低畫質感一致
+  const svg=uiMapThumbSvg(m),key=m.id+':'+m.biome,url=UI_THUMB[key];
+  if(url)return `<img class="ui-mapthumb" alt="" aria-hidden="true" src="${url}" style="image-rendering:pixelated">`;
+  if(url===undefined){UI_THUMB[key]='';const img=new Image();img.onload=()=>{try{const c=document.createElement('canvas');c.width=40;c.height=28;const x=c.getContext('2d');x.imageSmoothingEnabled=true;x.drawImage(img,0,0,40,28);UI_THUMB[key]=c.toDataURL('image/png');if(typeof renderModal==='function'&&!$('modal').hidden)renderModal();}catch(e){UI_THUMB[key]=null;}};img.onerror=()=>{UI_THUMB[key]=null;};img.src='data:image/svg+xml;charset=utf8,'+encodeURIComponent(svg.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" width="80" height="56" '));}
+  return svg;
+}
 function uiMapCard(m){const B=BIOMES[m.biome],c=mapChallenge(m.mods);return `<button type="button" class="ui-mapcard" data-focus="map-${uxEsc(m.id)}" aria-label="${uxEsc(B.n)}，等級 ${m.lvl}，挑戰詞綴 ${c}，查看詳情" style="--b1:${B.board.l};--b2:${B.board.m};--b3:${B.board.d};--t1:${B.t1};--t2:${B.t2}" onclick="uiInspectMap('${encodeURIComponent(m.id).replace(/'/g,'%27')}')">${uiMapThumb(m)}<b>${uxEsc(B.n)}</b><span class="lv">Lv. ${m.lvl}</span><span class="ch">挑戰詞綴 ${c}</span></button>`;}
 function uiItemTile({focus,icon,name,meta='',state='',action,rarity=0,tip=''}){return `<button type="button" class="ui-item-tile"${tip?` data-tip="${uxEsc(tip)}"`:''} data-rarity="${rarity}" style="--item-rarity:${RAR[rarity]?.c||'var(--ux-edge)'}" data-focus="${uxEsc(focus)}" aria-label="${uxEsc(name)}，${RAR[rarity]?RAR[rarity].n+'，':''}${uxEsc(meta)}${state?'，'+uxEsc(state):''}，查看詳情" onclick="${action}"><span class="ui-item-state">${uxEsc(state)}</span>${icon}<b>${uxEsc(name)}</b><small>${uxEsc(meta)}</small></button>`;}
 function uiGearState(it){return G.equip[it.slot]===it?'穿著':it.kept?'鎖定':gearReferenced(it)?'構築':G.equipBackup[it.slot]===it?'上一件':it.cr?'腐化':it.lk!=null?'詞綴鎖':'';}
-function uiGearTile(it,core=false){return uiItemTile({focus:core?'core-'+it.lg:'gear-'+it.uid,icon:core?xico('legend',it.lg,28):eqico(it.slot,it.r,28),name:it.name,meta:`Lv. ${it.il} · ${it.aff.length?'T'+Math.min(...it.aff.map(a=>affTier(a,it.il))):RAR[it.r].n}`,state:uiGearState(it)||RAR[it.r].n,action:core?`uiInspectCore('${it.lg}')`:`uiInspectGear(${it.uid})`,rarity:it.r,tip:[it.name+'（'+SLOTN[it.slot]+' · '+RAR[it.r].n+'）',...itemLines(it).map(l=>l.t)].join('\n')});}
-function uiEquippedTile(slot){const it=G.equip[slot];return it?uiItemTile({focus:'equipped-'+slot,icon:it.lg?xico('legend',it.lg,28):eqico(slot,it.r,28),name:it.name,meta:`${SLOTN[slot]} · Lv. ${it.il}`,state:'穿著',action:`uiInspectEquipped('${slot}')`,rarity:it.r}):`<div class="ui-item-tile ui-item-empty">${spr(SLOT_ICON[slot],28)}<b>${SLOTN[slot]}</b><small>空欄位</small></div>`;}
+function uiGearTile(it,core=false){return uiItemTile({focus:core?'core-'+it.lg:'gear-'+it.uid,icon:core?xico('legend',it.lg,28):eqico(it.slot,it.r,28,it),name:it.name,meta:`Lv. ${it.il} · ${it.aff.length?'T'+Math.min(...it.aff.map(a=>affTier(a,it.il))):RAR[it.r].n}`,state:uiGearState(it)||RAR[it.r].n,action:core?`uiInspectCore('${it.lg}')`:`uiInspectGear(${it.uid})`,rarity:it.r,tip:[it.name+'（'+SLOTN[it.slot]+' · '+RAR[it.r].n+'）',...itemLines(it).map(l=>l.t)].join('\n')});}
+function uiEquippedTile(slot){const it=G.equip[slot];return it?uiItemTile({focus:'equipped-'+slot,icon:it.lg?xico('legend',it.lg,28):eqico(slot,it.r,28,it),name:it.name,meta:`${SLOTN[slot]} · Lv. ${it.il}`,state:'穿著',action:`uiInspectEquipped('${slot}')`,rarity:it.r}):`<div class="ui-item-tile ui-item-empty">${spr(SLOT_ICON[slot],28)}<b>${SLOTN[slot]}</b><small>空欄位</small></div>`;}
 function uiInspectEquipped(slot){const it=G.equip[slot];if(!it)return;if(it.lg)return uiInspectCore(it.lg);if(G.inventory.includes(it))return uiInspectGear(it.uid);showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[slot]} · ${RAR[it.r].n} · 物品等級 ${it.il} · 穿著中</p><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><button class="mb" data-initial-focus onclick="hideOverlay()">返回角色</button>`);}
 function uiGearComparison(it){const next=calc({...G.equip,[it.slot]:it}),current=G.st;return `<dl class="ui-stat-list"><div><dt>預估傷害</dt><dd>${tFmt(current.dps)} → ${tFmt(next.dps)}</dd></div><div><dt>最大生命</dt><dd>${tFmt(current.life)} → ${tFmt(next.life)}</dd></div><div><dt>暴擊率</dt><dd>${current.crit.toFixed(1)}% → ${next.crit.toFixed(1)}%</dd></div></dl>`;}
 function uiInspectCore(id){const it=G.armory[id];if(!it)return;const on=G.equip[it.slot]===it,back=modalTab==='warehouse'?'返回倉庫':'返回收藏';showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[it.slot]} · 暗金 · 物品等級 ${it.il}${on?' · 穿著中':''}</p><p>${uxEsc(LEGEND_BY[id].d)}</p>${uiGearComparison(it)}<ul>${itemLines(it).filter(l=>!l.lg||l.t==='已腐化').map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">${back}</button><button class="mb pri" ${on?'disabled':''} onclick="uiEquipCore('${id}')">${on?'已裝備':'換上'+uxEsc(it.name)}</button></div>`);}
@@ -4438,7 +4449,7 @@ function whClose(){const k=WAREHOUSE_UI.sel;WAREHOUSE_UI.sel=null;renderModal();
 function warehouseCardHtml(){
  const it=WAREHOUSE_UI.kind==='gear'&&G.inventory.find(x=>x.uid===WAREHOUSE_UI.sel);if(!it){WAREHOUSE_UI.sel=null;return '';}
  const uid=it.uid,on=G.equip[it.slot]===it,guard=it.kept||it.cr||it.lk!=null||on||Object.values(G.equipBackup).includes(it)||gearReferenced(it);
- return `<section id="whcard" class="uxinspect whcard" aria-label="${uxEsc(it.name)}"><div class="uxinspect-head">${eqico(it.slot,it.r,28)}<b>${uxEsc(it.name)}</b><button class="uxquiet" onclick="whClose()">取消</button></div><div class="uxmeta">${SLOTN[it.slot]} · ${RAR[it.r].n} · 等級 ${it.il}</div><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul>${uiGearComparison(it)}<div class="uxactions whact"><button class="mb pri" ${on?'disabled':''} onclick="uiWearStored(${uid})">${on?'穿著中':'換上'}</button><button class="mb" onclick="uiKeepStored(${uid})">${it.kept?'解除鎖定':'鎖定'}</button><button class="mb" ${guard?'disabled':''} title="${guard?'穿著、上一件、構築引用、鎖定、詞綴鎖定或已腐化的裝備受保護，不能回收':''}" onclick="uiRecycleAsk(${uid})">回收</button></div></section>`;
+ return `<section id="whcard" class="uxinspect whcard" aria-label="${uxEsc(it.name)}"><div class="uxinspect-head">${eqico(it.slot,it.r,28,it)}<b>${uxEsc(it.name)}</b><button class="uxquiet" onclick="whClose()">取消</button></div><div class="uxmeta">${SLOTN[it.slot]} · ${RAR[it.r].n} · 等級 ${it.il}</div><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul>${uiGearComparison(it)}<div class="uxactions whact"><button class="mb pri" ${on?'disabled':''} onclick="uiWearStored(${uid})">${on?'穿著中':'換上'}</button><button class="mb" onclick="uiKeepStored(${uid})">${it.kept?'解除鎖定':'鎖定'}</button><button class="mb" ${guard?'disabled':''} title="${guard?'穿著、上一件、構築引用、鎖定、詞綴鎖定或已腐化的裝備受保護，不能回收':''}" onclick="uiRecycleAsk(${uid})">回收</button></div></section>`;
 }
 function uiInspectGear(uid){
  const it=G.inventory.find(x=>x.uid===uid);if(!it)return;
@@ -5201,7 +5212,7 @@ function phonePage(){
   if (PH.tab === 1) return `<div class="phs-hello">★ 隨身裝備 ★</div><div class="phs-rainbow"></div>` + Object.keys(SLOTN).map(k => {
     const it = G.equip[k];
     if (!it) return `<fieldset><legend>${SLOTN[k]}</legend><p class="phs-dim">（空）</p></fieldset>`;
-    return `<fieldset><legend>${SLOTN[k]}</legend><div class="phs-gear">${eqico(k, it.r, 28)}<div><b style="color:${phRar(it.r)}">${phEsc(it.name)}</b><br><small>${RAR[it.r].n} · Lv.${it.il}</small></div></div><ul class="phs-ul">${itemLines(it).slice(0, 5).map(l => `<li>${phEsc(l.t)}</li>`).join('')}</ul></fieldset>`;
+    return `<fieldset><legend>${SLOTN[k]}</legend><div class="phs-gear">${eqico(k, it.r, 28, it)}<div><b style="color:${phRar(it.r)}">${phEsc(it.name)}</b><br><small>${RAR[it.r].n} · Lv.${it.il}</small></div></div><ul class="phs-ul">${itemLines(it).slice(0, 5).map(l => `<li>${phEsc(l.t)}</li>`).join('')}</ul></fieldset>`;
   }).join('');
   if (PH.tab === 2) {
     const rows = [['單體直傷預估', tFmt(s.dps) + ' DPS'], ['最大生命', tFmt(s.life)], ['暴擊率', s.crit.toFixed(0) + '%'], ['暴擊傷害', Math.round(s.cm) + '%'], ['攻擊速度', s.aps ? s.aps.toFixed(2) + ' 次／秒' : '—'], ['傷害減免', (s.red * 100).toFixed(0) + '%'], ['每秒回復', tFmt(s.regen || 0)], ['吸血', (s.leech || 0) + '%'], ['戰力評分', tFmt(s.power)]];
@@ -5263,7 +5274,7 @@ function phoneModelLoad(){
 }
 function phoneGLInit(root){
   const M = phoneModelLoad(), cv = document.createElement('canvas'); cv.id = 'ph-gl';
-  const rd = new T3.WebGLRenderer({ canvas:cv, antialias:true, alpha:true }); rd.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); rd.outputColorSpace = T3.SRGBColorSpace;
+  const rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true }); cv.style.imageRendering = 'pixelated'; rd.outputColorSpace = T3.SRGBColorSpace;
   const K = PHG.K, sc = new T3.Scene(), cam = new T3.PerspectiveCamera(30, 1, 10, 30000), pivot = new T3.Group(), mesh = new T3.Mesh(M.g, M.mat);
   sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.1)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl); const rim = new T3.DirectionalLight(0x8fd0ff, 1.2); rim.position.set(2, .5, -1.5); sc.add(rim);
   mesh.rotation.x = Math.PI / 2; mesh.scale.setScalar(K); mesh.position.set(-M.c.x * K, M.c.z * K, -M.c.y * K); pivot.add(mesh); sc.add(pivot);
@@ -5275,7 +5286,7 @@ function phoneGLInit(root){
 }
 function phoneFitGL(){
   const G3 = PH.gl; if (!G3) return; const w = innerWidth, h = innerHeight, K = PHG.K, th = Math.tan(G3.cam.fov * Math.PI / 360);
-  G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
+  G3.rd.setPixelRatio(r3BufferSize(w, h, devicePixelRatio || 1, false, r3ViewQuality(), innerWidth).width / w); G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
   const asp = w / h, rN = Math.max(1.16 * K / (2 * th * .94), .72 * K / (2 * th * asp * .94)), rZ = Math.max(PHG_SCREEN.h * K * 1.14 / (2 * th), PHG_SCREEN.w * K / (2 * th * asp * .98));
   G3.pivot.updateMatrixWorld(true); const sp = new T3.Vector3(); G3.sA.getWorldPosition(sp);
   G3.tgtR = PH.zoom ? rZ : rN; G3.tgtX = PH.zoom ? sp.x : 0; G3.tgtY = PH.zoom ? sp.y : 0;
@@ -5466,7 +5477,7 @@ function phoneButtonHtml(){
 .ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;animation:phMiniSpin 12s ease-in-out infinite}
 @keyframes phMiniSpin{0%,100%{transform:rotateY(-30deg) rotateX(4deg)}50%{transform:rotateY(30deg) rotateX(4deg)}}
 
-.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
+.ph-mini .ph-plane,.ph-plane{image-rendering:pixelated}.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
 @keyframes phSpk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
 .ph-rb{font:15px/1.2 "Cubic 11",system-ui!important;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8,#ff5a5a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;animation:phRb 2s linear infinite;filter:drop-shadow(1px 1px 0 #000)}
 .ph-new{position:absolute;right:-4px;top:-6px;z-index:2;padding:7px 8px;font:700 12px "Cubic 11",system-ui;font-style:normal;color:#d00;background:#ffe45c;clip-path:polygon(50% 0,61% 20%,82% 8%,80% 32%,100% 38%,84% 55%,96% 78%,72% 74%,64% 100%,50% 82%,36% 100%,28% 74%,4% 78%,16% 55%,0 38%,20% 32%,18% 8%,39% 20%);animation:phNew .9s steps(2) infinite;transform:rotate(12deg)}
@@ -5511,6 +5522,126 @@ function phoneButtonHtml(){
 @media (prefers-reduced-motion:reduce){.ph-open,.ph-mini-spin,.ph-new,.ph-rb,.ph-open-txt small{animation:none}.ph-enter.in{animation-duration:.01s}.ph-grid,.ph-stars,.ph-mq span,.phs-tick span,.phs-rainbow{animation:none}}
 `; document.head.appendChild(s);
  const f = document.createElement('style'); f.textContent = typeof PHONE_IMG === 'undefined' ? '' : `.ph-front{background-image:url(${PHONE_IMG.front})}.ph-back{background-image:url(${PHONE_IMG.back})}.ph-side{background-image:url(${PHONE_IMG.side})}.ph-sideL{background-image:url(${PHONE_IMG.side});transform-style:preserve-3d}.ph-slice{background-image:url(${PHONE_IMG.slice})}`; document.head.appendChild(f); })();
+
+</script>
+<script>
+/* ---------- 下方工作列：開始選單、音效切換、時鐘與小彩蛋 ---------- */
+(function(){
+  function init(){
+  const tb = document.querySelector('.tfoot'); if (!tb) return false;
+  const NAV = [['char', '角色'], ['warehouse', '背包'], ['skills', '技能'], ['craft', '打造'], ['maps', '冒險'], ['settings', '設定']];
+  const sfx = n => { try { if (typeof SFX === 'function') SFX(n); } catch (e) {} };
+  const snd = () => (typeof AUD !== 'undefined' && AUD.mode === 'off') ? '♪×' : '♪';
+  tb.innerHTML = '<span class="start" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" id="tb-start">★ Start</span><span class="task" role="button" tabindex="0" id="tb-task">Idle Hero</span><span class="tray"><span class="tb-snd" role="button" tabindex="0" id="tb-snd" aria-label="切換音效" data-tip="音效開關"></span><span class="clk" id="clk" role="button" tabindex="0" aria-label="時間"></span></span>';
+  const css = document.createElement('style'); css.textContent = `
+.tfoot .start,.tfoot .task,.tfoot .tb-snd,.tfoot .clk{cursor:pointer;user-select:none}
+.tfoot .start:active,.tfoot .start[aria-expanded=true]{filter:brightness(.82)}
+.tfoot .task:hover{background:#ffffff48}
+.tfoot .tray{margin-left:auto;display:flex;align-items:center;gap:2px;background:#1f3fb040;border-left:1px solid #ffffff50}
+.tfoot .tray .clk{margin:0;background:none;border:0}.tfoot .tb-snd{padding:6px 6px}.tfoot .tb-snd:hover,.tfoot .tray .clk:hover{background:#ffffff30}
+.tb-menu{position:fixed;left:0;bottom:30px;z-index:9100;width:210px;display:flex;background:#e9eefb;border:2px solid #fff;outline:1px solid #5b6fb8;box-shadow:3px -3px 0 #2f3f8f55;font:14px/1.2 "Cubic 11",system-ui,sans-serif;color:#172751}
+.tb-menu[hidden]{display:none}
+.tb-side{width:26px;flex:none;background:linear-gradient(0deg,#2f5fd0,#7fa8f5);color:#fff;writing-mode:vertical-rl;transform:rotate(180deg);text-align:left;padding:8px 5px;font-size:15px;letter-spacing:.12em;text-shadow:0 1px 0 #1a3a99}
+.tb-list{flex:1;display:flex;flex-direction:column;padding:3px 0}
+.tb-menu .tb-list button{all:unset;box-sizing:border-box;display:block;padding:9px 12px;cursor:pointer;color:#172751;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;text-shadow:none!important;min-height:0!important;font:14px/1.2 "Cubic 11",system-ui,sans-serif!important}
+.tb-menu .tb-list button:hover,.tb-menu .tb-list button:focus-visible{background:#2f5fd0!important;color:#fff!important;text-shadow:none!important}
+.tb-list hr{margin:3px 6px;border:0;border-top:1px solid #9ca9c8;border-bottom:1px solid #fff}
+.tb-pop{position:fixed;right:6px;bottom:36px;z-index:9100;max-width:260px;padding:8px 12px;background:#fffbd8;border:1px solid #7a6a2a;box-shadow:2px 2px 0 #0003;font:13px/1.5 "Cubic 11",system-ui,sans-serif;color:#2a2410;animation:tbPop .2s ease-out}
+@keyframes tbPop{from{opacity:0;transform:translateY(6px)}}
+.tb-off{position:fixed;inset:0;z-index:9500;background:#000;color:#ffb000;display:flex;align-items:center;justify-content:center;text-align:center;font:18px/1.9 "Cubic 11",monospace;cursor:pointer;animation:tbOff .7s ease-in both}
+@keyframes tbOff{0%{clip-path:inset(0 0 0 0);filter:brightness(2.2)}55%{clip-path:inset(48% 0 48% 0)}100%{clip-path:inset(0 0 0 0);filter:none}}
+.tb-off small{display:block;color:#a07000;font-size:13px}
+.tb-rb{position:fixed;inset:0;z-index:9400;pointer-events:none;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8);opacity:0;mix-blend-mode:soft-light;animation:tbRb 2.4s ease-in-out}
+@keyframes tbRb{50%{opacity:.75}}
+@media(prefers-reduced-motion:reduce){.tb-off,.tb-rb,.tb-pop{animation:none}}`;
+  document.head.appendChild(css);
+  const menu = document.createElement('div'); menu.className = 'tb-menu'; menu.hidden = true; menu.setAttribute('role', 'menu');
+  const ver = (typeof CHANGELOG !== 'undefined' && CHANGELOG[0]) ? CHANGELOG[0].v : '';
+  menu.innerHTML = '<div class="tb-side">Idle Hero</div><div class="tb-list">' + NAV.map(([k, n]) => `<button role="menuitem" data-nav="${k}">${n}</button>`).join('') + '<hr><button role="menuitem" data-act="about">關於 Idle Hero…</button><button role="menuitem" data-act="off">關機…</button></div>';
+  document.body.appendChild(menu);
+  const $s = document.getElementById('tb-start'), $snd = document.getElementById('tb-snd'), $clk = document.getElementById('clk'), $task = document.getElementById('tb-task');
+  const setMenu = on => { menu.hidden = !on; $s.setAttribute('aria-expanded', String(on)); if (on) sfx('ph_tab'); };
+  const act = fn => e => { if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return; e.preventDefault(); e.stopPropagation(); fn(); };
+  [$s, $snd, $clk, $task].forEach(el => { el.addEventListener('click', e => e.stopPropagation()); });
+  const bind = (el, fn) => { el.addEventListener('click', act(fn)); el.addEventListener('keydown', act(fn)); };
+  bind($s, () => setMenu(menu.hidden));
+  document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target)) setMenu(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { setMenu(false); $s.focus(); } });
+  let pop = null, popT = 0;
+  const say = html => { pop?.remove(); pop = document.createElement('div'); pop.className = 'tb-pop'; pop.setAttribute('role', 'status'); pop.innerHTML = html; document.body.appendChild(pop); clearTimeout(popT); popT = setTimeout(() => { pop?.remove(); pop = null; }, 4200); };
+  const rainbow = () => { const d = document.createElement('div'); d.className = 'tb-rb'; document.body.appendChild(d); setTimeout(() => d.remove(), 2500); sfx('ph_key'); };
+  const shutdown = () => {
+    const d = document.createElement('div'); d.className = 'tb-off'; d.tabIndex = 0; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '現在可以安全地關閉電腦了');
+    d.innerHTML = '<div>現在可以安全地關閉電腦了。<small>（點一下任何地方，重新開機）</small></div>'; document.body.appendChild(d); sfx('ph_off'); d.focus();
+    const back = () => { d.remove(); sfx('ph_on'); }; d.addEventListener('click', back); d.addEventListener('keydown', back);
+  };
+  menu.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return; setMenu(false);
+    if (b.dataset.nav) { if (typeof openModal === 'function') openModal(b.dataset.nav); return; }
+    if (b.dataset.act === 'about') say(`<b>Idle Hero</b> ${ver}<br>一個掛機也能玩的小冒險。<br>祝你刷到好東西。`);
+    if (b.dataset.act === 'off') shutdown();
+  });
+  // 工作列按鈕：點「Idle Hero」回到角色頁；右下角音效鍵與時鐘
+  bind($task, () => { if (typeof openModal === 'function') openModal('char'); sfx('ph_tab'); });
+  const paintSnd = () => { $snd.textContent = snd(); $snd.setAttribute('aria-pressed', String(!(typeof AUD !== 'undefined' && AUD.mode === 'off'))); };
+  bind($snd, () => { if (typeof audMode !== 'function') return; audInit?.(); audMode(AUD.mode === 'off' ? 'all' : 'off'); paintSnd(); if (AUD.mode !== 'off') sfx('ph_tab'); });
+  paintSnd();
+  const pad = n => String(n).padStart(2, '0');
+  const tick = () => { const d = new Date(); $clk.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()); }; tick(); setInterval(tick, 20000);
+  let clicks = 0, clickT = 0; const days = '日一二三四五六';
+  bind($clk, () => {
+    const d = new Date(); clicks++; clearTimeout(clickT); clickT = setTimeout(() => { clicks = 0; }, 900);
+    if (clicks >= 7) { clicks = 0; rainbow(); say('★ 時間是彩虹色的 ★'); return; }
+    say(`${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日 星期${days[d.getDay()]}`);
+  });
+  // 彩蛋：↑↑↓↓←→←→ 讓畫面閃一道彩虹
+  const seq = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight']; let at = 0;
+  document.addEventListener('keydown', e => { if (e.target.closest?.('input,textarea,select')) return; at = e.key === seq[at] ? at + 1 : (e.key === seq[0] ? 1 : 0); if (at === seq.length) { at = 0; rainbow(); say('★ 隱藏彩蛋：歡迎回到 2000 年代 ★'); } });
+  return true;
+  }
+  if (!init()){ const t = setInterval(() => { if (init()) clearInterval(t); }, 150); }
+})();
+
+</script>
+<script>
+/* ---------- 裝備圖示：用低面數 3D 模型離屏渲染成小圖（平塗、低解析、像素化放大） ---------- */
+const ICON3D = { cache:{}, rd:null, fail:false, S:48 };
+const ICON3D_RAR = [['#e8eef5', '#cfdcf0'], ['#8fd0ff', '#4aa8ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff5a8a']];
+function icon3dJacket(tier, C){
+  const g = new T3.Group(), body = ['#7a86b4', '#3f6fb5', '#e9edf6', '#2b2f45'][tier], dark = m3('#243046'), main = m3(body), acc = m3(C[1], { emissive:C[1], emissiveIntensity:.35 });
+  mk(new T3.BoxGeometry(2.4, 2.8, 1.3), main, 0, 0, 0, g);
+  if (tier !== 2) for (const s of [-1, 1]){ const a = mk(new T3.BoxGeometry(.85, 2.5, .95), main, s * 1.6, -.1, 0, g); a.rotation.z = -s * .22; mk(new T3.BoxGeometry(.9, .35, 1), dark, s * 1.78, -1.3, 0, g).rotation.z = -s * .22; }
+  if (tier === 0){ mk(ico(.95, 0), main, 0, 1.55, -.35, g).scale.set(1.2, .8, .9); mk(new T3.BoxGeometry(1.2, .7, .15), dark, 0, -.7, .7, g); }
+  if (tier === 1){ for (const s of [-1, 1]) mk(new T3.BoxGeometry(.7, .5, .5), main, s * .5, 1.5, .25, g).rotation.z = s * .5; mk(new T3.BoxGeometry(2.4, .12, 1.35), dark, 0, -.8, 0, g); }
+  if (tier === 2){ mk(new T3.BoxGeometry(2.5, .3, 1.4), dark, 0, 1.3, 0, g); mk(new T3.BoxGeometry(2.5, .3, 1.4), dark, 0, -1.3, 0, g); }
+  if (tier === 3){ mk(new T3.BoxGeometry(2.6, .5, 1.4), dark, 0, 1.5, 0, g); for (const y of [-.5, .5]) mk(new T3.BoxGeometry(2.45, .2, 1.34), acc, 0, y, 0, g); }
+  mk(new T3.BoxGeometry(.14, 2.7, .1), acc, 0, 0, .69, g);
+  return g;
+}
+function icon3dGadget(tier, C){
+  const g = new T3.Group(), dark = m3('#334358'), silver = m3('#bbc8d2'), screen = m3('#85bcb8', { emissive:'#85bcb8', emissiveIntensity:.5 }), acc = m3(C[1], { emissive:C[1], emissiveIntensity:.4 });
+  if (tier === 0){ mk(new T3.BoxGeometry(2.6, 1.9, .8), dark, 0, 0, 0, g); mk(new T3.BoxGeometry(1.7, .7, .1), screen, 0, .25, .43, g); mk(new T3.BoxGeometry(.5, 1.1, .3), silver, 1.45, 0, 0, g); for (const x of [-.7, 0, .7]) mk(new T3.BoxGeometry(.4, .25, .1), acc, x, -.6, .43, g); }
+  if (tier === 1){ mk(new T3.BoxGeometry(1.7, 1.7, .4), dark, 0, -.9, 0, g); const up = new T3.Group(); up.position.set(0, -.05, 0); up.rotation.x = -.45; mk(new T3.BoxGeometry(1.7, 1.6, .35), silver, 0, .8, 0, up); mk(new T3.BoxGeometry(1.2, .9, .1), screen, 0, .8, .2, up); g.add(up); for (const x of [-.5, 0, .5]) for (const y of [-1.2, -.7]) mk(new T3.BoxGeometry(.3, .25, .1), acc, x, y, .22, g); }
+  if (tier === 2){ mk(new T3.BoxGeometry(2.2, 2.2, .6), silver, 0, 0, 0, g); mk(new T3.CylinderGeometry(.8, .8, .12, 10), dark, 0, .2, .35, g).rotation.x = Math.PI / 2; mk(new T3.CylinderGeometry(.3, .3, .14, 8), acc, 0, .2, .38, g).rotation.x = Math.PI / 2; mk(new T3.BoxGeometry(1.4, .4, .1), screen, 0, -.8, .33, g); }
+  if (tier === 3){ mk(ico(1.2, 1), m3('#f4f0ff'), 0, 0, 0, g).scale.set(1, 1.2, .55); mk(new T3.BoxGeometry(1.1, .9, .1), screen, 0, .3, .72, g); for (const x of [-.55, 0, .55]) mk(new T3.CylinderGeometry(.18, .18, .12, 8), acc, x, -.7, .7, g).rotation.x = Math.PI / 2; mk(new T3.TorusGeometry(.3, .08, 4, 8), dark, 0, 1.55, 0, g); }
+  return g;
+}
+function icon3dModel(slot, tier, r){
+  const C = ICON3D_RAR[Math.max(0, Math.min(r | 0, 3))], t = Math.max(0, Math.min(tier | 0, 3));
+  if (slot === 'weapon'){ const g = new T3.Group(); buildWeapon(g, t, r | 0); const b = new T3.Box3().setFromObject(g), s = b.getSize(new T3.Vector3()), ax = s.x >= s.y && s.x >= s.z ? new T3.Vector3(1, 0, 0) : s.z >= s.y ? new T3.Vector3(0, 0, 1) : new T3.Vector3(0, 1, 0); const w = new T3.Group(); w.add(g); w.quaternion.setFromUnitVectors(ax, new T3.Vector3(.72, .72, 0)); return w; }
+  const g = slot === 'armor' ? icon3dJacket(t, C) : icon3dGadget(t, C), w = new T3.Group(); w.add(g); w.rotation.set(.22, -.5, 0); return w;
+}
+function icon3dUrl(slot, tier, r){
+  const key = slot + tier + '_' + r; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof T3.WebGLRenderer !== 'function') return '';
+  try {
+    if (!ICON3D.rd){ const cv = document.createElement('canvas'); ICON3D.rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true, preserveDrawingBuffer:true }); ICON3D.rd.setPixelRatio(1); ICON3D.rd.setSize(ICON3D.S, ICON3D.S, false); ICON3D.rd.setClearColor(0x000000, 0); ICON3D.rd.outputColorSpace = T3.SRGBColorSpace; }
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200), m = icon3dModel(slot, tier, r); sc.add(m);
+    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
+    m.updateMatrixWorld(true); const b = new T3.Box3().setFromObject(m), c = b.getCenter(new T3.Vector3()), rad = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
+    cam.position.set(0, 0, rad / Math.sin(28 * Math.PI / 360) * .78); cam.lookAt(0, 0, 0);
+    ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[key] = url; return url;
+  } catch (e) { ICON3D.fail = true; return ''; }
+}
 
 </script>
 <script>

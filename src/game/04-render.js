@@ -9,7 +9,7 @@ const T3 = THREE, R3 = { clean:new URLSearchParams(location.search).has('clean')
 function r3Quality(quality='auto',viewportWidth=1024){return ['low','medium','high'].includes(quality)?quality:(viewportWidth<768||typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches&&viewportWidth<1180)?'medium':'high';}
 function r3BufferSize(width,height,dpr=1,clean=false,quality='auto',viewportWidth=width){
   const W=Math.max(2,Number.isFinite(width)?width:2),H=Math.max(2,Number.isFinite(height)?height:2);
-  const q=r3Quality(quality,viewportWidth),policy={low:[.5,720],medium:[.75,1100],high:[1,1600]}[q];
+  const q=r3Quality(quality,viewportWidth),policy={low:[.3,420],medium:[.4,560],high:[.5,720]}[q];
   const ratio=clean?Math.max(1,Math.min(2,Number.isFinite(dpr)?dpr:1)):Math.min(policy[0],policy[1]/Math.max(W,H));
   return {width:Math.max(1,Math.floor(W*ratio)),height:Math.max(1,Math.floor(H*ratio))};
 }
@@ -447,7 +447,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   const frameRatio=document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig0.getBoundingClientRect().width):MOB()?mobRatio():Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig0.getBoundingClientRect().width)));
   if(vb0.width && Math.abs(vb0.height/vb0.width-frameRatio)>.01)fig0.setAttribute('viewBox',`0 0 ${vb0.width} ${vb0.width*frameRatio}`);
   const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
-  const cv = R3.rd.domElement; cv.style.imageRendering = !R3.clean&&r3Quality(r3ViewQuality(),innerWidth)==='low'?'pixelated':'auto'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const cv = R3.rd.domElement; cv.style.imageRendering = R3.clean?'auto':'pixelated'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
   const buffer=r3BufferSize(W,H,dpr,R3.clean,r3ViewQuality(),innerWidth);
   R3.W=W;R3.H=H;R3.dpr=dpr;
   if(buffer.width!==cv.width||buffer.height!==cv.height)R3.rd.setSize(buffer.width,buffer.height,false);

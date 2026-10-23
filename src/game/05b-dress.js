@@ -55,7 +55,7 @@ function dressTick(){
   if (sig !== PV.sig){ PV.sig = sig; if (PV.hero){if(typeof characterDispose==='function')characterDispose(PV.hero);PV.sc.remove(PV.hero);} const g = buildHero(aTier(A), A ? A.r : 0, aTier(W), W ? W.r : 0, cos); g.scale.setScalar(1); g.traverse(o => { if (o.isMesh && o.material && o.material.transparent && o.material.opacity < .9 && o.geometry.type !== 'SphereGeometry') o.visible = false; }); PV.hero = g; PV.sc.add(g); PV.sc.updateMatrixWorld(true); PV.box = new T3.Box3(); g.traverse(o => { if (o.isMesh && o.visible && o.geometry.type !== 'RingGeometry' && o.geometry.type !== 'CircleGeometry'){ o.geometry.computeBoundingBox(); PV.box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld)); } }); }
   if(PV.hero.userData.y2k)characterAnimate(PV.hero,.04);
   if (PV.auto) PV.yaw += .02; PV.hero.rotation.y = PV.yaw;
-  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=!R3.clean&&r3Quality(r3ViewQuality(),innerWidth)==='low'?'pixelated':'auto';
+  const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=R3.clean?'auto':'pixelated';
   if(PV.cv.width!==buffer.width||PV.cv.height!==buffer.height)PV.rd.setSize(buffer.width,buffer.height,false);
   const bx = PV.box, cy = (bx.min.y + bx.max.y)/2, vh = (bx.max.y - bx.min.y)*1.2, vw = vh*w/h; PV.cam.left = -vw/2; PV.cam.right = vw/2; PV.cam.top = vh/2; PV.cam.bottom = -vh/2; PV.cam.position.set(0, cy, 40); PV.cam.lookAt(0, cy, 0); PV.cam.updateProjectionMatrix();
   PV.rd.render(PV.sc, PV.cam);
