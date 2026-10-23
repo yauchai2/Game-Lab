@@ -432,3 +432,4 @@ body.ui-material #mbody .ui-menu-group{margin:12px 0!important;padding:0 10px 10
 body.ui-material #mbody .ui-menu-group .ui-directory,body.m.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:1fr!important}
 body.ui-material #mbody .ui-directory button{background-image:none!important;grid-template-columns:auto 1fr auto}
 `;document.head.appendChild(st);})();
+(function(){const st=document.createElement('style');st.textContent=`html body.ui-material :is(#mbody,#ovl) .mct,html body.ui-material :is(#mbody,#ovl) .mct *{color:#fff!important}html body.ui-material :is(#mbody,#ovl) .mct small,html body.ui-material :is(#mbody,#ovl) .mct button{color:#1d2552!important}`;document.head.appendChild(st);})();
