@@ -227,6 +227,7 @@ const qm = k => `<button aria-label="${HELP[k] ? HELP[k][0] : '說明'}" class="
 function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; uxOpenDialog(o, o.querySelector('h2,b,.mct')?.textContent || '遊戲提示', hideOverlay); }
 function hideOverlay(){ UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
+const offYield = fn => { if (typeof MessageChannel === 'function'){ const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); fn(); }; c.port2.postMessage(0); } else setTimeout(fn, 0); };
 function catchUp(sec, report){
   if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
   const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths, inventory:G.inventory.length,chips:G.chips, gems:{...G.gems}, carts:{...G.carts} };
@@ -235,10 +236,11 @@ function catchUp(sec, report){
   if (report) showOverlay(`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
     const t0 = performance.now();
-    while (left > 0 && performance.now() - t0 < 8){
-      update(.2); left -= .2;
+    while (left > 0 && performance.now() - t0 < 30){
+      const st = total - left > 1800 ? .4 : .2;   // 前半小時照原本精度，之後每步放大一倍，收益差距在隨機波動內
+      update(st); left -= st;
     }
-    if (left > 0){ if (report && $('oprog')) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; setTimeout(chunk, 0); return; }
+    if (left > 0){ if (report && $('oprog')) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; offYield(chunk); return; }
     for (const d of G.drops) if (!d.done){ d.done = true; pickup(d); } G.drops = []; G.proj = []; G.timers = []; G.mons = []; G.spawnCd = .5; G.h.swingT = -1; G.h.castT = -1; G.h.dead = 0;
     resolveOfflineChoices(G.off);
     if (G.h.hp <= 0) G.h.hp = G.st.life;

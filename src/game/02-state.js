@@ -526,7 +526,7 @@ function terrainWaypoint(x,y,tx,ty){
   const p=terrainNow();[tx,ty]=terrainProject(tx,ty,p);if(terrainSegment(x,y,tx,ty,p))return [tx,ty];
   const from=terrainCell(x,y,p),target=terrainCell(tx,ty,p);if(!from)return terrainProject(x,y,p);
   let field=p.routes.get(target.k);
-  if(!field){field=new Map([[target.k,0]]);const q=[target];for(let a=0;a<q.length;a++){const c=q[a];for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const i=c.i+di,j=c.j+dj,k=j*p.nx+i;if(i<0||i>=p.nx||j<0||j>=p.ny||field.has(k)||!p.lookup.has(k))continue;field.set(k,field.get(c.k)+1);q.push(p.lookup.get(k));}}if(p.routes.size>=32)p.routes.delete(p.routes.keys().next().value);p.routes.set(target.k,field);}
+  if(!field){field=new Map([[target.k,0]]);const q=[target];for(let a=0;a<q.length;a++){const c=q[a];for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const i=c.i+di,j=c.j+dj,k=j*p.nx+i;if(i<0||i>=p.nx||j<0||j>=p.ny||field.has(k)||!p.lookup.has(k))continue;field.set(k,field.get(c.k)+1);q.push(p.lookup.get(k));}}if(p.routes.size>=160)p.routes.delete(p.routes.keys().next().value);p.routes.set(target.k,field);}
   let best=from;for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const c=p.lookup.get((from.j+dj)*p.nx+from.i+di);if(c&&Math.abs(c.i-from.i)+Math.abs(c.j-from.j)===1&&field.get(c.k)<field.get(best.k))best=c;}
   // First align inside the current cell, then cross its shared edge; no diagonal corner cutting.
   if(best.i!==from.i&&Math.abs(y-from.y)>1.6)return [from.x,from.y];
