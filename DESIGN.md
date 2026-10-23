@@ -1,12 +1,12 @@
 ---
 version: alpha
 colors:
-  ink: "#172751"
-  muted: "#475778"
-  screen: "#e6e8f7"
-  primary: "#303d9b"
-  edge: "#9ca9c8"
-  accent: "#b94732"
+  ink: "#17243e"
+  muted: "#4b5c75"
+  screen: "#f9fcff"
+  primary: "#174fe6"
+  edge: "#9aafca"
+  accent: "#ffe34d"
 typography:
   display:
     fontFamily: '"Cubic 11", system-ui, sans-serif'
@@ -240,3 +240,27 @@ Alan 要求右側空位只顯示一支 3D 手機，輕輕自轉，不要左右�
 ## 四角色預覽待機（2026-10-23，候選）
 
 角色與裝扮的展示由 characterPreviewAnimate 擁有，沿用既有 idle clip 加上各自骨骼小動作：AKI 轉頭／手腕，MILO 跟拍點頭，PING 抬左手查看裝置，NULL 看向寵機／右手互動。手勢以平滑進出及停頓形成 9–13 秒週期，不新增素材或改動戰鬥動畫。預覽保持展示角，拖曳仍可轉動；不再自動持續旋轉。減少動態設定停止展示動畫，背景分頁暫停更新。來源及驗證限制見 docs/character-preview-idles-2026-10-23.md。
+
+## 亮銀與晴空配色（2026-10-23，現行候選）
+
+Alan 指出顏色暗沉，要求按提供的 look and feel 重設。本節取代前文灰紫閱讀面、氧化橘紅主要動作及像素模式暗色帶；歷史保留。參考亮銀播放器、白色資料面、晴空桌面及街頭角色雜誌的鮮藍／黃色。
+
+唯一色彩 owner 仍為 src/game/05f-ux.js 的 UX_THEME，UX_MATERIAL_CSS 消費 token，viewFxSnapshot 共用於獨立編年史。像素模式只改半徑與邊沿粗細，不再維護第二組暗色漸層。body --ink／--paper 亦轉接共用 token。
+
+| 角色 | Token | 顏色 |
+| --- | --- | --- |
+| 正文 | --ux-ink | #17243e |
+| 輔助 | --ux-muted | #4b5c75 |
+| 閱讀面 | --ux-screen | #f9fcff |
+| 標題／選中／焦點 | --ux-blue / --ux-focus | #174fe6 |
+| 邊沿 | --ux-edge | #9aafca |
+| 主要動作（深字） | --ux-accent | #ffe34d |
+| 外殼 | --ux-face | #e8eef4 |
+| 輸入 | --ux-lcd | #fff |
+| 摘要／詳情 | --ux-sky | #e4f4ff |
+| 輕選中 | --ux-selected | #dceeff |
+| 捲軸／軌道 | --ux-scroll / --ux-track | #6f93bf / #edf5fc |
+
+Cubic 11、既有幾何、玩法與存檔保持原 owner。危險動作維持原有文案與語意；不將檸檬黃當警告。--ux-pink #c32877 僅預留小面積點綴，不強行鋪滿頁面。
+
+驗證與限制見 [交接](docs/bright-y2k-theme-2026-10-23.md)。未合併／未發佈。

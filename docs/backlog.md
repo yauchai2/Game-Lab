@@ -555,3 +555,11 @@ Alan 欣賞參考截圖的技能組裝思考，但不希望照搬；本輪僅發
 
 - [x] CHAR-IDLE-01：角色與裝扮預覽加入四種各自骨骼小動作，取消持續自轉；獨立展示時間、背景暫停、減少動態及骨架回歸通過。候選分支 codex/character-preview-idles。
 - [ ] CHAR-IDLE-02：整合 PR #17 後重建 dist，檢查完整模型／裝備穿模與相機裁切，核對使用者附件頁面預覽入口。測試界線見 docs/character-preview-idles-2026-10-23.md。
+
+## 2026-10-23 亮銀／晴空配色候選（PR #22）
+
+- [x] BRIGHT-01：共用 UX_THEME／UX_MATERIAL_CSS 改為亮銀、白色閱讀面、冰藍摘要、鮮藍選中與檸檬黃主要動作；像素模式同源。
+- [x] BRIGHT-02：本機完成 18 項三尺寸主頁檢查、鍵盤焦點、質感開關與邏輯測試；既有整套測試失敗另記。
+- [ ] BRIGHT-03：環境中斷，整合前重建 dist 並重跑瀏覽器；Alan 視覺確認／Safari 真機。未合併、未發佈。
+
+來源及限制：[交接](bright-y2k-theme-2026-10-23.md)；分支 codex/bright-y2k-theme。
