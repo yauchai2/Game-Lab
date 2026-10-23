@@ -600,6 +600,8 @@ function disposeWorldObject(root){
 function scene(){
   if (window.BOSSON) return '';
   if (!R3.ready) r3init();
+  if (document.body.classList.contains('battle-fold')){ if (R3.rd) R3.rd.domElement.style.display = 'none'; return ''; }   // 戰場收起時整個不畫，省電
+  if (R3.rd && R3.rd.domElement.style.display === 'none') R3.rd.domElement.style.display = '';
   r3frame();
   const bi = biomeNow();
   if (R3.bi !== bi || R3.terrainKey!==terrainKey()){

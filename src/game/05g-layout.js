@@ -18,7 +18,7 @@ function uiTitle(){
   const box=document.querySelector('#modal > .mbox');if(!box)return;
   let el=$('mttl');if(!el){el=document.createElement('div');el.id='mttl';box.insertBefore(el,$('mbody'));}
   const root=UI_NAV.find(g=>g.pages.includes(modalTab)),back=root&&modalTab!==root.k;
-  const hk=MHELP[modalTab],cz=uiBattleSize();
+  const hk=MHELP[modalTab],cz=uiBattleSize();document.body.classList.toggle('battle-fold',MOB()&&cz===3);
   el.innerHTML=`${back?`<button class="ui-back" aria-label="返回${root.n}" onclick="openModal('${root.k}')">返回</button>`:''}<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="切換戰場大小，目前${CZN[cz]}" onclick="cycleCz()">${CZN[cz]}</button>`:''}`;
 }
 function uiSegments(key,items,label){return `<div class="ui-segments" role="group" aria-label="${label}">${items.map(([id,name])=>`<button aria-pressed="${UI_WORK[key]===id}" data-focus="${key}-${id}" onclick="uiWork('${key}','${id}')">${name}</button>`).join('')}</div>`;}
@@ -102,6 +102,7 @@ body.d .stats{position:absolute;left:8px;right:8px;top:4px;margin:0;max-width:no
 .ui-map-banner h3,.ui-map-banner>span{background:#ffffffdd;padding:3px 7px;border-radius:4px;width:fit-content}.ui-map-banner>span{display:inline-block}
 @media(max-width:1179px){body.m #mbody{padding:10px}#mbody .pz{max-width:300px}.ui-segments>button{min-height:44px}body.m .ui-inventory-grid{gap:7px}}
 @media(min-width:560px) and (max-width:1179px){body.m #mbody{padding:14px 24px}.ui-inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ui-equipment{grid-template-columns:repeat(3,minmax(0,1fr))}.ui-character-head,.ui-menu-group,.ui-wiki{max-width:900px;margin-left:auto;margin-right:auto}}
+body.m.battle-fold .stage{height:96px;min-height:96px;padding:0}body.m.battle-fold #fig,body.m.battle-fold #nexthint,body.m.battle-fold #ctxbtn,body.m.battle-fold #fxo{display:none!important}body.m.battle-fold .stats{position:static!important;margin:4px 6px!important}
 @media(max-height:500px){body.m .stats{top:0}body.m #mttl{min-height:40px}body.m .stage{padding-bottom:30px}body.m #fig{max-height:110px}body.m #mbody{padding:8px}body.m #mtabs{height:48px}body.m{padding-bottom:calc(48px + env(safe-area-inset-bottom))!important}}
 body.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:repeat(2,minmax(0,1fr))}
 body.ui-material #mbody .ui-map-grid .ui-item-state{font-size:var(--ux-small)!important}
@@ -278,9 +279,9 @@ function uiCityHtml(){const C=G.city||(G.city=newCity());CITY_UI.tier=Math.min(C
 let CITY_CHECKPOINT_REVEALED=null;
 function uiCityRevealCheckpoint(){const c=G.run?.city;if(modalTab!=='maps'||!c?.awaitChoice||UX_LAYERS.length)return;const key=G.run.map.id+':'+c.stage;if(CITY_CHECKPOINT_REVEALED===key)return;CITY_CHECKPOINT_REVEALED=key;requestAnimationFrame(()=>{if(modalTab!=='maps'||!G.run?.city?.awaitChoice)return;$('mbody').scrollTop=0;document.querySelector('[data-focus="city-branch-safe"]')?.focus({preventScroll:true});});}
 
-const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰守關者':['守關者條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
+const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰守關者':['守關者條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'戰鬥畫面':['戰鬥畫面（手機）',()=>G.userCz?['大','中','小','收起'][G.cz==null?1:G.cz]:'自動'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
 function uiInstallSettings(){const root=$('uisettings');if(!root||root.dataset.gridReady)return;root.dataset.gridReady='true';for(const wrap of root.querySelectorAll('#btns .stepwrap')){const button=wrap.querySelector('.act'),label=button.textContent.replace('▾','').trim();if(UI_SETTING_LABELS[label]){wrap.dataset.setting=label;button.dataset.focus='setting-'+label;}}
- const order=['模式','挑戰守關者','戰利品過濾','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
+ const order=['模式','挑戰守關者','戰利品過濾','戰鬥畫面','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
  uiSyncSettings();}
 function uiSyncSettings(){for(const wrap of document.querySelectorAll('#uisettings [data-setting]')){const [label,value]=UI_SETTING_LABELS[wrap.dataset.setting],button=wrap.querySelector('.act'),text=value(),html=`<span class="ui-setting-copy"><b>${label}</b><small>${uxEsc(text)}</small></span>${wrap.querySelector('.chips')?'<span aria-hidden="true">▾</span>':'<span aria-hidden="true">↗</span>'}`;if(button.innerHTML!==html)button.innerHTML=html;}}
 

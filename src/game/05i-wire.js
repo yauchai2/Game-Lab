@@ -76,9 +76,9 @@ function wireSelCard(){
   const first = B.pieces.some(p => p.kind === 'active');
   return `<p class="uxgrid-help">${first ? '點右邊的插槽選取技能，再沿著格子畫線到它；線經過的輔助配件才會生效。' : '點右邊的插槽，選一個技能裝上。'}</p>`;
 }
-function skillsHtml0(){
+function wireTopHtml(){
   wireInstallStyles();
-  return `<p class="uxgrid-help">從左邊電源拉線到技能插槽，經過的輔助配件會強化那個技能。紅叉是壞軌，不能走也不能放。</p>${wireBoardHtml()}${wireBar()}${wireSelCard()}${uiInventoryHtml()}${uiResolvedHtml()}${uiCombatHtml()}`;
+  return `<p class="uxgrid-help">從左邊電源拉線到技能插槽，經過的輔助配件會強化那個技能。紅叉是壞軌，不能走也不能放。</p>${wireBoardHtml()}${wireBar()}`;
 }
 
 /* ---------- 說明與可及性 ---------- */

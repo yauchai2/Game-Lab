@@ -80,22 +80,38 @@ function uiFinishBuild(result,i){if(!result.ok){uxAnnounce(result.reason);return
 function uiConfirmBuildFallback(){const p=BUILD_PENDING;BUILD_PENDING=null;hideOverlay();if(!p||JSON.stringify(G.builds[p.index])!==p.target){uxAnnounce('配置已變動，請重新確認。');return;}uiFinishBuild(restoreBuild(p.index,true),p.index);}
 function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、角色、策略及三件裝備；引用裝備受回收保護。');}
 function skillsHtml(){
-  return buildBar() + dpsBar() + circuitShopHtml() + skillsHtml0();
+  // 接線板放最上面，收起戰場時一打開就能直接編輯；構築管理與電路合成放在下面
+  return wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + buildBar() + circuitShopHtml() + uiResolvedHtml() + uiCombatHtml();
 }
 function treeHtml(){
   return buildBar() + treeHtml0();
 }
+/* 天賦盤：畫在 160×160 的小畫布上再用最近鄰放大，保持低解像像素風；互動靠上面一層透明的 SVG 熱區 */
+const TREE_PX = 160, TREE_STAR = ['....#....', '....#....', '...###...', '#########', '.#######.', '..#####..', '..##.##..', '.##...##.', '.#.....#.'];
+function treePixelArt(){
+  if (typeof document === 'undefined') return '';
+  const cv = document.createElement('canvas'); cv.width = cv.height = TREE_PX; const c = cv.getContext('2d'); if (!c) return '';
+  const P = n => [Math.round((n.x + 125)/250*TREE_PX), Math.round((n.y + 125)/250*TREE_PX)];
+  c.fillStyle = '#dfe9ff'; c.fillRect(0, 0, TREE_PX, TREE_PX); c.fillStyle = '#c9d7f5'; for (let y = 4; y < TREE_PX; y += 8) for (let x = 4; x < TREE_PX; x += 8) c.fillRect(x, y, 1, 1);
+  const px = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(x, y, w, h); };
+  const line = (a, b, w, col) => { let [x0, y0] = a; const [x1, y1] = b, dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let err = dx + dy; for (;;){ px(x0 - (w >> 1), y0 - (w >> 1), w, w, col); if (x0 === x1 && y0 === y1) break; const e2 = 2*err; if (e2 >= dy){ err += dy; x0 += sx; } if (e2 <= dx){ err += dx; y0 += sy; } } };
+  const lit = id => id === 'S' || G.pass.includes(id), pairs = [];
+  for (const id in TREE) for (const l of TREE[id].links) if (id < l) pairs.push([id, l]);
+  for (const [i, j] of pairs) if (!(lit(i) && lit(j))) line(P(TREE[i]), P(TREE[j]), 1, '#a9b8de');
+  for (const [i, j] of pairs) if (lit(i) && lit(j)){ const n = TREE[i], m = TREE[j]; line(P(n), P(m), 3, '#2b2552'); line(P(n), P(m), 1, n.col === '#e8e2d4' ? m.col : n.col); }
+  for (const id in TREE){
+    const n = TREE[id], [x, y] = P(n), got = lit(id), open = canAllocateTalent(id), col = got ? n.col : open ? '#ffffff' : '#eef3ff', edge = got ? '#2b2552' : open ? '#2b2552' : '#8d9cc4';
+    if (n.big){ const o = 4; for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) TREE_STAR.forEach((row, r) => [...row].forEach((ch, k) => { if (ch === '#') px(x - o + k + dx, y - o + r + dy, 1, 1, edge); })); TREE_STAR.forEach((row, r) => [...row].forEach((ch, k) => { if (ch === '#') px(x - o + k, y - o + r, 1, 1, got ? col : open ? '#fff7b0' : '#c7d1ee'); })); }
+    else { const h = 3; if (got) px(x - h - 1, y - h - 1, 2*h + 3, 2*h + 3, col + '55'); px(x - h, y - h, 2*h + 1, 2*h + 1, edge); px(x - h + 1, y - h + 1, 2*h - 1, 2*h - 1, col); if (got) px(x - h + 1, y - h + 1, 2, 1, '#ffffff'); }
+  }
+  return cv.toDataURL('image/png');
+}
 function treeHtml0(){
-  const pts = passPoints(); let lines = '', nodes = '';
-  for (const id in TREE){ const n = TREE[id]; for (const l of n.links) if (id < l){ const m = TREE[l], on2 = (id === 'S' || G.pass.includes(id)) && (l === 'S' || G.pass.includes(l));
-    lines += `<line class="${on2 ? 'connected' : 'inactive'}" x1="${n.x.toFixed(1)}" y1="${n.y.toFixed(1)}" x2="${m.x.toFixed(1)}" y2="${m.y.toFixed(1)}" stroke="${on2 ? n.col === '#e8e2d4' ? m.col : n.col : '#d3daf0'}" stroke-width="${on2 ? 3.4 : 1.6}" stroke-linecap="round"/>`; } }
-  const star = (x, y, R, r) => Array.from({ length: 10 }, (_, i) => { const a = -Math.PI/2 + i*Math.PI/5, k = i % 2 ? r : R; return `${(x + Math.cos(a)*k).toFixed(1)},${(y + Math.sin(a)*k).toFixed(1)}`; }).join(' ');
-  for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = canAllocateTalent(id), x = n.x.toFixed(1), y = n.y.toFixed(1), r = n.big ? 6.6 : 4;
-    const fill = got ? n.col : '#eef3ff', stroke = got ? '#ffffff' : open ? '#2b2552' : '#c3cbe8', sw = got ? 2 : open ? 1.8 : 1.2;
-    const shape = n.big ? `<polygon points="${star(+x, +y, r + 1.6, r*.55)}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>` : `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${open ? 'stroke-dasharray="2 1.5"' : ''}/>`;
-    nodes += `<g class="tn ${got ? 'got' : open ? 'open' : 'locked'}" data-tree="${id}" role="button" tabindex="${open?0:-1}" aria-disabled="${!open}" aria-label="${uxEsc(talentName(id))}，${got?'已點亮':open?'可點亮':'未連到或點數不足'}" onfocus="treeInfo('${id}')" onmouseover="treeInfo('${id}')" onclick="treeInfo('${id}');allocPass('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();allocPass('${id}')}" style="cursor:${open ? 'pointer' : 'default'}"><title>${talentName(id)}</title>${got ? `<circle cx="${x}" cy="${y}" r="${r + 2.4}" fill="${n.col}" opacity=".28"/>` : ''}${shape}${got && !n.big ? `<circle cx="${(+x - r*.3).toFixed(1)}" cy="${(+y - r*.35).toFixed(1)}" r="${(r*.28).toFixed(1)}" fill="#fff" opacity=".8"/>` : ''}</g>`; }
+  const pts = passPoints(); let nodes = '';
+  for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = canAllocateTalent(id), x = n.x.toFixed(1), y = n.y.toFixed(1), r = n.big ? 8 : 6;
+    nodes += `<g class="tn ${got ? 'got' : open ? 'open' : 'locked'}" data-tree="${id}" role="button" tabindex="${open?0:-1}" aria-disabled="${!open}" aria-label="${uxEsc(talentName(id))}，${got?'已點亮':open?'可點亮':'未連到或點數不足'}" onfocus="treeInfo('${id}')" onmouseover="treeInfo('${id}')" onclick="treeInfo('${id}');allocPass('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();allocPass('${id}')}" style="cursor:${open ? 'pointer' : 'default'}"><title>${talentName(id)}</title><circle cx="${x}" cy="${y}" r="${r + 2}" fill="transparent"/>${open ? `<rect class="tnb" x="${(+x - r).toFixed(1)}" y="${(+y - r).toFixed(1)}" width="${2*r}" height="${2*r}" fill="none" stroke="#2b2552" stroke-width="1.6" shape-rendering="crispEdges"/>` : ''}</g>`; }
   return `${uiTalentBudget()}<div class="hint">可用天賦點：<b>${pts}</b>（最多 36 點，最多兩個韌體）。點亮與已點亮節點相連的點。</div>
-    <svg viewBox="-125 -125 250 250" class="tree">${lines}${nodes}</svg>${treeAvailableHtml()}
+    <div class="treebox"><img class="treecv" alt="" src="${treePixelArt()}"><svg viewBox="-125 -125 250 250" class="tree" role="group" aria-label="天賦盤">${nodes}</svg></div>${treeAvailableHtml()}
     <div id="tinfo" class="hint">滑過節點看效果。<span style="color:#e2584d">紅：力量</span> <span style="color:#3f86e6">藍：智慧</span> <span style="color:#3bb552">綠：敏捷</span></div>
     <button class="mb" ${G.run?.city||G.train?'disabled':''} onclick="uiRespec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
 }
@@ -206,11 +222,12 @@ const HELP = {
 };
 const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
 const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
-const uiBattleSize=()=>['skills','craft','warehouse','settings'].includes(modalTab)&&!G.userCz?2:G.cz==null?1:G.cz;
-const CZN = ['大', '中', '小'];
+// 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
+const uiBattleSize=()=>{if(G.userCz)return G.cz==null?1:G.cz;if(modalTab==='skills')return G.autoFold===false?2:3;if(['craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
+const CZN = ['大', '中', '小', '收'];
 function mobTitle(){ uiTitle(); }
-function cycleCz(){ const current = uiBattleSize(); G.cz = (current + 1) % 3; G.userCz = true; G.dirty = true; mobTitle(); }
-const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; return Math.min([340,260,168][i],h*[.5,.36,.25][i])/Math.max(1,innerWidth); };
+function cycleCz(){ const current = uiBattleSize(); G.cz = (current + 1) % 4; G.userCz = true; G.dirty = true; mobTitle(); }
+const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
 const RISKM = Object.keys(MODS).filter(k => ['challenge','mixed'].includes(MODS[k].kind));
 function runMods(R){
   const mods = R.map.mods || []; if (!mods.length) return '';
@@ -230,7 +247,9 @@ function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.fl
 const offYield = fn => { if (typeof MessageChannel === 'function'){ const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); fn(); }; c.port2.postMessage(0); } else setTimeout(fn, 0); };
 const OFF_WINDOW = 600;   // 離線只精確模擬前 10 分鐘，其餘用這段的收益率放大
 function offlineBulk(R, f, w){
-  f *= .8;   // 放大段不再精確推進難度，保守折損兩成
+  // 放大段遞減：前 2 小時 ×0.5、之後 2 小時 ×0.3、其餘 ×0.15，離線越久越不划算，上班族不會因為關機一晚爆賺
+  const eff = Math.min(R, 7200)*.5 + Math.max(0, Math.min(R - 7200, 7200))*.3 + Math.max(0, R - 14400)*.15;
+  f *= eff/Math.max(1, R);
   const K = Math.round(w.kills*f), d = lvlNow(), q = runQ();
   G.totalKills += K; G.gold += Math.round(w.gold*f); G.chips += Math.round(w.chips*f); G.deaths += Math.round(w.deaths*f);
   if (w.xp > 0) gainXp(w.xp*f);
@@ -240,7 +259,7 @@ function offlineBulk(R, f, w){
   for (let i = hit(.012); i > 0; i--) pickup({ kind:'cart', id:tPick(Object.keys(MODES)) });
   for (let i = hit(.025); i > 0; i--) pickup({ kind:'gem', id:tPick(Object.keys(SUPPS)) });
   for (let i = Math.min(15, hit(.03)); i > 0; i--) pickup({ kind:'map', map:makeMap(d) });
-  const boss = Math.min(Math.floor(w.boss*f), Math.floor(R/1800)); if (boss > 0){ G.bossKills = (G.bossKills || 0) + boss; if (G.push && !G.run){ G.depth += boss; G.maxDepth = Math.max(G.maxDepth, G.depth); } }
+  const boss = Math.min(Math.floor(w.boss*f), Math.floor(R/3600)); if (boss > 0){ G.bossKills = (G.bossKills || 0) + boss; if (G.push && !G.run){ G.depth += boss; G.maxDepth = Math.max(G.maxDepth, G.depth); } }
 }
 function catchUp(sec, report){
   if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
@@ -286,7 +305,7 @@ function setupPanel(){
     .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px} .mc{border:1.5px solid var(--ink);border-radius:14px;padding:8px 10px;box-shadow:0 2px 0 #b9c6ee} .mc.dim{opacity:.5} .mc.run{margin-bottom:10px;border-style:dashed}
     .mc ul{margin:4px 0 6px;padding-left:16px} .hint{color:var(--muted);font-size:11.5px;margin:4px 0 8px;line-height:1.5} .hint b{color:var(--ink)}
     .srow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px} select,.sv{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:3px 6px;max-width:100%}
-    .mc>select{display:block;margin:6px 0} .tree{width:100%;max-width:520px;display:block;margin:0 auto 6px;background:radial-gradient(circle,rgba(111,196,245,.22) 1.6px,transparent 2px) 0 0/16px 16px,linear-gradient(#ffffff,#e6f1ff);border:3px solid #fff;box-shadow:0 0 0 2px #aab8ee;border-radius:18px} .tn.open circle,.tn.open polygon{animation:tp 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center} @keyframes tp{50%{transform:scale(1.12)}}
+    .mc>select{display:block;margin:6px 0} .treebox{position:relative;width:100%;max-width:520px;margin:0 auto 6px} .treebox .treecv{display:block;width:100%;aspect-ratio:1;image-rendering:pixelated;image-rendering:crisp-edges;border:3px solid #fff;box-shadow:0 0 0 2px #7d8bbd;box-sizing:border-box;background:#dfe9ff} body #mbody .treebox svg.tree{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);margin:0!important;max-width:none;background:none!important;border:0!important;box-shadow:none!important;outline:none} body.ui-material #mbody .treebox svg.tree{background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important} body.ui-material #mbody .treebox svg.tree .tn :is(circle,polygon){fill:transparent!important;stroke:none!important;animation:none!important} body.ui-material #mbody .treebox svg.tree>line{display:none} .treebox .tn.open .tnb{animation:tnblink 1s steps(2) infinite} .treebox .tn:focus-visible .tnb,.treebox .tn:focus-visible circle{outline:none;stroke:#e2583d} @keyframes tnblink{50%{opacity:0}} @media(prefers-reduced-motion:reduce){.treebox .tn.open .tnb{animation:none}} .tree{width:100%;max-width:520px;display:block;margin:0 auto 6px;background:radial-gradient(circle,rgba(111,196,245,.22) 1.6px,transparent 2px) 0 0/16px 16px,linear-gradient(#ffffff,#e6f1ff);border:3px solid #fff;box-shadow:0 0 0 2px #aab8ee;border-radius:18px} .tn.open circle,.tn.open polygon{animation:tp 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center} @keyframes tp{50%{transform:scale(1.12)}}
     .ach{padding-left:0;list-style:none;margin:6px 0 0}.ach li{margin:3px 0}.ach .got{color:#a87400}
     .chars{display:flex;gap:6px;margin:4px 0}.chr{font:inherit;flex:1;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:4px;cursor:pointer;display:flex;flex-direction:column;font-size:13px}.chr.on{background:#d9e6ff;box-shadow:inset 0 0 0 2px #4a7fdc}.chr[disabled]{opacity:.5;cursor:default}.chr .mute{font-size:10px}
     .cards{display:flex;gap:8px;margin:10px 0}.mbox.small:has(.cards){width:min(470px,94vw)}
