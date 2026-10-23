@@ -835,6 +835,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.41.2', d:'2026-10-23', t:['接線板的電線改成一條連續的粗電纜，帶高光；沿路的配件襯墊改成低調的淡色小圓點，畫面焦點放在電線、電源與插槽'] },
   { v:'0.41.1', d:'2026-10-23', t:['技能頁新手引導重做：開頭一句話講明接線板是什麼，每一步只講一件事，並讓下一步要點的格子閃爍提示','第 2、3 步多了「一鍵幫我設好」按鈕，不想研究的人一按就完成','接線板下方加了圖例：電源、技能插槽、色塊各代表什麼'] },
   { v:'0.41.0', d:'2026-10-23', t:['技能接線板全面改版：電源與插槽有紅、藍、綠三色，每個插槽只能接同色電源，線愈繞愈能經過更多色塊','配件只能放在線經過的色塊襯墊上；和線同色的襯墊效果 ×2，異色 ×1，不再限制線長與配件數量','拖線更順：點電源或插槽就會沿路補線，也可以直接把配件拖到襯墊上，或按「自動配置」一鍵擺放','接線板換上天藍 Y2K 風格：粗黑邊、發光色塊與彩色電路線','舊存檔會自動轉換：技能保留並自動接線，配件重新放到襯墊上，戰力可能略有變動'] },
   { v:'0.40.1', d:'2026-10-23', t:['自動換裝現在可以換掉暗金核心：新裝備戰力高出 35% 才會換，核心仍留在收藏，可一鍵換回','各頁小標題（新手任務、目標、圖鑑分類）文字改成白色，不再暗沉難讀','還原按鈕與輸入欄的斜面藍紫風格，不再使用扁平白色按鈕'] },
@@ -5041,7 +5042,7 @@ function wireSvg(){
     const done = GridLab.connected(B, w.sock), col = GridLab.SOCK_COL[w.sock], s = GridLab.SRCS[w.sock], k = GridLab.SOCKS[w.sock], pts = [pt(s[0], s[1]), ...w.cells.map(c => pt(c[0], c[1]))];
     if (done) pts.push(pt(k[0], k[1]));
     const p = pts.join(' '), sel = w.sock === selSock;
-    o += `<polyline class="wo" points="${p}"/><polyline class="wl c-${col} ${done ? 'done' : 'part'}${sel ? ' sel' : ''}" points="${p}"/>${sel || !done ? `<polyline class="wf" points="${p}"/>` : ''}`;
+    o += `<polyline class="wo" points="${p}"/><polyline class="wl c-${col} ${done ? 'done' : 'part'}${sel ? ' sel' : ''}" points="${p}"/><polyline class="wh" points="${p}"/>${sel || !done ? `<polyline class="wf" points="${p}"/>` : ''}`;
   }
   return `<svg class="wsvg" viewBox="0 0 ${GridLab.W} ${GridLab.H}" preserveAspectRatio="none" aria-hidden="true">${o}</svg>`;
 }
@@ -5364,10 +5365,10 @@ body #mbody .pz.wb{--cr:#ff6a3d;--cb:#3f86ff;--cg:#35d493;--ink:#14204f;position
 #mbody .pz.wb button.pc.dead{background:transparent!important;box-shadow:none!important;opacity:0}
 #mbody .pz.wb button.pc.rk{background:repeating-linear-gradient(45deg,var(--ink) 0 4px,#ffd54a 4px 8px)!important;box-shadow:inset 0 0 0 2px var(--ink)!important;color:#fff!important;font-size:14px;font-weight:700;text-shadow:0 0 2px var(--ink),0 0 2px var(--ink)}
 /* 色塊襯墊：配件只能放在這裡；線經過時變成空心環，讓線看得見 */
-#mbody .pz.wb button.pc.pd{background:radial-gradient(circle at 32% 26%,#ffffffd0 0 9%,#fff0 26%),var(--padc)!important;box-shadow:inset 0 0 0 2px var(--ink),inset 0 -3px 0 #0003!important}
-#mbody .pz.wb button.pc.pd:not(.fill):not(.mt)::before{content:"★";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;text-shadow:1px 1px 0 var(--ink);opacity:.9;pointer-events:none}
-#mbody .pz.wb button.pc.pd.mt span{font-size:11px;font-weight:800;color:#fff;text-shadow:1px 1px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
-#mbody .pz.wb button.pc.pd.wr:not(.fill){background:radial-gradient(circle,var(--padc) 0 28%,#fff0 31%)!important;box-shadow:inset 0 0 0 2px var(--padc)!important}
+#mbody .pz.wb button.pc.pd{background:radial-gradient(circle,color-mix(in srgb,var(--padc) 50%,#fff) 0 21%,#fff0 25%),#ffffff2e!important;box-shadow:inset 0 0 0 1px #ffffff80!important}
+#mbody .pz.wb button.pc.pd:not(.fill)::before{content:none}
+#mbody .pz.wb button.pc.pd:not(.fill) span{display:none}
+#mbody .pz.wb button.pc.pd.wr:not(.fill){background:radial-gradient(circle,color-mix(in srgb,var(--padc) 55%,#fff) 0 24%,#fff0 28%),#ffffff2e!important}
 /* 電源：同色的插頭方塊 */
 #mbody .pz.wb button.pc.src{background:linear-gradient(#ffffff90,#fff0 52%),var(--padc)!important;box-shadow:inset 0 0 0 2px var(--ink),inset 0 -3px 0 #0003!important;color:#fff!important}
 #mbody .pz.wb button.pc.src span{font-size:15px;font-weight:800;text-shadow:1px 1px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink);-webkit-line-clamp:1}
@@ -5400,8 +5401,8 @@ body #mbody .dpsbar{padding:5px 8px;margin:4px 0}.ui-inventory{margin:8px 0}
 #mbody .pz.wb button.pc.pv.bad{box-shadow:inset 0 0 0 2px #bd342b!important;background-color:#ffc4c455!important}
 .wsvg{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);pointer-events:none;z-index:1;overflow:visible;shape-rendering:geometricPrecision}
 .wsvg polyline{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.wsvg .wo{stroke:#14204f;stroke-width:.42}
-.wsvg .wl{stroke-width:.26}.wsvg .wl.c-r{stroke:#ff5a3c}.wsvg .wl.c-b{stroke:#3c7dff}.wsvg .wl.c-g{stroke:#2fd08a}.wsvg .wl.part{stroke-dasharray:.34 .16}.wsvg .wl.sel{stroke-width:.3}
+.wsvg .wo{stroke:#14204f;stroke-width:.4}.wsvg .wh{stroke:#ffffff99;stroke-width:.07;transform:translate(-.04px,-.04px)}
+.wsvg .wl{stroke-width:.28}.wsvg .wl.c-r{stroke:#ff5a3c}.wsvg .wl.c-b{stroke:#3c7dff}.wsvg .wl.c-g{stroke:#2fd08a}.wsvg .wl.part{stroke-dasharray:.34 .16}.wsvg .wl.sel{stroke-width:.3}
 .wsvg .wf{stroke:#fff;stroke-width:.07;stroke-dasharray:.07 .5;animation:wireflow 1s linear infinite}
 @keyframes wireflow{to{stroke-dashoffset:-1.14}}
 @media(prefers-reduced-motion:reduce){.wsvg .wf{animation:none}#mbody .pz.wb button.pc.chip.blink::after{animation:none}}
