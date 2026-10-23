@@ -54,11 +54,11 @@ function wireCell(x, y, ctx){
       const i = si, col = GridLab.SOCK_COL[i];
       if (!wOpen(i)) return `<button type="button" class="pc lock k${col}" ${ev}><span>L${GridLab.SOCK_LV[i]}</span></button>`;
       const a = wActive(i), wired = GridLab.connected(B, i);
-      if (!a) return `<button type="button" class="pc sk empty k${col}${selSock === i ? ' sel' : ''}" ${ev}><span>S${i + 1}</span></button>`;
-      return `<button type="button" class="pc fill sk chip k${col}${selSock === i ? ' sel' : ''}${wired ? ' lnk' : ' open'}" data-skill="${a.key}" ${ev}>${sico(a.key, 20)}<span>${SKILLS[a.key].n}</span></button>`;
+      if (!a) return `<button type="button" class="pc sk empty k${col}${selSock === i ? ' sel' : ''}" ${ev}><span>終點</span></button>`;
+      return `<button type="button" class="pc fill sk chip k${col}${selSock === i ? ' sel' : ''}${wired ? ' lnk' : ' open'}" data-skill="${a.key}" ${ev}>${sico(a.key, 20)}<span>${SKILLS[a.key].n}</span><em class="lb">終點</em></button>`;
     }
     const ri = GridLab.SRCS.findIndex(s => s[0] === x && s[1] === y);
-    if (ri >= 0) return `<button type="button" class="pc bus src s${GridLab.SOCK_COL[ri]}${wOpen(ri) ? '' : ' off'}${selSock === ri ? ' sel' : ''}" ${ev}><span>⚡</span></button>`;
+    if (ri >= 0) return `<button type="button" class="pc bus src s${GridLab.SOCK_COL[ri]}${wOpen(ri) ? '' : ' off'}${selSock === ri ? ' sel' : ''}" ${ev}><span>⚡</span><em class="lb in">起點</em></button>`;
     return `<button type="button" class="pc dead" tabindex="-1" aria-hidden="true" disabled></button>`;
   }
   if (GridLab.isRock(x, y)) return `<button type="button" class="pc rk" ${ev}><span>✕</span></button>`;
@@ -102,14 +102,14 @@ function wireSelCard(){
 
 function wireGuideHtml(){
   const step = wireStep(), B = G.board;
-  const what = step === 1 ? '<p class="wwhat">接線板是讓技能變強的電路：<b>電源⚡</b>經過<b>電線</b>接到<b>技能插槽</b>，電線經過的<b>色塊</b>放上配件，技能就更強。</p>' : '';
-  const txt = ['', '先把技能裝上：點亮起的<b>空插槽</b>（板子上面或右邊），再選一個技能。', '接上電線：從亮起的<b>電源⚡</b>開始，點或拖到亮起的<b>插槽</b>就會自動接好。', '放上配件：把下面的配件拖到亮起的<b>色塊</b>上；和線同色的色塊效果 ×2。', '完成了！想更強：讓電線繞去更多色塊，尤其是和線同色的色塊。'][step];
+  const what = step === 1 ? '<p class="wwhat">接線板是讓技能變強的電路：<b>起點⚡</b>經過<b>電線</b>接到<b>終點（技能插槽）</b>，電線經過的<b>色塊</b>放上配件，技能就更強。</p>' : '';
+  const txt = ['', '先把技能裝上：點亮起的<b>空插槽</b>（板子上面或右邊），再選一個技能。', '接上電線：從亮起的<b>起點⚡</b>開始，點或拖到亮起的<b>終點</b>就會自動接好。', '放上配件：把下面的配件拖到亮起的<b>色塊</b>上；和線同色的色塊效果 ×2。', '完成了！想更強：讓電線繞去更多色塊，尤其是和線同色的色塊。'][step];
   const chips = ['裝技能', '接電線', '放配件'].map((n, i) => `<li class="${step > i + 1 ? 'done' : step === i + 1 ? 'now' : ''}"><b>${step > i + 1 ? '✓' : i + 1}</b>${n}</li>`).join('');
   const cta = step >= 2 && step < 4 ? `<button class="mb wcta" onclick="wireAuto()">一鍵幫我設好</button>` : '';
   return `<section class="wguide${step === 4 ? ' ok' : ''}" aria-label="新手引導">${what}<ol>${chips}</ol><p class="wnow">${txt}</p>${cta}</section>`;
 }
 function wireLegendHtml(){
-  return `<div class="wlegend" aria-hidden="true"><span><i class="lg src">⚡</i>電源（顏色＝線的顏色）</span><span><i class="lg sock"></i>技能插槽</span><span><i class="lg pad">★</i>色塊：放配件，同色 ×2</span></div>`;
+  return `<div class="wlegend" aria-hidden="true"><span><i class="lg src">⚡</i>起點（電源，顏色＝線的顏色）</span><span><i class="lg sock"></i>終點（技能插槽，接同色）</span><span><i class="lg pad">★</i>色塊：放配件，同色 ×2</span></div>`;
 }
 function wireTopHtml(){
   wireInstallStyles();
@@ -408,6 +408,10 @@ body #mbody .dpsbar{padding:5px 8px;margin:4px 0}.ui-inventory{margin:8px 0}
 .wlegend{display:flex;flex-wrap:wrap;gap:4px 12px;margin:5px 0 2px;font-size:12px;color:#33407f}.wlegend span{display:inline-flex;align-items:center;gap:4px}
 .wlegend .lg{display:inline-block;width:16px;height:16px;line-height:16px;text-align:center;font-style:normal;font-size:10px;border:2px solid #14204f;color:#fff}
 .wlegend .lg.src{background:#ff5a3c}.wlegend .lg.sock{background:#fff;border-color:#3c7dff}.wlegend .lg.pad{background:#2fd08a}
+#mbody .pz.wb .lb{position:absolute;font-style:normal;font-size:9px;line-height:1;white-space:nowrap;color:#fff;pointer-events:none;z-index:4}
+#mbody .pz.wb .lb.in{left:0;right:0;bottom:2px;text-align:center;text-shadow:1px 1px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
+#mbody .pz.wb .lb:not(.in){left:50%;top:-5px;transform:translateX(-50%);padding:2px 3px;background:var(--ink)}
+#mbody .pz.wb button.pc.sk.empty span{font-size:10px;font-weight:700}
 @keyframes wirehint{0%,100%{box-shadow:0 0 0 2px #fff27a,0 0 6px 2px #ffd400}50%{box-shadow:0 0 0 3px #fff,0 0 14px 5px #ffd400}}
 #mbody .pz.wb button.pc.hint{animation:wirehint 1s ease-in-out infinite;z-index:3}
 @media(prefers-reduced-motion:reduce){#mbody .pz.wb button.pc.hint{animation:none;outline:3px solid #ffd400}}
