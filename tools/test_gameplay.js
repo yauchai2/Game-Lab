@@ -33,12 +33,17 @@ run('suspension ignores saved auto choice preferences without consuming queued c
   assert.equal(Object.keys(G.cards).length,0);assert.equal(Object.keys(G.relics).length,0);
   assert.equal(summary.cards.length,0);
 `);
-run('every distinct legendary is retained and normal high score cannot remove the active core',`
+run('every distinct legendary is retained and a normal item replaces the active core only when it is at least 35% stronger',`
   const a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});
   assert.strictEqual(G.armory.W_ECHO,a);assert.strictEqual(G.equip.weapon,a);
   pickup({kind:'item',it:b});assert.strictEqual(G.armory.W_FORK,b);assert.strictEqual(G.equip.weapon,a);
-  const before=G.parts;pickup({kind:'item',it:makeItem('weapon',2,1000)});
-  assert.strictEqual(G.equip.weapon,a);assert.equal(G.parts,before);assert(G.inventory.some(it=>it.il===1000));
+  const before=G.parts,basePower=G.st.power;
+  const weak=makeItem('weapon',2,1);pickup({kind:'item',it:weak});
+  assert.strictEqual(G.equip.weapon,a);assert.equal(G.parts,before);assert(G.inventory.includes(weak));
+  const strong=makeItem('weapon',2,1000);assert(calc({...G.equip,weapon:strong}).power>basePower*AUTO_LG_MARGIN);
+  pickup({kind:'item',it:strong});
+  assert.strictEqual(G.equip.weapon,strong);assert.strictEqual(G.armory.W_ECHO,a);assert.strictEqual(G.armory.W_FORK,b);assert.strictEqual(G.equipBackup.weapon,a);
+  assert(restoreEquipment('weapon'));assert.strictEqual(G.equip.weapon,a);
 `);
 run('manual core swaps and restoration preserve ownership, resources and the previous normal item',`
   const normal=G.equip.weapon,a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});pickup({kind:'item',it:b});

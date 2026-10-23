@@ -791,7 +791,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  { v:'0.40.1', d:'2026-10-23', t:['存檔、回饋、角色、打造等頁的按鈕與輸入欄統一成淡紫扁平風，主要按鈕改成藍紫，不再是紅色或灰色斜面','各頁小標題（新手任務、目標、圖鑑分類）文字改成白色，不再暗沉難讀'] },
+  { v:'0.40.1', d:'2026-10-23', t:['自動換裝現在可以換掉暗金核心：新裝備戰力高出 35% 才會換，核心仍留在收藏，可一鍵換回','各頁小標題（新手任務、目標、圖鑑分類）文字改成白色，不再暗沉難讀','還原按鈕與輸入欄的斜面藍紫風格，不再使用扁平白色按鈕'] },
   { v:'0.40.0', d:'2026-10-23', t:['新增「排行榜」（更多 → 排行榜），先放了幾筆標示「示範」的假排名讓你看版面：自動記下最深層數與無限之塔最高層，連同當時的完整構築','可以隨時記錄目前構築，點開能看到技能、配件接線、裝備與遺物','構築可以複製成構築碼傳給朋友，貼上就能觀摩對方怎麼砌','目前只存在這台瀏覽器，全球榜之後開放'] },
   { v:'0.39.25', d:'2026-10-23', t:['角色頁的小手機改成等距視角的低解像度 3D 模型，慢速自轉，不再有誇張的透視'] },
   { v:'0.39.24', d:'2026-10-23', t:['角色頁只保留一個「角色與裝扮」入口','修正：還沒拾取的掉落物不再飄到角色頭上打轉，會留在原地等拾取','「更多」選單的分組與入口卡片改成藍紫窗口風：標題列、淡紫卡片與硬陰影','編年史入口改為檸檬黃卡片'] },
@@ -1378,6 +1378,7 @@ function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
+const AUTO_LG_MARGIN = 1.35;   // 自動換裝要換掉暗金核心，新裝備的戰力必須高出 35%；核心仍留在收藏，可一鍵換回
 function serialize(){ return { v:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 function applySave(o){
@@ -1437,7 +1438,7 @@ function collectEquipment(it){
   if(!validGear(it))return;
   if(it.lg)return false;
   if(it.r<G.filter){recycleOverflow(it);return true;}
-  const old=G.equip[it.slot],upgrade=G.autoEquip&&!old?.lg&&(!old||calc({...G.equip,[it.slot]:it}).power>G.st.power*1.02);
+  const old=G.equip[it.slot],upgrade=G.autoEquip&&(!old||calc({...G.equip,[it.slot]:it}).power>G.st.power*(old.lg?AUTO_LG_MARGIN:1.02));
   if(old&&!old.lg)storeGear(old);
   if(!storeGear(it)){recycleOverflow(it);return true;}
   if(upgrade){G.equipBackup[it.slot]=old;G.equip[it.slot]=it;recalc();if(G.off)G.off.eq++;logLine(`換上 ${it.name}，上一件保留在倉庫`,RAR[it.r].c);}
@@ -4764,16 +4765,6 @@ body.ui-material #mbody .ui-menu-group{margin:12px 0!important;padding:0 10px 10
 body.ui-material #mbody .ui-menu-group .ui-directory,body.m.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:1fr!important}
 body.ui-material #mbody .ui-directory button{background-image:none!important;grid-template-columns:auto 1fr auto}
 `;document.head.appendChild(st);})();
-/* 殘留灰色／亮白清理：通用按鈕、主要按鈕、輸入欄、核心收藏摺疊列統一成藍紫窗口語言（同時蓋過 pixelfx 與對話窗的舊規則） */
-(function(){const rules=P=>`
-${P} button.mb:not(.pri):not([aria-pressed=true]){background:#f4f5ff!important;background-image:none!important;color:#1d2552!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;text-shadow:none!important}
-${P} button.mb.pri{background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;border:2px solid #fff!important;outline:1px solid #1d2552;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;text-shadow:none!important}
-${P} button.mb[aria-pressed=true]{background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;border:2px solid #fff!important;outline:1px solid #1d2552;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important}
-${P} button.mb:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #8c9bd0!important}
-${P} button.mb[disabled]{opacity:.55}
-${P} :is(input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea){background:#f4f5ff!important;color:#1d2552!important;border:2px solid #8c9bd0!important;outline:0;border-radius:0!important;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 #cfd6ee!important;font-family:var(--ux-body,system-ui)}
-${P} :is(input,select,textarea):focus{border-color:#4a5aa8!important;outline:2px solid #ffe45c}
-`;const st=document.createElement('style');st.textContent=rules('html body.ui-material #mbody')+rules('html body.ui-material.ui-pixelfx :is(#mbody,#ovl)');document.head.appendChild(st);})();
 (function(){const st=document.createElement('style');st.textContent=`html body.ui-material :is(#mbody,#ovl) .mct,html body.ui-material :is(#mbody,#ovl) .mct *{color:#fff!important}html body.ui-material :is(#mbody,#ovl) .mct small,html body.ui-material :is(#mbody,#ovl) .mct button{color:#1d2552!important}`;document.head.appendChild(st);})();
 
 </script>
