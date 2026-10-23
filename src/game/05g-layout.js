@@ -215,12 +215,13 @@ function uiConfirmRespec(){
 }
 
 /* 倉庫與電路合成沿用同一外殼、確認及焦點系統。 */
-const WAREHOUSE_UI={slot:'all',kind:'gear',page:0,sel:null};const WAREHOUSE_PAGE_SIZE=36;
-function uiWarehouseFilter(key,value){if(key==='slot'&&!['all',...Object.keys(SLOTN)].includes(value)||key==='kind'&&!['gear','core'].includes(value)||!['slot','kind'].includes(key))return;WAREHOUSE_UI[key]=value;WAREHOUSE_UI.page=0;renderModal();}
+const WAREHOUSE_UI={slot:'all',kind:'gear',page:0,sel:null,sort:'new'};const WAREHOUSE_PAGE_SIZE=36;
+function uiWarehouseFilter(key,value){if(key==='slot'&&!['all',...Object.keys(SLOTN)].includes(value)||key==='kind'&&!['gear','core'].includes(value)||key==='sort'&&!['new','dps'].includes(value)||!['slot','kind','sort'].includes(key))return;WAREHOUSE_UI[key]=value;WAREHOUSE_UI.page=0;renderModal();}
+function uiSortByDps(list,mode){if(mode!=='dps')return list;const dps=new Map();for(const it of list)dps.set(it,calc({...G.equip,[it.slot]:it}).dps);return list.slice().sort((a,b)=>dps.get(b)-dps.get(a));}
 function warehouseHtml(){
- const cores=Object.values(G.armory),source=WAREHOUSE_UI.kind==='core'?cores:G.inventory,list=source.filter(it=>WAREHOUSE_UI.slot==='all'||it.slot===WAREHOUSE_UI.slot).slice().reverse(),pages=Math.max(1,Math.ceil(list.length/WAREHOUSE_PAGE_SIZE));WAREHOUSE_UI.page=Math.min(WAREHOUSE_UI.page,pages-1);
+ const cores=Object.values(G.armory),source=WAREHOUSE_UI.kind==='core'?cores:G.inventory,list=uiSortByDps(source.filter(it=>WAREHOUSE_UI.slot==='all'||it.slot===WAREHOUSE_UI.slot).slice().reverse(),WAREHOUSE_UI.sort),pages=Math.max(1,Math.ceil(list.length/WAREHOUSE_PAGE_SIZE));WAREHOUSE_UI.page=Math.min(WAREHOUSE_UI.page,pages-1);
  const start=WAREHOUSE_UI.page*WAREHOUSE_PAGE_SIZE;
- return `<div class="ui-warehouse-tools"><div class="ui-warehouse-summary"><b>裝備 <span id="ui-gear-count">${G.inventory.length}</span>／${whCap()}</b><button class="mb" data-focus="warehouse-auto" aria-pressed="${G.autoEquip}" onclick="G.autoEquip=!G.autoEquip;G.dirty=true;renderModal()">自動換裝：${G.autoEquip?'開':'關'}</button></div><div class="ui-segments" role="group" aria-label="倉庫分類">${[['gear','一般裝備 '+G.inventory.length],['core','傳奇核心 '+cores.length]].map(([id,n])=>`<button data-focus="warehouse-kind-${id}" aria-pressed="${WAREHOUSE_UI.kind===id}" onclick="uiWarehouseFilter('kind','${id}')">${n}</button>`).join('')}</div><div class="ui-segments" role="group" aria-label="倉庫部位">${[['all','全部'],...Object.entries(SLOTN)].map(([id,n])=>`<button data-focus="warehouse-filter-${id}" aria-pressed="${WAREHOUSE_UI.slot===id}" onclick="uiWarehouseFilter('slot','${id}')">${n}</button>`).join('')}</div><p class="uxmeta">${list.length} 件</p></div>${warehouseCardHtml()}<div class="ui-item-grid ui-warehouse-list" role="group" aria-label="${WAREHOUSE_UI.kind==='core'?'核心':'裝備'}網格">${list.slice(start,start+WAREHOUSE_PAGE_SIZE).map(it=>uiGearTile(it,WAREHOUSE_UI.kind==='core')).join('')||'<p class="ui-grid-empty">目前沒有這類裝備。角色走近掉落物會自動拾入；可切換部位或繼續冒險。</p>'}</div><div class="uxactions ui-grid-pagination"><button class="mb" data-focus="warehouse-prev" ${WAREHOUSE_UI.page===0?'disabled':''} onclick="warehouseMove(-1)">上一頁</button><span>第 ${WAREHOUSE_UI.page+1}／${pages} 頁</span><button class="mb" data-focus="warehouse-next" ${WAREHOUSE_UI.page>=pages-1?'disabled':''} onclick="warehouseMove(1)">下一頁</button></div><details class="ui-rules"><summary>倉庫與保護規則</summary><p>普通裝備最多 200 件，核心每種保留一件。滿倉優先保留高稀有度與高階詞綴；穿著、上一件、構築引用、保管鎖定、詞綴鎖定及腐化物品受保護。低於拾取門檻的裝備會回收；累計回收 ${G.storageRecycled} 件。</p></details>`;
+ return `<div class="ui-warehouse-tools"><div class="ui-warehouse-summary"><b>裝備 <span id="ui-gear-count">${G.inventory.length}</span>／${whCap()}</b><button class="mb" data-focus="warehouse-auto" aria-pressed="${G.autoEquip}" onclick="G.autoEquip=!G.autoEquip;G.dirty=true;renderModal()">自動換裝：${G.autoEquip?'開':'關'}</button></div><div class="ui-segments" role="group" aria-label="倉庫分類">${[['gear','一般裝備 '+G.inventory.length],['core','傳奇核心 '+cores.length]].map(([id,n])=>`<button data-focus="warehouse-kind-${id}" aria-pressed="${WAREHOUSE_UI.kind===id}" onclick="uiWarehouseFilter('kind','${id}')">${n}</button>`).join('')}</div><div class="ui-segments" role="group" aria-label="倉庫部位">${[['all','全部'],...Object.entries(SLOTN)].map(([id,n])=>`<button data-focus="warehouse-filter-${id}" aria-pressed="${WAREHOUSE_UI.slot===id}" onclick="uiWarehouseFilter('slot','${id}')">${n}</button>`).join('')}</div><div class="ui-segments" role="group" aria-label="排序">${[['new','最新'],['dps','DPS 由高至低']].map(([id,n])=>`<button data-focus="warehouse-sort-${id}" aria-pressed="${WAREHOUSE_UI.sort===id}" onclick="uiWarehouseFilter('sort','${id}')">${n}</button>`).join('')}</div><p class="uxmeta">${list.length} 件</p></div>${warehouseCardHtml()}<div class="ui-item-grid ui-warehouse-list" role="group" aria-label="${WAREHOUSE_UI.kind==='core'?'核心':'裝備'}網格">${list.slice(start,start+WAREHOUSE_PAGE_SIZE).map(it=>uiGearTile(it,WAREHOUSE_UI.kind==='core')).join('')||'<p class="ui-grid-empty">目前沒有這類裝備。角色走近掉落物會自動拾入；可切換部位或繼續冒險。</p>'}</div><div class="uxactions ui-grid-pagination"><button class="mb" data-focus="warehouse-prev" ${WAREHOUSE_UI.page===0?'disabled':''} onclick="warehouseMove(-1)">上一頁</button><span>第 ${WAREHOUSE_UI.page+1}／${pages} 頁</span><button class="mb" data-focus="warehouse-next" ${WAREHOUSE_UI.page>=pages-1?'disabled':''} onclick="warehouseMove(1)">下一頁</button></div><details class="ui-rules"><summary>倉庫與保護規則</summary><p>普通裝備最多 200 件，核心每種保留一件。滿倉優先保留高稀有度與高階詞綴；穿著、上一件、構築引用、保管鎖定、詞綴鎖定及腐化物品受保護。低於拾取門檻的裝備會回收；累計回收 ${G.storageRecycled} 件。</p></details>`;
 }
 function whClose(){const k=WAREHOUSE_UI.sel;WAREHOUSE_UI.sel=null;renderModal();document.querySelector(`[data-focus="gear-${k}"]`)?.focus();}
 function warehouseCardHtml(){
@@ -298,7 +299,7 @@ function uiCityHtml(){const C=G.city||(G.city=newCity());CITY_UI.tier=Math.min(C
 let CITY_CHECKPOINT_REVEALED=null;
 function uiCityRevealCheckpoint(){const c=G.run?.city;if(modalTab!=='maps'||!c?.awaitChoice||UX_LAYERS.length)return;const key=G.run.map.id+':'+c.stage;if(CITY_CHECKPOINT_REVEALED===key)return;CITY_CHECKPOINT_REVEALED=key;requestAnimationFrame(()=>{if(modalTab!=='maps'||!G.run?.city?.awaitChoice)return;$('mbody').scrollTop=0;document.querySelector('[data-focus="city-branch-safe"]')?.focus({preventScroll:true});});}
 
-const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰守關者':['守關者條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'戰鬥畫面':['戰鬥畫面（手機）',()=>G.userCz?['大','中','小','收起'][G.cz==null?1:G.cz]:'自動'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
+const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰守關者':['守關者條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'戰鬥畫面':['戰鬥畫面（手機）',()=>G.userCz?['大','大','小','收起'][Math.max(1,G.cz==null?1:G.cz)]:'自動'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
 function uiInstallSettings(){const root=$('uisettings');if(!root||root.dataset.gridReady)return;root.dataset.gridReady='true';for(const wrap of root.querySelectorAll('#btns .stepwrap')){const button=wrap.querySelector('.act'),label=button.textContent.replace('▾','').trim();if(UI_SETTING_LABELS[label]){wrap.dataset.setting=label;button.dataset.focus='setting-'+label;}}
  const order=['模式','挑戰守關者','戰利品過濾','戰鬥畫面','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
  uiSyncSettings();}
@@ -387,3 +388,47 @@ function uiMapGroups(){
 #mbody .rpgm .rc,#mbody .ui-section{background:transparent}
 `;document.head.appendChild(st);})();
 (function(){const st=document.createElement('style');st.textContent=`#mbody .rc>.rh,#mbody .rc.wide>.rh{border-radius:0!important;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;border:2px solid #fff!important;padding:3px 8px!important}`;document.head.appendChild(st);})();
+/* 設定頁：每組設定做成小視窗（標題列＋內容），圖示格、像素滑桿與檸檬黃數值標籤 */
+(function(){const st=document.createElement('style');st.textContent=`
+body.ui-material #uisettings .ui-setting-grid>.ui-setting-block,body #uisettings .ui-setting-block{position:relative;margin:10px 0!important;padding:0 10px 10px!important;background:#e6e8f6!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:3px 3px 0 #8c9bd0}
+body #uisettings .ui-setting-block>h4,body #uisettings .view-fx-control>div:first-child{display:flex;align-items:center;justify-content:flex-start;gap:6px;margin:0 -10px 10px!important;padding:4px 8px;font:14px var(--ux-body,system-ui);color:#fff;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);border-bottom:2px solid #1d2552}
+body #uisettings .ui-setting-block>h4::before,body #uisettings .view-fx-control>div:first-child label::before{content:"";display:inline-block;width:8px;height:8px;margin-right:6px;background:#ffe45c;border:1px solid #1d2552}
+body #uisettings .view-fx-control label{color:#fff;font:14px var(--ux-body,system-ui)}
+body #uisettings .view-fx-control output{margin-left:auto;padding:1px 8px;background:#ffe45c;color:#1d2552;border:1px solid #1d2552;font-size:12px}
+body #uisettings .view-fx-ticks span{color:#33407f}
+body #uisettings input#ui-fx-level{-webkit-appearance:none;appearance:none;background:transparent}
+body #uisettings input#ui-fx-level::-webkit-slider-runnable-track{height:12px;background:#18233d;border:2px solid #1d2552;box-shadow:1px 1px 0 #fff}
+body #uisettings input#ui-fx-level::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:22px;margin-top:-7px;background:linear-gradient(#fff3bf,#efce68);border:2px solid #1d2552;border-radius:0}
+body #uisettings input#ui-fx-level::-moz-range-track{height:12px;background:#18233d;border:2px solid #1d2552}
+body #uisettings input#ui-fx-level::-moz-range-thumb{width:14px;height:20px;background:#efce68;border:2px solid #1d2552;border-radius:0}
+body.ui-material #uisettings #btns .act{position:relative;padding-left:14px!important;border-left:6px solid #33407f!important}
+body.ui-material #uisettings #btns .act::after{content:"";position:absolute;left:-6px;top:0;width:6px;height:100%;background:linear-gradient(#ffe45c 0 30%,#33407f 30% 100%);opacity:0}
+body #uisettings .view-settings .view-options>button,body #uisettings #watch-now{border-radius:0!important}
+body #uisettings .ui-rules{margin-top:8px}
+`;document.head.appendChild(st);})();
+/* 更多選單：分組改為藍紫小窗口，入口卡片與編年史同色系 */
+(function(){const st=document.createElement('style');st.textContent=`
+body #mbody .ui-menu-group{margin:12px 0!important;padding:0 10px 10px!important;background:#e6e8f6!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:3px 3px 0 #8c9bd0!important}
+body #mbody .ui-menu-group>h3{display:flex;align-items:center;gap:6px;margin:0 -10px 10px;padding:4px 8px;font:14px var(--ux-body,system-ui);letter-spacing:.06em;color:#fff;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);border-bottom:2px solid #1d2552}
+body #mbody .ui-menu-group>h3::before{content:"";width:8px;height:8px;background:#ffe45c;border:1px solid #1d2552;flex:none}
+body #mbody .ui-directory button,body #mbody .ui-wiki{background:#f4f5ff!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;color:#1d2552!important}
+body #mbody .ui-directory button:active,body #mbody .ui-wiki:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #8c9bd0!important}
+body #mbody .ui-directory button b,body #mbody .ui-wiki b{color:#1d2552}
+body #mbody .ui-directory button span,body #mbody .ui-wiki small{color:#5c6a8e!important}
+body #mbody .ui-directory button i,body #mbody .ui-wiki i{color:#33407f;font-size:13px}
+body #mbody .ui-wiki{margin-top:12px;background:linear-gradient(#fffbe0,#f6e9a8)!important}
+`;document.head.appendChild(st);})();
+/* 設定頁選項按鈕：由灰色斜面鈕改成淡紫扁平卡 */
+(function(){const st=document.createElement('style');st.textContent=`
+body #uisettings .ui-setting-grid>button,body #uisettings .view-settings .view-options>button,body #uisettings #watch-now{background:#f4f5ff!important;color:#1d2552!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;text-shadow:none!important}
+body #uisettings .ui-setting-grid>button:active,body #uisettings .view-settings .view-options>button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #8c9bd0!important}
+body #uisettings .ui-setting-grid>button small,body #uisettings .ui-setting-grid>button span{color:#5c6a8e!important}
+body #uisettings .view-options>button[aria-pressed=true],body #uisettings .view-options>button.on,body #uisettings .view-options>button.sel{background:linear-gradient(#4a5aa8,#33407f)!important;color:#fff!important}
+`;document.head.appendChild(st);})();
+(function(){const st=document.createElement('style');st.textContent=`
+body.ui-material #uisettings #btns button.act,body.ui-material #uisettings .ui-setting-grid>button.act,body.ui-material #uisettings button.act{background:#f4f5ff!important;background-image:none!important;color:#1d2552!important;border:2px solid #fff!important;border-left:6px solid #33407f!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important}
+body #uisettings button.act b{color:#1d2552}body #uisettings button.act small{color:#5c6a8e!important}
+body.ui-material #mbody .ui-menu-group{margin:12px 0!important;padding:0 10px 10px!important;background:#e6e8f6!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:3px 3px 0 #8c9bd0!important}
+body.ui-material #mbody .ui-menu-group .ui-directory,body.m.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:1fr!important}
+body.ui-material #mbody .ui-directory button{background-image:none!important;grid-template-columns:auto 1fr auto}
+`;document.head.appendChild(st);})();
