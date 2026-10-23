@@ -1,12 +1,12 @@
 ---
 version: alpha
 colors:
-  ink: "#172751"
-  muted: "#475778"
-  screen: "#e6e8f7"
-  primary: "#303d9b"
-  edge: "#9ca9c8"
-  accent: "#b94732"
+  ink: "#17243e"
+  muted: "#4b5c75"
+  screen: "#f9fcff"
+  primary: "#174fe6"
+  edge: "#9aafca"
+  accent: "#ffe34d"
 typography:
   display:
     fontFamily: '"Cubic 11", system-ui, sans-serif'
@@ -231,3 +231,28 @@ Alan 希望中央更空曠而過渡自然、修正試玩數字、加入有趣過
 ## 四主角模型與動作候選（2026-10-23）
 
 Alan 提供的 Character.zip 取代舊共用角色造型，人物原始比例與服裝輪廓以實際 GLB 為準。AKI／MILO／PING／NULL 共用 32 單位高度、16 骨架節點與 9 個動作名，保留各自原色圖；霧面材質與低面數配件沿用場景方向。characters-render.js 為新人物呈現 owner，characters-assets.js 由本地 Blender 衍生 GLB 生成；戰場、裝扮及獨立動作審核共用。原 GUI 字體、密度、畫質 owner 不變。詳見 docs/y2k-characters-handoff.md；此為候選，未發佈。
+
+
+## 亮銀與晴空配色（2026-10-23，現行候選）
+
+Alan 指出顏色暗沉，要求按提供的 look and feel 重設。本節取代前文灰紫閱讀面、氧化橘紅主要動作及像素模式暗色帶；歷史保留。參考亮銀播放器、白色資料面、晴空桌面及街頭角色雜誌的鮮藍／黃色。
+
+唯一色彩 owner 仍為 src/game/05f-ux.js 的 UX_THEME，UX_MATERIAL_CSS 消費 token，viewFxSnapshot 共用於獨立編年史。像素模式只改半徑與邊沿粗細，不再維護第二組暗色漸層。body --ink／--paper 亦轉接共用 token。
+
+| 角色 | Token | 顏色 |
+| --- | --- | --- |
+| 正文 | --ux-ink | #17243e |
+| 輔助 | --ux-muted | #4b5c75 |
+| 閱讀面 | --ux-screen | #f9fcff |
+| 標題／選中／焦點 | --ux-blue / --ux-focus | #174fe6 |
+| 邊沿 | --ux-edge | #9aafca |
+| 主要動作（深字） | --ux-accent | #ffe34d |
+| 外殼 | --ux-face | #e8eef4 |
+| 輸入 | --ux-lcd | #fff |
+| 摘要／詳情 | --ux-sky | #e4f4ff |
+| 輕選中 | --ux-selected | #dceeff |
+| 捲軸／軌道 | --ux-scroll / --ux-track | #6f93bf / #edf5fc |
+
+Cubic 11、既有幾何、玩法與存檔保持原 owner。危險動作維持原有文案與語意；不將檸檬黃當警告。--ux-pink #c32877 僅預留小面積點綴，不強行鋪滿頁面。
+
+驗證與限制見 [交接](docs/bright-y2k-theme-2026-10-23.md)。未合併／未發佈。
