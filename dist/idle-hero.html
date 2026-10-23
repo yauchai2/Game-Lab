@@ -791,6 +791,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.39.24', d:'2026-10-23', t:['角色頁只保留一個「角色與裝扮」入口','修正：還沒拾取的掉落物不再飄到角色頭上打轉，會留在原地等拾取','「更多」選單的分組與入口卡片改成藍紫窗口風：標題列、淡紫卡片與硬陰影','編年史入口改為檸檬黃卡片'] },
   { v:'0.39.23', d:'2026-10-23', t:['技能頁：配件可以直接從庫存拖到接線板格子，技能可以拖到右邊插槽（手機長按後拖曳）','強化格改成低調的淡灰「×1.4」字樣，不再是醒目的金色圓點'] },
   { v:'0.39.22', d:'2026-10-23', t:['背包的裝備與傳奇核心可以按「DPS 由高至低」排序','戰鬥畫面大小簡化為大、小、收三段'] },
   { v:'0.39.21', d:'2026-10-23', t:['設定頁每組選項改成小視窗：標題列、像素滑桿與檸檬黃數值標籤，與其他頁面風格一致'] },
@@ -2990,8 +2991,8 @@ function scene(){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; let x = d.x, y = d.y, z = BZ;
     if (d.t < .6) z += Math.abs(Math.sin(d.t/.6*Math.PI*1.5))*5*(1 - d.t/.6) + .3;
-    else if (d.t >= 1.2){ const k = ease(tClamp((d.t - 1.2)/.5)); x = tLerp(d.x, G.h.x, k); y = tLerp(d.y, G.h.y, k); z = BZ + .3 + Math.sin(k*Math.PI)*8 + k*7; } else z += .3 + Math.sin(d.t*6)*.25;
-    at3(g, x, y, z+terrainHeight(x,y)); u.item.rotation.y = d.t*2.4; u.disc.visible = d.t < 1.2; if (u.beam) u.beam.visible = d.t < 1.2;
+    else z += .3 + Math.sin(d.t*6)*.25;
+    at3(g, x, y, z+terrainHeight(x,y)); u.item.rotation.y = d.t*2.4; u.disc.visible = true; if (u.beam) u.beam.visible = true;
   }
   for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); R3.ent.delete(k); }
   updateFx();
@@ -3401,7 +3402,7 @@ function openRelics(){ if(!GAME_FEATURES.cardChoices)return;
 function pickRelic(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
 function pickCard(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
 function charHtml(){
-  return `<div class="rc char-card"><div class="rh">角色 <button class="mb" style="float:right" onclick="openModal('dress')">角色頁與裝扮</button></div><div class="chars">${Object.entries(CHARS).map(([id, c]) => { const ok = charOk(id), on = G.char === id, pu = typeof icon3dPortraitUrl === 'function' ? icon3dPortraitUrl(id) : '', nm = String(c.n).split(' '); return `<button class="chr${on ? ' on' : ''}${ok ? '' : ' lock'}" ${ok ? '' : 'disabled'} aria-pressed="${on}" onclick="pickChar('${id}');G.dirty=true"><span class="chr-pic">${pu ? `<img alt="" aria-hidden="true" src="${pu}" style="image-rendering:pixelated">` : ''}</span><span class="chr-info"><b>${nm[0]}<small>${nm[1] || ''}</small></b><i>${ok ? (c.title || c.d) : (c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖')}</i>${on ? '<em>使用中 ✓</em>' : ''}</span></button>`; }).join('')}</div><div class="chr-data"><p><span>姓名</span><b>${CHARS[G.char].n}</b></p><p><span>職業</span><b>${CHARS[G.char].title||CHARS[G.char].d}</b></p><p><span>定位</span><b>${CHARS[G.char].role||"—"}</b></p><p><span>專屬</span><b>${CHARS[G.char].sig.n}</b></p></div><div class="char-description">專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
+  return `<div class="rc char-card"><div class="rh">角色</div><div class="chars">${Object.entries(CHARS).map(([id, c]) => { const ok = charOk(id), on = G.char === id, pu = typeof icon3dPortraitUrl === 'function' ? icon3dPortraitUrl(id) : '', nm = String(c.n).split(' '); return `<button class="chr${on ? ' on' : ''}${ok ? '' : ' lock'}" ${ok ? '' : 'disabled'} aria-pressed="${on}" onclick="pickChar('${id}');G.dirty=true"><span class="chr-pic">${pu ? `<img alt="" aria-hidden="true" src="${pu}" style="image-rendering:pixelated">` : ''}</span><span class="chr-info"><b>${nm[0]}<small>${nm[1] || ''}</small></b><i>${ok ? (c.title || c.d) : (c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖')}</i>${on ? '<em>使用中 ✓</em>' : ''}</span></button>`; }).join('')}</div><div class="chr-data"><p><span>姓名</span><b>${CHARS[G.char].n}</b></p><p><span>職業</span><b>${CHARS[G.char].title||CHARS[G.char].d}</b></p><p><span>定位</span><b>${CHARS[G.char].role||"—"}</b></p><p><span>專屬</span><b>${CHARS[G.char].sig.n}</b></p></div><div class="char-description">專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
 }
 function achHtml(){
   const n = achCount(), tot = Object.keys(ACHS).filter(id=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).length;
@@ -4733,6 +4734,32 @@ body.ui-material #uisettings #btns .act{position:relative;padding-left:14px!impo
 body.ui-material #uisettings #btns .act::after{content:"";position:absolute;left:-6px;top:0;width:6px;height:100%;background:linear-gradient(#ffe45c 0 30%,#33407f 30% 100%);opacity:0}
 body #uisettings .view-settings .view-options>button,body #uisettings #watch-now{border-radius:0!important}
 body #uisettings .ui-rules{margin-top:8px}
+`;document.head.appendChild(st);})();
+/* 更多選單：分組改為藍紫小窗口，入口卡片與編年史同色系 */
+(function(){const st=document.createElement('style');st.textContent=`
+body #mbody .ui-menu-group{margin:12px 0!important;padding:0 10px 10px!important;background:#e6e8f6!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:3px 3px 0 #8c9bd0!important}
+body #mbody .ui-menu-group>h3{display:flex;align-items:center;gap:6px;margin:0 -10px 10px;padding:4px 8px;font:14px var(--ux-body,system-ui);letter-spacing:.06em;color:#fff;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);border-bottom:2px solid #1d2552}
+body #mbody .ui-menu-group>h3::before{content:"";width:8px;height:8px;background:#ffe45c;border:1px solid #1d2552;flex:none}
+body #mbody .ui-directory button,body #mbody .ui-wiki{background:#f4f5ff!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;color:#1d2552!important}
+body #mbody .ui-directory button:active,body #mbody .ui-wiki:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #8c9bd0!important}
+body #mbody .ui-directory button b,body #mbody .ui-wiki b{color:#1d2552}
+body #mbody .ui-directory button span,body #mbody .ui-wiki small{color:#5c6a8e!important}
+body #mbody .ui-directory button i,body #mbody .ui-wiki i{color:#33407f;font-size:13px}
+body #mbody .ui-wiki{margin-top:12px;background:linear-gradient(#fffbe0,#f6e9a8)!important}
+`;document.head.appendChild(st);})();
+/* 設定頁選項按鈕：由灰色斜面鈕改成淡紫扁平卡 */
+(function(){const st=document.createElement('style');st.textContent=`
+body #uisettings .ui-setting-grid>button,body #uisettings .view-settings .view-options>button,body #uisettings #watch-now{background:#f4f5ff!important;color:#1d2552!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;text-shadow:none!important}
+body #uisettings .ui-setting-grid>button:active,body #uisettings .view-settings .view-options>button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #8c9bd0!important}
+body #uisettings .ui-setting-grid>button small,body #uisettings .ui-setting-grid>button span{color:#5c6a8e!important}
+body #uisettings .view-options>button[aria-pressed=true],body #uisettings .view-options>button.on,body #uisettings .view-options>button.sel{background:linear-gradient(#4a5aa8,#33407f)!important;color:#fff!important}
+`;document.head.appendChild(st);})();
+(function(){const st=document.createElement('style');st.textContent=`
+body.ui-material #uisettings #btns button.act,body.ui-material #uisettings .ui-setting-grid>button.act,body.ui-material #uisettings button.act{background:#f4f5ff!important;background-image:none!important;color:#1d2552!important;border:2px solid #fff!important;border-left:6px solid #33407f!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important}
+body #uisettings button.act b{color:#1d2552}body #uisettings button.act small{color:#5c6a8e!important}
+body.ui-material #mbody .ui-menu-group{margin:12px 0!important;padding:0 10px 10px!important;background:#e6e8f6!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:3px 3px 0 #8c9bd0!important}
+body.ui-material #mbody .ui-menu-group .ui-directory,body.m.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:1fr!important}
+body.ui-material #mbody .ui-directory button{background-image:none!important;grid-template-columns:auto 1fr auto}
 `;document.head.appendChild(st);})();
 
 </script>
