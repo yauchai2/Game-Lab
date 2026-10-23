@@ -129,6 +129,20 @@ function icon3dObjUrl(kind){
 }
 function obj3d(kind, size){ const u = typeof icon3dObjUrl === 'function' ? icon3dObjUrl(kind) : ''; return u ? `<img class="ui-obj3d" alt="" aria-hidden="true" src="${u}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated">` : ''; }
 
+/* Cosmetic thumbnails use the same weapon/accessory builders as the equipped hero. */
+function icon3dCosmeticUrl(cat,id){
+  if(id==='0'||!cosAvailable(cat)||!cosGet(cat,id))return '';
+  if(cat==='weaponStyle')return icon3dUrl('weapon',{umbrella:0,bat:1,tube:2,saber:3}[id],0);
+  const key='cos:'+cat+':'+id;if(ICON3D.cache[key])return ICON3D.cache[key];if(ICON3D.fail)return '';
+  try{
+    if(!ICON3D.rd&&!icon3dUrl('weapon',0,0))return '';
+    const B={foreL:new T3.Group(),torso:new T3.Group()},m=new T3.Group();buildHeroAccessories(B,{[cat]:id});m.add(B.foreL,B.torso);m.rotation.set(.12,-.4,0);m.updateMatrixWorld(true);
+    const box=new T3.Box3().setFromObject(m),center=box.getCenter(new T3.Vector3()),radius=box.getBoundingSphere(new T3.Sphere()).radius;m.position.sub(center);
+    const sc=new T3.Scene(),cam=new T3.PerspectiveCamera(28,1,.1,200);sc.add(m);sc.add(new T3.HemisphereLight(0xffffff,0x6677aa,2.2));const light=new T3.DirectionalLight(0xffffff,2.2);light.position.set(-1,2,3);sc.add(light);cam.position.set(0,0,radius/Math.sin(28*Math.PI/360)*1.05);cam.lookAt(0,0,0);ICON3D.rd.render(sc,cam);
+    const url=ICON3D.rd.domElement.toDataURL('image/png');m.traverse(o=>{if(o.isMesh)o.geometry.dispose();});ICON3D.cache[key]=url;return url;
+  }catch(e){return '';}
+}
+
 /* 角色選擇用的頭像：把角色模型放進離屏畫面，拍頭肩特寫並快取；貼圖還沒載入完就先回傳空字串，稍後自動重畫角色頁 */
 function icon3dPortraitUrl(key){
   const ck = 'P_' + key; if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof buildHero !== 'function' || !CHARS[key] || !CHARS[key].model) return '';

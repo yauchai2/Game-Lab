@@ -1,12 +1,12 @@
 ---
 version: alpha
 colors:
-  ink: "#17243e"
-  muted: "#4b5c75"
-  screen: "#f9fcff"
-  primary: "#174fe6"
-  edge: "#9aafca"
-  accent: "#ffe34d"
+  ink: "#172751"
+  muted: "#475778"
+  screen: "#e6e8f7"
+  primary: "#303d9b"
+  edge: "#9ca9c8"
+  accent: "#b94732"
 typography:
   display:
     fontFamily: '"Cubic 11", system-ui, sans-serif'
@@ -264,3 +264,16 @@ Alan 指出顏色暗沉，要求按提供的 look and feel 重設。本節取代
 Cubic 11、既有幾何、玩法與存檔保持原 owner。危險動作維持原有文案與語意；不將檸檬黃當警告。--ux-pink #c32877 僅預留小面積點綴，不強行鋪滿頁面。
 
 驗證與限制見 [交接](docs/bright-y2k-theme-2026-10-23.md)。未合併／未發佈。
+
+
+## 角色封面與共用試穿舞台（2026-10-23，0.40.2 候選）
+
+Alan 在完整規劃後要求「開始詳細優化」。角色頁採街頭封面的巨大英文代號、四人專屬色與圖形、真實 3D 模型及三裝備插槽；總覽／天賦／裝扮使用同一入口層級。角色本名是主身份，玩家暱稱在個人資料編輯，避免阿零仍以「阿街」暱稱作主標題。
+
+Runtime 外殼維持藍紫窗口；本文件 frontmatter 六色已與 UX_THEME 對齊，取代上方歷史亮銀候選的現行宣稱，沒有重套亮銀。新局部角色色由 05g-layout.js 的 UI_LAYOUT_CSS 擁有：--cv-ink #241d59、--cv-blue #4141bb、--cv-paper #f4f5ff；--cv-signal／--cv-accent 依 street 為 #8bdeff／#e4ff74、frost 為 #bdb3ff／#9bffe1、beep 為 #ffc7b0／#ffec7c、volt 為 #a5eed3／#ffd178。它們僅為角色表現色，不代表稀有度、危險或成功狀態。字體仍共用 Cubic 11，英文代號作大比例裝飾，正常資訊不加合成粗體。
+
+角色頁使用 character-view 命名 variant，不改背包／打造／排名的共用皮膚。斜切、同心圓、座標線與條帶分別對應四人；圖形是裝飾背景，不假冒戰鬥數據。外觀縮圖由 icon3dCosmeticUrl 調用同一個 buildWeapon／buildHeroAccessories，只用既有素材、不直接使用參考圖。
+
+PV 是總覽／裝扮唯一預覽 owner，共用現有角色待機、畫質與模型；NULL 的展示寵機移出身體輪廓，與戰場實例分開。入場一次約 0.5 秒，不隨即時金幣重播；減少動態停用入場、待機及手機動畫，仍可手動旋轉。角色工作區維持單一捲動。手機未自行指定時角色／裝扮採小戰場，G.userCz 優先。
+
+原對話記錄已檢視本輪 15 份附件；本次接續沿用該對照，沒有重新取得所有附件像素：借用大字與人物遮擋、復古窗口控制、低面數輪廓及選角節奏；不複製品牌、他人角色、桌面內容或強制倒數。兩份 GIF 中一份只有單幀，另一份抽樣三幀確認姿態／選中背景差異，不宣稱逐幀動態驗收。完整範圍、證據與限制見 [角色封面交接](docs/character-stage-2026-10-23.md)。
