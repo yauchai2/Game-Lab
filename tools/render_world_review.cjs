@@ -5,8 +5,8 @@ const noop=()=>{};ctx.document={createElement:()=>({width:64,height:64,getContex
 vm.createContext(ctx);for(const f of ['src/vendor/three.min.js','src/game/01-data.js','src/game/02-state.js','src/game/models.js','src/game/models-mon.js','src/game/models-weapon.js','src/game/04-render.js'])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
 const panels=vm.runInContext(`(()=>{
  const output=[];
- for(const spec of [{name:'woodland',profile:0,size:'regular',bi:0},{name:'city',profile:5,size:'regular',bi:6},{name:'giant',profile:1,size:'giant',bi:0}]){
-  let plan;for(let n=0;n<10000;n++){const p=terrainBuild('map:review-'+n+':0');if(p.profile===spec.profile&&p.sizeClass===spec.size){plan=p;G.run={map:{id:'review-'+n,biome:spec.bi}};break;}}
+ for(const spec of [{name:'square',profile:0,size:'regular',shape:'square',bi:0},{name:'camp',profile:6,size:'medium',bi:0},{name:'city',profile:7,size:'medium',bi:6},{name:'windmill',profile:8,size:'medium',bi:0},{name:'ruins',profile:10,size:'large',bi:0},{name:'giant',profile:9,size:'giant',bi:2}]){
+  let plan;for(let n=0;n<10000;n++){const p=terrainBuild('map:review-'+n+':0');if(p.profile===spec.profile&&p.sizeClass===spec.size&&(!spec.shape||p.shapeClass===spec.shape)){plan=p;G.run={map:{id:'review-'+n,biome:spec.bi}};break;}}
   TERRAIN_CACHE=plan;const scene=new T3.Group();scene.add(buildGround(spec.bi));scene.add(buildWorldScenery(spec.bi));
   const hero=buildHero(0,0,0,0);at3(hero,HX,HY,BZ+terrainHeight(HX,HY,plan));scene.add(hero);scene.updateMatrixWorld(true);
   const box=new T3.Box3().setFromObject(scene),center=box.getCenter(new T3.Vector3()),cam=new T3.OrthographicCamera(-1,1,1,-1,-2000,2000);cam.position.copy(center).add(new T3.Vector3(1,.92,1).normalize().multiplyScalar(800));cam.lookAt(center);cam.updateMatrixWorld(true);cam.matrixWorldInverse.copy(cam.matrixWorld).invert();

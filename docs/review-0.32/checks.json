@@ -53,19 +53,19 @@
     {
       "command": "node tools/test_update_032.cjs",
       "exit_code": 0,
-      "stdout": "PASS suspension blocks every award consumer and level reward, preserving saved benefits\nPASS AOE, repeated casts and kill recovery share a bounded healing budget\nPASS damage records a regeneration delay, shield-only damage does not\nPASS small critical hits cannot be larger than large ordinary damage\nPASS 120 seeded maps stay connected and deterministic without consuming combat RNG\nPASS real navigation crosses six map shapes without cutting holes or stalling\nPASS feedback validates and URL-encodes only previewed fields, with optional device data\n7 update checks passed\n",
+      "stdout": "PASS suspension blocks every award consumer and level reward, preserving saved benefits\nPASS AOE, repeated casts and kill recovery share a bounded healing budget\nPASS damage records a regeneration delay, shield-only damage does not\nPASS small critical hits cannot be larger than large ordinary damage\nPASS 120 seeded maps stay connected and deterministic without consuming combat RNG\nPASS real navigation crosses twelve map shapes without cutting holes or stalling\nPASS feedback validates and URL-encodes only previewed fields, with optional device data\n7 update checks passed\n",
       "stderr": ""
     },
     {
       "command": "node tools/test_world_review.cjs",
       "exit_code": 0,
-      "stdout": "PASS real hero steering reaches distant coasts around obstacles across all six landscapes\nPASS 150 natural land masses have no enclosed interior voids, huge maps exceed 400 units and trees exceed hero height\nPASS desktop floating text scales up and giant maps offer legible follow framing plus full panorama\nPASS coast and giant-map approaches stay walkable and do not spawn directly on the hero\n",
+      "stdout": "PASS real hero steering reaches distant coasts around obstacles across all twelve landscapes\nPASS 150 natural land masses have no enclosed interior voids, huge maps exceed 400 units and trees exceed hero height\nPASS desktop floating text scales up and giant maps offer legible follow framing plus full panorama\nPASS coast and giant-map approaches stay walkable and do not spawn directly on the hero\nPASS square/rectangle/natural maps retain open level centers, 18+ prop types and simultaneous mountains/lowlands\nPASS stronger impact retains a shared flash cooldown and offline suppression\n",
       "stderr": ""
     },
     {
       "command": "node tools/test_terrain_mesh.cjs",
       "exit_code": 0,
-      "stdout": "PASS six real Three.js terrains contain finite merged geometry in fewer than 20 draw meshes each\n[{\"profile\":3,\"meshes\":3,\"vertices\":3666,\"invalid\":false},{\"profile\":2,\"meshes\":3,\"vertices\":9390,\"invalid\":false},{\"profile\":4,\"meshes\":3,\"vertices\":3396,\"invalid\":false},{\"profile\":1,\"meshes\":3,\"vertices\":4704,\"invalid\":false},{\"profile\":0,\"meshes\":3,\"vertices\":8160,\"invalid\":false},{\"profile\":5,\"meshes\":3,\"vertices\":4272,\"invalid\":false}]\n",
+      "stdout": "PASS twelve real Three.js terrains contain finite merged geometry in fewer than 20 draw meshes each\n[{\"profile\":3,\"meshes\":3,\"vertices\":3666,\"invalid\":false},{\"profile\":8,\"meshes\":3,\"vertices\":37404,\"invalid\":false},{\"profile\":9,\"meshes\":3,\"vertices\":15084,\"invalid\":false},{\"profile\":10,\"meshes\":3,\"vertices\":3342,\"invalid\":false},{\"profile\":1,\"meshes\":3,\"vertices\":13152,\"invalid\":false},{\"profile\":2,\"meshes\":3,\"vertices\":2826,\"invalid\":false},{\"profile\":0,\"meshes\":3,\"vertices\":21450,\"invalid\":false},{\"profile\":4,\"meshes\":3,\"vertices\":3504,\"invalid\":false},{\"profile\":7,\"meshes\":3,\"vertices\":8400,\"invalid\":false},{\"profile\":6,\"meshes\":3,\"vertices\":5298,\"invalid\":false},{\"profile\":5,\"meshes\":3,\"vertices\":25200,\"invalid\":false},{\"profile\":11,\"meshes\":3,\"vertices\":8064,\"invalid\":false}]\nPASS real mesh rays fade foreground occluders, preserve shared materials, ignore objects behind the hero and restore opacity\n",
       "stderr": "Scripts \"build/three.js\" and \"build/three.min.js\" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation\n"
     },
     {
@@ -77,7 +77,7 @@
     {
       "command": "python tools/test_font_grid.py",
       "exit_code": 0,
-      "stdout": "PASS native 12px face preserved; 1316 LCD glyphs, advances and baselines align to the 16px grid\n",
+      "stdout": "PASS native 12px face preserved; 1321 LCD glyphs, advances and baselines align to the 16px grid\n",
       "stderr": ""
     },
     {

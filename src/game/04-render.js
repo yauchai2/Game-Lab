@@ -296,17 +296,71 @@ const stoneM = () => m3('#d6d0ea');
 function buildPortal(){const g=new T3.Group();g.userData={glows:[],rings:[]};return g;}
 
 function buildWorldScenery(bi){
-  const p=terrainNow(),g=new T3.Group();
+  const p=terrainNow(),root=new T3.Group(),small=new T3.Group(),occluders=[],shared=new Set(Object.values(G_));
+  function merge(g){const out=bake(g);g.traverse(o=>{if(o.isMesh&&!shared.has(o.geometry))o.geometry.dispose();});return out;}
   for(const prop of terrainScenery(p)){
-    const z=BZ+terrainHeight(prop.x,prop.y,p);
-    if(prop.kind==='tree'){treeAt(g,bi%6,prop.x,z,prop.y,prop.scale);continue;}
-    if(prop.kind==='building'){const b=buildWorldBuilding(prop.height,bi);at3(b,prop.x,prop.y,z);g.add(b);continue;}
-    const o=prop.kind==='bike'?buildWorldBike():prop.kind==='grass'?buildWorldGrass(bi):buildDeco(prop.kind,1);
-    o.scale.multiplyScalar(prop.scale);o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);g.add(o);
+    const z=BZ+terrainHeight(prop.x,prop.y,p),large=prop.radius!=null||['rock','lamp','tent','column'].includes(prop.kind),holder=large?new T3.Group():small;
+    if(prop.kind==='tree')treeAt(holder,bi%6,prop.x,z,prop.y,prop.scale);
+    else{
+      const o=prop.kind==='building'?buildWorldBuilding(prop.height,bi,prop.variant):prop.kind==='bike'?buildWorldBike():prop.kind==='grass'?buildWorldGrass(bi):['warehouse','cabin','pavilion','windmill','ruin','boulder','tent','log','bench','planter','crate','flowers','column'].includes(prop.kind)?buildLandscapeProp(prop.kind,bi,prop.variant||0):buildDeco(prop.kind,1);
+      o.scale.multiplyScalar(prop.scale);o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);
+    }
+    if(large){const batch=merge(holder),materials=[];batch.traverse(o=>{if(o.isMesh){o.material=o.material.clone();materials.push(o.material);}});batch.userData.fade={materials,opacity:1,target:1};root.add(batch);occluders.push(batch);}
   }
-  const batch=bake(g),shared=new Set(Object.values(G_));g.traverse(o=>{if(o.isMesh&&!shared.has(o.geometry))o.geometry.dispose();});return batch;
+  root.add(merge(small));root.updateMatrixWorld(true);for(const o of occluders)o.userData.fade.box=new T3.Box3().setFromObject(o);
+  root.userData.occluders=occluders;return root;
 }
-function buildWorldBuilding(height,bi){
+// Cast through real silhouettes, so a building behind the player never fades.
+function sceneryBlocksHero(object,camera,point){
+  const direction=new T3.Vector3();camera.getWorldDirection(direction);
+  const origin=point.clone().addScaledVector(direction,-1200),ray=new T3.Raycaster(origin,direction,0,1199);
+  if(!ray.ray.intersectsBox(object.userData.fade.box))return false;
+  return ray.intersectObject(object,true).some(hit=>hit.distance<1199);
+}
+function updateSceneryOcclusion(root,camera,hero,dt){
+  if(!root)return;const objects=root.userData.occluders||[];
+  root.userData.occlusionClock=(root.userData.occlusionClock||0)-dt;
+  if(root.userData.occlusionClock<=0){root.userData.occlusionClock=.08;
+    const feet=hero.position,points=[6,12].map(h=>new T3.Vector3(feet.x,feet.y+h,feet.z));
+    for(const o of objects)o.userData.fade.target=points.some(point=>sceneryBlocksHero(o,camera,point))?.18:1;
+  }
+  for(const o of objects){const f=o.userData.fade;f.opacity+=(f.target-f.opacity)*Math.min(1,dt*12);if(Math.abs(f.opacity-f.target)<.005)f.opacity=f.target;
+    for(const m of f.materials){const translucent=f.opacity<.995;if(m.transparent!==translucent){m.transparent=translucent;m.depthWrite=!translucent;m.needsUpdate=true;}m.opacity=f.opacity;}
+  }
+}
+function buildLandscapeProp(kind,bi,variant){
+  const g=new T3.Group(),stone=m3('#84939b'),light=m3('#d6d8cc'),wood=m3('#846b57'),dark=m3('#384d5b'),leaf=m3(BIOMES[bi].t1),accent=m3('#819caa');
+  const box=(w,h,d,mat,x=0,y=h/2,z=0)=>mk(new T3.BoxGeometry(w,h,d),mat,x,y,z,g);
+  if(kind==='warehouse'){
+    box(28,15,26,light);box(31,2,29,dark,0,16,0);box(10,11,.5,accent,0,5.5,13.3);for(const x of [-10,10])box(4,3,.5,accent,x,11,13.3);for(const x of [-9,9])box(4,2,7,stone,x,18,-4);
+  }else if(['cabin','pavilion'].includes(kind)){
+    box(16,12,14,kind==='cabin'?wood:light);const roof=mk(new T3.ConeGeometry(14,8,4),dark,0,16,0,g);roof.rotation.y=Math.PI/4;roof.scale.z=.85;
+    box(4,7,.3,dark,0,3.5,7.2);for(const x of [-5,5])box(3,3,.4,accent,x,7,7.3);box(20,1,17,stone,0,.5,0);
+  }else if(kind==='windmill'){
+    mk(new T3.CylinderGeometry(4,7,32,8),light,0,16,0,g);mk(new T3.ConeGeometry(8,9,6),dark,0,36,0,g);
+    for(const a of [Math.PI/4,Math.PI*3/4]){const sail=box(36,2,1.5,wood,0,28,7);sail.rotation.z=a;}
+    box(4,7,.5,dark,0,3.5,6.5);
+  }else if(kind==='ruin'){
+    for(const x of [-8,8]){box(5,27,6,stone,x,13.5,0);box(7,2,8,light,x,27,0);}box(23,5,7,light,0,30,0);box(27,1.5,12,stone,0,.75,0);
+  }else if(kind==='boulder'){
+    for(let i=0;i<3;i++){const o=mk(new T3.IcosahedronGeometry(7+i*2,0),stone,(i-1)*4,5+i*3,(i%2)*3,g);o.scale.set(.8,1.4,.9);o.rotation.y=i;}
+  }else if(kind==='tent'){
+    const roof=mk(new T3.ConeGeometry(8,9,4),accent,0,4.5,0,g);roof.rotation.y=Math.PI/4;roof.scale.set(1,.9,1.4);box(4,4,.4,dark,0,2,5.7);box(13,.4,17,wood,0,.2,0);
+  }else if(kind==='log'){
+    const log=mk(new T3.CylinderGeometry(1.8,1.8,11,7),wood,0,1.8,0,g);log.rotation.z=Math.PI/2;for(const x of [-5.6,5.6]){const end=mk(new T3.CylinderGeometry(1.4,1.4,.2,7),light,x,1.8,0,g);end.rotation.z=Math.PI/2;}
+  }else if(kind==='bench'){
+    box(10,1,3,wood,0,3,0);box(10,3,.6,wood,0,5,-1.3);for(const x of [-3.5,3.5])box(.6,3,3,dark,x,1.5,0);
+  }else if(kind==='planter'){
+    box(7,3,5,stone);for(const x of [-2,0,2])mk(new T3.IcosahedronGeometry(2,0),leaf,x,4,0,g);
+  }else if(kind==='crate'){
+    box(4,4,4,wood);for(const x of [-1.5,1.5])box(.4,4.2,4.2,light,x,2,0);box(3,3,3,accent,3,1.5,1);
+  }else if(kind==='column'){
+    mk(new T3.CylinderGeometry(2,2.6,8+(variant%3)*3,6),stone,0,4,0,g);box(6,1.2,6,light,0,.6,0);
+  }else if(kind==='flowers'){
+    for(let i=0;i<5;i++){const x=Math.cos(i*2.4)*2,z=Math.sin(i*2.4)*2;box(.2,1.8,.2,leaf,x,.9,z);mk(new T3.IcosahedronGeometry(.65,0),i%2?light:accent,x,2,z,g);}
+  }return g;
+}
+function buildWorldBuilding(height,bi,variant=0){
   const g=new T3.Group(),shell=m3('#b7c4d4'),glass=m3(bi%2?'#456b8f':'#417f9b'),trim=m3('#e2e8ed'),roof=m3('#6f8092');
   mk(new T3.BoxGeometry(24,height,24),shell,0,height/2,0,g);
   mk(new T3.BoxGeometry(26,1.5,26),trim,0,height+.5,0,g);
@@ -316,7 +370,10 @@ function buildWorldBuilding(height,bi){
     mk(new T3.BoxGeometry(3.4,4.5,.25),glass,u-1,y,12.2,g);
     mk(new T3.BoxGeometry(.25,4.5,3.4),glass,12.2,y,u-1,g);
   }
-  mk(new T3.BoxGeometry(6,8,.35),glass,-4,4,12.3,g);return g;
+  mk(new T3.BoxGeometry(6,8,.35),glass,-4,4,12.3,g);
+  if(variant%3===0){mk(new T3.BoxGeometry(28,2,9),roof,0,10,15,g);for(const x of [-11,11])mk(new T3.BoxGeometry(1,10,1),trim,x,5,18,g);}
+  if(variant%3===1)mk(new T3.BoxGeometry(10,7,9),roof,-4,height+5,3,g);
+  return g;
 }
 function buildWorldBike(){
   const g=new T3.Group();for(const z of [-3.3,3.3]){const o=mk(new T3.TorusGeometry(1.65,.5,5,10),m3('#354052'),0,1.9,z,g);o.rotation.y=Math.PI/2;}
@@ -382,9 +439,9 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   const buffer=r3BufferSize(W,H,dpr,R3.clean);
   R3.W=W;R3.H=H;R3.dpr=dpr;
   if(buffer.width!==cv.width||buffer.height!==cv.height)R3.rd.setSize(buffer.width,buffer.height,false);
-  const now = performance.now(), fdt = Math.min(.1, (now - (R3.tPrev || now))/1000); R3.tPrev = now;
+  const now = performance.now(), fdt = Math.min(.1, (now - (R3.tPrev || now))/1000); R3.tPrev = now;R3.frameDt=fdt;
   FXO.yaw += (FXO.yawT - FXO.yaw)*Math.min(1, fdt*8); FXO.zoom += (FXO.zoomT - FXO.zoom)*Math.min(1, fdt*8); FXO.shake *= Math.pow(.0008, fdt); FXO.punch *= Math.pow(.003, fdt); FXO.flash *= Math.pow(.02, fdt);
-  { const o = document.getElementById('fxo'), low = G.st && G.h.hp < G.st.life*.3 && G.h.dead <= 0, a = Math.max(FXO.flash, low ? .22 + .08*Math.sin(now/180) : 0); if (o){ o.style.opacity = a > .01 ? a.toFixed(2) : 0; o.style.background = `radial-gradient(ellipse at center, transparent 40%, ${FXO.flash > .12 || !low ? FXO.fc : '#ff2a50'} 140%)`; } }
+  { const o = document.getElementById('fxo'), low = G.st && G.h.hp < G.st.life*.3 && G.h.dead <= 0, a = Math.max(FXO.flash, low ? .22 + .08*Math.sin(now/180) : 0); if (o){ o.style.opacity = a > .01 ? a.toFixed(2) : 0; o.style.background = `radial-gradient(ellipse at center, ${FXO.flash>.05?'color-mix(in srgb, '+FXO.fc+' 16%, transparent)':'transparent'} 0%, transparent 45%, ${FXO.flash > .12 || !low ? FXO.fc : '#ff2a50'} 140%)`; } }
   const plan=terrainNow(),framing=terrainCameraWindow(plan,innerWidth,!!FXO.overview),focus=framing.follow?{x:G.h.x,y:G.h.y}:{x:HX,y:HY};
   R3.focusX=R3.focusX??focus.x;R3.focusY=R3.focusY??focus.y;
   R3.focusX+=(focus.x-R3.focusX)*Math.min(1,fdt*4);R3.focusY+=(focus.y-R3.focusY)*Math.min(1,fdt*4);
@@ -395,7 +452,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   let vw = bw*(ptv ? .8 : 1.03), vh = bh*(ptv ? .84 : 1.05); if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;   // 手機直式拉近、裁掉島的左右，裁切處用 CSS 淡出
   if (WOV.has('zoom')){ const z = +WOV.get('zoom'), p = new T3.Vector3(G.h.x, BZ + 10, G.h.y).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; cx = p.x; cy = p.y; }   // 測試用：?zoom=6 把鏡頭拉近到主角
   if (FXO.zoom !== 1){ const z = FXO.zoom, f = tClamp((z - 1)/1.2), p = new T3.Vector3(G.h.x, BZ + 10, G.h.y).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; if (z > 1){ cx = tLerp(cx, p.x, f); cy = tLerp(cy, p.y, f); } }
-  vw *= 1 - FXO.punch*.025; vh *= 1 - FXO.punch*.025; cx += (Math.random() - .5)*FXO.shake*vw*.012; cy += (Math.random() - .5)*FXO.shake*vh*.012;
+  vw *= 1 - FXO.punch*.055; vh *= 1 - FXO.punch*.055; cx += (Math.random() - .5)*FXO.shake*vw*.027; cy += (Math.random() - .5)*FXO.shake*vh*.027;
   cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2; cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
   const vb = fig.viewBox.baseVal; R3.vbW = vb.width; R3.vbH = vb.height;
 }
@@ -530,14 +587,11 @@ function scene(){
     R3.bi = bi; { const SK = BIOMES[bi].sky || [['#8fcdf7', '#c9e9ff', '#f5fbff'], ['#ffc98a', '#ffe6bf', '#fff7ea'], ['#a9d8ff', '#d9efff', '#ffffff'], ['#c07a9a', '#e9b4cc', '#ffe2ee'], ['#141450', '#3a3a8c', '#7a6ad0'], ['#ffa6d6', '#ffd0ee', '#fff0fa']][bi%6] || []; SK.forEach((c, i) => document.documentElement.style.setProperty('--sk' + i, c)); }
     for (const o of [R3.gnd, R3.portal, ...R3.decor]) if(o){R3.world.remove(o);disposeWorldObject(o);}
     R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];const staticDecor=new T3.Group();
-    const scenery=buildWorldScenery(bi);R3.world.add(scenery);R3.decor.push(scenery);
-    R3.sign=buildSign();at3(R3.sign,HX-13,HY+10,BZ+terrainHeight(HX-13,HY+10));R3.world.add(R3.sign);R3.decor.push(R3.sign);
+    const scenery=buildWorldScenery(bi);R3.scenery=scenery;R3.world.add(scenery);R3.decor.push(scenery);
     for (const [k, e] of R3.ent){ R3.world.remove(e);disposeWorldObject(e); R3.ent.delete(k); }   // 換生態時怪物與掉落物重建（顏色隨生態）
   }
   const t = G.time;
   for (const o of R3.decor){ const u = o.userData; if (u.fl){ const f2 = 1 + Math.sin(t*14 + o.position.x)*.08; u.fl[0].scale.set(f2, 1 + Math.sin(t*11)*.1, f2); u.fl[2].scale.setScalar(1 + Math.sin(t*7)*.1); } if (u.glow) u.glow.material.color.set(Math.sin(t*3) > 0 ? '#ff9ab0' : '#ffc2d2'); }
-  const sg = R3.sign, txt = G.run ? 'MAP ' + G.run.map.lvl : 'DEPTH ' + G.depth;
-  if (sg.userData.txt !== txt){ sg.userData.txt = txt; const mt = new T3.MeshBasicMaterial({ map:signTex(txt) }), wd = m3('#c99a6a'); sg.userData.board.material = [wd, wd, wd, wd, mt, mt]; }
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
   pu.glows.forEach(gl => gl.scale.setScalar(1 + (pulse ? .35*Math.sin(pulse.t*3.14) : 0))); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
   // 主角
@@ -556,6 +610,7 @@ function scene(){
   }
   for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); R3.ent.delete(k); }
   updateFx();
+  updateSceneryOcclusion(R3.scenery,R3.cam,R3.hero,R3.frameDt||0);
   R3.rd.render(R3.sc, R3.cam);
   return overlay();
 }

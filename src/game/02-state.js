@@ -33,8 +33,8 @@ const FXO = { shake:0, flash:0, fc:'#fff', punch:0, yaw:0, yawT:0, zoom:1, zoomT
 function hitStop(t){if(G.offline||G.time-(FXO.stopAt??-10)<.6||typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches||typeof GAME_VIEW!=='undefined'&&!GAME_VIEW.prefs.glitch)return;FXO.stopAt=G.time;FXO.stop=Math.max(FXO.stop,Math.min(.07,t));}
 function kick(s,f,c,p){
  if(G.offline||typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches||typeof GAME_VIEW!=='undefined'&&!GAME_VIEW.prefs.glitch)return;
- FXO.shake=Math.max(FXO.shake,Math.min(3,s));
- if(f&&G.time-(FXO.flashAt??-10)>.8){FXO.flash=Math.max(FXO.flash,Math.min(.45,f));FXO.fc=c||'#fff';FXO.flashAt=G.time;}
+ FXO.shake=Math.max(FXO.shake,Math.min(4.5,s));
+ if(f&&G.time-(FXO.flashAt??-10)>.45){FXO.flash=Math.max(FXO.flash,Math.min(.45,f));FXO.fc=c||'#fff';FXO.flashAt=G.time;}
  if(p)FXO.punch=Math.max(FXO.punch,Math.min(.8,p));
 }
 /* 配件拼圖：玩家擺的是 G.board；G.slots / G.supp 由它推導出來，戰鬥與屬性計算照舊讀這兩個 */
@@ -478,37 +478,41 @@ function terrainHash(text){let n=2166136261;for(const c of String(text))n=Math.i
 function terrainKey(){const r=G.run;return G.train?'training':r?.map?'map:'+r.map.id+':'+(r.city?.stage??r.floor??0):'depth:'+G.depth;}
 let TERRAIN_CACHE=null;
 function terrainBuild(key){
-  const seed=terrainHash(key),training=key==='training',profile=training?0:seed%6,cell=6;
+  const seed=terrainHash(key),training=key==='training',profile=training?0:seed%12,cell=6;
   // Rounded land masses with low-frequency coast variation, never letter-shaped cut-outs.
-  const sizeClass=training?'training':seed%11===0?'giant':seed%4===0?'large':'regular';
-  const span=sizeClass==='giant'?540+(seed>>>5)%19*6:sizeClass==='large'?252+(seed>>>5)%9*6:144+(seed>>>5)%9*6;
-  const nx=training?17:Math.round(span/cell),ny=training?17:Math.round(span*(.78+(seed>>>11)%23/100)/cell);
+  const sizeRoll=(seed>>>16)%12,sizeClass=training?'training':sizeRoll===0?'giant':sizeRoll<3?'large':sizeRoll<7?'medium':'regular';
+  const shapeRoll=(seed>>>24)%5,shapeClass=training||shapeRoll===0?'square':shapeRoll===1?'rectangle':'natural';
+  const span=sizeClass==='giant'?540+(seed>>>5)%19*6:sizeClass==='large'?330+(seed>>>5)%9*6:sizeClass==='medium'?246+(seed>>>5)%7*6:144+(seed>>>5)%9*6;
+  const nx=training?17:Math.round(span/cell),ny=training?17:Math.round(span*(shapeClass==='square'?1:.78+(seed>>>11)%23/100)/cell);
   const ox=HX-Math.floor(nx/2)*cell-cell/2,oy=HY-Math.floor(ny/2)*cell-cell/2,w=nx*cell/2,h=ny*cell/2;
-  const names=['林間海岸','起伏山丘','寬闊河灣','高原盆地','海岸台地','城市綠洲'];
+  const names=['林間海岸','起伏山丘','寬闊河灣','高原盆地','海岸台地','城市綠洲','山麓營地','古城廣場','風車高地','雪嶺低谷','石柱遺跡','工業庭院'];
+  const clearRadius=training?24:Math.max(28,Math.min(48,Math.min(w,h)*.3));
   const groundCells=[],lookup=new Map();
   for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
     const x=ox+(i+.5)*cell,y=oy+(j+.5)*cell,u=(x-HX)/w,v=(y-HY)/h,angle=Math.atan2(v,u);
     const coast=.87+.055*Math.sin(angle*3+seed%17)+.035*Math.sin(angle*5+seed%11)+.025*Math.cos(angle*2+profile);
     const bend=profile===2?.13*Math.sin(v*2.3):profile===4?.1*v:0;
-    if(training||Math.hypot(u-bend,v)<coast){const c={i,j,x,y,k:j*nx+i};groundCells.push(c);lookup.set(c.k,c);}
+    if(shapeClass!=='natural'||Math.hypot(u-bend,v)<coast){const c={i,j,x,y,k:j*nx+i};groundCells.push(c);lookup.set(c.k,c);}
   }
   const groundLookup=new Map(lookup),landmarks=[];
   const pick=(index)=>groundCells[terrainHash(key+':'+index)%groundCells.length];
   const count=training?0:Math.min(64,Math.round(groundCells.length/110)+3);
   for(let n=0;n<count*12&&landmarks.length<count;n++){
-    const c=pick(n),building=profile===5&&landmarks.length<Math.min(4,Math.ceil(count/3)),radius=building?12:3;
-    if(Math.hypot(c.x-HX,c.y-HY)<(building?45:30)||Math.hypot((c.x-HX)/w,(c.y-HY)/h)>.7)continue;
-    if(landmarks.some(o=>Math.hypot(o.x-c.x,o.y-c.y)<o.radius+radius+18))continue;
-    const scale=building?1:2.4+(terrainHash(key+':scale:'+n)%18)/10;
-    landmarks.push({x:c.x,y:c.y,radius,kind:building?'building':'tree',scale,height:building?48+(n%4)*18:14*scale});
-    for(const q of groundCells)if(building?Math.abs(q.x-c.x)<radius&&Math.abs(q.y-c.y)<radius:Math.hypot(q.x-c.x,q.y-c.y)<radius)lookup.delete(q.k);
+    const c=pick(n),urban=[5,7,11].includes(profile),variant=terrainHash(key+':object:'+n);
+    const family=profile===7?['cabin','pavilion','tree','building']:profile===11?['warehouse','building','tree','pavilion']:urban?['building','building','tree','pavilion']:profile===8?['windmill','tree','boulder','cabin']:profile===10?['ruin','boulder','tree','ruin']:profile===6?['tree','cabin','tree','boulder']:['tree','tree','boulder','tree'];
+    const kind=family[landmarks.length%family.length],radius=kind==='warehouse'?16:kind==='building'?13:kind==='cabin'?9:kind==='ruin'?9:kind==='pavilion'?8:kind==='windmill'?7:kind==='boulder'?12:3;
+    if(Math.hypot(c.x-HX,c.y-HY)<clearRadius+radius+7||Math.hypot((c.x-HX)/w,(c.y-HY)/h)>.79)continue;
+    if(landmarks.some(o=>Math.hypot(o.x-c.x,o.y-c.y)<o.radius+radius+12))continue;
+    const scale=kind==='tree'?2.4+(variant%22)/10:1;
+    landmarks.push({x:c.x,y:c.y,radius,kind,scale,variant,height:kind==='building'?(profile===7?22:30+(variant%5)*15):14*scale});
+    for(const q of groundCells)if(['building','warehouse','cabin','pavilion','ruin'].includes(kind)?Math.abs(q.x-c.x)<radius&&Math.abs(q.y-c.y)<radius:Math.hypot(q.x-c.x,q.y-c.y)<radius)lookup.delete(q.k);
   }
   const center=Math.floor(ny/2)*nx+Math.floor(nx/2),seen=new Set([center]),queue=[lookup.get(center)];
   for(let n=0;n<queue.length;n++){const c=queue[n];for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const i=c.i+di,j=c.j+dj,k=j*nx+i;if(i>=0&&i<nx&&j>=0&&j<ny&&lookup.has(k)&&!seen.has(k)){seen.add(k);queue.push(lookup.get(k));}}}
   const cells=groundCells.filter(c=>seen.has(c.k));for(const k of lookup.keys())if(!seen.has(k))lookup.delete(k);
   const edges=cells.filter(c=>[[1,0],[-1,0],[0,1],[0,-1]].some(([di,dj])=>{const i=c.i+di,j=c.j+dj;return i<0||i>=nx||j<0||j>=ny||!groundLookup.has(j*nx+i);}));
   const bounds=[Math.min(...groundCells.map(c=>c.x))-3,Math.max(...groundCells.map(c=>c.x))+3,Math.min(...groundCells.map(c=>c.y))-3,Math.max(...groundCells.map(c=>c.y))+3];
-  return {key,seed,profile,sizeClass,name:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:training?0:[8,22,10,28,18,5][profile]};
+  return {key,seed,profile,sizeClass,shapeClass,clearRadius,name:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:training?0:[24,48,20,58,36,10,54,12,48,72,46,14][profile]};
 }
 
 function terrainNow(){const key=terrainKey();if(TERRAIN_CACHE?.key!==key)TERRAIN_CACHE=terrainBuild(key);return TERRAIN_CACHE;}
@@ -516,8 +520,15 @@ function terrainGroundCell(x,y,p=terrainNow()){const i=Math.floor((x-p.ox)/p.cel
 function terrainCell(x,y,p=terrainNow()){const i=Math.floor((x-p.ox)/p.cell),j=Math.floor((y-p.oy)/p.cell);return i>=0&&i<p.nx&&j>=0&&j<p.ny?p.lookup.get(j*p.nx+i):undefined;}
 function terrainHeight(x,y,p=terrainNow()){
   if(!p.amplitude)return 0;
-  const u=(x-HX)/(p.nx*p.cell/2),v=(y-HY)/(p.ny*p.cell/2),hill=Math.exp(-((u+.3)**2+(v+.25)**2)*5),ridge=Math.exp(-((u-.35)**2+(v-.15)**2)*8);
-  return p.amplitude*(.12+.55*hill+.3*ridge+.03*Math.sin(u*6+v*4+p.seed%7));
+  const u=(x-HX)/(p.nx*p.cell/2),v=(y-HY)/(p.ny*p.cell/2),r=Math.hypot(x-HX,y-HY);
+  // An open, nearly level arena blends into peripheral ridges and a lower valley.
+  const blend=Math.max(0,Math.min(1,(r-p.clearRadius*.75)/(p.clearRadius*.8)));
+  const smooth=blend*blend*(3-2*blend),angle=(p.seed%8)*Math.PI/4;
+  const a=u*Math.cos(angle)-v*Math.sin(angle),b=u*Math.sin(angle)+v*Math.cos(angle);
+  const peak=Math.exp(-((a+.52)**2/ .075+(b+.3)**2/.16));
+  const ridge=Math.exp(-((a-.46)**2/.12+(b-.38)**2/.09));
+  const valley=Math.exp(-((a-.12)**2/.24+(b+.55)**2/.1));
+  return p.amplitude*smooth*(peak+.66*ridge-.22*valley+.025*Math.sin(u*6+v*4+p.seed%7));
 }
 
 function terrainProject(x,y,p=terrainNow()){
@@ -562,8 +573,14 @@ function terrainSpawnPoints(){
 function terrainScenery(p=terrainNow()){
   if(p.key==='training')return [];const out=p.landmarks.map(o=>({...o})),occupied=(x,y,r)=>p.landmarks.some(o=>Math.hypot(o.x-x,o.y-y)<o.radius+r+4);
   const count=Math.min(260,Math.round(p.groundCells.length*.15));
-  for(let i=0;i<count;i++){const c=p.cells[terrainHash(p.key+':detail:'+i)%p.cells.length];if(Math.hypot(c.x-HX,c.y-HY)<17||occupied(c.x,c.y,3))continue;
-    const n=terrainHash(p.key+':kind:'+i),kind=p.profile===5?(n%7===0?'bike':n%4===0?'lamp':'grass'):n%9===0?'rock':n%5===0?'bush':'grass';
-    out.push({x:c.x,y:c.y,kind,scale:kind==='grass'?.6:kind==='bike'?1:.5+(n%6)/10,rotation:n%628/100});
+  for(let i=0;i<count;i++){const c=p.cells[terrainHash(p.key+':detail:'+i)%p.cells.length];if(Math.hypot(c.x-HX,c.y-HY)<p.clearRadius+5||occupied(c.x,c.y,3))continue;
+    const n=terrainHash(p.key+':kind:'+i),urban=[5,7,11].includes(p.profile);
+    const palette=urban?['bike','lamp','bench','planter','crate','grass','grass']:p.profile===6?['tent','log','rock','bush','grass','grass']:p.profile===10?['column','rock','bush','grass','grass']:['rock','log','flowers','bush','grass','grass','grass'];
+    const kind=palette[n%palette.length];
+    out.push({x:c.x,y:c.y,kind,scale:kind==='grass'?.5:kind==='bike'?1:kind==='rock'?1+(n%9)/5:.8+(n%4)/10,rotation:n%628/100});
+  }
+  // Small, related satellites compose each landmark instead of scattering unrelated props.
+  for(const o of p.landmarks){const urban=['building','warehouse','pavilion'].includes(o.kind),items=urban?['bike','planter','bench']:o.kind==='cabin'?['log','tent','flowers']:o.kind==='ruin'?['column','rock','bush']:['bush','flowers','rock'];
+    items.forEach((kind,i)=>{const a=(o.variant%628)/100+i*2.1,r=o.radius+7+i*2,x=o.x+Math.cos(a)*r,y=o.y+Math.sin(a)*r;if(terrainCell(x,y,p)&&Math.hypot(x-HX,y-HY)>p.clearRadius+5&&!occupied(x,y,1))out.push({x,y,kind,scale:kind==='flowers'?1.2:1,rotation:a});});
   }return out;
 }
