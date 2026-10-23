@@ -432,3 +432,14 @@ body.ui-material #mbody .ui-menu-group{margin:12px 0!important;padding:0 10px 10
 body.ui-material #mbody .ui-menu-group .ui-directory,body.m.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:1fr!important}
 body.ui-material #mbody .ui-directory button{background-image:none!important;grid-template-columns:auto 1fr auto}
 `;document.head.appendChild(st);})();
+/* 殘留灰色／亮白清理：通用按鈕、主要按鈕、輸入欄、核心收藏摺疊列統一成藍紫窗口語言（同時蓋過 pixelfx 與對話窗的舊規則） */
+(function(){const rules=P=>`
+${P} button.mb:not(.pri):not([aria-pressed=true]){background:#f4f5ff!important;background-image:none!important;color:#1d2552!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;text-shadow:none!important}
+${P} button.mb.pri{background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;border:2px solid #fff!important;outline:1px solid #1d2552;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;text-shadow:none!important}
+${P} button.mb[aria-pressed=true]{background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%)!important;color:#fff!important;border:2px solid #fff!important;outline:1px solid #1d2552;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important}
+${P} button.mb:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #8c9bd0!important}
+${P} button.mb[disabled]{opacity:.55}
+${P} :is(input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea){background:#f4f5ff!important;color:#1d2552!important;border:2px solid #8c9bd0!important;outline:0;border-radius:0!important;box-shadow:inset 1px 1px 0 #fff,inset -1px -1px 0 #cfd6ee!important;font-family:var(--ux-body,system-ui)}
+${P} :is(input,select,textarea):focus{border-color:#4a5aa8!important;outline:2px solid #ffe45c}
+`;const st=document.createElement('style');st.textContent=rules('html body.ui-material #mbody')+rules('html body.ui-material.ui-pixelfx :is(#mbody,#ovl)');document.head.appendChild(st);})();
+(function(){const st=document.createElement('style');st.textContent=`html body.ui-material :is(#mbody,#ovl) .mct,html body.ui-material :is(#mbody,#ovl) .mct *{color:#fff!important}html body.ui-material :is(#mbody,#ovl) .mct small,html body.ui-material :is(#mbody,#ovl) .mct button{color:#1d2552!important}`;document.head.appendChild(st);})();
