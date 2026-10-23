@@ -791,6 +791,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  { v:'0.39.14',d:'2026-10-23',t:['技能出手範圍再縮短，只打得到主角身邊的怪；撿東西也要走到更近才會撿起','修正少數怪物倒下時可能出現的畫面錯誤']},
   { v:'0.39.13',d:'2026-10-23',t:['怪物移動與待機更有個性：螃蟹橫行、蜘蛛急竄、喇叭隨節拍脹縮、鬼火旋轉飄動、鼹鼠起伏鑽行、巨像沉重踏步','技能命中特效依元素區分：火焰迸出火星、冰霜落下冰晶、閃電放出電弧']},
   { v:'0.39.12',d:'2026-10-23',t:['怪物動作增加：出場時彈出、攻擊前先蹲低蓄力、被打到會往後退；史萊姆被擊倒時攤平、無人機旋轉墜落','過熱電池丟出時拖著火星']},
   { v:'0.39.11',d:'2026-10-23',t:['技能只會打到主角附近的怪，太遠的怪要等牠們走近才會被打（以前部分範圍技能可以隔著整張地圖打到）','主角出招時不再冒出圍著頭轉的彩色光柱，只保留腳下的光圈']},
@@ -1439,7 +1440,7 @@ function dropGround(d){
   G.drops.push(d);
 }
 function collectNearby(dt){
-  for(const d of G.drops){d.t+=dt;if(!d.done&&d.t>=.35&&G.h.dead<=0&&Math.hypot(d.x-G.h.x,d.y-G.h.y)<=6){d.done=true;addFx({k:'pickup',x:d.x,y:d.y,x2:G.h.x,y2:G.h.y,col:d.kind==='gold'?'#e4c379':'#81cbd1',t:0,dur:.35});pickup(d);}}
+  for(const d of G.drops){d.t+=dt;if(!d.done&&d.t>=.35&&G.h.dead<=0&&Math.hypot(d.x-G.h.x,d.y-G.h.y)<=4){d.done=true;addFx({k:'pickup',x:d.x,y:d.y,x2:G.h.x,y2:G.h.y,col:d.kind==='gold'?'#e4c379':'#81cbd1',t:0,dur:.35});pickup(d);}}
   G.drops=G.drops.filter(d=>!d.done);
 }
 
@@ -1987,7 +1988,7 @@ function hitMon(m, dmg, crit, source=G.src||'其他'){
 function rollDmg(base, critPct){ const s = G.st, crit = Math.random()*100 < (critPct == null ? s.crit : critPct); return { dmg:base * (crit ? s.cm/100 : 1) * tRand(.9, 1.1), crit }; }
 const aliveMons = () => G.mons.filter(m => !m.dead && !(m.fall > 0));
 /* 出手範圍：只打得到主角附近的怪，太遠的怪等牠們走近（以前全場無距離限制） */
-const CAST_RANGE = 78;
+const CAST_RANGE = 42;
 const castMons = () => aliveMons().filter(m => Math.hypot(m.x - G.h.x, m.y - G.h.y) <= CAST_RANGE);
 function nearestMon(fightOnly, from){ let best = null, bd = 1e9; const [fx, fy] = from || [G.h.x, G.h.y]; for (const m of G.mons){ if (m.dead || m.fall > 0 || (fightOnly && !m.fight)) continue; const d = Math.hypot(m.x - fx, m.y - fy); if (d < bd && d < 60){ bd = d; best = m; } } return best; }
 
