@@ -68,6 +68,8 @@ function characterPlay(g,name,fade=.1){
 }
 function characterAnimate(g,dt,state={}){
  const u=g.userData;if(!u.y2k)return;dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));
+ // Preview offsets are temporary: remove them before the mixer writes the next pose.
+ if(u.previewApplied){for(const [name,q]of Object.entries(u.previewPose))u.B[name].quaternion.copy(q);u.previewApplied=false;}
  const mode=state.dead?'death':state.hurt?'hurt':state.dash?'dash':state.attack?'attack':state.cast?'cast':state.speed>7?'run':state.speed>1?'walk':'idle';
  if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack')u.actions.attack.reset().play();u.lastSwing=state.swing;
  if(state.cast&&u.lastCast!=null&&state.castTime<u.lastCast&&u.animation==='cast')u.actions.cast.reset().play();u.lastCast=state.castTime;
@@ -75,9 +77,56 @@ function characterAnimate(g,dt,state={}){
  u.mixer.update(dt);if(u.pet){const t=u.mixer.time;u.pet.position.set(8+Math.sin(t*1.7)*.6,13+Math.sin(t*3)*.8,-2);u.pet.rotation.y=Math.sin(t)*.25;}
  g.updateMatrixWorld(true);u.skeleton.update();
 }
+// Presentation only. No game clocks, combat flags, save data or model assets change.
+function characterPreviewAnimate(g,dt,reduced=false){
+ if(!g?.userData.y2k)return;
+ const u=g.userData;
+ characterAnimate(g,reduced?0:dt);
+ if(reduced)return;
+ dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));
+ u.previewTime=(u.previewTime||0)+dt;
+ const phase={aki:0,milo:1.7,ping:3.1,null:4.6}[u.id]||0,t=u.previewTime+phase;
+ const smooth=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);};
+ // Long rests between gestures, with soft acceleration and a separate return.
+ const gesture=(period,start,hold,end)=>{const p=t%period;return smooth((p-start)/.8)*(1-smooth((p-hold)/(end-hold)));};
+ if(!u.previewPose)u.previewPose={};
+ if(!u.previewEuler)u.previewEuler=new T3.Euler();
+ if(!u.previewOffset)u.previewOffset=new T3.Quaternion();
+ const turn=(name,x=0,y=0,z=0)=>{
+  const bone=u.B[name];if(!bone)return;
+  (u.previewPose[name]||(u.previewPose[name]=new T3.Quaternion())).copy(bone.quaternion);
+  bone.quaternion.multiply(u.previewOffset.setFromEuler(u.previewEuler.set(x,y,z)));
+ };
+ const breath=Math.sin(t*1.55);
+ if(u.id==='aki'){
+  const look=gesture(11,2,3.8,5.8);
+  turn('torso',.008*breath,0,-.025);
+  turn('head',-.025*look,0,.16*look);
+  turn('foreR',-.10*look);turn('handR',0,.09*look,0);
+ }else if(u.id==='milo'){
+  const beat=Math.sin(t*2.5),tap=gesture(9,3,4.4,6.2);
+  turn('torso',.012*breath,0,.04*beat);
+  turn('head',.055*Math.sin(t*2.5-.45),0,-.025*beat);
+  turn('foreL',-.16*tap);turn('handL',.04*tap,0,.07*tap);
+ }else if(u.id==='ping'){
+  const check=gesture(12,2,4.8,7);
+  turn('torso',.035*check,0,0);
+  turn('head',.13*check,0,-.10*check);
+  turn('armL',-.25*check,0,-.04*check);
+  turn('foreL',-.42*check);turn('handL',0,.06*check,0);
+ }else if(u.id==='null'){
+  const greet=gesture(13,2.5,5.3,7.8);
+  turn('torso',.015*breath,0,-.04*greet);
+  turn('head',.065*greet,0,.18*greet);
+  turn('armR',-.20*greet,0,.08*greet);
+  turn('foreR',-.26*greet);turn('handR',0,.08*Math.sin(t*2)*greet,0);
+ }
+ u.previewApplied=true;g.updateMatrixWorld(true);u.skeleton.update();
+}
 function characterHeroLook(g){
  const h=G.h,u=g.userData;characterAnimate(g,R3.frameDt||1/60,{dead:h.dead>0,hurt:h.hurtT>0,dash:!!h.dash,attack:h.swingT>=0,swing:h.swingT,cast:h.castT>=0||G.time<(h.characterCastUntil||0),castTime:h.castT,speed:h.mv||0});
  at3(g,h.x,h.y,BZ+terrainHeight(h.x,h.y));const target=nearestMon(false);if(target&&h.dead<=0)u.face=Math.atan2(target.x-h.x,target.y-h.y);const d=Math.atan2(Math.sin(u.face-g.rotation.y),Math.cos(u.face-g.rotation.y));g.rotation.y+=d*(1-Math.exp(-12*(R3.frameDt||1/60)));
  g.scale.setScalar(.85*CK);u.orb.visible=h.castT>=0&&h.dead<=0;
 }
 function characterDispose(g){if(!g?.userData.y2k)return;const u=g.userData;u.mixer.stopAllAction();u.mixer.uncacheRoot(g);u.skeleton.dispose();}
+
