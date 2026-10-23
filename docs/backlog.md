@@ -570,3 +570,5 @@ Alan 欣賞參考截圖的技能組裝思考，但不希望照搬；本輪僅發
 來源及限制：[交接](bright-y2k-theme-2026-10-23.md)；分支 codex/bright-y2k-theme。
 
 - 亮銀配色（docs/bright-y2k-theme-2026-10-23.md）：2026-10-23 試過後 Alan 覺得原本藍紫版較好，已還原；亮色版只留在 Codex 分支 codex/bright-y2k-theme，之後除非 Alan 要求不再套用。
+
+- [x] 接線板改為 B3 色塊接線板（v0.41.0）。待辦：手機真機驗證拖線、數值平衡（配件不限量、同色襯墊 ×2）。
