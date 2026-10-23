@@ -262,7 +262,7 @@ function offlineBulk(R, f, w){
   const boss = Math.min(Math.floor(w.boss*f), Math.floor(R/3600)); if (boss > 0){ G.bossKills = (G.bossKills || 0) + boss; if (G.push && !G.run){ G.depth += boss; G.maxDepth = Math.max(G.maxDepth, G.depth); } }
 }
 function catchUp(sec, report){
-  if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
+  if (G.paused) return; const away = sec; sec = Math.min(sec, offCapSec());
   const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths, inventory:G.inventory.length,chips:G.chips, gems:{...G.gems}, carts:{...G.carts} };
   G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };
