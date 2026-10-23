@@ -272,10 +272,10 @@ function phoneClose(instant){
 }
 function phoneMini(){
   const M = PHONE_META, T = M.sideW; let sl = ''; for (let i = 0; i < 12; i++) sl += `<div class="ph-plane ph-slice" style="transform:translateZ(${(-T / 2 + 4 + (T - 8) * i / 11).toFixed(1)}px)"></div>`;
-  return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span><i class="ph-sp ph-sp1">✦</i><i class="ph-sp ph-sp2">✧</i></span>`;
+  return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span></span>`;
 }
 function phoneButtonHtml(){
-  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}<b class="ph-rb">▶ 點我開機</b><em class="ph-new">NEW!</em></button>`;
+  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
 }
 
 (function(){ const s = document.createElement('style'); s.textContent = `

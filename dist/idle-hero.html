@@ -790,7 +790,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  { v:'0.38.4',d:'2026-10-23',t:['手機螢幕改成銀灰掌機質感：果凍圓鈕、粉紅寶石愛心、液晶綠跑馬燈與底部選單列']},
+  { v:'0.38.4',d:'2026-10-23',t:['手機螢幕改成銀灰掌機質感：果凍圓鈕、粉紅寶石愛心、液晶綠跑馬燈與底部選單列','角色頁右側的手機入口回歸簡約，只保留一支緩慢旋轉的 3D 手機']},
   { v:'0.38.3',d:'2026-10-23',t:['角色頁的手機入口改成簡潔的小 3D 手機，放在角色資訊卡右側的空位，點一下就開機']},
   { v:'0.38.2',d:'2026-10-23',t:['角色手機改用真正的 3D 模型：側面、邊角與按鍵都有立體厚度，可以自由轉動並翻到背面','螢幕與按鍵會跟著模型一起透視變形，放大螢幕時鏡頭會推近']},
   { v:'0.38.1',d:'2026-10-23',t:['角色頁的手機入口改成會轉動的 3D 小手機，加上舊網頁風的 NEW! 星芒與彩虹字','角色手機新增專屬音效：撥接上網握手聲、按鍵音、開機與關機旋律；雙擊手機可以翻到背面','修正手機側面在側轉時一格一格的破圖，轉動角度改為有限制']},
@@ -5419,10 +5419,10 @@ function phoneClose(instant){
 }
 function phoneMini(){
   const M = PHONE_META, T = M.sideW; let sl = ''; for (let i = 0; i < 12; i++) sl += `<div class="ph-plane ph-slice" style="transform:translateZ(${(-T / 2 + 4 + (T - 8) * i / 11).toFixed(1)}px)"></div>`;
-  return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span><i class="ph-sp ph-sp1">✦</i><i class="ph-sp ph-sp2">✧</i></span>`;
+  return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span></span>`;
 }
 function phoneButtonHtml(){
-  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}<b class="ph-rb">▶ 點我開機</b><em class="ph-new">NEW!</em></button>`;
+  return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
 }
 
 (function(){ const s = document.createElement('style'); s.textContent = `
