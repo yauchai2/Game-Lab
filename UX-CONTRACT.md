@@ -261,6 +261,26 @@
 - 新人物走 characters-render 的共用 build／animate／dispose；純外觀配件不修改裝備或戰鬥數值，人物專屬技能規則集中在 characters-data，與外觀 owner 分開。
 - 來源合併完成後才重建 dist，不能以生成檔覆蓋 Claude 的來源更新；本次無 release。
 
+
+## 四角色預覽待機（2026-10-23，候選）
+
+- dressTick 使用 characterPreviewAnimate，只作用 PV.hero；戰場繼續呼叫 characterAnimate。模型、存檔、解鎖、裝扮購買及戰鬥計算不變。
+- 額外骨骼偏移在下一次 mixer 更新前還原，避免累積或帶入戰鬥；動作使用獨立展示時間，不讀寫 G.time。
+- 實際經過時間最多計 100ms，隱藏頁／離開裝扮時清除上一幀時間；重新掛載相同模型不重建骨架，保留動作進度。
+- prefers-reduced-motion 即時停用展示動作及寵機浮動；仍可手動拖曳旋轉。取消預覽自動轉圈。
+
+
+## 角色封面與裝扮（2026-10-23，0.40.2 候選）
+
+- uiCharacterStage／uiCharacterIdentity／charSegHtml 是總覽與裝扮共用呈現，PV／dressMount／dressTick 為唯一預覽。UI_LAYOUT_CSS 擁有布局；UX_THEME 保留全局色彩。資料仍由 CHARS／CHARACTER_PROFILES、G.equip／G.st／G.cos 擁有。
+- uiChooseCharacter 只寫 UI_CHARACTER_PICK；可以查看未解鎖角色及原因。uiConfirmCharacter 再驗 charOk 後呼叫 pickChar，取消／Escape 清空 pending 並回觸發按鈕；查看不改存檔角色或金幣。
+- dSel 是單部位暫時試穿，總覽只讀 G.cos；取消不改所有權、金幣、能力。dressBuy 執行時再驗公開部位、款式與金幣，成功後清空 pending，防止重複扣款。公開部位仍只有武器／副手／飾品，不加入能力裝備槽。
+- 金幣文字局部更新，只有支付資格改變才重繪裝扮；同物件預覽重掛不重建骨架。相機角度與待機時間不寫遊戲存檔。預覽具按鈕旋轉、還原與取消指標手勢，垂直觸控可捲頁。
+- 模型錯誤顯示文字及重試，保持裝備／外觀管理可用。離頁、背景與舞台捲出工作區時停更；重試重建 renderer，替換人物釋放預覽擁有的配件幾何與骨架，保留共用 GLB 幾何及材質。
+- 能力摘要明示單體直傷預估，不假冒完整 DPS 或戰力。空裝備格可前往背包，稀有度及詞綴仍由既有裝備詳情與比較函式決定。未持有專武不標已擁有。
+- 手機角色／裝扮預設小戰場，但明確 G.userCz 優先；resize 不重新載入或清空試穿／輸入。仍沿用原單一捲動與共用 dialog／toast／焦點恢復。
+
+驗證：tools/test_character_stage.cjs、tools/test_character_stage_browser.cjs，加既有角色骨架、裝備與 UX 回歸。瀏覽器證據不是 Safari 真機、完整報讀器或長時間 FPS 認證。
 ## Y2K 專裝候選（PR #15，未合併／未發佈）
 
 - `SIGNATURE_GEAR` 擁有角色、欄位、模型鍵與待補狀態；`rollSignatureGear` 擁有獨立極低機率判定，普通暗金生成不抽專裝。
