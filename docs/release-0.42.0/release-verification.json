@@ -1,0 +1,11 @@
+{
+  "tag": "v0.42.0",
+  "source_commit": "b7f795fb51960bbc2642f80a7e273f153c1dd552",
+  "release_url": "https://github.com/yauchai2/Game-Lab/releases/tag/v0.42.0",
+  "asset_url": "https://github.com/yauchai2/Game-Lab/releases/download/v0.42.0/idle-hero.html",
+  "bytes": 13438063,
+  "sha256": "c1ab4f8330d19768ad51bea7fdeae715ac0747d67b56b8e7872ad115e2b86d20",
+  "workflow": "https://github.com/yauchai2/Game-Lab/actions/runs/39987367877",
+  "github_asset_digest_matches_local": true,
+  "direct_asset_download": "Cloud HTTP client received 503 after GitHub redirect; not claimed as a successful byte download. GitHub API digest, uploaded size and successful Actions upload verified."
+}
