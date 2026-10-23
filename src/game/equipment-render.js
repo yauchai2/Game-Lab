@@ -17,12 +17,57 @@ function equipmentModel(id){
 }
 // Socket dimensions use the existing character rig's units; assets are centered with max span 1.
 const EQUIPMENT_SOCKETS={
- aki_headphones:['head',8,0,4.5,0],aki_baton:['handR',10,0,3.8,0],aki_chain:['hips',6,3,-2,2],aki_charm:['hips',1.8,4,-3,2.6],
- milo_headphones:['head',8,0,4.5,0],milo_md:['torso',3.4,0,2,3],milo_disc:['hips',3.4,3.6,0,2],milo_belt:['hips',4,3,-3,2],milo_md_strap:['torso',8,0,3,2.7],
- ping_clip:['head',2,-3.5,3,1],ping_comm:['head',3,-3.5,2,0],ping_bag:['torso',5,-3,-1,2],ping_launcher:['foreR',5.4,0,-1.5,.6],ping_phone:['handL',2.6,0,0,1],ping_bag_strap:['torso',9,0,3,2.6],
- null_goggles:['head',7,0,6,1],null_controller:['handR',2.8,0,0,1],null_box:['hips',3.5,3,-1,1],null_pet:['pet',4,8,13,-2],null_lanyard:['torso',6,0,3,3]
+ aki_headphones:['head',15,0,1.3,-.3],aki_baton:['handR',10,0,0,.4],aki_chain:['hips',5.8,3.3,-1.1,2.4],aki_charm:['hips',1.6,5,-2.5,2.7],
+ milo_headphones:['head',12.8,0,4.2,-.6],milo_md:['hips',3.3,-3.3,1.5,3.1],milo_disc:['hips',3.5,4.3,.1,1.2],milo_belt:['hips',3.5,1.8,-2.3,3],milo_md_strap:['torso',8,0,3,2.7],
+ ping_clip:['head',2,-3.5,3,1],ping_comm:['head',3.2,-5.3,1.4,.3],ping_bag:['hips',5.2,-5.4,-1.2,1.8],ping_launcher:['foreR',5.4,0,-1.5,.6],ping_phone:['handL',2.5,0,0,.6],ping_bag_strap:['torso',9,0,3,2.6],
+ null_goggles:['head',10.5,0,5.5,-.2],null_controller:['handR',2.8,0,.2,.8],null_box:['hips',3.2,-4.5,.5,.8],null_pet:['pet',4,8,13,-2],null_lanyard:['torso',6,0,3,3]
+};
+// Object-local contact points, measured in normalized source coordinates. The
+// wrapper moves that contact to a bone socket; cached source meshes stay untouched.
+const EQUIPMENT_FITS={
+ aki_headphones:{scale:[1,.9,1]},
+ aki_baton:{pivot:[0,-.38,0]},
+ aki_chain:{rotation:[0,.4,0]},aki_charm:{rotation:[0,.2,0]},
+ milo_md:{rotation:[0,-.25,0]},milo_disc:{rotation:[0,.6,0]},
+ ping_bag:{rotation:[0,-.65,0]},ping_comm:{rotation:[0,-.35,-.1]},
+ ping_launcher:{rotation:[Math.PI/2,0,0]},ping_phone:{pivot:[0,-.28,0],rotation:[-.4,0,-.12]},
+ null_controller:{pivot:[0,-.25,0],rotation:[-.3,0,.1]},null_box:{rotation:[0,-.8,0]}
 };
 function attachSignatureGear(g,it){
- const spec=signatureOf(it);if(!spec||!canUseGear(it))return false;const model=equipmentModel(spec.model),socket=EQUIPMENT_SOCKETS[spec.model];if(!model||!socket)return false;
- const [bone,size,x,y,z]=socket;model.scale.setScalar(size);model.position.set(x,y,z);if(spec.model==='ping_launcher')model.rotation.x=Math.PI/2;(bone==='pet'?g:g.userData.B[bone]).add(model);if(spec.model==='milo_disc'){const other=model.clone(true);other.position.x=-x;g.userData.B[bone].add(other);}if(bone==='pet')g.userData.pet=model;return true;
+ const spec=signatureOf(it);if(!spec||!canUseGear(it))return false;
+ const model=equipmentModel(spec.model),socket=EQUIPMENT_SOCKETS[spec.model];if(!model||!socket)return false;
+ const [bone,size,x,y,z]=socket,fit=EQUIPMENT_FITS[spec.model]||{},mount=new T3.Group();
+ mount.name='equipment_socket_'+spec.model;mount.position.set(x,y,z);
+ if(fit.rotation)mount.rotation.fromArray(fit.rotation);
+ model.scale.setScalar(size);if(fit.scale)model.scale.multiply(new T3.Vector3().fromArray(fit.scale));
+ if(fit.pivot)model.position.fromArray(fit.pivot).multiplyScalar(-size);
+ mount.add(model);(bone==='pet'?g:g.userData.B[bone]).add(mount);
+ (g.userData.equipment||=[]).push({id:spec.model,mount,bone,rest:mount.rotation.clone()});
+ if(spec.model==='milo_disc'){
+  const other=mount.clone(true);other.position.x=-x;other.rotation.y=-mount.rotation.y;
+  g.userData.B[bone].add(other);g.userData.equipment.push({id:spec.model,mount:other,bone,rest:other.rotation.clone()});
+ }
+ if(bone==='pet')g.userData.pet=mount;
+ return true;
+}
+function animateEquipment(g,state={}){
+ const u=g.userData,B=u.B,t=u.mixer.time,holding=new Set((u.equipment||[]).map(e=>e.id));
+ // The mixer restores authored bone tracks before these small local grip offsets.
+ if(holding.has('ping_phone'))B.handL.rotation.x-=.18;
+ if(holding.has('null_controller'))B.handR.rotation.x-=.2;
+ const gentle=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ for(const e of u.equipment||[]){
+  e.mount.rotation.copy(e.rest);
+  if(!gentle&&!state.dead&&['aki_chain','aki_charm','milo_belt'].includes(e.id))e.mount.rotation.z+=Math.sin(t*(state.speed>1?6:2))*(state.speed>1?.035:.012);
+ }
+ if(u.pet){const active=!state.dead&&!gentle;u.pet.position.set(9+(active?Math.sin(t*1.7)*.4:0),13+(active?Math.sin(t*3)*.5:0),-3);u.pet.rotation.y=active?Math.sin(t)*.15:0;}
+}
+
+function characterEquipmentGeometry(asset,id){
+ if(id!=='aki'||typeof CHARACTER_EQUIPMENT_MASKS==='undefined')return asset.geometry;
+ const gear=G.equip.armor,mask=CHARACTER_EQUIPMENT_MASKS.aki_headphones;
+ if(signatureOf(gear)?.model!=='aki_headphones'||!canUseGear(gear)||!mask)return asset.geometry;
+ if(asset.geometry.attributes.position.count!==mask.vertices||asset.geometry.index.count!==mask.triangles*3)throw Error('Character equipment mask is stale');
+ if(!asset.headsetVariant){const removed=new Set(mask.remove),indices=asset.geometry.index.array,kept=[];for(let i=0;i<indices.length;i+=3)if(!removed.has(i/3))kept.push(indices[i],indices[i+1],indices[i+2]);asset.headsetVariant=asset.geometry.clone();asset.headsetVariant.setIndex(kept);}
+ return asset.headsetVariant;
 }

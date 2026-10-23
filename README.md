@@ -86,7 +86,7 @@ Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機�
 
 已接入本次 ZIP 的 16 件 3D 模型；素材清單另外 4 件尚只有參考圖，先以簡模代替。專裝只有對應角色可穿戴，獨立低機率掉落；其餘裝備暫用簡單幾何模型。
 
-- 單檔模型與佩戴預覽：`dist/equipment-review.html`（不讀寫進度）
+- 單檔模型與佩戴預覽：`dist/equipment-review.html`（不讀寫進度；逐件／三欄搭配／整套參考、九動作、四視角及時間拖桿）
 - 整合遊戲候選：`dist/idle-hero-review.html`（獨立測試存檔）
 - [素材對照、掉落規則與驗證](docs/y2k-equipment.md)
 - 邏輯與素材檢查：`node tools/test_signature_equipment.cjs`

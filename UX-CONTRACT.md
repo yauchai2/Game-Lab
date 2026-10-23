@@ -268,3 +268,6 @@
 - `G.armory` 仍是收藏唯一持久化 owner，裝備及構築引用同一件物品；收藏數量由資料衍生，原九款核心之外增加二十款專裝。
 - `equipment-render.js` 擁有模型快取與骨架掛點，`equipment-assets.js` 由驗證後 GLB 與縮圖產生；模型鍵變動須重建場景外觀。專裝使用實際模型，普通裝備用簡模並保留原純外觀選擇與統計分離。
 - 缺少 3D 的四項在詳情標示暫用簡模；後續補檔保留既有物品 ID。獨立 `equipment-review.html` 不讀寫遊戲進度。驗證見 `docs/y2k-equipment.md`。
+
+
+Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與物件接觸點，`animateEquipment` 在既有動作混合器之後套用有限手腕偏移，不能影響命中與掉落。`characterEquipmentGeometry` 依實際佩戴選取原幾何或快取遮罩變體，不修改共用原網格。左手手機與左手純外觀裝扮互斥呈現，保留原裝扮設定。整套參考只存在獨立預覽，不寫進度；九動作／四視角與時間拖桿共用同一套場景及掛點。

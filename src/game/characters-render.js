@@ -26,7 +26,7 @@ function buildY2KHero(at,ar,wt,wr,cos){
  const nodes=doc.nodes.map((n,i)=>{const o=joints.has(i)?new T3.Bone():new T3.Group();o.name=n.name||'node_'+i;if(n.translation)o.position.fromArray(n.translation);if(n.rotation)o.quaternion.fromArray(n.rotation);if(n.scale)o.scale.fromArray(n.scale);if(n.matrix)new T3.Matrix4().fromArray(n.matrix).decompose(o.position,o.quaternion,o.scale);if(joints.has(i))B[o.name]=o;return o;});
  doc.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>nodes[i].add(nodes[c])));for(const i of doc.scenes[doc.scene||0].nodes)g.add(nodes[i]);
  const s=doc.skins[0],inv=asset.access(s.inverseBindMatrices).array,skeleton=new T3.Skeleton(s.joints.map(i=>nodes[i]),s.joints.map((_,i)=>new T3.Matrix4().fromArray(inv,i*16)));
- const mesh=new T3.SkinnedMesh(asset.geometry,asset.material);mesh.name=id+'_skin';mesh.frustumCulled=false;
+ const mesh=new T3.SkinnedMesh(characterEquipmentGeometry(asset,id),asset.material);mesh.name=id+'_skin';mesh.frustumCulled=false;
  const meshNode=doc.nodes.findIndex(n=>n.mesh===0);nodes[meshNode].add(mesh);g.updateMatrixWorld(true);mesh.bind(skeleton,mesh.matrixWorld);mesh.normalizeSkinWeights();
  const mixer=new T3.AnimationMixer(g),actions=Object.fromEntries(asset.clips.map(clip=>[clip.name,mixer.clipAction(clip)]));
  for(const [name,action]of Object.entries(actions)){if(!['idle','walk','run'].includes(name)){action.setLoop(T3.LoopOnce,1);action.clampWhenFinished=true;}}
@@ -47,7 +47,9 @@ function characterEquipment(g,cos,wt,wr){
  if(g.userData.id==='null'&&!g.userData.pet){const pet=buildSimpleEquipment('ring',0,0);pet.position.set(8,13,-2);g.add(pet);g.userData.pet=pet;}
  // Existing cosmetic owner expects forearm origins. Socket adapters put the item in the palm.
  const proxy={...B};for(const side of['L','R']){const socket=new T3.Group();socket.position.set(0,4,-1);B['hand'+side].add(socket);proxy['fore'+side]=socket;}
- buildHeroAccessories(proxy,cos);
+ const occupiedLeft=(g.userData.equipment||[]).some(e=>e.id==='ping_phone');
+ g.userData.offhandCosmeticSuppressed=occupiedLeft&&!!cos.offhandStyle&&cos.offhandStyle!=='0';
+ buildHeroAccessories(proxy,occupiedLeft?{...cos,offhandStyle:'0'}:cos);
 }
 function characterPlay(g,name,fade=.1){
  const u=g.userData,next=u.actions[name];if(!next||u.animation===name)return;
@@ -59,7 +61,7 @@ function characterAnimate(g,dt,state={}){
  if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack')u.actions.attack.reset().play();u.lastSwing=state.swing;
  if(state.cast&&u.lastCast!=null&&state.castTime<u.lastCast&&u.animation==='cast')u.actions.cast.reset().play();u.lastCast=state.castTime;
  characterPlay(g,mode,mode==='hurt'?.045:.1);const action=u.actions[mode];if(action&&mode==='attack')action.timeScale=.6/.3;if(action&&mode==='cast')action.timeScale=.8/.45;
- u.mixer.update(dt);if(u.pet){const t=u.mixer.time;u.pet.position.set(8+Math.sin(t*1.7)*.6,13+Math.sin(t*3)*.8,-2);u.pet.rotation.y=Math.sin(t)*.25;}
+ u.mixer.update(dt);animateEquipment(g,state);
  g.updateMatrixWorld(true);u.skeleton.update();
 }
 function characterHeroLook(g){
