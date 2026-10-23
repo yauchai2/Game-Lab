@@ -54,8 +54,8 @@ function wireBoardHtml(){
   return `<div class="pz wb" role="group" aria-label="接線板，方向鍵移動，Enter 選取或放置" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">${cells}${wireSvg()}</div>`;
 }
 function wireBar(){
-  const sel = selSock >= 0, held0 = !!held, btn = (t, fn, on = true) => `<button class="mb" ${on ? '' : 'disabled'} onclick="${fn}">${t}</button>`;
-  return `<div class="pzbar">${btn('自動配置', 'wireAuto()')}${WIRE_UNDO ? btn('復原', 'wireUndo()') : ''}<button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回"><i></i>全部清空</button>${btn('取消選取', 'uxCancelPiece()', sel || held0 || selPiece != null)}<span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
+  const sel = selSock >= 0, held0 = !!held, btn = (t, fn, on = true) => `<button class="mb" data-tip="${{'自動配置':'替所有技能自動接線，並把可用配件放到最合適的位置','復原':'還原上一次的自動配置或清空','取消選取':'放下手上的配件或取消選取的插槽'}[t] || ''}" ${on ? '' : 'disabled'} onclick="${fn}">${t}</button>`;
+  return `<div class="pzbar">${btn('自動配置', 'wireAuto()')}${WIRE_UNDO ? btn('復原', 'wireUndo()') : ''}<button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回" data-tip="清掉所有接線，配件收回庫存；可按復原還原"><i></i>全部清空</button>${btn('取消選取', 'uxCancelPiece()', sel || held0 || selPiece != null)}<span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
 }
 function wireSelCard(){
   const B = G.board;
@@ -272,7 +272,7 @@ function wireForgeHtml(){
 /* ---------- 庫存與目前生效 ---------- */
 function uiInventoryHtml(){
   const kind = UI_WORK.inventory;
-  const head = uiSegments('inventory', [['support', '輔助配件'], ['active', '主動技能'], ['cart', '模式卡匣']], '機件庫存分類');
+  const head = uiSegments('inventory', [['support', '輔助配件', '放在接線上強化技能；點選後再點板上的格子'], ['active', '主動技能', '點選後裝到選取的插槽'], ['cart', '模式卡匣', '改變技能的出手方式，裝在技能晶片上']], '機件庫存分類');
   let content = '';
   if (kind === 'active') content = `<div class="ui-inventory-grid">${Object.entries(SKILLS).map(([id, K]) => { const unlocked = G.lvl >= K.lvl, at = G.board.pieces.find(p => p.kind === 'active' && p.key === id); return `<button class="gt" data-focus="active-${id}" data-availability="${unlocked ? 'available' : 'unavailable'}" aria-label="${uxEsc(K.n + '：' + K.d)}" onclick="uiInventoryPick('active','${id}')">${sico(id, 26)}<b>${K.n}</b><small>${!unlocked ? `Lv. ${K.lvl}` : at ? `插槽 ${GridLab.sockIndex(at) + 1}` : '點選裝上'}</small></button>`; }).join('')}</div>`;
   else if (kind === 'support') content = `<div class="ui-inventory-grid">${Object.entries(SUPPS).flatMap(([id, S]) => [1, 2, 3].filter(t => t === 1 || gemOwnT(id, t) > 0).map(t => { const n = gemOwnT(id, t), f = gemFreeT(id, t), tn = TIER_NAME[t - 1], on = held?.key === id && (held.t || 1) === t; return `<button class="gt${on ? ' on' : ''}${t > 1 ? ' tier' + t : ''}" data-focus="support-${id}${t > 1 ? '-' + t : ''}" data-availability="${f ? 'available' : 'unavailable'}" aria-label="${uxEsc(S.n + tn)}，${f}／${n}，${uxEsc(S.d)}" onclick="uiInventoryPick('support','${id}',${t})">${t === 1 && G.newSnap && n > (G.newSnap.g[id] || 0) ? '<i class="nw">NEW</i>' : ''}${gemIco(id, 26)}<b>${S.n}${tn}</b><small>可用 ${f}／${n}</small></button>`; })).join('')}</div>${wireForgeHtml()}`;
