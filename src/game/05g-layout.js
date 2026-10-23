@@ -5,9 +5,9 @@ const UI_NAV = [
   {k:'skills',n:'技能',icon:'battle',pages:['skills']},
   {k:'craft',n:'打造',icon:'craft',pages:['craft']},
   {k:'maps',n:'冒險',icon:'adventure',pages:['maps']},
-  {k:'menu',n:'設定',icon:'more',pages:['menu','goals','ach','dex','log','save','settings','feedback']}
+  {k:'menu',n:'設定',icon:'more',pages:['menu','goals','ach','dex','rank','log','save','settings','feedback']}
 ];
-const UI_TITLE = {warehouse:'背包',char:'角色',dress:'角色與裝扮',skills:'技能',craft:'打造',tree:'天賦',maps:'冒險',menu:'設定',goals:'目標',ach:'成就',dex:'圖鑑',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定',feedback:'意見回饋'};
+const UI_TITLE = {warehouse:'背包',char:'角色',dress:'角色與裝扮',skills:'技能',craft:'打造',tree:'天賦',maps:'冒險',menu:'設定',goals:'目標',ach:'成就',dex:'圖鑑',rank:'排行榜',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定',feedback:'意見回饋'};
 const UI_WORK = {inventory:'support',craftSlot:'weapon',craftAct:'upgrade',adventure:'maps'};
 function uiNavHtml(){
   return UI_NAV.map(g=>{const current=g.pages.includes(modalTab),locked=!tabOpen(g.k),dot=g.k==='menu' ? dotOn('col')||logNew() : g.k==='char' ? passPoints()>0&&tabOpen('tree') : dotOn(g.k);
@@ -27,8 +27,8 @@ function uiWork(key,id){
   if(!allowed[key]?.includes(id))return;UI_WORK[key]=id;renderModal();
 }
 function uiMenuHtml(){
-  const group=(name,items)=>`<section class="ui-menu-group"><h3>${name}</h3><div class="ui-directory">${items.map(([k,n,d])=>`<button onclick="openModal('${k}')">${obj3d(k,44)}<b>${n}</b><span>${d}</span><i aria-hidden="true">↗</i></button>`).join('')}</div></section>`;
-  return group('遊戲',[['settings','遊戲設定','戰鬥規則、拾取與音效'],['save','存檔與備份','本機保存、匯入及匯出']])+group('進度與收藏',[['goals','目標','下一個里程碑與獎勵'],['ach','成就','已達成的挑戰'],['dex','圖鑑','技能、卡匣與收藏紀錄']])+group('其他',[['log','更新日誌','查看版本與更新'],['feedback','意見回饋','回報問題、平衡與玩法建議']])+`<button class="ui-wiki" aria-label="編年史" onclick="wikiOpen()">${obj3d('wiki',44)||spr('star',24)}<span><b>編年史</b><small>查看所有遊戲資訊</small></span><i aria-hidden="true">↗</i></button>`;
+  const group=(name,items)=>`<section class="ui-menu-group"><h3>${name}</h3><div class="ui-directory">${items.map(([k,n,d])=>`<button onclick="openModal('${k}')">${obj3d(k==='rank'?'ach':k,44)}<b>${n}</b><span>${d}</span><i aria-hidden="true">↗</i></button>`).join('')}</div></section>`;
+  return group('遊戲',[['settings','遊戲設定','戰鬥規則、拾取與音效'],['save','存檔與備份','本機保存、匯入及匯出']])+group('進度與收藏',[['goals','目標','下一個里程碑與獎勵'],['ach','成就','已達成的挑戰'],['dex','圖鑑','技能、卡匣與收藏紀錄'],['rank','排行榜','歷史最佳與構築']])+group('其他',[['log','更新日誌','查看版本與更新'],['feedback','意見回饋','回報問題、平衡與玩法建議']])+`<button class="ui-wiki" aria-label="編年史" onclick="wikiOpen()">${obj3d('wiki',44)||spr('star',24)}<span><b>編年史</b><small>查看所有遊戲資訊</small></span><i aria-hidden="true">↗</i></button>`;
 }
 function charSegHtml(){return `<div class="ui-segments" role="group" aria-label="角色分頁"><button aria-pressed="${modalTab==='char'}" data-focus="char-stats" onclick="openModal('char')">屬性</button><button aria-pressed="${modalTab==='tree'}" data-focus="char-talent"${tabOpen('tree')?'':' class="lock"'} onclick="${tabOpen('tree')?"openModal('tree')":"lockTip('tree')"}">${tabOpen('tree')?'天賦':'天賦 Lv'+TAB_LVL.tree}${passPoints()>0&&tabOpen('tree')?' ●':''}</button></div>`;}
 function uiCharacterHtml(){
