@@ -81,10 +81,10 @@ function uiConfirmBuildFallback(){const p=BUILD_PENDING;BUILD_PENDING=null;hideO
 function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、角色、策略及三件裝備；引用裝備受回收保護。');}
 function skillsHtml(){
   // 接線板放最上面，收起戰場時一打開就能直接編輯；構築管理與電路合成放在下面
-  return wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + buildBar() + circuitShopHtml() + uiResolvedHtml() + uiCombatHtml();
+  return wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + buildBar() + uiResolvedHtml() + uiCombatHtml();
 }
 function treeHtml(){
-  return buildBar() + treeHtml0();
+  return charSegHtml() + buildBar() + treeHtml0();
 }
 /* 天賦盤：畫在 160×160 的小畫布上再用最近鄰放大，保持低解像像素風；互動靠上面一層透明的 SVG 熱區 */
 const TREE_PX = 160, TREE_STAR = ['....#....', '....#....', '...###...', '#########', '.#######.', '..#####..', '..##.##..', '.##...##.', '.#.....#.'];
@@ -262,7 +262,7 @@ function offlineBulk(R, f, w){
   const boss = Math.min(Math.floor(w.boss*f), Math.floor(R/3600)); if (boss > 0){ G.bossKills = (G.bossKills || 0) + boss; if (G.push && !G.run){ G.depth += boss; G.maxDepth = Math.max(G.maxDepth, G.depth); } }
 }
 function catchUp(sec, report){
-  if (G.paused) return; const away = sec; sec = Math.min(sec, 6*3600);
+  if (G.paused) return; const away = sec; sec = Math.min(sec, offCapSec());
   const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths, inventory:G.inventory.length,chips:G.chips, gems:{...G.gems}, carts:{...G.carts} };
   G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };
