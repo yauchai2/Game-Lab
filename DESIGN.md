@@ -231,3 +231,8 @@ Alan 希望中央更空曠而過渡自然、修正試玩數字、加入有趣過
 ## 四主角模型與動作候選（2026-10-23）
 
 Alan 提供的 Character.zip 取代舊共用角色造型，人物原始比例與服裝輪廓以實際 GLB 為準。AKI／MILO／PING／NULL 共用 32 單位高度、16 骨架節點與 9 個動作名，保留各自原色圖；霧面材質與低面數配件沿用場景方向。characters-render.js 為新人物呈現 owner，characters-assets.js 由本地 Blender 衍生 GLB 生成；戰場、裝扮及獨立動作審核共用。原 GUI 字體、密度、畫質 owner 不變。詳見 docs/y2k-characters-handoff.md；此為候選，未發佈。
+
+
+## 角色頁小手機動態（2026-10-23，香港時間）
+
+Alan 要求右側空位只顯示一支 3D 手機，輕輕自轉，不要左右搖擺。沿用 05k-phone.js 的 phoneMini／銀灰凹槽與既有貼圖；phMiniSpin 改為固定 4° 俯仰、Y 軸單向 48 秒一圈的線性旋轉，沒有往返、位移或縮放。prefers-reduced-motion 下停在 -24° 展示角。這是手機入口的特例，不改全屏手機或戰場動畫。
