@@ -77,3 +77,7 @@ Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機�
 0.32 地形、選卡暫停及回饋驗證：`node tools/test_update_032.cjs`、`node tools/test_terrain_mesh.cjs`。本次結果及限制見 [docs/update-0.32-validation.md](docs/update-0.32-validation.md)。
 
 0.32 視覺修正版：`node tools/test_world_review.cjs`；完整來源檢查：`python tools/run_review_checks.py`。開發分支可推送，Release／gh-pages 必須先取得版本確認。
+
+### 四主角候選（未 release）
+
+`codex/y2k-characters` 以 Alan 上傳模型製作 AKI、MILO、PING、NULL 的 16 骨架／9 動作版本。獨立動作審核：`dist/character-review.html`；含四角色切換的遊戲試玩：`dist/idle-hero-review.html`。來源、驗證界線及與 Claude 分支的整合 hooks 見 [整合指引](docs/y2k-characters-handoff.md)。正式公開版仍為 v0.32.0。
