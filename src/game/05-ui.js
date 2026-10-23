@@ -61,7 +61,7 @@ function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); set
   if ($('modal').hidden) return;
   $('mtabs').innerHTML=uiNavHtml(); uiTitle();
   const settings=modalTab==='settings';if(settings)uiSyncSettings(); $('uisettings').hidden=!settings; $('mmenu').hidden=false; $('mbody').hidden=settings;
-  if(!settings) $('mbody').innerHTML = modalTab === 'warehouse' ? warehouseHtml() : modalTab === 'char' ? uiCharacterHtml() : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? dressHtml() : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : modalTab === 'feedback' ? feedbackHtml() : modalTab === 'save' ? saveHtml() : uiMenuHtml();
+  if(!settings) $('mbody').innerHTML = modalTab === 'warehouse' ? warehouseHtml() : modalTab === 'char' ? uiCharacterHtml() : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? dressHtml() : modalTab === 'rank' ? rankHtml() : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : modalTab === 'feedback' ? feedbackHtml() : modalTab === 'save' ? saveHtml() : uiMenuHtml();
   uxRestorePanel(uxPanel,resetScroll);if(resetScroll)uxAnimatePanel();
   UI_LIVE_SIGNATURE=uiLiveSignature();uiCityRevealCheckpoint();
 }
