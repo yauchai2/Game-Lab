@@ -375,4 +375,11 @@ details.ui-adv{margin:10px 0}details.ui-adv>summary{cursor:pointer;padding:8px 4
 body.d #mbody .pz.wb{max-width:min(100%,620px)!important;padding:12px}
 body.d #mbody .pz.wb button.pc{font-size:11px}body.d #mbody .pz.wb button.pc span{font-size:11px}
 body.d .wsvg{inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
+#mbody .pz.wb button.pc.sk:not(.empty):not(.lock){background:linear-gradient(#2b3a63,#1b2644)!important;box-shadow:inset 0 0 0 2px #7fe3b0,0 1px 0 #0006!important;color:#fff!important;border-radius:3px!important}
+#mbody .pz.wb button.pc.sk:not(.empty):not(.lock) span{color:#fff!important;font-size:12px!important;font-weight:700;line-height:1.15;text-shadow:1px 1px 0 #0a1230;letter-spacing:0;white-space:normal;word-break:break-all;font-size:11px!important}
+#mbody .pz.wb button.pc.sk.empty,#mbody .pz.wb button.pc.lock{background:#12302a!important;box-shadow:inset 0 0 0 2px #7fe3b0!important;color:#d9fff0!important}
+#mbody .pz.wb button.pc.sk.empty span,#mbody .pz.wb button.pc.lock span,#mbody .pz.wb button.pc.sk.empty,#mbody .pz.wb button.pc.lock{color:#d9fff0!important;font-size:12px!important;font-weight:700;letter-spacing:0}
+#mbody .pz.wb button.pc.bus,#mbody .pz.wb button.pc.bus span{font-size:12px!important;font-weight:800}
+#mbody .pz.wb button.pc.chip,#mbody .pz.wb button.pc.chip span,#mbody .pz.wb button.pc.ac,#mbody .pz.wb button.pc.ac span{font-size:12px!important;font-weight:700}
+body.d #mbody .pz.wb button.pc.sk:not(.empty):not(.lock) span,body.d #mbody .pz.wb button.pc.sk.empty span,body.d #mbody .pz.wb button.pc.lock span{font-size:13px!important}
 `;
