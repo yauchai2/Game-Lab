@@ -29,6 +29,22 @@ function wireSvg(){
   }
   return `<svg class="wsvg" viewBox="0 0 ${GridLab.W} ${GridLab.H}" preserveAspectRatio="none" aria-hidden="true">${o}</svg>`;
 }
+function wireStep(){
+  const B = G.board, res = GridLab.resolve(B, G.lvl), hasSkill = B.pieces.some(p => p.kind === 'active'), wired = res.some(r => r.wired), parts = res.some(r => r.linked.length);
+  return !hasSkill ? 1 : !wired ? 2 : !parts ? 3 : 4;
+}
+function wireHints(){
+  const B = G.board, step = wireStep(), h = new Set(), key = (x, y) => x + ',' + y;
+  if (step === 1){ for (let i = 0; i < GridLab.SOCKS.length; i++) if (wOpen(i) && !wActive(i)){ h.add(key(...GridLab.SOCKS[i])); break; } }
+  else if (step === 2){
+    const a = B.pieces.filter(p => p.kind === 'active').map(p => GridLab.sockIndex(p)).filter(i => i >= 0 && !GridLab.connected(B, i)).sort((x, y) => (x === selSock ? -1 : y === selSock ? 1 : x - y))[0];
+    if (a != null){ h.add(key(...GridLab.SRCS[a])); h.add(key(...GridLab.SOCKS[a])); }
+  } else if (step === 3){
+    const a = B.pieces.filter(p => p.kind === 'active').map(p => GridLab.sockIndex(p)).find(i => i >= 0 && GridLab.connected(B, i));
+    if (a != null){ const free = GridLab.getWire(B, a).cells.filter(c => GridLab.isPad(c[0], c[1]) && !wSupportAt(c[0], c[1])), m = free.filter(c => GridLab.padColor(c[0], c[1]) === GridLab.SOCK_COL[a]); (m.length ? m : free).slice(0, 3).forEach(c => h.add(key(c[0], c[1]))); }
+  }
+  return h;
+}
 function wireCell(x, y, ctx){
   const B = G.board, L = G.lvl, ev = `data-x="${x}" data-y="${y}" data-focus="cell-${x}-${y}" tabindex="${UX_GRID.x === x && UX_GRID.y === y ? 0 : -1}" aria-label="${uxEsc(uxGridLabel(x, y))}" onfocus="uxGridFocus(this)" onclick="wireTap(${x},${y})" onpointerdown="wireDown(event,${x},${y})" onmouseenter="pzHover(${x},${y})"`;
   const W = GridLab.W, H = GridLab.H, edge = x === 0 || y === 0 || x === W - 1 || y === H - 1;
@@ -56,7 +72,8 @@ function wireCell(x, y, ctx){
 function wireBoardHtml(){
   const B = G.board, res = GridLab.resolve(B, G.lvl), ctx = { linked:new Set(res.flatMap(r => r.linked)) };
   let cells = '';
-  for (let y = 0; y < B.h; y++) for (let x = 0; x < B.w; x++) cells += wireCell(x, y, ctx);
+  const hint = wireHints();
+  for (let y = 0; y < B.h; y++) for (let x = 0; x < B.w; x++){ const c = wireCell(x, y, ctx); cells += hint.has(x + ',' + y) ? c.replace('class="pc', 'class="pc hint') : c; }
   return `<div class="pz wb" role="group" aria-label="接線板，方向鍵移動，Enter 選取或放置" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">${cells}${wireSvg()}</div>`;
 }
 function wireBar(){
@@ -84,15 +101,19 @@ function wireSelCard(){
 }
 
 function wireGuideHtml(){
-  const B = G.board, res = GridLab.resolve(B, G.lvl), hasSkill = B.pieces.some(p => p.kind === 'active'), wired = res.some(r => r.wired), parts = res.some(r => r.linked.length);
-  const step = !hasSkill ? 1 : !wired ? 2 : !parts ? 3 : 4;
-  const txt = ['', '第 1 步：點板邊的插槽（上面與右邊），選一個技能裝上。', '第 2 步：從同色電源（⚡）拉一條線到插槽，點任何一格就會自動接過去。不想拉線就按下面的「自動配置」。', '第 3 步：把配件拖到線經過的色塊襯墊上，或按「自動配置」。同色襯墊威力 ×2。', '完成了！想更強：繞路經過更多襯墊，尤其是和線同色的襯墊。'][step];
-  const chips = ['裝技能', '拉線', '放配件'].map((n, i) => `<li class="${step > i + 1 ? 'done' : step === i + 1 ? 'now' : ''}"><b>${step > i + 1 ? '✓' : i + 1}</b>${n}</li>`).join('');
-  return `<section class="wguide${step === 4 ? ' ok' : ''}" aria-label="新手引導"><ol>${chips}</ol><p>${txt}</p></section>`;
+  const step = wireStep(), B = G.board;
+  const what = step === 1 ? '<p class="wwhat">接線板是讓技能變強的電路：<b>電源⚡</b>經過<b>電線</b>接到<b>技能插槽</b>，電線經過的<b>色塊</b>放上配件，技能就更強。</p>' : '';
+  const txt = ['', '先把技能裝上：點亮起的<b>空插槽</b>（板子上面或右邊），再選一個技能。', '接上電線：從亮起的<b>電源⚡</b>開始，點或拖到亮起的<b>插槽</b>就會自動接好。', '放上配件：把下面的配件拖到亮起的<b>色塊</b>上；和線同色的色塊效果 ×2。', '完成了！想更強：讓電線繞去更多色塊，尤其是和線同色的色塊。'][step];
+  const chips = ['裝技能', '接電線', '放配件'].map((n, i) => `<li class="${step > i + 1 ? 'done' : step === i + 1 ? 'now' : ''}"><b>${step > i + 1 ? '✓' : i + 1}</b>${n}</li>`).join('');
+  const cta = step >= 2 && step < 4 ? `<button class="mb wcta" onclick="wireAuto()">一鍵幫我設好</button>` : '';
+  return `<section class="wguide${step === 4 ? ' ok' : ''}" aria-label="新手引導">${what}<ol>${chips}</ol><p class="wnow">${txt}</p>${cta}</section>`;
+}
+function wireLegendHtml(){
+  return `<div class="wlegend" aria-hidden="true"><span><i class="lg src">⚡</i>電源（顏色＝線的顏色）</span><span><i class="lg sock"></i>技能插槽</span><span><i class="lg pad">★</i>色塊：放配件，同色 ×2</span></div>`;
 }
 function wireTopHtml(){
   wireInstallStyles();
-  return `${wireBoardHtml()}${wireBar()}`;
+  return `${wireBoardHtml()}${wireLegendHtml()}${wireBar()}`;
 }
 
 /* ---------- 說明與可及性 ---------- */
@@ -381,6 +402,15 @@ body #mbody .dpsbar{padding:5px 8px;margin:4px 0}.ui-inventory{margin:8px 0}
 .wguide ol{display:flex;gap:6px;margin:0 0 5px;padding:0;list-style:none}.wguide li{flex:1;display:flex;align-items:center;gap:5px;padding:3px 5px;background:#eef0f7;color:#8a93ad;font-size:13px}
 .wguide li b{display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;background:#c8cfe3;color:#fff;font-size:12px}
 .wguide li.now{background:#fff;color:#172751;outline:2px solid #e2b93b}.wguide li.now b{background:#d79a00}.wguide li.done{color:#3a7a52}.wguide li.done b{background:#3fa76a}
+.wguide .wwhat{margin:0 0 6px;font-size:13px;line-height:1.5;color:#3d2a00;font-weight:500}.wguide .wwhat b{color:#172751}
+.wguide .wnow{margin:0;font-size:15px;line-height:1.55;color:#3d2a00;font-weight:650}.wguide .wnow b{color:#b25d00}
+.wguide .wcta{margin-top:6px;min-height:38px;font-weight:700;background:linear-gradient(#ffd96a,#f0a91c)!important;color:#3d2a00!important}
+.wlegend{display:flex;flex-wrap:wrap;gap:4px 12px;margin:5px 0 2px;font-size:12px;color:#33407f}.wlegend span{display:inline-flex;align-items:center;gap:4px}
+.wlegend .lg{display:inline-block;width:16px;height:16px;line-height:16px;text-align:center;font-style:normal;font-size:10px;border:2px solid #14204f;color:#fff}
+.wlegend .lg.src{background:#ff5a3c}.wlegend .lg.sock{background:#fff;border-color:#3c7dff}.wlegend .lg.pad{background:#2fd08a}
+@keyframes wirehint{0%,100%{box-shadow:0 0 0 2px #fff27a,0 0 6px 2px #ffd400}50%{box-shadow:0 0 0 3px #fff,0 0 14px 5px #ffd400}}
+#mbody .pz.wb button.pc.hint{animation:wirehint 1s ease-in-out infinite;z-index:3}
+@media(prefers-reduced-motion:reduce){#mbody .pz.wb button.pc.hint{animation:none;outline:3px solid #ffd400}}
 .wguide p{margin:0;font-size:15px;line-height:1.55;color:#3d2a00;font-weight:650}.wguide.ok{background:#e6f7ec;border-color:#6bbf8a;box-shadow:2px 2px 0 #3a7a5233}.wguide.ok p{color:#1d5d3a;font-size:13px}.wguide.ok ol{display:none}
 .ui-inventory .nw{display:none}
 details.ui-adv{margin:10px 0}details.ui-adv>summary{cursor:pointer;padding:8px 4px;font-size:14px;font-weight:650}
