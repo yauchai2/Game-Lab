@@ -563,3 +563,5 @@ Alan 欣賞參考截圖的技能組裝思考，但不希望照搬；本輪僅發
 - [ ] BRIGHT-03：環境中斷，整合前重建 dist 並重跑瀏覽器；Alan 視覺確認／Safari 真機。未合併、未發佈。
 
 來源及限制：[交接](bright-y2k-theme-2026-10-23.md)；分支 codex/bright-y2k-theme。
+
+- 亮銀配色（docs/bright-y2k-theme-2026-10-23.md）：2026-10-23 試過後 Alan 覺得原本藍紫版較好，已還原；亮色版只留在 Codex 分支 codex/bright-y2k-theme，之後除非 Alan 要求不再套用。
