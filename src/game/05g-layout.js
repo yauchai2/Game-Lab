@@ -406,3 +406,29 @@ body.ui-material #uisettings #btns .act::after{content:"";position:absolute;left
 body #uisettings .view-settings .view-options>button,body #uisettings #watch-now{border-radius:0!important}
 body #uisettings .ui-rules{margin-top:8px}
 `;document.head.appendChild(st);})();
+/* 更多選單：分組改為藍紫小窗口，入口卡片與編年史同色系 */
+(function(){const st=document.createElement('style');st.textContent=`
+body #mbody .ui-menu-group{margin:12px 0!important;padding:0 10px 10px!important;background:#e6e8f6!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:3px 3px 0 #8c9bd0!important}
+body #mbody .ui-menu-group>h3{display:flex;align-items:center;gap:6px;margin:0 -10px 10px;padding:4px 8px;font:14px var(--ux-body,system-ui);letter-spacing:.06em;color:#fff;background:linear-gradient(#4a5aa8 0 45%,#33407f 45% 100%);border-bottom:2px solid #1d2552}
+body #mbody .ui-menu-group>h3::before{content:"";width:8px;height:8px;background:#ffe45c;border:1px solid #1d2552;flex:none}
+body #mbody .ui-directory button,body #mbody .ui-wiki{background:#f4f5ff!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;color:#1d2552!important}
+body #mbody .ui-directory button:active,body #mbody .ui-wiki:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #8c9bd0!important}
+body #mbody .ui-directory button b,body #mbody .ui-wiki b{color:#1d2552}
+body #mbody .ui-directory button span,body #mbody .ui-wiki small{color:#5c6a8e!important}
+body #mbody .ui-directory button i,body #mbody .ui-wiki i{color:#33407f;font-size:13px}
+body #mbody .ui-wiki{margin-top:12px;background:linear-gradient(#fffbe0,#f6e9a8)!important}
+`;document.head.appendChild(st);})();
+/* 設定頁選項按鈕：由灰色斜面鈕改成淡紫扁平卡 */
+(function(){const st=document.createElement('style');st.textContent=`
+body #uisettings .ui-setting-grid>button,body #uisettings .view-settings .view-options>button,body #uisettings #watch-now{background:#f4f5ff!important;color:#1d2552!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important;text-shadow:none!important}
+body #uisettings .ui-setting-grid>button:active,body #uisettings .view-settings .view-options>button:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #8c9bd0!important}
+body #uisettings .ui-setting-grid>button small,body #uisettings .ui-setting-grid>button span{color:#5c6a8e!important}
+body #uisettings .view-options>button[aria-pressed=true],body #uisettings .view-options>button.on,body #uisettings .view-options>button.sel{background:linear-gradient(#4a5aa8,#33407f)!important;color:#fff!important}
+`;document.head.appendChild(st);})();
+(function(){const st=document.createElement('style');st.textContent=`
+body.ui-material #uisettings #btns button.act,body.ui-material #uisettings .ui-setting-grid>button.act,body.ui-material #uisettings button.act{background:#f4f5ff!important;background-image:none!important;color:#1d2552!important;border:2px solid #fff!important;border-left:6px solid #33407f!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:2px 2px 0 #8c9bd0!important}
+body #uisettings button.act b{color:#1d2552}body #uisettings button.act small{color:#5c6a8e!important}
+body.ui-material #mbody .ui-menu-group{margin:12px 0!important;padding:0 10px 10px!important;background:#e6e8f6!important;border:2px solid #fff!important;outline:1px solid #5c6a8e;border-radius:0!important;box-shadow:3px 3px 0 #8c9bd0!important}
+body.ui-material #mbody .ui-menu-group .ui-directory,body.m.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:1fr!important}
+body.ui-material #mbody .ui-directory button{background-image:none!important;grid-template-columns:auto 1fr auto}
+`;document.head.appendChild(st);})();
