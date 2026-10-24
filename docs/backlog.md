@@ -648,4 +648,4 @@ Alan 欣賞參考截圖的技能組裝思考，但不希望照搬；本輪僅發
 
 - [x] REL044-01：每次 release 必須檢查 Claude 最新分支及 PR；規則已寫入 AGENTS.md 與發佈流程。
 - [x] REL044-02：整合訊號組裝台、整備台、設定網格與 Claude 最新日系中文文案，統一單筆版本紀錄與新角色專裝名稱；保留存檔鍵及數值。
-- [ ] REL044-03：完成合併後發佈、線上雜湊與 Release 附件驗證。
+- [x] REL044-03：完成合併後發佈、線上雜湊與 Release 附件驗證。來源 2d36f40，Pages efe1ace；見 docs/release-0.44.0/live-verification.json。

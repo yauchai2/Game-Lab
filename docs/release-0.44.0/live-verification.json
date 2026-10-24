@@ -1,0 +1,35 @@
+{
+  "manifest": {
+    "version": "0.44.0",
+    "commit": "2d36f4030e3bcb3d4d78b7d10e955d5cdc5032bc",
+    "sha256": "8705062757f1ec01e770384fd8b4b28227f5a9c065873a9756c15355a287f342",
+    "standalone_sha256": "c0e0b1aab299dc0a821be81197385c64e36042a57ee2f0a29deab38f764db8db",
+    "assets": {
+      "vendor.170c6789f43217c9.js": "170c6789f43217c96b3170f4b42fafe135de7f7cd48497a4218f9757ee1d49fa",
+      "game.47bdb7371a563a4e.js": "47bdb7371a563a4e033c98002ccb710b4f7abd232955997b5d63a00d5b4f5293"
+    }
+  },
+  "verified": {
+    "index.html": {
+      "sha256": "8705062757f1ec01e770384fd8b4b28227f5a9c065873a9756c15355a287f342",
+      "bytes": 1387
+    },
+    "vendor.170c6789f43217c9.js": {
+      "sha256": "170c6789f43217c96b3170f4b42fafe135de7f7cd48497a4218f9757ee1d49fa",
+      "bytes": 669884
+    },
+    "game.47bdb7371a563a4e.js": {
+      "sha256": "47bdb7371a563a4e033c98002ccb710b4f7abd232955997b5d63a00d5b4f5293",
+      "bytes": 12811679
+    }
+  },
+  "release_url": "https://github.com/yauchai2/Game-Lab/releases/tag/v0.44.0",
+  "asset_url": "https://github.com/yauchai2/Game-Lab/releases/download/v0.44.0/idle-hero.html",
+  "asset_digest": "sha256:c0e0b1aab299dc0a821be81197385c64e36042a57ee2f0a29deab38f764db8db",
+  "asset_bytes": 13483490,
+  "pages_commit": "efe1aced7b23e1da631f52f59e21cb4c6bffc371",
+  "pages_status": "built",
+  "asset_verification": "GitHub API SHA-256 digest and size equal tested local standalone; not a claim of direct redirected asset download.",
+  "workflow": "https://github.com/yauchai2/Game-Lab/actions/runs/40056106608",
+  "pages_workflow": "https://github.com/yauchai2/Game-Lab/actions/runs/40056099587"
+}
