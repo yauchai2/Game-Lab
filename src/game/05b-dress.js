@@ -48,7 +48,7 @@ function dressMount(){
     if(!PV.rd){
       PV.cv=document.createElement('canvas');PV.cv.style.cssText='width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab';PV.cv.setAttribute('aria-hidden','true');
       PV.rd=new T3.WebGLRenderer({canvas:PV.cv,antialias:false,alpha:true});PV.rd.setPixelRatio(1);PV.rd.setClearColor(0x000000,0);PV.rd.outputColorSpace=T3.SRGBColorSpace;
-      PV.sc=new T3.Scene();PV.sc.add(new T3.HemisphereLight(0xeaf5ff,0xd8c8f0,1.55));const sun=new T3.DirectionalLight(0xfff6ea,1.5);sun.position.set(30,60,50);PV.sc.add(sun);PV.sc.add(new T3.AmbientLight(0xffffff,.25));
+      PV.sc=new T3.Scene();studioWorldLighting(PV.sc);
       PV.cam=new T3.OrthographicCamera(-1,1,1,-1,.1,300);
       PV.plinth=new T3.Mesh(new T3.CylinderGeometry(13,14,1,12),new T3.MeshLambertMaterial({color:0xb4c4ec,flatShading:true}));PV.sc.add(PV.plinth);
       PV.cv.addEventListener('pointerdown',e=>{if(e.button!==0)return;PV.drag={x:e.clientX,y:e.clientY,yaw:PV.yaw,id:e.pointerId,active:false};});

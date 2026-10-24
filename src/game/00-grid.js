@@ -1,7 +1,7 @@
 /* Acquireable circuit boards. Legacy geometry is read only during migration. */
 (function(root){
  const old=typeof module!=='undefined'?require('./00-grid-legacy.js'):root.LegacyGrid;
- const GEM_COLOR={RIME:'b',KINDLE:'r',ANCHOR:'r',EXECUTE:'r',BLOOD:'r',CONDUCT:'b',LONG:'g',SPREAD:'g',HEAVY:'r',FOCUS:'r',DELAY:'r',RECOVER:'r',HASTE:'b',COOL:'b',CRYSTAL:'b',TWIN:'b',AREA:'g',FORK:'g',LEECH:'g',CRITS:'g'};
+ const GEM_COLOR={VENOM:'g',RIME:'b',KINDLE:'r',ANCHOR:'r',EXECUTE:'r',BLOOD:'r',CONDUCT:'b',LONG:'g',SPREAD:'g',HEAVY:'r',FOCUS:'r',DELAY:'r',RECOVER:'r',HASTE:'b',COOL:'b',CRYSTAL:'b',TWIN:'b',AREA:'g',FORK:'g',LEECH:'g',CRITS:'g'};
  const TIER_MUL=[1,1.35,1.65],TIER_COST=[1,2,3];
  const TEMPLATES={
   pocket:{n:'起步微板',size:3,seed:0,lvl:1,depth:0,power:3},
@@ -12,18 +12,25 @@
   matrix_v:{n:'交錯矩陣板',size:6,seed:5,lvl:18,depth:8,power:8},
   extreme:{n:'極限匯流板',size:8,seed:6,lvl:32,depth:18,power:12},
   extreme_v:{n:'垂直匯流板',size:8,seed:7,lvl:32,depth:18,power:12},
+  triad:{n:'三拍微型板',size:4,seed:8,lvl:14,depth:6,power:6,shape:'triad',note:'三路端口，緊湊三色洞'},
+  annulus:{n:'月環電路板',size:6,seed:9,lvl:20,depth:10,power:8,shape:'ring',note:'中央留空，沿外圈佈線'},
+  spindle:{n:'四葉匯流板',size:6,seed:10,lvl:24,depth:12,power:9,shape:'cross',note:'四角隔離，中心供電'},
+  cassette:{n:'雙槽卡匣板',size:6,seed:11,lvl:22,depth:11,power:8,shape:'cassette',note:'雙側機艙，橫向繞接'},
+  dualbridge:{n:'雙橋主機板',size:8,seed:12,lvl:36,depth:20,power:12,shape:'bridge',note:'四路端口，跨橋分流'},
+  prism:{n:'稜鏡矩陣板',size:8,seed:13,lvl:40,depth:24,power:12,shape:'prism',note:'斜向隔離，鏡像洞色'},
   legacy:{n:'舊式保留板',size:8,seed:0,lvl:1,depth:0,power:12,legacy:true}
  };
  const CACHE={};
  function layout(b){
   const id=b&&Object.hasOwn(TEMPLATES,b.template)?b.template:'pocket';if(CACHE[id])return CACHE[id];const t=TEMPLATES[id];
   if(t.legacy)return CACHE[id]={...t,id,w:10,h:10,socks:old.SOCKS,srcs:old.SRCS,colors:['r','b','g','y','v','c'],levels:old.SOCK_LV,rocks:old.ROCKS,pads:old.PADS};
-  const n=t.size,vertical=t.seed%2===1,rows=n===3?[2]:n===4?(vertical?[2,3]:[1,4]):n===6?(vertical?[1,2,5,6]:[1,3,4,6]):(vertical?[1,3,4,5,6,8]:[1,2,4,5,7,8]);
+  const n=t.size,vertical=t.seed%2===1,rows=t.shape==='triad'?[1,2,4]:t.shape==='bridge'?[2,3,6,7]:t.shape==='prism'?[1,3,6,8]:n===3?[2]:n===4?(vertical?[2,3]:[1,4]):n===6?(vertical?[1,2,5,6]:[1,3,4,6]):(vertical?[1,3,4,5,6,8]:[1,2,4,5,7,8]);
   const srcs=rows.map((r,i)=>vertical?[r,i%2?0:n+1]:[i%2?n+1:0,r]);
   const socks=rows.map((r,i)=>vertical?[r,i%2?n+1:0]:[i%2?0:n+1,r]);
   const colors=rows.map((_,i)=>['r','b','g','y','v','c'][i]);
   const rocks=[];for(let y=2;y<n;y++)for(let x=2;x<n;x++)if(!(vertical?rows.includes(x):rows.includes(y))&&(x*7+y*11+t.seed)%5===0&&rocks.length<Math.floor(n/2))rocks.push([x,y]);
-  const pads=[];for(let y=1;y<=n;y++)for(let x=1;x<=n;x++)if(!rocks.some(p=>p[0]===x&&p[1]===y))pads.push([x,y,['r','b','g'][(x+y+t.seed)%3]]);
+  if(t.shape){rocks.length=0;const patterns={ring:[[3,3],[4,3],[3,4],[4,4]],cross:[[2,2],[5,2],[2,5],[5,5]],cassette:[[3,2],[4,2],[3,5],[4,5]],bridge:[[4,1],[4,4],[4,5],[4,8]],prism:[[2,2],[3,3],[6,6],[7,7]]};for(const point of patterns[t.shape]||[])rocks.push(point);}
+  const pads=[];for(let y=1;y<=n;y++)for(let x=1;x<=n;x++)if(!rocks.some(p=>p[0]===x&&p[1]===y))pads.push([x,y,['r','b','g'][(t.shape==='prism'?Math.abs(x-y)+t.seed:t.shape==='cassette'?x+2*y+t.seed:x+y+t.seed)%3]]);
   return CACHE[id]={...t,id,w:n+2,h:n+2,socks,srcs,colors,levels:rows.map(()=>1),rocks,pads};
  }
  const same=(a,b)=>!!a&&!!b&&a[0]===b[0]&&a[1]===b[1];

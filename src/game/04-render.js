@@ -23,6 +23,10 @@ const m3 = (hex, o={}) => { if (o.own){ const { own, ...rest } = o; return new T
 const basic = (hex, op=1) => new T3.MeshBasicMaterial({ color:hex, transparent:op < 1, opacity:op, depthWrite:op >= 1 });
 const G_ = {};   // 共用幾何
 const geo = (key, fn) => G_[key] ||= fn();
+/* Small-radius chamfers and low-segment curves preserve the original footprint. */
+function studioWorldLighting(scene){scene.add(new T3.HemisphereLight(0xeaf5ff,0x6e839e,1.5));const key=new T3.DirectionalLight(0xf3f8ff,1.6);key.position.set(30,60,50);scene.add(key);const rim=new T3.DirectionalLight(0x98bdd7,.45);rim.position.set(-30,20,-30);scene.add(rim);scene.add(new T3.AmbientLight(0xffffff,.2));}
+function roundedG(w,h,d){const r=Math.min(w,h,d)*.16;if(r<.08)return new T3.BoxGeometry(w,h,d);const shape=new T3.Shape(),x=-w/2,y=-h/2;shape.moveTo(x+r,y);shape.lineTo(x+w-r,y);shape.quadraticCurveTo(x+w,y,x+w,y+r);shape.lineTo(x+w,y+h-r);shape.quadraticCurveTo(x+w,y+h,x+w-r,y+h);shape.lineTo(x+r,y+h);shape.quadraticCurveTo(x,y+h,x,y+h-r);shape.lineTo(x,y+r);shape.quadraticCurveTo(x,y,x+r,y);const g=new T3.ExtrudeGeometry(shape,{depth:d,bevelEnabled:false,curveSegments:2,steps:1});g.translate(0,0,-d/2);return g;}
+function curvedPipe(points,radius=.35){return new T3.TubeGeometry(new T3.CatmullRomCurve3(points.map(p=>new T3.Vector3(...p))),8,radius,4,false);}
 function mk(geom, mat, x=0, y=0, z=0, parent){ const o = new T3.Mesh(geom, mat); o.position.set(x, y, z); parent && parent.add(o); return o; }
 const ico = (r, d=1) => new T3.IcosahedronGeometry(r, d);
 const cylG = (rt, rb, h, n=7) => new T3.CylinderGeometry(rt, rb, h, n);
@@ -144,29 +148,27 @@ function buildHeroAccessories(B,cos){
 const WOV = new URLSearchParams(location.search);   // 測試用：?wt=0..3&wr=0..3 直接指定武器外觀
 function buildSimpleEquipment(slot,tier=0,rarity=0){
  const g=new T3.Group(),col=['#bbc8d2','#8bbcd5','#d5bf80','#c99174'][rarity]||'#bbc8d2',shell=m3(col),dark=m3('#34435a');g.userData.placeholder=slot;
- if(slot==='weapon'){mk(new T3.CylinderGeometry(.45,.45,2,6),dark,0,0,0,g);mk(new T3.BoxGeometry(1.2,5+tier,.8),shell,0,3,0,g);mk(new T3.BoxGeometry(.8,.5,.9),m3('#81cbd1'),0,5,0,g);}
- else if(slot==='head'){mk(new T3.CylinderGeometry(2.6,2.9,1.2,8),shell,0,0,0,g);mk(new T3.BoxGeometry(3,.3,1.5),dark,0,-.2,2,g);}
- else if(slot==='gloves'){mk(new T3.BoxGeometry(1.8,2.3,1),shell,0,0,0,g);mk(new T3.CylinderGeometry(.8,.9,.6,6),dark,0,-1.3,0,g);}
- else if(slot==='boots'){mk(new T3.BoxGeometry(2,2,2),shell,0,.5,0,g);mk(new T3.BoxGeometry(2.2,.6,3.2),dark,0,-.7,.5,g);}
- else if(slot==='offhand'){mk(new T3.BoxGeometry(3.2,4,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(2,2.7,.2),dark,0,0,.5,g);}
- else if(slot==='armor'){mk(new T3.BoxGeometry(3.2,3.5,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(1.4,.7,1),dark,0,.5,0,g);}
- else{mk(new T3.BoxGeometry(2.4,1.8,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(1.5,.7,.1),dark,0,.2,.45,g);}
+ if(slot==='weapon'){mk(new T3.CylinderGeometry(.45,.45,2,6),dark,0,0,0,g);mk(roundedG(1.2,5+tier,.8),shell,0,3,0,g);mk(roundedG(.8,.5,.9),m3('#81cbd1'),0,5,0,g);}
+ else if(slot==='head'){mk(new T3.CylinderGeometry(2.6,2.9,1.2,8),shell,0,0,0,g);mk(roundedG(3,.3,1.5),dark,0,-.2,2,g);}
+ else if(slot==='gloves'){mk(roundedG(1.8,2.3,1),shell,0,0,0,g);mk(new T3.CylinderGeometry(.8,.9,.6,6),dark,0,-1.3,0,g);}
+ else if(slot==='boots'){mk(roundedG(2,2,2),shell,0,.5,0,g);mk(roundedG(2.2,.6,3.2),dark,0,-.7,.5,g);}
+ else if(slot==='offhand'){mk(roundedG(3.2,4,.8),shell,0,0,0,g);mk(roundedG(2,2.7,.2),dark,0,0,.5,g);}
+ else if(slot==='armor'){mk(roundedG(3.2,3.5,.8),shell,0,0,0,g);mk(roundedG(1.4,.7,1),dark,0,.5,0,g);}
+ else{mk(roundedG(2.4,1.8,.8),shell,0,0,0,g);mk(roundedG(1.5,.7,.1),dark,0,.2,.45,g);}
  return g;
 }
 
-function buildWeapon(sw, wt, wr){
-  wt=Math.max(0,Math.min(3,wt|0));wr=Math.max(0,Math.min(3,wr|0));   // 模型來自 Blender（tools/model/gen_weapons.py）；這裡只負責依稀有度換色與發光
-  const C = [['#e8eef5', '#cfdcf0'], ['#8fd0ff', '#4aa8ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff5a8a']][wr], glow = wr >= 2;
-  const lit = (c, k = .5) => m3(c, { emissive:c, emissiveIntensity:k });
-  const mf = hex => {
-    if (wt === 2) return hex === C[1] ? lit(C[1], .9) : hex === C[0] ? basic(C[0], .25) : m3(hex);
-    if (wt === 3) return hex === C[1] ? basic(C[1], .45) : hex === '#ffffff' ? lit('#ffffff', .8) : m3(hex);
-    if (glow && ((wt === 0 && hex === C[1]) || (wt === 1 && hex === C[0]))) return lit(hex, .3);
-    return m3(hex);
-  };
-  sw.add(modelGroup(WEAPON_MODEL['w' + wt], { '#c0':C[0], '#c1':C[1], '#g0':C[1] }, mf));
-  if (wr === 3) mk(ico(5, 1), basic('#ff9a3c', .15), 0, 6, 0, sw);
+function buildWeapon(sw,wt,wr){
+ wt=Math.max(0,Math.min(3,wt|0));wr=Math.max(0,Math.min(3,wr|0));const C=[['#dce5ee','#b6c8d8'],['#8fd0ff','#4aa8ff'],['#e4cf9d','#bfa36a'],['#dfad91','#c78e7a']][wr],metal=m3('#b6c9d6'),accent=m3(['#8c9bc0','#7e9ead','#77d5df','#97b7ef'][wt],{emissive:['#8c9bc0','#7e9ead','#77d5df','#97b7ef'][wt],emissiveIntensity:wt===2?.35:.1}),dark=m3('#2b3d53');
+ const cylinder=(r1,r2,h,mat,y)=>mk(new T3.CylinderGeometry(r1,r2,h,8),mat,0,y,0,sw);
+ cylinder(.5,.55,3,dark,.4);cylinder(.75,.7,.35,metal,-1.3);
+ if(wt===0){cylinder(.24,.25,10,metal,6);const canopy=mk(new T3.ConeGeometry(2.7,4.8,8,1,true),metal,0,12,0,sw);canopy.rotation.z=.12;for(let i=0;i<4;i++)mk(curvedPipe([[0,14,0],[Math.cos(i*Math.PI/2)*1.6,12.4,Math.sin(i*Math.PI/2)*1.6],[Math.cos(i*Math.PI/2)*2.6,9.7,Math.sin(i*Math.PI/2)*2.6]],.12),accent,0,0,0,sw);mk(curvedPipe([[0,-1,0],[0,-3,0],[1,-3.5,0],[1.7,-2.5,0]],.28),metal,0,0,0,sw);}
+ if(wt===1){const points=[[.5,0],[.65,2],[.85,4],[1.05,7],[1.2,10],[.95,12],[.3,12.7]].map(p=>new T3.Vector2(...p));mk(new T3.LatheGeometry(points,10),metal,0,1,0,sw);for(const y of[4,5,11])cylinder(1.05,1.05,.2,accent,y);}
+ if(wt===2){cylinder(.7,.7,11,accent,7);cylinder(.25,.25,10,m3('#d8fbf4'),7);for(const y of[1.8,12.5]){cylinder(.95,.95,.6,dark,y);mk(new T3.TorusGeometry(.8,.16,4,10),metal,0,y,0,sw).rotation.x=Math.PI/2;}mk(roundedG(.4,1.2,.2),m3('#80cebd'),0,.6,.55,sw);}
+ if(wt===3){const sh=new T3.Shape();sh.moveTo(-.65,2);sh.lineTo(.7,2);sh.quadraticCurveTo(1.1,10,2.4,15);sh.quadraticCurveTo(-.9,12,-.65,2);const blade=new T3.ExtrudeGeometry(sh,{depth:.35,bevelEnabled:false,curveSegments:4});mk(blade,accent,0,0,-.17,sw);mk(curvedPipe([[-.5,2,0],[-.2,8,0],[1.9,14.5,0]],.13),m3('#dcf7fc'),0,0,0,sw);mk(roundedG(3,.5,1),metal,0,1.9,0,sw);mk(new T3.TorusGeometry(.8,.15,4,10),metal,0,-1.2,0,sw);}
+ sw.userData.weaponTier=wt;
 }
+
 function buildGrave(){
   const g = new T3.Group();
   mk(new T3.BoxGeometry(7, 1.4, 5), m3('#c8cce0'), 0, .7, 0, g); mk(new T3.BoxGeometry(5, 7, 1.6), m3('#d8dcf0'), 0, 4.6, 0, g);
@@ -228,16 +230,16 @@ function buildDeco(kind, k){
   const g = new T3.Group();
   const pine = snow => { mk(cylG(.9, 1.1, 3, 6), m3('#b88a6a'), 0, 1.5, 0, g); [['#7fdcae', 4.6, 3.8, 5.2], ['#92e6bd', 3.7, 7.2, 4.6], ['#a8f0cc', 2.8, 10.4, 4.2]].forEach(([c, r, y, h]) => { cone(g, c, 0, y, 0, r, h, 7); if (snow) cone(g, '#ffffff', 0, y + h*.18, 0, r*.72, h*.7, 7); }); };
   switch (kind){
-    case 'cone': mk(new T3.BoxGeometry(3.4, .4, 3.4), m3('#2b2552'), 0, .2, 0, g); cone(g, '#ff7a3a', 0, 2.6, 0, 1.2, 4.4, 7); mk(cylG(.95, 1.05, .7, 7), m3('#ffffff'), 0, 2.4, 0, g); break;
-    case 'vend': mk(new T3.BoxGeometry(4.6, 9, 3.6), m3('#6fa0f0'), 0, 4.5, 0, g); mk(new T3.BoxGeometry(3.4, 5.2, .3), basic('#cfeaff'), -.2, 5.6, 1.85, g); for (const [y, c] of [[7.2, '#ff8fb8'], [5.8, '#ffe27a'], [4.4, '#8fe3a8']]) mk(new T3.BoxGeometry(2.8, .8, .2), basic(c), -.2, y, 2.05, g); mk(new T3.BoxGeometry(3, .9, .3), basic('#2b2552'), 0, 1.4, 1.85, g); mk(new T3.BoxGeometry(.8, 1.4, .2), basic('#ff7a3a'), 1.7, 6, 1.9, g); break;
-    case 'rail': for (const z of [-3.6, 0, 3.6]) mk(cylG(.35, .35, 3.4, 5), m3('#e8eef5'), 0, 1.7, z, g); mk(new T3.BoxGeometry(.5, .5, 8.6), m3('#e8eef5'), 0, 3.3, 0, g); mk(new T3.BoxGeometry(.4, .4, 8.6), m3('#cfd6e0'), 0, 2.1, 0, g); break;
-    case 'lamp': mk(cylG(.4, .55, 12, 6), m3('#cfd6e0'), 0, 6, 0, g); mk(new T3.BoxGeometry(.5, .5, 3), m3('#cfd6e0'), 0, 12, 1.2, g); mk(new T3.BoxGeometry(1.4, .5, 2), basic('#fff6c8'), 0, 11.6, 2.4, g); break;
+    case 'cone': mk(roundedG(3.4, .4, 3.4), m3('#2b2552'), 0, .2, 0, g); cone(g, '#ff7a3a', 0, 2.6, 0, 1.2, 4.4, 7); mk(cylG(.95, 1.05, .7, 7), m3('#ffffff'), 0, 2.4, 0, g); break;
+    case 'vend': mk(roundedG(4.6, 9, 3.6), m3('#6fa0f0'), 0, 4.5, 0, g); mk(roundedG(3.4, 5.2, .3), basic('#cfeaff'), -.2, 5.6, 1.85, g); for (const [y, c] of [[7.2, '#ff8fb8'], [5.8, '#ffe27a'], [4.4, '#8fe3a8']]) mk(roundedG(2.8, .8, .2), basic(c), -.2, y, 2.05, g); mk(roundedG(3, .9, .3), basic('#2b2552'), 0, 1.4, 1.85, g); mk(roundedG(.8, 1.4, .2), basic('#ff7a3a'), 1.7, 6, 1.9, g); break;
+    case 'rail': for (const z of [-3.6, 0, 3.6]) mk(cylG(.35, .35, 3.4, 5), m3('#e8eef5'), 0, 1.7, z, g); mk(roundedG(.5, .5, 8.6), m3('#e8eef5'), 0, 3.3, 0, g); mk(roundedG(.4, .4, 8.6), m3('#cfd6e0'), 0, 2.1, 0, g); break;
+    case 'lamp': mk(cylG(.4, .55, 12, 6), m3('#cfd6e0'), 0, 6, 0, g); mk(roundedG(.5, .5, 3), m3('#cfd6e0'), 0, 12, 1.2, g); mk(roundedG(1.4, .5, 2), basic('#fff6c8'), 0, 11.6, 2.4, g); break;
     case 'pine': pine(false); break; case 'snowpine': pine(true); break;
     case 'bush': for (const [x, y, z, r] of [[-1.6, 1.8, 0, 2.2], [1.2, 2.2, .6, 2.6], [.2, 1.6, -1.6, 2]]) mk(ico(r, 1), m3('#86dca4'), x, y, z, g); for (const [x, y, z] of [[1.8, 4, 1.6], [-.4, 3.4, 1.6], [2.6, 2.6, -.4]]) mk(ico(.45, 0), m3('#ff6a8a'), x, y, z, g); break;
     case 'mush': mk(cylG(.9, 1.2, 2.6, 6), m3('#fff0e0'), 0, 1.3, 0, g); mk(new T3.SphereGeometry(2.6, 8, 5, 0, 6.283, 0, 1.55), m3('#ff7a9a'), 0, 2.4, 0, g); for (const [x, z] of [[-1, 1], [1.1, .4], [0, -1.3]]) mk(ico(.38, 0), m3('#ffffff'), x, 4.5 - (x*x + z*z)*.12, z, g); break;
-    case 'cactus': mk(cylG(1.5, 1.7, 8, 7), m3('#86dca4'), 0, 4, 0, g); mk(ico(1.5, 1), m3('#86dca4'), 0, 8, 0, g); for (const sx of [-1, 1]){ mk(cylG(.8, .8, 2.4, 6), m3('#86dca4'), sx*2.6, 6.2, 0, g); mk(new T3.BoxGeometry(1.8, .8, .8), m3('#86dca4'), sx*1.7, 4.2, 0, g); } mk(ico(.5, 0), m3('#ff8fb8'), 0, 9.3, 0, g); break;
+    case 'cactus': mk(cylG(1.5, 1.7, 8, 7), m3('#86dca4'), 0, 4, 0, g); mk(ico(1.5, 1), m3('#86dca4'), 0, 8, 0, g); for (const sx of [-1, 1]){ mk(cylG(.8, .8, 2.4, 6), m3('#86dca4'), sx*2.6, 6.2, 0, g); mk(roundedG(1.8, .8, .8), m3('#86dca4'), sx*1.7, 4.2, 0, g); } mk(ico(.5, 0), m3('#ff8fb8'), 0, 9.3, 0, g); break;
     case 'rock': mk(new T3.DodecahedronGeometry(2.8, 0), m3('#b9b3d6'), 0, 2, 0, g).scale.set(1.2, .9, 1); mk(new T3.DodecahedronGeometry(1.5, 0), m3('#cdc8e8'), 2.4, 1, 1.2, g); break;
-    case 'skull': mk(ico(1.8, 1), m3('#fbf6ea'), 0, 2, 0, g).scale.set(1.2, 1, 1.3); mk(new T3.BoxGeometry(2, 1, 1.6), m3('#fbf6ea'), 0, 1, 1.8, g); for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(1, 10)), basic('#2b2552'), sx*.8, 2.4, 2.1, g).scale.set(.55, .6, 1); cone(g, '#fff0d0', sx*2.4, 3.2, 0, .5, 3.4, 5, 0, -sx*1.0); } break;
+    case 'skull': mk(ico(1.8, 1), m3('#fbf6ea'), 0, 2, 0, g).scale.set(1.2, 1, 1.3); mk(roundedG(2, 1, 1.6), m3('#fbf6ea'), 0, 1, 1.8, g); for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(1, 10)), basic('#2b2552'), sx*.8, 2.4, 2.1, g).scale.set(.55, .6, 1); cone(g, '#fff0d0', sx*2.4, 3.2, 0, .5, 3.4, 5, 0, -sx*1.0); } break;
     case 'crystal': for (const [x, z, h, c] of [[0, 0, 9, '#8fe0ff'], [-2, 1, 5.5, '#b9a8ff'], [2, .6, 6.5, '#ffb0dd'], [.6, -2, 4, '#c8f2ff']]) mk(new T3.OctahedronGeometry(1.3, 0), m3(c, { emissive:c, emissiveIntensity:.18, transparent:true, opacity:.92 }), x, h/2, z, g).scale.set(.9, h/2.6, .9); break;
     case 'snowman': mk(ico(3.1, 1), m3('#ffffff'), 0, 3, 0, g); mk(ico(2.3, 1), m3('#ffffff'), 0, 7, 0, g); mk(ico(1.8, 1), m3('#ffffff'), 0, 10, 0, g); cone(g, '#ff9a5a', 0, 10, 2, .35, 1.8, 5, Math.PI/2); mk(new T3.TorusGeometry(1.7, .45, 4, 8), m3('#ff8fb8'), 0, 8.3, 0, g).rotation.x = Math.PI/2; for (const sx of [-.6, .6]) mk(ico(.2, 0), basic('#2b2552'), sx, 10.4, 1.65, g); break;
     case 'spike': for (const [x, z, h, r] of [[0, 0, 9, 1.8], [-2, 1, 5.5, 1.3], [2, .8, 6.5, 1.4]]) cone(g, '#a8587a', x, h/2, z, r, h, 5); break;
@@ -356,7 +358,7 @@ function updateSceneryOcclusion(root,camera,hero,dt){
 }
 function buildLandscapeProp(kind,bi,variant){
   const g=new T3.Group(),stone=m3('#84939b'),light=m3('#d6d8cc'),wood=m3('#846b57'),dark=m3('#384d5b'),leaf=m3(BIOMES[bi].t1),accent=m3('#819caa');
-  const box=(w,h,d,mat,x=0,y=h/2,z=0)=>mk(new T3.BoxGeometry(w,h,d),mat,x,y,z,g);
+  const box=(w,h,d,mat,x=0,y=h/2,z=0)=>mk(roundedG(w,h,d),mat,x,y,z,g);
   if(kind==='warehouse'){
     box(28,15,26,light);box(31,2,29,dark,0,16,0);box(10,11,.5,accent,0,5.5,13.3);for(const x of [-10,10])box(4,3,.5,accent,x,11,13.3);for(const x of [-9,9])box(4,2,7,stone,x,18,-4);
   }else if(['cabin','pavilion'].includes(kind)){
@@ -388,17 +390,17 @@ function buildLandscapeProp(kind,bi,variant){
 }
 function buildWorldBuilding(height,bi,variant=0){
   const g=new T3.Group(),shell=m3('#b7c4d4'),glass=m3(bi%2?'#456b8f':'#417f9b'),trim=m3('#e2e8ed'),roof=m3('#6f8092');
-  mk(new T3.BoxGeometry(24,height,24),shell,0,height/2,0,g);
-  mk(new T3.BoxGeometry(26,1.5,26),trim,0,height+.5,0,g);
-  mk(new T3.BoxGeometry(21,.8,21),roof,0,height+1.5,0,g);
-  mk(new T3.BoxGeometry(7,3,6),roof,4,height+3,-4,g);
+  mk(roundedG(24,height,24),shell,0,height/2,0,g);
+  mk(roundedG(26,1.5,26),trim,0,height+.5,0,g);
+  mk(roundedG(21,.8,21),roof,0,height+1.5,0,g);
+  mk(roundedG(7,3,6),roof,4,height+3,-4,g);
   for(let y=7;y<height-3;y+=7)for(const u of [-8,-2,4,10]){
-    mk(new T3.BoxGeometry(3.4,4.5,.25),glass,u-1,y,12.2,g);
-    mk(new T3.BoxGeometry(.25,4.5,3.4),glass,12.2,y,u-1,g);
+    mk(roundedG(3.4,4.5,.25),glass,u-1,y,12.2,g);
+    mk(roundedG(.25,4.5,3.4),glass,12.2,y,u-1,g);
   }
-  mk(new T3.BoxGeometry(6,8,.35),glass,-4,4,12.3,g);
-  if(variant%3===0){mk(new T3.BoxGeometry(28,2,9),roof,0,10,15,g);for(const x of [-11,11])mk(new T3.BoxGeometry(1,10,1),trim,x,5,18,g);}
-  if(variant%3===1)mk(new T3.BoxGeometry(10,7,9),roof,-4,height+5,3,g);
+  mk(roundedG(6,8,.35),glass,-4,4,12.3,g);
+  if(variant%3===0){mk(roundedG(28,2,9),roof,0,10,15,g);for(const x of [-11,11])mk(roundedG(1,10,1),trim,x,5,18,g);}
+  if(variant%3===1)mk(roundedG(10,7,9),roof,-4,height+5,3,g);
   return g;
 }
 function buildWorldBike(){
@@ -439,9 +441,7 @@ function r3init(){
   const rd = R3.rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true, preserveDrawingBuffer:!!(navigator.webdriver || location.search.includes('static')) });
   rd.setPixelRatio(1); rd.setClearColor(0x000000, 0); rd.outputColorSpace = T3.SRGBColorSpace;
   const sc = R3.sc = new T3.Scene();
-  sc.add(new T3.HemisphereLight(0xeaf5ff, 0xd8c8f0, 1.55));
-  const sun = new T3.DirectionalLight(0xfff6ea, 1.5); sun.position.set(30, 60, 50); sc.add(sun);
-  sc.add(new T3.AmbientLight(0xffffff, .25));
+  studioWorldLighting(sc);
   R3.cam = new T3.OrthographicCamera(-1, 1, 1, -1, -400, 600);
   R3.world = new T3.Group(); sc.add(R3.world); R3.fx = new T3.Group(); sc.add(R3.fx);
   R3.hero = null; R3.gnd = null; R3.portal = null; R3.decor = []; R3.bi = -1; R3.ready = true;
@@ -469,8 +469,9 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   R3.W=W;R3.H=H;R3.dpr=dpr;
   if(buffer.width!==cv.width||buffer.height!==cv.height)R3.rd.setSize(buffer.width,buffer.height,false);
   const now = performance.now(), fdt = Math.min(.1, (now - (R3.tPrev || now))/1000); R3.tPrev = now;R3.frameDt=fdt;
+  if(typeof GAME_VIEW!=='undefined'&&GAME_VIEW.prefs.shake===false){FXO.shake=0;FXO.punch=0;}
   FXO.yaw += (FXO.yawT - FXO.yaw)*Math.min(1, fdt*8); FXO.zoom += (FXO.zoomT - FXO.zoom)*Math.min(1, fdt*8); FXO.shake *= Math.pow(.0008, fdt); FXO.punch *= Math.pow(.003, fdt); FXO.flash *= Math.pow(.02, fdt);
-  { const o = document.getElementById('fxo'), low = G.st && G.h.hp < G.st.life*.3 && G.h.dead <= 0, a = Math.max(FXO.flash, low ? .22 + .08*Math.sin(now/180) : 0); if (o){ o.style.opacity = a > .01 ? a.toFixed(2) : 0; o.style.background = `radial-gradient(ellipse at center, ${FXO.flash>.05?'color-mix(in srgb, '+FXO.fc+' 16%, transparent)':'transparent'} 0%, transparent 45%, ${FXO.flash > .12 || !low ? FXO.fc : '#ff2a50'} 140%)`; } }
+  { const o = document.getElementById('fxo'), low = G.st && G.h.hp < G.st.life*.3 && G.h.dead <= 0, a = viewEffectsReduced()?0:Math.max(FXO.flash, low ? .22 + .08*Math.sin(now/180) : 0); if (o){ o.style.opacity = a > .01 ? a.toFixed(2) : 0; o.style.background = `radial-gradient(ellipse at center, ${FXO.flash>.05?'color-mix(in srgb, '+FXO.fc+' 16%, transparent)':'transparent'} 0%, transparent 45%, ${FXO.flash > .12 || !low ? FXO.fc : '#ff2a50'} 140%)`; } }
   const plan=terrainNow(),framing=terrainCameraWindow(plan,innerWidth,!!FXO.overview),focus=framing.follow?{x:G.h.x,y:G.h.y}:{x:HX,y:HY};
   R3.focusX=R3.focusX??focus.x;R3.focusY=R3.focusY??focus.y;
   R3.focusX+=(focus.x-R3.focusX)*Math.min(1,fdt*4);R3.focusY+=(focus.y-R3.focusY)*Math.min(1,fdt*4);
@@ -619,7 +620,7 @@ function terrainCameraWindow(p,width,overview=false){
 function toggleWorldOverview(){FXO.overview=!FXO.overview;FXO.zoomT=1;G.dirty=true;if(typeof renderModal==='function')renderModal();}
 function overlay(){
   const k = pxu(); let s = '';
-  const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = w*k*.8, H2 = 1.5*k; return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
+  const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = Math.max(14,w*k*.8), H2 = Math.max(3,1.5*k); return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
   if (G.h.dead <= 0) s += bar(G.h.x, G.h.y, BZ + 36*CK, 9, G.h.hp/G.st.life, '#ff6a8a');
   for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)) s += bar(m.x, m.y, BZ + (m.boss?140:m.type==='golem'?48:m.type==='lantern'?38:(m.type==='slime'?11:m.type==='brute'?32:m.type==='drone'?24:m.type==='bomb'?20:28)*(MONSTER_TRAITS[m.type]?.scale||1))*CK, m.boss?26:8, m.hp/m.hpMax, '#ff6a8a');
   if(G.h.dead<=0&&G.time<(G.h.bufferUntil||0)&&G.h.buffer>0)s+=bar(G.h.x,G.h.y,BZ+40*CK,9,G.h.buffer/(G.st.life*.12),'#57dce8');
@@ -684,10 +685,10 @@ function scene(){
 function buildCircuitMon(type){
  const g=new T3.Group(),dark=m3('#27364d'),silver=m3('#a3b9ca'),glow=m3(type==='wisp'?'#b99af0':'#67d5d5');
  let limbs=null;
- if(type==='spider'){mk(ico(4,0),dark,0,4,0,g).scale.set(1.2,.7,1.4);mk(ico(1.6,0),glow,0,4,4,g);limbs={};for(const sx of[-1,1])for(let i=0;i<4;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4,3,(i-1.5)*2,l=>{const leg=mk(new T3.BoxGeometry(7,.7,.7),silver,sx*3.5,-1,0,l);leg.rotation.z=sx*.35;},(i-1.5)*.25];}
- if(type==='speaker'){mk(new T3.BoxGeometry(7,11,5),dark,0,5.5,0,g);for(const y of[3,8])mk(cylG(2.3,2.3,.7,10),glow,0,y,2.7,g).rotation.x=Math.PI/2;mk(new T3.BoxGeometry(9,1,6),silver,0,11,0,g);}
+ if(type==='spider'){mk(ico(4,0),dark,0,4,0,g).scale.set(1.2,.7,1.4);mk(ico(1.6,0),glow,0,4,4,g);limbs={};for(const sx of[-1,1])for(let i=0;i<4;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4,3,(i-1.5)*2,l=>{const leg=mk(roundedG(7,.7,.7),silver,sx*3.5,-1,0,l);leg.rotation.z=sx*.35;},(i-1.5)*.25];}
+ if(type==='speaker'){mk(roundedG(7,11,5),dark,0,5.5,0,g);for(const y of[3,8])mk(cylG(2.3,2.3,.7,10),glow,0,y,2.7,g).rotation.x=Math.PI/2;mk(roundedG(9,1,6),silver,0,11,0,g);}
  if(type==='wisp'){mk(new T3.OctahedronGeometry(4,0),glow,0,5,0,g).scale.set(.7,1.8,.7);mk(new T3.TorusGeometry(4.8,.5,4,12),silver,0,5,0,g).rotation.x=.7;for(const sx of[-1,1])mk(ico(.8,0),dark,sx*1.3,6,2,g);}
- if(type==='crab'){mk(cylG(5,6,4,6),silver,0,3,0,g);mk(new T3.BoxGeometry(6,1,1),dark,0,5,4,g);limbs={};for(const sx of[-1,1]){limbs['claw'+(sx>0?'R':'L')]=[sx*5,3,1,l=>{mk(new T3.BoxGeometry(6,2,2),dark,sx*3,0,0,l);mk(new T3.ConeGeometry(2,5,4),glow,sx*5,1,1.5,l).rotation.z=-sx*.7;}];for(let i=0;i<3;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4.5,2,(i-1)*2.4,l=>{mk(new T3.BoxGeometry(4,.8,.8),silver,sx*2,-.5,0,l).rotation.z=sx*.5;}];}}
+ if(type==='crab'){mk(cylG(5,6,4,6),silver,0,3,0,g);mk(roundedG(6,1,1),dark,0,5,4,g);limbs={};for(const sx of[-1,1]){limbs['claw'+(sx>0?'R':'L')]=[sx*5,3,1,l=>{mk(roundedG(6,2,2),dark,sx*3,0,0,l);mk(new T3.ConeGeometry(2,5,4),glow,sx*5,1,1.5,l).rotation.z=-sx*.7;}];for(let i=0;i<3;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4.5,2,(i-1)*2.4,l=>{mk(roundedG(4,.8,.8),silver,sx*2,-.5,0,l).rotation.z=sx*.5;}];}}
  const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn,ry]=limbs[k];const lb=monLimb(out,px,py,pz,fn);lb.userData.ry=ry||0;out.userData.limbs[k]=lb;}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh&&o.material.emissive){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildRegionLandmark(bi){
@@ -705,11 +706,11 @@ function buildRegionLandmark(bi){
 function monLimb(root,px,py,pz,fn){const lg=new T3.Group();fn(lg);const b=bake(lg);b.position.set(px,py,pz);root.add(b);return b;}
 function buildFieldMonster(type,variant=0){
  let limbs=null;const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
- const box=(w,h,d,mat,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),mat,x,y,z,g);
+ const box=(w,h,d,mat,x,y,z)=>mk(roundedG(w,h,d),mat,x,y,z,g);
  if(type==='golem'){
   box(15,17,10,stone,0,17,0);box(11,7,9,silver,0,28,0);box(7,2,1,signal,0,29,4.7);mk(new T3.OctahedronGeometry(3,0),signal,0,19,5.5,g);
-  limbs={legL:[-5,9,0,l=>{mk(new T3.BoxGeometry(6,9,7),dark,0,-4.5,0,l);mk(new T3.BoxGeometry(8,5,10),stone,0,-7,2,l);}],legR:[5,9,0,l=>{mk(new T3.BoxGeometry(6,9,7),dark,0,-4.5,0,l);mk(new T3.BoxGeometry(8,5,10),stone,0,-7,2,l);}],
-    armL:[-10,25,0,l=>{mk(new T3.BoxGeometry(8,16,9),stone,0,-8,0,l);mk(new T3.BoxGeometry(9,7,10),silver,0,-14,1,l);}],armR:[10,25,0,l=>{mk(new T3.BoxGeometry(8,16,9),stone,0,-8,0,l);mk(new T3.BoxGeometry(9,7,10),silver,0,-14,1,l);}]};
+  limbs={legL:[-5,9,0,l=>{mk(roundedG(6,9,7),dark,0,-4.5,0,l);mk(roundedG(8,5,10),stone,0,-7,2,l);}],legR:[5,9,0,l=>{mk(roundedG(6,9,7),dark,0,-4.5,0,l);mk(roundedG(8,5,10),stone,0,-7,2,l);}],
+    armL:[-10,25,0,l=>{mk(roundedG(8,16,9),stone,0,-8,0,l);mk(roundedG(9,7,10),silver,0,-14,1,l);}],armR:[10,25,0,l=>{mk(roundedG(8,16,9),stone,0,-8,0,l);mk(roundedG(9,7,10),silver,0,-14,1,l);}]};
  }else if(type==='ranger'){
   for(const x of [-2,2])box(2,7,3,dark,x,3.5,0);box(8,7,5,wood,0,10,0);mk(new T3.ConeGeometry(6,5,5),dark,0,16,0,g);box(5,2,1,signal,0,13,3);box(2,2,13,silver,4,10,4);box(3,5,4,dark,-5,9,0);
  }else if(type==='lantern'){
@@ -717,7 +718,7 @@ function buildFieldMonster(type,variant=0){
   for(const x of [-3,3])box(.5,10,.5,dark,x,13,3);mk(new T3.TorusGeometry(3,.5,4,8),silver,0,22,0,g);
  }else if(type==='mole'){
   mk(new T3.IcosahedronGeometry(6,0),wood,0,5,0,g).scale.set(1,.8,1.4);mk(new T3.ConeGeometry(3,7,6),silver,0,5,8,g).rotation.x=Math.PI/2;
-  box(7,1.5,1,signal,0,7,5);limbs={pawL:[-5,3,3,l=>{mk(new T3.BoxGeometry(5,3,6),dark,0,-1,0,l);mk(new T3.BoxGeometry(3,1,4),silver,0,-1,4,l);}],pawR:[5,3,3,l=>{mk(new T3.BoxGeometry(5,3,6),dark,0,-1,0,l);mk(new T3.BoxGeometry(3,1,4),silver,0,-1,4,l);}]};
+  box(7,1.5,1,signal,0,7,5);limbs={pawL:[-5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}],pawR:[5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}]};
  }
  const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
@@ -725,8 +726,8 @@ function buildCircuitBoss(bi,form=bi%3){
  const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);
  const dark=m3('#394d61'),silver=m3('#bdc8cf'),signal=m3(form===0?'#9dbda1':form===1?'#8cb9d0':'#bba8cb');
  if(form===0){for(const x of [-12,12]){mk(new T3.IcosahedronGeometry(6,0),dark,x,26,0,ex);mk(new T3.ConeGeometry(3,12,5),signal,x,32,0,ex);}}
- if(form===1){for(const x of [-12,12]){mk(new T3.BoxGeometry(7,22,12),dark,x,24,0,ex);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,ex).rotation.x=Math.PI/2;}mk(new T3.BoxGeometry(1,18,1),silver,0,39,0,ex);}
- if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,ex);for(const x of [-13,13])mk(new T3.BoxGeometry(5,18,3),silver,x,21,3,ex);}
+ if(form===1){for(const x of [-12,12]){mk(roundedG(7,22,12),dark,x,24,0,ex);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,ex).rotation.x=Math.PI/2;}mk(roundedG(1,18,1),silver,0,39,0,ex);}
+ if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,ex);for(const x of [-13,13])mk(roundedG(5,18,3),silver,x,21,3,ex);}
  root.add(bake(ex));   // 肩甲與光環另外合併；手腳保持獨立，才能跟著擺動
  root.userData.limbs=body.userData.limbs;root.userData.simple=true;root.userData.s=4;root.userData.mats=[];root.traverse(o=>{if(o.isMesh){o.material=o.material.clone();root.userData.mats.push(o.material);}});return root;
 }
@@ -734,11 +735,11 @@ function buildCircuitBoss(bi,form=bi%3){
 
 function buildStreetMonster(type){
  const g=new T3.Group(),dark=m3('#2d4255'),metal=m3('#a4b6c0'),signal=m3(type==='furnace'?'#de9957':type==='shard'?'#adb5e4':'#83c8c1');
- const box=(w,h,d,m,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m,x,y,z,g),cyl=(r,h,m,x,y,z)=>mk(new T3.CylinderGeometry(r,r,h,8),m,x,y,z,g);
+ const box=(w,h,d,m,x,y,z)=>mk(roundedG(w,h,d),m,x,y,z,g),cyl=(r,h,m,x,y,z)=>mk(new T3.CylinderGeometry(r,r,h,8),m,x,y,z,g);
  if(type==='scanner'){mk(new T3.ConeGeometry(8,3,3),metal,0,14,0,g);box(4,3,9,dark,0,14,2);box(3,2,2,signal,0,14,7);for(const x of[-7,7])cyl(2,2,dark,x,14,0);}
  if(type==='roller'){for(const x of[-5,5])cyl(6,3,dark,x,7,0).rotation.z=Math.PI/2;box(9,9,11,metal,0,10,0);box(5,2,1,signal,0,13,6);mk(new T3.ConeGeometry(4,8,4),metal,0,9,10,g).rotation.x=Math.PI/2;}
- if(type==='antenna'){box(8,7,6,dark,0,10,0);for(const x of[-5,5])box(2,10,2,metal,x,5,0);box(1,15,1,metal,0,22,0);for(const y of[22,27])box(12,1,1,signal,0,y,0);cyl(3,2,signal,0,15,0);}
- if(type==='cable'){mk(new T3.IcosahedronGeometry(6,0),metal,0,18,0,g).scale.set(1,.7,1);for(let i=0;i<6;i++){const a=i*Math.PI/3;box(1,12,1,i%2?signal:dark,Math.cos(a)*4,9,Math.sin(a)*4);}cyl(2,3,signal,0,22,0);}
+ if(type==='antenna'){box(8,7,6,dark,0,10,0);for(const x of[-5,5])box(2,10,2,metal,x,5,0);box(1,15,1,metal,0,22,0);mk(new T3.SphereGeometry(5,10,5,0,Math.PI*2,0,Math.PI*.4),metal,0,27,0,g).rotation.x=Math.PI/2;for(const y of[22,27])box(12,1,1,signal,0,y,0);cyl(3,2,signal,0,15,0);}
+ if(type==='cable'){mk(new T3.IcosahedronGeometry(6,0),metal,0,18,0,g).scale.set(1,.7,1);for(let i=0;i<6;i++){const a=i*Math.PI/3;mk(curvedPipe([[Math.cos(a)*4,16,Math.sin(a)*4],[Math.cos(a)*6,9,Math.sin(a)*6],[Math.cos(a+.4)*5,3,Math.sin(a+.4)*5]],.55),i%2?signal:dark,0,0,0,g);}cyl(2,3,signal,0,22,0);}
  if(type==='furnace'){for(const x of[-6,6])box(4,6,15,dark,x,4,0);box(12,13,11,metal,0,13,0);box(8,7,1,dark,0,14,6);for(const x of[-2,0,2])box(1,5,1,signal,x,14,6.7);for(const x of[-4,4])cyl(1.5,9,dark,x,23,-2);}
  if(type==='shard'){mk(new T3.OctahedronGeometry(6,0),signal,0,13,0,g).scale.set(.65,1.6,.65);for(const x of[-7,7])mk(new T3.TetrahedronGeometry(4,0),metal,x,12,0,g);mk(new T3.TorusGeometry(7,.7,3,8),dark,0,13,0,g).rotation.x=.8;}
  const out=bake(g);out.userData.simple=true;out.userData.streetType=type;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
@@ -760,6 +761,7 @@ function buildIndustrialLandmark(theme,variant=0){
 function applyHeroDrama(g){
  const reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches,h=G.h,d=h.drama;g.rotation.x=0;g.rotation.z=0;if(reduced||!d)return;const t=Math.max(0,Math.min(1,(G.time-d.start)/d.duration));
  if(h.dead>0||d.kind==='fall'&&t<1){g.rotation.z=-Math.min(1,t*4)*Math.PI*.45;g.position.y-=Math.min(1,t*4)*4;}
+ else if(d.kind==='climb'){g.position.y+=(h.stairLift||0)+Math.abs(Math.sin(t*18))*.7;g.rotation.x=-.12;}
  else if(d.kind==='leap'){g.position.y+=Math.sin(t*Math.PI)*18;g.rotation.x=-Math.sin(t*Math.PI)*.35;}
  else if(d.kind==='blink'){g.position.y+=Math.sin(t*Math.PI)*7;g.rotation.z=Math.sin(t*Math.PI)*.2;}
  else if(d.kind==='rise'){g.position.y+=Math.sin(t*Math.PI)*5;}
@@ -767,20 +769,23 @@ function applyHeroDrama(g){
  if(h.dash){g.rotation.x=-.3;g.position.y+=2;}
 }
 function buildSummonUnit(large){
- const g=new T3.Group(),shell=m3(large?'#81909c':'#96c5c6'),dark=m3('#283f55'),light=m3(large?'#dfb16b':'#b7e9df');const box=(w,h,d,m,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m,x,y,z,g);
+ const g=new T3.Group(),shell=m3(large?'#81909c':'#96c5c6'),dark=m3('#283f55'),light=m3(large?'#dfb16b':'#b7e9df');const box=(w,h,d,m,x,y,z)=>mk(roundedG(w,h,d),m,x,y,z,g);
  if(large){box(10,12,7,shell,0,12,0);box(8,5,6,dark,0,21,0);box(6,1,1,light,0,21,3.5);for(const x of[-7,7]){box(4,11,5,shell,x,12,0);box(5,4,7,dark,x,6,1);}for(const x of[-3,3])box(4,7,5,dark,x,3,0);mk(new T3.TorusGeometry(3,.6,4,10),light,0,14,4,g);}
  else{mk(new T3.OctahedronGeometry(3,0),shell,0,7,0,g);for(const x of[-5,5]){box(6,.4,3,dark,x,7,0);mk(new T3.CylinderGeometry(2,2,.4,8),light,x,7,0,g);}box(2,1,1,light,0,7,3);}
  return bake(g);
 }
-function buildSupplyAircraft(){const g=new T3.Group(),silver=m3('#adc2cf'),dark=m3('#334b65'),light=m3('#80cebd');mk(new T3.ConeGeometry(5,30,5),silver,0,0,0,g).rotation.x=Math.PI/2;mk(new T3.BoxGeometry(42,1.5,7),dark,0,0,1,g);mk(new T3.BoxGeometry(17,1,4),silver,0,3,-11,g);for(const x of[-13,13])mk(new T3.CylinderGeometry(2,2,8,8),light,x,-2,0,g).rotation.x=Math.PI/2;return bake(g);}
+function buildSupplyAircraft(){const g=new T3.Group(),silver=m3('#adc2cf'),dark=m3('#334b65'),light=m3('#80cebd');mk(new T3.ConeGeometry(5,30,5),silver,0,0,0,g).rotation.x=Math.PI/2;mk(roundedG(42,1.5,7),dark,0,0,1,g);mk(roundedG(17,1,4),silver,0,3,-11,g);for(const x of[-13,13])mk(new T3.CylinderGeometry(2,2,8,8),light,x,-2,0,g).rotation.x=Math.PI/2;return bake(g);}
 function renderSupportWorld(){
+ if(G.run?.tower){const stair=entFor(G.run,buildTowerStairs),p=towerStairPosition();at3(stair,p[0],p[1],BZ+terrainHeight(...p));stair.rotation.y=-.4;}
  for(const p of G.summons||[]){const g=entFor(p,()=>buildSummonUnit(p.large));at3(g,p.x,p.y,BZ+terrainHeight(p.x,p.y)+(p.large?Math.max(0,Math.sin(p.attackAge*8))*1.5:5+Math.sin(G.time*6+p.seed)*1.4));g.rotation.y=p.angle||0;g.rotation.x=p.large&&p.attackAge<.35?-.3*Math.sin(p.attackAge/.35*Math.PI):0;g.scale.setScalar(p.large?1.05:1);}
  const f=G.airSupply?.flight;if(f){const g=entFor(f,buildSupplyAircraft);at3(g,f.x,f.y,BZ+85);g.rotation.z=Math.sin(f.age*.6)*.08;}
 }
 function renderSpectacleFx(e,add,geo){
- const reduced=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const reduced=viewEffectsReduced();
  if(e.k==='arrowstorm'){const n=reduced?5:24;for(let i=0;i<n;i++){const a=i*2.399,r=5+((i*17)%25),x=e.x+Math.cos(a)*r,y=e.y+Math.sin(a)*r,fall=Math.max(0,Math.min(1,(e.t-.25-(i%3)*.04)/.5)),o=add(geo('arrowshaft',()=>new T3.CylinderGeometry(.28,.28,13,4)),e.col,1-e.t*.5,x,y,BZ+8+(1-fall)*65);o.rotation.z=-.16;add(geo('arrowtip',()=>new T3.ConeGeometry(1.2,4,4)),e.col,1-e.t*.5,x,y,BZ+2+(1-fall)*65);}return true;}
  if(e.k==='giantblade'){const u=reduced?Math.min(1,e.t*1.5):Math.max(0,Math.min(1,(e.t-.35)/.4)),z=BZ+20+(1-u)*75,o=add(geo('giantblade',()=>new T3.BoxGeometry(5,45,1.5)),e.col,1-e.t*.4,e.x,e.y,z);o.rotation.z=(1-u)*-.6;const h=add(geo('giantguard',()=>new T3.BoxGeometry(18,3,3)),'#d9eaf1',1-e.t*.4,e.x,e.y,z+19);h.rotation.z=o.rotation.z;add(geo('giantgrip',()=>new T3.CylinderGeometry(1.3,1.3,13,6)),'#334b65',1-e.t*.4,e.x,e.y,z+27);return true;}
  if(e.k==='musicwave'){const n=reduced?3:9;for(let i=0;i<n;i++){const along=e.t*45,x=e.x+Math.cos(e.angle)*along+Math.sin(e.angle)*((i%3)-1)*5,y=e.y+Math.sin(e.angle)*along-Math.cos(e.angle)*((i%3)-1)*5,z=BZ+5+Math.sin(e.t*7+i)*3+i%3*4;add(geo('noteball',()=>new T3.OctahedronGeometry(1.2,0)),e.col,1-e.t,x,y,z);add(geo('notestem',()=>new T3.BoxGeometry(.5,6,.5)),e.col,1-e.t,x+1,y,z+3);}return true;}
  return false;
 }
+
+function buildTowerStairs(){const g=new T3.Group(),shell=m3('#8799ae'),trim=m3('#d9e7ed'),light=m3('#80cebd');for(let i=0;i<6;i++){mk(roundedG(9,1.4,2.3),i%2?shell:trim,0,1+i*1.5,5-i*2,g);mk(roundedG(8,.14,.3),light,0,1.8+i*1.5,6-i*2,g);}for(const x of[-5,5]){mk(curvedPipe([[x,3,7],[x,7,1],[x,12,-6]],.35),trim,0,0,0,g);for(const z of[5,-5])mk(new T3.CylinderGeometry(.25,.25,5,6),shell,x,z<0?8:3.5,z,g);}return bake(g);}

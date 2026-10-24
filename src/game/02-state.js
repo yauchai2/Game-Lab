@@ -31,12 +31,14 @@ const G = {
 };
 /* 打擊感：畫面震動、縮放衝擊、邊緣閃光；視角旋轉（yaw）也放這裡 */
 const FXO = { shake:0, flash:0, fc:'#fff', punch:0, yaw:0, yawT:0, zoom:1, zoomT:1, stop:0 };
-function hitStop(t){if(G.offline||G.time-(FXO.stopAt??-10)<.6||typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches||typeof GAME_VIEW!=='undefined'&&!GAME_VIEW.prefs.glitch)return;FXO.stopAt=G.time;FXO.stop=Math.max(FXO.stop,Math.min(.07,t));}
+function viewEffectsReduced(){return typeof GAME_VIEW!=='undefined'&&GAME_VIEW.prefs.reducedEffects||typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;}
+function hitStop(t){if(viewEffectsReduced()||G.offline||G.time-(FXO.stopAt??-10)<.6||typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches||typeof GAME_VIEW!=='undefined'&&!GAME_VIEW.prefs.glitch)return;FXO.stopAt=G.time;FXO.stop=Math.max(FXO.stop,Math.min(.07,t));}
 function kick(s,f,c,p){
  if(G.offline||typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches||typeof GAME_VIEW!=='undefined'&&!GAME_VIEW.prefs.glitch)return;
- FXO.shake=Math.max(FXO.shake,Math.min(4.5,s));
- if(f&&G.time-(FXO.flashAt??-10)>.45){FXO.flash=Math.max(FXO.flash,Math.min(.45,f));FXO.fc=c||'#fff';FXO.flashAt=G.time;}
- if(p)FXO.punch=Math.max(FXO.punch,Math.min(.8,p));
+ const noShake=typeof GAME_VIEW!=='undefined'&&GAME_VIEW.prefs.shake===false;
+ if(!noShake)FXO.shake=Math.max(FXO.shake,Math.min(4.5,s));
+ if(!viewEffectsReduced()&&f&&G.time-(FXO.flashAt??-10)>.45){FXO.flash=Math.max(FXO.flash,Math.min(.45,f));FXO.fc=c||'#fff';FXO.flashAt=G.time;}
+ if(p&&!noShake)FXO.punch=Math.max(FXO.punch,Math.min(.8,p));
 }
 /* 接線板：玩家擺的是 G.board；G.slots / G.supp / G.suppW 由它推導出來，戰鬥與屬性計算照舊讀這幾個 */
 function newBoard(){ G.board = GridLab.createBoard(); }
@@ -241,11 +243,11 @@ const xpNeed = L => Math.round(30 * Math.pow(1.32, L-1));
 function logLine(txt, col){ if (G.offline) return; if (typeof bossPush === 'function') bossPush(txt, col && col.length === 7 && col.toLowerCase() === '#2b2552' ? null : col, 'INFO'); G.log.unshift({ txt, col:col || '#2b2552' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
 function addFloat(x, y, z, txt, col, size=3.6, kind='event'){ if (G.offline) return; if(G.floats.length>=20)G.floats.shift(); G.floats.push({ x, y, z, txt, col, size, kind, t:0 }); }
 const PICKUP_RANGE = 26;   // 撿取範圍：範圍內開始吸附，物件本體抵達後結算，距離不改
-function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
+function addFx(e){ if (!G.offline&&G.fx.length<(viewEffectsReduced()?14:64)) G.fx.push(e); }
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
-function serialize(){ return { v:2,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
+function serialize(){ return { v:2,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
 function migrateEquipmentSlots(input){
@@ -263,6 +265,8 @@ function migrateEquipmentSlots(input){
 function applySave(o){
   if (!o || o.v !== 2) return false;
   o=migrateEquipmentSlots(o);
+  if(typeof seasonClean==='function'){G.season=seasonClean(o.season);seasonEnsure();}
+  G.secrets=[...new Set((Array.isArray(o.secrets)?o.secrets:[]).filter(id=>['arcade','floor13','radio'].includes(id)))];if(typeof clearHeroAilments==='function')clearHeroAilments();
   G.unread=cleanUnread(o.unread);G.summons=[];G.airSupply=null;G.airBuffs=[];G.damageLog=[];G.h.fatalSource=null;G.h.airShield=0;G.h.airShieldUntil=0;G.deathReport=cleanDeathReport(o.deathReport);
   G.startingChar=Object.hasOwn(CHARS,o.startingChar)?o.startingChar:null;
   const uidSeen=new Set(),uidConflicts=new Set();for(const it of Array.isArray(o.inventory)?o.inventory:[]){if(uidSeen.has(it.uid))uidConflicts.add(it.uid);uidSeen.add(it.uid);}
@@ -282,7 +286,8 @@ function applySave(o){
   G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!Object.hasOwn(CHARS,G.char)) G.char = 'street'; if (!G.ach) G.ach = {}; G.mons = []; G.drops = (Array.isArray(o.groundDrops)?o.groundDrops:[]).filter(validDrop).map(d=>({...d,t:Number.isFinite(d.t)?d.t:0,done:false,pull:d.pull&&Number.isFinite(d.pull.age)&&Number.isFinite(d.pull.duration)&&d.pull.duration>0?{age:Math.max(0,Math.min(d.pull.age,1.65)),duration:Math.max(.85,Math.min(d.pull.duration,1.65))}:null})); G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
   if (o.board && o.board.pieces) sanitizeBoard(o.board); else boardFromLegacy(o.slots || ['FIRE'], o.supp);
   G.ascension=typeof ASCENSIONS!=='undefined'&&ASCENSIONS[G.char]?.some(a=>a.id===o.ascension)?o.ascension:null;G.ascensionNodes=typeof ascensionCleanNodes==='function'?ascensionCleanNodes(G.ascension,o.ascensionNodes):[];G.circuits=Array.isArray(o.circuits)?o.circuits:['pocket',G.board.template];G.circuitLayouts=o.circuitLayouts&&typeof o.circuitLayouts==='object'?Object.fromEntries(Object.entries(o.circuitLayouts).filter(([id])=>Object.hasOwn(GridLab.TEMPLATES,id)).map(([id,b])=>[id,GridLab.adopt({...b,template:id})])):{};G.circuitPity=Math.max(0,Math.min(3,+o.circuitPity||0));if(typeof cleanCircuitInventory==='function')cleanCircuitInventory();
-  loadProgression(o);normalizeBuilds(uidConflicts);recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
+  loadProgression(o);if(typeof seasonRunValid==='function'){if(G.run?.city&&!seasonRunValid(G.run.city))G.run=null;cleanTowerStair(G.run);}
+  normalizeBuilds(uidConflicts);recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
 function saveGame(){if(G.__wipe)return false;try{if(typeof rankCheck==='function')rankCheck();if(typeof profileSave==='function')return profileSave();localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));return true;}catch(e){return false;}}
 function loadGame(){if(typeof profileLoad==='function')return profileLoad();try{return JSON.parse(localStorage.getItem(SAVE_KEY)||'null')}catch(e){return null;}}
@@ -420,7 +425,7 @@ function cityChoose(id,stage){const R=G.run,c=R?.city;if(!c||c.settled||!c.await
  c.branches.push(id);c.stage++;c.awaitChoice=false;delete c.choiceAt;R.kills=0;R.need=c.stage===3?0:28;R.bossOut=false;cityClearArena();recalc();G.dirty=true;return true;}
 function citySealReady(tier){return Object.keys(CITY_ROUTES).every(id=>G.city?.seals[tier]?.[id]===1);}
 function cityFinish(success=false){const R=G.run,c=R?.city;if(!c||c.settled)return false;
- c.settled=true;const C=G.city||(G.city=newCity()),route=c.route;
+ c.settled=true;if(typeof seasonFinish==='function')seasonFinish(c,success);const C=G.city||(G.city=newCity()),route=c.route;
  if(success){c.bank+=5+2*c.tier+(CITY_BRANCHES[c.branches.at(-1)]?.reward||0);if(c.nexus){C.nexusWins++;C.maxTier=Math.min(8,Math.max(C.maxTier,c.tier+1));}else{C.seals[c.tier]||={};C.seals[c.tier][route]=1;C.clears[route+':'+c.tier]=(C.clears[route+':'+c.tier]||0)+1;}
   const target=c.target,eligible=CITY_ROUTES[route].cores.includes(target);
   if(c.nexus||Math.random()<.15){const id=c.nexus?target:eligible?target:tPick(CITY_ROUTES[route].cores),it=makeItem(coreSlot(id),3,R.map.lvl,id);dropGround({kind:'item',it,x:G.h.x,y:G.h.y,t:0});}
@@ -442,6 +447,7 @@ function cityMonster(m){const c=G.run?.city;if(!c)return;const branch=c.branches
  m.cityRoute=route;m.hp*=1+.15*(c.tier-1)+(c.nexus?.35:0);m.hpMax=m.hp;
  m.dmg*=Math.pow(.85,branch.filter(x=>x==='safe').length)*Math.pow(1.15,branch.filter(x=>x==='risk').length);
  m.spdK*=Math.pow(1.12,branch.filter(x=>x==='risk').length);
+ if(typeof seasonMonster==='function')seasonMonster(m,c);
  if(route==='signal'){m.spdK*=1.3;m.x=tClamp(m.x+(m.slot%3-1)*14,HX-38,HX+38);m.skillCd=2;}
  if(route==='memory'){m.shieldMax=m.hpMax*.18;m.shield=m.shieldMax;}
  if(route==='power')m.dmg*=1.15;

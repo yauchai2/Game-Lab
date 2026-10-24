@@ -41,7 +41,7 @@ ui = mountFigure({
   },
 });
 setupPanel();
-{ const h = document.querySelector('header h1'); if (h) h.innerHTML = brandMarkup('header'); }
+{ if(typeof guidanceInit==='function')guidanceInit(); }
 document.documentElement.style.setProperty('--ver', '"v' + VERSION() + '"');
 if (Q.has('legend')){ for (const id of Q.get('legend').split(',')){ const L = LEGEND_BY[id]; if (!L) continue; const sl = Object.keys(LEGENDS).find(k => LEGENDS[k].includes(L)); G.equip[sl] = makeItem(sl, 3, 20, id); } recalc(); }
 if (Q.has('give')){ // testing helpers

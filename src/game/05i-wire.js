@@ -23,14 +23,14 @@ function wireStatus(){
 }
 function wireSvg(){
   const B = G.board, pt = (x, y) => `${(x + .5).toFixed(2)},${(y + .5).toFixed(2)}`;
-  let o = '', holes = '';
+  const liveSockets=new Set(GridLab.resolve(B,G.lvl).filter(r=>r.wired).map(r=>r.sock));let o = '', holes = '';
   for (const w of B.wires){
     if (!w.cells.length) continue;
     const done = GridLab.connected(B, w.sock), col = GridLab.layout(G.board).colors[w.sock], s = GridLab.layout(G.board).srcs[w.sock], k = GridLab.layout(G.board).socks[w.sock], pts = [pt(s[0], s[1]), ...w.cells.map(c => pt(c[0], c[1]))];
     if (done) pts.push(pt(k[0], k[1]));
     const p = pts.join(' '), sel = w.sock === selSock;
     for (const c of w.cells) if (wTier() > 1 && GridLab.isPad(c[0], c[1],G.board) && !wSupportAt(c[0], c[1])) holes += `<circle class="wk k${GridLab.padColor(c[0], c[1],G.board)}" cx="${c[0] + .5}" cy="${c[1] + .5}" r=".15"/>`;
-    o += `<polyline class="wo" points="${p}"/><polyline style="stroke:${PORT_COLORS[col]}" class="wl c-${col} ${done ? 'done' : 'part'}${sel ? ' sel' : ''}" points="${p}"/><polyline class="wh" points="${p}"/>${sel || !done ? `<polyline class="wf" points="${p}"/>` : ''}`;
+    o += `<polyline class="wo" points="${p}"/><polyline style="stroke:${PORT_COLORS[col]}" class="wl c-${col} ${done ? 'done' : 'part'}${sel ? ' sel' : ''}" points="${p}"/><polyline class="wh" points="${p}"/>${liveSockets.has(w.sock)?`<polyline class="wire-current" points="${p}"/>`:""}${sel || !done ? `<polyline class="wf" points="${p}"/>` : ''}`;
   }
   return `<svg class="wsvg" viewBox="0 0 ${GridLab.layout(G.board).w} ${GridLab.layout(G.board).h}" preserveAspectRatio="none" aria-hidden="true">${o}${holes}</svg>`;
 }

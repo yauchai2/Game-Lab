@@ -1,0 +1,23 @@
+{
+  "checks": [
+    "settings has ten concise entries; unconfigured sponsorship is honest; subpage back arrow returns to menu",
+    "four distinct rendered workbench machines open real supply and synthesis controls without duplicate actions",
+    "all four rarities have distinct symbol and text labels, including equipped gear",
+    "talent hover and keyboard focus share a readable viewport-clamped detail tooltip",
+    "tower instrument shows ten floors and next boss; actual ascent/skip advances once without extra reward",
+    "season risk changes actual encounter; finale confirmation cancel preserves charges and commit spends all three once",
+    "completed seasonal milestone pays once and becomes visibly claimed",
+    "phone is front-facing with matched screen projection; in-game header removed and waiting logo respects reduced motion",
+    "real MP3 music clock and WebAudio sample decoding work after gesture; eight-voice cap and all/sfx/off modes behave correctly",
+    "320px mobile, short landscape and desktop retain content scrolling and workbench actions",
+    "real world renders persistent stairs and character climb; reviewed models stay below bounded geometry budgets"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "phoneProjection": {
+    "rx": 0,
+    "ry": 0,
+    "x": 0.000007861287940613693,
+    "y": 0.000011431461246047547
+  }
+}
