@@ -30,7 +30,7 @@ assert.equal(context.count(['elite','swarm','wise']),2);
 assert.equal(context.count(['rich','lucky','wise']),0);
 assert.equal(context.classify('future'),'未分類');
 context.wikiRows = context.wikiRows;context.wiki.supp.rows=()=>[{t:'寬頻',d:'冷卻 -30%',s:'3 格',got:true}];
-context.wiki.skill.rows=()=>[{t:'過熱電池',d:'投射物',s:'',mods:['Echo'],got:true}];
+context.wiki.skill.rows=()=>[{t:'灼熱電池',d:'投射物',s:'',mods:['Echo'],got:true}];
 // 限定測試資料來源，不依賴 DOM 或完整戰鬥狀態。
 for(const k of Object.keys(context.wiki)) if(!['supp','skill'].includes(k)) context.wiki[k].rows=()=>[];
 assert.equal(context.wikiRows(' 寬頻 ').length,1);

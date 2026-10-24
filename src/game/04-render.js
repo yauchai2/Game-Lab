@@ -48,7 +48,7 @@ function eyeTex(iris='#46c8f0', style='anime'){
     x.fillStyle = '#fff'; x.beginPath(); x.arc(76, 62, 6, 0, 7); x.fill(); x.fillStyle = '#2b2552'; x.fillRect(0, 36, 128, 22); x.restore();
     x.strokeStyle = '#2b2552'; x.lineWidth = 8; x.lineCap = 'round'; x.beginPath(); x.moveTo(8, 60); x.quadraticCurveTo(60, 38, 120, 56); x.stroke();
     x.lineWidth = 4; x.beginPath(); x.ellipse(64, 70, 56, 30, 0, .3, 2.8); x.stroke();
-  } else {   // 黑亮圓眼（史萊姆、怪物）
+  } else {   // 黑亮圓眼（史萊姆、魔物）
     x.fillStyle = '#2b2552'; x.beginPath(); x.ellipse(64, 66, 50, 56, 0, 0, 7); x.fill();
     x.fillStyle = '#fff'; x.beginPath(); x.arc(80, 44, 17, 0, 7); x.fill(); x.beginPath(); x.arc(48, 88, 8, 0, 7); x.fill();
   }
@@ -67,7 +67,7 @@ function mouth(parent, R, elev, w, col='#2b2552', up=1, c = [0, 0, 0]){
 
 /* ---------- 主角 ---------- */
 const HAIR = ['#2b2552', '#2b2552', '#3a3f8f', '#d9dff2'];   // 藍黑、深藍、銀白
-function modelGroup(def, recolor, mf){   // 把 Blender 匯出的零件組成 three.js 群組（平塗、flat shading）；mf 可換成每隻怪物自己的材質
+function modelGroup(def, recolor, mf){   // 把 Blender 匯出的零件組成 three.js 群組（平塗、flat shading）；mf 可換成每隻魔物自己的材質
   const g = new T3.Group(); g.position.set(...def.at.map(v => v/1)); 
   for (const m of def.m){
     const geom = new T3.BufferGeometry(); geom.setAttribute('position', new T3.Float32BufferAttribute(m.p.map(v => v/100), 3)); geom.setIndex(m.i);
@@ -165,7 +165,7 @@ function buildGrave(){
   addShadow(g, 5); return g;
 }
 
-/* ---------- 怪物 ---------- */
+/* ---------- 魔物 ---------- */
 const SLIME_HEX = ['#9be07d', '#ffd36a', '#8fd8ff', '#ff9a8a', '#5fe8ff', '#ff9ad0'];
 function flash(g, c, k){ for (const m of g.userData.mats || []){ m.emissive.set(c); m.emissiveIntensity = k; } }
 function ownMat(g, hex, o={}){ const m = m3(hex, { own:true, ...o }); (g.userData.mats ||= []).push(m); return m; }
@@ -180,7 +180,7 @@ function buildSlime(){   // 稜角分明的霓虹凝膠：低面數外殼、發�
   for (const sx of [-1, 1]) mk(new T3.BoxGeometry(1.6, .4, .3), basic('#ff6aa8'), sx*1.5, 0, 5.95, fc);
   addShadow(g, 5.8); return g;
 }
-function monModel(g, def, recolor){   // 組合 MON_MODEL 的 11 根骨骼（沒有 tail），每隻怪物用自己的材質，回傳骨架
+function monModel(g, def, recolor){   // 組合 MON_MODEL 的 11 根骨骼（沒有 tail），每隻魔物用自己的材質，回傳骨架
   const B = rigModel(def, recolor, hex => ownMat(g, hex)); g.add(B.hips);
   g.userData.B = B; g.userData.head = B.head; return B;
 }
@@ -637,7 +637,7 @@ function scene(){
     for (const o of [R3.gnd, R3.portal, ...R3.decor]) if(o){R3.world.remove(o);disposeWorldObject(o);}
     R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];const staticDecor=new T3.Group();
     const scenery=buildWorldScenery(bi);R3.scenery=scenery;R3.world.add(scenery);R3.decor.push(scenery);
-    for (const [k, e] of R3.ent){ R3.world.remove(e);disposeWorldObject(e); R3.ent.delete(k); }   // 換生態時怪物與掉落物重建（顏色隨生態）
+    for (const [k, e] of R3.ent){ R3.world.remove(e);disposeWorldObject(e); R3.ent.delete(k); }   // 換生態時魔物與掉落物重建（顏色隨生態）
   }
   const t = G.time;
   for (const o of R3.decor){ const u = o.userData; if (u.fl){ const f2 = 1 + Math.sin(t*14 + o.position.x)*.08; u.fl[0].scale.set(f2, 1 + Math.sin(t*11)*.1, f2); u.fl[2].scale.setScalar(1 + Math.sin(t*7)*.1); } if (u.glow) u.glow.material.color.set(Math.sin(t*3) > 0 ? '#ff9ab0' : '#ffc2d2'); }
@@ -647,7 +647,7 @@ function scene(){
   const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, ...Object.values(G.equip).map(it=>it?[it.lg||'',it.r,aTier(it)].join(':'):''), G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos)].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero){if(typeof characterDispose==='function')characterDispose(R3.hero);R3.world.remove(R3.hero);} R3.hero = G.h.dead>0&&G.h.dead<=2.15 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
-  // 怪物與掉落物
+  // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
   for (const m of G.mons){ const g = entFor(m, () => m.boss?buildCircuitBoss(biomeNow(),m.bossForm):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g); }
   for (const d of G.drops){
@@ -665,7 +665,7 @@ function scene(){
   return overlay();
 }
 
-/* 新怪物以少數合批網格形成完全不同的輪廓，不增加骨架負擔。 */
+/* 新魔物以少數合批網格形成完全不同的輪廓，不增加骨架負擔。 */
 function buildCircuitMon(type){
  const g=new T3.Group(),dark=m3('#27364d'),silver=m3('#a3b9ca'),glow=m3(type==='wisp'?'#b99af0':'#67d5d5');
  let limbs=null;
@@ -686,7 +686,7 @@ function buildRegionLandmark(bi){
  if(bi===11){for(const x of[-24,56]){for(let i=0;i<9;i++)block(x+i*.9,BZ+i*.8,75+i*.8,8,.8,2,silver);block(x,BZ+15,85,14,4,3,light);block(x,BZ+7,85,2,14,2);}}
  return g;
 }
-/* 可獨立擺動的肢體：以關節為原點合批，再掛到怪物身上旋轉 */
+/* 可獨立擺動的肢體：以關節為原點合批，再掛到魔物身上旋轉 */
 function monLimb(root,px,py,pz,fn){const lg=new T3.Group();fn(lg);const b=bake(lg);b.position.set(px,py,pz);root.add(b);return b;}
 function buildFieldMonster(type,variant=0){
  let limbs=null;const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');

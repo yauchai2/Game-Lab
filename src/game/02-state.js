@@ -1,5 +1,5 @@
 /* ---------- passive tree ---------- */
-const EFF_TXT = { life:v => `+${v} 生命`, lifePct:v => `+${v}% 最大生命`, dmgPct:v => `${v}% 增加傷害`, sinc:v => `${v}% 技能傷害`, apsInc:v => `${v}% 攻擊速度`, crit:v => `+${v}% 暴擊率`, cm:v => `+${v}% 暴擊傷害`,
+const EFF_TXT = { life:v => `+${v} 生命`, lifePct:v => `+${v}% 最大生命`, dmgPct:v => `${v}% 增加傷害`, sinc:v => `${v}% 技能傷害`, apsInc:v => `${v}% 攻擊速度`, crit:v => `+${v}% 會心率`, cm:v => `+${v}% 會心傷害`,
   regen:v => `+${v} 生命回復/秒`, leech:v => `${v}% 生命偷取`, armor:v => `+${v} 護甲`, fire:v => `${v}% 火焰傷害`, cold:v => `${v}% 冰霜傷害`, light:v => `${v}% 閃電傷害`, haste:v => `${v}% 技能急速` };
 const effText = e => Object.entries(e).map(([k, v]) => EFF_TXT[k](v)).join(',');
 const TREE = (() => {
@@ -24,7 +24,7 @@ const TREE = (() => {
 const G = {
   storyFlags:{},city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
   coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:true, storageRecycled:0, whUp:0, offUp:0, chips:0, equip:Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null])), armory:{}, equipBackup:{}, deferChoices:false, gemTier:{}, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
-  pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'阿街', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
+  pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'茜', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
   h:{ x:HX, y:HY, vx:0, vy:0, gx:HX, gy:HY, aiT:0, mv:0, hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
   lgK:0, lgC:0, mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
 };
@@ -99,7 +99,7 @@ function rollSignatureGear(kind,il){
 function rarityRoll(boss){
   const bonus = Math.min(8, lvlNow()*.25) + runQ()*6 + (G.run && G.run.map.mods.includes('lucky') ? 4 : 0), w = [RAR[0].w - bonus*2, RAR[1].w, RAR[2].w + bonus, RAR[3].w + bonus*.3];
   let r = Math.random()*w.reduce((a, b) => a + b, 0), i = 0; while (r > w[i] && i < 3) r -= w[i++];
-  if (boss){ if (i < 2) i = 2; if (Math.random() < Math.min(1, .1 + .06*(G.pity || 0) + (G.relics.LUCK ? .03 : 0))) i = 3; }   // 守關者暗金保底：每次沒出就 +6%，最多 15 件必出
+  if (boss){ if (i < 2) i = 2; if (Math.random() < Math.min(1, .1 + .06*(G.pity || 0) + (G.relics.LUCK ? .03 : 0))) i = 3; }   // 關主暗金保底：每次沒出就 +6%，最多 15 件必出
   if (boss){ if (i === 3) G.pity = 0; else G.pity = (G.pity || 0) + 1; }
   return i;
 }
@@ -467,7 +467,7 @@ function recalibrateAff(a,it){return {...a,tier:affTier(a,it.il),v:affValue(a.k,
 
 function forgetBuildGear(index){if(![0,1,2].includes(index)||index===(G.bi||0)||G.run?.city||G.train||!G.builds[index]?.equipment)return false;delete G.builds[index].equipment;G.dirty=true;G.inventoryRevision++;return true;}
 
-/* 回復共用額度：多段、範圍、擊殺與吸血共享，不能用命中數繞過。 */
+/* 回復共用額度：多段、範圍、討伐與吸血共享，不能用命中數繞過。 */
 function heroRecover(amount){
   const h=G.h,rate=G.st.life*.025;
   if(!Number.isFinite(amount)||amount<=0||h.hp<=0)return 0;
@@ -594,11 +594,11 @@ function terrainScenery(p=terrainNow()){
 /* 斷線年代：短篇地方記憶，不以對話框打斷掛機。只保存已發現的章節。 */
 const FIELD_STORIES=[
  ['潮聲裡的呼號','渡船員 阿澄','停電後第七年，海邊的樹仍替電台擋風。有人把回家的頻率刻在樹幹上。','巨像倒下時，舊收音機傳來一句：下一班船，還會回來。'],
- ['山路沒有盡頭','巡山員 留言','山丘上的路牌已經褪色。跟著風聲走，能找到仍在轉動的天線。','守關者胸口掉出一張車票。終點寫著：山頂電台。'],
+ ['山路沒有盡頭','巡山員 留言','山丘上的路牌已經褪色。跟著風聲走，能找到仍在轉動的天線。','關主胸口掉出一張車票。終點寫著：山頂電台。'],
  ['河灣的晚班','渡船員 阿澄','河水淹過了舊月台。那盞靠岸燈一直亮著，像在等最後一位乘客。','水面靜下來後，你聽見遠處有人試著呼叫這座島。'],
  ['盆地裡的回音','修理工 小禾','所有鐘都停在同一分鐘。只有地下電纜，偶爾還會傳來腳步般的脈衝。','電纜重新亮起了一小段。訊號向山那邊延伸。'],
- ['海岸的備忘錄','渡船員 阿澄','海風帶來別座島的聲音。別丟掉舊卡匣，也許裡面還留著某人的地址。','守關者終於停止巡邏。遠方海岸亮起一盞很小的燈。'],
- ['沒有關門的城市','街坊廣播','樓宇裡已經沒有人，街角電單車的方向燈卻仍在閃。這座城似乎還沒下班。','街角喇叭播出了一段走調的收工音樂。'],
+ ['海岸的備忘錄','渡船員 阿澄','海風帶來別座島的聲音。別丟掉舊卡匣，也許裡面還留著某人的地址。','關主終於停止巡邏。遠方海岸亮起一盞很小的燈。'],
+ ['沒有關門的城市','鄰居廣播','樓宇裡已經沒有人，街角電單車的方向燈卻仍在閃。這座城似乎還沒下班。','街角喇叭播出了一段走調的收工音樂。'],
  ['營火熄滅之後','修理工 小禾','帳篷裡的地圖圈著同一座山。大家說，只要電台還亮，迷路的人就不算失蹤。','營地的短波機又響了。這次，另一端有人回答。'],
  ['舊城的約定','鐘樓留言','廣場上的長椅留著一個空位。從前每逢黃昏，修理工們會在這裡交換零件與消息。','鐘樓響了一次，像有人終於記起了約定。'],
  ['風仍記得名字','巡山員 留言','風車替早已空掉的村子發電。小禾說，別停下它，那是通往山頂的路標。','風車重新對準了山頂。被雜音蓋住的呼號清楚了一點。'],

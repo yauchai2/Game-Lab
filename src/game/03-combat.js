@@ -1,5 +1,5 @@
 /* ---------- monsters ---------- */
-// 刷怪模式：小怪又多又脆（血量、傷害、經驗、金幣都打折），一次湧出一群，持續補充到上限
+// 刷怪模式：雜兵又多又脆（血量、傷害、經驗、金幣都打折），一次湧出一群，持續補充到上限
 const HORDE = { hp:.4, dmg:.2, xp:.3, gold:.3, drop:.1 };
 const hordeCap = () => Math.min(SLOTS.length,42,18+Math.floor(lvlNow()*1.3),3+Math.floor(G.lvl*1.8));   // 新手一次只來幾隻，隨等級慢慢增加
 const earlyK = () => Math.max(0, 8 - G.lvl);
@@ -15,7 +15,7 @@ function spawnPack(){
   if (!R && G.need < 60) G.need = 60;   /* 舊存檔的門檻較低，大群怪的玩法改成 60 */
   pushHoldCheck(); const bossNow = (R || (G.push && !G.pushHold)) && kills >= need && !bossOut && !(R && R.tower && R.floor % 10 !== 0) && (G.h.hp >= G.st.life*(G.bossHp || 0)/100 || R);   // 推進模式：生命低於設定值就先不開打
   let types;
-  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的守關者出現了！`, '#8e3fd1'); }
+  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的關主出現了！`, '#8e3fd1'); }
   else {const n=Math.min(hordeCap()-G.mons.filter(m=>!m.dead).length,4+Math.floor(Math.random()*4)+(mods.includes('more')?2:0)+(mods.includes('swarm')?3:0));const pool=REGION_MOBS[biomeNow()]||REGION_MOBS[0];types=Array.from({length:Math.max(0,n)},()=>tPick(pool));}
   if(R?.city&&R.city.stage<3)types=types.map(()=>tPick(CITY_ROUTES[R.city.route].pool));
   const hpK = (mods.includes('tough') ? 1.4 : 1)*(mods.includes('swarm') ? .75 : 1), dmgK = mods.includes('deadly') ? 1.35 : 1, fastK = mods.includes('fast') ? 1.25 : 1;
@@ -24,7 +24,7 @@ function spawnPack(){
     const T = MTYPES[t], trash = t !== 'boss' ? HORDE.hp : 1, hp = 24 * Math.pow(1.32, d-1) * T.hp * hpK * trash * (1.2+Math.min(1,Math.max(0,d-2)*.08)) * (t==='boss'?1.5:1) * (1 + earlyK()*.15);
     let slot = 0; while (used.has(slot) && slot < SLOTS.length - 1) slot++; used.add(slot);   // 找一個沒人站的圍攻位置
     const rf=rifts[packRift],sx=t==='boss'?G.h.x+tRand(-14,14):rf[0]+tRand(-3,3),sy=t==='boss'?G.h.y-18+tRand(-6,6):rf[1]+tRand(-3,3);
-    const el = t !== 'boss' && (d >= 6 || mods.includes('elite')) && Math.random() < (mods.includes('elite') ? .3 : .06);   // 菁英：體型大、金環、血厚、賞金多
+    const el = t !== 'boss' && (d >= 6 || mods.includes('elite')) && Math.random() < (mods.includes('elite') ? .3 : .06);   // 精英：體型大、金環、血厚、賞金多
     G.mons.push({ type:t, boss:t === 'boss', elite:el, x:sx, y:sy, hp:hp*(el ? 3.2 : 1), hpMax:hp*(el ? 3.2 : 1), dmg:(el ? 1.3 : 1) * 4.5 * Math.pow(1.22, d-1) * T.dmg * dmgK * (1.3+Math.min(1.1,Math.max(0,d-2)*.09)) * (t==='boss'?1.35:1) * (t !== 'boss' ? HORDE.dmg : 1) * (1 + earlyK()*.12), atkInt:T.atk/fastK, spdK:fastK, atkCd:tRand(.3, T.atk),
       skillCd:2.5+(i%3)*.7,bossForm:t==='boss'?terrainNow().profile%3:null,slot, fall:t === 'boss' ? .9 : 0, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
   });
@@ -39,7 +39,7 @@ function killMon(m){
   let hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk * (G.relics.CALC ? 1.2 : 1) * (offPen() ? .75 : 1))), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
   if (m.elite){ gold *= 4; xp *= 4; } if (mods.includes('wise')) xp = Math.round(xp*1.5);
   if (G.relics.PIG) gold = Math.round(gold*1.3);
-  dropGround({kind:'gold',amount:gold,x:m.x,y:m.y,t:0});if(m.boss||m.elite||Math.random()<.08)dropGround({kind:'chip',amount:m.boss?5:m.elite?2:1,x:m.x+2,y:m.y,t:0});G.totalKills++; if (m.boss){ G.bossKills = (G.bossKills || 0) + 1; if (GAME_FEATURES.cardChoices && Object.keys(G.relics).length < Object.keys(RELICS).length) G.relicPicks++; kick(2.4, .5, '#fff6c0', 1); hitStop(.14); if (G.fx.length < 40) addFx({ k:'ring', x:m.x, y:m.y, col:'#fff6c0', t:0, dur:.7 }); if (Math.random() < .25 && typeof COS !== 'undefined'){ const pool = []; for (const [c] of COS_CATS) for (const e of COS[c]) if (e[3] > 0 && !G.own[c + ':' + e[0]]) pool.push([c, e]); if (pool.length){ const [c, e] = tPick(pool); G.own[c + ':' + e[0]] = 1; logLine(`守關者掉落裝扮：${e[1]}`, '#c28a00'); } } }
+  dropGround({kind:'gold',amount:gold,x:m.x,y:m.y,t:0});if(m.boss||m.elite||Math.random()<.08)dropGround({kind:'chip',amount:m.boss?5:m.elite?2:1,x:m.x+2,y:m.y,t:0});G.totalKills++; if (m.boss){ G.bossKills = (G.bossKills || 0) + 1; if (GAME_FEATURES.cardChoices && Object.keys(G.relics).length < Object.keys(RELICS).length) G.relicPicks++; kick(2.4, .5, '#fff6c0', 1); hitStop(.14); if (G.fx.length < 40) addFx({ k:'ring', x:m.x, y:m.y, col:'#fff6c0', t:0, dur:.7 }); if (Math.random() < .25 && typeof COS !== 'undefined'){ const pool = []; for (const [c] of COS_CATS) for (const e of COS[c]) if (e[3] > 0 && !G.own[c + ':' + e[0]]) pool.push([c, e]); if (pool.length){ const [c, e] = tPick(pool); G.own[c + ':' + e[0]] = 1; logLine(`關主掉落裝扮：${e[1]}`, '#c28a00'); } } }
   gainXp(xp); if (R) R.kills++; else G.kills++; checkGoals();
   if (R && R.tower && R.floor % 10 !== 0 && R.kills >= R.need) towerNext();
   if (G.relics.FOOD) heroRecover(G.st.life*.01);
@@ -57,10 +57,10 @@ function killMon(m){
   if (m.boss){
     fieldDiscover(terrainNow().profile,true);
     if (R){ completeRun(); }
-    else { G.bossOut = false; G.kills = 0; G.pushFail = 0; G.pushHold = false; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗守關者！進入深度 ${G.depth}`, '#2f9e4f'); } }
+    else { G.bossOut = false; G.kills = 0; G.pushFail = 0; G.pushHold = false; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗關主！進入深度 ${G.depth}`, '#2f9e4f'); } }
   }
 }
-/* 無限之塔：每層殺滿一定數量進下一層，每 10 層是守關者層，打贏加一條規則並給遺物 */
+/* 無限之塔：每層殺滿一定數量進下一層，每 10 層是關主層，打贏加一條規則並給遺物 */
 const towerLvl = f => Math.max(3, G.maxDepth-6) + Math.floor(f*0.8);
 function towerStart(){
   if (G.run || G.maxDepth < 8) return; const f = 1;
@@ -77,7 +77,7 @@ function towerNext(){
     if (GAME_FEATURES.cardChoices && Object.keys(G.relics).length < Object.keys(RELICS).length) G.relicPicks++;
     dropGround({ x:tRand(8, 22), y:tRand(HY + 6, HY + 16), kind:'item', it:makeItem(tPick(Object.keys(SLOTN)), rarityRoll(true), R.map.lvl), t:0 });
   }
-  addFloat(G.h.x, G.h.y, BZ + 26, `第 ${R.floor} 層`, '#8e3fd1', 4.6); logLine(`無限之塔：第 ${R.floor} 層${R.floor % 10 === 0 ? '（守關者層）' : ''}`, '#8e3fd1'); kick(.5, .25, '#d8c0ff'); G.dirty = true;
+  addFloat(G.h.x, G.h.y, BZ + 26, `第 ${R.floor} 層`, '#8e3fd1', 4.6); logLine(`無限之塔：第 ${R.floor} 層${R.floor % 10 === 0 ? '（關主層）' : ''}`, '#8e3fd1'); kick(.5, .25, '#d8c0ff'); G.dirty = true;
 }
 function completeRun(){
   if (!G.run) return;
@@ -208,14 +208,14 @@ const castMons = () => aliveMons().filter(m => Math.hypot(m.x - G.h.x, m.y - G.h
 function nearestMon(fightOnly, from){ let best = null, bd = 1e9; const [fx, fy] = from || [G.h.x, G.h.y]; for (const m of G.mons){ if (m.dead || m.fall > 0 || (fightOnly && !m.fight)) continue; const d = Math.hypot(m.x - fx, m.y - fy); if (d < bd && d < 60){ bd = d; best = m; } } return best; }
 
 function revive(){ const h = G.h; h.dead = 0; h.x = HX; h.y = HY; h.vx = h.vy = 0; h.hp = G.st.life; G.spawnCd = 1; }
-/* 推進連敗保護：連輸兩次守關者就先停止挑戰、在原地刷；等級 +2 或 DPS +15% 後自動再挑戰。避免掛機一直循環送死 */
+/* 推進連敗保護：連輸兩次關主就先停止挑戰、在原地刷；等級 +2 或 DPS +15% 後自動再挑戰。避免掛機一直循環送死 */
 function pushFailed(){
   if (!G.push) return;
   G.pushFail = (G.pushFail || 0) + 1;
-  if (G.pushFail >= 2 && !G.pushHold){ G.pushHold = true; G.holdLvl = G.lvl; G.holdDps = G.st.dps; logLine('連續倒下，先在這裡累積實力，變強後自動再挑戰守關者', '#c9892b'); }
+  if (G.pushFail >= 2 && !G.pushHold){ G.pushHold = true; G.holdLvl = G.lvl; G.holdDps = G.st.dps; logLine('連續倒下，先在這裡累積實力，變強後自動再挑戰關主', '#c9892b'); }
 }
 function pushHoldCheck(){
-  if (G.pushHold && (G.lvl >= (G.holdLvl || 0) + 2 || G.st.dps >= (G.holdDps || 0)*1.15)){ G.pushHold = false; G.pushFail = 1; logLine('變強了，再次挑戰守關者', '#2f9e4f'); }
+  if (G.pushHold && (G.lvl >= (G.holdLvl || 0) + 2 || G.st.dps >= (G.holdDps || 0)*1.15)){ G.pushHold = false; G.pushFail = 1; logLine('變強了，再次挑戰關主', '#2f9e4f'); }
 }
 function heroDie(){
   const h=G.h;
@@ -489,7 +489,7 @@ function monsterSkillTick(m,dt){
   const dist=Math.hypot(G.h.x-m.x,G.h.y-m.y);
   if(!m.warning&&m.skillCd<=0&&dist<55){
     let skill=MONSTER_TRAITS[m.type]?.skill||'cleave';
-    if(m.boss){const turn=m.skillTurn||0,low=m.hp<m.hpMax*.5;skill=[['stomp','charge','pulse'],['salvo','pulse','charge'],['burrow','stomp','salvo']][m.bossForm??0][turn%3];m.skillTurn=turn+1;if(low&&!m.enraged){m.enraged=true;addFloat(m.x,m.y,BZ+40,'守關者 · 覺醒','#8c415e',18,'event');} }
+    if(m.boss){const turn=m.skillTurn||0,low=m.hp<m.hpMax*.5;skill=[['stomp','charge','pulse'],['salvo','pulse','charge'],['burrow','stomp','salvo']][m.bossForm??0][turn%3];m.skillTurn=turn+1;if(low&&!m.enraged){m.enraged=true;addFloat(m.x,m.y,BZ+40,'關主 · 覺醒','#8c415e',18,'event');} }
     if(skill==='mend'){const allies=G.mons.filter(o=>o!==m&&!o.dead&&!o.boss&&Math.hypot(o.x-m.x,o.y-m.y)<30&&o.hp<o.hpMax).slice(0,3);for(const o of allies){o.hp=Math.min(o.hpMax,o.hp+o.hpMax*.12);addFx({k:'bolt',pts:[[m.x,m.y,BZ+8],[o.x,o.y,BZ+8]],col:'#71c7b4',t:0,dur:.4});}m.skillCd=7;return;}
     if(skill==='guard'){m.guardUntil=G.time+2.5;m.skillCd=7;addFx({k:'ring',x:m.x,y:m.y,col:'#86c9d8',t:0,dur:2.5});return;}
     const line=skill==='charge',rad=m.boss?skill==='stomp'?26:skill==='pulse'?30:8:skill==='stomp'?12:skill==='pulse'?13:skill==='cleave'?8:6;

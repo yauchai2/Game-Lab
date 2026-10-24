@@ -15,15 +15,15 @@
 
   // 主動機件：mult、cd 與 src/game/01-data.js 的 SKILLS 相同；原型獨立，所以在這裡複製一份
   const ACTIVES = {
-    FIRE:   { n: '過熱電池',   tags: ['proj', 'fire'],  mult: 2.6, cd: 2.6 },
+    FIRE:   { n: '灼熱電池',   tags: ['proj', 'fire'],  mult: 2.6, cd: 2.6 },
     FROST:  { n: '冷氣爆發',   tags: ['area', 'cold'],  mult: 1.9, cd: 4.2 },
     CHAIN:  { n: '紅外線連鎖', tags: ['proj', 'light'], mult: 2.3, cd: 3.2 },
-    METEOR: { n: '衛星墜落',   tags: ['area', 'fire'],  mult: 6.2, cd: 8.0 },
-    PULSE:  { n: '重低音喇叭', tags: ['area', 'light'], mult: 2.2, cd: 5.0 },
-    SPAM:   { n: '垃圾郵件',   tags: ['proj', 'light'], mult: 1.1, cd: 3.6 },
-    MAGNET: { n: '強力磁鐵',   tags: ['area', 'cold'],  mult: 1.5, cd: 6.0 },
-    FLICKER:{ n: '閃打連拍',   tags: ['melee', 'light'], mult: 2.0, cd: 3.4 },
-    BEAM:   { n: '雷射指向筆', tags: ['proj', 'fire'],  mult: 4.5, cd: 5.5 },
+    METEOR: { n: '流星衛星',   tags: ['area', 'fire'],  mult: 6.2, cd: 8.0 },
+    PULSE:  { n: '重低音砲', tags: ['area', 'light'], mult: 2.2, cd: 5.0 },
+    SPAM:   { n: '迷惑郵件',   tags: ['proj', 'light'], mult: 1.1, cd: 3.6 },
+    MAGNET: { n: '超強磁石',   tags: ['area', 'cold'],  mult: 1.5, cd: 6.0 },
+    FLICKER:{ n: '連拍閃擊',   tags: ['melee', 'light'], mult: 2.0, cd: 3.4 },
+    BEAM:   { n: '雷射指示棒', tags: ['proj', 'fire'],  mult: 4.5, cd: 5.5 },
   };
   // 輔助配件：needs 為空代表任何主動機件都適用；否則至少符合其中一個標籤
   const SUPPORTS = {
@@ -238,8 +238,8 @@
     return c ? { x: c.c[0], y: c.c[1], rot: 0 } : null;
   }
 
-  // 預期 DPS（單一目標）：每次命中 = 武器傷害 × 技能倍率 × (1 + 傷害加成) × 期望暴擊倍率
-  // hero：{ hit 武器傷害, crit 暴擊率 %, cm 暴擊傷害 % }
+  // 預期 DPS（單一目標）：每次命中 = 武器傷害 × 技能倍率 × (1 + 傷害加成) × 期望會心倍率
+  // hero：{ hit 武器傷害, crit 會心率 %, cm 會心傷害 % }
   function dps(b, hero, lvl) {
     return resolve(b, lvl).map(r => {
       const d = ACTIVES[r.key], keys = r.linked.map(id => b.pieces.find(p => p.id === id).key), mod = skillMods(keys, r.key, r.weights);
