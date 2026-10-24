@@ -1,0 +1,15 @@
+{
+  "version": "0.47.0",
+  "method": "local replay of deployment files whose HTTPS hashes were verified",
+  "directError": "page.goto: net::ERR_CERT_AUTHORITY_INVALID at https://yauchai2.github.io/Game-Lab/?fresh&static&modal=menu",
+  "menuCards": 9,
+  "brandLogo": true,
+  "talentLimit": 24,
+  "shortProfessionNames": true,
+  "opened": [
+    "skills",
+    "craft",
+    "settings"
+  ],
+  "errors": []
+}

@@ -80,3 +80,12 @@ PR #43已合併，來源／標籤f7adc3357f5eed8dba7c95547c4ba2eb69f39797；Page
 [Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.46.0)工作流程40077472352成功並附離線單檔；Pages工作流程40077490150成功。線上manifest、入口、兩個腳本、標籤來源及附件digest／大小均已核對。見[整合紀錄](release-0.46.0/integration.md)及[線上核對](release-0.46.0/live-verification.json)。
 
 此版改為固定職業與最多12個獨立角色；舊8×8板與物品保留，配件必須符合同色洞、供電及每技能三枚上限，未接通技能不會施放，舊構築可能需要重新手動組裝。備份碼只含目前角色，仍無帳號同步。長期平衡與真機效能不冒稱已驗收。
+
+
+## v0.47.0已發佈（2026-10-24）
+
+PR #45已合併，來源／標籤401a3658c4b47e0a47395fed157e971ff0fde268；Pages提交88d19f0a86195ee50448e9e0aa1fda983ad24e2a，狀態built。Claude各分支已重新fetch，最新e0b3468已在主線，無新遊戲提交待合併；全部分支保留。
+
+[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.47.0)工作流程40093529090及Pages工作流程40093528098成功。線上版本、入口與兩個雜湊腳本、標籤來源及附件digest／大小已核對；見[整合紀錄](release-0.47.0/integration.md)與[線上證據](release-0.47.0/live-verification.json)。分離式部署啟動以已核對HTTPS雜湊的原檔重播；雲端Chromium直接連線CA限制仍如實記錄。
+
+一般天賦最多24點，舊超額配置保留，可主動轉換／還原；昇華四點獨立。更新前可匯出本機存檔。真機Safari、長時效能及完整終局平衡未宣稱已驗收。
