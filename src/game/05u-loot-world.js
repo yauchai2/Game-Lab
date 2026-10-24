@@ -37,7 +37,7 @@ function introStoryArt(step){
  const shapes=[`<path d="M12 134L65 108V47H97V91H122V24H149V110H186V62H214V114H262V73H290V136Z" fill="#243652"/><path d="M10 137H309M154 138L222 153" stroke="#8297b7" stroke-width="4"/><path d="M75 65H86M130 40H140M131 57H140M198 83H206" stroke="#ffc56a" stroke-width="3"/><path d="M34 29H83M225 32H282" stroke="#80cebd" stroke-width="2"/>`,
  `<path d="M32 127L120 98 285 122 192 155Z" fill="#62748d"/><path d="M101 58L215 40 250 111 132 130Z" fill="#bed0dc" stroke="#172751" stroke-width="5"/><path d="M125 68L202 55 215 91 139 105Z" fill="#334b68"/><circle cx="151" cy="82" r="10" fill="#80cebd"/><circle cx="192" cy="75" r="10" fill="#80cebd"/><path d="M63 69L77 57 90 77 76 90M256 55L268 42 282 64" fill="none" stroke="#d4b374" stroke-width="3"/>`,
  `<path d="M10 139L75 100 164 126 254 99 312 131 218 156 100 158Z" fill="#586b86"/><path d="M100 128L160 90 202 105 238 78" fill="none" stroke="#80cebd" stroke-width="5"/><path d="M250 101V22M233 75L250 22 270 75M239 57H263" stroke="#bed0dc" stroke-width="4" fill="none"/><path d="M47 106V70L61 66 67 97M115 111V79L129 73 138 113" fill="#d4b374"/><circle cx="250" cy="17" r="5" fill="#ffd34e"/>`];
- return `<svg class="intro-radio" data-story-scene="${step}" viewBox="0 0 320 160" role="img" aria-label="${['停電城市的最後燈光','桌上的神秘錄音卡匣','通往山頂電台的浮島路線'][step]}">${shapes[step]}</svg>`;
+ return storyPixelMarkup(step,`<svg class="intro-radio" data-story-scene="${step}" viewBox="0 0 320 160" role="img" aria-label="${['停電城市的最後燈光','桌上的神秘錄音卡匣','通往山頂電台的浮島路線'][step]}">${shapes[step]}</svg>`);
 }
 const LOOT_WORLD_CSS=`
 body.m #modal{margin-bottom:34px!important}body.m:not(.battle-fold) #fig{max-height:max(40px,calc(100dvh - 460px))!important}

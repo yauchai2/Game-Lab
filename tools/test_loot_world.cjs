@@ -4,7 +4,7 @@ r.evaluate(`
 let checks=0;function ok(value,message){checks++;if(!value)throw Error(message)}
 function target(x=HX+10,y=HY){return {type:'slime',x,y,hp:1e9,hpMax:1e9,dead:false,fall:0,frozen:0,shock:0,burn:0,hurtT:0,atkCd:999,lunge:-1,slot:0,skillCd:999,ph:0};}
 G.lvl=50;G.maxDepth=30;G.h.hp=1e9;
-ok(Object.keys(SKILLS).length===15&&Object.keys(SUPPS).length===18,'catalog expanded');
+ok(Object.keys(SKILLS).length===20&&Object.keys(SUPPS).length===20,'catalog expanded');
 for(const id of Object.keys(SKILLS))ok(GridLab.ACTIVES[id]&&SKILLS[id].cd===GridLab.ACTIVES[id].cd,'active parity '+id);
 for(const id of Object.keys(SUPPS))ok(GridLab.SUPPORTS[id]&&GridLab.GEM_COLOR[id],'support registry and category '+id);
 for(const id of EXPANSION_SKILLS){G.board=GridLab.createBoard('extreme');GridLab.place(G.board,'active',id,...GridLab.layout(G.board).socks[0]);G.board.wires=[{sock:0,cells:GridLab.route(G.board,0)}];recalc();const m=target();G.mons=[m];G.h.hp=G.st.life;G.timers=[];G.proj=[];castSkill(id);for(const timer of G.timers.filter(t=>t.expansion))expansionPulse(timer);ok(m.hp<1e9,'actual damage '+id);ok(G.timers.filter(t=>t.expansion).length<=4,'bounded ticks '+id);ok(Number.isFinite(G.st.sk[id].direct),'honest finite preview '+id);const saved=serialize();ok(applySave(saved)&&G.board.pieces.some(p=>p.key===id),'save preserves '+id);}

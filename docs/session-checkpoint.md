@@ -1,18 +1,14 @@
-# Game Lab精簡接續摘要
+# Game Lab 精簡接續紀錄
 
-更新：2026-10-24。只保留目前決策及必要入口，完整歷史查對應驗收，不重複貼整段聊天。
+2026-10-24。先讀本頁及相關差異，不重讀全部聊天；階段完成更新，不能當作平台已刪除聊天上下文。
 
-- Alan要求繁體中文／全形標點；美術銀灰藍紫Y2K、低面數與像素風，簡約酷感。
-- v0.47.0已正式發佈；PR #45已合併，來源／tag 401a365，Pages 88d19f0，工作流程40093529090／40093528098成功。線上SHA-256及附件digest核對完成；固定網址https://yauchai2.github.io/Game-Lab/ 。
-- 功能範圍及逐項完成表：docs/release-0.47.0/integration.md。驗收25來源／27瀏覽器與單檔驗收：docs/readability-brand-2026-10-24/review.md。首批視窗／72昇華天賦及平衡：docs/window-ui-ascensions-2026-10-24/review.md。
-- 六對端口高對比色加形狀，寶石仍紅藍綠；放大板、拖出收回、手動逐格接線。一般天賦24點／兩韌體，昇華獨立4點。舊配點保留、主動轉換。職業戰士／樂師／獵手／寵機師。
-- Logo已收到及接入；來源src/brand/idle-hero-logo.webp，tools/pack_logo.py嵌入啟動及runtime；生成式去背不是逐像素擷取。頁首與等待共用，減少動態停播。
-- 每次release重新fetch及核對Claude分支／PR，來源先push，保留所有分支與tag。此次Claude最新e0b3468已包含，內部備份排除；部署流程docs/deployment.md。
-- 不把測試或提案當已上線。未驗收真機Safari、實測FPS及完整終局平衡；strict audit兩項既有事件代理提示需如實保留。
-- 新想法及待辦只寫docs/backlog.md；不建第二份全專案待辦。階段完成／發佈／轉向時更新本摘要，之後先讀摘要與差異，必要才查完整歷史。
-
-目前追加已完成：候選v0.48.0，分支codex/deeper-loot-world，基底de81f4a，未合併／未發佈。DEPTH-01至12全完成。26組來源、15新增瀏覽器＋19原流程回歸、79條新狀態斷言、15配件階級比較、單檔零外部請求驗證通過；見docs/loot-world-2026-10-24/review.md。
-
-追加決策：15主動／18配件；6新魔物、18區與6實際工業地標。一般背包上限700，擴建每次100，批次分解有快照與原保護，預設保留T0／T1詞綴。手機正交35.264°／−45°，DOM仍可操作；圖鑑是個人進度、編年史是完整參考。
-
-已推送Draft PR #48：https://github.com/yauchai2/Game-Lab/pull/48 ，遊戲來源cb40e3e；最後查核main仍為de81f4a，PR可乾淨合併。下一步：等待Alan試玩回饋。沒有本輪release要求，正式站維持0.47.0。只有新修改／失敗才補驗證，避免重跑同一產物。
+- Alan使用繁體中文／全形標點。美術銀灰藍紫Y2K、低面數與像素，簡約酷感。不可在公開遊戲文案寫參考遊戲／內部研究／帳號資源。
+- 正式v0.47.0：來源／tag401a365，Pages88d19f0，PR #45及證據PR #46已合併；main基底de81f4a。固定站https://yauchai2.github.io/Game-Lab/ 。
+- 候選v0.48.0：分支codex/deeper-loot-world，Draft PR #48 https://github.com/yauchai2/Game-Lab/pull/48 。尚未合併／發佈。本次沒有release要求。
+- DEPTH-01至12完成：背包批次分解及快照保護、700格上限、七部位重排、等距手機、三場序章、20主動／20配件、18地區／六新魔物。歷史驗收docs/loot-world-2026-10-24/review.md，最新追加以次項為準。
+- PLAY-01、03至20完成：真召喚3小＋1大、箭雨／巨劍／音波、閃現共享6擊熱量及1.8秒復原、死亡／腐化細節、NEW持久化、空投、元素配件、三分鐘離線彈窗門檻、低解析故事、技能盤庫存與接通導向、天賦滾輪／雙指。原頭像不連續自轉，只待機／微擺。詳細docs/combat-feedback-2026-10-24/review.md。
+- PLAY-02部分：遊戲內回饋＋Worker／GitHub App服務端及部署設定已備，Alan沒有API或Cloudflare專案；尚未部署，endpoint空白，禁送出並保留／下載草稿。建議免費Worker＋repo限定App。需要帳號接入及真實提交驗收；不在聊天索取Token。
+- 最新驗證：28來源套件、10新瀏覽器流程、19接線窗口與15背包回歸、單檔零外部請求。新戰鬥53斷言，回饋服務19測試含RSA簽署，全stub、0真Issue。DESIGN lint通過；strict audit兩項既有手機事件代理偵測提示保留。無真機Safari／FPS或完整終局平衡驗收。
+- 一般天賦24點／兩韌體，昇華獨立4點；六對端口不同色＋形狀，寶石紅藍綠同色洞，所有配置手動。維持唯一狀態擁有者，見DESIGN.md及UX-CONTRACT.md。
+- 每次release必須重新fetch並查Claude分支／PR及main，先push來源，保留全部分支與tag。最後已知Claude e0b3468包含於主線；內部備份不發佈。流程docs/deployment.md。
+- 下一步：Alan試玩候選；接通回饋服務。若要release才重新做整合查核。只有新修改／失敗／未解疑慮才補驗證。所有新想法寫docs/backlog.md，不建第二份全專案待辦。

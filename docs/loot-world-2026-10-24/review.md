@@ -1,5 +1,7 @@
 # 技能、背包與世界候選驗收
 
+追加戰鬥、技能盤與回報體驗後的最新驗收見[本次追加](../combat-feedback-2026-10-24/review.md)。以下為cb40e3e的歷史驗收，20／20技能配件及最新單檔以追加文件為準。
+
 2026-10-24。[Draft PR #48](https://github.com/yauchai2/Game-Lab/pull/48)已推送，遊戲來源cb40e3e。分支`codex/deeper-loot-world`，基底main `de81f4a`，候選v0.48.0。已實作及驗證，未合併、未發佈；正式站仍為v0.47.0。
 
 ## 逐項交付

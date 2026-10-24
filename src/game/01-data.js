@@ -103,13 +103,13 @@ const SKILLS = {
   PULSE: { n:'重低音砲', lvl:8,  cd:5.0, mult:2.2, el:'light', col:'#c28aff', tg:1.6, d:'音浪從身邊炸開，震退並傷害附近敵人' },
   MAGNET:{ n:'超強磁石',   lvl:11, cd:6.0, mult:1.5, el:'cold',  col:'#7fa8ff', tg:1.8, d:'把周圍的怪全部吸到身邊並造成傷害' },
   SPAM:  { n:'迷惑郵件',   lvl:14, cd:3.6, mult:1.1, el:'light', col:'#ffffff', tg:3.5, d:'一口氣寄出 6 封郵件，隨機砸中不同敵人' },
-  FLICKER:{ n:'連拍閃擊',  lvl:12, cd:3.4, mult:2.0, el:'light', col:'#ff9ae0', tg:3.2, d:'像閃光燈一樣連續閃到 4 個敵人身邊痛擊，最後一下 +50% 傷害' },
+  FLICKER:{ n:'連拍閃擊',  lvl:12, cd:3.4, mult:1.7, el:'light', col:'#ff9ae0', tg:3.2, d:'連續閃擊3次，最後一下+50%；追擊28距離，2秒內所有回放共用最多6擊，耗盡後復原1.8秒' },
   BEAM:  { n:'雷射指示棒', lvl:16, cd:5.5, mult:4.5, el:'fire',  col:'#ff4a6a', tg:2.2, d:'射出一道貫穿全場的雷射，打中直線上所有敵人' },
 };
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  {v:'0.48.0',d:'2026-10-24',t:['新增六款主動機件與六款條件式配件，手動組裝更多距離、異常與生命流派','背包加入篩選分解與收益預覽，保護穿著、構築引用、鎖定及特殊物品；重排七部位裝備架','序章三頁加入不同場景，個人手機改等距取景，像素質感增加即時樣本與分級差異','新增工業地區與六種魔物，改善裝備及功能圖示辨識，編年史加入頁籤圖示']},
+  {v:'0.48.0',d:'2026-10-24',t:['新增召喚蜂群、大型護衛、箭雨、巨劍與音波，並以共享熱量限制閃現連擊；死亡及腐化結果可查閱細節','新增六款主動機件與六款條件式配件，手動組裝更多距離、異常與生命流派','背包加入篩選分解與收益預覽，保護穿著、構築引用、鎖定及特殊物品；重排七部位裝備架','序章三頁加入不同場景，個人手機改等距取景，像素質感增加即時樣本與分級差異','新增工業地區與六種魔物，改善裝備及功能圖示辨識，編年史加入頁籤圖示']},
   {v:'0.47.0',d:'2026-10-24',t:[
     '修正快速拖曳接線漏格及觸控捕獲問題，沿實際指標軌跡接線，取消可還原原配置',
     '共用視窗改用右上角關閉按鈕，子頁返回父頁，確認視窗保留取消與資源保護',
@@ -320,7 +320,7 @@ const MODES = {
   PULSE_SONIC:  { sk:'PULSE',  n:'超音波', hint:'聲音太高，聽不見但是很痛。', d:'範圍 +60%，傷害 -25%' },
   MAGNET_CRUSH: { sk:'MAGNET', n:'黑洞磁鐵', hint:'吸過來之後好像還有下文。', d:'吸過來 0.5 秒後坍縮，近身敵人再受 200% 傷害' },
   MAGNET_STICKY:{ sk:'MAGNET', n:'黏性磁鐵', hint:'被吸住的東西動不了。', d:'被吸過來的敵人凍結 2 秒；關主需累積控制並受適應期限制' },
-  FLICKER_STORM:{ sk:'FLICKER', n:'閃光風暴', hint:'快門按到停不下來。', d:'一次閃 8 下，每下 50% 傷害，沒有最後一擊加成' },
+  FLICKER_STORM:{ sk:'FLICKER', n:'閃光風暴', hint:'快門按到停不下來。', d:'一次閃5下，每下65%傷害，沒有最後一擊加成；所有回放共用連擊熱量' },
   FLICKER_REAP: { sk:'FLICKER', n:'收割閃打', hint:'它只對倒下的目標感興趣。', d:'討伐目標時立刻追加一次閃打，可連續觸發' },
   FLICKER_TRAIL:{ sk:'FLICKER', n:'殘影拖尾', hint:'留下的殘影也會咬人。', d:'每一下命中點留下殘影，0.4 秒後再造成 22% 傷害' },
   SPAM_FLOOD:   { sk:'SPAM',   n:'洗版', hint:'信箱爆了。', d:'一次寄出 14 封，每封 45% 傷害' },
@@ -334,13 +334,13 @@ const COMBAT_RULES=Object.freeze({freezeSeconds:1.4,bossFreezeGuard:4,bossFreeze
 const SKILL_PATTERNS={
   FIRE:{each:1},FROST:{each:1},CHAIN:{each:1,hops:3,decay:.7},METEOR:{each:1,count:1},
   PULSE:{each:1,range:24},MAGNET:{each:1,range:40},SPAM:{each:1,count:6},
-  FLICKER:{each:1,count:4,last:1.5},BEAM:{each:1,width:4.5},
+  FLICKER:{each:1,count:3,last:1.5},BEAM:{each:1,width:4.5},
 };
 for(const [id,pattern] of Object.entries({
   FROST_STORM:{echo:.6},CHAIN_FORK:{fork:.5},CHAIN_OVERLOAD:{hops:5,decay:1,cd:1.8},
   METEOR_TWIN:{count:2,each:.6},METEOR_COMET:{primary:2.2,splash:.5},
   PULSE_ECHO:{echo:.6},PULSE_SONIC:{range:38,each:.75},MAGNET_CRUSH:{crush:2},
-  FLICKER_STORM:{count:8,each:.5,last:1},FLICKER_TRAIL:{trail:.22},
+  FLICKER_STORM:{count:5,each:.65,last:1},FLICKER_TRAIL:{trail:.22},
   SPAM_FLOOD:{count:14,each:.45},SPAM_PHISH:{count:3,each:3},
   BEAM_SWEEP:{each:.65,sweep:true},BEAM_FOCUS:{each:2.5,width:2.2},
   METEOR_COLDSTART:{each:.8,cd:1.25,coldStart:true,radius:18,coldBonus:3},
@@ -494,3 +494,7 @@ BIOMES.push({"n": "風蝕採石場", "board": {"l": "#c4b799", "m": "#92866c", "
 BIOMES.push({"n": "高壓冷卻塔", "board": {"l": "#a4c1c0", "m": "#6a9193", "d": "#32505e"}, "t1": "#6a9193", "t2": "#a4c1c0", "portal": "#92e1da", "glow": "#92e1da", "sky": ["#152435", "#32505e", "#6a9193"]});
 BIOMES.push({"n": "暴雨地下道", "board": {"l": "#9caab5", "m": "#637984", "d": "#2f4359"}, "t1": "#637984", "t2": "#9caab5", "portal": "#d6c475", "glow": "#d6c475", "sky": ["#152435", "#2f4359", "#637984"]});
 MONSTER_GUIDE.push(["scanner","巡弋掃描器","三角翼哨機，預警後三連射擊"],["roller","履帶碎鐵獸","圓輪重裝體，向預警路線衝鋒"],["antenna","斷訊天線","高腳訊號塔，週期修復附近同伴"],["cable","纜線水母","多條懸垂電纜，預警後釋出震波"],["furnace","爐心搬運機","方形熔爐履帶車，以重踏壓迫近處"],["shard","碎鏡哨衛","分裂稜鏡裝置，以高速躍擊突入落點"]);
+
+Object.assign(SKILLS,{"SWARM": {"n": "口袋蜂群", "lvl": 14, "cd": 14, "mult": 0.8, "el": "light", "col": "#80d5d3", "tg": 4, "d": "召喚3隻小型巡弋寵機，存在14秒，自行追敵並每1.3秒攻擊；同款最多3隻，回放只刷新"}, "GUARDIAN": {"n": "重型護衛", "lvl": 26, "cd": 18, "mult": 2.1, "el": "fire", "col": "#e8b270", "tg": 4, "d": "召喚1隻大型護衛，存在16秒，每1.6秒重擊並濺射附近最多2敵；同款最多1隻，不會替角色擋傷"}, "ARROWS": {"n": "電磁箭雨", "lvl": 18, "cd": 8.5, "mult": 3.8, "el": "light", "col": "#9bd9ee", "tg": 4, "d": "標示一片區域，1.1秒後箭雨落下，命中半徑30內最多12敵；目標走出範圍便不會命中"}, "GIANTBLADE": {"n": "巨型光刃", "lvl": 24, "cd": 10, "mult": 5.4, "el": "cold", "col": "#8abbe8", "tg": 3, "d": "巨劍在空中蓄力，0.8秒後劈落，命中半徑24內最多8敵並累積0.6秒凍結；關主仍有控制適應"}, "OVERTURE": {"n": "失真終章", "lvl": 20, "cd": 6.8, "mult": 1.5, "el": "light", "col": "#b5b4ed", "tg": 4, "d": "向目標方向連放3道音符波，每道掃過寬度7的路徑，最多命中5敵；三波方向在施放時固定"}});
+Object.assign(SKILL_PATTERNS,{SWARM:{each:0},GUARDIAN:{each:0},ARROWS:{each:1},GIANTBLADE:{each:1},OVERTURE:{each:3}});
+Object.assign(SUPPS,{RIME:{n:"冷媒回路",d:"冰霜技能傷害-10%；4秒內每3次命中累積一次0.6秒凍結，關主仍需累積並受適應期限制；凍結時長隨配件階級提升"},KINDLE:{n:"燃點回授",d:"火焰技能傷害-10%；擊倒燃燒敵人時，把點燃傳到14距離內最多2敵，持續2.5秒，不觸發連鎖傳播；點燃強度隨配件階級提升"}});

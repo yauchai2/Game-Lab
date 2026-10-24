@@ -63,7 +63,7 @@ if (Q.has('mons')){   // testing: ?mons=slime,skel,brute,boss&at=48 lines up fro
 if (Q.has('picks')) G.picks = +Q.get('picks');
 if (Q.has('modal')) openModal(Q.get('modal'));
 const gap0 = Q.has('away') ? +Q.get('away') : loadedT ? (Date.now() - loadedT)/1000 : 0;
-if (gap0 > 20) catchUp(gap0, true);
+if (gap0 > 20) catchUp(gap0, gap0 >= 180);
 const introWanted=!hasLoadedGame&&(Q.has('intro')||![...Q.keys()].some(k=>['fresh','static','modal','sim','selftest','give','lvl','char','mons','away'].includes(k)));
 if(introWanted)introStart();
 ui.renderInterval=1000/30;
@@ -74,7 +74,7 @@ ui.animate(dt => {
   if (FXO.stop > 0) FXO.stop -= dt;
   if (GAME_FEATURES.cardChoices && G.relicPicks > 0 && !G.offline && (G.autoCard || (!G.deferChoices && !G.offerR && $('ovl').hidden))) openRelics();
   else if (GAME_FEATURES.cardChoices && G.picks > 0 && !G.offline && (G.autoCard || (!G.deferChoices && !G.offer && $('ovl').hidden))) openCards();
-  if (gap > 3){ catchUp(gap, gap > 20); return true; }
+  if (gap > 3){ catchUp(gap, gap >= 180); return true; }
   stepSim(gap>=0?gap:dt); return true;
 });
 setInterval(() => { if (!G.paused) saveGame(); }, 5000);

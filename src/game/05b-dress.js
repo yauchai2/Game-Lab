@@ -78,8 +78,8 @@ function dressTick(){
     if(PV.hero.userData.y2k)characterPreviewAnimate(PV.hero,dt,matchMedia('(prefers-reduced-motion: reduce)').matches);
     // Keep NULL's companion outside the body silhouette in this presentation instance.
     if(PV.hero.userData.pet){PV.hero.userData.pet.position.x+=6;PV.hero.userData.pet.position.z+=4;}
-    if(!PV.drag&&!matchMedia('(prefers-reduced-motion: reduce)').matches)PV.yaw+=dt*Math.PI*2/60;
-    PV.hero.rotation.y=PV.yaw;
+    if(!PV.drag&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&modalTab==='dress')PV.yaw+=dt*Math.PI*2/60;
+    PV.hero.rotation.y=PV.yaw+(modalTab==='char'&&!matchMedia('(prefers-reduced-motion: reduce)').matches?Math.sin(now/1800)*.055:0);
     const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=R3.clean?'auto':'pixelated';
     if(PV.cv.width!==buffer.width||PV.cv.height!==buffer.height)PV.rd.setSize(buffer.width,buffer.height,false);
     const portrait=host.dataset.framing==='portrait',b=PV.box,cx=portrait?PV.portraitFocus.x:(b.min.x+b.max.x)/2,cy=portrait?PV.portraitFocus.y-.8:(b.min.y+b.max.y)/2,span=Math.hypot(b.max.x-b.min.x,b.max.z-b.min.z),vh=portrait?(b.max.y-b.min.y)*.44:Math.max((b.max.y-b.min.y)*1.18,span*h/w*1.1),vw=vh*w/h;

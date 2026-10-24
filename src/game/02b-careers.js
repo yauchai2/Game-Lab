@@ -26,7 +26,7 @@ function circuitDrop(kind){
  if(!guarantee&&Math.random()>({normal:.02,elite:.08,boss:.3}[kind]||0))return null;
  const id=tPick(guarantee?fresh:pool);if(kind==='boss'&&fresh.includes(id))G.circuitPity=0;return id;
 }
-function collectCircuit(id){if(!Object.hasOwn(GridLab.TEMPLATES,id))return false;G.circuits=G.circuits||['pocket'];if(G.circuits.includes(id)){G.parts+=8;logLine('重複電路板回收為8零件。','#687ba9');}else{G.circuits.push(id);logLine('入手電路板：'+GridLab.TEMPLATES[id].n,'#2f9e4f');}G.dirty=true;return true;}
+function collectCircuit(id){if(!Object.hasOwn(GridLab.TEMPLATES,id))return false;G.circuits=G.circuits||['pocket'];if(G.circuits.includes(id)){G.parts+=8;logLine('重複電路板回收為8零件。','#687ba9');}else{G.circuits.push(id);noticeNew('boards',id);logLine('入手電路板：'+GridLab.TEMPLATES[id].n,'#2f9e4f');}G.dirty=true;return true;}
 function cleanCircuitInventory(){
  G.circuits=[...new Set(['pocket',...(Array.isArray(G.circuits)?G.circuits:[]),G.board.template].filter(id=>Object.hasOwn(GridLab.TEMPLATES,id)))];
  const used={};G.board.pieces=G.board.pieces.filter(p=>p.kind!=='support'||(used[p.key+':'+(p.t||1)]=(used[p.key+':'+(p.t||1)]||0)+1)<=gemOwnT(p.key,p.t||1));

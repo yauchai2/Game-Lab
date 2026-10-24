@@ -22,10 +22,11 @@
     PULSE:  { n: '重低音砲', tags: ['area', 'light'], mult: 2.2, cd: 5.0 },
     SPAM:   { n: '迷惑郵件',   tags: ['proj', 'light'], mult: 1.1, cd: 3.6 },
     MAGNET: { n: '超強磁石',   tags: ['area', 'cold'],  mult: 1.5, cd: 6.0 },
-    FLICKER:{ n: '連拍閃擊',   tags: ['melee', 'light'], mult: 2.0, cd: 3.4 },
+    FLICKER:{ n: '連拍閃擊',   tags: ['melee', 'light'], mult: 1.7, cd: 3.4 },
     BEAM:   { n: '雷射指示棒', tags: ['proj', 'fire'],  mult: 4.5, cd: 5.5 },
   };
   Object.assign(ACTIVES,{"DISC": {"n": "回帶飛盤", "mult": 2.2, "cd": 3.8, "tags": ["proj", "light"]}, "COIL": {"n": "街角線圈", "mult": 1.2, "cd": 6, "tags": ["area", "light"]}, "ORBIT": {"n": "磁帶環刃", "mult": 1.25, "cd": 5.8, "tags": ["area", "cold"]}, "RAIL": {"n": "軌道放電", "mult": 4.2, "cd": 4.8, "tags": ["proj", "light"]}, "DEFRAG": {"n": "碎片清除", "mult": 2.9, "cd": 5, "tags": ["proj", "fire"]}, "RELAY": {"n": "中繼崩解", "mult": 2.4, "cd": 7, "tags": ["area", "cold"]}});
+  Object.assign(ACTIVES,{"SWARM": {"n": "口袋蜂群", "mult": 0.8, "cd": 14, "tags": ["summon", "light"]}, "GUARDIAN": {"n": "重型護衛", "mult": 2.1, "cd": 18, "tags": ["summon", "fire"]}, "ARROWS": {"n": "電磁箭雨", "mult": 3.8, "cd": 8.5, "tags": ["area", "spread", "light"]}, "GIANTBLADE": {"n": "巨型光刃", "mult": 5.4, "cd": 10, "tags": ["area", "spread", "cold"]}, "OVERTURE": {"n": "失真終章", "mult": 1.5, "cd": 6.8, "tags": ["area", "spread", "light"]}});
   // 輔助配件：needs 為空代表任何主動機件都適用；否則至少符合其中一個標籤
   const SUPPORTS = {
     HEAVY: { n: '超頻',     needs: [],        mod: { dmg: 0.45 } },
@@ -43,6 +44,7 @@
   };
   Object.assign(SUPPORTS,{"ANCHOR": {"n": "定錨電容", "needs": [], "mod": {"dmg": 0.8, "cd": 0.25}}, "EXECUTE": {"n": "清場指令", "needs": [], "mod": {"dmg": -0.1}}, "BLOOD": {"n": "危險供電", "needs": [], "mod": {"dmg": -0.1}}, "CONDUCT": {"n": "異常協定", "needs": [], "mod": {"dmg": -0.1}}, "LONG": {"n": "遠距天線", "needs": [], "mod": {"dmg": -0.1}}, "SPREAD": {"n": "廣域接頭", "needs": ["spread"], "mod": {"dmg": -0.2, "area": 0.4}}});
   for(const id of ['DISC','COIL','ORBIT','RAIL','RELAY','PULSE','MAGNET','BEAM'])ACTIVES[id].tags.push('spread');
+  Object.assign(SUPPORTS,{RIME:{n:"冷媒回路",needs:["cold"],mod:{dmg:-.1}},KINDLE:{n:"燃點回授",needs:["fire"],mod:{dmg:-.1}}});
   // 舊版方塊拼圖的形狀，只用來把舊存檔搬到接線板
   const LEGACY = {
     active: { FIRE: [[0, 0]], FROST: [[0, 0], [1, 0]], CHAIN: [[0, 0], [0, 1]], METEOR: [[0, 0], [1, 0], [0, 1]], PULSE: [[0, 0], [1, 0], [1, 1]],
@@ -58,7 +60,7 @@
     return {
       hit:(1 + .35*n('FOCUS'))*(n('DELAY') ? .85 : 1)*(1 + .45*n('HEAVY'))*
         (1 + .08*Math.max(0,Math.min(5,keys.length)-2))*(1 + .2*n('COOL') + .1*n('CRYSTAL'))*
-        (n('AREA') && key === 'FIRE' ? .85 : 1)*(1+.8*n('ANCHOR'))*Math.max(.4,1-.1*n('EXECUTE')-.1*n('BLOOD')-.1*n('CONDUCT')-.1*n('LONG')-.2*n('SPREAD')),
+        (n('AREA') && key === 'FIRE' ? .85 : 1)*(1+.8*n('ANCHOR'))*Math.max(.4,1-.1*n('EXECUTE')-.1*n('BLOOD')-.1*n('CONDUCT')-.1*n('LONG')-.2*n('SPREAD')-.1*n('RIME')-.1*n('KINDLE')),
       crit:15*n('FOCUS') + 30*n('CRITS') + 15*n('CRYSTAL'),
       reduction:30*n('HASTE') + 15*n('COOL'), delay:1 + .15*n('FOCUS')+.25*n('ANCHOR'),
       twin:n('TWIN'), area:!!n('AREA'), leech:!!n('LEECH'), repeat:!!n('DELAY'),

@@ -1,7 +1,7 @@
 /* Acquireable circuit boards. Legacy geometry is read only during migration. */
 (function(root){
  const old=typeof module!=='undefined'?require('./00-grid-legacy.js'):root.LegacyGrid;
- const GEM_COLOR={ANCHOR:'r',EXECUTE:'r',BLOOD:'r',CONDUCT:'b',LONG:'g',SPREAD:'g',HEAVY:'r',FOCUS:'r',DELAY:'r',RECOVER:'r',HASTE:'b',COOL:'b',CRYSTAL:'b',TWIN:'b',AREA:'g',FORK:'g',LEECH:'g',CRITS:'g'};
+ const GEM_COLOR={RIME:'b',KINDLE:'r',ANCHOR:'r',EXECUTE:'r',BLOOD:'r',CONDUCT:'b',LONG:'g',SPREAD:'g',HEAVY:'r',FOCUS:'r',DELAY:'r',RECOVER:'r',HASTE:'b',COOL:'b',CRYSTAL:'b',TWIN:'b',AREA:'g',FORK:'g',LEECH:'g',CRITS:'g'};
  const TIER_MUL=[1,1.35,1.65],TIER_COST=[1,2,3];
  const TEMPLATES={
   pocket:{n:'起步微板',size:3,seed:0,lvl:1,depth:0,power:3},

@@ -126,9 +126,9 @@ function saveHtml(){
 /* modal actions */
 function cartsHtml(){const sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active'),ids=Object.keys(MODES).filter(id=>(G.carts[id]||0)>0);let h=sp?`<p class="uxmeta">${SKILLS[sp.key].n} · ${sp.mode?MODES[sp.mode].n:'標準模式'} ${sp.mode?'<button class="mb" onclick="equipCart(\'\')">卸下</button>':''}</p>`:'<p class="uxmeta">先選盤面技能才可裝卡匣；點格子可查看提示，裝上才鑑定。</p>';
  if(!ids.length)return h+'<p>還沒有卡匣。冒險或電路合成都能取得。</p>';
- return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],ok=sp&&sp.key===M.sk&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${G.newSnap&&n>(G.newSnap.c?.[id]||0)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>可用 ${f}／${n}</small></button>`;}).join('')+'</div>';
+ return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],ok=sp&&sp.key===M.sk&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${noticeHas('carts',id)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>可用 ${f}／${n}</small></button>`;}).join('')+'</div>';
 }
-function uiCartPick(id){const M=MODES[id],sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active');if(!M||!G.carts[id])return;if(sp?.key===M.sk&&cartFree(id)>0)return equipCart(id);const reason=!sp?'先選盤面上的主動技能':sp.key!==M.sk?'適用於'+SKILLS[M.sk].n+'，目前選了'+SKILLS[sp.key].n:'全部已裝上，先卸下其他同款卡匣';showOverlay(`<h2 class="uxdialog-title">${uxEsc(G.seen[id]?M.n:'未鑑定的'+SKILLS[M.sk].n+'卡匣')}</h2><p>${uxEsc(G.seen[id]?M.d:M.hint)}</p><p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回卡匣</button>`);}
+function uiCartPick(id){noticeRead('carts',id);const M=MODES[id],sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active');if(!M||!G.carts[id])return;if(sp?.key===M.sk&&cartFree(id)>0)return equipCart(id);const reason=!sp?'先選盤面上的主動技能':sp.key!==M.sk?'適用於'+SKILLS[M.sk].n+'，目前選了'+SKILLS[sp.key].n:'全部已裝上，先卸下其他同款卡匣';showOverlay(`<h2 class="uxdialog-title">${uxEsc(G.seen[id]?M.n:'未鑑定的'+SKILLS[M.sk].n+'卡匣')}</h2><p>${uxEsc(G.seen[id]?M.d:M.hint)}</p><p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回卡匣</button>`);}
 function equipCart(id){
   const p = G.board.pieces.find(q => q.id === selPiece && q.kind === 'active'); if (!p) return;
   if (!id){ delete p.mode; recalc(); renderModal(); return; }
@@ -246,7 +246,7 @@ function offlineBulk(R, f, w){
   const boss = Math.min(Math.floor(w.boss*f), Math.floor(R/3600)); if (boss > 0){ G.bossKills = (G.bossKills || 0) + boss; if (G.push && !G.run){ G.depth += boss; G.maxDepth = Math.max(G.maxDepth, G.depth); } }
 }
 function catchUp(sec, report){
-  if (G.paused) return; const away = sec; sec = Math.min(sec, offCapSec());
+  if (G.paused) return;report=!!report&&sec>=180; const away = sec; sec = Math.min(sec, offCapSec());
   const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths, inventory:G.inventory.length,chips:G.chips, gems:{...G.gems}, carts:{...G.carts} };
   G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };

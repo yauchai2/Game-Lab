@@ -1,0 +1,5 @@
+{
+  "checks": 19,
+  "real_external_requests": 0,
+  "method": "All upstream network calls stubbed; no real Issue created."
+}

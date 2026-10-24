@@ -29,7 +29,11 @@ function deviceCircuitModel(kind,id){
  const order=Object.keys(kind==='skill'?SKILLS:SUPPS),variant=order.indexOf(id);
  // Each function owns a distinct silhouette; six binary trace pins provide a redundant identifier.
  if(kind==='skill'){
-  if(['FIRE','METEOR'].includes(id)){mk(new T3.CylinderGeometry(.5,.5,1.4,6),accent,0,1.15,0,g);if(id==='METEOR')for(const x of[-.9,.9])mk(new T3.BoxGeometry(.7,.15,1.2),silver,x,1.2,0,g);}
+  if(['SWARM','GUARDIAN'].includes(id)){mk(new T3.BoxGeometry(id==='GUARDIAN'?1.4:.7,1,.8),silver,0,1,0,g);for(const x of[-.9,.9])mk(new T3.BoxGeometry(.4,id==='GUARDIAN'?1:.2,1),accent,x,1,0,g);}
+  else if(id==='ARROWS'){for(const x of[-.7,0,.7]){mk(new T3.CylinderGeometry(.08,.08,1.3,4),silver,x,1.1,0,g);mk(new T3.ConeGeometry(.25,.5,4),accent,x,.3,0,g).rotation.z=Math.PI;}}
+  else if(id==='GIANTBLADE'){mk(new T3.BoxGeometry(.45,1.7,.2),accent,0,1.5,0,g);mk(new T3.BoxGeometry(1.1,.15,.35),silver,0,.8,0,g);}
+  else if(id==='OVERTURE'){for(const x of[-.5,.5]){mk(new T3.OctahedronGeometry(.35,0),accent,x,.8,0,g);mk(new T3.BoxGeometry(.15,1.2,.15),silver,x+.2,1.3,0,g);}mk(new T3.BoxGeometry(1,.2,.2),silver,0,1.9,0,g);}
+  else if(['FIRE','METEOR'].includes(id)){mk(new T3.CylinderGeometry(.5,.5,1.4,6),accent,0,1.15,0,g);if(id==='METEOR')for(const x of[-.9,.9])mk(new T3.BoxGeometry(.7,.15,1.2),silver,x,1.2,0,g);}
   else if(['FROST','PULSE','MAGNET'].includes(id)){const ring=mk(new T3.TorusGeometry(.75,.15,4,id==='FROST'?6:10),accent,0,1,0,g);if(id==='PULSE')for(const x of[-.9,.9])mk(new T3.BoxGeometry(.15,1.3,.5),accent,x,1,0,g);if(id==='MAGNET')mk(new T3.BoxGeometry(.6,.7,.4),dark,0,.4,0,g);}
   else if(id==='CHAIN'){for(const x of[-.7,0,.7])mk(new T3.OctahedronGeometry(.34,0),accent,x,1,0,g);}
   else if(id==='SPAM'){for(let i=0;i<3;i++){const card=mk(new T3.BoxGeometry(1.2,.08,.8),silver,i*.25-.25,.8+i*.3,0,g);card.rotation.y=i*.3;}}
@@ -68,7 +72,7 @@ function icon3dCollectibleUrl(kind,id){
 }
 function deviceSkillsHtml(){
  const connected=GridLab.resolve(G.board,G.lvl).filter(r=>r.wired).length;
- return `<div class="device-workspace device-skills"><div class="device-heading"><div><span class="device-eyebrow">技能接線</span><h3>${GridLab.layout(G.board).n}</h3><span>${GridLab.layout(G.board).size}×${GridLab.layout(G.board).size} · 供電 ${GridLab.powerUsed(G.board)}／${GridLab.layout(G.board).power}</span></div><button class="mb" onclick="careerCircuits()">更換電路板</button></div>${wireGuideHtml()}<section class="device-console" aria-label="技能組裝工作區">${wireTopHtml()}</section>${wireSelCard()}<section class="device-inventory"><h3>技能與配件庫</h3><p class="device-caption">條件式配件的收益隨階級提升；同款條件只取最高階，傷害代價仍累計。供電及每技能三枚上限不變。</p>${uiInventoryHtml()}</section>${DIRECT_VIEW.builds?buildBar():''}<div class="direct-analysis-tools"><button class="mb" onclick="directBuildTools()">構築配置</button><button class="mb" onclick="directCombatReport()">戰鬥分析</button>${directHelpButton('skills')}</div></div>`;
+ return `<div class="device-workspace device-skills"><div class="device-heading"><div><span class="device-eyebrow">技能接線</span><h3>${GridLab.layout(G.board).n}</h3><span>${GridLab.layout(G.board).size}×${GridLab.layout(G.board).size} 電路板</span></div><button class="mb" onclick="careerCircuits()">更換電路板${G.unread?.boards?.length?'<span class="play-new" data-board-badge>NEW</span>':''}</button></div>${playBoardSummary()}<section class="device-console" aria-label="技能組裝工作區">${wireTopHtml()}</section>${playPortStrip()}${wireSelCard()}<section class="device-inventory"><h3>技能與配件庫</h3><p class="device-caption">條件式配件的收益隨階級提升；同款條件只取最高階，傷害代價仍累計。供電及每技能三枚上限不變。</p>${uiInventoryHtml()}</section>${DIRECT_VIEW.builds?buildBar():''}<div class="direct-analysis-tools"><button class="mb" onclick="directBuildTools()">構築配置</button><button class="mb" onclick="directCombatReport()">戰鬥分析</button>${directHelpButton('skills')}</div></div>`;
 }
 function deviceMenuHtml(){
  const groups=[['遊戲',[['settings','遊戲設定','畫面與戰鬥'],['save','存檔備份','匯入與匯出']]],['進度',[['goals','目標','里程碑獎勵'],['ach','成就','挑戰紀錄'],['dex','圖鑑','個人收藏進度'],['rank','排行榜','歷史構築']]],['資訊',[['log','更新日誌','版本紀錄'],['feedback','意見回饋','回報與建議'],['wiki','編年史','完整機制參考']]]];
