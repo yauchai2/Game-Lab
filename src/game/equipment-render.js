@@ -65,7 +65,7 @@ function animateEquipment(g,state={}){
 
 function characterEquipmentGeometry(asset,id){
  if(id!=='aki'||typeof CHARACTER_EQUIPMENT_MASKS==='undefined')return asset.geometry;
- const gear=G.equip.armor,mask=CHARACTER_EQUIPMENT_MASKS.aki_headphones;
+ const gear=G.equip.head,mask=CHARACTER_EQUIPMENT_MASKS.aki_headphones;
  if(signatureOf(gear)?.model!=='aki_headphones'||!canUseGear(gear)||!mask)return asset.geometry;
  if(asset.geometry.attributes.position.count!==mask.vertices||asset.geometry.index.count!==mask.triangles*3)throw Error('Character equipment mask is stale');
  if(!asset.headsetVariant){const removed=new Set(mask.remove),indices=asset.geometry.index.array,kept=[];for(let i=0;i<indices.length;i+=3)if(!removed.has(i/3))kept.push(indices[i],indices[i+1],indices[i+2]);asset.headsetVariant=asset.geometry.clone();asset.headsetVariant.setIndex(kept);}

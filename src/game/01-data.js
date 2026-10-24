@@ -20,7 +20,9 @@ const BIOMES = [
 ];
 const RAR = [ { n:'普通', c:'#6b665b', g:'#d9d3c2', w:55 }, { n:'魔法', c:'#2f6fd6', g:'#6a9cf0', w:32 },
               { n:'稀有', c:'#a9780a', g:'#f4c542', w:11 }, { n:'暗金', c:'#c4501f', g:'#ff7a3d', w:2 } ];
-const SLOTN = { weapon:'武器', armor:'外套', ring:'配件' };
+const SLOTN = { head:'頭部', armor:'身體', gloves:'手部', ring:'飾品', boots:'鞋子', weapon:'武器', offhand:'副手' };
+const GEAR_ROUTE={head:'memory',armor:'memory',gloves:'signal',ring:'power',boots:'power',weapon:'signal',offhand:'memory'};
+function gearImplicit(slot,il){return slot==='weapon'?{k:'dmg',v:Math.round(4+il*1.5)}:slot==='armor'?{k:'armor',v:Math.round(5+il*3)}:slot==='head'?{k:'life',v:Math.round(8+il*2)}:slot==='gloves'?{k:'aps',v:2}:slot==='boots'?{k:'haste',v:2}:slot==='offhand'?{k:'armor',v:Math.round(3+il*1.5)}:{k:'crit',v:2};}
 const AFF = {
   dmg:   { t:v => `+${v} 物理傷害`,   b:il => 2 + il*.9 },
   inc:   { t:v => `${v}% 增加傷害`,    b:il => 8 + il*1.2 },
@@ -54,29 +56,34 @@ const LEGENDS = {
            { id:'R_LINK', name:'訊號滿格',     aff:['crit','inc','fire','light'], d:'擊殺怪物時，其生命的 50% 變成傷害轉給最近的敵人' },
            { id:'R_DIAL', name:'撥號連線',     aff:['cm','aps','haste','inc'],  d:'每次施放技能有 20% 機率免費再施放一次' } ],
 };
+// Additional equipment types share the same affix and rarity system.
+Object.assign(POOL,{head:['life','armor','regen','haste','inc'],gloves:['aps','crit','cm','inc','life'],boots:['life','armor','regen','haste','leech'],offhand:['armor','life','crit','haste','fire','cold','light']});
+Object.assign(BASES,{head:['網帽','隔音耳罩','金屬護目鏡','訊號頭盔'],gloves:['露指手套','機車手套','導電手套','脈衝護手'],boots:['厚底帆布鞋','街頭短靴','磁浮跑鞋','光軌長靴'],offhand:['迷你音箱','反射護板','訊號接收器','電磁護盾']});
+Object.assign(RARE_NAMES,{head:['夜航頻率','靜電視界','都市殘響','斷訊面罩'],gloves:['低頻握力','凌晨訊號','電弧手勢','超載觸點'],boots:['末班快線','午夜步頻','空白軌跡','高架疾走'],offhand:['倒帶回聲','電波隔離','鏡面訊號','城市屏障']});
+Object.assign(LEGENDS,{head:[{id:'H_BROADBAND',name:'寬頻耳罩',aff:['life','haste','armor','regen'],d:'偏重生命、技能急速與持續回復的頭部裝備。'}],gloves:[{id:'G_CONTACT',name:'超頻觸點',aff:['aps','crit','cm','life'],d:'偏重攻擊速度與暴擊的手部裝備。'}],boots:[{id:'B_LASTTRAIN',name:'末班快線',aff:['life','haste','regen','armor'],d:'偏重技能急速與生存的鞋子。'}],offhand:[{id:'O_REFLECTOR',name:'訊號反射板',aff:['armor','life','haste','light'],d:'偏重護甲與閃電傷害的副手裝備。'}]});
 // User supplied Y2K signature gear: kept out of ordinary rarity/pity/forge pools.
 const SIGNATURE_DROP = {normal:.00001, elite:.0001, boss:.001};
 const SIGNATURE_PENDING = new Set(['ping_clip','milo_md_strap','ping_bag_strap','null_lanyard']);
 const SIGNATURE_GEAR = Object.fromEntries([
- ["aki_headphones", "street", "armor", "修補耳機"],
+ ["aki_headphones", "street", "head", "修補耳機"],
  ["aki_baton", "street", "weapon", "改裝伸縮電棍"],
  ["aki_chain", "street", "ring", "銀色腰鏈"],
  ["aki_charm", "street", "ring", "插頭吊飾"],
- ["milo_headphones", "frost", "armor", "DJ 耳機"],
+ ["milo_headphones", "frost", "head", "DJ 耳機"],
  ["milo_md", "frost", "ring", "MD 隨身聽"],
  ["milo_disc", "frost", "weapon", "音波發射盤"],
  ["milo_belt", "frost", "ring", "條紋腰帶布帶"],
  ["milo_md_strap", "frost", "armor", "MD 機肩帶"],
- ["ping_clip", "beep", "armor", "金屬髮夾"],
+ ["ping_clip", "beep", "head", "金屬髮夾"],
  ["ping_comm", "beep", "ring", "通訊耳機"],
  ["ping_bag", "beep", "armor", "硬殼郵差包"],
  ["ping_launcher", "beep", "weapon", "前臂發射器"],
- ["ping_phone", "beep", "ring", "翻蓋手機"],
+ ["ping_phone", "beep", "offhand", "翻蓋手機"],
  ["ping_bag_strap", "beep", "armor", "郵差包肩帶"],
- ["null_goggles", "volt", "armor", "防護眼鏡"],
+ ["null_goggles", "volt", "head", "防護眼鏡"],
  ["null_controller", "volt", "weapon", "電子寵物控制器"],
  ["null_box", "volt", "ring", "備用電池盒"],
- ["null_pet", "volt", "ring", "浮游寵機"],
+ ["null_pet", "volt", "offhand", "浮游寵機"],
  ["null_lanyard", "volt", "armor", "控制器頸繩"]
 ].map(([model,owner,slot,label])=>{
  const who={street:'AKI',frost:'MILO',beep:'PING',volt:'NULL'}[owner],id='Y2K_'+model.toUpperCase();
@@ -102,6 +109,12 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.43.0',d:'2026-10-24',t:[
+    '角色頁重整為身份、重要讀數、防禦摘要與分類能力表，角色展示可自行展開',
+    '裝備擴充為頭部、身體、手部、飾品、鞋子、武器與副手七類，舊收藏及構築自動轉換；裝扮仍為三類',
+    '背包新增七欄配裝與密集物品網格，點選裝備可並排比較目前穿著及能力差異',
+    '天賦盤可平移、縮放與搜尋；先查看效果及能力預估，再確認分配或退回點數'
+  ]},
   { v:'0.42.0', d:'2026-10-24', t:[
     '三色接線板整合：10×10 配置、拖曳電纜、同色配件加成與一鍵設好，舊構築自動遷移',
     '四角色封面舞台與裝扮共用 3D 預覽，加入選角預覽、旋轉、試穿及清楚的能力摘要',

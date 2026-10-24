@@ -60,7 +60,7 @@ function buyCrate(n){
   let bought=0,best=null;
   for(let i=0;i<n;i++){
     const cost=crateCost();if(G.gold<cost)break;
-    const it=makeItem(tPick(['weapon','armor','ring']),crateRar(),Math.max(1,lvlNow()));
+    const it=makeItem(tPick(Object.keys(SLOTN)),crateRar(),Math.max(1,lvlNow()));
     if(!storeGear(it)){uxAnnounce('倉庫已滿，請先整理再開箱。');break;}
     G.gold-=cost;bought++;if(!best||it.r>best.r)best=it;
   }
@@ -96,7 +96,7 @@ function craftHtml(){
 /* 分離同階校準、指定升階及核心物品等級重構。 */
 const CRAFT_AFFIX_UI={weapon:0,armor:0,ring:0};let GEAR_PENDING=null;
 const tierLevel=tier=>tier===0?25:tier===1?12:tier===2?5:1;
-function affTierState(slot,index){const it=G.equip[slot],a=it?.aff[index],route={weapon:'signal',armor:'memory',ring:'power'}[slot];if(!it||!a)return {ok:false,reason:'先選擇一條詞綴',parts:0,fragments:0,dust:0};
+function affTierState(slot,index){const it=G.equip[slot],a=it?.aff[index],route=GEAR_ROUTE[slot];if(!it||!a)return {ok:false,reason:'先選擇一條詞綴',parts:0,fragments:0,dust:0};
  const from=affTier(a,it.il),to=Math.max(0,from-1),parts=from===0?0:[240,140,80,40][to],fragments=from!==0&&to===0?8:0,dust=from!==0&&it.lg?1:0,level=tierLevel(to);
  let reason=G.run||G.train?'先結束挑戰或訓練':it.cr?'已腐化，不能升階':it.lk===index?'先解除這條詞綴的鎖定':from===0?'已達 T0 上限':it.il<level?`T${to} 需要物品等級 ${level}`:G.parts<parts?`需要 ${parts} 零件`:((G.city?.fragments[route]||0)<fragments)?`需要 ${fragments} 枚${CITY_ROUTES[route].n}碎片`:(G.coreDust||0)<dust?`需要 ${dust} 核心殘晶`:'';
  const next={...a,tier:to,v:Math.max(a.v,affValue(a.k,it.il,to,affQuality(a,it),it.r===3?1.35:1))};
@@ -117,7 +117,7 @@ function gearOperationConfirm(){const p=GEAR_PENDING;GEAR_PENDING=null;hideOverl
  if(!s.ok||G.equip[p.slot]!==p.it||JSON.stringify(p.it)!==p.stamp||gearOperationCost(s)!==p.cost){uxAnnounce('裝備、成本或挑戰狀態已變動，沒有扣除材料。');return;}
  G.parts-=s.parts;if(s.fragments)G.city.fragments[s.route]-=s.fragments;G.coreDust=(G.coreDust||0)-s.dust;
  if(p.kind==='tier')p.it.aff[p.index]=s.next;
- else{const old={...p.it};p.it.aff=p.it.aff.map(a=>({...a,tier:affTier(a,old.il),v:Math.max(a.v,affValue(a.k,s.nextLevel,affTier(a,old.il),affQuality(a,old),1.35))}));p.it.il=s.nextLevel;const value=p.slot==='weapon'?Math.round(4+p.it.il*1.5):p.slot==='armor'?Math.round(5+p.it.il*3):2;p.it.imp={...p.it.imp,v:Math.max(p.it.imp.v,value)};}
+ else{const old={...p.it};p.it.aff=p.it.aff.map(a=>({...a,tier:affTier(a,old.il),v:Math.max(a.v,affValue(a.k,s.nextLevel,affTier(a,old.il),affQuality(a,old),1.35))}));p.it.il=s.nextLevel;const value=gearImplicit(p.slot,s.nextLevel).v;p.it.imp={...p.it.imp,v:Math.max(p.it.imp.v,value)};}
  G.craftN++;G.inventoryRevision++;checkQuest();recalc();renderModal();uxAnnounce(`${p.kind==='tier'?'詞綴升階':'核心重構'}完成，消耗 ${p.cost}。`);
 }
 function uiAffixPick(slot,index){if(!G.equip[slot]?.aff[index])return;CRAFT_AFFIX_UI[slot]=index;renderModal();}

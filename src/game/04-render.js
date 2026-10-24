@@ -145,6 +145,10 @@ const WOV = new URLSearchParams(location.search);   // 測試用：?wt=0..3&wr=0
 function buildSimpleEquipment(slot,tier=0,rarity=0){
  const g=new T3.Group(),col=['#bbc8d2','#8bbcd5','#d5bf80','#c99174'][rarity]||'#bbc8d2',shell=m3(col),dark=m3('#34435a');g.userData.placeholder=slot;
  if(slot==='weapon'){mk(new T3.CylinderGeometry(.45,.45,2,6),dark,0,0,0,g);mk(new T3.BoxGeometry(1.2,5+tier,.8),shell,0,3,0,g);mk(new T3.BoxGeometry(.8,.5,.9),m3('#81cbd1'),0,5,0,g);}
+ else if(slot==='head'){mk(new T3.CylinderGeometry(2.6,2.9,1.2,8),shell,0,0,0,g);mk(new T3.BoxGeometry(3,.3,1.5),dark,0,-.2,2,g);}
+ else if(slot==='gloves'){mk(new T3.BoxGeometry(1.8,2.3,1),shell,0,0,0,g);mk(new T3.CylinderGeometry(.8,.9,.6,6),dark,0,-1.3,0,g);}
+ else if(slot==='boots'){mk(new T3.BoxGeometry(2,2,2),shell,0,.5,0,g);mk(new T3.BoxGeometry(2.2,.6,3.2),dark,0,-.7,.5,g);}
+ else if(slot==='offhand'){mk(new T3.BoxGeometry(3.2,4,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(2,2.7,.2),dark,0,0,.5,g);}
  else if(slot==='armor'){mk(new T3.BoxGeometry(3.2,3.5,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(1.4,.7,1),dark,0,.5,0,g);}
  else{mk(new T3.BoxGeometry(2.4,1.8,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(1.5,.7,.1),dark,0,.2,.45,g);}
  return g;

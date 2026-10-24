@@ -42,7 +42,15 @@ function characterEquipment(g,cos,wt,wr){
  for(const slot of Object.keys(SLOTN)){
   const it=G.equip[slot];if(it&&attachSignatureGear(g,it))continue;
   if(slot==='weapon'){const style={umbrella:0,bat:1,tube:2,saber:3}[cos.weaponStyle]??wt;const w=buildSimpleEquipment(slot,style,wr);grip.add(w);}
-  else if(it){const item=buildSimpleEquipment(slot,Math.min(3,Math.floor(it.il/6)),it.r);item.position.set(slot==='armor'?0:3,slot==='armor'?3:0,3.3);B.torso.add(item);}
+  else if(it){
+   if(slot==='offhand'&&cos.offhandStyle&&cos.offhandStyle!=='0')continue;
+   const add=(bone,x,y,z)=>{const item=buildSimpleEquipment(slot,Math.min(3,Math.floor(it.il/6)),it.r);item.position.set(x,y,z);B[bone].add(item);};
+   if(slot==='head')add('head',0,5,0);
+   else if(slot==='gloves'){add('handL',0,1,0);add('handR',0,1,0);}
+   else if(slot==='boots'){add('footL',0,0,0);add('footR',0,0,0);}
+   else if(slot==='offhand')add('handL',0,1,1);
+   else add('torso',slot==='armor'?0:3,slot==='armor'?3:0,3.3);
+  }
  }
  if(g.userData.id==='null'&&!g.userData.pet){const pet=buildSimpleEquipment('ring',0,0);pet.position.set(8,13,-2);g.add(pet);g.userData.pet=pet;}
  // Existing cosmetic owner expects forearm origins. Socket adapters put the item in the palm.

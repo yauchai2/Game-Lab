@@ -42,7 +42,7 @@ function dressRetry(){
   Object.assign(PV,{rd:null,cv:null,sc:null,cam:null,hero:null,plinth:null,sig:'',failed:false,lastTime:null,drag:null});dressMount();
 }
 function dressMount(){
-  const host=$('pvhost');if(!host)return;
+  const host=$('pvhost');if(!host||host.closest('details')?.open===false)return;
   if(PV.failed){dressPreviewFailure(host);return;}
   try{
     if(!PV.rd){

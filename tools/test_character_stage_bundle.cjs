@@ -11,11 +11,11 @@ let browser;
   else{blocked.push(route.request().url());await route.abort();}
  });
  await p.goto('https://offline-demo.invalid/?fresh&static&modal=settings',{waitUntil:'domcontentloaded',timeout:90000});
- assert.equal(await p.evaluate(()=>VERSION()),'0.42.0');
- await p.evaluate(()=>{ui.suspendRender=()=>true;G.paused=true;hideOverlay();openModal('char')});
+ const expected=fs.readFileSync('src/game/01-data.js','utf8').match(/const CHANGELOG\s*=\s*\[\s*\{\s*v\s*:\s*['"]([^'"]+)/)[1];assert.equal(await p.evaluate(()=>VERSION()),expected);
+ await p.evaluate(()=>{ui.suspendRender=()=>true;G.paused=true;hideOverlay();openModal('char');document.querySelector('.sheet-showcase').open=true;document.querySelector('#pvhost').scrollIntoView({block:'nearest'});dressMount()});
  await p.waitForFunction(()=>document.getElementById('pvhost')?.dataset.preview==='ready',null,{timeout:30000});
- assert.equal(await p.locator('#pvhost canvas').count(),1);assert.equal(await p.locator('.cv-loadout .ui-item-tile').count(),3);
+ assert.equal(await p.locator('#pvhost canvas').count(),1);assert.equal(await p.locator('.cv-loadout .ui-item-tile').count(),7);
  assert.deepEqual(errors,[]);assert.deepEqual(blocked,[]);
- fs.writeFileSync('docs/release-0.42.0/bundle-results.json',JSON.stringify({version:'0.42.0',single_inline_document:true,external_requests:blocked,page_errors:errors,preview_ready:true,method:'HTTP document intercepted; all other network requests rejected; not a native file URL test.'},null,2));
- console.log('PASS standalone bundle: real preview, three equipment tiles, zero external requests or page errors');
+ fs.writeFileSync(process.env.GAME_LAB_BUNDLE_OUTPUT||'docs/arpg-ui-2026-10-24/bundle-results.json',JSON.stringify({version:expected,single_inline_document:true,external_requests:blocked,page_errors:errors,preview_ready:true,method:'HTTP document intercepted; all other network requests rejected; not a native file URL test.'},null,2));
+ console.log('PASS standalone bundle: real preview, seven equipment tiles, zero external requests or page errors');
 })().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{await browser?.close()});

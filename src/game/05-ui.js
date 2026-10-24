@@ -9,11 +9,11 @@ const ICON_IDX=ART_SHEETS.icons.ids,SK_IDX=ART_SHEETS.skills.ids;
 function spr(name,size=30){return uiSprite('icons',name,size);}
 function sico(id,size=30){return uiSprite('skills',id,size);}
 const SHEETS={relic:['relics'],legend:['legends'],badge:['badges']};
-function xico(kind,id,size=24){if(kind==='legend'&&typeof EQUIPMENT_ICONS!=='undefined'&&SIGNATURE_GEAR[id]&&EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model])return `<img src="${EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model]}" width="${size}" height="${size}" alt="" style="vertical-align:middle;margin-right:4px;object-fit:contain;image-rendering:pixelated">`;if(kind==='legend'&&typeof icon3dLegendUrl==='function'){const url=icon3dLegendUrl(id);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
+function xico(kind,id,size=24){if(kind==='legend'&&typeof EQUIPMENT_ICONS!=='undefined'&&SIGNATURE_GEAR[id]&&EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model])return `<img class="spr eq3d" src="${EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model]}" width="${size}" height="${size}" alt="" style="vertical-align:middle;margin-right:4px;object-fit:contain;image-rendering:pixelated">`;if(kind==='legend'&&typeof icon3dLegendUrl==='function'){const url=icon3dLegendUrl(id);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
 function eqico(slot,r,size=32,it){
   if(typeof icon3dUrl==='function'){const url=icon3dUrl(slot,it&&typeof aTier==='function'?aTier(it):0,r|0);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}
   return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
-const SLOT_ICON = { weapon:'sword', armor:'shield', ring:'coin' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
+const SLOT_ICON = { head:'role', armor:'shield', gloves:'craft', ring:'coin', boots:'adventure', weapon:'sword', offhand:'shield' }, SKILL_ICON = { FIRE:'fire', FROST:'ice', CHAIN:'bolt', METEOR:'meteor', PULSE:'headphones', MAGNET:'coin', SPAM:'star', FLICKER:'sword', BEAM:'heart' };
 function slotHtml(slot){
   const it = G.equip[slot];
   if (!it) return `<div class="rc"><div class="rh">${SLOTN[slot]}</div><div class="nm">${spr(SLOT_ICON[slot], 32)}<div class="mute">空</div></div></div>`;
@@ -57,7 +57,7 @@ function openModal(tab){ modalTabPrev = modalTab; modalTab = tab || modalTab; ma
 const MOB = () => document.body.classList.contains('m');   // 手機直式：上面戰鬥畫面，下面固定的分頁面板（彈窗變成面板）
 const DESK = () => document.body.classList.contains('d');   // 桌機寬螢幕：左邊角色與紀錄、中間戰鬥、右邊常駐分頁面板
 function closeModal(){ if(MOB()||DESK()){renderModal(true);return;} $('modal').hidden=true; }
-function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); setTimeout(() => { if (typeof dressMount === 'function' && ['char','dress'].includes(modalTab)) dressMount(); }, 0);
+function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); setTimeout(() => { if (typeof dressMount === 'function' && ['char','dress'].includes(modalTab)) dressMount();if(modalTab==='tree'&&typeof uiTreeMount==='function')uiTreeMount(); }, 0);
   if ($('modal').hidden) return;
   $('mtabs').innerHTML=uiNavHtml(); uiTitle();
   const settings=modalTab==='settings';if(settings)uiSyncSettings(); $('uisettings').hidden=!settings; $('mmenu').hidden=false; $('mbody').hidden=settings;
@@ -86,38 +86,8 @@ function skillsHtml(){
   return wireGuideHtml() + wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + `<details class="ui-section ui-adv"><summary>進階：構築切換、目前生效、戰鬥報告</summary>${buildBar()}${uiResolvedHtml()}${uiCombatHtml()}</details>`;
 }
 function treeHtml(){
-  return charSegHtml() + buildBar() + treeHtml0();
+  return uiTalentWorkspaceHtml();
 }
-/* 天賦盤：畫在 160×160 的小畫布上再用最近鄰放大，保持低解像像素風；互動靠上面一層透明的 SVG 熱區 */
-const TREE_PX = 160, TREE_STAR = ['....#....', '....#....', '...###...', '#########', '.#######.', '..#####..', '..##.##..', '.##...##.', '.#.....#.'];
-function treePixelArt(){
-  if (typeof document === 'undefined') return '';
-  const cv = document.createElement('canvas'); cv.width = cv.height = TREE_PX; const c = cv.getContext('2d'); if (!c) return '';
-  const P = n => [Math.round((n.x + 125)/250*TREE_PX), Math.round((n.y + 125)/250*TREE_PX)];
-  c.fillStyle = '#dfe9ff'; c.fillRect(0, 0, TREE_PX, TREE_PX); c.fillStyle = '#c9d7f5'; for (let y = 4; y < TREE_PX; y += 8) for (let x = 4; x < TREE_PX; x += 8) c.fillRect(x, y, 1, 1);
-  const px = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(x, y, w, h); };
-  const line = (a, b, w, col) => { let [x0, y0] = a; const [x1, y1] = b, dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let err = dx + dy; for (;;){ px(x0 - (w >> 1), y0 - (w >> 1), w, w, col); if (x0 === x1 && y0 === y1) break; const e2 = 2*err; if (e2 >= dy){ err += dy; x0 += sx; } if (e2 <= dx){ err += dx; y0 += sy; } } };
-  const lit = id => id === 'S' || G.pass.includes(id), pairs = [];
-  for (const id in TREE) for (const l of TREE[id].links) if (id < l) pairs.push([id, l]);
-  for (const [i, j] of pairs) if (!(lit(i) && lit(j))) line(P(TREE[i]), P(TREE[j]), 1, '#a9b8de');
-  for (const [i, j] of pairs) if (lit(i) && lit(j)){ const n = TREE[i], m = TREE[j]; line(P(n), P(m), 3, '#2b2552'); line(P(n), P(m), 1, n.col === '#e8e2d4' ? m.col : n.col); }
-  for (const id in TREE){
-    const n = TREE[id], [x, y] = P(n), got = lit(id), open = canAllocateTalent(id), col = got ? n.col : open ? '#ffffff' : '#eef3ff', edge = got ? '#2b2552' : open ? '#2b2552' : '#8d9cc4';
-    if (n.big){ const o = 4; for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) TREE_STAR.forEach((row, r) => [...row].forEach((ch, k) => { if (ch === '#') px(x - o + k + dx, y - o + r + dy, 1, 1, edge); })); TREE_STAR.forEach((row, r) => [...row].forEach((ch, k) => { if (ch === '#') px(x - o + k, y - o + r, 1, 1, got ? col : open ? '#fff7b0' : '#c7d1ee'); })); }
-    else { const h = 3; if (got) px(x - h - 1, y - h - 1, 2*h + 3, 2*h + 3, col + '55'); px(x - h, y - h, 2*h + 1, 2*h + 1, edge); px(x - h + 1, y - h + 1, 2*h - 1, 2*h - 1, col); if (got) px(x - h + 1, y - h + 1, 2, 1, '#ffffff'); }
-  }
-  return cv.toDataURL('image/png');
-}
-function treeHtml0(){
-  const pts = passPoints(); let nodes = '';
-  for (const id in TREE){ const n = TREE[id], got = id === 'S' || G.pass.includes(id), open = canAllocateTalent(id), x = n.x.toFixed(1), y = n.y.toFixed(1), r = n.big ? 8 : 6;
-    nodes += `<g class="tn ${got ? 'got' : open ? 'open' : 'locked'}" data-tree="${id}" role="button" tabindex="${open?0:-1}" aria-disabled="${!open}" aria-label="${uxEsc(talentName(id))}，${got?'已點亮':open?'可點亮':'未連到或點數不足'}" onfocus="treeInfo('${id}')" onmouseover="treeInfo('${id}')" onclick="treeInfo('${id}');allocPass('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();allocPass('${id}')}" style="cursor:${open ? 'pointer' : 'default'}"><title>${talentName(id)}</title><circle cx="${x}" cy="${y}" r="${r + 2}" fill="transparent"/>${open ? `<rect class="tnb" x="${(+x - r).toFixed(1)}" y="${(+y - r).toFixed(1)}" width="${2*r}" height="${2*r}" fill="none" stroke="#2b2552" stroke-width="1.6" shape-rendering="crispEdges"/>` : ''}</g>`; }
-  return `${uiTalentBudget()}<div class="hint">可用天賦點：<b>${pts}</b></div>
-    <div class="treebox"><img class="treecv" alt="" src="${treePixelArt()}"><svg viewBox="-125 -125 250 250" class="tree" role="group" aria-label="天賦盤">${nodes}</svg></div>${treeAvailableHtml()}
-    <div id="tinfo" class="hint"><span style="color:#e2584d">紅：力量</span> <span style="color:#3f86e6">藍：智慧</span> <span style="color:#3bb552">綠：敏捷</span></div>
-    <button class="mb" ${G.run?.city||G.train?'disabled':''} onclick="uiRespec()">洗點（${tFmt(100*G.lvl)}g）</button>`;
-}
-function treeInfo(id){ const n = TREE[id], el = $('tinfo'); if (el) el.textContent = id === 'S' ? '起點' : `${talentName(id)}${nodeOpen(id) ? '' : G.pass.includes(id) ? '（已點亮）' : '（未連到）'}`; }
 function nextStep(){
   if(G.run?.city?.awaitChoice)return {t:'城市路段完成，選擇下一段或帶回碎片',tab:'maps'};
   const q = QUESTS[G.quest || 0];
@@ -225,7 +195,7 @@ const HELP = {
 const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
 const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
 // 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
-const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(modalTab==='skills')return G.autoFold===false?2:3;if(['char','dress','craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
+const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(['skills','tree','warehouse'].includes(modalTab))return G.autoFold===false?2:3;if(['char','dress','craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
 const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
@@ -259,7 +229,7 @@ function offlineBulk(R, f, w){
   const nItems = Math.min(800, hit(HORDE.drop*(1 + q)*(offPen() ? .25 : 1)));
   // Bulk kills use the conservative normal-monster rate; never multiply an observed rare item.
   for(let i=hit(SIGNATURE_DROP.normal);i>0;i--){const gear=tPick(Object.values(SIGNATURE_GEAR));pickup({kind:'item',it:makeItem(gear.slot,3,d,gear.id)});}
-  for (let i = 0; i < nItems; i++) pickup({ kind:'item', it:makeItem(tPick(['weapon','armor','ring']), rarityRoll(false), d) });
+  for (let i = 0; i < nItems; i++) pickup({ kind:'item', it:makeItem(tPick(Object.keys(SLOTN)), rarityRoll(false), d) });
   for (let i = hit(.012); i > 0; i--) pickup({ kind:'cart', id:tPick(Object.keys(MODES)) });
   for (let i = hit(.025); i > 0; i--) pickup({ kind:'gem', id:tPick(Object.keys(SUPPS)) });
   for (let i = Math.min(15, hit(.03)); i > 0; i--) pickup({ kind:'map', map:makeMap(d) });
