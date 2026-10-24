@@ -24,4 +24,6 @@
 
 ## 發佈狀態
 
-來源已準備，待合併與線上雜湊驗證；完成後在本節更新來源、Pages 與 Release 證據。
+PR #39 已合併，#37 與 #38 因來源 ancestry 一併標記合併。來源／標籤 v0.44.0 指向 2d36f4030e3bcb3d4d78b7d10e955d5cdc5032bc；Pages 提交 efe1aced7b23e1da631f52f59e21cb4c6bffc371，狀態 built。Release 工作流程 40056106608 成功；附件 idle-hero.html 的 GitHub SHA-256 digest 與大小符合已測試單檔。線上 version.json、入口及全部雜湊腳本均以 HTTPS 核對，證據見 live-verification.json。所有分支保留，標籤未覆蓋。
+
+部署入口另以已核對 HTTPS 雜湊的同一份分離式產物重播，確認啟動、九個設定入口及技能／打造／設定三頁無頁面錯誤，見 site-browser.json。雲端 Chromium 直接開線上頁遇到連線錯誤，未停用 TLS 驗證；不宣稱直接連外瀏覽器或 Safari 真機測試通過。

@@ -57,3 +57,10 @@ PR #31 已合併；來源／標籤提交 b7f795fb51960bbc2642f80a7e273f153c1dd55
 來源標籤 v0.43.0 固定指向 6db59660c905d54bab2c10fff78c37768b841027，部署提交 864077335c2654cea13bc4d7bcd4b5bd844cb97a。PR #35 及 #34 已合併；所有分支保留。Pages built，線上入口與兩個雜湊腳本的 SHA-256、版本及來源提交均已核對。
 
 [Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.43.0) 由工作流程 40049182421 成功建立並附上 idle-hero.html；GitHub 回傳附件 digest 及大小與已測試單檔相符。完整證據見 [線上核對](release-0.43.0/live-verification.json)。七部位存檔升級後不建議回匯舊三欄版本；真機效能與配裝平衡仍待驗收。
+
+
+## v0.44.0 已發佈（2026-10-24，香港時間）
+
+PR #39 整合 #38 的裝置介面與 #37 的最新角色文案（截至 e0b3468），已合併。來源／標籤為 2d36f4030e3bcb3d4d78b7d10e955d5cdc5032bc；Pages 提交 efe1aced7b23e1da631f52f59e21cb4c6bffc371，狀態 built。線上版本、入口及兩個雜湊腳本已核對；[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.44.0) 工作流程 40056106608 成功，附件 SHA-256 digest 與大小符合已測試單檔。
+
+證據見 [整合紀錄](release-0.44.0/integration.md) 與 [線上核對](release-0.44.0/live-verification.json)。固定流程已加入每次 release 查核 Claude 最新分支與 PR；不代表其他對話已自動讀取規則。
