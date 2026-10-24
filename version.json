@@ -1,10 +1,10 @@
 {
-  "version": "0.42.0",
-  "commit": "b7f795fb51960bbc2642f80a7e273f153c1dd552",
-  "sha256": "0b283b0a3dbceb0d7ea32f458987d8312ce53df3dfe76a031aab04b52a543327",
-  "standalone_sha256": "c1ab4f8330d19768ad51bea7fdeae715ac0747d67b56b8e7872ad115e2b86d20",
+  "version": "0.43.0",
+  "commit": "6db59660c905d54bab2c10fff78c37768b841027",
+  "sha256": "ae6c29a422a0814aa050af977566bcfc8d8966d02c0d9e4bfc6cb6e728ac0d0f",
+  "standalone_sha256": "17764cbe845169254452c06122123fe82a4b69273f0f8cea2a84b143680c6a25",
   "assets": {
     "vendor.170c6789f43217c9.js": "170c6789f43217c96b3170f4b42fafe135de7f7cd48497a4218f9757ee1d49fa",
-    "game.cd8e4112c54eabc6.js": "cd8e4112c54eabc6c71d4ced631bc9730a4375374badee13229be9b2336f378b"
+    "game.3edc9d5337095bbb.js": "3edc9d5337095bbb3f25e6c0afdc82200989490321a5bdf96ceb3f2f7be1cd87"
   }
 }
