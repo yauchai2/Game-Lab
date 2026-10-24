@@ -44,7 +44,7 @@
   };
   Object.assign(SUPPORTS,{"ANCHOR": {"n": "定錨電容", "needs": [], "mod": {"dmg": 0.8, "cd": 0.25}}, "EXECUTE": {"n": "清場指令", "needs": [], "mod": {"dmg": -0.1}}, "BLOOD": {"n": "危險供電", "needs": [], "mod": {"dmg": -0.1}}, "CONDUCT": {"n": "異常協定", "needs": [], "mod": {"dmg": -0.1}}, "LONG": {"n": "遠距天線", "needs": [], "mod": {"dmg": -0.1}}, "SPREAD": {"n": "廣域接頭", "needs": ["spread"], "mod": {"dmg": -0.2, "area": 0.4}}});
   for(const id of ['DISC','COIL','ORBIT','RAIL','RELAY','PULSE','MAGNET','BEAM'])ACTIVES[id].tags.push('spread');
-  Object.assign(SUPPORTS,{RIME:{n:"冷媒回路",needs:["cold"],mod:{dmg:-.1}},KINDLE:{n:"燃點回授",needs:["fire"],mod:{dmg:-.1}}});
+  Object.assign(SUPPORTS,{VENOM:{n:"腐蝕封包",needs:[],mod:{dmg:-.1}},RIME:{n:"冷媒回路",needs:["cold"],mod:{dmg:-.1}},KINDLE:{n:"燃點回授",needs:["fire"],mod:{dmg:-.1}}});
   // 舊版方塊拼圖的形狀，只用來把舊存檔搬到接線板
   const LEGACY = {
     active: { FIRE: [[0, 0]], FROST: [[0, 0], [1, 0]], CHAIN: [[0, 0], [0, 1]], METEOR: [[0, 0], [1, 0], [0, 1]], PULSE: [[0, 0], [1, 0], [1, 1]],

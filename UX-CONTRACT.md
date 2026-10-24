@@ -415,3 +415,22 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - `05n-death.js`唯一死亡窗口擁有者；關閉只收提示，不跳過復活。`05v-combat-experience.js`提供總結及腐化差異內容，改機確認快照仍由05c擁有。
 - `05v`管理天賦縮放手勢與技能庫篩選，沿用05p天賦狀態及05i接線狀態；原地更新縮放，保留pointer capture；雙指結束後短暫抑制節點click，普通單點仍可直接分配。
 - 回饋公開端點唯一設定`feedback-config.js`，不得放Token。純草稿格式由05g擁有，非同步送出由05v擁有，忙碌時禁止重複送出；未知結果沿用requestId重試。服務端固定repo、驗證字數、限流及Durable Object去重；未部署屬未完成，不能把mock結果描述為實際上線驗收。
+
+## 斷訊季、樓梯與聲音契約（2026-10-24）
+
+業務來源：Alan本輪release後追加與Ko-fi方式回覆；STYLE-01至17記於backlog。UI仍沿用05f／05g共享視窗、焦點、提示及捲動狀態，不另建遊戲狀態。
+
+- `02d-season.js`擁有28天本機巡迴資料、清理、換季歸檔、充能及一次性領獎；存檔由02-state序列化。合約共用cityStart／cityStageClear／cityChoose／cityFinish及validCityRun，額外資料必須驗證；失敗／退出不能當完成。午夜中樞需三頻各1格，按確認時再核對本期；不售能力、不以本機時鐘宣稱權威全球賽季。
+- `03-combat.js`仍唯一塔獎勵擁有者。towerNext先標paid，過場排程禁止重入；towerCommitFloor只換層與關主追加規則。讀檔重建導航路徑，保留paid；跳過不推進大量遊戲時間。`04-render`只顯示階梯、沿路位置及抬升，不能派獎。
+- `05w-signal-studio.js`擁有塔／巡迴／贊助／整備設備的呈現，以及天賦hover浮層。設備內容呼叫原有改機、回收、合成及商店函式；不複製付費邏輯。資訊浮層不取代原天賦點選詳情，觸控與鍵盤可達。
+- 返回←是導向上一頁／上一層；×是收起獨立視窗或取消。只有明確父頁回呼的嵌套視窗採返回；確認視窗仍×取消且不扣款。共用showOverlay與uiTitle實作，不以個別頁面替代。
+- `audio.js`唯一音訊生命週期／靜音擁有者。來源先手勢解鎖，音樂切換不另開無限播放器，音效解碼未完成時重查靜音／背景，最多8個同時聲源。樣本由pack_audio.py內嵌，source provenance記原始及衍生hash；打包不能默默改用網上熱連結。
+- `SUPPORT_CONFIG.url`只接受確認的Ko-fi或GitHub Sponsors公開收款頁。Alan已選Ko-fi，但網址未提供；不可從帳號猜測網址，不處理卡資料、不把贊助當已付款／提供戰力。Cloudflare憑證與GitHub代發憑證只用安全設定，電郵不是帳號授權。
+
+## 任務導引、集合與狀態（2026-10-24）
+
+- `05x-guidance-play.js`擁有任務目的地／到達指引、單一IntersectionObserver、狀態邊緣及彩蛋呈現；仍由openModal／renderModal控制導航及捲動。切頁清除過期指引，未解鎖不可繞過tabOpen。
+- `05g-layout`持有背包篩選／48件批次／DPS比較快取，物件仍由inventory及armory擁有。observer重建先斷開舊實例；清理／裝備／屬性變動須使快取失效。紅點源自原unread資料，移除標籤不可刪讀屏物件資訊。
+- `02e-player-status.js`控制玩家異常及敵人毒層，傷害只走heroDamage／hitMon；不得另做死亡或收益。新命中才附加，持續傷害不再觸發附加；凍結不能永久刷新。訓練暫存／還原異常，死亡、復活、讀檔及塔換層清除。
+- `GAME_VIEW.prefs.shake/reducedEffects`獨立保存；audio.js保持唯一播放器。battle-fold／battle-off改暫停狀態，不改mode；未完成解碼重查隱藏狀態，還原不解除原有靜音。
+- 遊戲主介面完全移除直屬header，標誌僅啟動／等待頁；手機預設正交正面0°／0°且DOM投影跟隨同一矩陣。

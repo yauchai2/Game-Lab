@@ -20,21 +20,7 @@ const phEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&
 const phNum = n => (n | 0).toString().padStart(6, '0');
 
 
-/* 角色手機專屬音效：撥接上網、按鍵 DTMF、開關機 */
-const PH_DTMF = [[697, 1209], [697, 1336], [697, 1477], [770, 1209], [770, 1336], [770, 1477], [852, 1209], [852, 1336], [852, 1477], [941, 1336]];
-Object.assign(SFXS, {
-  ph_open: () => {   // 撥接數據機握手 + 立體飛入的呼嘯
-    aNz(1.1, .16, 500, .7); aNz(.9, .1, 3200, 1.2, .1);
-    [0, 1, 2, 3, 4, 5].forEach(i => { const d = PH_DTMF[(i * 3 + 1) % 10]; aTone(d[0], .07, 'sine', .1, 0, i * .09); aTone(d[1], .07, 'sine', .1, 0, i * .09); });
-    aTone(2100, .5, 'sine', .07, .9, .58); aTone(1300, .5, 'square', .035, 1.4, .6); aNz(.5, .09, 1800, 4, .6);
-  },
-  ph_on: () => { [523, 659, 784, 1047, 1319].forEach((f, i) => { aTone(f, .16, 'square', .08, 0, i * .07); aTone(f * 2, .1, 'sine', .035, 0, i * .07); }); aNz(.12, .12, 6000, 2); },
-  ph_key: () => { const d = PH_DTMF[Math.floor(Math.random() * 10)]; aTone(d[0], .06, 'sine', .08); aTone(d[1], .06, 'sine', .08); },
-  ph_tab: () => { aTone(1480, .04, 'square', .06); aTone(740, .05, 'square', .05, 0, .035); },
-  ph_zoom: () => { aTone(300, .22, 'triangle', .1, 3); aNz(.2, .08, 2400, 1.5); },
-  ph_zoomout: () => { aTone(900, .22, 'triangle', .1, .33); aNz(.2, .08, 1200, 1.5); },
-  ph_off: () => { [1047, 784, 523, 392].forEach((f, i) => aTone(f, .14, 'square', .07, 0, i * .07)); aNz(.4, .1, 800, .8, .2); }
-});
+/* Phone cues share the licensed sample palette in audio.js. */
 const phSfx = n => { try { SFX(n); } catch (e) {} };
 function phoneProfile(){ return (typeof CHARACTER_PROFILES !== 'undefined' && CHARACTER_PROFILES[G.char]) || {}; }
 function phoneHead(){
@@ -272,7 +258,7 @@ function phoneUp(){ if (PH.drag) { PH.drag = null; PH.release = performance.now(
 function phoneFlip(ev){ if (ev.target.closest('.ph-screen,.ph-key,.ph-close')) return; PH.face = PH.face ? 0 : 180; PH.flipping = true; PH.drag = null; phSfx('ph_zoom'); }
 function phoneTilt(now){
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
- if(!PH.drag){PH.ry+=(PH.face-45-PH.ry)*.08;PH.rx+=(35.264-PH.rx)*.08;if(Math.abs(PH.face-45-PH.ry)<1)PH.flipping=false;}
+ if(!PH.drag){PH.ry+=(PH.face-PH.ry)*.08;PH.rx+=(0-PH.rx)*.08;if(Math.abs(PH.face-PH.ry)<1)PH.flipping=false;}
  // Orthographic projection, fixed isometric presentation; drag still permits inspection.
  return [PH.rx,PH.ry];
 }
@@ -287,7 +273,7 @@ function phoneLoop(now){
 function phoneOpen(){
   if(!document.getElementById('phone-pixel-style')){const st=document.createElement('style');st.id='phone-pixel-style';st.textContent=PHONE_PIXEL_CSS;document.head.appendChild(st);}
   if (PH.open || typeof PHONE_IMG === 'undefined') return;
-  PH.open = true; PH.closing = false; PH.tab = 0; PH.zoom = false; PH.rx=35.264;PH.ry=-45;PH.tx=PH.ty=0; PH.face = 0; PH.flipping = false; PH.release = 0; PH.t0 = performance.now()-(matchMedia('(prefers-reduced-motion: reduce)').matches?1200:0);
+  PH.open = true; PH.closing = false; PH.tab = 0; PH.zoom = false; PH.rx=0;PH.ry=0;PH.tx=PH.ty=0; PH.face = 0; PH.flipping = false; PH.release = 0; PH.t0 = performance.now()-(matchMedia('(prefers-reduced-motion: reduce)').matches?1200:0);
   const host = document.createElement('div'); host.id = 'ph-host'; PH.gl = null;
   let glOk = false; if (typeof PHONE_GLB !== 'undefined' && typeof T3 !== 'undefined') { try { host.innerHTML = phoneBuildGL(); document.body.appendChild(host); phoneGLInit(host.querySelector('#ph-root')); glOk = true; } catch (e) { PH.gl = null; host.remove(); } }
   if (!glOk) { host.innerHTML = phoneBuild(); document.body.appendChild(host); }
@@ -311,7 +297,7 @@ function phoneClose(instant){
   setTimeout(done, 520);
 }
 /* 角色頁小手機：用同一個 3D 模型以正交等距視角離屏渲染 24 格低解像度轉台圖，拼成精靈圖後由 CSS 逐格播放 */
-const PH_MINI = { url:'', wait:0, W:52, H:76, N:24 };
+const PH_MINI = { url:'', wait:0, W:52, H:76, N:1 };
 function phoneMiniSprite(){
   if (PH_MINI.url) return PH_MINI.url;
   try {
@@ -324,7 +310,7 @@ function phoneMiniSprite(){
     sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.1)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl); const rim = new T3.DirectionalLight(0x8fd0ff, 1.2); rim.position.set(2, .5, -1.5); sc.add(rim);
     mesh.rotation.x = Math.PI / 2; mesh.position.set(-M.c.x, M.c.z, -M.c.y); pivot.add(mesh); sc.add(pivot); cam.position.set(0, 0, 5);
     const sheet = document.createElement('canvas'); sheet.width = W * N; sheet.height = H; const sx = sheet.getContext('2d');
-    for (let i = 0; i < N; i++) { pivot.rotation.set(.5, (i / N) * Math.PI * 2 - .55, 0, 'YXZ'); rd.render(sc, cam); sx.drawImage(cv, i * W, 0); }
+    for (let i = 0; i < N; i++) { pivot.rotation.set(.14, -.24, 0, 'YXZ'); rd.render(sc, cam); sx.drawImage(cv, i * W, 0); }
     rd.dispose(); rd.forceContextLoss && rd.forceContextLoss();
     return PH_MINI.url = sheet.toDataURL('image/png');
   } catch (e) { return ''; }
@@ -377,7 +363,7 @@ function phoneButtonHtml(){
 .ui-character-head{position:relative;min-height:158px}
 .ph-open{position:absolute;right:8px;top:8px;bottom:8px;z-index:2;display:flex;align-items:center;justify-content:center;width:104px;margin:0;padding:0!important;min-height:0!important;background:linear-gradient(#d9dfe9,#bcc5d3)!important;border:1px solid #8793a6!important;box-shadow:inset 0 2px 5px #5d6a7f88,inset 0 -1px 0 #fff!important;border-radius:6px!important;cursor:pointer;overflow:hidden}
 .ph-open:hover{filter:brightness(1.12)}.ph-open:active{transform:translateY(2px)}
-.ph-mini2{display:block;flex:none;width:104px;height:152px;background-repeat:no-repeat;background-size:2496px 152px;image-rendering:pixelated;animation:phMini2 10s steps(24) infinite}@keyframes phMini2{to{background-position:-2496px 0}}
+.ph-mini2{display:block;flex:none;width:104px;height:152px;background-repeat:no-repeat;background-size:104px 152px;image-rendering:pixelated;animation:none}@keyframes phMini2{to{background-position:-2496px 0}}
 .ph-mini{position:relative;flex:none;width:104px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
 .ph-mini-s{position:absolute;left:52px;top:76px;width:0;height:0;transform-style:preserve-3d;transform:scale(.118)}
 .ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;transform:rotateX(4deg) rotateY(-24deg);animation:phMiniSpin 48s linear infinite}

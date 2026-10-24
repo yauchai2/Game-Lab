@@ -3,21 +3,21 @@ const ICON3D = { cache:{}, rd:null, fail:false, S:48 };
 const ICON3D_RAR = [['#e8eef5', '#cfdcf0'], ['#8fd0ff', '#4aa8ff'], ['#ffe08a', '#ffc94a'], ['#ff9a5a', '#ff5a8a']];
 function icon3dJacket(tier, C){
   const g = new T3.Group(), body = ['#7a86b4', '#3f6fb5', '#e9edf6', '#2b2f45'][tier], dark = m3('#243046'), main = m3(body), acc = m3(C[1], { emissive:C[1], emissiveIntensity:.35 });
-  mk(new T3.BoxGeometry(2.4, 2.8, 1.3), main, 0, 0, 0, g);
-  if (tier !== 2) for (const s of [-1, 1]){ const a = mk(new T3.BoxGeometry(.85, 2.5, .95), main, s * 1.6, -.1, 0, g); a.rotation.z = -s * .22; mk(new T3.BoxGeometry(.9, .35, 1), dark, s * 1.78, -1.3, 0, g).rotation.z = -s * .22; }
-  if (tier === 0){ mk(ico(.95, 0), main, 0, 1.55, -.35, g).scale.set(1.2, .8, .9); mk(new T3.BoxGeometry(1.2, .7, .15), dark, 0, -.7, .7, g); }
-  if (tier === 1){ for (const s of [-1, 1]) mk(new T3.BoxGeometry(.7, .5, .5), main, s * .5, 1.5, .25, g).rotation.z = s * .5; mk(new T3.BoxGeometry(2.4, .12, 1.35), dark, 0, -.8, 0, g); }
-  if (tier === 2){ mk(new T3.BoxGeometry(2.5, .3, 1.4), dark, 0, 1.3, 0, g); mk(new T3.BoxGeometry(2.5, .3, 1.4), dark, 0, -1.3, 0, g); }
-  if (tier === 3){ mk(new T3.BoxGeometry(2.6, .5, 1.4), dark, 0, 1.5, 0, g); for (const y of [-.5, .5]) mk(new T3.BoxGeometry(2.45, .2, 1.34), acc, 0, y, 0, g); }
-  mk(new T3.BoxGeometry(.14, 2.7, .1), acc, 0, 0, .69, g);
+  mk(roundedG(2.4, 2.8, 1.3), main, 0, 0, 0, g);
+  if (tier !== 2) for (const s of [-1, 1]){ const a = mk(roundedG(.85, 2.5, .95), main, s * 1.6, -.1, 0, g); a.rotation.z = -s * .22; mk(roundedG(.9, .35, 1), dark, s * 1.78, -1.3, 0, g).rotation.z = -s * .22; }
+  if (tier === 0){ mk(ico(.95, 0), main, 0, 1.55, -.35, g).scale.set(1.2, .8, .9); mk(roundedG(1.2, .7, .15), dark, 0, -.7, .7, g); }
+  if (tier === 1){ for (const s of [-1, 1]) mk(roundedG(.7, .5, .5), main, s * .5, 1.5, .25, g).rotation.z = s * .5; mk(roundedG(2.4, .12, 1.35), dark, 0, -.8, 0, g); }
+  if (tier === 2){ mk(roundedG(2.5, .3, 1.4), dark, 0, 1.3, 0, g); mk(roundedG(2.5, .3, 1.4), dark, 0, -1.3, 0, g); }
+  if (tier === 3){ mk(roundedG(2.6, .5, 1.4), dark, 0, 1.5, 0, g); for (const y of [-.5, .5]) mk(roundedG(2.45, .2, 1.34), acc, 0, y, 0, g); }
+  mk(roundedG(.14, 2.7, .1), acc, 0, 0, .69, g);
   return g;
 }
 function icon3dGadget(tier, C){
   const g = new T3.Group(), dark = m3('#334358'), silver = m3('#bbc8d2'), screen = m3('#85bcb8', { emissive:'#85bcb8', emissiveIntensity:.5 }), acc = m3(C[1], { emissive:C[1], emissiveIntensity:.4 });
-  if (tier === 0){ mk(new T3.BoxGeometry(2.6, 1.9, .8), dark, 0, 0, 0, g); mk(new T3.BoxGeometry(1.7, .7, .1), screen, 0, .25, .43, g); mk(new T3.BoxGeometry(.5, 1.1, .3), silver, 1.45, 0, 0, g); for (const x of [-.7, 0, .7]) mk(new T3.BoxGeometry(.4, .25, .1), acc, x, -.6, .43, g); }
-  if (tier === 1){ mk(new T3.BoxGeometry(1.7, 1.7, .4), dark, 0, -.9, 0, g); const up = new T3.Group(); up.position.set(0, -.05, 0); up.rotation.x = -.45; mk(new T3.BoxGeometry(1.7, 1.6, .35), silver, 0, .8, 0, up); mk(new T3.BoxGeometry(1.2, .9, .1), screen, 0, .8, .2, up); g.add(up); for (const x of [-.5, 0, .5]) for (const y of [-1.2, -.7]) mk(new T3.BoxGeometry(.3, .25, .1), acc, x, y, .22, g); }
-  if (tier === 2){ mk(new T3.BoxGeometry(2.2, 2.2, .6), silver, 0, 0, 0, g); mk(new T3.CylinderGeometry(.8, .8, .12, 10), dark, 0, .2, .35, g).rotation.x = Math.PI / 2; mk(new T3.CylinderGeometry(.3, .3, .14, 8), acc, 0, .2, .38, g).rotation.x = Math.PI / 2; mk(new T3.BoxGeometry(1.4, .4, .1), screen, 0, -.8, .33, g); }
-  if (tier === 3){ mk(ico(1.2, 1), m3('#f4f0ff'), 0, 0, 0, g).scale.set(1, 1.2, .55); mk(new T3.BoxGeometry(1.1, .9, .1), screen, 0, .3, .72, g); for (const x of [-.55, 0, .55]) mk(new T3.CylinderGeometry(.18, .18, .12, 8), acc, x, -.7, .7, g).rotation.x = Math.PI / 2; mk(new T3.TorusGeometry(.3, .08, 4, 8), dark, 0, 1.55, 0, g); }
+  if (tier === 0){ mk(roundedG(2.6, 1.9, .8), dark, 0, 0, 0, g); mk(roundedG(1.7, .7, .1), screen, 0, .25, .43, g); mk(roundedG(.5, 1.1, .3), silver, 1.45, 0, 0, g); for (const x of [-.7, 0, .7]) mk(roundedG(.4, .25, .1), acc, x, -.6, .43, g); }
+  if (tier === 1){ mk(roundedG(1.7, 1.7, .4), dark, 0, -.9, 0, g); const up = new T3.Group(); up.position.set(0, -.05, 0); up.rotation.x = -.45; mk(roundedG(1.7, 1.6, .35), silver, 0, .8, 0, up); mk(roundedG(1.2, .9, .1), screen, 0, .8, .2, up); g.add(up); for (const x of [-.5, 0, .5]) for (const y of [-1.2, -.7]) mk(roundedG(.3, .25, .1), acc, x, y, .22, g); }
+  if (tier === 2){ mk(roundedG(2.2, 2.2, .6), silver, 0, 0, 0, g); mk(new T3.CylinderGeometry(.8, .8, .12, 10), dark, 0, .2, .35, g).rotation.x = Math.PI / 2; mk(new T3.CylinderGeometry(.3, .3, .14, 8), acc, 0, .2, .38, g).rotation.x = Math.PI / 2; mk(roundedG(1.4, .4, .1), screen, 0, -.8, .33, g); }
+  if (tier === 3){ mk(ico(1.2, 1), m3('#f4f0ff'), 0, 0, 0, g).scale.set(1, 1.2, .55); mk(roundedG(1.1, .9, .1), screen, 0, .3, .72, g); for (const x of [-.55, 0, .55]) mk(new T3.CylinderGeometry(.18, .18, .12, 8), acc, x, -.7, .7, g).rotation.x = Math.PI / 2; mk(new T3.TorusGeometry(.3, .08, 4, 8), dark, 0, 1.55, 0, g); }
   return g;
 }
 function icon3dModel(slot, tier, r){
@@ -46,10 +46,8 @@ function icon3dLegendUrl(id){
     if (!ICON3D.rd) { if (!icon3dUrl('weapon', 0, 0)) return ''; }
     const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200), m = icon3dModel(slot, G.armory[id]?aTier(G.armory[id]):idx+1, 3), halo = new T3.Group(), gold = new T3.MeshBasicMaterial({ color:0xffd24d });
     sc.add(m); m.updateMatrixWorld(true); let b = new T3.Box3().setFromObject(m); const c = b.getCenter(new T3.Vector3()), rad0 = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
-    const ring = new T3.Mesh(new T3.TorusGeometry(rad0 * 1.08, rad0 * .035, 4, 20), gold); ring.rotation.x = 1.1; halo.add(ring);
-    const gem = new T3.Mesh(new T3.OctahedronGeometry(rad0 * .2, 0), gold); gem.position.set(rad0 * .95, rad0 * .75, 0); halo.add(gem); sc.add(halo);
     sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
-    cam.position.set(0, 0, rad0 * 1.2 / Math.sin(28 * Math.PI / 360) * .86); cam.lookAt(0, 0, 0);
+    cam.position.set(0, 0, rad0 * 1.02 / Math.sin(28 * Math.PI / 360) * .86); cam.lookAt(0, 0, 0);
     ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[key] = url; return url;
   } catch (e) { return ''; }
 }
@@ -165,7 +163,7 @@ function icon3dPortraitUrl(key){
 
 function detailedEquipmentModel(slot,t,C){
  const g=slot==='armor'?icon3dJacket(t,C):slot==='ring'?icon3dGadget(t,C):new T3.Group(),dark=m3('#2b3b52'),metal=m3('#b9c8d4'),accent=m3(C[1]);
- const box=(w,h,d,m,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m,x,y,z,g);
+ const box=(w,h,d,m,x,y,z)=>mk(roundedG(w,h,d),m,x,y,z,g);
  if(slot==='head'){if(t===0){mk(new T3.CylinderGeometry(1.1,1.15,.5,8),dark,0,.1,0,g);box(1.9,.12,1.3,metal,0,-.18,.55);}else if(t===1){mk(new T3.TorusGeometry(1,.2,4,10),metal,0,0,0,g);for(const x of[-1,1])box(.5,1.1,.65,dark,x,-.5,0);}else if(t===2){mk(new T3.SphereGeometry(1.1,6,4),dark,0,0,0,g).scale.set(1,.65,.8);box(1.5,.35,.1,accent,0,.1,.8);}else{box(2,1.2,1.5,metal,0,0,0);box(1.7,.4,.1,dark,0,0,.8);for(const x of[-.6,.6])box(.2,.2,.1,accent,x,0,.9);}}
  if(slot==='gloves'){for(const x of[-.65,.65]){box(.7,1.2,.55,dark,x,0,0);box(.8,.35,.65,metal,x,.5,0);for(let i=0;i<3;i++)box(.16,.4,.6,metal,x-.2+i*.2,-.7,0);box(.4,.3,.1,accent,x,.1,.35);}}
  if(slot==='boots'){for(const x of[-.7,.7]){box(.9,1.3,.8,dark,x,.2,0);box(1,.55,1.6,metal,x,-.65,.4);box(1.05,.2,1.65,dark,x,-.95,.4);for(const y of[-.3,0,.3])box(.7,.08,.1,accent,x,y,.5);}}

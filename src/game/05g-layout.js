@@ -5,9 +5,9 @@ const UI_NAV = [
   {k:'skills',n:'技能',icon:'battle',pages:['skills']},
   {k:'craft',n:'打造',icon:'craft',pages:['craft']},
   {k:'maps',n:'冒險',icon:'adventure',pages:['maps']},
-  {k:'menu',n:'設定',icon:'more',pages:['menu','goals','ach','dex','rank','log','save','settings','feedback']}
+  {k:'menu',n:'設定',icon:'more',pages:['menu','goals','ach','dex','rank','log','save','settings','feedback','support']}
 ];
-const UI_TITLE = {warehouse:'背包',char:'角色',dress:'裝扮',skills:'技能',craft:'打造',tree:'天賦',maps:'冒險',menu:'設定',goals:'目標',ach:'成就',dex:'圖鑑',rank:'排行榜',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定',feedback:'意見回饋'};
+const UI_TITLE = {warehouse:'背包',char:'角色',dress:'裝扮',skills:'技能',craft:'打造',tree:'天賦',maps:'冒險',menu:'設定',goals:'目標',ach:'成就',dex:'圖鑑',rank:'排行榜',log:'更新日誌',save:'存檔與備份',settings:'遊戲設定',feedback:'意見回饋',support:'贊助'};
 const UI_WORK = {inventory:'support',craftSlot:'weapon',craftAct:'upgrade',adventure:'maps'};
 function uiNavHtml(){
   return UI_NAV.map(g=>{const current=g.pages.includes(modalTab),locked=!tabOpen(g.k),dot=g.k==='warehouse'?(G.unread?.gear?.length||G.unread?.cores?.length):g.k==='skills'?(G.unread?.skills?.length||G.unread?.gems?.length||G.unread?.carts?.length||G.unread?.boards?.length||dotOn('skills')):g.k==='menu' ? dotOn('col')||logNew() : g.k==='char' ? passPoints()>0&&tabOpen('tree') : dotOn(g.k);
@@ -22,11 +22,12 @@ function uiTitle(){
   const hk=MHELP[modalTab],cz=uiBattleSize();document.body.classList.toggle('battle-fold',(MOB()&&cz===3)||(typeof GAME_VIEW!=='undefined'&&!!GAME_VIEW.prefs.hideBattle));
   uiSyncBattleFrame();if(typeof installPlayStyle==='function')installPlayStyle();
   if(typeof lootWorldStyles==='function'){lootWorldStyles();lootBattleRestore();}
-  el.innerHTML=`<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="切換戰場大小，目前${CZN[cz]}" onclick="cycleCz()">${CZN[cz]}</button>`:''}${back?`<button class="window-close" aria-label="關閉${UI_TITLE[modalTab]}，返回${backName}" title="返回${backName}" onclick="${rankBack?'rankOpen(null)':`openModal('${root.k}')`}">×</button>`:''}`;
+  if(typeof audSyncBattle==='function')audSyncBattle(document.body.classList.contains('battle-fold')||!!GAME_VIEW.prefs.hideBattle);
+  el.innerHTML=`<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="切換戰場大小，目前${CZN[cz]}" onclick="cycleCz()">${CZN[cz]}</button>`:''}${back?`<button class="window-back" aria-label="返回${backName}" title="返回${backName}" onclick="${rankBack?'rankOpen(null)':`openModal('${root.k}')`}">←</button>`:''}`;
 }
 function uiSegments(key,items,label){return `<div class="ui-segments" role="group" aria-label="${label}">${items.map(([id,name,tip])=>`<button aria-pressed="${UI_WORK[key]===id}"${tip?` data-tip="${uxEsc(tip)}"`:''} data-focus="${key}-${id}" onclick="uiWork('${key}','${id}')">${name}</button>`).join('')}</div>`;}
 function uiWork(key,id){
-  const allowed={inventory:['active','support','cart'],craftSlot:Object.keys(SLOTN),craftAct:Object.keys(CRAFT),adventure:['maps','city','tower','training']};
+  const allowed={inventory:['active','support','cart'],craftSlot:Object.keys(SLOTN),craftAct:Object.keys(CRAFT),adventure:['maps','city','tower','training','season']};
   if(!allowed[key]?.includes(id))return;UI_WORK[key]=id;renderModal();
 }
 function uiMenuHtml(){return deviceMenuHtml();}
@@ -64,9 +65,10 @@ function uiMapThumb(m){const u3=typeof icon3dMapUrl==='function'?icon3dMapUrl(m)
   return svg;
 }
 function uiMapCard(m){const B=BIOMES[m.biome],c=mapChallenge(m.mods);return `<button type="button" class="ui-mapcard" data-focus="map-${uxEsc(m.id)}" aria-label="${uxEsc(B.n)}，等級 ${m.lvl}，挑戰詞綴 ${c}，查看詳情" style="--b1:${B.board.l};--b2:${B.board.m};--b3:${B.board.d};--t1:${B.t1};--t2:${B.t2}" onclick="uiInspectMap('${encodeURIComponent(m.id).replace(/'/g,'%27')}')">${uiMapThumb(m)}<b>${uxEsc(B.n)}${playNewBadge('maps',m.id)}</b><span class="lv">Lv. ${m.lvl}</span><span class="ch">挑戰詞綴 ${c}</span></button>`;}
-function uiItemTile({focus,icon,name,meta='',state='',action,rarity=0,tip=''}){return `<button type="button" class="ui-item-tile"${tip?` data-tip="${uxEsc(tip)}"`:''} data-rarity="${rarity}" style="--item-rarity:${RAR[rarity]?.c||'var(--ux-edge)'}" data-focus="${uxEsc(focus)}" aria-label="${uxEsc(name)}，${RAR[rarity]?RAR[rarity].n+'，':''}${uxEsc(meta)}${state?'，'+uxEsc(state):''}，查看詳情" onclick="${action}"><span class="ui-item-state">${uxEsc(state)}</span>${icon}<b>${uxEsc(name)}</b><small>${uxEsc(meta)}</small></button>`;}
+function rarityBadge(r){const i=Math.max(0,Math.min(3,r|0));return `<span class="rarity-tag rarity-${i}" data-rarity="${i}"><i aria-hidden="true">${['▪','◇','◆','✦'][i]}</i>${['普通','魔法','稀有','傳奇'][i]}</span>`;}
+function uiItemTile({focus,icon,name,meta='',state='',action,rarity=0,tip='',fresh=false}){return `<button type="button" class="ui-item-tile"${tip?` data-tip="${uxEsc(tip)}"`:''} data-rarity="${rarity}" style="--item-rarity:${RAR[rarity]?.c||'var(--ux-edge)'}" data-focus="${uxEsc(focus)}" aria-label="${uxEsc(name)}，${fresh?'新獲得，':''}${RAR[rarity]?RAR[rarity].n+'，':''}${uxEsc(meta)}${state?'，'+uxEsc(state):''}，查看詳情" onclick="${action}"><span class="ui-item-state">${uxEsc(state)}</span>${icon}${fresh?'<i class="item-new-dot" role="img" aria-label="新獲得"></i>':''}${rarityBadge(rarity)}<b>${uxEsc(name)}</b><small>${uxEsc(meta)}</small></button>`;}
 function uiGearState(it){return G.equip[it.slot]===it?'穿著':it.kept?'鎖定':gearReferenced(it)?'構築':G.equipBackup[it.slot]===it?'上一件':it.cr?'腐化':it.lk!=null?'詞綴鎖':'';}
-function uiGearTile(it,core=false){return uiItemTile({focus:core?'core-'+it.lg:'gear-'+it.uid,icon:core?xico('legend',it.lg,28):eqico(it.slot,it.r,52,it),name:it.name,meta:`Lv. ${it.il} · ${it.aff.length?'T'+Math.min(...it.aff.map(a=>affTier(a,it.il))):RAR[it.r].n}`,state:(noticeHas(core?'cores':'gear',core?it.lg:it.uid)?'NEW · ':'')+(uiGearState(it)||RAR[it.r].n),action:core?`uiInspectCore('${it.lg}')`:`uiInspectGear(${it.uid})`,rarity:it.r,tip:[it.name+'（'+SLOTN[it.slot]+' · '+RAR[it.r].n+'）',...itemLines(it).map(l=>l.t)].join('\n')});}
+function uiGearTile(it,core=false){return uiItemTile({focus:core?'core-'+it.lg:'gear-'+it.uid,icon:core?xico('legend',it.lg,28):eqico(it.slot,it.r,52,it),name:it.name,meta:`Lv. ${it.il} · ${it.aff.length?'T'+Math.min(...it.aff.map(a=>affTier(a,it.il))):RAR[it.r].n}`,fresh:noticeHas(core?'cores':'gear',core?it.lg:it.uid),state:uiGearState(it)||'',action:core?`uiInspectCore('${it.lg}')`:`uiInspectGear(${it.uid})`,rarity:it.r,tip:[it.name+'（'+SLOTN[it.slot]+' · '+RAR[it.r].n+'）',...itemLines(it).map(l=>l.t)].join('\n')});}
 function uiEquippedTile(slot){const it=G.equip[slot];return it?uiItemTile({focus:'equipped-'+slot,icon:it.lg?xico('legend',it.lg,28):eqico(slot,it.r,52,it),name:it.name,meta:`${SLOTN[slot]} · Lv. ${it.il}`,state:'穿著',action:`uiInspectEquipped('${slot}')`,rarity:it.r}):`<button class="ui-item-tile ui-item-empty" data-focus="equipped-${slot}" aria-label="${SLOTN[slot]}空欄位，前往背包選擇裝備" onclick="openModal('warehouse')">${eqico(slot,0,52)}<b>${SLOTN[slot]}</b><small>空欄位 · 選擇裝備</small></button>`;}
 function uiInspectEquipped(slot){const it=G.equip[slot];if(!it)return;if(it.lg)return uiInspectCore(it.lg);if(G.inventory.includes(it))return uiInspectGear(it.uid);showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[slot]} · ${RAR[it.r].n} · 物品等級 ${it.il} · 穿著中</p><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><button class="mb" data-initial-focus onclick="hideOverlay()">返回角色</button>`);}
 function uiGearComparison(it){const next=calc({...G.equip,[it.slot]:it}),current=G.st;return `<dl class="ui-stat-list"><div><dt>預估傷害</dt><dd>${tFmt(current.dps)} → ${tFmt(next.dps)}</dd></div><div><dt>最大生命</dt><dd>${tFmt(current.life)} → ${tFmt(next.life)}</dd></div><div><dt>會心率</dt><dd>${current.crit.toFixed(1)}% → ${next.crit.toFixed(1)}%</dd></div></dl>`;}
@@ -273,9 +275,10 @@ body.ui-material #uisettings .ui-setting-grid>button{width:100%;min-height:60px;
 function uiAdventureHtml(){
   if(G.run?.city?.awaitChoice)UI_WORK.adventure='city';
   const R=G.run,mode=UI_WORK.adventure;
-  const nav=uiSegments('adventure',[['maps','地圖','消耗地圖卡進入挑戰，打贏有額外獎勵'],['city','城市遠征','三段路線加關主，取得傳奇核心碎片'],['tower','無限之塔','一路往上爬，死亡就結束，記錄最高層'],['training','訓練場','對假人測試 DPS，不影響進度']],'冒險分類');
+  const nav=uiSegments('adventure',[['maps','地圖','消耗地圖卡進入挑戰，打贏有額外獎勵'],['city','城市遠征','三段路線加關主，取得傳奇核心碎片'],['season','斷訊季','巡迴委託與終局'],['tower','無限之塔','一路往上爬，死亡就結束，記錄最高層'],['training','訓練場','對假人測試 DPS，不影響進度']],'冒險分類');
   const current=R?.city?uiCityRunHtml():R?`<section class="ui-section"><div class="ui-map-state"><b>${R.tower?'無限之塔 第 '+R.floor+' 層':BIOMES[R.map.biome].n}</b><span>進行中</span></div><div class="ui-progress" role="progressbar" aria-label="地圖討伐進度" aria-valuemin="0" aria-valuemax="${R.need}" aria-valuenow="${Math.min(R.kills,R.need)}"><i style="width:${Math.min(100,R.kills/R.need*100)}%"></i></div><p id="ui-run-count" class="uxmeta">討伐 ${Math.min(R.kills,R.need)}／${R.need}</p>${runMods(R)}<button class="mb" onclick="uiLeaveMap()">離開目前挑戰</button></section>`:`<section class="ui-section"><div class="ui-map-state"><b>一般冒險</b><span>深度 ${G.depth}</span></div><p id="ui-normal-count" class="uxmeta">討伐 ${Math.min(G.kills,G.need)}／${G.need}${G.push?'':'，原地刷怪'}</p></section>`;
-  if(mode==='tower')return current+nav+`<section class="ui-section"><h3>無限之塔</h3><div class="ui-towerbox">${(u=>u?`<img class="ui-scene tall" alt="" aria-hidden="true" src="${u}" style="image-rendering:pixelated">`:'')(icon3dSceneUrl('tower',Math.ceil((G.towerBest||0)/2)+3))}<div><div class="ui-towernum"><b>${G.towerBest||0}</b> 層</div><div class="uxmeta">最高紀錄</div>${G.maxDepth<8?'<p class="uxmeta">深度 8 解鎖</p>':''}</div></div><button class="mb pri" ${R||G.maxDepth<8?'disabled':''} onclick="towerStart()">挑戰無限之塔</button>${R?'<p class="uxmeta">請先完成或離開目前挑戰。</p>':''}</section>`;
+  if(mode==='season')return (R?current:'')+nav+seasonHtml();
+  if(mode==='tower')return nav+towerConsoleHtml();
   if(mode==='city')return (R?current:'')+nav+(R?.city?'<details class="ui-section"><summary>查看城市目標與下次出發設定</summary>'+uiCityHtml()+'</details>':uiCityHtml());
   if(mode==='training'){
     const L=G.trainLast,mx=L?.rows.length?L.rows[0][1]:1;
@@ -300,10 +303,11 @@ function uiLiveSignature(){
   if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.ascension,G.ascensionNodes,G.bossKills,G.maxDepth,G.st,G.cos,G.cards,G.picks,G.relicPicks]);
   if(modalTab==='dress'){const e=cosGet(dSel.cat,dSel.id);return JSON.stringify([G.lvl,G.equip,G.char,G.cos,G.own,e?G.gold>=e[3]:true]);}
   if(modalTab==='craft')return JSON.stringify([G.parts,G.equip,G.coreDust,G.city?.fragments,G.city?.maxTier,G.maxDepth,!!G.run,!!G.train]);
-  if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,G.run?.city,G.city,G.towerBest,!!G.train,G.trainLast,G.maxDepth]);
+  if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,G.run?.city,G.city,G.towerBest,G.season,!!G.run?.stair,!!G.train,G.trainLast,G.maxDepth]);
   return modalTab;
 }
 function uiRefreshLive(){
+  if(typeof guidanceViewSettings==='function'){guidanceViewSettings();ailmentView();secretView();}
   if(typeof careerTalentRefresh==='function')careerTalentRefresh();
   if(modalTab==='settings')uiSyncSettings();
   const gold=$('cv-gold');if(gold)gold.textContent=tFmt(G.gold);
@@ -336,9 +340,11 @@ function uiConfirmRespec(){
 }
 
 /* 倉庫與電路合成沿用同一外殼、確認及焦點系統。 */
-const WAREHOUSE_UI={slot:'all',kind:'gear',page:0,sel:null,sort:'new'};const WAREHOUSE_PAGE_SIZE=36;
-function uiWarehouseFilter(key,value){if(key==='slot'&&!['all',...Object.keys(SLOTN)].includes(value)||key==='kind'&&!['gear','core'].includes(value)||key==='sort'&&!['new','dps'].includes(value)||!['slot','kind','sort'].includes(key))return;WAREHOUSE_UI[key]=value;WAREHOUSE_UI.page=0;renderModal();}
-function uiSortByDps(list,mode){if(mode!=='dps')return list;const dps=new Map();for(const it of list)dps.set(it,calc({...G.equip,[it.slot]:it}).dps);return list.slice().sort((a,b)=>dps.get(b)-dps.get(a));}
+const WAREHOUSE_UI={limit:48,slot:'all',kind:'all',page:0,sel:null,sort:'new'};const WAREHOUSE_PAGE_SIZE=36;
+function uiWarehouseFilter(key,value){if(key==='slot'&&!['all',...Object.keys(SLOTN)].includes(value)||key==='kind'&&!['all','gear','core'].includes(value)||key==='sort'&&!['new','dps'].includes(value)||!['slot','kind','sort'].includes(key))return;WAREHOUSE_UI[key]=value;WAREHOUSE_UI.page=0;WAREHOUSE_UI.limit=48;renderModal();}
+const WAREHOUSE_DPS_CACHE={stamp:'',values:new Map()};
+function uiSortByDps(list,mode){if(mode!=='dps')return list;const stamp=JSON.stringify([G.inventoryRevision,G.char,G.lvl,G.maxDepth,G.equip,G.pass,G.board,G.suppW,G.cards,G.relics,G.ach,G.ascension,G.ascensionNodes,G.run?.city?.branches]);if(stamp!==WAREHOUSE_DPS_CACHE.stamp){WAREHOUSE_DPS_CACHE.stamp=stamp;WAREHOUSE_DPS_CACHE.values.clear();}const values=WAREHOUSE_DPS_CACHE.values;for(const it of list)if(!values.has(it))values.set(it,calc({...G.equip,[it.slot]:it}).dps);return list.slice().sort((a,b)=>values.get(b)-values.get(a));}
+
 function warehouseHtml(){return uiWarehouseSheetHtml();}
 function uiInspectGear(uid){
  const it=G.inventory.find(x=>x.uid===uid);if(!it)return;noticeRead('gear',uid);

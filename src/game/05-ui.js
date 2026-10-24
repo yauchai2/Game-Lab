@@ -53,15 +53,16 @@ const invN = () => Object.values(G.gems).reduce((a, b) => a + b, 0) + Object.val
 const dotOn = k => k === 'skills' ? invN() > (G.seenInv || 0) : k === 'craft' ? (G.parts || 0) >= 6 && G.parts > (G.seenParts || 0) : k === 'col' ? Object.keys(G.goals).length > (G.seenGoals || 0) : false;
 function markSeen(t){ if (t === 'skills'){ if (!G.newSnap || modalTabPrev !== 'skills') G.newSnap = { g:{ ...(G.seenG || G.gems) }, c:{ ...(G.seenC || G.carts) } }; G.seenG = { ...G.gems }; G.seenC = { ...G.carts }; G.seenInv = invN(); } else if (t === 'craft') G.seenParts = G.parts || 0; else if (['goals', 'ach', 'dex'].includes(t)) G.seenGoals = Object.keys(G.goals).length; }
 let modalTabPrev = '';
-function openModal(tab){ if(typeof WIRE_MOVE!=='undefined'&&tab&&tab!=='skills'){WIRE_MOVE=null;if(drag)wireUp({type:'pointercancel'});}modalTabPrev = modalTab; modalTab = tab || modalTab; markSeen(modalTab); resetArm = false; $('modal').hidden = false; renderModal(true); }
+function openModal(tab){if(typeof TASK_GUIDE!=='undefined'&&TASK_GUIDE&&TASK_GUIDE.page!==tab)TASK_GUIDE=null; if(typeof WIRE_MOVE!=='undefined'&&tab&&tab!=='skills'){WIRE_MOVE=null;if(drag)wireUp({type:'pointercancel'});}modalTabPrev = modalTab; modalTab = tab || modalTab; markSeen(modalTab); resetArm = false; $('modal').hidden = false; renderModal(true); }
 const MOB = () => document.body.classList.contains('m');   // 手機直式：上面戰鬥畫面，下面固定的分頁面板（彈窗變成面板）
 const DESK = () => document.body.classList.contains('d');   // 桌機寬螢幕：左邊角色與紀錄、中間戰鬥、右邊常駐分頁面板
 function closeModal(){ if(MOB()||DESK()){renderModal(true);return;} $('modal').hidden=true; }
-function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); setTimeout(() => { if (typeof dressMount === 'function' && ['char','dress'].includes(modalTab)) dressMount();if(modalTab==='tree'&&typeof uiTreeMount==='function')uiTreeMount(); }, 0);
+function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); setTimeout(() => { if (typeof dressMount === 'function' && ['char','dress'].includes(modalTab)) dressMount();if(modalTab==='tree'&&typeof uiTreeMount==='function')uiTreeMount();if(typeof uiWarehouseMount==='function')uiWarehouseMount(); }, 0);
   if ($('modal').hidden) return;
   $('mtabs').innerHTML=uiNavHtml(); uiTitle();
   const settings=modalTab==='settings';if(settings)uiSyncSettings(); $('uisettings').hidden=!settings; $('mmenu').hidden=false; $('mbody').hidden=settings;
-  if(!settings) $('mbody').innerHTML = modalTab === 'warehouse' ? warehouseHtml() : modalTab === 'char' ? uiCharacterHtml() : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? dressHtml() : modalTab === 'rank' ? rankHtml() : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : modalTab === 'feedback' ? feedbackHtml() : modalTab === 'save' ? saveHtml() : uiMenuHtml();
+  if(!settings) $('mbody').innerHTML = modalTab === 'warehouse' ? warehouseHtml() : modalTab === 'char' ? uiCharacterHtml() : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? dressHtml() : modalTab === 'rank' ? rankHtml() : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : modalTab === 'feedback' ? feedbackHtml() : modalTab === 'support' ? supportHtml() : modalTab === 'save' ? saveHtml() : uiMenuHtml();
+  if(!settings&&typeof taskGuideHtml==='function'){const inventory=TASK_GUIDE?.key==='modes'?document.getElementById('uxinventory'):null;if(inventory)inventory.insertAdjacentHTML('beforebegin',taskGuideHtml());else $('mbody').insertAdjacentHTML('afterbegin',taskGuideHtml());}
   uxRestorePanel(uxPanel,resetScroll);if(resetScroll)uxAnimatePanel();
   UI_LIVE_SIGNATURE=uiLiveSignature();uiCityRevealCheckpoint();
 }
@@ -99,12 +100,12 @@ function questHtml(){
   const q = QUESTS[G.quest || 0];
   if (!q) return '';
   const v = Math.min(q.goal, GOAL_STAT[q.k]());
-  return `<div class="mct">新手任務　${G.quest || 0}/${QUESTS.length}</div><div class="gls"><div class="gl"><b>${obj3d('goals',30)}${q.n}</b><span class="mute">${q.t}　獎勵：${goalRewardText(q.rw)}${q.un ? '　（完成後開放：' + (q.un === 'craft' ? '改機' : '天賦盤') + '）' : ''}</span><i style="--p:${Math.round(v/q.goal*100)}%"></i><em>${v} / ${q.goal}</em></div></div>`;
+  return `<div class="mct">新手任務　${G.quest || 0}/${QUESTS.length}</div><div class="gls"><div class="gl"><b>${obj3d('goals',30)}${q.n}</b><span class="mute">${q.t}　獎勵：${goalRewardText(q.rw)}${q.un ? '　（完成後開放：' + (q.un === 'craft' ? '改機' : '天賦盤') + '）' : ''}</span><i style="--p:${Math.round(v/q.goal*100)}%"></i><em>${v} / ${q.goal}</em>${taskButton(q)}</div></div>`;
 }
 function goalsHtml(){
   const done = GOALS.filter(a => G.goals[a.id]).length;
   return questHtml() + `<div class="mct">目標　${done}/${GOALS.length}${qm('goals')}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
-    return `<div class="gl${ok ? ' ok' : ''}"><b>${obj3d(ok?'ach':'goals',30)}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em></div>`; }).join('') + '</div>';
+    return `<div class="gl${ok ? ' ok' : ''}"><b>${obj3d(ok?'ach':'goals',30)}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em>${taskButton(a)}</div>`; }).join('') + '</div>';
 }
 function mapsHtml(){ return uiAdventureHtml(); }
 
@@ -217,7 +218,7 @@ function showOverlay(html,options={}){
  const o=$('ovl');o.innerHTML=`<div class="mbox small">${html}</div>`;OVERLAY_CLOSE=options.close||hideOverlay;
  const box=o.firstElementChild;if(options.surface)box.classList.add(options.surface);const heading=box.querySelector('h2,.mct'),label=options.title||heading?.textContent||box.querySelector('b')?.textContent||'遊戲提示';
  const bar=document.createElement('div');bar.className='window-titlebar';const title=document.createElement('span');title.className='window-title';title.setAttribute('role','heading');title.setAttribute('aria-level','2');title.textContent=label;bar.append(title);
- if(heading)heading.remove();const close=document.createElement('button');close.type='button';close.className='mb window-close';close.setAttribute('aria-label',options.closeLabel||'關閉視窗');close.title=options.closeLabel||'關閉視窗';close.textContent='×';close.addEventListener('click',windowCloseOverlay);bar.append(close);box.prepend(bar);
+ if(heading)heading.remove();const close=document.createElement('button'),back=!!options.close&&/返回/.test(options.closeLabel||'');close.type='button';close.className='mb '+(back?'window-back':'window-close');const closeLabel=back?options.closeLabel.slice(options.closeLabel.indexOf('返回')):options.closeLabel||'關閉視窗';close.setAttribute('aria-label',closeLabel);close.title=closeLabel;close.textContent=back?'←':'×';close.addEventListener('click',windowCloseOverlay);bar.append(close);box.prepend(bar);
  for(const button of [...box.querySelectorAll('button')])if(button.getAttribute('onclick')==='hideOverlay()'&&/^(返回|知道了|關閉)/.test(button.textContent.trim())){if(button.hasAttribute('data-initial-focus'))close.setAttribute('data-initial-focus','');button.remove();}
  const cancel=box.querySelector('[data-initial-focus]:not(:disabled)');if(!options.close&&cancel&&/^(取消|保留|繼續)/.test(cancel.textContent.trim()))OVERLAY_CLOSE=()=>cancel.click();
  uxOpenDialog(o,label,windowCloseOverlay);

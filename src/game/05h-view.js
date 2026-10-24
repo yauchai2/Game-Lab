@@ -1,6 +1,6 @@
 /* 戰場讀數、像素圖集及全視窗觀戰。只保存本機呈現偏好，不改遊戲存檔。 */
 const VIEW_KEY='idle-hero-view-v1', VIEW_ATLASES=Object.fromEntries(Object.entries(ART_SHEETS).map(([key,s])=>[key,[s.cols,s.rows]]));
-const GAME_VIEW={prefs:{idle:60,pixels:true,glitch:true,uiFx:2,quality:'auto',hideBattle:false},atlases:{},ready:Promise.resolve(),watch:false,last:performance.now(),pointers:new Set(),swallow:new Set(),clickUntil:0,trigger:null,inert:new Map(),scroll:[],tab:null,initialized:false,pulseAt:-1000,pulseTimer:0};
+const GAME_VIEW={prefs:{idle:60,pixels:true,glitch:true,uiFx:2,quality:'auto',hideBattle:false,shake:true,reducedEffects:false},atlases:{},ready:Promise.resolve(),watch:false,last:performance.now(),pointers:new Set(),swallow:new Set(),clickUntil:0,trigger:null,inert:new Map(),scroll:[],tab:null,initialized:false,pulseAt:-1000,pulseTimer:0};
 const UI_FX_NAMES=['關閉','輕微','標準','強烈'];
 const UI_FX_CSS=`
 .view-fx-sample{display:flex;align-items:center;gap:14px;position:relative;min-height:68px;padding:10px;border:2px solid var(--ux-edge);background:#d0dcec;color:#172751;overflow:hidden}.view-fx-sample i{width:72px;height:18px;background:linear-gradient(90deg,#5086ae 75%,#172751 75%);border:2px solid #172751}.view-fx-sample b{font-weight:400;font-size:16px}.view-fx-sample::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#13264d66 0 var(--ui-lines,1px),transparent var(--ui-lines,1px) var(--ui-step,4px));opacity:var(--ui-grain,0)}body[data-ui-fx="2"] .view-fx-sample::after{background-image:repeating-linear-gradient(0deg,#13264d66 0 1px,transparent 1px 4px),repeating-linear-gradient(90deg,#13264d22 0 1px,transparent 1px 4px)}body[data-ui-fx="3"] .view-fx-sample i{clip-path:polygon(0 0,90% 0,90% 20%,100% 20%,100% 80%,90% 80%,90% 100%,0 100%)}
@@ -40,7 +40,7 @@ function viewApplyPrefs(){
   const motion=GAME_VIEW.prefs.uiFx>0&&GAME_VIEW.prefs.glitch&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.body.classList.toggle('signal-fx',motion);
   document.body.classList.toggle('ui-pixelfx',GAME_VIEW.prefs.uiFx>0);document.body.dataset.uiFx=GAME_VIEW.prefs.uiFx;
-  if(!GAME_VIEW.prefs.glitch||matchMedia('(prefers-reduced-motion: reduce)').matches){FXO.shake=0;FXO.flash=0;FXO.punch=0;FXO.stop=0;}
+  if(!GAME_VIEW.prefs.glitch||GAME_VIEW.prefs.reducedEffects||matchMedia('(prefers-reduced-motion: reduce)').matches){FXO.shake=0;FXO.flash=0;FXO.punch=0;FXO.stop=0;}
   if(!motion){clearTimeout(GAME_VIEW.pulseTimer);document.body.classList.remove('ui-fx-pulse');}
   const range=$('ui-fx-level'),name=$('ui-fx-name');if(range){range.value=GAME_VIEW.prefs.uiFx;range.setAttribute('aria-valuetext',UI_FX_NAMES[GAME_VIEW.prefs.uiFx]);}if(name)name.textContent=UI_FX_NAMES[GAME_VIEW.prefs.uiFx];
   document.querySelectorAll('[data-view-quality]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.viewQuality===GAME_VIEW.prefs.quality)));
@@ -52,7 +52,7 @@ function viewApplyPrefs(){
   }
   document.querySelectorAll('[data-view-idle]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.viewIdle===GAME_VIEW.prefs.idle)));
   document.querySelectorAll('[data-view-setting]').forEach(b=>{const on=GAME_VIEW.prefs[b.dataset.viewSetting];b.setAttribute('aria-pressed',String(on));b.textContent=b.dataset.viewSetting==='pixels'?(on?'像素圖示':'原始圖示'):b.dataset.viewSetting==='hideBattle'?(on?'戰鬥畫面：隱藏':'戰鬥畫面：顯示'):(on?'動態衝擊：開':'動態衝擊：關');});
-  document.body.classList.toggle('battle-off',!!GAME_VIEW.prefs.hideBattle);if(typeof uiTitle==='function'&&GAME_VIEW.initialized)uiTitle();
+  document.body.classList.toggle('battle-off',!!GAME_VIEW.prefs.hideBattle);document.body.classList.toggle('reduced-effects',!!GAME_VIEW.prefs.reducedEffects);if(typeof audSyncBattle==='function')audSyncBattle(GAME_VIEW.prefs.hideBattle||document.body.classList.contains('battle-fold'));if(GAME_VIEW.prefs.shake===false){FXO.shake=0;FXO.punch=0;}if(typeof uiTitle==='function'&&GAME_VIEW.initialized)uiTitle();if(typeof guidanceViewSettings==='function')guidanceViewSettings();
 }
 function viewPreparePixels(){
   // 原圖保持不變。以每格 24 邏輯像素取樣，所有尺寸共用同一份圖集。
@@ -120,7 +120,7 @@ function viewRestorePrefs(prefs){
  if([0,30,60,120].includes(prefs.idle))GAME_VIEW.prefs.idle=prefs.idle;
  GAME_VIEW.prefs.hideBattle=prefs.hideBattle===true;
  if([0,1,2,3].includes(prefs.uiFx))GAME_VIEW.prefs.uiFx=prefs.uiFx;
- for(const k of ['pixels','glitch'])if(typeof prefs[k]==='boolean')GAME_VIEW.prefs[k]=prefs[k];
+ for(const k of ['pixels','glitch','shake','reducedEffects'])if(typeof prefs[k]==='boolean')GAME_VIEW.prefs[k]=prefs[k];
 }
 function viewInit(){
   try{viewRestorePrefs(JSON.parse(localStorage.getItem(VIEW_KEY)));}catch(_){}
