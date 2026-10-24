@@ -145,6 +145,10 @@ const WOV = new URLSearchParams(location.search);   // 測試用：?wt=0..3&wr=0
 function buildSimpleEquipment(slot,tier=0,rarity=0){
  const g=new T3.Group(),col=['#bbc8d2','#8bbcd5','#d5bf80','#c99174'][rarity]||'#bbc8d2',shell=m3(col),dark=m3('#34435a');g.userData.placeholder=slot;
  if(slot==='weapon'){mk(new T3.CylinderGeometry(.45,.45,2,6),dark,0,0,0,g);mk(new T3.BoxGeometry(1.2,5+tier,.8),shell,0,3,0,g);mk(new T3.BoxGeometry(.8,.5,.9),m3('#81cbd1'),0,5,0,g);}
+ else if(slot==='head'){mk(new T3.CylinderGeometry(2.6,2.9,1.2,8),shell,0,0,0,g);mk(new T3.BoxGeometry(3,.3,1.5),dark,0,-.2,2,g);}
+ else if(slot==='gloves'){mk(new T3.BoxGeometry(1.8,2.3,1),shell,0,0,0,g);mk(new T3.CylinderGeometry(.8,.9,.6,6),dark,0,-1.3,0,g);}
+ else if(slot==='boots'){mk(new T3.BoxGeometry(2,2,2),shell,0,.5,0,g);mk(new T3.BoxGeometry(2.2,.6,3.2),dark,0,-.7,.5,g);}
+ else if(slot==='offhand'){mk(new T3.BoxGeometry(3.2,4,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(2,2.7,.2),dark,0,0,.5,g);}
  else if(slot==='armor'){mk(new T3.BoxGeometry(3.2,3.5,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(1.4,.7,1),dark,0,.5,0,g);}
  else{mk(new T3.BoxGeometry(2.4,1.8,.8),shell,0,0,0,g);mk(new T3.BoxGeometry(1.5,.7,.1),dark,0,.2,.45,g);}
  return g;
@@ -616,7 +620,7 @@ function overlay(){
 /* ---------- scene：每一幀同步遊戲狀態到 three 場景，再畫出來 ---------- */
 function disposeWorldObject(root){
   if(!root)return;const sharedGeometry=new Set(Object.values(G_)),sharedMaterial=new Set(Object.values(R3.cache)),done=new Set();
-  root.traverse(o=>{if(!o.isMesh)return;if(!sharedGeometry.has(o.geometry)&&!done.has(o.geometry)){done.add(o.geometry);o.geometry.dispose();}for(const m of Array.isArray(o.material)?o.material:[o.material])if(!sharedMaterial.has(m)&&!done.has(m)){done.add(m);if(m.map&&!sharedMaterial.has(m.map))m.map.dispose();m.dispose();}});
+  root.traverse(o=>{if(!o.isMesh)return;if(!o.geometry.userData?.equipmentShared&&!sharedGeometry.has(o.geometry)&&!done.has(o.geometry)){done.add(o.geometry);o.geometry.dispose();}for(const m of Array.isArray(o.material)?o.material:[o.material])if(!m.userData?.equipmentShared&&!sharedMaterial.has(m)&&!done.has(m)){done.add(m);if(m.map&&!sharedMaterial.has(m.map))m.map.dispose();m.dispose();}});
 }
 function scene(){
   if (window.BOSSON) return '';
@@ -653,7 +657,7 @@ function scene(){
     else z += .3 + Math.sin(d.t*6)*.25;
     at3(g, x, y, z+terrainHeight(x,y)); u.item.rotation.y = d.t*2.4; u.disc.visible = true; if (u.beam) u.beam.visible = true;
   }
-  for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); R3.ent.delete(k); }
+  for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); disposeWorldObject(e); R3.ent.delete(k); }
   updateFx();
   if(typeof worldTravelRender==='function')worldTravelRender();
   updateSceneryOcclusion(R3.scenery,R3.cam,R3.hero,R3.frameDt||0);

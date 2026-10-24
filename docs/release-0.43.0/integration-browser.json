@@ -1,0 +1,16 @@
+{
+  "version": "0.43.0",
+  "disposal": {
+    "shared": 0,
+    "privateGeometry": 1,
+    "privateMaterial": 1,
+    "privateTexture": 1
+  },
+  "hiddenBattle": {
+    "continues": true,
+    "hidden": true,
+    "saved": true
+  },
+  "restored": true,
+  "errors": []
+}

@@ -291,3 +291,19 @@
 
 
 Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與物件接觸點，`animateEquipment` 在既有動作混合器之後套用有限手腕偏移，不能影響命中與掉落。`characterEquipmentGeometry` 依實際佩戴選取原幾何或快取遮罩變體，不修改共用原網格。左手手機與左手純外觀裝扮互斥呈現，保留原裝扮設定。整套參考只存在獨立預覽，不寫進度；九動作／四視角與時間拖桿共用同一套場景及掛點。
+
+
+## 七部位、能力表與天賦研究（2026-10-24，候選）
+
+| 能力 | canonical owner | 契約 |
+| --- | --- | --- |
+| 能力部位 | SLOTN／POOL／gearImplicit | 七類能力裝備，所有掉落、離線、打造與構築共用；COS_CATS 獨立維持三類外觀 |
+| 舊裝備轉換 | migrateEquipmentSlots／applySave | equipmentVersion:2，保留舊 armor／ring 鍵、原詞條及 UID；專裝按新分類移位，收藏與構築引用同步；重載不重抽 |
+| 角色資訊 | uiCharacterSheetHtml／G.st | 生命、攻擊、防禦與元素增傷只顯示真實資料，不杜撰魔力／精神／抗性；直傷保留預估標籤 |
+| 配裝與比較 | uiEquipmentRigHtml／uiGearCompareSheet | 七個欄位；庫存點選用共用 dialog，比較與換裝沿用 calc／equipStored／equipCore；異角專裝不顯示不能實現的換裝預估 |
+| 天賦盤 | uiTalentWorkspaceHtml／TREE | TALENT_VIEW 只保存探索狀態；先選再確認，canAllocateTalent／allocPass／refundTalent 仍為交易 owner，不另寫規則 |
+| 搜尋 | uiTreeSearch／uiTalentListHtml | 本機即時搜尋、IME 完成再套用、有清除與空結果；為暫時研究狀態，不寫遊戲存檔或 URL |
+
+選節點／平移／縮放不改金幣、點數、裝備或存檔。城市／訓練鎖定與連接、韌體上限規則維持。方向鍵可研究節點，原生捲動、平移按鈕與清單提供非拖曳替代。角色展示預設收合，不初始化隱藏的 WebGL renderer；裝扮沿用 PV。資料讀數不使用高頻 live-region；只在選節點更新詳情。
+
+驗證入口：tools/test_equipment_slots.cjs、tools/test_character_workspace_browser.cjs、tools/test_character_stage_bundle.cjs。新候選未合併／未發佈；Claude PR #34 的隱藏戰場／效能工作保留獨立，不改其偏好 owner。

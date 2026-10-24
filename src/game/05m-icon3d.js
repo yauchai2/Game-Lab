@@ -23,7 +23,7 @@ function icon3dGadget(tier, C){
 function icon3dModel(slot, tier, r){
   const C = ICON3D_RAR[Math.max(0, Math.min(r | 0, 3))], t = Math.max(0, Math.min(tier | 0, 3));
   if (slot === 'weapon'){ const g = new T3.Group(); buildWeapon(g, t, r | 0); const b = new T3.Box3().setFromObject(g), s = b.getSize(new T3.Vector3()), ax = s.x >= s.y && s.x >= s.z ? new T3.Vector3(1, 0, 0) : s.z >= s.y ? new T3.Vector3(0, 0, 1) : new T3.Vector3(0, 1, 0); const w = new T3.Group(); w.add(g); w.quaternion.setFromUnitVectors(ax, new T3.Vector3(.72, .72, 0)); return w; }
-  const g = slot === 'armor' ? icon3dJacket(t, C) : icon3dGadget(t, C), w = new T3.Group(); w.add(g); w.rotation.set(.22, -.5, 0); return w;
+  const g = ['head','gloves','boots','offhand'].includes(slot)?buildSimpleEquipment(slot,t,r):slot === 'armor' ? icon3dJacket(t, C) : icon3dGadget(t, C), w = new T3.Group(); w.add(g); w.rotation.set(.22, -.5, 0); return w;
 }
 function icon3dUrl(slot, tier, r){
   const key = slot + tier + '_' + r; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof T3.WebGLRenderer !== 'function') return '';

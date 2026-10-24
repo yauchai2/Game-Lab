@@ -1,0 +1,20 @@
+[
+  {
+    "command": "node tools/test_equipment_slots.cjs",
+    "exit_code": 0,
+    "stdout": "PASS all seven types at four rarities: generation, pickup, equip, stats, save and build restoration\nPASS old three-slot saves: preserved rolls, collection/backup/build migration, no source mutation, idempotent reload\n",
+    "stderr": ""
+  },
+  {
+    "command": "node tools/test_equipment_depth.js",
+    "exit_code": 0,
+    "stdout": "PASS two loadouts restore exact owned objects, character, strategy, board and talents\nPASS build references block manual and overflow recycling but unreferenced gear remains recyclable\nPASS missing gear blocks the whole switch, explicit fallback changes no ownership\nPASS old saved builds retain their current gear until explicitly saved with equipment\nPASS roundtrip keeps refs canonical; ordinary upgrades do not mutate protected snapshots\nPASS missing referenced UIDs are never reused by later drops, including at the wrap boundary\nPASS ambiguous imported duplicate UIDs cannot silently bind a loadout to the wrong item\nPASS calibration preserves kinds and tiers, locks and item identity across repeated rolls\nPASS tier upgrade is deterministic, pays once, preserves key and never lowers legacy outliers\nPASS T0 needs item level and regional materials; changing funds after preview charges nothing\nPASS changed target, corruption, locked affix and live challenge all prevent payment\nPASS duplicate cores yield one dust and cannot replace a core referenced by a build\nPASS core reconstruction preserves effect, tiers and all values, capped by actual progress\nPASS core reconstruction rejects protected or changed targets and never auto consumes materials offline\nPASS old saves do not inherit dust or equipment refs from another loaded save\nPASS forget inactive gear releases only its own references, keeps all items and board\nPASS legendary T0 pays regional material and dust exactly once; dust roundtrips\nPASS deliberately empty slots clear equipment on restoration\n18 equipment depth checks passed\n",
+    "stderr": ""
+  },
+  {
+    "command": "node tools/test_ux_revision.cjs",
+    "exit_code": 0,
+    "stdout": "PASS three cosmetic categories only, legacy choices cannot spend funds, purchases are idempotent and legacy holdings persist\nPASS cosmetics never change combat stats\nPASS compact type tokens, semantic hierarchy, quality preference validation and decorative non-interactive travel layer\nPASS explicit quality preferences survive real storage write/read and invalid values fall back to auto\n",
+    "stderr": ""
+  }
+]
