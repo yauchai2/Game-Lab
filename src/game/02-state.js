@@ -367,7 +367,7 @@ function buyCircuitMode(id){
 
 /* 有限路徑、可還原遷移、城市遠征與定向收藏。 */
 const copyState=x=>JSON.parse(JSON.stringify(x));
-function talentBudget(){return Math.min(TALENT_LIMIT,Math.max(0,G.lvl-1)+Math.max(0,Math.floor((G.maxDepth-1)/4)));}
+function talentBudget(){return Math.min(TALENT_LIMIT,Math.max(0,Math.floor((G.lvl-1)/2))+Math.max(0,Math.floor((G.maxDepth-1)/5)));}
 const firmwareCount=pass=>pass.filter(id=>FIRMWARE[id]).length;
 const talentOverLimit=pass=>pass.length>talentBudget()||firmwareCount(pass)>FIRMWARE_LIMIT;
 function passiveLegacy(){return !!G.legacyMode||talentOverLimit(G.pass);}
@@ -376,8 +376,8 @@ function talentName(id){return !passiveLegacy()&&FIRMWARE[id]?FIRMWARE[id].n+'�
 function connectedTalents(pass){const reached=new Set(['S']);let changed=true;while(changed){changed=false;for(const id of pass)if(TREE[id]&&!reached.has(id)&&TREE[id].links.some(k=>reached.has(k))){reached.add(id);changed=true;}}return pass.every(id=>reached.has(id));}
 function talentPlan(pass=G.pass){const left=[...new Set(pass.filter(id=>TREE[id]&&id!=='S'))],out=[];let changed=true;
  while(changed){changed=false;for(const id of left){if(out.includes(id)||out.length>=talentBudget()||FIRMWARE[id]&&firmwareCount(out)>=FIRMWARE_LIMIT)continue;if(TREE[id].links.some(k=>k==='S'||out.includes(k))){out.push(id);changed=true;}}}return out;}
-function convertTalents(){if(G.run||G.train)return false;if(!G.legacyTalent)G.legacyTalent=copyState({pass:G.pass,builds:G.builds,bi:G.bi||0,board:G.board,castPolicy:G.castPolicy});G.pass=talentPlan();G.legacyMode=false;recalc();return true;}
-function restoreLegacyTalents(){if(!G.legacyTalent||G.run||G.train)return false;const old=copyState(G.legacyTalent),board=old.board?.pieces?GridLab.adopt(old.board,G.lvl):G.board;if(!G.circuits.includes(board.template))return false;G.pass=old.pass;G.builds=old.builds;G.bi=old.bi;G.board=board;G.castPolicy=old.castPolicy==='combo'?'combo':'balanced';G.legacyMode=true;recalc();return true;}
+function convertTalents(){if(G.run||G.train)return false;if(!G.legacyTalent)G.legacyTalent=copyState({pass:G.pass,builds:G.builds,bi:G.bi||0,board:G.board,castPolicy:G.castPolicy,legacyMode:G.legacyMode});G.pass=talentPlan();G.legacyMode=false;recalc();return true;}
+function restoreLegacyTalents(){if(!G.legacyTalent||G.run||G.train)return false;const old=copyState(G.legacyTalent),board=old.board?.pieces?GridLab.adopt(old.board,G.lvl):G.board;if(!G.circuits.includes(board.template))return false;G.pass=old.pass;G.builds=old.builds;G.bi=old.bi;G.board=board;G.castPolicy=old.castPolicy==='combo'?'combo':'balanced';G.legacyMode=old.legacyMode!==false;recalc();return true;}
 function refundTalent(id){if(!G.pass.includes(id)||G.run||G.train)return false;const next=G.pass.filter(k=>k!==id);if(!connectedTalents(next))return false;G.pass=next;recalc();return true;}
 function newCity(){return {maxTier:1,fragments:{signal:0,memory:0,power:0},seals:{},clears:{},nexusWins:0,target:'W_ECHO',policy:'safe',last:null};}
 function loadProgression(o){
@@ -389,7 +389,7 @@ function loadProgression(o){
   if(LEGEND_BY[o.city.target])G.city.target=o.city.target;G.city.policy=o.city.policy==='risk'?'risk':'safe';
   if(o.city.last&&typeof o.city.last.text==='string')G.city.last={text:o.city.last.text.slice(0,300)};
  }
- G.legacyMode=o.progressionVersion===1?(o.legacyMode===true||talentOverLimit(G.pass)):G.pass.length>0;
+ G.legacyMode=o.progressionVersion===1?(o.legacyMode===true||firmwareCount(G.pass)>FIRMWARE_LIMIT):G.pass.length>0;
  G.legacyTalent=o.legacyTalent&&Array.isArray(o.legacyTalent.pass)?copyState(o.legacyTalent):null;
  if(o.progressionVersion!==1){G.builds=G.builds.map(b=>b?{...b,legacyMode:true}:b);if(G.pass.length||G.builds.some(Boolean))G.legacyTalent=copyState({pass:G.pass,builds:G.builds,bi:G.bi||0,board:G.board,castPolicy:G.castPolicy});}
  if(G.legacyTalent){G.legacyTalent.pass=G.legacyTalent.pass.filter(id=>TREE[id]&&id!=='S');if(!Array.isArray(G.legacyTalent.builds))G.legacyTalent.builds=[null,null,null];G.legacyTalent.builds=G.legacyTalent.builds.slice(0,3);G.legacyTalent.bi=[0,1,2].includes(G.legacyTalent.bi)?G.legacyTalent.bi:0;}
@@ -462,7 +462,7 @@ function restoreBuild(index,keepMissing=false){if(![0,1,2].includes(index)||inde
  const target=G.builds[index],targetBoard=target?GridLab.adopt(copyState(target.board),G.lvl):null;if(target?.character&&target.character!==G.char)return {ok:false,reason:'構築屬於其他職業，不能轉職'};if(targetBoard&&!G.circuits?.includes(targetBoard.template))return {ok:false,reason:'尚未持有此電路板'};const resolved=inspectBuildGear(target);if(resolved.missing.length&&!keepMissing)return {ok:false,missing:resolved.missing,reason:'部分裝備已不存在'};
  const current=captureBuild();if(!current)return {ok:false,reason:'倉庫已滿，先整理空間再保存目前裝備'};
  G.builds[G.bi||0]=current;G.bi=index;
- if(target){G.board=targetBoard;G.pass=target.pass.slice();G.castPolicy=target.castPolicy==='combo'?'combo':'balanced';G.legacyMode=target.legacyMode===true||talentOverLimit(G.pass);}
+ if(target){G.board=targetBoard;G.pass=target.pass.slice();G.castPolicy=target.castPolicy==='combo'?'combo':'balanced';G.legacyMode=target.legacyMode===true||firmwareCount(G.pass)>FIRMWARE_LIMIT;}
  else{G.board=GridLab.createBoard(G.board.template);G.pass=[];G.castPolicy='balanced';G.legacyMode=false;}
  if(target?.equipment){for(const slot of Object.keys(SLOTN)){const old=G.equip[slot];G.equip[slot]=resolved.equip[slot];if(old!==G.equip[slot])G.equipBackup[slot]=old;}G.autoEquip=false;}
  const use={},cu={};G.board.pieces=G.board.pieces.filter(p=>p.kind!=='support'||(use[p.key+(p.t||1)]=(use[p.key+(p.t||1)]||0)+1)<=gemOwnT(p.key,p.t||1));

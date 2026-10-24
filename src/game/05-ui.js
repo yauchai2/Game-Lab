@@ -174,7 +174,7 @@ function pickCard(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeCa
 function charHtml(){const c=CHARS[G.char];return `<section class="rc char-card"><h3>${uxEsc(G.heroName||'未命名')}</h3><p>${c.n} · ${ascendInfo()?.n||'尚未昇華'}</p><p>${c.role}</p><button class="mb" onclick="careerProfiles()">角色列表</button></section>${characterStoryHtml()}`;}
 function achHtml(){
   const n = achCount(), tot = Object.keys(ACHS).filter(id=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).length;
-  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).filter(([id])=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${obj3d('medal:'+['#8fd0ff','#ffd24d','#ff9ad0','#5dffa3','#ff9a5a','#c9a8ff'][(id.length+id.charCodeAt(0))%6],36)||xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
+  return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).filter(([id])=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${obj3d('medal:'+['#8fd0ff','#ffd24d','#ff9ad0','#5dffa3','#ff9a5a','#c9a8ff'][(id.length+id.charCodeAt(0))%6],36)||xico('badge', id, 26)}<b>${a.n}</b><span>${a.d}</span><small>${G.ach[id]?'已達成':'未達成'}</small></li>`).join('')}</ul></div>`;
 }
 function cardsHtml(){
   const e = Object.entries(G.cards);if(!GAME_FEATURES.cardChoices)return e.length?`<section class="ui-section"><h3>既有改裝效果</h3><ul>${e.map(([id,n])=>`<li>${uxEsc(CARDS[id].n)} ×${n} · ${uxEsc(CARDS[id].d)}</li>`).join('')}</ul></section>`:''; const pend = (G.picks > 0 ? `<button class="mb" onclick="openCards()">有 ${G.picks} 次改裝待選</button> ` : '') + (G.relicPicks > 0 ? `<button class="mb" onclick="openRelics()">有 ${G.relicPicks} 次遺物待選</button> ` : '') + `<button class="mb" onclick="toggleAuto()">自動隨機：${G.autoCard ? '開' : '關'}</button>`;
@@ -249,13 +249,13 @@ function catchUp(sec, report){
   G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };
   let left = simSec; const total = simSec;
-  if (report) showOverlay(`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
+  if (report) showOverlay(typeof returnLoadingHtml==='function'?returnLoadingHtml():`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
     const t0 = performance.now();
     while (left > 0 && performance.now() - t0 < 30){
       update(.2); left -= .2;
     }
-    if (left > 0){ if (report && $('oprog')) $('oprog').textContent = Math.round((1 - left/total)*100) + '%'; offYield(chunk); return; }
+    if (left > 0){ if (report && $('oprog')) {$('oprog').textContent = Math.round((1 - left/total)*100) + '%';const bar=$('oprogbar');if(bar)bar.value=Math.round((1-left/total)*100);} offYield(chunk); return; }
     for (const d of G.drops) if (!d.done){ d.done = true; pickup(d); } G.drops = []; G.proj = []; G.timers = []; G.mons = []; G.spawnCd = .5; G.h.swingT = -1; G.h.castT = -1; G.h.dead = 0;
     if (sec > simSec){
       const w = { gold:G.gold - w0.gold, kills:G.totalKills - w0.kills, chips:G.chips - w0.chips, deaths:G.deaths - w0.deaths, boss:(G.bossKills || 0) - w0.boss, xp:G.off.xp };

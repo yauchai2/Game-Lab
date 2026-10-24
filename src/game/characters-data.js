@@ -1,10 +1,10 @@
 /* Stable legacy save keys deliberately retained: street→AKI, frost→MILO,
    beep→PING, volt→NULL. Story is opt-in; no arrival dialog is added. */
 const CHARACTER_PROFILES={
- street:{model:'aki',n:'脈衝衛士',title:'近戰與護盾',quote:'接地，再突破。',identity:'職業｜街區電力維護',role:'近戰、連鎖電擊、護盾續戰',passive:'普通攻擊連續命中可累積短暫護盾，上限生命5%。',eff:{inc:10},sig:{n:'短路連打',cd:7,d:'每7秒重擊近處目標，再向最多3個鄰近敵人跳電。'},story:['擅長把城市廢棄的電力裝置改成武器，以護盾承受壓力，再用連鎖電流打開缺口。','三條昇華在接地防護、多人跳電與超載攻勢之間取捨。所有技能與電路配件仍可自由配搭。']},
- frost:{model:'milo',n:'頻譜遊俠',title:'音波與節拍',quote:'讓節拍穿過靜默。',identity:'職業｜聲場調律',role:'中距離、環形音波、連擊加速',passive:'持續普攻可累積5層節拍，最多加快音波節奏20%；中斷3秒重置。',eff:{apsInc:8},sig:{n:'低頻環流',cd:7,d:'每7秒向半徑42內釋放音波，持續命中可縮短間隔。'},story:['透過舊播放器與共振裝置塑造戰場，用節奏和頻率改變攻勢。','回聲、靜域及疾拍各有不同的施放節奏，並非限定只能使用冰霜或音波技能。']},
- beep:{model:'ping',n:'訊號獵手',title:'投射與鎖定',quote:'確認訊號，鎖定目標。',identity:'職業｜訊號追蹤',role:'遠程投射、標記追蹤、會心',passive:'普攻討伐目標後，下一輪職業連射傷害提高25%。',eff:{crit:6,apsInc:6},sig:{n:'訊號連射',cd:6,d:'每6秒向最多6個目標發出2.8倍訊號彈，依會心率判定。'},story:['以城市通訊裝置追蹤敵人，在單體精度、多人分流與快速走位之間建立攻勢。','選擇定頻狙擊會犧牲清場，分流則降低每發傷害；技能盤仍不鎖武器或元素。']},
- volt:{model:'null',n:'寵機技師',title:'寵機與修復',quote:'啟動，保持連線。',identity:'職業｜電子寵機改裝',role:'召喚、持續輸出、修復增益',passive:'寵機每8次有效攻擊可修復1.5%生命，受共用回復額度限制。',eff:{inc:8},sig:{n:'寵機出動',cd:8,d:'寵機持續自動索敵，每8秒增幅4秒，期間寵機傷害提高50%。'},story:['透過可移動的電子寵機提供持續火力，在雙核連擊、維修與熔核濺射中選擇改裝方向。','寵機是職業能力，其他技能仍需手動組裝並接通電路才能生效。']}
+ street:{model:'aki',n:'戰士',title:'近戰與護盾',quote:'接地，再突破。',identity:'職業｜街區電力維護',role:'近戰、連鎖電擊、護盾續戰',passive:'普通攻擊連續命中可累積短暫護盾，上限生命5%。',eff:{inc:10},sig:{n:'短路連打',cd:7,d:'每7秒重擊近處目標，再向最多3個鄰近敵人跳電。'},story:['擅長把城市廢棄的電力裝置改成武器，以護盾承受壓力，再用連鎖電流打開缺口。','三條昇華在接地防護、多人跳電與超載攻勢之間取捨。所有技能與電路配件仍可自由配搭。']},
+ frost:{model:'milo',n:'樂師',title:'音波與節拍',quote:'讓節拍穿過靜默。',identity:'職業｜聲場調律',role:'中距離、環形音波、連擊加速',passive:'持續普攻可累積5層節拍，最多加快音波節奏20%；中斷3秒重置。',eff:{apsInc:8},sig:{n:'低頻環流',cd:7,d:'每7秒向半徑42內釋放音波，持續命中可縮短間隔。'},story:['透過舊播放器與共振裝置塑造戰場，用節奏和頻率改變攻勢。','回聲、靜域及疾拍各有不同的施放節奏，並非限定只能使用冰霜或音波技能。']},
+ beep:{model:'ping',n:'獵手',title:'投射與鎖定',quote:'確認訊號，鎖定目標。',identity:'職業｜訊號追蹤',role:'遠程投射、標記追蹤、會心',passive:'普攻討伐目標後，下一輪職業連射傷害提高25%。',eff:{crit:6,apsInc:6},sig:{n:'訊號連射',cd:6,d:'每6秒向最多6個目標發出2.8倍訊號彈，依會心率判定。'},story:['以城市通訊裝置追蹤敵人，在單體精度、多人分流與快速走位之間建立攻勢。','選擇定頻狙擊會犧牲清場，分流則降低每發傷害；技能盤仍不鎖武器或元素。']},
+ volt:{model:'null',n:'寵機師',title:'寵機與修復',quote:'啟動，保持連線。',identity:'職業｜電子寵機改裝',role:'召喚、持續輸出、修復增益',passive:'寵機每8次有效攻擊可修復1.5%生命，受共用回復額度限制。',eff:{inc:8},sig:{n:'寵機出動',cd:8,d:'寵機持續自動索敵，每8秒增幅4秒，期間寵機傷害提高50%。'},story:['透過可移動的電子寵機提供持續火力，在雙核連擊、維修與熔核濺射中選擇改裝方向。','寵機是職業能力，其他技能仍需手動組裝並接通電路才能生效。']}
 };
 for(const[key,p]of Object.entries(CHARACTER_PROFILES))Object.assign(CHARS[key],p,{d:p.title+'。'+p.role});
 ACHS.boss10.d='討伐關主30次，留下資深討伐紀錄。';
@@ -40,4 +40,4 @@ function y2kSignature(al,s,echo=false){
   const boost=r.receipt?1.25+(t.receiptBoost||0):1;r.receipt=false;for(const m of al.slice().sort((a,b)=>Math.hypot(a.x-h.x,a.y-h.y)-Math.hypot(b.x-h.x,b.y-h.y)).slice(0,(G.ascension==='snipe'?2:G.ascension==='split'?8:6)+(t.shotCap||0))){const shot=rollDmg(s.hit*((G.ascension==='snipe'?4.3:G.ascension==='split'?2.4:2.8)+(t.shotMul||0))*boost*sigMul*(m.hp<m.hpMax*.3?1+(t.execute||0):1));hitMon(m,shot.dmg,shot.crit);if(!G.offline)addFx({k:'bolt',pts:[origin,[m.x,m.y,BZ+8]],t:0,dur:.2});}
  }else if(G.char==='volt'){r.boostUntil=G.time+4;addFx({k:'ring',x:h.x+7,y:h.y-2,col:'#9bcbb6',t:0,dur:.45});}
 }
-function characterStoryHtml(){const p=CHARACTER_PROFILES[G.char];return `<section><h3>${p.n}</h3>${p.story.map(t=>`<p>${uxEsc(t)}</p>`).join('')}</section>`;}
+function characterStoryHtml(){const p=CHARACTER_PROFILES[G.char],url=typeof icon3dPortraitUrl==='function'?icon3dPortraitUrl(G.char):'';return `<section class="class-dossier"><div class="class-dossier-head">${url?`<img src="${url}" alt="">`:''}<div><h3>${p.n}</h3><p>${p.role}</p></div></div><ol>${p.story.map(t=>`<li><p>${uxEsc(t)}</p></li>`).join('')}</ol></section>`;}

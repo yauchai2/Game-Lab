@@ -91,6 +91,9 @@ function uiInitLayout(){
   addEventListener('resize',()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>uiApplyLayout());});
 }
 const UI_LAYOUT_CSS=`
+body.m.battle-fold>canvas,body.m.battle-fold>.world-travel{display:none!important}
+body.m .stage{min-width:0;max-width:100%;overflow:hidden}body.m #fig{max-width:100%;overflow:hidden}
+
 /* Character cover: scoped business variant; the global blue-violet shell stays unchanged. */
 .character-view{--cv-ink:#241d59;--cv-blue:#4141bb;--cv-signal:#8bdeff;--cv-accent:#e4ff74;--cv-paper:#f4f5ff;container-type:inline-size}
 .character-view[data-character="frost"]{--cv-signal:#bdb3ff;--cv-accent:#9bffe1}

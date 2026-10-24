@@ -1,6 +1,6 @@
 /* 技能頁：接線板介面。邏輯在 00-grid.js；這裡負責畫面、點選、拖線與提示。
    狀態：selSock 目前選的插槽、held 手上的輔助配件、selPiece 選取的機件 id（都是暫存，不進存檔）。 */
-let WIRE_UNDO = null, drag = null, WIRE_MOVE = null,WIRE_ZOOM=false;   // drag：拖線中的狀態，其他檔案用它判斷「正在操作盤面」
+let WIRE_UNDO = null, drag = null, WIRE_MOVE = null,WIRE_ZOOM=true;   // drag：拖線中的狀態，其他檔案用它判斷「正在操作盤面」
 const WIRE_TAG_NAME = { proj:'投射物', area:'範圍', melee:'近戰', fire:'火焰', cold:'冰霜', light:'閃電' };
 const WIRE_PRIORITY = ['HEAVY', 'CRITS', 'HASTE', 'COOL', 'CRYSTAL', 'TWIN', 'FOCUS', 'AREA', 'LEECH', 'FORK', 'RECOVER', 'DELAY'];
 const wActive = i => G.board.pieces.find(p => p.kind === 'active' && GridLab.sockIndex(p,G.board) === i);
@@ -14,7 +14,9 @@ function wireInstallStyles(){
 }
 /* Grid size and endpoint count belong to the equipped circuit, never automatic configuration. */
 const wTier = () => 3;
-const WIRE_COLNAME = { r:'紅', b:'藍', g:'綠' };
+const WIRE_COLNAME = {r:'紅',b:'藍',g:'綠',y:'金',v:'紫',c:'青'};
+const PORT_COLORS={r:'#ff6d60',b:'#528fff',g:'#58dc83',y:'#ffd34e',v:'#c793ff',c:'#4ce9ef'};
+const WIRE_SHAPES=['▲','●','■','◆','✚','✦'];
 function wireStatus(){
   const B = G.board, used = GridLab.wireLen(B), pads = B.wires.reduce((a, w) => a + w.cells.filter(c => GridLab.isPad(c[0], c[1],G.board)).length, 0), put = B.pieces.filter(p => p.kind === 'support' && GridLab.wireOf(B, p.x, p.y)).length;
   return `線 ${used} 格　線經過襯墊 ${pads}　已放配件 ${put}`;
@@ -28,7 +30,7 @@ function wireSvg(){
     if (done) pts.push(pt(k[0], k[1]));
     const p = pts.join(' '), sel = w.sock === selSock;
     for (const c of w.cells) if (wTier() > 1 && GridLab.isPad(c[0], c[1],G.board) && !wSupportAt(c[0], c[1])) holes += `<circle class="wk k${GridLab.padColor(c[0], c[1],G.board)}" cx="${c[0] + .5}" cy="${c[1] + .5}" r=".15"/>`;
-    o += `<polyline class="wo" points="${p}"/><polyline class="wl c-${col} ${done ? 'done' : 'part'}${sel ? ' sel' : ''}" points="${p}"/><polyline class="wh" points="${p}"/>${sel || !done ? `<polyline class="wf" points="${p}"/>` : ''}`;
+    o += `<polyline class="wo" points="${p}"/><polyline style="stroke:${PORT_COLORS[col]}" class="wl c-${col} ${done ? 'done' : 'part'}${sel ? ' sel' : ''}" points="${p}"/><polyline class="wh" points="${p}"/>${sel || !done ? `<polyline class="wf" points="${p}"/>` : ''}`;
   }
   return `<svg class="wsvg" viewBox="0 0 ${GridLab.layout(G.board).w} ${GridLab.layout(G.board).h}" preserveAspectRatio="none" aria-hidden="true">${o}${holes}</svg>`;
 }
@@ -49,21 +51,21 @@ function wireHints(){
   return h;
 }
 function wireCell(x, y, ctx){
-  const B = G.board, L = G.lvl, ev = `data-x="${x}" data-y="${y}" data-focus="cell-${x}-${y}" tabindex="${UX_GRID.x === x && UX_GRID.y === y ? 0 : -1}" aria-label="${uxEsc(uxGridLabel(x, y))}" onfocus="uxGridFocus(this)" onclick="wireTap(${x},${y})" onpointerdown="wireDown(event,${x},${y})" onmouseenter="pzHover(${x},${y})"`;
+  const B = G.board, L = G.lvl, ev = `data-x="${x}" data-y="${y}" data-focus="cell-${x}-${y}" tabindex="${UX_GRID.x === x && UX_GRID.y === y ? 0 : -1}" title="${uxEsc(uxGridLabel(x,y))}" aria-label="${uxEsc(uxGridLabel(x, y))}" onfocus="uxGridFocus(this)" onclick="wireTap(${x},${y})" onpointerdown="wireDown(event,${x},${y})" onmouseenter="pzHover(${x},${y})"`;
   const W = GridLab.layout(G.board).w, H = GridLab.layout(G.board).h, edge = x === 0 || y === 0 || x === W - 1 || y === H - 1;
   if (edge){
     const si = GridLab.sockAt(x, y,G.board);
     if (si >= 0){
-      const i = si, col = GridLab.layout(G.board).colors[i];
+      const i = si, col = GridLab.layout(G.board).colors[i],portStyle=`style="--padc:${PORT_COLORS[col]}"`;
       if (!wOpen(i) && wTier() < 3) return `<button type="button" class="pc dead" tabindex="-1" aria-hidden="true" disabled></button>`;
       if (!wOpen(i)) return `<button type="button" class="pc lock k${col}" ${ev}><span>L${GridLab.layout(G.board).levels[i]}</span></button>`;
       const a = wActive(i), wired = GridLab.connected(B, i);
-      if (!a) return `<button type="button" class="pc sk empty k${col}${selSock === i ? ' sel' : ''}" ${ev}><span>終點</span></button>`;
-      return `<button type="button" class="pc fill sk chip k${col}${selSock === i ? ' sel' : ''}${wired ? ' lnk' : ' open'}" data-skill="${a.key}" ${ev}>${sico(a.key, 16)}<span>${SKILLS[a.key].n}</span><em class="lb">${wired?'接通':'未接通'}</em></button>`;
+      if (!a) return `<button type="button" class="pc sk empty k${col}${selSock === i ? ' sel' : ''}" ${portStyle} ${ev}><span>終</span><i class="port-shape" aria-hidden="true">${WIRE_SHAPES[i]}</i></button>`;
+      return `<button type="button" class="pc fill sk chip k${col}${selSock === i ? ' sel' : ''}${wired ? ' lnk' : ' open'}" data-skill="${a.key}" ${portStyle} ${ev}><span class="port-word">終</span><i class="port-shape" aria-hidden="true">${WIRE_SHAPES[i]}</i></button>`;
     }
     const ri = GridLab.layout(G.board).srcs.findIndex(s => s[0] === x && s[1] === y);
     if (ri >= 0 && !wOpen(ri) && wTier() < 3) return `<button type="button" class="pc dead" tabindex="-1" aria-hidden="true" disabled></button>`;
-    if (ri >= 0) return `<button type="button" class="pc bus src s${GridLab.layout(G.board).colors[ri]}${wOpen(ri) ? '' : ' off'}${selSock === ri ? ' sel' : ''}" ${ev}><span>⚡</span><em class="lb in">起點</em></button>`;
+    if (ri >= 0) return `<button type="button" class="pc bus src s${GridLab.layout(G.board).colors[ri]}${wOpen(ri) ? '' : ' off'}${selSock === ri ? ' sel' : ''}" style="--padc:${PORT_COLORS[GridLab.layout(G.board).colors[ri]]}" ${ev}><span>起</span><i class="port-shape" aria-hidden="true">${WIRE_SHAPES[ri]}</i></button>`;
     return `<button type="button" class="pc dead" tabindex="-1" aria-hidden="true" disabled></button>`;
   }
   if (GridLab.isRock(x, y,G.board)) return `<button type="button" class="pc rk" ${ev}><span>✕</span></button>`;
@@ -79,11 +81,11 @@ function wireBoardHtml(){
   let cells = '';
   const hint = wireHints();
   for (let y = 0; y < B.h; y++) for (let x = 0; x < B.w; x++){ const c = wireCell(x, y, ctx); cells += hint.has(x + ',' + y) ? c.replace('class="pc', 'class="pc hint') : c; }
-  return `<div class="pz wb" role="group" aria-label="接線板，方向鍵移動，Enter 選取或放置" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">${cells}${wireSvg()}</div><button type="button" class="mb wire-drop-remove" data-wire-remove onclick="wireRemoveSelected()">拖到此處收回 · 不會銷毀</button>`;
+  return `<div class="pz wb" role="group" aria-label="接線板，方向鍵移動，Enter 選取或放置" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">${cells}${wireSvg()}</div>`;
 }
 function wireBar(){
   const sel = selSock >= 0, held0 = !!held, btn = (t, fn, on = true) => `<button class="mb" data-tip="${{'復原':'還原上一次的配置、移位、收回或清空','取消選取':'放下手上的配件或取消選取的插槽'}[t] || ''}" ${on ? '' : 'disabled'} onclick="${fn}">${t}</button>`;
-  return `<div class="pzbar">${btn(WIRE_ZOOM?'顯示全盤':'放大接線板','wireZoom()')}${WIRE_UNDO ? btn('復原', 'wireUndo()') : ''}<button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回" data-tip="清掉所有接線，配件收回庫存；可按復原還原"><i></i>全部清空</button>${btn('取消選取', 'uxCancelPiece()', sel || held0 || selPiece != null)}<span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
+  return `<div class="pzbar">${WIRE_UNDO ? btn('復原', 'wireUndo()') : ''}<button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回" data-tip="清掉所有接線，配件收回庫存；可按復原還原"><i></i>全部清空</button>${btn('取消選取', 'uxCancelPiece()', sel || held0 || selPiece != null)}<span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
 }
 function wireSelCard(){
   const B = G.board;
@@ -277,7 +279,7 @@ function wireMovePiece(id,x,y,signature){
 }
 function wirePrepareMove(id){const p=G.board.pieces.find(q=>q.id===id);if(!p)return;wirePickClose();WIRE_MOVE={id,signature:JSON.stringify(p)};selPiece=id;selSock=-1;uxAnnounce('已選取'+wName(p)+'，點選新的'+(p.kind==='active'?'終點':'色塊位')+'，或按 Escape 取消。');}
 function wireRemovePiece(id,signature){const p=G.board.pieces.find(q=>q.id===id);if(!p||signature&&JSON.stringify(p)!==signature){uxAnnounce('機件已變動，未收回。');return false;}WIRE_UNDO=JSON.stringify(G.board);GridLab.remove(G.board,id);WIRE_MOVE=null;selPiece=null;selSock=-1;wirePickClose();recalc();renderModal();uxAnnounce('已收回'+wName(p)+'，沒有銷毀；可按復原。');return true;}
-function wireRemoveSelected(){const id=WIRE_MOVE?.id??selPiece;if(id!=null)wireRemovePiece(id);else uxAnnounce('按住盤上機件拖到這裡可收回；也可點選機件後移動或收回。');}
+function wireRemoveSelected(){const id=WIRE_MOVE?.id??selPiece;if(id!=null)wireRemovePiece(id);else uxAnnounce('把機件拖出接線板邊框後放開可收回；也可點選後收回。');}
 function wirePieceDragMove(ev){
  const d=drag;if(!d||d.piece==null||ev.pointerId!==d.pointer)return;
  if(!d.moved&&Math.hypot(ev.clientX-d.sx,ev.clientY-d.sy)<8)return;
@@ -323,7 +325,13 @@ function wireMove(ev){
   const result=GridLab.extend(G.board,selSock,...c,G.lvl);if(result.ok){changed=true;if(result.connected){done=true;break;}}
  }
  d.px=ev.clientX;d.py=ev.clientY;
- if(changed){recalc();wireRedrawLive();}if(done)wireUp();
+ if(changed){recalc();wireRedrawLive();}if(done)wireUp();else wireSchedulePan(d);
+}
+function wireSchedulePan(d){
+ if(d.panFrame||drag!==d)return;const sc=document.querySelector('.wire-board-scroll'),body=$('mbody');if(!sc||!body)return;
+ const r=sc.getBoundingClientRect(),v=body.getBoundingClientRect(),dx=d.px>r.right-28?10:d.px<r.left+28?-10:0,dy=d.py>v.bottom-28?10:d.py<v.top+28?-10:0;
+ const horizontal=dx&&(dx>0?sc.scrollLeft+sc.clientWidth<sc.scrollWidth:sc.scrollLeft>0),vertical=dy&&(dy>0?body.scrollTop+body.clientHeight<body.scrollHeight:body.scrollTop>0);if(!horizontal&&!vertical)return;
+ d.panFrame=requestAnimationFrame(()=>{d.panFrame=null;if(drag!==d)return;if(horizontal)sc.scrollLeft+=dx;if(vertical)body.scrollTop+=dy;wireMove({pointerId:d.pointer,clientX:d.px,clientY:d.py,preventDefault(){}});});
 }
 function wireLostCapture(ev){if(drag?.capture===ev.currentTarget&&drag.pointer===ev.pointerId)wireUp({type:'pointercancel'});}
 function wireRedrawLive(){   // 拖曳中只更新線與格子，不重建整個面板，手指不會被打斷
@@ -333,8 +341,8 @@ function wireRedrawLive(){   // 拖曳中只更新線與格子，不重建整個
 }
 function wireUp(ev){
   document.removeEventListener('pointermove', wireMove); document.removeEventListener('pointerup', wireUp); document.removeEventListener('pointercancel', wireUp);
-  const d = drag; drag = null;
-  if(d?.piece!=null){document.getElementById('wire-ghost')?.remove();document.querySelector('.wb')?.classList.remove('piece-dragging');document.querySelectorAll('.wire-target,.wire-target-bad').forEach(e=>e.classList.remove('wire-target','wire-target-bad'));document.querySelector('[data-wire-remove]')?.classList.remove('drag-over');if(!d.moved)return;noClick=true;setTimeout(()=>noClick=false,250);if(!ev||ev.type==='pointercancel'){uxAnnounce('已取消移動，盤面沒有變更。');return;}const hit=document.elementFromPoint(ev.clientX,ev.clientY);if(hit?.closest('[data-wire-remove]'))wireRemovePiece(d.piece,d.signature);else{const target=wireCellAt(ev.clientX,ev.clientY);if(target)wireMovePiece(d.piece,...target,d.signature);else uxAnnounce('已取消移動，盤面沒有變更。');}return;}
+  const d = drag; drag = null;if(d?.panFrame)cancelAnimationFrame(d.panFrame);
+  if(d?.piece!=null){document.getElementById('wire-ghost')?.remove();document.querySelector('.wb')?.classList.remove('piece-dragging');document.querySelectorAll('.wire-target,.wire-target-bad').forEach(e=>e.classList.remove('wire-target','wire-target-bad'));document.querySelector('[data-wire-remove]')?.classList.remove('drag-over');if(!d.moved)return;noClick=true;setTimeout(()=>noClick=false,250);if(!ev||ev.type==='pointercancel'){uxAnnounce('已取消移動，盤面沒有變更。');return;}const hit=document.elementFromPoint(ev.clientX,ev.clientY);const box=document.querySelector('.wb')?.getBoundingClientRect(),clip=document.querySelector('.wire-board-scroll')?.getBoundingClientRect(),outside=box&&(ev.clientX<Math.max(box.left,clip?.left??box.left)||ev.clientX>Math.min(box.right,clip?.right??box.right)||ev.clientY<box.top||ev.clientY>box.bottom);if(outside)wireRemovePiece(d.piece,d.signature);else{const target=wireCellAt(ev.clientX,ev.clientY);if(target)wireMovePiece(d.piece,...target,d.signature);else uxAnnounce('已取消移動，盤面沒有變更。');}return;}
   if(d?.capture){d.capture.removeEventListener('lostpointercapture',wireLostCapture);try{if(d.capture.hasPointerCapture(d.pointer))d.capture.releasePointerCapture(d.pointer);}catch(e){}}
   if (!d || !d.moved) return;
   if(ev?.type==='pointercancel'){G.board=JSON.parse(d.before);WIRE_UNDO=d.undo;selSock=-1;selPiece=null;recalc();renderModal();noClick=true;setTimeout(()=>noClick=false,250);uxAnnounce('已取消接線，還原原有配置。');return;}
