@@ -49,3 +49,10 @@ v0.26.0，來源提交 56b401ee7d33a9cba13dd1612b96e5e54d19b0a0，部署提交 c
 PR #31 已合併；來源／標籤提交 b7f795fb51960bbc2642f80a7e273f153c1dd552，部署提交 ca48d2accbf62e2e29bd82ac196182ee29838cb7。Pages built；version.json、入口與兩個雜湊腳本已透過 HTTPS 逐一核對 SHA-256。證據見 [整合發佈目錄](release-0.42.0/integration.md) 與 [線上核對](release-0.42.0/live-verification.json)。
 
 直接上傳 Release 資產收到 401，因此現有 release workflow 增加可選 upload_standalone；從指定 target 提交取出 dist/idle-hero.html，使用 Actions 的儲存庫 token 上傳。發佈說明仍從預設分支讀取，標籤不移動。
+
+
+## v0.43.0 已發佈（2026-10-24，香港時間）
+
+來源標籤 v0.43.0 固定指向 6db59660c905d54bab2c10fff78c37768b841027，部署提交 864077335c2654cea13bc4d7bcd4b5bd844cb97a。PR #35 及 #34 已合併；所有分支保留。Pages built，線上入口與兩個雜湊腳本的 SHA-256、版本及來源提交均已核對。
+
+[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.43.0) 由工作流程 40049182421 成功建立並附上 idle-hero.html；GitHub 回傳附件 digest 及大小與已測試單檔相符。完整證據見 [線上核對](release-0.43.0/live-verification.json)。七部位存檔升級後不建議回匯舊三欄版本；真機效能與配裝平衡仍待驗收。
