@@ -5,7 +5,7 @@ const cosGet=(cat,id)=>(COS[cat]||[]).find(x=>x[0]===id);
 const cosOwned=(cat,id)=>!!cosGet(cat,id)&&(cosGet(cat,id)[3]===0||!!G.own[cat+':'+id]);
 function cosPreview(){const c={...G.cos};if(dSel.id&&cosAvailable(dSel.cat)&&cosGet(dSel.cat,dSel.id))c[dSel.cat]=dSel.id;return c;}
 function rankOf(){let r=RANKS[0][1];for(const [l,n]of RANKS)if(G.lvl>=l)r=n;return r;}
-function setName(v){G.heroName=(v||'').trim().slice(0,8)||'茜';G.dirty=true;}
+function setName(v){G.heroName=(v||'').trim().slice(0,12)||G.heroName;G.dirty=true;}
 function dressPick(cat,id){if(!cosAvailable(cat)||!cosGet(cat,id))return;dSel={cat,id};renderModal();}
 function dressCat(cat){if(!cosAvailable(cat))return;dSel={cat,id:null};renderModal();}
 function dressBuy(){
@@ -78,6 +78,7 @@ function dressTick(){
     if(PV.hero.userData.y2k)characterPreviewAnimate(PV.hero,dt,matchMedia('(prefers-reduced-motion: reduce)').matches);
     // Keep NULL's companion outside the body silhouette in this presentation instance.
     if(PV.hero.userData.pet){PV.hero.userData.pet.position.x+=6;PV.hero.userData.pet.position.z+=4;}
+    if(!PV.drag&&!matchMedia('(prefers-reduced-motion: reduce)').matches)PV.yaw+=dt*Math.PI*2/60;
     PV.hero.rotation.y=PV.yaw;
     const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=R3.clean?'auto':'pixelated';
     if(PV.cv.width!==buffer.width||PV.cv.height!==buffer.height)PV.rd.setSize(buffer.width,buffer.height,false);

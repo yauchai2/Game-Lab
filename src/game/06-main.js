@@ -3,6 +3,8 @@ const Q = new URLSearchParams(location.search);
 G.equip.weapon = makeItem('weapon', 0, 1); G.equip.weapon.name = '新手摺疊傘';
 G.equip.armor = makeItem('armor', 0, 1); G.equip.armor.name = '粗布衣';
 recalc(); G.h.hp = G.st.life;
+G.ascension=null;G.circuits=['pocket'];G.circuitLayouts={};G.circuitPity=0;
+const GAME_NEW_STATE=copyState(G);
 let loadedT = 0,hasLoadedGame=false;
 if (!Q.has('fresh')){ const o = loadGame(); if (o && applySave(o)){loadedT = o.t || 0;hasLoadedGame=true;} }
 G.speed = 1;   // 已拿掉遊戲速度選項
@@ -31,7 +33,7 @@ ui = mountFigure({
     { label:'存檔', onClick:() => openModal('save') },
   ],
   params:(s, q) => {
-    if (q.has('char') && CHARS[q.get('char')]){ G.char = q.get('char'); recalc(); }
+    if (q.has('fresh')&&q.has('char')&&Object.hasOwn(CHARS,q.get('char'))){ G.char = q.get('char'); recalc(); }
     if (q.has('lvl')){ G.lvl = +q.get('lvl'); recalc(); }
     if (q.has('depth')){ G.depth = +q.get('depth'); G.maxDepth = Math.max(G.maxDepth, G.depth); }
     if (q.has('speed')) G.speed = +q.get('speed');

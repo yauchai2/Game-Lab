@@ -184,6 +184,7 @@ function uxOpenDialog(el, label, close){
   if(typeof viewExitWatch==='function')viewExitWatch();
   let layer = UX_LAYERS.find(l => l.el === el);
   if (!layer){ layer = { el, trigger:uxFocusToken(), close }; UX_LAYERS.push(layer); }
+  layer.close=close;
   el.hidden = false; el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label',label); el.tabIndex = -1;
   uxLayerSync();
   requestAnimationFrame(() => {

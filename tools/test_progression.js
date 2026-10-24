@@ -1,9 +1,9 @@
 /* Finite talents, reversible migration, deterministic acquisition and expedition settlement. */
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');let passed=0;
 function check(name,code){const math=Object.create(Math);math.random=()=>.4;const c={console,Date,Math:math,GridLab:require('../src/game/00-grid.js'),tPick:a=>a[0],tRand:(a,b)=>(a+b)/2,tClamp:(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),tFmt:String,SFX:()=>{},closeModal:()=>{}};vm.createContext(c);
- for(const f of ['01-data.js','02-state.js','03-combat.js'])vm.runInContext(fs.readFileSync(__dirname+'/../src/game/'+f,'utf8'),c);c.assert=assert;
+ for(const f of ['01-data.js','02-state.js','02b-careers.js','03-combat.js'])vm.runInContext(fs.readFileSync(__dirname+'/../src/game/'+f,'utf8'),c);c.assert=assert;
  vm.runInContext(`G.lvl=60;G.maxDepth=8;G.city=newCity();G.offline=true;G.equip.weapon=makeItem('weapon',0,10);storeGear(G.equip.weapon);recalc();
- function board(ids,modes={}){G.board=GridLab.createBoard();for(const id of ids){const s=GridLab.findSpot(G.board,'active',id);const p=GridLab.place(G.board,'active',id,s.x,s.y,s.rot);p.mode=modes[id]||null;}recalc();}
+ function board(ids,modes={}){G.board=GridLab.createBoard('extreme');G.circuits=['pocket','extreme'];for(const id of ids){const s=GridLab.findSpot(G.board,'active',id);const p=GridLab.place(G.board,'active',id,s.x,s.y,s.rot);p.mode=modes[id]||null;const sock=GridLab.sockIndex(p,G.board);G.board.wires.push({sock,cells:GridLab.route(G.board,sock)});}recalc();}
  function clearStage(){G.run.kills=G.run.need;assert(cityStageClear());}
  function finishRoute(){clearStage();assert(cityChoose('safe',1));clearStage();assert(cityChoose('safe',2));spawnPack();const m=G.mons.find(m=>m.boss);assert(m);m.fall=0;hitMon(m,1e20,false,'測試');}
  ${code}`,c);passed++;console.log('PASS',name);

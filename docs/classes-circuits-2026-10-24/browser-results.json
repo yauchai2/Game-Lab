@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "install does not activate",
+    "real pointer taps connect source to sink",
+    "color rejection and matching placement",
+    "cut disables combat immediately",
+    "earned board empty, old manual layout restored",
+    "visible central 3D model rotates",
+    "reduced motion stops automatic rotation",
+    "ascension cancel, free choice and paid exactly-once respec",
+    "named character creation creates separate fixed profession",
+    "switch and cancel preserve both independent characters",
+    "profession ranking and readonly foreign board inspection",
+    "8x8 board fits 320px, short landscape and desktop; zoom provides 44px+ cells without page overflow"
+  ],
+  "errors": []
+}

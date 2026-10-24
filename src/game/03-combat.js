@@ -34,6 +34,8 @@ function spawnPack(){
 }
 function dropItem(m, it){ dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'item', it, t:0 }); if (it.r >= 2 && !G.offline){ lootToast(it); bossLoot(it); SFX('rare'); if (it.r >= 3) kick(.6, .3, '#ffb27a', .5); } }
 function killMon(m){
+  if(m.dead)return;
+  if(!m.training){const board=circuitDrop(m.boss?'boss':m.elite?'elite':'normal');if(board)dropGround({kind:'circuit',id:board,x:m.x,y:m.y,t:0});}
   if(m.training){m.hp=m.hpMax;return;}
   m.dead = true; m.deadT = 0; SFX('kill'); if (!G.train && G.mk) G.mk[m.type] = (G.mk[m.type] || 0) + 1; const T = MTYPES[m.type], d = lvlNow(), R = G.run, q = runQ(), mods = R ? R.map.mods : [];
   let hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk * (G.relics.CALC ? 1.2 : 1) * (offPen() ? .75 : 1))), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
@@ -99,6 +101,7 @@ function gainXp(xp){
 /* ---------- loot handling ---------- */
 function pickup(d){
   if(d.kind==='gold'||d.kind==='chip'){if(d.kind==='gold')G.gold+=d.amount;else G.chips+=d.amount;G.dirty=true;addFloat(G.h.x,G.h.y,BZ+16,d.kind==='gold'?`+${tFmt(d.amount)}g`:`+${d.amount} 電路點數`,d.kind==='gold'?'#a9780a':'#187f9c',3.2);return;}
+  if(d.kind==='circuit'){collectCircuit(d.id);return;}
   if(d.kind==='item'&&collectEquipment(d.it))return;
   if (d.kind === 'gem'){ G.gems[d.id] = (G.gems[d.id] || 0) + 1; logLine(`入手輔助寶石：${SUPPS[d.id].n}`, '#8e3fd1'); if (G.off) G.off.gems++; G.dirty = true; return; }
   if (d.kind === 'cart'){ if (G.off) G.off.carts = (G.off.carts || 0) + 1; G.carts[d.id] = (G.carts[d.id] || 0) + 1; logLine(`入手卡匣：${G.seen[d.id] ? MODES[d.id].n : '未鑑定的' + SKILLS[MODES[d.id].sk].n + '卡匣'}`, '#1f9bbf'); G.dirty = true; return; }
@@ -116,18 +119,10 @@ function pickup(d){
     G.armory[it.lg] = it;
     if (!old && G.off) G.off.cores = (G.off.cores || 0) + 1;
     logLine(`${old?'更新':'收藏'}傳奇核心：${it.name}`, rc);
-    if (G.autoEquip && canUseGear(it) && !cur?.lg && (!cur || cand.power > G.st.power*1.02)){
-      // 收藏裝備永不作自動拆解來源；一般裝備仍使用原本的自動比較。
-      if(cur){if(!cur.lg)storeGear(cur);G.equipBackup[it.slot]=cur;}
-      G.equip[it.slot] = it; recalc(); if (G.off) G.off.eq++;
-    }
     G.dirty = true; return;
   }
-  if (cur?.lg){ G.gold += itemValue(it); salvage(it); G.dirty = true; return; }
-  if (!cur || cand.power > G.st.power * 1.02){
-    if (cur){ G.gold += itemValue(cur); salvage(cur); }
-    const d0 = G.st.dps; G.equip[it.slot] = it; recalc(); const dd = d0 > 0 ? Math.round((G.st.dps/d0 - 1)*100) : 0; logLine(`裝備 ${it.name}（傷害 ${dd >= 0 ? '+' : ''}${dd}%）`, rc); addFloat(G.h.x + 3, G.h.y, BZ + 22, '升級！', rc, 3.8); SFX(it.r >= 2 ? 'rare' : 'pick'); if (G.off) G.off.eq++;
-  } else { G.gold += itemValue(it); salvage(it); if (it.r >= 2) logLine(`賣掉 ${it.name}（沒有更強）`, '#9a93a6'); }
+  storeGear(it);G.dirty=true;
+
 }
 function reroll(slot){
   const it = G.equip[slot]; if (!it) return; const cost = 30 * it.il + 20;
@@ -450,7 +445,7 @@ function update(dt){
   if (h.phx > 0) h.phx -= dt;
   if(typeof characterCombatTick==='function')characterCombatTick(dt);
   { const sg = CHARS[G.char] && CHARS[G.char].sig, al = castMons().filter(m => !(m.fall > 0));
-    if (sg && al.length && !G.train){ G.sigT = (G.sigT || 0) + dt; if (G.sigT >= sg.cd){ G.sigT = 0; G.src = '專屬：' + sg.n; const hit = s.hit, pick = n => al.slice().sort(() => Math.random() - .5).slice(0, n); SFX('boom');
+    if (sg && al.length && !G.train){ G.sigT = (G.sigT || 0) + dt; if (G.sigT >= (s.signatureCd||sg.cd)){ G.sigT = 0; G.src = '專屬：' + sg.n; const hit = s.hit, pick = n => al.slice().sort(() => Math.random() - .5).slice(0, n); SFX('boom');
       if(typeof y2kSignature==='function')y2kSignature(al,s);
       else if (G.char === 'street'){ addFx({ k:'ring', x:G.h.x, y:G.h.y, col:'#ff9a3c', t:0, dur:.5 }); kick(.8, .2, '#ff9a3c', .5); for (const m of al) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 24){ const a = Math.atan2(m.y - G.h.y, m.x - G.h.x); m.x += Math.cos(a)*5; m.y += Math.sin(a)*5; hitMon(m, hit*7, false); } }
       else if (G.char === 'frost'){ addFx({ k:'nova', t:0, dur:.55 }); for (const m of al){ applyFreeze(m); } }

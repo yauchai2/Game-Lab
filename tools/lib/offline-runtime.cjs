@@ -40,7 +40,7 @@ function createRuntime(seed = 11) {
     },
   };
   vm.createContext(context);
-  for (const file of ['01-data.js', '02-state.js', '03-combat.js', '05-ui.js']) {
+  for (const file of ['01-data.js', '02-state.js', '02b-careers.js', '03-combat.js', 'characters-data.js', '05-ui.js']) {
     vm.runInContext(fs.readFileSync(path.join(root, 'src/game', file), 'utf8'), context, { filename: file });
   }
   const evaluate = code => vm.runInContext(code, context, { timeout: 120000 });
@@ -71,7 +71,7 @@ function createRuntime(seed = 11) {
     },
     snapshot() { return JSON.parse(evaluate('JSON.stringify(serialize())')); },
     reload() {
-      context.savedState = JSON.parse(storage.get('idle-hero-save-v2'));
+      const raw=JSON.parse(storage.get('idle-hero-save-v2'));context.savedState=raw?.v===3?raw.profiles.find(p=>p.id===raw.active)?.save:raw;
       return evaluate('applySave(savedState)');
     },
     get rngState() { return rng; },

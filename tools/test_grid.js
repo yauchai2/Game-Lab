@@ -1,5 +1,6 @@
+// Legacy migration engine coverage; current rules: test_classes_circuits.cjs.
 // node tools/test_grid.js：接線板邏輯測試（B3 色塊接線板）
-const G = require('../src/game/00-grid.js');
+const G = require('../src/game/00-grid-legacy.js');
 const assert = require('assert');
 const padOf = (b, i, col) => { const w = G.getWire(b, i); return w.cells.find(c => G.isPad(c[0], c[1]) && (!col || G.padColor(c[0], c[1]) === col)); };
 

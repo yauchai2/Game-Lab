@@ -31,10 +31,10 @@ function uiMenuHtml(){return deviceMenuHtml();}
 
 function charSegHtml(){return `<div class="ui-segments" role="group" aria-label="角色分頁"><button aria-pressed="${modalTab==='char'}" data-focus="char-stats" onclick="openModal('char')">總覽</button><button aria-pressed="${modalTab==='tree'}" data-focus="char-talent"${tabOpen('tree')?'':' class="lock"'} onclick="${tabOpen('tree')?"openModal('tree')":"lockTip('tree')"}">${tabOpen('tree')?'天賦':'天賦 Lv'+TAB_LVL.tree}${passPoints()>0&&tabOpen('tree')?' ●':''}</button><button aria-pressed="${modalTab==='dress'}" data-focus="char-dress" onclick="openModal('dress')">裝扮</button></div>`;}
 let UI_CHARACTER_PICK = null, UI_CHARACTER_STAGE_VISIT = '';
-function uiCharacterCode(id=G.char){return String(String(CHARS[id]?.n||'').split(' ').at(-1)||CHARS[id]?.model||'').toUpperCase();}
+function uiCharacterCode(id=G.char){return {street:'PULSE',frost:'SPECTRUM',beep:'TRACKER',volt:'MECHANIST'}[id]||'';}
 function uiCharacterIdentity(){
   const c=CHARS[G.char];
-  return `<div class="cv-identity" role="group" aria-label="目前角色"><div><span class="cv-kicker">${uxEsc(c.title||c.d)}</span><h3>${uxEsc(c.n.split(' ')[0])}<span>Lv. ${G.lvl}</span></h3></div><button class="mb" data-focus="character-switch" onclick="uiChooseCharacter()">切換角色 ↗</button></div>`;
+  return `<div class="cv-identity" role="group" aria-label="目前角色"><div><span class="cv-kicker">${uxEsc(c.title||c.d)}</span><h3>${uxEsc(G.heroName||'未命名')}<span>Lv. ${G.lvl}</span></h3></div><button class="mb" data-focus="character-switch" onclick="uiChooseCharacter()">角色列表 ↗</button></div>`;
 }
 function uiCharacterStage(dress=false){
   const c=CHARS[G.char],visit=modalTab+':'+G.char,arrive=UI_CHARACTER_STAGE_VISIT!==visit;UI_CHARACTER_STAGE_VISIT=visit;
@@ -42,22 +42,14 @@ function uiCharacterStage(dress=false){
 }
 function uiCharacterProfile(){
   const [bm,bd]=G.born;
-  return `<details class="cv-profile"><summary>個人資料</summary><label for="hname">玩家暱稱<input id="hname" maxlength="8" value="${uxEsc(G.heroName||'茜')}" onchange="setName(this.value)"></label><p>生日 ${bm} / ${bd} · ${STAR_SIGNS[bm-1]}</p><p>${rankOf()}</p></details>`;
+  return `<details class="cv-profile"><summary>個人資料</summary><label for="hname">玩家暱稱<input id="hname" maxlength="12" value="${uxEsc(G.heroName||'')}" onchange="setName(this.value)"></label><p>生日 ${bm} / ${bd} · ${STAR_SIGNS[bm-1]}</p><p>${rankOf()}</p></details>`;
 }
 function uiCharacterStats(){
   const s=G.st;
   return `<section class="cv-performance" aria-label="戰鬥能力摘要"><div class="cv-stat cv-stat-main"><span>單體直傷預估</span><strong>${tFmt(s.dps)}<small>DPS</small></strong></div><div class="cv-stat"><span>最大生命</span><strong>${tFmt(s.life)}</strong></div><div class="cv-stat"><span>會心率</span><strong>${s.crit.toFixed(0)}<small>%</small></strong></div><div class="cv-stat"><span>傷害減免</span><strong>${(s.red*100).toFixed(0)}<small>%</small></strong></div></section><details class="cv-detail"><summary>完整能力與計算說明</summary><dl class="ui-stat-list">${[['普通攻擊傷害',tFmt(s.hit)],['每秒普通攻擊',s.aps.toFixed(2)+' 次'],['會心傷害',s.cm.toFixed(0)+'%'],['護甲',tFmt(s.armor)],['基礎生命回復',s.regen.toFixed(1)+' / 秒']].map(([n,v])=>`<div><dt>${n}</dt><dd>${v}</dd></div>`).join('')}</dl><p class="uxmeta">直傷預估不含持續傷害、條件連動及角色專技。回復仍受戰鬥上限影響，實際傷害可到冒險的訓練場測量。</p></details>`;
 }
-function uiChooseCharacter(id=G.char){
-  if(!CHARS[id])return;UI_CHARACTER_PICK=id;const c=CHARS[id],ok=charOk(id),on=G.char===id;
-  const reason=ok?'已解鎖':c.ach?'成就「'+ACHS[c.ach].n+'」解鎖':'最深 '+c.need+' 層解鎖';
-  showOverlay(`<h2 class="uxdialog-title">選擇角色</h2><p class="uxmeta">先查看角色，按下使用才會切換。</p><div class="cv-roster" role="group" aria-label="角色預覽">${Object.entries(CHARS).map(([key,p])=>{const u=typeof icon3dPortraitUrl==='function'?icon3dPortraitUrl(key):'';return `<button class="mb" data-focus="character-pick-${key}" aria-pressed="${id===key}" onclick="uiChooseCharacter('${key}')">${u?`<img src="${u}" alt="" width="72" height="72">`:''}<span>${uxEsc(p.n)}</span><small>${key===G.char?'使用中':charOk(key)?'已解鎖':'未解鎖'}</small></button>`;}).join('')}</div><div class="cv-roster-detail"><h3>${uxEsc(c.n)} · ${uxEsc(c.title||c.d)}</h3><p>${uxEsc(c.role||'')}</p><p>專屬技能「${uxEsc(c.sig.n)}」：${uxEsc(c.sig.d)}</p>${c.passive?`<p>${uxEsc(c.passive)}</p>`:''}<p>${uxEsc(reason)}</p></div><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回角色</button><button class="mb pri" ${!ok||on?'disabled':''} onclick="uiConfirmCharacter()">${on?'目前使用中':!ok?'尚未解鎖':'使用 '+uxEsc(c.n)}</button></div>`);
-  requestAnimationFrame(()=>document.querySelector(`[data-focus="character-pick-${id}"]`)?.focus({preventScroll:true}));
-}
-function uiConfirmCharacter(){
-  const id=UI_CHARACTER_PICK;if(!id||!CHARS[id]||!charOk(id)||id===G.char)return;
-  UI_CHARACTER_PICK=null;pickChar(id);G.dirty=true;PV.yaw=.5;hideOverlay();renderModal();uxAnnounce('已切換為'+CHARS[id].n+'。');
-}
+function uiChooseCharacter(){careerProfiles();}
+function uiConfirmCharacter(){careerProfiles();}
 function uiCharacterHtml(){return uiCharacterSheetHtml();}
 
 /* 共用物品格：精簡讀數，完整名稱與屬性由點選詳情取得。 */
@@ -77,7 +69,7 @@ function uiEquippedTile(slot){const it=G.equip[slot];return it?uiItemTile({focus
 function uiInspectEquipped(slot){const it=G.equip[slot];if(!it)return;if(it.lg)return uiInspectCore(it.lg);if(G.inventory.includes(it))return uiInspectGear(it.uid);showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[slot]} · ${RAR[it.r].n} · 物品等級 ${it.il} · 穿著中</p><ul>${itemLines(it).map(l=>`<li>${uxEsc(l.t)}</li>`).join('')}</ul><button class="mb" data-initial-focus onclick="hideOverlay()">返回角色</button>`);}
 function uiGearComparison(it){const next=calc({...G.equip,[it.slot]:it}),current=G.st;return `<dl class="ui-stat-list"><div><dt>預估傷害</dt><dd>${tFmt(current.dps)} → ${tFmt(next.dps)}</dd></div><div><dt>最大生命</dt><dd>${tFmt(current.life)} → ${tFmt(next.life)}</dd></div><div><dt>會心率</dt><dd>${current.crit.toFixed(1)}% → ${next.crit.toFixed(1)}%</dd></div></dl>`;}
 function uiInspectCore(id){const it=G.armory[id];if(!it)return;const on=G.equip[it.slot]===it,back=modalTab==='warehouse'?'返回倉庫':'返回收藏';showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[it.slot]} · 暗金 · 物品等級 ${it.il}${on?' · 穿著中':''}</p><p>${uxEsc(LEGEND_BY[id].d)}</p>${uiGearCompareSheet(it)}<div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">${back}</button><button class="mb pri" ${on||!canUseGear(it)?'disabled':''} onclick="uiEquipCore('${id}')">${on?'已裝備':!canUseGear(it)?'角色不符':'換上'+uxEsc(it.name)}</button></div>`);}
-function uiCoreCollection(){const ids=Object.keys(LEGEND_BY).filter(id=>G.armory[id]);return `<button class="mb" onclick="uiCityGo()">城市遠征 · 定向追求核心</button><details class="ui-section ui-core-collection"><summary>傳奇核心收藏 ${ids.length}／${Object.keys(LEGEND_BY).length}</summary><p>角色專裝：雜兵 0.001%、精英 0.01%、關主 0.1% 各自抽一件，不受一般暗金保底影響，僅本人可裝備。</p>${ids.length?`<div class="ui-item-grid ui-core-grid" role="group" aria-label="核心收藏">${ids.map(id=>uiGearTile(G.armory[id],true)).join('')}</div>`:'<p>尚未收藏核心。冒險掉落或城市定向合成都會加入這裡。</p>'}<details><summary>收藏與重複品規則</summary><p>角色專裝只可由本人裝備，切換角色後保留在收藏。專裝另作獨立掉落判定，不受暗金保底或城市合成影響。同款保留一件。穿著、構築引用、詞綴鎖定或腐化的核心不會自動替換。重複品提供零件及殘晶，打造可提高核心等級。</p></details><div class="uxactions">${Object.keys(SLOTN).filter(slot=>G.equipBackup[slot]).map(slot=>`<button class="mb" onclick="uiRestoreEquipment('${slot}')">切回上一件${SLOTN[slot]}</button>`).join('')}</div></details>`;}
+function uiCoreCollection(){const ids=Object.keys(LEGEND_BY).filter(id=>G.armory[id]);return `<button class="mb" onclick="uiCityGo()">城市遠征 · 定向追求核心</button><details class="ui-section ui-core-collection"><summary>傳奇核心收藏 ${ids.length}／${Object.keys(LEGEND_BY).length}</summary><p>角色專裝：雜兵 0.001%、精英 0.01%、關主 0.1% 各自抽一件，不受一般暗金保底影響，僅對應職業可裝備。</p>${ids.length?`<div class="ui-item-grid ui-core-grid" role="group" aria-label="核心收藏">${ids.map(id=>uiGearTile(G.armory[id],true)).join('')}</div>`:'<p>尚未收藏核心。冒險掉落或城市定向合成都會加入這裡。</p>'}<details><summary>收藏與重複品規則</summary><p>職業專裝只可由對應職業裝備，保留在各角色的收藏。專裝另作獨立掉落判定，不受暗金保底或城市合成影響。同款保留一件。穿著、構築引用、詞綴鎖定或腐化的核心不會自動替換。重複品提供零件及殘晶，打造可提高核心等級。</p></details><div class="uxactions">${Object.keys(SLOTN).filter(slot=>G.equipBackup[slot]).map(slot=>`<button class="mb" onclick="uiRestoreEquipment('${slot}')">切回上一件${SLOTN[slot]}</button>`).join('')}</div></details>`;}
 function uiEquipCore(id){ if(equipCore(id)){hideOverlay();renderModal();uxAnnounce(`已換上${LEGEND_BY[id].name}，可切回上一件裝備。`);} }
 function uiRestoreEquipment(slot){ if(restoreEquipment(slot)){renderModal();uxAnnounce(`已切回上一件${SLOTN[slot]}。`);} }
 function uiRevealSelection(){requestAnimationFrame(()=>{const el=document.querySelector('.uxinspect');if(el){el.scrollIntoView({block:'start'});el.querySelector('.uxboard-link,button')?.focus({preventScroll:true});}});}
@@ -299,8 +291,8 @@ let UI_LIVE_SIGNATURE='';
 function uiLiveSignature(){
   if(modalTab==='warehouse')return JSON.stringify([G.inventoryRevision,G.autoEquip,G.storageRecycled,G.armory,G.equip,G.builds]);
   if(modalTab==='tree')return JSON.stringify([G.lvl,G.maxDepth,G.pass,G.st,!!G.run,!!G.train,G.legacyMode]);
-  if(modalTab==='skills')return JSON.stringify([G.lvl,G.board,G.gems,G.carts,G.seen,G.st.dps,G.chips]);
-  if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.st,G.cos,G.cards,G.picks,G.relicPicks]);
+  if(modalTab==='skills')return JSON.stringify([G.lvl,G.board,G.circuits,G.gems,G.carts,G.seen,G.st.dps,G.chips]);
+  if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.ascension,G.bossKills,G.maxDepth,G.st,G.cos,G.cards,G.picks,G.relicPicks]);
   if(modalTab==='dress'){const e=cosGet(dSel.cat,dSel.id);return JSON.stringify([G.lvl,G.equip,G.char,G.cos,G.own,e?G.gold>=e[3]:true]);}
   if(modalTab==='craft')return JSON.stringify([G.parts,G.equip,G.coreDust,G.city?.fragments,G.city?.maxTier,G.maxDepth,!!G.run,!!G.train]);
   if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,G.run?.city,G.city,G.towerBest,!!G.train,G.trainLast,G.maxDepth]);
@@ -348,7 +340,7 @@ function uiInspectGear(uid){
  const on=G.equip[it.slot]===it,guard=it.kept||it.cr||it.lk!=null||on||Object.values(G.equipBackup).includes(it)||gearReferenced(it);
  showOverlay(`<h2 class="uxdialog-title">${uxEsc(it.name)}</h2><p>${SLOTN[it.slot]} · ${RAR[it.r].n} · 物品等級 ${it.il}</p>${uiGearCompareSheet(it)}<div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回倉庫</button><button class="mb pri" ${on?'disabled':''} onclick="uiWearStored(${uid})">${on?'穿著中':'換上這件裝備'}</button><button class="mb" onclick="uiKeepStored(${uid})">${it.kept?'解除保管鎖定':'鎖定保管'}</button><button class="mb" ${guard?'disabled':''} onclick="uiRecycleAsk(${uid})">回收裝備</button></div>${guard?'<p class="uxmeta">穿著、上一件、構築引用、鎖定、詞綴鎖定或已腐化的裝備受保護，不能直接回收。</p>':''}`);
 }
-function uiWearStored(uid){if(!equipStored(uid)){uxAnnounce('裝備狀態已變更，請重新查看。');return;}hideOverlay();renderModal();uxAnnounce('已換裝，自動換裝已關閉，上一件裝備保留。');}
+function uiWearStored(uid){if(!equipStored(uid)){uxAnnounce('裝備狀態已變更，請重新查看。');return;}hideOverlay();renderModal();uxAnnounce('已手動換裝，上一件裝備保留。');}
 function uiKeepStored(uid){const it=G.inventory.find(x=>x.uid===uid);if(!it)return;it.kept=!it.kept;G.inventoryRevision++;G.dirty=true;hideOverlay();renderModal();document.querySelector(`[data-focus="gear-${uid}"]`)?.focus();uxAnnounce(it.kept?'裝備已鎖定保管。':'已解除保管鎖定。');}
 function uiRecycleAsk(uid){
  const it=G.inventory.find(x=>x.uid===uid);if(!it)return;

@@ -341,3 +341,18 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 | 構築詳情 | rankClean／rankSnap／rankImport／rankPieceDetails | 新快照保存七部位、節點、策略、卡匣與階級；舊碼缺項明示。白名單、數量上限及 GridLab.normalize 防壞資料；只讀盤用同一 resolve，不臨時換 G.board、不套用別人的物件或資源 |
 
 排行榜沒有新增後端或自動上傳。朋友資料由玩家貼構築碼，示範不宣稱真人。全新／舊檔、拖曳成功／取消／無效、存讀、五尺寸、鍵盤及減少動態由 tools/test_direct_play_browser.cjs／tools/test_direct_play_state.cjs 驗證；真機 Safari、報讀器及長期 FPS 不冒稱已測。
+
+
+## 固定職業、昇華與板型（2026-10-24，候選）
+
+| 能力 | 唯一 owner | 契約 |
+| --- | --- | --- |
+| 接通判定 | GridLab.validPath／connected／resolve，syncBoard | 來源相鄰首格、逐格合法、無交叉／重複／跳格、對應終點；只有wired列可進G.slots。安裝技能不補線，清除或斷線即移出下次出手名單。已發出的投射物可正常結束。 |
+| 配件 | GridLab.GEM_COLOR／canPlace／resolve | 同色洞、階級耗電1／2／3、效果1／1.35／1.65倍；全板供電上限，每技能最多三枚生效。錯色／超供電不扣庫存。移動、交換、收回與復原沿用既有owner。 |
+| 板型 | GridLab.TEMPLATES／layout，circuitDrop／equipCircuit | 3×3起步，4×4、6×6、8×8依進度；實體掉落及拾取，不自動換板。符合條件後第三次關主保底未持有板，重複掉落不重置保底。換板記住手動配置，再驗庫存。 |
+| 職業與角色 | CHARS／CHARACTER_PROFILES，PROFILE_SESSION | 四個固定職業，各自三昇華；新角姓名必填1至12字。單一localStorage原子envelope最多12角，既有v2存檔包入列表；構築不可轉職，跨職業匯入另存新角。開新角可取消；保存失敗不切角／刪角；刪除僅影響當前角色。 |
+| 昇華 | ASCENSIONS／ascensionState／chooseAscension | Lv20、最深8層、10關主；首次免費，同職業重選等級×500金幣，執行重驗職業／原昇華／成本／profile；取消與重複執行不扣費。控制與修復用原有上限owner。 |
+| 排行榜 | rankClean／rankSnap／rankHtml | 職業分類，快照含昇華及板型；異板可讀不改G.board；仍是本機及手動分享，示範明示，未聲稱全球排行。 |
+| 備份與離線 | serialize／profileSave／catchUp | 匯出碼只備份目前角色，不冒充整個角色列表備份；只有啟用角色補算離線。新板離線bulk採普通怪率、有限目錄逐種結算，不放大觀測到的稀有掉落。 |
+
+新規則驗證：tools/test_classes_circuits.cjs、tools/test_classes_circuits_browser.cjs；量測限制見docs/classes-circuits-2026-10-24/review.md。舊版幾何引擎保留為00-grid-legacy.js僅做遷移，test_grid.js明確測此遷移引擎；新規則由新測試負責。
