@@ -1,0 +1,10 @@
+idle-hero.html : 54 inline scripts syntax checked
+idle-hero-review.html : 37 inline scripts syntax checked
+character-review.html : 17 inline scripts syntax checked
+equipment-review.html : 20 inline scripts syntax checked
+PASS review fixtures isolated; production toolbar and save key unchanged
+PASS native 12px face preserved; 1593 LCD glyphs, advances and baselines align to the 16px grid
+PASS all seven types at four rarities: generation, pickup, equip, stats, save and build restoration
+PASS old three-slot saves: preserved rolls, collection/backup/build migration, no source mutation, idempotent reload
+PASS signature pool isolation, exact drop thresholds, owner restrictions, pickup, save identity, character swaps, backup restrictions and offline bulk
+PASS 16 derived asset hashes, inline bytes, geometry budgets and fully embedded GLB dependencies

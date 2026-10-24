@@ -10,3 +10,5 @@
 - 本次已fresh fetch所有Claude分支與open PR，e0b3468已包含，無新遊戲提交；內部備份45ecb31與歷史研究改名fd689ed排除。全部分支及tag保留，逐SHA見docs/release-0.49.0/claude-integration.json。每次新release仍要重新查。
 - 下一步：Alan試玩正式0.49；安全配置Cloudflare部署與GitHub代發憑證、提供Ko-fi公開收款URL後才接通，真機與長期平衡另驗。下一次release重新fetch及核對Claude，來源先push，勿移動舊tag。
 - 繁中全形標點，銀灰藍紫Y2K／Cubic 11，低面數像素酷感；公開遊戲文案不可提參考遊戲／內部研究／帳號資源。沿用唯一資料擁有者；docs/backlog.md記所有新要求，不建第二份全專案待辦。
+
+2026-10-25遺漏複核：Alan指出Logo及黃環仍在。正式0.49.0新載入兩尺寸無Logo、無重現黃環；原Logo先建後刪已改header:false。真正額外遺漏：GPU縮圖失敗退舊圖集／空白，專屬物件JPEG灰底。候選codex/visual-omissions-audit（base d00974f）補132透明預製3D、中央退路、移除舊灰底捷徑；0.49.1尚待提交／發佈。證據與逐組對照docs/visual-omissions-2026-10-25/review.md，外部服務／全球排名／真機及全面GLB美術仍有未完成。

@@ -271,7 +271,7 @@ function mountFigure(cfg){
   document.title = cfg.title;
   const style = document.createElement('style'); style.textContent = CORE_CSS; document.head.appendChild(style);
   document.body.innerHTML = `
-    <header><h1>Fig. ${cfg.fig} — ${cfg.title}</h1><span>${cfg.hint || ''}</span></header>
+    ${cfg.header === false ? '' : `<header><h1>Fig. ${cfg.fig} — ${cfg.title}</h1><span>${cfg.hint || ''}</span></header>`}
     <div class="stage">
       ${cfg.buttons && cfg.buttons.length ? `<div class="actions" id="btns"><div class="cap">${cfg.buttonsLabel || 'Try it'}</div></div>` : ''}
       ${cfg.stats ? '<div class="stats" id="stats"></div>' : ''}

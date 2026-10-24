@@ -434,3 +434,7 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - `02e-player-status.js`控制玩家異常及敵人毒層，傷害只走heroDamage／hitMon；不得另做死亡或收益。新命中才附加，持續傷害不再觸發附加；凍結不能永久刷新。訓練暫存／還原異常，死亡、復活、讀檔及塔換層清除。
 - `GAME_VIEW.prefs.shake/reducedEffects`獨立保存；audio.js保持唯一播放器。battle-fold／battle-off改暫停狀態，不改mode；未完成解碼重查隱藏狀態，還原不解除原有靜音。
 - 遊戲主介面完全移除直屬header，標誌僅啟動／等待頁；手機預設正交正面0°／0°且DOM投影跟隨同一矩陣。
+
+## 縮圖失敗退路（2026-10-25）
+
+`gear-fallbacks.js`由pack_gear_fallbacks.cjs重用現有模型產生，隨index及離線單檔內嵌。icon3dUrl及icon3dLegendUrl是一般裝備／核心縮圖唯一入口，render拋錯後使用預製圖；專屬模型經icon3dProxyGearUrl取同一預製資料。禁止在個別頁先繞去舊JPEG或舊像素圖。此fallback不另開WebGL context。mountFigure的header選項預設保留，只有正式遊戲明確false。
