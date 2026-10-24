@@ -653,7 +653,7 @@ function scene(){
     else z += .3 + Math.sin(d.t*6)*.25;
     at3(g, x, y, z+terrainHeight(x,y)); u.item.rotation.y = d.t*2.4; u.disc.visible = true; if (u.beam) u.beam.visible = true;
   }
-  for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); R3.ent.delete(k); }
+  for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); disposeWorldObject(e); R3.ent.delete(k); }
   updateFx();
   if(typeof worldTravelRender==='function')worldTravelRender();
   updateSceneryOcclusion(R3.scenery,R3.cam,R3.hero,R3.frameDt||0);

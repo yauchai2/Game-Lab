@@ -1,6 +1,6 @@
 /* 戰場讀數、像素圖集及全視窗觀戰。只保存本機呈現偏好，不改遊戲存檔。 */
 const VIEW_KEY='idle-hero-view-v1', VIEW_ATLASES=Object.fromEntries(Object.entries(ART_SHEETS).map(([key,s])=>[key,[s.cols,s.rows]]));
-const GAME_VIEW={prefs:{idle:60,pixels:true,glitch:true,uiFx:2,quality:'auto'},atlases:{},ready:Promise.resolve(),watch:false,last:performance.now(),pointers:new Set(),swallow:new Set(),clickUntil:0,trigger:null,inert:new Map(),scroll:[],tab:null,initialized:false,pulseAt:-1000,pulseTimer:0};
+const GAME_VIEW={prefs:{idle:60,pixels:true,glitch:true,uiFx:2,quality:'auto',hideBattle:false},atlases:{},ready:Promise.resolve(),watch:false,last:performance.now(),pointers:new Set(),swallow:new Set(),clickUntil:0,trigger:null,inert:new Map(),scroll:[],tab:null,initialized:false,pulseAt:-1000,pulseTimer:0};
 const UI_FX_NAMES=['關閉','輕微','標準','強烈'];
 const UI_FX_CSS=`
 :root{--ui-fx-cyan:#57efff;--ui-fx-magenta:#ff73be}
@@ -49,7 +49,8 @@ function viewApplyPrefs(){
     else document.documentElement.style.removeProperty('--pixel-'+key);
   }
   document.querySelectorAll('[data-view-idle]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.viewIdle===GAME_VIEW.prefs.idle)));
-  document.querySelectorAll('[data-view-setting]').forEach(b=>{const on=GAME_VIEW.prefs[b.dataset.viewSetting];b.setAttribute('aria-pressed',String(on));b.textContent=b.dataset.viewSetting==='pixels'?(on?'像素圖示':'原始圖示'):(on?'動態衝擊：開':'動態衝擊：關');});
+  document.querySelectorAll('[data-view-setting]').forEach(b=>{const on=GAME_VIEW.prefs[b.dataset.viewSetting];b.setAttribute('aria-pressed',String(on));b.textContent=b.dataset.viewSetting==='pixels'?(on?'像素圖示':'原始圖示'):b.dataset.viewSetting==='hideBattle'?(on?'戰鬥畫面：隱藏':'戰鬥畫面：顯示'):(on?'動態衝擊：開':'動態衝擊：關');});
+  document.body.classList.toggle('battle-off',!!GAME_VIEW.prefs.hideBattle);if(typeof uiTitle==='function'&&GAME_VIEW.initialized)uiTitle();
 }
 function viewPreparePixels(){
   // 原圖保持不變。以每格 24 邏輯像素取樣，所有尺寸共用同一份圖集。
@@ -108,13 +109,14 @@ function viewTick(now=performance.now()){
   if(!GAME_VIEW.initialized)return;
   viewRenderHUD();
   if(viewBlocked()){GAME_VIEW.last=now;if(GAME_VIEW.watch)viewExitWatch();return;}
-  if(!GAME_VIEW.watch&&GAME_VIEW.prefs.idle>0&&now-GAME_VIEW.last>=GAME_VIEW.prefs.idle*1000)viewEnterWatch();
+  if(!GAME_VIEW.watch&&!GAME_VIEW.prefs.hideBattle&&GAME_VIEW.prefs.idle>0&&now-GAME_VIEW.last>=GAME_VIEW.prefs.idle*1000)viewEnterWatch();
   if(GAME_VIEW.tab!==modalTab){GAME_VIEW.tab=modalTab;viewFxPulse();}
 }
 function viewRestorePrefs(prefs){
  if(!prefs||typeof prefs!=='object')return;
  GAME_VIEW.prefs.quality=['auto','low','medium','high'].includes(prefs.quality)?prefs.quality:'auto';
  if([0,30,60,120].includes(prefs.idle))GAME_VIEW.prefs.idle=prefs.idle;
+ GAME_VIEW.prefs.hideBattle=prefs.hideBattle===true;
  if([0,1,2,3].includes(prefs.uiFx))GAME_VIEW.prefs.uiFx=prefs.uiFx;
  for(const k of ['pixels','glitch'])if(typeof prefs[k]==='boolean')GAME_VIEW.prefs[k]=prefs[k];
 }
@@ -126,7 +128,7 @@ function viewInit(){
   hud.innerHTML='<div class="hud-left"><div class="hud-level" data-tip="角色等級；擊殺怪物獲得經驗"><span>LV</span><b data-hud="level"></b></div><div class="hud-vitals"><div class="hud-healthline"><span>HP</span><b data-hud="hp"></b></div><div class="hud-meter hud-hp" data-hud="hpbar" role="progressbar" aria-label="生命" aria-valuemin="0" aria-valuemax="100"><i></i></div><div class="hud-meter hud-xp" data-hud="xpbar" role="progressbar" aria-label="經驗" aria-valuemin="0" aria-valuemax="100"><span>XP</span><i></i></div></div><div class="hud-progress" data-hud="progress"></div></div><div class="hud-right"><div data-tip="金幣：升級天賦、洗點與購買用"><span>G</span><b data-hud="gold"></b></div><div data-tip="單體直傷預估（DPS），實戰會因範圍與連動不同"><span>DPS</span><b data-hud="dps"></b></div></div>';
   GAME_VIEW.hud=hud;GAME_VIEW.fields=Object.fromEntries([...hud.querySelectorAll('[data-hud]')].map(el=>[el.dataset.hud,el]));ui.drawStats=viewRenderHUD;
   const back=document.createElement('button');back.id='watch-return';back.type='button';back.hidden=true;back.setAttribute('aria-label','返回操作台');back.innerHTML='<span><i aria-hidden="true"></i>觀戰中 · 點一下返回<span class="watch-key"> ／ Esc</span></span>';back.onclick=()=>viewExitWatch();document.body.appendChild(back);
-  const settings=document.createElement('section');settings.className='view-settings';settings.setAttribute('aria-label','畫面與觀戰');settings.innerHTML='<h3>畫面與觀戰</h3><div class="ui-setting-grid"><div class="view-options" role="group" aria-label="圖示與動態效果"><button type="button" data-view-setting="pixels"></button><button type="button" data-view-setting="glitch"></button></div><div class="ui-setting-block"><h4>自動觀戰</h4><div class="view-options" role="group" aria-label="自動觀戰等待時間">'+[[0,'關閉'],[30,'30 秒'],[60,'60 秒'],[120,'2 分鐘']].map(([s,t])=>`<button type="button" data-view-idle="${s}">${t}</button>`).join('')+'</div></div><button type="button" id="watch-now">立即觀戰 ↗</button></div><details class="ui-rules"><summary>畫面與觀戰說明</summary><p>像素質感套用整個操作介面。震動、衝擊與訊號可獨立關閉；系統減少動態效果時會停用動畫。觀戰填滿遊戲視窗，點一下或按 Esc 返回；編輯、拖曳及選獎勵時不自動切換。</p></details>';
+  const settings=document.createElement('section');settings.className='view-settings';settings.setAttribute('aria-label','畫面與觀戰');settings.innerHTML='<h3>畫面與觀戰</h3><div class="ui-setting-grid"><div class="view-options" role="group" aria-label="圖示與動態效果"><button type="button" data-view-setting="hideBattle" data-tip="隱藏 3D 戰鬥畫面並停止繪製，戰鬥與收益照常進行；電腦較慢或長時間掛機時可省電"></button><button type="button" data-view-setting="pixels"></button><button type="button" data-view-setting="glitch"></button></div><div class="ui-setting-block"><h4>自動觀戰</h4><div class="view-options" role="group" aria-label="自動觀戰等待時間">'+[[0,'關閉'],[30,'30 秒'],[60,'60 秒'],[120,'2 分鐘']].map(([s,t])=>`<button type="button" data-view-idle="${s}">${t}</button>`).join('')+'</div></div><button type="button" id="watch-now">立即觀戰 ↗</button></div><details class="ui-rules"><summary>畫面與觀戰說明</summary><p>像素質感套用整個操作介面。震動、衝擊與訊號可獨立關閉；系統減少動態效果時會停用動畫。觀戰填滿遊戲視窗，點一下或按 Esc 返回；編輯、拖曳及選獎勵時不自動切換。</p></details>';
   $('uisettings').append(settings);
   const quality=document.createElement('section');quality.className='ui-setting-block view-quality';quality.innerHTML='<h4>3D 畫質</h4><div class="view-options" role="group" aria-label="3D 畫質">'+[['auto','自動'],['low','低'],['medium','中'],['high','高']].map(([key,label])=>`<button type="button" data-view-quality="${key}" aria-pressed="false">${label}</button>`).join('')+'</div><p id="view-quality-summary" class="uxmeta"></p><p class="uxmeta">自動：手機中畫質，桌機高畫質。只調整 3D 清晰度，像素字體保持不變。</p>';settings.querySelector('.ui-setting-grid').prepend(quality);
   const control=document.createElement('div');control.className='view-fx-control ui-setting-block';control.innerHTML='<div><label for="ui-fx-level">介面像素質感</label><output for="ui-fx-level" id="ui-fx-name"></output></div><input id="ui-fx-level" type="range" min="0" max="3" step="1" aria-describedby="ui-fx-help"><div class="view-fx-ticks" aria-hidden="true"><span>關閉</span><span>輕微</span><span>標準</span><span>強烈</span></div><p id="ui-fx-help" class="uxsr">調整外殼訊號紋理。關閉時保留像素字體，恢復平滑按鍵與連續血條。</p>';
