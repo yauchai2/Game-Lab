@@ -681,4 +681,4 @@ Alan 欣賞參考截圖的技能組裝思考，但不希望照搬；本輪僅發
 - [x] CAREER-08：角色頁中心3D緩慢自轉與待機動作，尊重減少動態。
 - [x] CAREER-09：移除所有自動裝備、自動接線及自動配置，保留手動裝備及組裝。
 
-CAREER-01至09驗證及平衡限制：[候選驗收](classes-circuits-2026-10-24/review.md)。已實作與驗證，未合併／未發佈。
+CAREER-01至09已隨v0.46.0合併及發佈；驗證及平衡限制見[驗收](classes-circuits-2026-10-24/review.md)，來源、Claude整合及上線核對見[發佈紀錄](release-0.46.0/integration.md)。

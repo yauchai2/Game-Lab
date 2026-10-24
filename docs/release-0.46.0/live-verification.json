@@ -1,0 +1,92 @@
+{
+  "manifest": {
+    "version": "0.46.0",
+    "commit": "f7adc3357f5eed8dba7c95547c4ba2eb69f39797",
+    "sha256": "71c06f7f01b84900f168fc26bd26ce1dce501987149c03641b0ae4c86b0d6aa7",
+    "standalone_sha256": "b538ffd1eb0d1734344f4db1fb17a494e6040f54c80f4d61bf032d72bb689133",
+    "assets": {
+      "vendor.170c6789f43217c9.js": "170c6789f43217c96b3170f4b42fafe135de7f7cd48497a4218f9757ee1d49fa",
+      "game.e46320e15c07557f.js": "e46320e15c07557fd491918d9c459eaf8fd5916f49b249f7ed43972cfaa3eed2"
+    }
+  },
+  "verified": {
+    "index.html": {
+      "sha256": "71c06f7f01b84900f168fc26bd26ce1dce501987149c03641b0ae4c86b0d6aa7",
+      "bytes": 1387
+    },
+    "vendor.170c6789f43217c9.js": {
+      "sha256": "170c6789f43217c96b3170f4b42fafe135de7f7cd48497a4218f9757ee1d49fa",
+      "bytes": 669884
+    },
+    "game.e46320e15c07557f.js": {
+      "sha256": "e46320e15c07557fd491918d9c459eaf8fd5916f49b249f7ed43972cfaa3eed2",
+      "bytes": 12868524
+    }
+  },
+  "release_url": "https://github.com/yauchai2/Game-Lab/releases/tag/v0.46.0",
+  "asset_url": "https://github.com/yauchai2/Game-Lab/releases/download/v0.46.0/idle-hero.html",
+  "asset_digest": "sha256:b538ffd1eb0d1734344f4db1fb17a494e6040f54c80f4d61bf032d72bb689133",
+  "asset_bytes": 13540403,
+  "tag_source": "f7adc3357f5eed8dba7c95547c4ba2eb69f39797",
+  "pages_commit": "b853777fc8e6cc2874dbb951c4b96dc229a3eb83",
+  "pages_status": "built",
+  "asset_verification": "GitHub API digest and size match tested standalone; not a redirected attachment download claim",
+  "runs": [
+    {
+      "conclusion": "success",
+      "databaseId": 40077490150,
+      "headSha": "b853777fc8e6cc2874dbb951c4b96dc229a3eb83",
+      "name": "pages build and deployment",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40077472352,
+      "headSha": "f7adc3357f5eed8dba7c95547c4ba2eb69f39797",
+      "name": "release",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40071666931,
+      "headSha": "d3237f326d75d98278d749abcc9eb542067f1a23",
+      "name": "release",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40071657892,
+      "headSha": "ccfb76d2e1bb1173cbe9ec1cd39889d821a26f0e",
+      "name": "pages build and deployment",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40056106608,
+      "headSha": "2d36f4030e3bcb3d4d78b7d10e955d5cdc5032bc",
+      "name": "release",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40056099587,
+      "headSha": "efe1aced7b23e1da631f52f59e21cb4c6bffc371",
+      "name": "pages build and deployment",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40049182421,
+      "headSha": "6db59660c905d54bab2c10fff78c37768b841027",
+      "name": "release",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40049165501,
+      "headSha": "864077335c2654cea13bc4d7bcd4b5bd844cb97a",
+      "name": "pages build and deployment",
+      "status": "completed"
+    }
+  ]
+}

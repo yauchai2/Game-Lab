@@ -71,3 +71,12 @@ PR #39 整合 #38 的裝置介面與 #37 的最新角色文案（截至 e0b3468�
 PR #41 已合併，來源／標籤 d3237f326d75d98278d749abcc9eb542067f1a23；Pages 提交 ccfb76d2e1bb1173cbe9ec1cd39889d821a26f0e，狀態 built。本次已 fetch 並查核 Claude 最新 e0b3468，無未納入的新遊戲提交，所有分支保留。
 
 [Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.45.0) 工作流程 40071666931 成功並附離線單檔；線上 manifest、入口與兩個腳本的 SHA-256，以及附件 digest／大小均已核對。見 [整合紀錄](release-0.45.0/integration.md) 與 [線上核對](release-0.45.0/live-verification.json)。已有存檔直接續玩；短篇序章及起始角色選擇只在新局出現。
+
+
+## v0.46.0 已發佈（2026-10-24，香港時間）
+
+PR #43已合併，來源／標籤f7adc3357f5eed8dba7c95547c4ba2eb69f39797；Pages提交b853777fc8e6cc2874dbb951c4b96dc229a3eb83，狀態built。每次release的Claude查核已執行：最新e0b3468已在主線，其餘舊分支及PR保留，內部備份不帶入網站。
+
+[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.46.0)工作流程40077472352成功並附離線單檔；Pages工作流程40077490150成功。線上manifest、入口、兩個腳本、標籤來源及附件digest／大小均已核對。見[整合紀錄](release-0.46.0/integration.md)及[線上核對](release-0.46.0/live-verification.json)。
+
+此版改為固定職業與最多12個獨立角色；舊8×8板與物品保留，配件必須符合同色洞、供電及每技能三枚上限，未接通技能不會施放，舊構築可能需要重新手動組裝。備份碼只含目前角色，仍無帳號同步。長期平衡與真機效能不冒稱已驗收。
