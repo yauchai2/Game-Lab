@@ -9,3 +9,7 @@
 新一輪17項需求列於backlog的STYLE-01至17，將在下一候選實作，不以本release宣稱完成。Cloudflare目前沒有登入；不能僅憑電郵取得帳號權限，回饋API仍未部署。
 
 發佈後的來源、Pages與Release附件核對另見live-verification.json，未有此證據前不宣稱已上線。
+
+## 已發佈
+
+PR #48已合併。來源／tag88012d568acdc8dbc5db1423838f5174d357a83d，Pages08a8029a256e39f1e8f8a2bc8dc1a63172b9321c；Release40103262662與Pages40103207418成功。線上manifest／index／兩腳本SHA-256及附件digest／大小相符，正式瀏覽器技能盤、七部位與3D頭像啟動通過。見live-verification.json及site-browser.json。下一批另開候選，不移動0.48標籤。

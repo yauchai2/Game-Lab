@@ -89,3 +89,7 @@ PR #45已合併，來源／標籤401a3658c4b47e0a47395fed157e971ff0fde268；Page
 [Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.47.0)工作流程40093529090及Pages工作流程40093528098成功。線上版本、入口與兩個雜湊腳本、標籤來源及附件digest／大小已核對；見[整合紀錄](release-0.47.0/integration.md)與[線上證據](release-0.47.0/live-verification.json)。分離式部署啟動以已核對HTTPS雜湊的原檔重播；雲端Chromium直接連線CA限制仍如實記錄。
 
 一般天賦最多24點，舊超額配置保留，可主動轉換／還原；昇華四點獨立。更新前可匯出本機存檔。真機Safari、長時效能及完整終局平衡未宣稱已驗收。
+
+## v0.48.0已發佈（2026-10-24）
+
+PR #48合併，來源／tag88012d568acdc8dbc5db1423838f5174d357a83d，Pages08a8029a256e39f1e8f8a2bc8dc1a63172b9321c。Release40103262662／Pages40103207418成功；正式manifest、入口、兩腳本SHA-256及附件digest／大小已核對，線上瀏覽器啟動通過。Claude遊戲最新e0b3468已包含，內部備份與歷史研究改名分支排除，分支全保留。證據[發佈整合](release-0.48.0/integration.md)。
