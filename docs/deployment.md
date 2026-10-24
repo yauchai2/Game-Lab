@@ -99,3 +99,7 @@ PR #48合併，來源／tag88012d568acdc8dbc5db1423838f5174d357a83d，Pages08a80
 PR #50合併，來源／tag78e989151c3dd0eba0cbf7000138227e68d9fb3b，Pages5d6b46ef87ee568a127ae52fa17294b44b12eb23。Release40139564065／Pages40139551744成功；正式HTTPS版本、入口、兩腳本SHA-256、附件digest及大小均已核對。直接正式站瀏覽器驗證任務、技能盤、七部位、角色頭像、正面手機、賽季，無頁面錯誤。[整合及證據](release-0.49.0/integration.md)。
 
 每次發佈的Claude所有分支及PR重新查核已完成，e0b3468已包含、無新遊戲提交待整合，內部備份及歷史研究改名排除，所有分支保留。新增本機斷訊季、連續背包及狀態機制；進度仍本機，建議先匯出備份。Cloudflare回饋及Ko-fi收款未接通，如實保留待辦。
+
+## v0.49.1遺漏修補（2026-10-25）
+
+PR #52合併，來源／tagcf0382089483843466ecc63590528c43dfc00c51，Pages764c138fada90d5fba52c48c5e90c8a9bf88c62a。Release40141178138／Pages40141169461成功。正式HTTPS版本、入口／腳本雜湊及附件digest／大小一致；直接正式站驗證主header生命週期及全部裝備／核心縮圖失敗退路通過。[整合與限制](release-0.49.1/integration.md)。來源先push，Claude所有分支及PR已重新查核，全部分支／tag保留。

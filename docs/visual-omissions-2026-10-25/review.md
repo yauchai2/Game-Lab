@@ -1,6 +1,6 @@
 # 對話要求與正式站遺漏複核
 
-2026-10-25，香港時間。基底main d00974f；正式站0.49.0／78e9891。修正候選codex/visual-omissions-audit，0.49.1，發佈狀態另見release-0.49.1。
+2026-10-25，香港時間。基底main d00974f；正式站0.49.0／78e9891。修正來源codex/visual-omissions-audit已由PR #52合併，0.49.1已發佈，來源cf03820；[正式證據](../release-0.49.1/integration.md)。
 
 ## 重現與修正
 
