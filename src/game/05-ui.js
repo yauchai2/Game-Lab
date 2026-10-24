@@ -53,7 +53,7 @@ const invN = () => Object.values(G.gems).reduce((a, b) => a + b, 0) + Object.val
 const dotOn = k => k === 'skills' ? invN() > (G.seenInv || 0) : k === 'craft' ? (G.parts || 0) >= 6 && G.parts > (G.seenParts || 0) : k === 'col' ? Object.keys(G.goals).length > (G.seenGoals || 0) : false;
 function markSeen(t){ if (t === 'skills'){ if (!G.newSnap || modalTabPrev !== 'skills') G.newSnap = { g:{ ...(G.seenG || G.gems) }, c:{ ...(G.seenC || G.carts) } }; G.seenG = { ...G.gems }; G.seenC = { ...G.carts }; G.seenInv = invN(); } else if (t === 'craft') G.seenParts = G.parts || 0; else if (['goals', 'ach', 'dex'].includes(t)) G.seenGoals = Object.keys(G.goals).length; }
 let modalTabPrev = '';
-function openModal(tab){ if(typeof WIRE_MOVE!=='undefined'&&tab&&tab!=='skills'){WIRE_MOVE=null;if(drag?.piece!=null)wireUp({type:'pointercancel'});}modalTabPrev = modalTab; modalTab = tab || modalTab; markSeen(modalTab); resetArm = false; $('modal').hidden = false; renderModal(true); }
+function openModal(tab){ if(typeof WIRE_MOVE!=='undefined'&&tab&&tab!=='skills'){WIRE_MOVE=null;if(drag)wireUp({type:'pointercancel'});}modalTabPrev = modalTab; modalTab = tab || modalTab; markSeen(modalTab); resetArm = false; $('modal').hidden = false; renderModal(true); }
 const MOB = () => document.body.classList.contains('m');   // 手機直式：上面戰鬥畫面，下面固定的分頁面板（彈窗變成面板）
 const DESK = () => document.body.classList.contains('d');   // 桌機寬螢幕：左邊角色與紀錄、中間戰鬥、右邊常駐分頁面板
 function closeModal(){ if(MOB()||DESK()){renderModal(true);return;} $('modal').hidden=true; }
@@ -209,8 +209,18 @@ function rulesBar(){
 function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未開放.txt</div><div style="font-size:13px;line-height:1.7">升到 ${L} 級開放${k === 'craft' ? '改機（拆裝備得零件，重洗與改裝詞綴）' : '天賦盤（升級得到的點數在這裡分配）'}。</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 const qm = k => `<button aria-label="${HELP[k] ? HELP[k][0] : '說明'}" class="qm" onclick="showHelp('${k}')">?</button>`;
-function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; uxOpenDialog(o, o.querySelector('h2,b,.mct')?.textContent || '遊戲提示', hideOverlay); }
-function hideOverlay(){ if(typeof CAREER_UI!=='undefined')CAREER_UI.pending=null;UI_CHARACTER_PICK=null;UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
+let OVERLAY_CLOSE=null;
+function windowCloseOverlay(){const close=OVERLAY_CLOSE||hideOverlay;OVERLAY_CLOSE=null;close();}
+function showOverlay(html,options={}){
+ const o=$('ovl');o.innerHTML=`<div class="mbox small">${html}</div>`;OVERLAY_CLOSE=options.close||hideOverlay;
+ const box=o.firstElementChild;if(options.surface)box.classList.add(options.surface);const heading=box.querySelector('h2,.mct'),label=options.title||heading?.textContent||box.querySelector('b')?.textContent||'遊戲提示';
+ const bar=document.createElement('div');bar.className='window-titlebar';const title=document.createElement('span');title.className='window-title';title.setAttribute('role','heading');title.setAttribute('aria-level','2');title.textContent=label;bar.append(title);
+ if(heading)heading.remove();const close=document.createElement('button');close.type='button';close.className='mb window-close';close.setAttribute('aria-label',options.closeLabel||'關閉視窗');close.title=options.closeLabel||'關閉視窗';close.textContent='×';close.addEventListener('click',windowCloseOverlay);bar.append(close);box.prepend(bar);
+ for(const button of [...box.querySelectorAll('button')])if(button.getAttribute('onclick')==='hideOverlay()'&&/^(返回|知道了|關閉)/.test(button.textContent.trim())){if(button.hasAttribute('data-initial-focus'))close.setAttribute('data-initial-focus','');button.remove();}
+ const cancel=box.querySelector('[data-initial-focus]:not(:disabled)');if(!options.close&&cancel&&/^(取消|保留|繼續)/.test(cancel.textContent.trim()))OVERLAY_CLOSE=()=>cancel.click();
+ uxOpenDialog(o,label,windowCloseOverlay);
+}
+function hideOverlay(){ OVERLAY_CLOSE=null;if(typeof CAREER_UI!=='undefined')CAREER_UI.pending=null;UI_CHARACTER_PICK=null;UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
 const offYield = fn => { if (typeof MessageChannel === 'function'){ const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); fn(); }; c.port2.postMessage(0); } else setTimeout(fn, 0); };
 const OFF_WINDOW = 600;   // 離線只精確模擬前 10 分鐘，其餘用這段的收益率放大

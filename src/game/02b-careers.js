@@ -17,7 +17,7 @@ const ASC_UNLOCK={lvl:20,depth:8,boss:10};
 function ascendInfo(id=G.ascension,job=G.char){return ASCENSIONS[job]?.find(a=>a.id===id)||null;}
 function canAscend(){return G.lvl>=ASC_UNLOCK.lvl&&G.maxDepth>=ASC_UNLOCK.depth&&G.bossKills>=ASC_UNLOCK.boss;}
 function ascensionState(id){const a=ascendInfo(id),cost=G.ascension&&G.ascension!==id?500*G.lvl:0;return {a,cost,ok:!!a&&canAscend()&&!G.run&&!G.train&&G.ascension!==id&&G.gold>=cost};}
-function chooseAscension(id,expected){const state=ascensionState(id);if(!state.ok||expected&&(expected.job!==G.char||expected.prev!==(G.ascension||null)||expected.cost!==state.cost))return false;G.gold-=state.cost;G.ascension=id;G.characterRuntime=null;recalc();return true;}
+function chooseAscension(id,expected){const state=ascensionState(id);if(!state.ok||expected&&(expected.job!==G.char||expected.prev!==(G.ascension||null)||expected.cost!==state.cost))return false;G.gold-=state.cost;G.ascension=id;G.ascensionNodes=[];G.characterRuntime=null;recalc();return true;}
 function circuitAllowed(id){const t=GridLab.TEMPLATES[id];return !!t&&(t.legacy||G.lvl>=t.lvl&&G.maxDepth>=t.depth);}
 function circuitPool(){return Object.keys(GridLab.TEMPLATES).filter(id=>!GridLab.TEMPLATES[id].legacy&&id!=='pocket'&&circuitAllowed(id));}
 function circuitDrop(kind){

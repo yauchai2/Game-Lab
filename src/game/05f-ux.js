@@ -11,7 +11,7 @@ body.ui-material :is(#mttl,.wkt){background:var(--ux-title-face)!important;borde
 body.ui-material :is(#mttl h2,.wkt h2){font-family:var(--ux-display);font-weight:400;text-shadow:1px 1px #1c2c66}
 body.ui-material #mttl::before{display:block;content:"";width:5px;height:20px;flex:none;background:linear-gradient(#b9f1f0 0 40%,#6bbacb 40% 65%,#b9f1f0 65%);box-shadow:1px 0 #1c2c66}
 body.ui-material :is(#modal,#ovl,#wiki) :where(button:not(.pc):not(.gt)){background:var(--ux-key-face)!important;border:1px solid var(--ux-frame)!important;border-radius:var(--ux-key-radius)!important;box-shadow:var(--ux-key-shadow)!important;text-shadow:none!important;color:var(--ux-ink)!important;transform:none!important;font-family:var(--ux-body)!important}
-body.ui-material :is(#modal,#ovl,#wiki) :where(button:not(.pc):not(.gt)):enabled:hover{background:var(--ux-key-hover)!important}
+body.ui-material :is(#modal,#ovl,#wiki) :where(button:not(.pc):not(.gt):not([aria-pressed="true"]):not(.on)):enabled:hover{background:var(--ux-key-hover)!important}
 body.ui-material :is(#modal,#ovl,#wiki) :where(button:not(.pc):not(.gt)):enabled:active{box-shadow:var(--ux-inset)!important}
 body.ui-material #mtabs{background:var(--ux-metal)!important;box-shadow:inset 0 1px #fff!important;border:0!important;gap:4px!important}
 body.ui-material #mtabs button.tab{background:var(--ux-key-face)!important;border:1px solid #8492ae!important;border-radius:4px 4px 6px 6px!important;box-shadow:var(--ux-key-shadow)!important;text-shadow:none!important;color:var(--ux-ink)!important}
@@ -170,8 +170,8 @@ function uxRestoreFocus(t){
   if (!el && scope) el = t.key ? [...scope.querySelectorAll('[data-focus]')].find(e => e.dataset.focus === t.key) : t.action ? [...scope.querySelectorAll('[onclick]')].find(e => e.getAttribute('onclick') === t.action) : null;
   if (el && !el.closest('[inert]') && !el.disabled) el.focus({ preventScroll:true });
 }
-function uxCapturePanel(){ return { focus:uxFocusToken(), scroll:document.getElementById('mbody')?.scrollTop || 0, details:[...document.querySelectorAll('#mbody details')].map(el=>el.open) }; }
-function uxRestorePanel(s, reset){ if(reset){document.getElementById('mbody').scrollTop=0;const settings=document.getElementById('uisettings');if(settings)settings.scrollTop=0;} if (!reset){ document.getElementById('mbody').scrollTop = s.scroll;document.querySelectorAll('#mbody details').forEach((el,i)=>{if(s.details[i]!=null)el.open=s.details[i]});uxRestoreFocus(s.focus); } }
+function uxCapturePanel(){ return { focus:uxFocusToken(), scroll:document.getElementById('mbody')?.scrollTop || 0, scrollers:Object.fromEntries([...document.querySelectorAll('#mbody [data-scroll-key]')].map(el=>[el.dataset.scrollKey,{left:el.scrollLeft,top:el.scrollTop}])), details:[...document.querySelectorAll('#mbody details')].map(el=>el.open) }; }
+function uxRestorePanel(s, reset){ if(reset){document.getElementById('mbody').scrollTop=0;const settings=document.getElementById('uisettings');if(settings)settings.scrollTop=0;} if (!reset){ for(const el of document.querySelectorAll('#mbody [data-scroll-key]')){const pos=s.scrollers?.[el.dataset.scrollKey];if(pos){el.scrollLeft=pos.left;el.scrollTop=pos.top;}}document.getElementById('mbody').scrollTop = s.scroll;document.querySelectorAll('#mbody details').forEach((el,i)=>{if(s.details[i]!=null)el.open=s.details[i]});uxRestoreFocus(s.focus); } }
 function uxLayerSync(){
   for (const [el, was] of UX_INERT) el.inert = was;
   UX_INERT.clear();

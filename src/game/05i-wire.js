@@ -109,7 +109,7 @@ function wireNextUnlock(){return '取得不同電路板可增加可用格與終�
 function wireGuideHtml(){const n=GridLab.resolve(G.board,G.lvl).filter(r=>r.wired).length;return `<p class="device-wire-note">${n?'已接通 '+n+' 個技能。':'先點終點裝技能，再從起點逐格接線。'}配件只可入同色洞，供電 ${GridLab.powerUsed(G.board)}／${GridLab.layout(G.board).power}。</p>`;}
 function wireLegendHtml(){return '<p>起點 ⚡ → 相鄰電線 → 對應終點，完整接通才會亮燈及施放技能。紅、藍、綠寶石只可入同色洞；每技能最多三枚配件，Ⅰ／Ⅱ／Ⅲ耗電1／2／3。</p>';}
 function wireZoom(){WIRE_ZOOM=!WIRE_ZOOM;renderModal();}
-function wireTopHtml(){wireInstallStyles();return `<div class="wire-board-scroll${WIRE_ZOOM?' zoomed':''}" tabindex="0" aria-label="電路板視窗，放大時可水平捲動">${wireBoardHtml()}</div>${wireBar()}`;}
+function wireTopHtml(){wireInstallStyles();return `<div data-scroll-key="wire-board" class="wire-board-scroll${WIRE_ZOOM?' zoomed':''}" tabindex="0" aria-label="電路板視窗，放大時可水平捲動">${wireBoardHtml()}</div>${wireBar()}`;}
 
 /* ---------- 說明與可及性 ---------- */
 function uxPieceDetails(){ return ''; }   // 選取詳情改放在接線板下方（wireSelCard）
@@ -197,7 +197,7 @@ function wirePickPiece(x, y, p){
 }
 function wirePickTake(id){ wirePickClose(); wireTake(id); }
 document.addEventListener('pointerdown', e => { if (!e.target.closest || e.target.closest('#wpick') || e.target.closest('.wb')) return; wirePickClose(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape'){wirePickClose();if(WIRE_MOVE){WIRE_MOVE=null;uxAnnounce('已取消移動。');}if(drag?.piece!=null)wireUp({type:'pointercancel'});} });
+document.addEventListener('keydown', e => { if (e.key === 'Escape'){wirePickClose();if(WIRE_MOVE){WIRE_MOVE=null;uxAnnounce('已取消移動。');}if(drag)wireUp({type:'pointercancel'});} });
 function wireTap(x, y){
   if (noClick) return;
   const B = G.board; UX_GRID.x = x; UX_GRID.y = y;
@@ -287,7 +287,7 @@ function wirePieceDragMove(ev){
  document.querySelectorAll('.wire-target,.wire-target-bad').forEach(e=>e.classList.remove('wire-target','wire-target-bad'));
  const hit=document.elementFromPoint(ev.clientX,ev.clientY),cell=hit?.closest('.wb .pc[data-x]'),p=G.board.pieces.find(p=>p.id===d.piece);if(cell)cell.classList.add(wireCanMove(p,+cell.dataset.x,+cell.dataset.y)?'wire-target':'wire-target-bad');document.querySelector('[data-wire-remove]')?.classList.toggle('drag-over',!!hit?.closest('[data-wire-remove]'));
 }
-addEventListener('blur',()=>{if(drag?.piece!=null)wireUp({type:'pointercancel'});});
+addEventListener('blur',()=>{if(drag)wireUp({type:'pointercancel'});});
 document.addEventListener('dragstart',e=>{if(e.target.closest?.('.wb,.ui-inventory-grid'))e.preventDefault();});
 function wireDown(ev, x, y){
   if (ev.button > 0 || drag || held) return;
@@ -295,35 +295,37 @@ function wireDown(ev, x, y){
   if(piece&&!WIRE_MOVE){drag={piece:piece.id,signature:JSON.stringify(piece),sx:ev.clientX,sy:ev.clientY,moved:false,pointer:ev.pointerId};document.addEventListener('pointermove',wireMove,{passive:false});document.addEventListener('pointerup',wireUp);document.addEventListener('pointercancel',wireUp);return;}
   const si = GridLab.layout(G.board).srcs.findIndex(c => c[0] === x && c[1] === y);
   if (si >= 0 && wOpen(si)){   // 按住起點：選取此線，再逐格手動繪製
-    drag = { sx:ev.clientX, sy:ev.clientY, moved:false, at:[x, y], src:si };
-    document.addEventListener('pointermove', wireMove); document.addEventListener('pointerup', wireUp); document.addEventListener('pointercancel', wireUp);
+    drag = { sx:ev.clientX,sy:ev.clientY,px:ev.clientX,py:ev.clientY,pointer:ev.pointerId,moved:false,at:[x,y],src:si,before:JSON.stringify(G.board),undo:WIRE_UNDO };
+    document.addEventListener('pointermove',wireMove,{passive:false}); document.addEventListener('pointerup', wireUp); document.addEventListener('pointercancel', wireUp);
     return;
   }
   if (selSock < 0 || !wActive(selSock)) return;
   const w = GridLab.getWire(G.board, selSock), last = w && w.cells[w.cells.length - 1];
   const st = GridLab.startOf(selSock,G.board), ok = (!w && x === st[0] && y === st[1]) || (last && last[0] === x && last[1] === y && !GridLab.connected(G.board, selSock));
   if (!ok) return;
-  drag = { sx:ev.clientX, sy:ev.clientY, moved:false, at:[x, y] };
-  document.addEventListener('pointermove', wireMove); document.addEventListener('pointerup', wireUp); document.addEventListener('pointercancel', wireUp);
+  drag = { sx:ev.clientX,sy:ev.clientY,px:ev.clientX,py:ev.clientY,pointer:ev.pointerId,moved:false,at:[x,y],before:JSON.stringify(G.board),undo:WIRE_UNDO };
+  document.addEventListener('pointermove',wireMove,{passive:false}); document.addEventListener('pointerup', wireUp); document.addEventListener('pointercancel', wireUp);
 }
 function wireMove(ev){
-  const d = drag; if (!d) return;
-  if(d.piece!=null){wirePieceDragMove(ev);return;}
-  if (!d.moved && Math.hypot(ev.clientX - d.sx, ev.clientY - d.sy) < 8) return;
-  if(!d.moved)WIRE_UNDO=JSON.stringify(G.board);d.moved = true; ev.preventDefault();
-  if (d.src != null){   // 從起點開拉：此時才選線及清掉舊線（單純點一下不會動到現有的線）
-    const si = d.src; selSock = si; selPiece = null;
-    if(!wActive(si)){wireUp({type:'pointercancel'});pzMsg('先在對應終點手動裝上一個技能。');return;}
-    if (GridLab.getWire(G.board, si)) GridLab.clearWire(G.board, si);
-    d.src = null; recalc(); wireRedrawLive();
-  }
-  const c = wireCellAt(ev.clientX, ev.clientY); if (!c || (c[0] === d.at[0] && c[1] === d.at[1])) return;
-  const B = G.board, w = GridLab.getWire(B, selSock);
-  if (w && w.cells.length >= 2 && w.cells[w.cells.length - 2][0] === c[0] && w.cells[w.cells.length - 2][1] === c[1]){ GridLab.shrink(B, selSock); d.at = c; recalc(); wireRedrawLive(); return; }
-  if (!GridLab.isInner(c[0], c[1],G.board)){ d.at = c; return; }
-  const r = GridLab.extendTo(B, selSock, c[0], c[1], G.lvl); d.at = c;
-  if (r.ok){ recalc(); wireRedrawLive(); if (r.connected) wireUp(); }
+ const d=drag;if(!d||ev.pointerId!==d.pointer)return;
+ if(d.piece!=null){wirePieceDragMove(ev);return;}
+ if(!d.moved&&Math.hypot(ev.clientX-d.sx,ev.clientY-d.sy)<8)return;
+ ev.preventDefault();
+ if(!d.moved){WIRE_UNDO=d.before;d.moved=true;wirePickClose();const wb=document.querySelector('.wb');if(wb){try{wb.setPointerCapture(d.pointer);d.capture=wb;}catch(e){}wb.addEventListener('lostpointercapture',wireLostCapture,{once:true});}}
+ if(d.src!=null){selSock=d.src;selPiece=null;if(!wActive(selSock)){wireUp({type:'pointercancel'});pzMsg('先在對應終點手動裝上一個技能。');return;}GridLab.clearWire(G.board,selSock);d.src=null;recalc();}
+ const rect=document.querySelector('.wb')?.getBoundingClientRect(),step=Math.max(2,(rect?.width||300)/G.board.w/4),distance=Math.hypot(ev.clientX-d.px,ev.clientY-d.py),count=Math.min(512,Math.max(1,Math.ceil(distance/step)));
+ let changed=false,done=false;
+ for(let i=1;i<=count;i++){
+  const c=wireCellAt(d.px+(ev.clientX-d.px)*i/count,d.py+(ev.clientY-d.py)*i/count);if(!c||c[0]===d.at[0]&&c[1]===d.at[1])continue;
+  const w=GridLab.getWire(G.board,selSock);d.at=c;
+  if(w?.cells.length>=2&&w.cells.at(-2)[0]===c[0]&&w.cells.at(-2)[1]===c[1]){GridLab.shrink(G.board,selSock);changed=true;continue;}
+  if(!GridLab.isInner(...c,G.board))continue;
+  const result=GridLab.extend(G.board,selSock,...c,G.lvl);if(result.ok){changed=true;if(result.connected){done=true;break;}}
+ }
+ d.px=ev.clientX;d.py=ev.clientY;
+ if(changed){recalc();wireRedrawLive();}if(done)wireUp();
 }
+function wireLostCapture(ev){if(drag?.capture===ev.currentTarget&&drag.pointer===ev.pointerId)wireUp({type:'pointercancel'});}
 function wireRedrawLive(){   // 拖曳中只更新線與格子，不重建整個面板，手指不會被打斷
   const wb = document.querySelector('.wb'); if (!wb) return;
   const html = wireBoardHtml(), t = document.createElement('div'); t.innerHTML = html; const nb = t.firstElementChild;
@@ -333,7 +335,9 @@ function wireUp(ev){
   document.removeEventListener('pointermove', wireMove); document.removeEventListener('pointerup', wireUp); document.removeEventListener('pointercancel', wireUp);
   const d = drag; drag = null;
   if(d?.piece!=null){document.getElementById('wire-ghost')?.remove();document.querySelector('.wb')?.classList.remove('piece-dragging');document.querySelectorAll('.wire-target,.wire-target-bad').forEach(e=>e.classList.remove('wire-target','wire-target-bad'));document.querySelector('[data-wire-remove]')?.classList.remove('drag-over');if(!d.moved)return;noClick=true;setTimeout(()=>noClick=false,250);if(!ev||ev.type==='pointercancel'){uxAnnounce('已取消移動，盤面沒有變更。');return;}const hit=document.elementFromPoint(ev.clientX,ev.clientY);if(hit?.closest('[data-wire-remove]'))wireRemovePiece(d.piece,d.signature);else{const target=wireCellAt(ev.clientX,ev.clientY);if(target)wireMovePiece(d.piece,...target,d.signature);else uxAnnounce('已取消移動，盤面沒有變更。');}return;}
+  if(d?.capture){d.capture.removeEventListener('lostpointercapture',wireLostCapture);try{if(d.capture.hasPointerCapture(d.pointer))d.capture.releasePointerCapture(d.pointer);}catch(e){}}
   if (!d || !d.moved) return;
+  if(ev?.type==='pointercancel'){G.board=JSON.parse(d.before);WIRE_UNDO=d.undo;selSock=-1;selPiece=null;recalc();renderModal();noClick=true;setTimeout(()=>noClick=false,250);uxAnnounce('已取消接線，還原原有配置。');return;}
   noClick = true; setTimeout(() => { noClick = false; }, 0);
   const done=GridLab.connected(G.board,selSock);if(done){selSock=-1;selPiece=null;}renderModal();uxAnnounce(done?'接通了，目前預估 DPS '+tFmt(G.st.dps):'接線中');
 }
