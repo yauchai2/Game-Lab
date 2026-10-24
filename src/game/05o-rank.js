@@ -72,7 +72,7 @@ function rankSave(){ try { localStorage.setItem(RANK_KEY, JSON.stringify({ v:1, 
 
 function rankSnap(cat, score){
   const equip = Object.keys(SLOTN).map(s => { const it = G.equip[s]; return it ? { slot:s, name:it.name, r:it.r, il:it.il, lg:it.lg || '', lines:itemLines(it).map(l => l.t) } : null; }).filter(Boolean);
-  return rankClean({ cat, score, t:Date.now(), name:G.heroName || '阿街', char:G.char, lvl:G.lvl, depth:G.maxDepth, tower:G.towerBest || 0, dps:G.st.dps, life:G.st.life, crit:G.st.crit,
+  return rankClean({ cat, score, t:Date.now(), name:G.heroName || '茜', char:G.char, lvl:G.lvl, depth:G.maxDepth, tower:G.towerBest || 0, dps:G.st.dps, life:G.st.life, crit:G.st.crit,
     equip, relics:Object.keys(G.relics || {}), pass:(G.pass || []).length, ver:VERSION(), board:{ v:5, pieces:G.board.pieces, wires:G.board.wires } });
 }
 function rankAdd(r){

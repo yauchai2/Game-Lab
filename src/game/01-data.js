@@ -4,8 +4,8 @@
    ===================================================================== */
 const GAME_FEATURES = {cardChoices:false};
 const BXW = 30, BYW = 74, BZ = 3;
-const HX = 15, HY = 36;   // 主角站在島的正中央，怪物從四面八方來
-// 怪物圍住英雄的站位（相對主角的偏移）：五圈、四方八面都有，讓一大群怪可以同時圍上來
+const HX = 15, HY = 36;   // 主角站在島的正中央，魔物從四面八方來
+// 魔物圍住英雄的站位（相對主角的偏移）：五圈、四方八面都有，讓一大群怪可以同時圍上來
 const SLOTS = [];
 for (const [n, r] of [[6, 10], [10, 16], [14, 22], [18, 28], [22, 34]]) for (let i = 0; i < n; i++){ const a = -Math.PI/2 + (i + (r % 2 ? .5 : 0))*Math.PI*2/n; SLOTS.push([Math.cos(a)*r, Math.sin(a)*r]); }
 const BONE  = { l:'#f4efde', m:'#d9d2ba', d:'#a39b82' };
@@ -26,8 +26,8 @@ function gearImplicit(slot,il){return slot==='weapon'?{k:'dmg',v:Math.round(4+il
 const AFF = {
   dmg:   { t:v => `+${v} 物理傷害`,   b:il => 2 + il*.9 },
   inc:   { t:v => `${v}% 增加傷害`,    b:il => 8 + il*1.2 },
-  crit:  { t:v => `+${v}% 暴擊率`,     b:il => 3 + il*.35 },
-  cm:    { t:v => `+${v}% 暴擊傷害`,   b:il => 12 + il*1.6 },
+  crit:  { t:v => `+${v}% 會心率`,     b:il => 3 + il*.35 },
+  cm:    { t:v => `+${v}% 會心傷害`,   b:il => 12 + il*1.6 },
   aps:   { t:v => `${v}% 攻擊速度`,    b:il => 5 + il*.5 },
   fire:  { t:v => `${v}% 火焰傷害`,    b:il => 10 + il*1.8 },
   cold:  { t:v => `${v}% 冰霜傷害`,    b:il => 10 + il*1.8 },
@@ -40,27 +40,27 @@ const AFF = {
 };
 const POOL = { weapon:['dmg','inc','crit','aps','fire','cold','light'], armor:['life','armor','regen','leech','inc','haste'], ring:['crit','cm','leech','fire','cold','light','inc','aps','life','haste'] };
 const STAT_KEY = { dmg:'dmg', inc:'inc', crit:'crit', cm:'cm', aps:'apsInc', fire:'fire', cold:'cold', light:'light', haste:'haste', life:'life', armor:'armor', regen:'regen', leech:'leech' };
-const PREF = { dmg:'加重的', inc:'超頻的', crit:'爆擊的', cm:'暴走的', aps:'高速的', fire:'過熱的', cold:'冷氣的', light:'帶電的', haste:'寬頻的', life:'耐用的', armor:'加厚的', regen:'充電的', leech:'偷訊號的' };
+const PREF = { dmg:'加重的', inc:'超頻的', crit:'會心的', cm:'暴走的', aps:'高速的', fire:'過熱的', cold:'冷氣的', light:'帶電的', haste:'寬頻的', life:'耐用的', armor:'加厚的', regen:'充電的', leech:'偷訊號的' };
 // Y2K 城市物件：武器是街頭隨手可得的東西，外套是當年的潮服，配件是千禧年的電子小物
 const BASES = { weapon:['摺疊傘','鋁製球棒','霓虹光管','雷射光劍'], armor:['連帽衛衣','牛仔外套','羽絨背心','反光風褸'], ring:['BB Call 傳呼機','翻蓋手機','MD 隨身聽','電子寵物機'] };
-const RARE_NAMES = { weapon:['午夜快車','霓虹斷線','像素裂縫','千禧蟲'], armor:['街頭傳說','電波外套','夜行者','高架橋之影'], ring:['來電未接','Y2K 倒數','訊號滿格','撥號連線'] };
+const RARE_NAMES = { weapon:['午夜特急','霓虹斷線','像素裂縫','千年蟲'], armor:['街角傳說','電波外套','夜行者','高架橋之影'], ring:['未接來電','Y2K 倒數','電波滿格','撥號連線'] };
 /* 傳奇（暗金）裝備：每個欄位三種，各自帶一條會改變技能行為的特效 */
 const LEGENDS = {
   weapon:[ { id:'W_ECHO',  name:'回音光劍',   aff:['dmg','fire','crit','aps'],  d:'每施放 4 次技能，第 4 次會自動再施放一次（100% 傷害）' },
-           { id:'W_FORK',  name:'碎星球棒',   aff:['dmg','inc','crit','cm'],    d:'技能暴擊時，另外對 2 個附近敵人造成 50% 傷害' },
+           { id:'W_FORK',  name:'碎星球棒',   aff:['dmg','inc','crit','cm'],    d:'技能會心時，另外對 2 個附近敵人造成 50% 傷害' },
            { id:'W_MULTI', name:'萬用遙控器', aff:['dmg','inc','haste','aps'],  d:'每裝備一種不同的技能，所有技能傷害 +15%' } ],
   armor:[  { id:'A_PHOENIX', name:'不滅羽絨', aff:['life','armor','regen','leech'], d:'受到致命傷時以 50% 生命復活，全部技能立即冷卻完畢（90 秒一次）' },
            { id:'A_RIPOSTE', name:'反光風褸', aff:['life','armor','inc','haste'],   d:'成功閃避時，自動施放一次技能（80% 傷害）' },
-           { id:'A_RESET',   name:'電波外套', aff:['life','armor','haste','regen'], d:'每擊殺 25 隻怪，全部技能立即冷卻完畢' } ],
+           { id:'A_RESET',   name:'電波外套', aff:['life','armor','haste','regen'], d:'每討伐 25 隻怪，全部技能立即冷卻完畢' } ],
   ring:[   { id:'R_LAST', name:'最後一通來電', aff:['crit','cm','inc','aps'],   d:'生命低於 35% 時，技能冷卻速度 +150%、傷害 +40%' },
-           { id:'R_LINK', name:'訊號滿格',     aff:['crit','inc','fire','light'], d:'擊殺怪物時，其生命的 50% 變成傷害轉給最近的敵人' },
+           { id:'R_LINK', name:'電波滿格',     aff:['crit','inc','fire','light'], d:'討伐魔物時，其生命的 50% 變成傷害轉給最近的敵人' },
            { id:'R_DIAL', name:'撥號連線',     aff:['cm','aps','haste','inc'],  d:'每次施放技能有 20% 機率免費再施放一次' } ],
 };
 // Additional equipment types share the same affix and rarity system.
 Object.assign(POOL,{head:['life','armor','regen','haste','inc'],gloves:['aps','crit','cm','inc','life'],boots:['life','armor','regen','haste','leech'],offhand:['armor','life','crit','haste','fire','cold','light']});
 Object.assign(BASES,{head:['網帽','隔音耳罩','金屬護目鏡','訊號頭盔'],gloves:['露指手套','機車手套','導電手套','脈衝護手'],boots:['厚底帆布鞋','街頭短靴','磁浮跑鞋','光軌長靴'],offhand:['迷你音箱','反射護板','訊號接收器','電磁護盾']});
 Object.assign(RARE_NAMES,{head:['夜航頻率','靜電視界','都市殘響','斷訊面罩'],gloves:['低頻握力','凌晨訊號','電弧手勢','超載觸點'],boots:['末班快線','午夜步頻','空白軌跡','高架疾走'],offhand:['倒帶回聲','電波隔離','鏡面訊號','城市屏障']});
-Object.assign(LEGENDS,{head:[{id:'H_BROADBAND',name:'寬頻耳罩',aff:['life','haste','armor','regen'],d:'偏重生命、技能急速與持續回復的頭部裝備。'}],gloves:[{id:'G_CONTACT',name:'超頻觸點',aff:['aps','crit','cm','life'],d:'偏重攻擊速度與暴擊的手部裝備。'}],boots:[{id:'B_LASTTRAIN',name:'末班快線',aff:['life','haste','regen','armor'],d:'偏重技能急速與生存的鞋子。'}],offhand:[{id:'O_REFLECTOR',name:'訊號反射板',aff:['armor','life','haste','light'],d:'偏重護甲與閃電傷害的副手裝備。'}]});
+Object.assign(LEGENDS,{head:[{id:'H_BROADBAND',name:'寬頻耳罩',aff:['life','haste','armor','regen'],d:'偏重生命、技能急速與持續回復的頭部裝備。'}],gloves:[{id:'G_CONTACT',name:'超頻觸點',aff:['aps','crit','cm','life'],d:'偏重攻擊速度與會心的手部裝備。'}],boots:[{id:'B_LASTTRAIN',name:'末班快線',aff:['life','haste','regen','armor'],d:'偏重技能急速與生存的鞋子。'}],offhand:[{id:'O_REFLECTOR',name:'訊號反射板',aff:['armor','life','haste','light'],d:'偏重護甲與閃電傷害的副手裝備。'}]});
 // User supplied Y2K signature gear: kept out of ordinary rarity/pity/forge pools.
 const SIGNATURE_DROP = {normal:.00001, elite:.0001, boss:.001};
 const SIGNATURE_PENDING = new Set(['ping_clip','milo_md_strap','ping_bag_strap','null_lanyard']);
@@ -86,8 +86,8 @@ const SIGNATURE_GEAR = Object.fromEntries([
  ["null_pet", "volt", "offhand", "浮游寵機"],
  ["null_lanyard", "volt", "armor", "控制器頸繩"]
 ].map(([model,owner,slot,label])=>{
- const who={street:'AKI',frost:'MILO',beep:'PING',volt:'NULL'}[owner],id='Y2K_'+model.toUpperCase();
- return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅本人可裝備。'+(SIGNATURE_PENDING.has(model)?'目前以程序式 3D 代用，原始模型待補。':'')+'小怪 0.001%、菁英 0.01%、首領 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
+ const who={street:'AKANE',frost:'REN',beep:'YUI',volt:'TAICHI'}[owner],id='Y2K_'+model.toUpperCase();
+ return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅本人可裝備。'+(SIGNATURE_PENDING.has(model)?'目前以程序式 3D 代用，原始模型待補。':'')+'雜兵 0.001%、精英 0.01%、關主 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
 }));
 for(const gear of Object.values(SIGNATURE_GEAR))LEGENDS[gear.slot].push(gear);
 const signatureOf = it => it && SIGNATURE_GEAR[it.lg] || null;
@@ -96,15 +96,15 @@ const canUseGear = (it,character=G.char) => !signatureOf(it)||signatureOf(it).ow
 const LEGEND_BY = {}; for (const sl in LEGENDS) for (const L of LEGENDS[sl]) LEGEND_BY[L.id] = L;
 
 const SKILLS = {
-  FIRE:  { n:'過熱電池', lvl:1,  cd:2.6, mult:2.6, el:'fire',  col:'#ff7a2a', tg:1.4, d:'丟出過熱的電池，命中時爆炸' },
-  FROST: { n:'冷氣爆發', lvl:5,  cd:4.2, mult:1.9, el:'cold',  col:'#7fd3ff', tg:1.8, d:'冷風傷害敵人並凍結 1.4 秒；首領需累積控制，凍結後有適應期' },
+  FIRE:  { n:'灼熱電池', lvl:1,  cd:2.6, mult:2.6, el:'fire',  col:'#ff7a2a', tg:1.4, d:'丟出過熱的電池，命中時爆炸' },
+  FROST: { n:'冷氣爆發', lvl:5,  cd:4.2, mult:1.9, el:'cold',  col:'#7fd3ff', tg:1.8, d:'冷風傷害敵人並凍結 1.4 秒；關主需累積控制，凍結後有適應期' },
   CHAIN: { n:'紅外線連鎖', lvl:10, cd:3.2, mult:2.3, el:'light', col:'#ffe45c', tg:1.7, d:'紅外線在 3 個敵人間傳送（後續每跳 70%）' },
-  METEOR:{ n:'衛星墜落', lvl:18, cd:8.0, mult:6.2, el:'fire',  col:'#ff4a1c', tg:1.9, d:'舊衛星從天而降，轟炸全場' },
-  PULSE: { n:'重低音喇叭', lvl:8,  cd:5.0, mult:2.2, el:'light', col:'#c28aff', tg:1.6, d:'音浪從身邊炸開，震退並傷害附近敵人' },
-  MAGNET:{ n:'強力磁鐵',   lvl:11, cd:6.0, mult:1.5, el:'cold',  col:'#7fa8ff', tg:1.8, d:'把周圍的怪全部吸到身邊並造成傷害' },
-  SPAM:  { n:'垃圾郵件',   lvl:14, cd:3.6, mult:1.1, el:'light', col:'#ffffff', tg:3.5, d:'一口氣寄出 6 封郵件，隨機砸中不同敵人' },
-  FLICKER:{ n:'閃打連拍',  lvl:12, cd:3.4, mult:2.0, el:'light', col:'#ff9ae0', tg:3.2, d:'像閃光燈一樣連續閃到 4 個敵人身邊痛擊，最後一下 +50% 傷害' },
-  BEAM:  { n:'雷射指向筆', lvl:16, cd:5.5, mult:4.5, el:'fire',  col:'#ff4a6a', tg:2.2, d:'射出一道貫穿全場的雷射，打中直線上所有敵人' },
+  METEOR:{ n:'流星衛星', lvl:18, cd:8.0, mult:6.2, el:'fire',  col:'#ff4a1c', tg:1.9, d:'舊衛星從天而降，轟炸全場' },
+  PULSE: { n:'重低音砲', lvl:8,  cd:5.0, mult:2.2, el:'light', col:'#c28aff', tg:1.6, d:'音浪從身邊炸開，震退並傷害附近敵人' },
+  MAGNET:{ n:'超強磁石',   lvl:11, cd:6.0, mult:1.5, el:'cold',  col:'#7fa8ff', tg:1.8, d:'把周圍的怪全部吸到身邊並造成傷害' },
+  SPAM:  { n:'迷惑郵件',   lvl:14, cd:3.6, mult:1.1, el:'light', col:'#ffffff', tg:3.5, d:'一口氣寄出 6 封郵件，隨機砸中不同敵人' },
+  FLICKER:{ n:'連拍閃擊',  lvl:12, cd:3.4, mult:2.0, el:'light', col:'#ff9ae0', tg:3.2, d:'像閃光燈一樣連續閃到 4 個敵人身邊痛擊，最後一下 +50% 傷害' },
+  BEAM:  { n:'雷射指示棒', lvl:16, cd:5.5, mult:4.5, el:'fire',  col:'#ff4a6a', tg:2.2, d:'射出一道貫穿全場的雷射，打中直線上所有敵人' },
 };
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
@@ -113,7 +113,9 @@ const CHANGELOG = [
     '技能頁重整為深藍訊號組裝台，精簡提示與接線標示，保留分級操作及原有接線玩法',
     '打造頁改為目標裝備、詞綴、工序與成本的整備工作區，保留鎖定、升階與腐化確認',
     '設定目錄改為圖像網格，畫面與戰鬥控制使用一致的裝置外殼',
-    '裝備原貌、武器外觀、技能及配件補上 3D 模型縮圖；四種武器恢復不同輪廓，欠模型專裝以程序式 3D 代用'
+    '裝備原貌、武器外觀、技能及配件補上 3D 模型縮圖；四種武器恢復不同輪廓，欠模型專裝以程序式 3D 代用',
+    '四位角色更名為茜 AKANE、蓮 REN、結衣 YUI、太一 TAICHI，更新稱號、台詞與身世，保留原有進度與能力',
+    '統一魔物、關主、討伐與會心等用語，更新技能名稱、歸來問候及力盡提示'
   ]},
   {v:'0.43.0',d:'2026-10-24',t:[
     '角色頁重整為身份、重要讀數、防禦摘要與分類能力表，角色展示可自行展開',
@@ -243,10 +245,10 @@ const CHANGELOG = [
   { v:'0.1.1', d:'2026-10-20', t:['多角色選擇', '地圖改成中央廣場加十字步道', '修正手機下方面板消失'] },
   { v:'0.1.0', d:'2026-10-20', t:['音樂與音效，可靜音', '升級三選一改裝卡與技能變體', '模式卡匣：技能的隱藏攻擊模式，裝上才鑑定'] },
 ];
-/* 遺物：每次擊敗守關者（深度推進或地圖通關）三選一，永久生效，全部不重複 */
+/* 遺物：每次擊敗關主（深度推進或地圖通關）三選一，永久生效，全部不重複 */
 const RELICS = {
   FAN:   { n:'迷你風扇',   d:'技能冷卻 -10%', st:'haste', v:10 },
-  LENS:  { n:'放大鏡',     d:'暴擊傷害 +40%', st:'cm', v:40 },
+  LENS:  { n:'放大鏡',     d:'會心傷害 +40%', st:'cm', v:40 },
   CHARM: { n:'護身符',     d:'閃避 +6%', st:'dodge', v:6 },
   DRINK: { n:'運動飲料',   d:'生命回復 +4/秒', st:'regen', v:4 },
   BATT:  { n:'電池組',     d:'傷害 +12%', st:'inc', v:12 },
@@ -254,8 +256,8 @@ const RELICS = {
   CALC:  { n:'計算機',     d:'經驗值 +20%' },
   PIG:   { n:'撲滿',       d:'金幣 +30%' },
   LUCK:  { n:'幸運符',     d:'暗金機率 +3%（含保底）' },
-  FOOD:  { n:'暴食便當',   d:'擊殺怪物回復 1% 生命' },
-  BOMB:  { n:'連環炸彈',   d:'擊殺怪物有 10% 機率爆炸，傷害周圍敵人（150% 技能傷害）' },
+  FOOD:  { n:'暴食便當',   d:'討伐魔物回復 1% 生命' },
+  BOMB:  { n:'連環炸彈',   d:'討伐魔物有 10% 機率爆炸，傷害周圍敵人（150% 技能傷害）' },
   SUN:   { n:'小太陽',     d:'每 10 秒，對全場敵人造成一次 120% 技能傷害' },
 };
 /* 裝扮：每個部位一組顏色，價格用金幣；第一個是預設（免費、已擁有） */
@@ -278,7 +280,7 @@ const COS = {
   skin:  [['peach', '蜜桃', '#f4cfb4', 0], ['fair', '白皙', '#f8e0d2', 0], ['tan', '小麥', '#e2ac86', 0], ['deep', '深棕', '#b9825a', 0]],
 };
 const STAR_SIGNS = ['傳呼座', '摺機座', '撥接座', '光碟座', '掌機座', '像素座', '耳機座', '隨身聽座', '電子雞座', '貼紙座', '卡帶座', '倒數座'];
-const RANKS = [[1, '實習英雄'], [5, '街頭新手'], [10, '巷口勇者'], [20, '都市傳說'], [35, '世紀末英雄'], [50, '千禧之王']];
+const RANKS = [[1, '見習勇者'], [5, '街角新人'], [10, '巷口勇者'], [20, '都市傳說'], [35, '世紀末英雄'], [50, '千禧之王']];
 const SLOT_LV = [1, 4, 9, 15, 22, 30];   // 拼圖面板每一列的解鎖等級
 /* 模式卡匣：裝在技能上會改變攻擊方式。hint 是鑑定前看到的提示，d 是裝上過一次之後才顯示的完整效果 */
 const MODES = {
@@ -293,9 +295,9 @@ const MODES = {
   PULSE_ECHO:   { sk:'PULSE',  n:'迴響喇叭', hint:'喇叭好像聽到了自己的聲音。', d:'0.5 秒後再響一次（60% 傷害）' },
   PULSE_SONIC:  { sk:'PULSE',  n:'超音波', hint:'聲音太高，聽不見但是很痛。', d:'範圍 +60%，傷害 -25%' },
   MAGNET_CRUSH: { sk:'MAGNET', n:'黑洞磁鐵', hint:'吸過來之後好像還有下文。', d:'吸過來 0.5 秒後坍縮，近身敵人再受 200% 傷害' },
-  MAGNET_STICKY:{ sk:'MAGNET', n:'黏性磁鐵', hint:'被吸住的東西動不了。', d:'被吸過來的敵人凍結 2 秒；首領需累積控制並受適應期限制' },
+  MAGNET_STICKY:{ sk:'MAGNET', n:'黏性磁鐵', hint:'被吸住的東西動不了。', d:'被吸過來的敵人凍結 2 秒；關主需累積控制並受適應期限制' },
   FLICKER_STORM:{ sk:'FLICKER', n:'閃光風暴', hint:'快門按到停不下來。', d:'一次閃 8 下，每下 50% 傷害，沒有最後一擊加成' },
-  FLICKER_REAP: { sk:'FLICKER', n:'收割閃打', hint:'它只對倒下的目標感興趣。', d:'擊殺目標時立刻追加一次閃打，可連續觸發' },
+  FLICKER_REAP: { sk:'FLICKER', n:'收割閃打', hint:'它只對倒下的目標感興趣。', d:'討伐目標時立刻追加一次閃打，可連續觸發' },
   FLICKER_TRAIL:{ sk:'FLICKER', n:'殘影拖尾', hint:'留下的殘影也會咬人。', d:'每一下命中點留下殘影，0.4 秒後再造成 22% 傷害' },
   SPAM_FLOOD:   { sk:'SPAM',   n:'洗版', hint:'信箱爆了。', d:'一次寄出 14 封，每封 45% 傷害' },
   SPAM_PHISH:   { sk:'SPAM',   n:'釣魚信件', hint:'它專挑最肥的魚。', d:'只寄 3 封，專打生命最多的敵人，每封 +200% 傷害' },
@@ -328,32 +330,32 @@ function skillDirectFactor(id,p,repeat=false){
   return p.each*(1+(repeat?0:(p.echo||0)+(p.crush||0)));
 }
 const SUPPS = {
-  HEAVY:{ n:'超頻', d:'此技能傷害 +45%' }, COOL:{ n:'散熱片', d:'此技能傷害 +20%，冷卻 -15%' }, CRYSTAL:{ n:'水晶振盪', d:'此技能傷害 +10%，暴擊率 +15%' }, AREA:{ n:'廣播', d:'電池命中全部敵人（-15%）；連鎖多跳 2 次' }, HASTE:{ n:'寬頻', d:'此技能冷卻 -30%' },
-  LEECH:{ n:'無線充電', d:'此技能傷害的 12% 轉為生命' }, TWIN:{ n:'雙卡雙待', d:'0.25 秒後重複施放一次（60% 傷害）' }, CRITS:{ n:'爆機', d:'此技能暴擊率 +30%' },
+  HEAVY:{ n:'超頻', d:'此技能傷害 +45%' }, COOL:{ n:'散熱片', d:'此技能傷害 +20%，冷卻 -15%' }, CRYSTAL:{ n:'水晶振盪', d:'此技能傷害 +10%，會心率 +15%' }, AREA:{ n:'廣播', d:'電池命中全部敵人（-15%）；連鎖多跳 2 次' }, HASTE:{ n:'寬頻', d:'此技能冷卻 -30%' },
+  LEECH:{ n:'無線充電', d:'此技能傷害的 12% 轉為生命' }, TWIN:{ n:'雙卡雙待', d:'0.25 秒後重複施放一次（60% 傷害）' }, CRITS:{ n:'爆機', d:'此技能會心率 +30%' },
 };
 /* 升級三選一的「改裝卡」：數值卡常見，技能變體卡只在該技能裝備時出現，會改變技能行為 */
 const CARDS = {
-  C_DMG:{ n:'超頻電路', d:'傷害 +15%', st:'inc', v:15 }, C_CRIT:{ n:'高感度麥克風', d:'暴擊率 +6%', st:'crit', v:6 }, C_CM:{ n:'重低音', d:'暴擊傷害 +20%', st:'cm', v:20 },
+  C_DMG:{ n:'超頻電路', d:'傷害 +15%', st:'inc', v:15 }, C_CRIT:{ n:'高感度麥克風', d:'會心率 +6%', st:'crit', v:6 }, C_CM:{ n:'重低音', d:'會心傷害 +20%', st:'cm', v:20 },
   C_DODGE:{ n:'防滑鞋底', d:'閃避 +5%', st:'dodge', v:5 }, C_APS:{ n:'快速充電', d:'攻速 +10%', st:'apsInc', v:10 }, C_LIFE:{ n:'大容量電池', d:'生命 +12%', st:'lifePct', v:12 }, C_HASTE:{ n:'寬頻升級', d:'技能冷卻 -8%', st:'haste', v:8 },
   C_REGEN:{ n:'太陽能板', d:'生命回復 +2/秒', st:'regen', v:2 }, C_ARMOR:{ n:'防水外殼', d:'護甲 +20', st:'armor', v:20 }, C_LEECH:{ n:'無線充電座', d:'吸血 +1.5%', st:'leech', v:1.5 },
-  V_SPLIT:{ n:'分裂電池', d:'過熱電池爆炸時，另外炸向 2 隻附近怪物（60% 傷害），每張 +2 隻', sk:'FIRE', max:3 },
-  V_SHATTER:{ n:'冷凍碎裂', d:'被凍結的怪物受到技能傷害 +40%，每張再 +40%', sk:'FROST', max:3 },
+  V_SPLIT:{ n:'分裂電池', d:'灼熱電池爆炸時，另外炸向 2 隻附近魔物（60% 傷害），每張 +2 隻', sk:'FIRE', max:3 },
+  V_SHATTER:{ n:'冷凍碎裂', d:'被凍結的魔物受到技能傷害 +40%，每張再 +40%', sk:'FROST', max:3 },
   V_FORK:{ n:'多重頻道', d:'紅外線多跳 2 次，每張再 +2 次', sk:'CHAIN', max:3 },
-  V_ECHO:{ n:'雙衛星', d:'衛星墜落後 0.6 秒再落一顆（50% 傷害）', sk:'METEOR', max:1 },
+  V_ECHO:{ n:'雙衛星', d:'流星衛星後 0.6 秒再落一顆（50% 傷害）', sk:'METEOR', max:1 },
 };
 /* 可選角色：外觀（髮色、褲色、膚色）與被動；用最深深度解鎖 */
 const CHARS = {
-  street:{ n:'阿街', d:'街頭小子。傷害 +10%', eff:{ inc:10 }, sig:{ n:'街頭衝撞', cd:7, d:'每 7 秒衝撞周圍敵人，傷害 ×7 並擊退' }, need:0, hair:null, pants:null, skin:null },
-  frost: { n:'小冷', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, sig:{ n:'冷氣護罩', cd:9, d:'每 9 秒冷風吹過全場，凍結小怪 1.4 秒；首領改累積控制並受適應期限制' }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
-  beep:  { n:'傳呼仔', d:'有 Call 必應。攻速 +12%，吸血 +1.5%', eff:{ apsInc:12, leech:1.5 }, sig:{ n:'連環 Call', cd:6, d:'每 6 秒隨機呼叫 6 個敵人，各受 ×5 傷害' }, need:0, ach:'boss10', hair:'#ff6aa8', pants:'#2b2552', skin:null },
-  volt:  { n:'電波仔', d:'訊號滿格。暴擊率 +6%，閃電傷害 +30%', eff:{ crit:6, light:30 }, sig:{ n:'訊號塔', cd:8, d:'每 8 秒落雷劈 5 個敵人（必定暴擊）' }, need:12, hair:'#e0b020', pants:'#8a4a8f', skin:'#e2ac86' },
+  street:{ n:'茜', d:'街頭小子。傷害 +10%', eff:{ inc:10 }, sig:{ n:'街頭衝撞', cd:7, d:'每 7 秒衝撞周圍敵人，傷害 ×7 並擊退' }, need:0, hair:null, pants:null, skin:null },
+  frost: { n:'雪乃', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, sig:{ n:'冷氣護罩', cd:9, d:'每 9 秒冷風吹過全場，凍結雜兵 1.4 秒；關主改累積控制並受適應期限制' }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
+  beep:  { n:'結衣', d:'有 Call 必應。攻速 +12%，吸血 +1.5%', eff:{ apsInc:12, leech:1.5 }, sig:{ n:'連環 Call', cd:6, d:'每 6 秒隨機呼叫 6 個敵人，各受 ×5 傷害' }, need:0, ach:'boss10', hair:'#ff6aa8', pants:'#2b2552', skin:null },
+  volt:  { n:'太一', d:'電波滿格。會心率 +6%，閃電傷害 +30%', eff:{ crit:6, light:30 }, sig:{ n:'訊號塔', cd:8, d:'每 8 秒落雷劈 5 個敵人（必定會心）' }, need:12, hair:'#e0b020', pants:'#8a4a8f', skin:'#e2ac86' },
 };
 /* 成就：帳號永久進度。每個成就永久傷害 +1%，部分成就解鎖角色 */
 const ACHS = {
-  k100:{ n:'初試身手', d:'累計擊殺 100 隻怪物', ok:() => G.totalKills >= 100 },
-  k2000:{ n:'割草專家', d:'累計擊殺 5000 隻怪物', ok:() => G.totalKills >= 5000 },
-  boss1:{ n:'守關者殺手', d:'擊敗守關者 1 次', ok:() => (G.bossKills || 0) >= 1 },
-  boss10:{ n:'傳呼機響了', d:'擊敗守關者 30 次，解鎖角色「傳呼仔」', ok:() => (G.bossKills || 0) >= 30 },
+  k100:{ n:'初試身手', d:'累計討伐 100 隻魔物', ok:() => G.totalKills >= 100 },
+  k2000:{ n:'割草達人', d:'累計討伐 5000 隻魔物', ok:() => G.totalKills >= 5000 },
+  boss1:{ n:'關主殺手', d:'擊敗關主 1 次', ok:() => (G.bossKills || 0) >= 1 },
+  boss10:{ n:'傳呼機響了', d:'擊敗關主 30 次，解鎖角色「結衣」', ok:() => (G.bossKills || 0) >= 30 },
   d10:{ n:'深入街頭', d:'最深到達第 12 層', ok:() => G.maxDepth >= 12 },
   d20:{ n:'夜行者', d:'最深到達第 20 層', ok:() => G.maxDepth >= 20 },
   l20:{ n:'老鳥', d:'等級達到 25', ok:() => G.lvl >= 25 },
@@ -364,9 +366,9 @@ const ACHS = {
   survive:{ n:'命大', d:'倒下 5 次還繼續打', ok:() => G.deaths >= 5 },
 };
 const MODS = {
-  more:  { kind:'challenge', n:'怪群更大（+1 隻）', q:.25 }, fast:{ kind:'challenge', n:'怪物更迅捷', q:.15 }, tough:{ kind:'challenge', n:'怪物生命 +40%', q:.2 },
-  deadly:{ kind:'challenge', n:'怪物傷害 +35%', q:.2 }, rich:{ kind:'reward', n:'金幣 +60%', q:.1 }, lucky:{ kind:'reward', n:'稀有度提升', q:.2 },
-  elite:{ kind:'challenge', n:'菁英出沒', q:.3 }, swarm:{ kind:'mixed', n:'怪潮（怪群 +3，生命 -25%）', q:.2 }, wise:{ kind:'reward', n:'經驗 +50%', q:.1 },
+  more:  { kind:'challenge', n:'怪群更大（+1 隻）', q:.25 }, fast:{ kind:'challenge', n:'魔物更迅捷', q:.15 }, tough:{ kind:'challenge', n:'魔物生命 +40%', q:.2 },
+  deadly:{ kind:'challenge', n:'魔物傷害 +35%', q:.2 }, rich:{ kind:'reward', n:'金幣 +60%', q:.1 }, lucky:{ kind:'reward', n:'稀有度提升', q:.2 },
+  elite:{ kind:'challenge', n:'精英出沒', q:.3 }, swarm:{ kind:'mixed', n:'怪潮（怪群 +3，生命 -25%）', q:.2 }, wise:{ kind:'reward', n:'經驗 +50%', q:.1 },
 };
 
 /* 目標：獎勵型進度（存在 G.goals，和 ACHS 的永久傷害成就分開）。k 是統計項目，goal 是門檻，rw 是獎勵 */
@@ -389,11 +391,11 @@ const GOALS = [
 ];
 /* 新手任務鏈：一次一個，完成才出下一個；同時逐步解鎖系統（unlock 對應分頁） */
 const QUESTS = [
-  { n:'熱身', t:'擊殺 20 隻怪物', k:'kills', goal:20, rw:{ gold:150 } },
+  { n:'熱身', t:'討伐 20 隻魔物', k:'kills', goal:20, rw:{ gold:150 } },
   { n:'升級', t:'升到 3 級', k:'lvl', goal:3, rw:{ gem:'HASTE' } },
   { n:'往前走', t:'抵達深度 3', k:'depth', goal:3, rw:{ gold:300 } },
   { n:'換新裝', t:'升到 6 級', k:'lvl', goal:6, rw:{ gem:'CRITS' }, un:'tree', tip:'天賦盤已開放：升級得到的點數可以在這裡分配。' },
-  { n:'第一個守關者', t:'抵達深度 6', k:'depth', goal:6, rw:{ gold:600 } },
+  { n:'第一個關主', t:'抵達深度 6', k:'depth', goal:6, rw:{ gold:600 } },
   { n:'拆解與改機', t:'升到 10 級', k:'lvl', goal:10, rw:{ parts:10 }, un:'craft', tip:'改機已開放：拆掉不要的裝備得到零件，拿來重洗與改裝。' },
   { n:'動手改一次', t:'改機 1 次', k:'craft', goal:1, rw:{ parts:6, gold:500 } },
   { n:'出門探索', t:'完成 1 張地圖', k:'runs', goal:1, rw:{ cart:'FIRE_BLAST' } },
@@ -401,7 +403,7 @@ const QUESTS = [
   { n:'挑戰極限', t:'抵達深度 8，解鎖無限之塔', k:'depth', goal:8, rw:{ parts:15, gold:1000 } },
 ];
 const TAB_LVL = { tree:6, craft:10, maps:5 };
-const GOAL_UNIT = { kills:'隻怪物', lvl:'級', depth:'層深度', runs:'張地圖通關', modes:'種卡匣鑑定' };
+const GOAL_UNIT = { kills:'隻魔物', lvl:'級', depth:'層深度', runs:'張地圖通關', modes:'種卡匣鑑定' };
 const tLerp = (a,b,t) => a + (b-a)*t, tClamp = (v,a=0,b=1) => Math.max(a, Math.min(b, v));
 const tRand = (a,b) => a + Math.random()*(b-a), tPick = a => a[Math.floor(Math.random()*a.length)];
 const tFmt = n => n >= 1e9 ? (n/1e9).toFixed(1)+'B' : n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e4 ? (n/1e3).toFixed(1)+'k' : String(Math.round(n));
@@ -417,7 +419,7 @@ BIOMES.push(
  {n:'廢棄商場',board:{l:'#d1c3d5',m:'#96899f',d:'#51485e'},t1:'#ad9db9',t2:'#d9c0d4',portal:'#8d7bff',glow:'#c0b7ff'}
 );
 Object.assign(SUPPS,{
- FOCUS:{n:'鎖頻晶片',d:'此技能傷害 +35%、暴擊率 +15%，冷卻 +15%'},
+ FOCUS:{n:'鎖頻晶片',d:'此技能傷害 +35%、會心率 +15%，冷卻 +15%'},
  FORK:{n:'分線器',d:'此技能命中時，對另一個鄰近敵人造成 25% 傷害；每 0.25 秒觸發一次'},
  RECOVER:{n:'備用電池',d:'此技能命中回復 3% 最大生命；每 0.8 秒觸發一次'},
  DELAY:{n:'延遲緩衝',d:'此技能傷害 -15%，0.6 秒後額外重播一次，造成 45% 傷害'}
@@ -428,21 +430,21 @@ Object.assign(SUPPS,{
 const MONSTER_GUIDE=[
  ['ranger','拾荒射手','中距離停步，以三個預警落點封鎖走位'],['lantern','巡路燈靈','浮游修理燈，每次回復附近最多三位同伴少量生命'],['mole','鑽頭地鼠','預警後鑽地移到鎖定位置，避開落點便能閃過'],['golem','山路石衛','高大而緩慢的石機，接近後以大範圍重踏驅散敵人'],
  ['slime','史萊姆','成群出現，會躍擊預告的位置'],['skel','骷髏','比史萊姆耐打，會圍向角色'],['brute','蠻牛','又慢又硬，打人很痛'],['drone','無人機','貼著半空飛，速度快但很脆'],['bomb','自爆機器人','死亡時爆炸，波及角色與附近敵人'],
- ['spider','跳線蛛','快速接近的多足拾荒體'],['speaker','失控音箱','重裝音箱，會預警後轟炸落點'],['wisp','訊號幽靈','低耐久的浮游訊號體，移動靈活'],['crab','硬碟蟹','厚重機殼與雙鉗，短暫閉殼時減少受到的直擊傷害'],['boss','守關者','巨型巡山機、搬運機或鐘樓看守，輪換三種預警攻勢，半血後加速；掉落高階戰利品']
+ ['spider','跳線蛛','快速接近的多足拾荒體'],['speaker','失控音箱','重裝音箱，會預警後轟炸落點'],['wisp','訊號幽靈','低耐久的浮游訊號體，移動靈活'],['crab','硬碟蟹','厚重機殼與雙鉗，短暫閉殼時減少受到的直擊傷害'],['boss','關主','巨型巡山機、搬運機或鐘樓看守，輪換三種預警攻勢，半血後加速；掉落高階戰利品']
 ];
 
 /* 城市路線與韌體是所有角色共用的構築規則。 */
 const TALENT_LIMIT=36, FIRMWARE_LIMIT=2;
 const FIRMWARE={
- AK:{n:'冷備份',eff:{lifePct:12,armor:35},d:'技能直傷降低 15%；冷啟動消耗凍結時，獲得最大生命 12% 的緩衝盾，持續 4 秒，不疊加'},
- BK:{n:'三頻協定',eff:{crit:-8},d:'同時啟用火、冰、電機件時，技能傷害提高 30%；暴擊率降低 8%'},
+ AK:{n:'冷備份',eff:{lifePct:12,armor:35},d:'技能直傷降低 15%；冷啟動消耗凍結時，入手最大生命 12% 的緩衝盾，持續 4 秒，不疊加'},
+ BK:{n:'三頻協定',eff:{crit:-8},d:'同時啟用火、冰、電機件時，技能傷害提高 30%；會心率降低 8%'},
  CK:{n:'單頻放大',eff:{apsInc:-15},d:'最多 3 種主動機件時，技能傷害提高 35%；停用整列、整欄及同元素共鳴，攻速降低 15%'},
  DK:{n:'超頻協定',eff:{haste:25,lifePct:-22},d:'技能急速 +25%；最大生命降低 22%'},
  EK:{n:'斷線重播',eff:{apsInc:-20},d:'每次原始施放追加 60% 回放；原始技能傷害降低 15%，攻速降低 20%。回放不產電、不再回放'},
- FK:{n:'電池孤注',eff:{cm:70,lifePct:-25},d:'暴擊傷害 +70%；每格電荷放電加成由 35% 改為 45%，最大生命降低 25%'}
+ FK:{n:'電池孤注',eff:{cm:70,lifePct:-25},d:'會心傷害 +70%；每格電荷放電加成由 35% 改為 45%，最大生命降低 25%'}
 };
 const CITY_ROUTES={
- signal:{n:'廢訊號網',biome:6,pool:['drone','wisp','spider'],d:'分散的快速敵人，首領以更短間隔追擊；連鎖、遠距及移動覆蓋較有利',cores:['W_FORK','R_DIAL','R_LINK'],threat:'敵人移速 +30%，分散入場'},
+ signal:{n:'廢訊號網',biome:6,pool:['drone','wisp','spider'],d:'分散的快速敵人，關主以更短間隔追擊；連鎖、遠距及移動覆蓋較有利',cores:['W_FORK','R_DIAL','R_LINK'],threat:'敵人移速 +30%，分散入場'},
  memory:{n:'磁帶迴廊',biome:7,pool:['crab','speaker','spider'],d:'成群單位帶回充護盾；持續命中阻止回充，聚怪與範圍傷害較有利',cores:['W_ECHO','A_RESET','A_PHOENIX'],threat:'護盾為最大生命 18%，停火 3 秒後回充'},
  power:{n:'地下電源區',biome:9,pool:['speaker','brute','crab'],d:'重裝敵人承受傷害降低 25%；燃燒、電標記或凍結可解除減傷，適合鋪墊後爆發',cores:['W_MULTI','A_RIPOSTE','R_LAST'],threat:'重裝減傷 25%，敵人傷害 +15%'}
 };

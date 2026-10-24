@@ -89,7 +89,7 @@ const sp = padOf(b, 0, G.SOCK_COL[0]); G.place(b, 'support', 'HEAVY', sp[0], sp[
 d = G.dps(b, hero, 9)[0];
 assert(Math.abs(d.dps - 100 * (1 + .45 * G.PAD_MATCH)) < 1e-9, '同色襯墊上一個超頻 +90%');
 const hc = G.dps(b, { hit: 100, crit: 50, cm: 200 }, 9)[0];
-assert(Math.abs(hc.hit / d.hit - 1.5) < 1e-9, '50% 暴擊、暴傷 200% 的期望倍率 1.5');
+assert(Math.abs(hc.hit / d.hit - 1.5) < 1e-9, '50% 會心、暴傷 200% 的期望倍率 1.5');
 
 // 自動接線：六個插槽可以同時接通，線互不重疊
 b = G.createBoard();

@@ -1,0 +1,41 @@
+{
+  "characters": [
+    {
+      "id": "street",
+      "name": "茜 AKANE",
+      "model": "aki",
+      "code": "AKANE",
+      "valid": true
+    },
+    {
+      "id": "frost",
+      "name": "蓮 REN",
+      "model": "milo",
+      "code": "REN",
+      "valid": true
+    },
+    {
+      "id": "beep",
+      "name": "結衣 YUI",
+      "model": "ping",
+      "code": "YUI",
+      "valid": true
+    },
+    {
+      "id": "volt",
+      "name": "太一 TAICHI",
+      "model": "null",
+      "code": "TAICHI",
+      "valid": true
+    }
+  ],
+  "save": {
+    "loaded": true,
+    "preserved": true,
+    "signatureOwners": true,
+    "skillName": "灼熱電池",
+    "gridName": "灼熱電池",
+    "version": "0.44.0"
+  },
+  "errors": []
+}

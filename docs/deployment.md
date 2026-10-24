@@ -8,6 +8,7 @@
 
 ## 發佈流程
 
+0. 每次 release 先 fetch 並查核 Claude 最新分支／PR，記錄整合範圍及排除原因；既有內部備份 PR 不當成遊戲內容直接發佈。
 1. 在 src/game/01-data.js 的 CHANGELOG 最前面新增版本，完成測試。
 2. python3 tools/build.py 重建單檔，將來源及產物一起提交。
 3. 推送目前來源分支，先完成來源同步；publish_pages.py 要求目前分支遠端與 HEAD 一致。
