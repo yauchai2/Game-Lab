@@ -25,8 +25,10 @@ function icon3dModel(slot, tier, r){
   if (slot === 'weapon'){ const g = new T3.Group(); buildWeapon(g, t, r | 0); const b = new T3.Box3().setFromObject(g), s = b.getSize(new T3.Vector3()), ax = s.x >= s.y && s.x >= s.z ? new T3.Vector3(1, 0, 0) : s.z >= s.y ? new T3.Vector3(0, 0, 1) : new T3.Vector3(0, 1, 0); const w = new T3.Group(); w.add(g); w.quaternion.setFromUnitVectors(ax, new T3.Vector3(.72, .72, 0)); return w; }
   const g = detailedEquipmentModel(slot,t,C), w = new T3.Group(); w.add(g); w.rotation.set(.22, -.5, 0); return w;
 }
+function gearFallbackUrl(slot,tier,r){return typeof GEAR_FALLBACKS==='undefined'?'':GEAR_FALLBACKS[slot+':'+Math.max(0,Math.min(tier|0,3))+':'+Math.max(0,Math.min(r|0,3))]||'';}
+function legendFallbackUrl(id){if(typeof GEAR_FALLBACKS==='undefined')return '';if(GEAR_FALLBACKS['signature:'+id])return GEAR_FALLBACKS['signature:'+id];for(const slot in LEGENDS){const idx=LEGENDS[slot].findIndex(it=>it.id===id);if(idx>=0)return gearFallbackUrl(slot,G.armory[id]?aTier(G.armory[id]):idx+1,3);}return '';}
 function icon3dUrl(slot, tier, r){
-  const key = slot + tier + '_' + r; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof T3.WebGLRenderer !== 'function') return '';
+  const key = slot + tier + '_' + r; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof T3.WebGLRenderer !== 'function') return gearFallbackUrl(slot,tier,r);
   try {
     if (!ICON3D.rd){ const cv = document.createElement('canvas'); ICON3D.rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true, preserveDrawingBuffer:true }); ICON3D.rd.setPixelRatio(1); ICON3D.rd.setSize(ICON3D.S, ICON3D.S, false); ICON3D.rd.setClearColor(0x000000, 0); ICON3D.rd.outputColorSpace = T3.SRGBColorSpace; }
     const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200), m = icon3dModel(slot, tier, r); sc.add(m);
@@ -34,22 +36,22 @@ function icon3dUrl(slot, tier, r){
     m.updateMatrixWorld(true); const b = new T3.Box3().setFromObject(m), c = b.getCenter(new T3.Vector3()), rad = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
     cam.position.set(0, 0, rad / Math.sin(28 * Math.PI / 360) * .78); cam.lookAt(0, 0, 0);
     ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[key] = url; return url;
-  } catch (e) { ICON3D.fail = true; return ''; }
+  } catch (e) { ICON3D.fail = true; return gearFallbackUrl(slot,tier,r); }
 }
 
-/* 暗金核心：依插槽與序號選模型，固定稀有度最高色並加金色光環與寶石，和一般裝備區隔 */
+/* 核心只展示模型；稀有度由外框呈現，GPU失敗使用同模型預製縮圖。 */
 function icon3dLegendUrl(id){
   if(typeof SIGNATURE_GEAR!=='undefined'&&SIGNATURE_GEAR[id]&&typeof icon3dProxyGearUrl==='function')return icon3dProxyGearUrl(id);
-  const key = 'L_' + id+'_'+(G.armory[id]?aTier(G.armory[id]):0); if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof LEGENDS === 'undefined') return '';
+  const key = 'L_' + id+'_'+(G.armory[id]?aTier(G.armory[id]):0); if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof LEGENDS === 'undefined') return legendFallbackUrl(id);
   let slot = '', idx = 0; for (const sl in LEGENDS){ const i = LEGENDS[sl].findIndex(L => L.id === id); if (i >= 0){ slot = sl; idx = i; } } if (!slot) return '';
   try {
     if (!ICON3D.rd) { if (!icon3dUrl('weapon', 0, 0)) return ''; }
-    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200), m = icon3dModel(slot, G.armory[id]?aTier(G.armory[id]):idx+1, 3), halo = new T3.Group(), gold = new T3.MeshBasicMaterial({ color:0xffd24d });
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200), m = icon3dModel(slot, G.armory[id]?aTier(G.armory[id]):idx+1, 3);
     sc.add(m); m.updateMatrixWorld(true); let b = new T3.Box3().setFromObject(m); const c = b.getCenter(new T3.Vector3()), rad0 = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
     sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
     cam.position.set(0, 0, rad0 * 1.02 / Math.sin(28 * Math.PI / 360) * .86); cam.lookAt(0, 0, 0);
     ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[key] = url; return url;
-  } catch (e) { return ''; }
+  } catch (e) { return legendFallbackUrl(id); }
 }
 
 /* 地圖縮圖：低面數 3D 小島，依地貌配色，離屏渲染後像素化放大 */
