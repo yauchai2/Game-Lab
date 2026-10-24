@@ -22,6 +22,7 @@ const TREE = (() => {
 
 /* ---------- game state ---------- */
 const G = {
+  unread:{skills:[],gear:[],cores:[],gems:[],carts:[],maps:[],boards:[]},summons:[],airSupply:null,airBuffs:[],damageLog:[],deathReport:null,
   ascension:null,ascensionNodes:[],circuits:['pocket'],circuitLayouts:{},circuitPity:0,storyFlags:{},city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
   coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:false, storageRecycled:0, whUp:0, offUp:0, chips:0, equip:Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null])), armory:{}, equipBackup:{}, deferChoices:false, gemTier:{}, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
   pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
@@ -144,7 +145,7 @@ function checkQuest(){
   for (let g = 0; g < 4; g++){
     const q = QUESTS[G.quest || 0]; if (!q || GOAL_STAT[q.k]() < q.goal) return;
     const r = q.rw; G.quest = (G.quest || 0) + 1;
-    if (r.gold) G.gold += r.gold; if (r.parts) G.parts = (G.parts || 0) + r.parts; if (r.gem) G.gems[r.gem] = (G.gems[r.gem] || 0) + 1; if (r.cart) G.carts[r.cart] = (G.carts[r.cart] || 0) + 1;
+    if (r.gold) G.gold += r.gold; if (r.parts) G.parts = (G.parts || 0) + r.parts; if(r.gem){G.gems[r.gem]=(G.gems[r.gem]||0)+1;noticeNew('gems',r.gem);} if(r.cart){G.carts[r.cart]=(G.carts[r.cart]||0)+1;noticeNew('carts',r.cart);}
     logLine(`任務完成：${q.n}（${[r.gold && '金幣 ' + r.gold, r.parts && '零件 ' + r.parts, r.gem && '輔助：' + SUPPS[r.gem].n, r.cart && '卡匣'].filter(Boolean).join('、')}）${q.tip ? ' ' + q.tip : ''}`, '#1f9bbf'); addFloat(HX + 3, HY, BZ + 26, '任務完成！', '#1f9bbf', 3.8); G.dirty = true;
   }
 }
@@ -154,7 +155,7 @@ function checkGoals(){
   for (const a of GOALS){
     if (G.goals[a.id] || GOAL_STAT[a.k]() < a.goal) continue;
     G.goals[a.id] = 1; const r = a.rw;
-    if (r.gold) G.gold += r.gold; if (r.gem) G.gems[r.gem] = (G.gems[r.gem] || 0) + 1; if (r.cart) G.carts[r.cart] = (G.carts[r.cart] || 0) + 1;
+    if (r.gold) G.gold += r.gold; if(r.gem){G.gems[r.gem]=(G.gems[r.gem]||0)+1;noticeNew('gems',r.gem);} if(r.cart){G.carts[r.cart]=(G.carts[r.cart]||0)+1;noticeNew('carts',r.cart);}
     logLine(`目標達成：${a.n}（${goalRewardText(r)}）`, '#d18a00'); addFloat(HX + 3, HY, BZ + 26, '目標達成！', '#d18a00', 3.8); G.dirty = true;
   }
 }
@@ -187,13 +188,17 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, fo
   for (const id of slots){ if (!id) continue;
     const K = SKILLS[id], sp = supp[id] || [];
     const pattern=skillPattern(id,G.modeOf[id]),sw=supp===G.supp&&(G.suppW||{})[id]&&G.suppW[id].length===sp.length?G.suppW[id]:null,mod=GridLab.skillMods(sp,id,sw);
+    if(sp.includes('SPREAD')){if(pattern.range)pattern.range*=1.4;if(pattern.width)pattern.width*=1.4;}
     const hit=s.dmg*K.mult*(1+(s.inc+s[K.el]+s.sinc)/100)*
       (Object.values(equip).some(it=>it&&it.lg==='W_MULTI')?1+.15*slots.filter(Boolean).length:1)*
       mod.hit*(modern&&pass.includes('AK')?.85:1)*(modern&&pass.includes('EK')?.85:1)*(modern&&pass.includes('CK')&&slots.length<=3?1.35:1)*(modern&&pass.includes('BK')&&new Set(slots.map(id=>SKILLS[id]?.el)).size===3?1.3:1)*(1+.12*bb.rows)*(bb.pair[id]?1.15:1);
-    const cd=GridLab.cooldown(K.cd,sp,s.haste,pattern.cd||1,sw),crit=Math.min(100,s.crit+mod.crit);
+    const rawCd=GridLab.cooldown(K.cd,sp,s.haste,pattern.cd||1,sw),crit=Math.min(100,s.crit+mod.crit);
     const extra=mod.twin*GridLab.LIMITS.repeatDamage+(mod.repeat?.45:0)+(pass.includes('EK')?(modern?.6:.35):0);
-    const direct=skillDirectFactor(id,pattern)+extra*skillDirectFactor(id,pattern,true);
-    s.sk[id]={mode:G.modeOf[id]||null,pattern,hit,cd,crit,has:sp.filter(Boolean),area:mod.area,twin:mod.twin,leech:mod.leech,
+    const cd=id==='FLICKER'?Math.max(rawCd,extra>0?2.6:2.1):rawCd;
+    let direct=skillDirectFactor(id,pattern)+extra*skillDirectFactor(id,pattern,true);
+    if(id==='FLICKER'&&extra>0){const left=Math.max(0,6-pattern.count),strength=mod.twin>0?GridLab.LIMITS.repeatDamage:mod.repeat?.45:modern?.6:.35,rest=pattern.each*(left+(left>=pattern.count?pattern.last-1:0));direct=skillDirectFactor(id,pattern)+Math.min(extra*skillDirectFactor(id,pattern,true),rest*strength);}
+
+    s.sk[id]={mode:G.modeOf[id]||null,pattern,hit,cd,crit,has:sp.filter(Boolean),supportPower:Object.fromEntries([...new Set(sp)].map(key=>[key,Math.max(...sp.map((id,i)=>id===key?(sw?sw[i]:1):0))])),area:mod.area,twin:mod.twin,leech:mod.leech,
       direct:hit*(1+crit/100*(s.cm/100-1))*direct};
   }
   // Capacity-aware direct-hit preview. Conditions, DoT, signatures and on-kill effects are measured in training instead.
@@ -235,12 +240,12 @@ function resolveOfflineChoices(summary){ if(!GAME_FEATURES.cardChoices)return;
 const xpNeed = L => Math.round(30 * Math.pow(1.32, L-1));
 function logLine(txt, col){ if (G.offline) return; if (typeof bossPush === 'function') bossPush(txt, col && col.length === 7 && col.toLowerCase() === '#2b2552' ? null : col, 'INFO'); G.log.unshift({ txt, col:col || '#2b2552' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
 function addFloat(x, y, z, txt, col, size=3.6, kind='event'){ if (G.offline) return; if(G.floats.length>=20)G.floats.shift(); G.floats.push({ x, y, z, txt, col, size, kind, t:0 }); }
-const PICKUP_RANGE = 12;   // 撿取範圍：範圍內開始吸附，物件本體抵達後結算，距離不改
+const PICKUP_RANGE = 26;   // 撿取範圍：範圍內開始吸附，物件本體抵達後結算，距離不改
 function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
-function serialize(){ return { v:2, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
+function serialize(){ return { v:2,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
 function migrateEquipmentSlots(input){
@@ -258,6 +263,7 @@ function migrateEquipmentSlots(input){
 function applySave(o){
   if (!o || o.v !== 2) return false;
   o=migrateEquipmentSlots(o);
+  G.unread=cleanUnread(o.unread);G.summons=[];G.airSupply=null;G.airBuffs=[];G.damageLog=[];G.h.fatalSource=null;G.h.airShield=0;G.h.airShieldUntil=0;G.deathReport=cleanDeathReport(o.deathReport);
   G.startingChar=Object.hasOwn(CHARS,o.startingChar)?o.startingChar:null;
   const uidSeen=new Set(),uidConflicts=new Set();for(const it of Array.isArray(o.inventory)?o.inventory:[]){if(uidSeen.has(it.uid))uidConflicts.add(it.uid);uidSeen.add(it.uid);}
   G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>/^p(?:[0-9]|1[01])$/.test(k)&&Number.isInteger(v)&&v>=0&&v<=3));
@@ -268,7 +274,7 @@ function applySave(o){
   G.armory = Object.fromEntries(Object.entries(o.armory || {}).filter(([id,it]) => coreSlot(id) && it && it.lg === id && it.slot === coreSlot(id) && Array.isArray(it.aff) && it.imp));
   G.equipBackup = Object.fromEntries(Object.entries(o.equipBackup || {}).filter(([slot,it]) => SLOTN[slot] && it?.slot === slot && Array.isArray(it.aff) && it.imp));
   G.deferChoices = o.deferChoices === true;
-  G.inventory=(Array.isArray(o.inventory)?o.inventory:[]).filter(validGear).slice(0,whCap());
+  G.inventory=(Array.isArray(o.inventory)?o.inventory:[]).filter(validGear).slice(0,200+100*Math.min(WH_UP_MAX,Math.max(0,Math.floor(+o.whUp||0))));
   {const used=new Set();let next=1;for(const it of G.inventory){if(!Number.isSafeInteger(it.uid)||it.uid<1||it.uid>1e8||used.has(it.uid)){while(used.has(next))next++;it.uid=next++;}used.add(it.uid);}G.nextGearId=Math.max(1,...used)+1;}G.autoEquip=false;
   G.coreDust=Number.isSafeInteger(o.coreDust)?Math.max(0,o.coreDust):0;G.storageRecycled=Math.max(0,+o.storageRecycled||0);G.whUp=Math.min(WH_UP_MAX,Math.max(0,Math.floor(+o.whUp||0)));G.offUp=Math.min(OFF_UP_MAX,Math.max(0,Math.floor(+o.offUp||0)));G.chips=Math.max(0,+o.chips||0);G.inventoryRevision++;
   for(const group of [G.equip,G.equipBackup])for(const slot of Object.keys(group)){const it=group[slot];if(validGear(it)&&!it.lg){storeGear(it);group[slot]=G.inventory.find(x=>x.uid===it.uid)||it;}}
@@ -285,7 +291,7 @@ const encodeSave = () => { try { return btoa(unescape(encodeURIComponent(JSON.st
 const decodeSave = str => { try { return JSON.parse(decodeURIComponent(escape(atob(str.trim())))); } catch (e) { return null; } };
 
 
-const WH_UP_MAX=5,OFF_UP_MAX=6,whCap=()=>200+20*(G.whUp||0),offCapSec=()=>(6+(G.offUp||0))*3600;
+const WH_UP_MAX=5,OFF_UP_MAX=6,whCap=()=>200+100*(G.whUp||0),offCapSec=()=>(6+(G.offUp||0))*3600;
 /* Manual equipment ownership; overflow recycling has a visible counter. */
 const validGear=it=>!!(it&&SLOTN[it.slot]&&Number.isInteger(it.r)&&it.r>=0&&it.r<=3&&it.imp&&AFF[it.imp.k]&&Number.isFinite(it.imp.v)&&Number.isFinite(it.il)&&it.il>0&&Array.isArray(it.aff)&&it.aff.every(a=>AFF[a.k]&&Number.isFinite(a.v)));
 function affTier(a,il=1){if(Number.isInteger(a.tier)&&a.tier>=0&&a.tier<=4)return a.tier;const ratio=a.v/AFF[a.k].b(il);return ratio>=1.5?0:ratio>=1.2?1:ratio>=1?2:ratio>=.8?3:4;}
@@ -300,7 +306,7 @@ function storeGear(it){
     if(!low||gearPriority(it)<=gearPriority(low))return false;
     G.inventory=G.inventory.filter(x=>x!==low);recycleOverflow(low);
   }
-  it.uid=allocateGearId();G.inventory.push(it);G.inventoryRevision++;return true;
+  it.uid=allocateGearId();G.inventory.push(it);noticeNew('gear',it.uid);G.inventoryRevision++;return true;
 }
 function equipStored(uid){
   const it=G.inventory.find(x=>x.uid===uid);if(!it||G.equip[it.slot]===it)return false;
@@ -309,9 +315,9 @@ function equipStored(uid){
 }
 function recycleStored(uid){
   const it=G.inventory.find(x=>x.uid===uid);if(!it||it.kept||it.cr||it.lk!=null||Object.values(G.equip).includes(it)||Object.values(G.equipBackup).includes(it)||gearReferenced(it))return false;
-  G.inventory=G.inventory.filter(x=>x!==it);G.gold+=itemValue(it);salvage(it);G.inventoryRevision++;G.dirty=true;return true;
+  G.inventory=G.inventory.filter(x=>x!==it);noticeRead('gear',it.uid);G.gold+=itemValue(it);salvage(it);G.inventoryRevision++;G.dirty=true;return true;
 }
-function recycleOverflow(it){G.gold+=itemValue(it);salvage(it);G.storageRecycled++;G.dirty=true;}
+function recycleOverflow(it){if(Number.isSafeInteger(it.uid))noticeRead('gear',it.uid);G.gold+=itemValue(it);salvage(it);G.storageRecycled++;G.dirty=true;}
 function collectEquipment(it){
   if(!validGear(it))return;
   if(it.lg)return false;
@@ -322,7 +328,7 @@ function collectEquipment(it){
 
   G.off&&(G.off.stored=(G.off.stored||0)+1);G.dirty=true;return true;
 }
-const validDrop=d=>!!(d&&Number.isFinite(d.x)&&Number.isFinite(d.y)&&(d.kind==='circuit'?Object.hasOwn(GridLab.TEMPLATES,d.id):['gold','chip'].includes(d.kind)?Number.isFinite(d.amount)&&d.amount>0:d.kind==='item'?validGear(d.it):d.kind==='gem'?SUPPS[d.id]:d.kind==='cart'?MODES[d.id]:d.kind==='map'?d.map&&BIOMES[d.map.biome]:false));
+const validDrop=d=>!!(d&&Number.isFinite(d.x)&&Number.isFinite(d.y)&&(d.kind==='boost'?['power','guard'].includes(d.boost):d.kind==='circuit'?Object.hasOwn(GridLab.TEMPLATES,d.id):['gold','chip'].includes(d.kind)?Number.isFinite(d.amount)&&d.amount>0:d.kind==='item'?validGear(d.it):d.kind==='gem'?SUPPS[d.id]:d.kind==='cart'?MODES[d.id]:d.kind==='map'?d.map&&BIOMES[d.map.biome]:false));
 function dropGround(d){
   [d.x,d.y]=terrainProject(d.x,d.y);
   if(d.kind==='gold'||d.kind==='chip'){
@@ -358,11 +364,11 @@ function dropVisualPosition(d){const u=d.pull?Math.max(0,Math.min(1,d.pull.age/d
  const arms=[['A',-90,4],['D',-30,5],['B',30,4],['E',90,5],['C',150,4],['F',210,5]];
  for(let i=0;i<arms.length;i++){let prev=arms[i][0]+arms[i][2];for(let j=0;j<2;j++){const a=(arms[i][1]+20+j*20)*Math.PI/180,id='R'+i+j;add(id,Math.cos(a)*70,Math.sin(a)*70,j?{life:18}:{dmgPct:5},'#9cacc9');link(prev,id);prev=id;}const next=arms[(i+1)%arms.length];link(prev,next[0]+next[2]);}
 })();
-function buyCircuitSupport(id){if(!['FOCUS','FORK','RECOVER','DELAY'].includes(id)||G.chips<20)return false;G.chips-=20;G.gems[id]=(G.gems[id]||0)+1;G.dirty=true;return true;}
+function buyCircuitSupport(id){if(!['FOCUS','FORK','RECOVER','DELAY','ANCHOR','EXECUTE','BLOOD','CONDUCT','LONG','SPREAD','RIME','KINDLE'].includes(id)||G.chips<20)return false;G.chips-=20;G.gems[id]=(G.gems[id]||0)+1;noticeNew('gems',id);G.dirty=true;return true;}
 
 function buyCircuitMode(id){
   if(!['METEOR_COLDSTART','BEAM_CAPACITOR'].includes(id)||G.chips<20||G.carts[id]||G.lvl<SKILLS[MODES[id].sk].lvl)return false;
-  G.chips-=20;G.carts[id]=1;G.seen[id]=1;G.dirty=true;return true;
+  G.chips-=20;G.carts[id]=1;noticeNew('carts',id);G.seen[id]=1;G.dirty=true;return true;
 }
 
 /* 有限路徑、可還原遷移、城市遠征與定向收藏。 */
@@ -427,7 +433,11 @@ function forgeTargetCore(id){const C=G.city||(G.city=newCity()),route=cityRouteF
  const it=makeItem(coreSlot(id),3,Math.max(8,G.maxDepth),id);C.fragments[route]-=24;G.armory[id]=it;G.legSeen[id]=1;G.dirty=true;return true;
 }
 function validCityRun(R){const c=R?.city;return !!(c&&CITY_ROUTES[c.route]&&Number.isInteger(c.tier)&&c.tier>=1&&c.tier<=8&&Number.isInteger(c.stage)&&c.stage>=1&&c.stage<=3&&Number.isFinite(c.bank)&&c.bank>=0&&Array.isArray(c.branches)&&c.branches.length===c.stage-1&&c.branches.every(id=>CITY_BRANCHES[id])&&LEGEND_BY[c.target]&&c.settled===false&&Number.isFinite(R.kills)&&Number.isFinite(R.need)&&BIOMES[R.map?.biome]&&Number.isFinite(R.map?.lvl));}
-function heroDamage(damage){if(!Number.isFinite(damage)||damage<=0)return 0;const h=G.h,shield=G.time<(h.bufferUntil||0)?h.buffer||0:0,absorbed=Math.min(shield,damage);h.buffer=shield-absorbed;h.hp-=damage-absorbed;if(damage>absorbed)h.lastDamageAt=G.time;return damage-absorbed;}
+function heroDamage(damage,source='未分類傷害',kind='直接命中'){
+ if(!Number.isFinite(damage)||damage<=0)return 0;const h=G.h,before=h.hp,base=G.time<(h.bufferUntil||0)?h.buffer||0:0,supply=G.time<(h.airShieldUntil||0)?h.airShield||0:0,airUsed=Math.min(supply,damage),classUsed=Math.min(base,damage-airUsed),absorbed=airUsed+classUsed;
+ h.airShield=supply-airUsed;h.buffer=base-classUsed;h.hp-=damage-absorbed;if(typeof recordIncoming==='function')recordIncoming(damage-absorbed,absorbed,source,kind,before>0&&h.hp<=0);if(damage>absorbed)h.lastDamageAt=G.time;return damage-absorbed;
+}
+
 function cityMonster(m){const c=G.run?.city;if(!c)return;const branch=c.branches,route=c.nexus?['signal','memory','power'][Math.min(2,c.stage-1)]:c.route;
  m.cityRoute=route;m.hp*=1+.15*(c.tier-1)+(c.nexus?.35:0);m.hpMax=m.hp;
  m.dmg*=Math.pow(.85,branch.filter(x=>x==='safe').length)*Math.pow(1.15,branch.filter(x=>x==='risk').length);
@@ -625,3 +635,9 @@ function fieldDiscover(profile,boss=false){if(G.offline||profile<0||profile>=FIE
 function worldTravelStart(plan){if(G.offline||plan.key==='training')return;const changed=WORLD_TRAVEL.key!==plan.key;if(!changed)return;WORLD_TRAVEL.key=plan.key;WORLD_TRAVEL.remaining=WORLD_TRAVEL.duration;fieldDiscover(plan.profile);}
 function worldTravelAdvance(dt){if(G.offline){WORLD_TRAVEL.remaining=0;return false;}WORLD_TRAVEL.remaining=Math.max(0,WORLD_TRAVEL.remaining-dt);return false;}
 function worldTravelSkip(){WORLD_TRAVEL.remaining=0;}
+
+function cleanUnread(raw){return Object.fromEntries(['skills','gear','cores','gems','carts','maps','boards'].map(k=>[k,[...new Set((Array.isArray(raw?.[k])?raw[k]:[]).filter(v=>typeof v==='string'&&v.length<80||Number.isSafeInteger(v)))].slice(-700)]));}
+function noticeNew(kind,key){G.unread=G.unread||cleanUnread();const a=G.unread[kind];if(a&&!a.includes(key)){a.push(key);if(a.length>700)a.shift();G.dirty=true;}}
+function noticeHas(kind,key){return !!G.unread?.[kind]?.includes(key);}
+function noticeRead(kind,key){if(!G.unread?.[kind])return;G.unread[kind]=key==null?[]:G.unread[kind].filter(v=>v!==key);G.dirty=true;}
+function cleanDeathReport(r){if(!r||!Number.isFinite(r.time)||typeof r.cause!=='string')return null;return {time:r.time,cause:r.cause.slice(0,100),area:typeof r.area==='string'?r.area.slice(0,80):'',total:Math.max(0,Number(r.total)||0),shield:Math.max(0,Number(r.shield)||0),largest:Math.max(0,Number(r.largest)||0),life:Math.max(1,Number(r.life)||1),sources:(Array.isArray(r.sources)?r.sources:[]).filter(q=>typeof q?.name==='string'&&Number.isFinite(q.amount)).slice(0,6).map(q=>({name:q.name.slice(0,100),amount:Math.max(0,q.amount)})),skills:(Array.isArray(r.skills)?r.skills:[]).filter(id=>SKILLS[id]).slice(0,6)};}

@@ -33,7 +33,7 @@ function panelHtml(){
 function codexHtml(){
   const lg = Object.values(LEGEND_BY), nl = lg.filter(L => G.legSeen[L.id]).length, md = Object.keys(MODES), nm = md.filter(id => G.seen[id]).length, sk = Object.keys(SKILLS), ns = sk.filter(id => G.lvl >= SKILLS[id].lvl).length;
   const slotOf = id => Object.keys(LEGENDS).find(k => LEGENDS[k].some(L => L.id === id));
-  return `<div class="rc wide"><div class="rh">圖鑑</div><div class="mute">關主暗金保底：連續 ${G.pity || 0} 件沒出，下一件暗金機率 ${Math.round(Math.min(1, .1 + .06*(G.pity || 0))*100)}%</div>
+  return `<p class="uxmeta">圖鑑記錄你的收藏與解鎖；完整效果與機制請查編年史。</p><div class="rc wide"><div class="rh">圖鑑</div><div class="mute">關主暗金保底：連續 ${G.pity || 0} 件沒出，下一件暗金機率 ${Math.round(Math.min(1, .1 + .06*(G.pity || 0))*100)}%</div>
     <div class="mct" style="margin:8px 0 3px">元素反應</div><ul class="ach"><li class="got">${obj3d('orb:#ff7a3d',28)}<b>火焰</b> 命中的敵人燃燒 3 秒，持續受到傷害</li><li class="got">${obj3d('orb:#ffe04a',28)}<b>閃電</b> 命中的敵人被標記 4 秒</li><li class="got">${obj3d('orb:#ff9ad0',28)}<b>融化</b> 火焰打到凍結的敵人：傷害 +40%，解除凍結</li><li class="got">${obj3d('orb:#8fe8ff',28)}<b>超導</b> 閃電打到凍結的敵人：傷害 +30%</li><li class="got">${obj3d('orb:#c9d3ff',28)}<b>蒸氣</b> 冰霜打到燃燒的敵人：周圍 8 格內敵人受到 40% 傷害，熄滅燃燒</li><li class="got">${obj3d('orb:#ff5a8a',28)}<b>過載</b> 火焰或冰霜打到被閃電標記的敵人：傷害 +25%</li></ul>
     <div class="mct" style="margin:8px 0 3px">遺物 ${Object.keys(G.relics).length} / ${Object.keys(RELICS).length}</div><ul class="ach">${Object.entries(RELICS).map(([id, r]) => `<li class="${G.relics[id] ? 'got' : 'mute'}">${xico('relic', id, 22)}<b>${G.relics[id] ? r.n : '？？？'}</b> ${G.relics[id] ? r.d : ''}</li>`).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">傳奇裝備 ${nl} / ${lg.length}</div><ul class="ach">${lg.map(L => `<li class="${G.legSeen[L.id] ? 'got' : 'mute'}">${xico('legend', L.id, 24)}<b>${G.legSeen[L.id] ? L.name : '？？？'}</b> ${G.legSeen[L.id] ? L.d : `（暗金${SLOTN[slotOf(L.id)]}）`}</li>`).join('')}</ul>
@@ -126,9 +126,9 @@ function saveHtml(){
 /* modal actions */
 function cartsHtml(){const sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active'),ids=Object.keys(MODES).filter(id=>(G.carts[id]||0)>0);let h=sp?`<p class="uxmeta">${SKILLS[sp.key].n} · ${sp.mode?MODES[sp.mode].n:'標準模式'} ${sp.mode?'<button class="mb" onclick="equipCart(\'\')">卸下</button>':''}</p>`:'<p class="uxmeta">先選盤面技能才可裝卡匣；點格子可查看提示，裝上才鑑定。</p>';
  if(!ids.length)return h+'<p>還沒有卡匣。冒險或電路合成都能取得。</p>';
- return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],ok=sp&&sp.key===M.sk&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${G.newSnap&&n>(G.newSnap.c?.[id]||0)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>可用 ${f}／${n}</small></button>`;}).join('')+'</div>';
+ return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],ok=sp&&sp.key===M.sk&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${noticeHas('carts',id)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>可用 ${f}／${n}</small></button>`;}).join('')+'</div>';
 }
-function uiCartPick(id){const M=MODES[id],sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active');if(!M||!G.carts[id])return;if(sp?.key===M.sk&&cartFree(id)>0)return equipCart(id);const reason=!sp?'先選盤面上的主動技能':sp.key!==M.sk?'適用於'+SKILLS[M.sk].n+'，目前選了'+SKILLS[sp.key].n:'全部已裝上，先卸下其他同款卡匣';showOverlay(`<h2 class="uxdialog-title">${uxEsc(G.seen[id]?M.n:'未鑑定的'+SKILLS[M.sk].n+'卡匣')}</h2><p>${uxEsc(G.seen[id]?M.d:M.hint)}</p><p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回卡匣</button>`);}
+function uiCartPick(id){noticeRead('carts',id);const M=MODES[id],sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active');if(!M||!G.carts[id])return;if(sp?.key===M.sk&&cartFree(id)>0)return equipCart(id);const reason=!sp?'先選盤面上的主動技能':sp.key!==M.sk?'適用於'+SKILLS[M.sk].n+'，目前選了'+SKILLS[sp.key].n:'全部已裝上，先卸下其他同款卡匣';showOverlay(`<h2 class="uxdialog-title">${uxEsc(G.seen[id]?M.n:'未鑑定的'+SKILLS[M.sk].n+'卡匣')}</h2><p>${uxEsc(G.seen[id]?M.d:M.hint)}</p><p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回卡匣</button>`);}
 function equipCart(id){
   const p = G.board.pieces.find(q => q.id === selPiece && q.kind === 'active'); if (!p) return;
   if (!id){ delete p.mode; recalc(); renderModal(); return; }
@@ -195,6 +195,8 @@ const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(['sk
 const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
+function battleFrameRatio(fig){return document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig.getBoundingClientRect().width):MOB()?mobRatio():Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig.getBoundingClientRect().width)));}
+function uiSyncBattleFrame(){const fig=$('fig'),vb=fig?.viewBox?.baseVal;if(!vb?.width)return;const ratio=battleFrameRatio(fig);if(Math.abs(vb.height/vb.width-ratio)>.01)fig.setAttribute('viewBox',`0 0 ${vb.width} ${vb.width*ratio}`);}
 const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
 const RISKM = Object.keys(MODS).filter(k => ['challenge','mixed'].includes(MODS[k].kind));
 function runMods(R){
@@ -220,7 +222,7 @@ function showOverlay(html,options={}){
  const cancel=box.querySelector('[data-initial-focus]:not(:disabled)');if(!options.close&&cancel&&/^(取消|保留|繼續)/.test(cancel.textContent.trim()))OVERLAY_CLOSE=()=>cancel.click();
  uxOpenDialog(o,label,windowCloseOverlay);
 }
-function hideOverlay(){ OVERLAY_CLOSE=null;if(typeof CAREER_UI!=='undefined')CAREER_UI.pending=null;UI_CHARACTER_PICK=null;UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
+function hideOverlay(){ OVERLAY_CLOSE=null;if(typeof LOOT_UI!=='undefined')LOOT_UI.pending=null;if(typeof CAREER_UI!=='undefined')CAREER_UI.pending=null;UI_CHARACTER_PICK=null;UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
 const offYield = fn => { if (typeof MessageChannel === 'function'){ const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); fn(); }; c.port2.postMessage(0); } else setTimeout(fn, 0); };
 const OFF_WINDOW = 600;   // 離線只精確模擬前 10 分鐘，其餘用這段的收益率放大
@@ -244,7 +246,7 @@ function offlineBulk(R, f, w){
   const boss = Math.min(Math.floor(w.boss*f), Math.floor(R/3600)); if (boss > 0){ G.bossKills = (G.bossKills || 0) + boss; if (G.push && !G.run){ G.depth += boss; G.maxDepth = Math.max(G.maxDepth, G.depth); } }
 }
 function catchUp(sec, report){
-  if (G.paused) return; const away = sec; sec = Math.min(sec, offCapSec());
+  if (G.paused) return;report=!!report&&sec>=180; const away = sec; sec = Math.min(sec, offCapSec());
   const b = { lvl:G.lvl, depth:G.depth, gold:G.gold, kills:G.totalKills, deaths:G.deaths, inventory:G.inventory.length,chips:G.chips, gems:{...G.gems}, carts:{...G.carts} };
   G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };

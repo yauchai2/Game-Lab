@@ -36,6 +36,7 @@ function craftDo(slot, act, confirmed = false){
     craftPending = { slot, act, it, stamp:JSON.stringify(it) };
     showOverlay(`<h2 class="uxdialog-title">腐化「${uxEsc(it.name)}」？</h2><p>消耗 ${state.cost} 零件。可能提升數值、增加詞綴、沒有變化或降低數值。</p><p class="uxwarning">腐化後，這件裝備不能再改機。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="craftPending=null;hideOverlay()">取消</button><button class="mb pri" onclick="craftConfirm()">腐化裝備</button></div>`); return;
   }
+  const beforeRows=copyState(it.aff);
   const cost = state.cost, before = it.aff.map(a => AFF[a.k].t(a.v)).join('、') || '無額外詞綴';
   G.parts -= cost; G.craftN = (G.craftN || 0) + 1; checkQuest(); const have = new Set(it.aff.map(a => a.k)), free = () => POOL[slot].filter(k => !have.has(k)), add = () => { const f = free(); if (!f.length) return false; const k = tPick(f); have.add(k); it.aff.push(rollAff(k, it.il)); return true; };
   let msg = '';
@@ -49,8 +50,8 @@ function craftDo(slot, act, confirmed = false){
     else { for (const a of it.aff) a.v = a.k === 'leech' ? Math.round(a.v*8.5)/10 : Math.max(1, Math.round(a.v*.85)); msg = '腐化失敗：數值 -15%'; } }
   it.lk = it.lk != null && it.lk < it.aff.length ? it.lk : null;
   const after = it.aff.map(a => AFF[a.k].t(a.v)).join('、') || '無額外詞綴';
-  CRAFT_RESULTS[slot] = { it, msg, cost, before, after };
-  recalc(); logLine(`改機（${SLOTN[slot]}）：${msg}`, '#1f9bbf'); addFloat(G.h.x + 3, G.h.y, BZ + 22, C.n, '#1f9bbf', 3.8); SFX('card'); G.dirty = true; renderModal(); uxAnnounce(`${msg}，消耗 ${cost} 零件。`);
+  CRAFT_RESULTS[slot] = { it, msg, cost, before, after,beforeRows,afterRows:copyState(it.aff) };
+  recalc(); logLine(`改機（${SLOTN[slot]}）：${msg}`, '#1f9bbf'); addFloat(G.h.x + 3, G.h.y, BZ + 22, C.n, '#1f9bbf', 3.8); SFX('card'); G.dirty = true; renderModal(); uxAnnounce(`${msg}，消耗 ${cost} 零件。`);if(act==='corrupt')showCraftOutcome(slot);
 }
 
 /* 金幣補給站：金幣的長期用途（補給箱、倉庫擴建、離線儲備）。 */
@@ -76,7 +77,7 @@ function goldShopHtml(){
   const c=crateCost(),wMax=(G.whUp||0)>=WH_UP_MAX,oMax=(G.offUp||0)>=OFF_UP_MAX;
   return `<details class="ui-section ui-goldshop"><summary>補給站 · 金幣 ${tFmt(G.gold)}</summary>`+
    row('補給箱','隨機一件目前等級的裝備：魔法 60%、稀有 40%',btn(`開 1 個 · ${tFmt(c)}`,G.gold>=c,'buyCrate(1)','暗金只能靠關主與城市遠征取得')+btn(`開 10 個 · ${tFmt(c*10)}`,G.gold>=c*10,'buyCrate(10)','一次開十個，倉庫放不下就會停'))+
-   row('背包擴建',`容量 ${whCap()}／${200+20*WH_UP_MAX}，每次 +20`,wMax?'<span class="uxmeta">已滿</span>':btn(`擴建 · ${tFmt(whUpCost())}`,G.gold>=whUpCost(),'buyWhUp()','永久增加背包容量'))+
+   row('背包擴建',`容量 ${whCap()}／${200+100*WH_UP_MAX}，每次 +100`,wMax?'<span class="uxmeta">已滿</span>':btn(`擴建 · ${tFmt(whUpCost())}`,G.gold>=whUpCost(),'buyWhUp()','永久增加背包容量'))+
    row('離線儲備',`離線收益最多 ${offCapSec()/3600} 小時，每次 +1 小時（上限 ${6+OFF_UP_MAX}）`,oMax?'<span class="uxmeta">已滿</span>':btn(`延長 · ${tFmt(offUpCost())}`,G.gold>=offUpCost(),'buyOffUp()','永久延長離線結算時數'))+
    `<p class="uxmeta">金幣另外可用在：混沌重鑄、技能升級、天賦重置、角色裝扮。</p></details>`;
 }

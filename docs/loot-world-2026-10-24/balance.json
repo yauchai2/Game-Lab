@@ -1,0 +1,233 @@
+{
+  "scenario": "Lv40 fixed gear; one support at a time; no crit; real applySkillHit. Conditional uptime, enemy counterattacks and full build synergy are not simulated.",
+  "rows": [
+    {
+      "id": "EXECUTE",
+      "strength": 1,
+      "unconditional": {
+        "hit": 378.93517196178436,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 757.8703439980745,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 610.5066659450531,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "BLOOD",
+      "strength": 1,
+      "unconditional": {
+        "hit": 378.93517196178436,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 719.9768267869949,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 610.5066659450531,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "CONDUCT",
+      "strength": 1,
+      "unconditional": {
+        "hit": 378.93517196178436,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 663.1365510225296,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 610.5066659450531,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "LONG",
+      "strength": 1,
+      "unconditional": {
+        "hit": 378.93517196178436,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 682.0833096504211,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 610.5066659450531,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "ANCHOR",
+      "strength": 1,
+      "anchor": {
+        "hit": 757.870344042778,
+        "cd": 6
+      },
+      "heavy": {
+        "hit": 610.5066659450531,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "EXECUTE",
+      "strength": 1.35,
+      "unconditional": {
+        "hit": 364.19880425930023,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 855.8671898692846,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 676.8203210830688,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "BLOOD",
+      "strength": 1.35,
+      "unconditional": {
+        "hit": 364.19880425930023,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 806.70035135746,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 676.8203210830688,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "CONDUCT",
+      "strength": 1.35,
+      "unconditional": {
+        "hit": 364.19880425930023,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 732.9500935077667,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 676.8203210830688,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "LONG",
+      "strength": 1.35,
+      "unconditional": {
+        "hit": 364.19880425930023,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 757.533512711525,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 676.8203210830688,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "ANCHOR",
+      "strength": 1.35,
+      "anchor": {
+        "hit": 875.7612863779068,
+        "cd": 6.419999999999999
+      },
+      "heavy": {
+        "hit": 676.8203210830688,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "EXECUTE",
+      "strength": 1.65,
+      "unconditional": {
+        "hit": 351.5676318407059,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 931.6542242765427,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 733.6605968475342,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "BLOOD",
+      "strength": 1.65,
+      "unconditional": {
+        "hit": 351.5676318407059,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 873.645565032959,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 733.6605968475342,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "CONDUCT",
+      "strength": 1.65,
+      "unconditional": {
+        "hit": 351.5676318407059,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 786.6325761079788,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 733.6605968475342,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "LONG",
+      "strength": 1.65,
+      "unconditional": {
+        "hit": 351.5676318407059,
+        "cd": 4.8
+      },
+      "condition": {
+        "hit": 815.6369057893753,
+        "cd": 4.8
+      },
+      "heavy": {
+        "hit": 733.6605968475342,
+        "cd": 4.8
+      }
+    },
+    {
+      "id": "ANCHOR",
+      "strength": 1.65,
+      "anchor": {
+        "hit": 976.8106656074524,
+        "cd": 6.78
+      },
+      "heavy": {
+        "hit": 733.6605968475342,
+        "cd": 4.8
+      }
+    }
+  ]
+}

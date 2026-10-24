@@ -94,7 +94,7 @@ function phoneScanMount(){
 function phoneScanDispose(){ const S = PH.scan; if (!S) return; PH.scan = null; try { S.rd.dispose(); S.rd.forceContextLoss?.(); } catch (e) {} S.el.replaceChildren?.(); }
 function phoneScanTick(now){
   const S = PH.scan; if (!S) return; if (!S.el.isConnected) return phoneScanDispose();
-  const t = (now - S.t0) / 1000; S.root.rotation.y = t * .9; S.gem.rotation.y = -t * 1.6; S.gem.rotation.x = t * .7; S.gem.position.set(Math.cos(t * 1.1) * 1.9, .6 + Math.sin(t * 1.7) * .3, Math.sin(t * 1.1) * 1.9);
+  const t = matchMedia('(prefers-reduced-motion: reduce)').matches?0:(now - S.t0) / 1000; S.root.rotation.y = t * .9; S.gem.rotation.y = -t * 1.6; S.gem.rotation.x = t * .7; S.gem.position.set(Math.cos(t * 1.1) * 1.9, .6 + Math.sin(t * 1.7) * .3, Math.sin(t * 1.1) * 1.9);
   S.scan.position.y = -1.7 + (Math.sin(t * 1.4) * .5 + .5) * 3.8; S.scan.material.opacity = .85 - (S.scan.position.y + 1.7) / 3.8 * .6; S.ring.rotation.z = t * .5;
   S.rd.render(S.sc, S.cam);
 }
@@ -152,7 +152,7 @@ function phoneModelLoad(){
 function phoneGLInit(root){
   const M = phoneModelLoad(), cv = document.createElement('canvas'); cv.id = 'ph-gl';
   const rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true }); cv.style.imageRendering = 'pixelated'; rd.outputColorSpace = T3.SRGBColorSpace;
-  const K = PHG.K, sc = new T3.Scene(), cam = new T3.PerspectiveCamera(30, 1, 10, 30000), pivot = new T3.Group(), mesh = new T3.Mesh(M.g, M.mat);
+  const K = PHG.K, sc = new T3.Scene(), cam = new T3.OrthographicCamera(-1000,1000,1000,-1000,1,30000), pivot = new T3.Group(), mesh = new T3.Mesh(M.g, M.mat);
   sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.1)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl); const rim = new T3.DirectionalLight(0x8fd0ff, 1.2); rim.position.set(2, .5, -1.5); sc.add(rim);
   mesh.rotation.x = Math.PI / 2; mesh.scale.setScalar(K); mesh.position.set(-M.c.x * K, M.c.z * K, -M.c.y * K); pivot.add(mesh); sc.add(pivot);
   const anchor = (c, sx, sy) => { const o = new T3.Object3D(); o.matrixAutoUpdate = true; o.position.set(c[0], c[1], c[2]); o.quaternion.setFromRotationMatrix(new T3.Matrix4().makeBasis(new T3.Vector3(1, 0, 0), new T3.Vector3(0, 0, -1), new T3.Vector3(0, 1, 0))); o.scale.set(sx, sy, 1); mesh.add(o); return o; };
@@ -162,13 +162,15 @@ function phoneGLInit(root){
   phoneFitGL();
 }
 function phoneFitGL(){
-  const G3 = PH.gl; if (!G3) return; const w = innerWidth, h = innerHeight, K = PHG.K, th = Math.tan(G3.cam.fov * Math.PI / 360);
-  G3.rd.setPixelRatio(r3BufferSize(w, h, devicePixelRatio || 1, false, r3ViewQuality(), innerWidth).width / w); G3.rd.setSize(w, h); G3.cam.aspect = w / h; G3.cam.updateProjectionMatrix(); G3.scrW = w; G3.scrH = h;
-  const asp = w / h, rN = Math.max(1.16 * K / (2 * th * .94), .72 * K / (2 * th * asp * .94)), rZ = Math.max(PHG_SCREEN.h * K * 1.14 / (2 * th), PHG_SCREEN.w * K / (2 * th * asp * .98));
-  G3.pivot.updateMatrixWorld(true); const sp = new T3.Vector3(); G3.sA.getWorldPosition(sp);
-  G3.tgtR = PH.zoom ? rZ : rN; G3.tgtX = PH.zoom ? sp.x : 0; G3.tgtY = PH.zoom ? sp.y : 0;
-  document.getElementById('ph-root')?.classList.toggle('zoom', PH.zoom);
+ const G3=PH.gl;if(!G3)return;const w=innerWidth,h=innerHeight,K=PHG.K;
+ // A shared logical pixel scale keeps the shell and readable screen in balance.
+ G3.rd.setPixelRatio(Math.min(1,Math.max(.5,420/w)));G3.rd.setSize(w,h);G3.scrW=w;G3.scrH=h;
+ G3.tgtScale=PH.zoom?Math.min(w*.86/(PHG_SCREEN.w*K),h*.86/(PHG_SCREEN.h*K)):Math.min(w*.84/(.95*K),h*.82/(1.25*K));
+ if(!G3.viewScale)G3.viewScale=G3.tgtScale;
+ G3.pivot.updateMatrixWorld(true);const sp=new T3.Vector3();G3.sA.getWorldPosition(sp);
+ G3.tgtR=5000;G3.tgtX=PH.zoom?sp.x:0;G3.tgtY=PH.zoom?sp.y:0;document.getElementById('ph-root')?.classList.toggle('zoom',PH.zoom);
 }
+
 const phE = v => Math.abs(v) < 1e-10 ? 0 : v;
 function phCamCss(m){ const e = m.elements; return `matrix3d(${phE(e[0])},${phE(-e[1])},${phE(e[2])},${phE(e[3])},${phE(e[4])},${phE(-e[5])},${phE(e[6])},${phE(e[7])},${phE(e[8])},${phE(-e[9])},${phE(e[10])},${phE(e[11])},${phE(e[12])},${phE(-e[13])},${phE(e[14])},${phE(e[15])})`; }
 function phObjCss(m){ const e = m.elements; return `translate(-50%,-50%) matrix3d(${phE(e[0])},${phE(e[1])},${phE(e[2])},${phE(e[3])},${phE(-e[4])},${phE(-e[5])},${phE(-e[6])},${phE(-e[7])},${phE(e[8])},${phE(e[9])},${phE(e[10])},${phE(e[11])},${phE(e[12])},${phE(e[13])},${phE(e[14])},${phE(e[15])})`; }
@@ -187,12 +189,13 @@ function phoneLoopGL(now){
   else { const t = (now - PH.t0) / 1150; if (t < 1) [fz, fy, fry, frx] = phFly(t); }
   G3.pivot.position.set(0, fy * K, fz * K); G3.pivot.rotation.set((rx + frx) * Math.PI / 180, (ry + fry) * Math.PI / 180, 0, 'YXZ');
   G3.camR += (G3.tgtR - G3.camR) * .12; G3.tx += (G3.tgtX - G3.tx) * .12; G3.ty += (G3.tgtY - G3.ty) * .12;
+  G3.viewScale+=(G3.tgtScale-G3.viewScale)*.12;const spanX=innerWidth/(2*G3.viewScale),spanY=innerHeight/(2*G3.viewScale);G3.cam.left=-spanX;G3.cam.right=spanX;G3.cam.top=spanY;G3.cam.bottom=-spanY;G3.cam.updateProjectionMatrix();
   G3.cam.position.set(G3.tx, G3.ty, G3.camR); G3.cam.updateMatrixWorld(); G3.pivot.updateMatrixWorld(true);
   G3.rd.render(G3.sc, G3.cam);
-  const w = innerWidth, h = innerHeight, fov = .5 / Math.tan(G3.cam.fov * Math.PI / 360) * h, css = document.getElementById('ph-css'), cel = document.getElementById('ph-camel');
+  const w = innerWidth, h = innerHeight, css = document.getElementById('ph-css'), cel = document.getElementById('ph-camel');
   if (css && cel) {
-    css.style.perspective = fov + 'px'; cel.style.width = w + 'px'; cel.style.height = h + 'px';
-    cel.style.transform = `translateZ(${fov}px) ${phCamCss(G3.cam.matrixWorldInverse)} translate(${w / 2}px,${h / 2}px)`;
+    css.style.perspective = 'none'; cel.style.transformOrigin='0 0'; cel.style.width = w + 'px'; cel.style.height = h + 'px';
+    cel.style.transform = `translate(${w/2}px,${h/2}px) scale(${G3.viewScale}) ${phCamCss(G3.cam.matrixWorldInverse)}`;
     const sc = document.getElementById('ph-screen'), ks = document.getElementById('ph-keys');
     G3.sA.updateMatrixWorld(true); G3.kA.updateMatrixWorld(true);
     if (sc) sc.style.transform = phObjCss(G3.sA.matrixWorld); if (ks) ks.style.transform = phObjCss(G3.kA.matrixWorld);
@@ -268,13 +271,12 @@ function phoneMove(ev){
 function phoneUp(){ if (PH.drag) { PH.drag = null; PH.release = performance.now(); } }
 function phoneFlip(ev){ if (ev.target.closest('.ph-screen,.ph-key,.ph-close')) return; PH.face = PH.face ? 0 : 180; PH.flipping = true; PH.drag = null; phSfx('ph_zoom'); }
 function phoneTilt(now){
-  if (!PH.drag) {   // 放開後緩緩回正（或翻面），再輕輕晃動
-    const settle = PH.release ? Math.min(1, (now - PH.release) / 900) : 1;
-    PH.ry += (PH.face - PH.ry) * (PH.flipping ? .1 : .06 * settle); PH.rx *= 1 - .06 * settle; if (PH.flipping && Math.abs(PH.face - PH.ry) < 1) PH.flipping = false;
-  }
-  const sway = PH.zoom ? 0 : 1, t = (now - PH.t0) / 1000;
-  return [PH.rx + PH.tx * sway + Math.sin(t * .7) * 2 * sway, PH.ry + PH.ty * sway + Math.sin(t * .9) * 4 * sway];
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(!PH.drag){PH.ry+=(PH.face-45-PH.ry)*.08;PH.rx+=(35.264-PH.rx)*.08;if(Math.abs(PH.face-45-PH.ry)<1)PH.flipping=false;}
+ // Orthographic projection, fixed isometric presentation; drag still permits inspection.
+ return [PH.rx,PH.ry];
 }
+
 function phoneLoop(now){
   if (!PH.open) return;
   const el = document.getElementById('ph-tilt'); if (!el) return;
@@ -283,8 +285,9 @@ function phoneLoop(now){
   phoneScanTick(now); PH.raf = requestAnimationFrame(phoneLoop);
 }
 function phoneOpen(){
+  if(!document.getElementById('phone-pixel-style')){const st=document.createElement('style');st.id='phone-pixel-style';st.textContent=PHONE_PIXEL_CSS;document.head.appendChild(st);}
   if (PH.open || typeof PHONE_IMG === 'undefined') return;
-  PH.open = true; PH.closing = false; PH.tab = 0; PH.zoom = false; PH.rx = PH.ry = PH.tx = PH.ty = 0; PH.face = 0; PH.flipping = false; PH.release = 0; PH.t0 = performance.now();
+  PH.open = true; PH.closing = false; PH.tab = 0; PH.zoom = false; PH.rx=35.264;PH.ry=-45;PH.tx=PH.ty=0; PH.face = 0; PH.flipping = false; PH.release = 0; PH.t0 = performance.now()-(matchMedia('(prefers-reduced-motion: reduce)').matches?1200:0);
   const host = document.createElement('div'); host.id = 'ph-host'; PH.gl = null;
   let glOk = false; if (typeof PHONE_GLB !== 'undefined' && typeof T3 !== 'undefined') { try { host.innerHTML = phoneBuildGL(); document.body.appendChild(host); phoneGLInit(host.querySelector('#ph-root')); glOk = true; } catch (e) { PH.gl = null; host.remove(); } }
   if (!glOk) { host.innerHTML = phoneBuild(); document.body.appendChild(host); }
@@ -301,7 +304,7 @@ function phoneClose(instant){
   if (!PH.open || PH.closing) return;
   const done = () => { PH.open = false; phoneScanDispose(); if (PH.gl) { PH.gl.rd.dispose(); PH.gl.rd.forceContextLoss?.(); PH.gl = null; } clearInterval(PH.timer); cancelAnimationFrame(PH.raf); document.removeEventListener('keydown', phoneKey, true); removeEventListener('resize', phoneFit); document.getElementById('ph-host')?.remove(); };
   PH.closing = true;
-  if (instant === true) { done(); return; }
+  if (instant === true||matchMedia('(prefers-reduced-motion: reduce)').matches) { done(); return; }
   phSfx('ph_off');
   document.getElementById('ph-crt')?.classList.remove('on'); PH.closeAt = performance.now(); const en = document.getElementById('ph-enter'); if (en) { en.classList.remove('in'); en.classList.add('out'); }
   document.getElementById('ph-root').classList.add('leaving');
@@ -429,3 +432,7 @@ function phoneButtonHtml(){
 @media (prefers-reduced-motion:reduce){.ph-open,.ph-mini-spin,.ph-mini2,.ph-new,.ph-rb,.ph-open-txt small{animation:none}.ph-enter.in{animation-duration:.01s}.ph-grid,.ph-stars,.ph-mq span,.phs-tick span,.phs-rainbow{animation:none}}
 `; document.head.appendChild(s);
  const f = document.createElement('style'); f.textContent = typeof PHONE_IMG === 'undefined' ? '' : `.ph-front{background-image:url(${PHONE_IMG.front})}.ph-back{background-image:url(${PHONE_IMG.back})}.ph-side{background-image:url(${PHONE_IMG.side})}.ph-sideL{background-image:url(${PHONE_IMG.side});transform-style:preserve-3d}.ph-slice{background-image:url(${PHONE_IMG.slice})}`; document.head.appendChild(f); })();
+
+const PHONE_PIXEL_CSS=`
+.phs,.phs button,.phs input,.phs-title,.phs-tabs,.phs-body,.phs-status{font-family:"Cubic 11",system-ui,sans-serif!important;font-synthesis:none!important;font-weight:400!important;text-shadow:none!important}.ph-screen{image-rendering:pixelated;isolation:isolate}.ph-screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;background:repeating-linear-gradient(0deg,#10274722 0 1px,transparent 1px 3px);opacity:.42;mix-blend-mode:multiply}.phs-win{border-radius:0!important;box-shadow:inset 2px 2px #c1dddc,inset -2px -2px #153248!important}.phs-title{background:#224663!important}.phs-body{background:#112f49!important}.phs-tabs button{border-radius:0!important}.phs :is(img,canvas){image-rendering:pixelated}@media(prefers-reduced-motion:reduce){#ph-root *{animation:none!important;transition:none!important}}
+`;

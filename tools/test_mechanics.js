@@ -6,7 +6,7 @@ function run(name,code){const math=Object.create(Math);math.random=()=>.99;const
  vm.createContext(c);for(const f of ['01-data.js','02-state.js','02b-careers.js','03-combat.js'])vm.runInContext(fs.readFileSync(__dirname+'/../src/game/'+f,'utf8'),c);
  c.assert=assert;vm.runInContext(`
  G.lvl=60;G.offline=true;G.ach=Object.fromEntries(Object.keys(ACHS).map(id=>[id,1]));G.equip.weapon=makeItem('weapon',0,1);recalc();moveHero=()=>{};
- function board(ids,modes={}){G.h.x=HX;G.h.y=HY;G.board=GridLab.createBoard('extreme');G.circuits=['pocket','extreme'];for(const id of ids){const spot=GridLab.findSpot(G.board,'active',id);assert(spot);const piece=GridLab.place(G.board,'active',id,spot.x,spot.y,spot.rot);piece.mode=modes[id]||null;const sock=GridLab.sockIndex(piece,G.board);G.board.wires.push({sock,cells:GridLab.route(G.board,sock)});}recalc();G.readySince={};for(const id of ids)G.cds[id]=999;G.h.castT=-1;G.h.atkCd=999;}
+ function board(ids,modes={}){G.h.x=HX;G.h.y=HY;G.board=GridLab.createBoard('extreme');G.circuits=['pocket','extreme'];for(const id of ids){const spot=GridLab.findSpot(G.board,'active',id);assert(spot);const piece=GridLab.place(G.board,'active',id,spot.x,spot.y,spot.rot);piece.mode=modes[id]||null;const sock=GridLab.sockIndex(piece,G.board);G.board.wires.push({sock,cells:GridLab.route(G.board,sock)});}recalc();G.readySince={};for(const id of ids)G.cds[id]=999;G.h.castT=-1;G.h.atkCd=999;G.h.blinkCount=0;G.h.blinkWindow=G.time;G.h.blinkRestUntil=0;G.summons=[];}
  function dummy(boss=false){return {type:'slime',boss,x:HX,y:HY-10,hp:1e12,hpMax:1e12,dmg:0,spdK:0,atkInt:1e9,atkCd:1e9,slot:0,ph:0,skillCd:3,fall:0,dead:false,deadT:0,hurtT:0,lunge:-1,frozen:0};}
  function target(boss=false){G.mons=[dummy(boss)];G.train={start:G.time,t:10000,total:0,dmg:{}};return G.mons[0];}
  function tick(seconds){for(let t=0;t<seconds-1e-8;t+=.05)update(.05);}
@@ -25,7 +25,7 @@ run('all six sockets cast after reversing skill order on the same high-haste boa
 run('every standard and mode preview matches direct single-target hits, excluding conditional reactions',`
  Math.random=()=>.5;for(const id of Object.keys(SKILLS))for(const mode of [null,...Object.keys(MODES).filter(m=>MODES[m].sk===id)]){
   G.proj=[];G.timers=[];board([id],{[id]:mode});target();const k=G.st.sk[id];k.hit=10;k.crit=0;
-  castSkill(id);tick(2);const actual=Object.entries(G.train.damage||{}).filter(([label])=>label===SKILLS[id].n||label.startsWith(SKILLS[id].n+'·')).reduce((n,[,d])=>n+d,0);
+  castSkill(id);tick(2);const actual=Object.entries(G.train.damage||{}).filter(([label])=>label===SKILLS[id].n||label.startsWith(SKILLS[id].n+'·')&&!label.includes('·召喚')).reduce((n,[,d])=>n+d,0);
   assert(Math.abs(actual-10*skillDirectFactor(id,k.pattern))<1e-7,id+' '+mode+' '+actual);
  }
 `);

@@ -27,7 +27,7 @@ check('suspended manual return preserves old choices without creating more after
 check('suspended automatic return preserves queued decisions and previous acquisitions', () => {
   const r = createRuntime();
   r.evaluate('G.autoCard=true;G.picks=2;G.relicPicks=1;G.cards[Object.keys(CARDS)[0]]=2;G.relics.FOOD=1');
-  const before=r.snapshot();r.settle(120);
+  const before=r.snapshot();r.settle(180);
   const saved = r.snapshot(), summary = r.reports[0].summary;
   assert.equal(saved.picks, 2); assert.equal(saved.relicPicks, 1);
   assert.deepEqual(saved.cards,before.cards);assert.deepEqual(saved.relics,before.relics);
@@ -50,8 +50,8 @@ check('60-second threshold changes the penalty only beyond the existing boundary
   for (const [seconds, expected] of [[3.1, false], [60, false], [60.1, true]]) {
     const r = createRuntime(); r.settle(seconds);
     assert.equal(r.evaluate('G.offPen'), expected);
-    assert.equal(r.reports[0].seconds, seconds);
-    assert.equal(r.reports[0].away, seconds);
+    assert.equal(r.reports.length, 0);
+    assert(Math.abs(r.evaluate('G.time') - seconds) < .201);
   }
 });
 check('an overlapping catch-up request cannot simulate, report or save twice', () => {
@@ -70,7 +70,7 @@ check('unavailable storage is reported without losing earned choices or locking 
   const r = createRuntime();
   r.evaluate(`G.autoCard=false;G.picks=2;
     localStorage.setItem=()=>{throw Error('Test storage is full');};`);
-  r.settle(120);
+  r.settle(180);
   assert.equal(r.reports[0].saved, false);
   assert(r.snapshot().picks >= 2);
   assert.equal(r.snapshot().deferChoices, false);

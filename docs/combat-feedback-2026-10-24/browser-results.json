@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "corruption confirmation shows exact before/after rows and explicitly reports unchanged outcome",
+    "ascension effects readable before allocation on mobile",
+    "starter board fits mobile; port status opens selection and support color filter matches real sockets",
+    "new-board cue clears only after opening board collection",
+    "real mouse wheel and CDP two-finger pinch zoom without accidental allocation; ordinary touch still allocates once",
+    "three separate 160×80 nearest-neighbor story images; exactly four selectable jobs and two future placeholders",
+    "unconnected feedback is honest; download works; mocked pending, duplicate-click and idempotent success retain/clear drafts correctly",
+    "death window shares desktop chrome; recap shows actual lethal cause and dismiss does not skip revival timer",
+    "320px mobile, short landscape and desktop fit viewport",
+    "real WebGL renders both summon sizes, aircraft, giant blade, arrow rain and music notes; reduced-motion renderer remains valid"
+  ],
+  "errors": [],
+  "externalFeedbackRequests": 0
+}

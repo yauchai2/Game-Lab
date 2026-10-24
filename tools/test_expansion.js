@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 let passed=0;
 function check(name,code){const math=Object.create(Math);math.random=()=>.4;const c={console,Math:math,Date,GridLab:require('../src/game/00-grid.js'),tPick:a=>a[0],tRand:(a,b)=>(a+b)/2,tClamp:(v,a,b)=>Math.max(a,Math.min(b,v)),tFmt:String,SFX:()=>{}};vm.createContext(c);for(const f of ['01-data.js','02-state.js','02b-careers.js','03-combat.js'])vm.runInContext(fs.readFileSync(__dirname+'/../src/game/'+f,'utf8'),c);c.assert=assert;vm.runInContext(`G.equip.weapon=makeItem('weapon',0,1);recalc();${code}`,c);passed++;console.log('PASS',name);}
 check('remote drops do not pay by age; proximity starts physical pickup; arrival pays once',`
- G.h.x=HX;G.h.y=HY;dropGround({kind:'gold',amount:40,x:HX+20,y:HY,t:0});dropGround({kind:'chip',amount:3,x:HX+20,y:HY,t:0});collectNearby(50);assert.equal(G.gold,0);assert.equal(G.chips,0);assert.equal(G.drops.length,2);G.h.x=HX+20;collectNearby(.1);assert.equal(G.gold,0);assert(G.drops.every(d=>d.pull));collectNearby(2);assert.equal(G.gold,40);assert.equal(G.chips,3);assert.equal(G.drops.length,0);
+ G.h.x=HX;G.h.y=HY;dropGround({kind:'gold',amount:40,x:HX+PICKUP_RANGE+2,y:HY,t:0});dropGround({kind:'chip',amount:3,x:HX+PICKUP_RANGE+2,y:HY,t:0});collectNearby(50);assert.equal(G.gold,0);assert.equal(G.chips,0);assert.equal(G.drops.length,2);G.h.x=HX+PICKUP_RANGE+2;collectNearby(.1);assert.equal(G.gold,0);assert(G.drops.every(d=>d.pull));collectNearby(2);assert.equal(G.gold,40);assert.equal(G.chips,3);assert.equal(G.drops.length,0);
 `);
 check('killing a monster creates a gold pile rather than directly paying it',`
  for(const id of Object.keys(GOALS))G.goals[id]=1;G.quest=QUESTS.length;const before=G.gold;killMon({type:'slime',x:HX+12,y:HY,hpMax:10,boss:false});assert.equal(G.gold,before);assert(G.drops.some(d=>d.kind==='gold'&&d.amount>0));
@@ -41,7 +41,7 @@ check('replay support and protocol enqueue bounded non-recursive casts',`
 check('fork and recovery effects apply once within their cooldown windows',`
  G.board=GridLab.createBoard();GridLab.place(G.board,'active','FIRE',...GridLab.layout(G.board).socks[0]);G.board.wires=[{sock:0,cells:GridLab.route(G.board,0)}];recalc();const a={type:'slime',x:HX+4,y:HY,hp:1e6,hpMax:1e6,dead:false,fall:0},b={...a,x:HX+8};G.mons=[a,b];G.st.sk.FIRE.has=['FORK','RECOVER'];G.h.hp=G.st.life*.5;const hp=G.h.hp;applySkillHit('FIRE',a);assert(G.h.hp>hp);assert(b.hp<1e6);const second=G.h.hp,other=b.hp;applySkillHit('FIRE',a);assert.equal(G.h.hp,second);assert.equal(b.hp,other);
 `);
-check('twelve map regions and four new monster archetypes participate in capped waves',`
- assert.equal(BIOMES.length,12);assert.deepEqual(new Set(MONSTER_GUIDE.map(m=>m[0])),new Set(Object.keys(MTYPES)));for(const id of ['spider','speaker','wisp','crab'])assert(MTYPES[id]);G.lvl=30;G.depth=12;G.spawnCd=0;for(let i=0;i<20;i++)spawnPack();assert(G.mons.length<=hordeCap());assert(hordeCap()<=42);Math.random=()=>.99;assert.equal(makeMap(10).biome,11);
+check('eighteen map regions and ten added monster archetypes participate in capped waves',`
+ assert.equal(BIOMES.length,18);assert.deepEqual(new Set(MONSTER_GUIDE.map(m=>m[0])),new Set(Object.keys(MTYPES)));for(const id of ['spider','speaker','wisp','crab'])assert(MTYPES[id]);G.lvl=30;G.depth=12;G.spawnCd=0;for(let i=0;i<20;i++)spawnPack();assert(G.mons.length<=hordeCap());assert(hordeCap()<=42);Math.random=()=>.99;assert.equal(makeMap(10).biome,17);
 `);
 console.log(passed+' expansion checks passed');

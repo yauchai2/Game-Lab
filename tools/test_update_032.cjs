@@ -30,5 +30,5 @@ check('real navigation crosses twelve map shapes without cutting holes or stalli
 const ctx={console,document:{createElement:()=>({}),head:{appendChild:()=>{}}},GridLab:require('../src/game/00-grid.js'),location:{search:''}};vm.createContext(ctx);
 for(const f of ['01-data.js','05g-layout.js'])vm.runInContext(fs.readFileSync('src/game/'+f,'utf8'),ctx);
 const payload=vm.runInContext(`feedbackPayload({category:'平衡',title:'測試 <標題>',details:'血量下降太慢 & 改善建議',device:false},'PRIVATE DEVICE')`,ctx);
-assert(payload&&payload.url.startsWith('https://github.com/yauchai2/Game-Lab/issues/new?'));assert(!payload.body.includes('PRIVATE DEVICE'));assert(!payload.body.includes('save'));assert.equal(new URL(payload.url).searchParams.get('body'),payload.body);assert.equal(vm.runInContext(`feedbackPayload({category:'錯誤',title:' ',details:'x'})`,ctx),null);console.log('PASS feedback validates and URL-encodes only previewed fields, with optional device data');count++;
+assert(payload&&!payload.url);assert(!payload.body.includes('PRIVATE DEVICE'));assert(!payload.body.includes('save'));assert.equal(vm.runInContext(`feedbackPayload({category:'錯誤',title:' ',details:'x'})`,ctx),null);console.log('PASS feedback validates public fields without a GitHub redirect or implicit device data');count++;
 console.log(`${count} update checks passed`);

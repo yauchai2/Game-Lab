@@ -23,7 +23,7 @@ function icon3dGadget(tier, C){
 function icon3dModel(slot, tier, r){
   const C = ICON3D_RAR[Math.max(0, Math.min(r | 0, 3))], t = Math.max(0, Math.min(tier | 0, 3));
   if (slot === 'weapon'){ const g = new T3.Group(); buildWeapon(g, t, r | 0); const b = new T3.Box3().setFromObject(g), s = b.getSize(new T3.Vector3()), ax = s.x >= s.y && s.x >= s.z ? new T3.Vector3(1, 0, 0) : s.z >= s.y ? new T3.Vector3(0, 0, 1) : new T3.Vector3(0, 1, 0); const w = new T3.Group(); w.add(g); w.quaternion.setFromUnitVectors(ax, new T3.Vector3(.72, .72, 0)); return w; }
-  const g = ['head','gloves','boots','offhand'].includes(slot)?buildSimpleEquipment(slot,t,r):slot === 'armor' ? icon3dJacket(t, C) : icon3dGadget(t, C), w = new T3.Group(); w.add(g); w.rotation.set(.22, -.5, 0); return w;
+  const g = detailedEquipmentModel(slot,t,C), w = new T3.Group(); w.add(g); w.rotation.set(.22, -.5, 0); return w;
 }
 function icon3dUrl(slot, tier, r){
   const key = slot + tier + '_' + r; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof T3.WebGLRenderer !== 'function') return '';
@@ -121,7 +121,7 @@ function icon3dObjUrl(kind){
   const ck = 'O_' + kind; if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined') return '';
   try {
     if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
-    const m = icon3dObjModel(kind), sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200); sc.add(m);
+    const m = ['rank','wiki','feedback','log','save'].includes(kind)?semanticDeviceModel(kind):icon3dObjModel(kind), sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200); sc.add(m);
     sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.2)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl);
     m.updateMatrixWorld(true); const b = new T3.Box3().setFromObject(m), c = b.getCenter(new T3.Vector3()), rad = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
     cam.position.set(0, 0, rad / Math.sin(28 * Math.PI / 360) * .85); cam.lookAt(0, 0, 0);
@@ -161,4 +161,28 @@ function icon3dPortraitUrl(key){
     cam.position.set(hp.x, hp.y + 1, hp.z + 50); cam.lookAt(hp.x, hp.y - 1.5, hp.z);
     ICON3D.rd.render(sc, cam); const url = ICON3D.rd.domElement.toDataURL('image/png'); ICON3D.cache[ck] = url; return url;
   } catch (e) { return ''; }
+}
+
+function detailedEquipmentModel(slot,t,C){
+ const g=slot==='armor'?icon3dJacket(t,C):slot==='ring'?icon3dGadget(t,C):new T3.Group(),dark=m3('#2b3b52'),metal=m3('#b9c8d4'),accent=m3(C[1]);
+ const box=(w,h,d,m,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m,x,y,z,g);
+ if(slot==='head'){if(t===0){mk(new T3.CylinderGeometry(1.1,1.15,.5,8),dark,0,.1,0,g);box(1.9,.12,1.3,metal,0,-.18,.55);}else if(t===1){mk(new T3.TorusGeometry(1,.2,4,10),metal,0,0,0,g);for(const x of[-1,1])box(.5,1.1,.65,dark,x,-.5,0);}else if(t===2){mk(new T3.SphereGeometry(1.1,6,4),dark,0,0,0,g).scale.set(1,.65,.8);box(1.5,.35,.1,accent,0,.1,.8);}else{box(2,1.2,1.5,metal,0,0,0);box(1.7,.4,.1,dark,0,0,.8);for(const x of[-.6,.6])box(.2,.2,.1,accent,x,0,.9);}}
+ if(slot==='gloves'){for(const x of[-.65,.65]){box(.7,1.2,.55,dark,x,0,0);box(.8,.35,.65,metal,x,.5,0);for(let i=0;i<3;i++)box(.16,.4,.6,metal,x-.2+i*.2,-.7,0);box(.4,.3,.1,accent,x,.1,.35);}}
+ if(slot==='boots'){for(const x of[-.7,.7]){box(.9,1.3,.8,dark,x,.2,0);box(1,.55,1.6,metal,x,-.65,.4);box(1.05,.2,1.65,dark,x,-.95,.4);for(const y of[-.3,0,.3])box(.7,.08,.1,accent,x,y,.5);}}
+ if(slot==='offhand'){if(t===0){box(2.2,2.8,.2,metal,0,0,0);box(1.8,2.3,.15,dark,0,0,.15);box(.2,1,.3,accent,0,0,.3);}if(t===1){box(1.8,2.7,.55,dark,0,0,0);box(1.3,1.2,.1,accent,0,.4,.35);for(const x of[-.5,0,.5])box(.2,.2,.1,metal,x,-.7,.35);}if(t===2){mk(new T3.TorusGeometry(1,.18,4,12),metal,0,0,0,g);box(.4,2.8,.3,dark,0,-.1,0);mk(new T3.OctahedronGeometry(.5,0),accent,0,0,.3,g);}if(t===3){box(1.6,2,.6,dark,0,0,0);for(const x of[-.6,.6])box(.35,2.3,.8,metal,x,0,0);mk(new T3.TorusGeometry(.5,.15,4,8),accent,0,.1,.5,g);}}
+ if(slot==='armor'){for(const x of[-.65,.65]){box(.55,.6,.2,metal,x,-.45,.8);box(.2,.2,.25,accent,x,.6,.85);}box(2.5,.15,1.4,dark,0,-1.3,0);}
+ if(slot==='gloves'&&t>0){for(const x of[-.65,.65]){if(t===1)for(const dx of[-.2,.2])box(.2,.25,.25,metal,x+dx,-.25,.4);if(t===2)mk(new T3.TorusGeometry(.5,.1,4,8),accent,x,.5,0,g).rotation.x=Math.PI/2;if(t===3){box(.25,1.6,.25,metal,x-.3,.3,.4);box(.25,1.6,.25,metal,x+.3,.3,.4);}}}
+ if(slot==='boots'&&t>0){for(const x of[-.7,.7]){if(t===1)box(.8,.6,.65,metal,x,1,0);if(t===2)box(1.2,.55,1.1,metal,x,.1,0);if(t===3)for(const z of[0,.8])mk(new T3.CylinderGeometry(.3,.3,1.15,8),dark,x,-1.2,z,g).rotation.z=Math.PI/2;}}
+ if(t>0&&slot!=='armor'&&slot!=='head')for(const x of[-1,1])box(.12,.4,.15,accent,x,.2,.45);
+ return g;
+}
+function semanticDeviceModel(kind){
+ const g=new T3.Group(),dark=m3('#334358'),metal=m3('#bac9d6'),blue=m3('#738fca'),cyan=m3('#80cebd');
+ const box=(w,h,d,m,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m,x,y,z,g);
+ if(kind==='rank'){for(let i=0;i<3;i++){const h=[1.3,2.1,.8][i];box(.8,h,.9,i===1?blue:metal,(i-1)*.9,h/2,0);}mk(new T3.OctahedronGeometry(.45,0),cyan,0,2.8,0,g);}
+ if(kind==='wiki'){for(const x of[-.65,.65]){const p=box(1.1,2.2,.25,metal,x,0,0);p.rotation.y=x*.3;for(const y of[-.5,0,.5])box(.7,.08,.12,blue,x,y,.2);}box(.15,2.3,.4,dark,0,0,0);}
+ if(kind==='feedback'){box(2.3,1.5,.5,metal,0,.3,0);mk(new T3.ConeGeometry(.5,.7,3),metal,-.5,-.7,0,g);for(const x of[-.65,0,.65])box(.22,.22,.1,blue,x,.4,.3);}
+ if(kind==='log'){box(2,2.4,.25,metal,0,0,0);for(const y of[-.6,0,.6])box(1.2,.12,.1,blue,.2,y,.2);for(const y of[-.6,0,.6])box(.2,.2,.1,cyan,-.65,y,.2);}
+ if(kind==='save'){box(2.1,2.3,.4,blue,0,0,0);box(1.4,.7,.1,metal,0,.7,.25);box(1.4,.8,.1,metal,0,-.65,.25);box(.3,.45,.15,dark,.35,.7,.3);}
+ g.rotation.set(.3,-.5,0);return g;
 }
