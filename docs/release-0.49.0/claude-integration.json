@@ -71,5 +71,10 @@
       "updatedAt": "2026-10-23T03:04:09Z"
     }
   ],
-  "all_branches_preserved": true
+  "all_branches_preserved": true,
+  "merged_pr": 50,
+  "released_source": "78e989151c3dd0eba0cbf7000138227e68d9fb3b",
+  "pages_commit": "5d6b46ef87ee568a127ae52fa17294b44b12eb23",
+  "release_run": 40139564065,
+  "pages_run": 40139551744
 }

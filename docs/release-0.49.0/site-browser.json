@@ -1,0 +1,13 @@
+{
+  "version": "0.49.0",
+  "direct_https_browser": true,
+  "headerRemoved": true,
+  "taskDestinations": true,
+  "connectedElectricity": true,
+  "sevenEquipmentSlots": true,
+  "continuousInventory": true,
+  "animatedPortrait": true,
+  "frontPhone": true,
+  "seasonConsole": true,
+  "pageErrors": []
+}
