@@ -52,7 +52,7 @@ function icon3dCollectibleUrl(kind,id){
 }
 function deviceSkillsHtml(){
  const connected=GridLab.resolve(G.board,G.lvl).filter(r=>r.wired).length;
- return `<div class="device-workspace device-skills"><div class="device-heading"><div><span class="device-eyebrow">技能接線</span><h3>訊號組裝台</h3></div><span>${connected} 個技能接通</span></div>${wireGuideHtml()}<section class="device-console" aria-label="技能組裝工作區">${wireTopHtml()}</section>${wireSelCard()}<section class="device-inventory"><h3>技能與配件庫</h3>${uiInventoryHtml()}</section><details class="device-details"><summary>構築與戰鬥分析</summary>${buildBar()}${dpsBar()}${uiResolvedHtml()}${uiCombatHtml()}</details></div>`;
+ return `<div class="device-workspace device-skills"><div class="device-heading"><div><span class="device-eyebrow">技能接線</span><h3>訊號組裝台</h3></div><span>${connected} 個技能接通</span></div>${wireGuideHtml()}<section class="device-console" aria-label="技能組裝工作區">${wireTopHtml()}</section>${wireSelCard()}<section class="device-inventory"><h3>技能與配件庫</h3>${uiInventoryHtml()}</section>${DIRECT_VIEW.builds?buildBar():''}<div class="direct-analysis-tools"><button class="mb" onclick="directBuildTools()">構築配置</button><button class="mb" onclick="directCombatReport()">戰鬥分析</button>${directHelpButton('skills')}</div></div>`;
 }
 function deviceMenuHtml(){
  const groups=[['遊戲',[['settings','遊戲設定','畫面與戰鬥'],['save','存檔備份','匯入與匯出']]],['進度',[['goals','目標','里程碑獎勵'],['ach','成就','挑戰紀錄'],['dex','圖鑑','技能與收藏'],['rank','排行榜','歷史構築']]],['資訊',[['log','更新日誌','版本紀錄'],['feedback','意見回饋','回報與建議'],['wiki','編年史','完整資料']]]];

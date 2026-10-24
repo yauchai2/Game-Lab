@@ -18,8 +18,9 @@ function uiTitle(){
   const box=document.querySelector('#modal > .mbox');if(!box)return;
   let el=$('mttl');if(!el){el=document.createElement('div');el.id='mttl';box.insertBefore(el,$('mbody'));}
   const root=UI_NAV.find(g=>g.pages.includes(modalTab)),back=root&&modalTab!==root.k&&modalTab!=='tree';
+  const rankBack=modalTab==='rank'&&RANK_UI.open,backName=rankBack?'排行榜':root?.n;
   const hk=MHELP[modalTab],cz=uiBattleSize();document.body.classList.toggle('battle-fold',(MOB()&&cz===3)||(typeof GAME_VIEW!=='undefined'&&!!GAME_VIEW.prefs.hideBattle));
-  el.innerHTML=`${back?`<button class="ui-back" aria-label="返回${root.n}" onclick="openModal('${root.k}')">返回</button>`:''}<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="切換戰場大小，目前${CZN[cz]}" onclick="cycleCz()">${CZN[cz]}</button>`:''}`;
+  el.innerHTML=`${back?`<button class="ui-back" aria-label="返回${backName}" onclick="${rankBack?'rankOpen(null)':`openModal('${root.k}')`}">返回</button>`:''}<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="切換戰場大小，目前${CZN[cz]}" onclick="cycleCz()">${CZN[cz]}</button>`:''}`;
 }
 function uiSegments(key,items,label){return `<div class="ui-segments" role="group" aria-label="${label}">${items.map(([id,name,tip])=>`<button aria-pressed="${UI_WORK[key]===id}"${tip?` data-tip="${uxEsc(tip)}"`:''} data-focus="${key}-${id}" onclick="uiWork('${key}','${id}')">${name}</button>`).join('')}</div>`;}
 function uiWork(key,id){
@@ -360,7 +361,7 @@ function treeAvailableHtml(){
  const open=Object.values(TREE).filter(n=>canAllocateTalent(n.id)),branch={A:'耐久',B:'元素',C:'會心',D:'超頻',E:'回授',F:'電池',R:'接線'};
  return `<details class="ui-section"><summary>可連接節點清單（${open.length}）</summary><p>可用清單選擇，不必瞄準盤面的小圓點。每個節點消耗 1 天賦點，所有角色共用。</p><div class="ui-directory">${open.map(n=>`<button data-focus="talent-${n.id}" ${passPoints()<=0?'disabled':''} onclick="uiAllocateTalent('${n.id}')"><b>${branch[n.id[0]]}支線</b><span>${uxEsc(talentName(n.id))}</span></button>`).join('')||'<p>點數或韌體已達上限，或目前沒有可分配節點。可退回末端點後重新選路。</p>'}</div></details>`;
 }
-function uiAllocateTalent(id){const before=G.pass.length;allocPass(id);if(G.pass.length>before){if(modalTab==='tree')document.getElementById('talent-detail')?.focus({preventScroll:true});else document.querySelector(`[data-tree="${id}"]`)?.focus();uxAnnounce(`已點亮${talentName(id)}。`);uxAnimatePanel();}}
+function uiAllocateTalent(id){const before=G.pass.length;allocPass(id);if(G.pass.length>before){document.querySelector(`[data-tree="${id}"]`)?.focus({preventScroll:true});uxAnnounce(`已點亮${talentName(id)}。`);uxAnimatePanel();}}
 
 function warehouseMove(delta){WAREHOUSE_UI.page=Math.max(0,WAREHOUSE_UI.page+delta);renderModal();const id=delta>0?'warehouse-next':'warehouse-prev',next=document.querySelector(`[data-focus="${id}"]`);(next&&!next.disabled?next:document.querySelector(`[data-focus="${delta>0?'warehouse-prev':'warehouse-next'}"]`))?.focus();}
 
@@ -437,7 +438,7 @@ function feedbackDownload(){if(!FEEDBACK_PREVIEW)return;const p=FEEDBACK_PREVIEW
 
 function fieldJournalHtml(){const count=FIELD_STORIES.filter((_,i)=>G.storyFlags['p'+i]).length;return `<details class="ui-rules"><summary>電台手記 · 已收錄 ${count}／${FIELD_STORIES.length}</summary><p>停電後第七年。你帶著舊卡匣，沿各島微弱的訊號尋找山頂電台。</p>${FIELD_STORIES.map((e,i)=>{const f=G.storyFlags['p'+i]||0;return f?`<details class="field-entry"><summary>${uxEsc(e[0])}${f&2?' · 歸途已收錄':''}</summary><p class="uxmeta">${uxEsc(e[1])}</p><p>${uxEsc(e[2])}</p>${f&2?`<p>歸途：${uxEsc(e[3])}</p>`:''}</details>`:'';}).join('')||'<p>到達新的地景後，會收錄當地留言。</p>'}</details>`;}
 
-function uiWorldViewHtml(){const p=terrainNow(),size={regular:'一般地圖',medium:'中型地圖',large:'大型地圖',giant:'巨型地圖',training:'訓練場'}[p.sizeClass];return `<section class="ui-section"><h3>${p.name} · ${size}</h3><button class="mb" type="button" aria-pressed="${!!FXO.overview}" onclick="toggleWorldOverview()">${FXO.overview?'返回戰鬥鏡頭':'查看全景地圖'}</button>${fieldJournalHtml()}</section>`;}
+function uiWorldViewHtml(){const p=terrainNow(),size={regular:'一般',medium:'中型',large:'大型',giant:'巨型',training:'訓練場'}[p.sizeClass];return `<div class="direct-map-tools"><span>${uxEsc(p.name)} · ${size}</span><button class="mb" aria-pressed="${!!FXO.overview}" onclick="toggleWorldOverview()">${FXO.overview?'跟隨鏡頭':'全景'}</button><button class="mb" onclick="directJournal()">手記 ${FIELD_STORIES.filter((_,i)=>G.storyFlags['p'+i]).length}／12</button>${directHelpButton('maps')}</div>`;}
 
 /* 可用地圖：依地貌分組、同款（地貌＋等級＋詞綴）合併成一張並標示數量，方塊卡放大 3D 小島 */
 function uiMapGroups(){

@@ -662,10 +662,10 @@ function scene(){
   for (const m of G.mons){ const g = entFor(m, () => m.boss?buildCircuitBoss(biomeNow(),m.bossForm):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
-    const g = entFor(d, () => buildDrop(d)), u = g.userData; let x = d.x, y = d.y, z = BZ;
+    const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
     if (d.t < .6) z += Math.abs(Math.sin(d.t/.6*Math.PI*1.5))*5*(1 - d.t/.6) + .3;
     else z += .3 + Math.sin(d.t*6)*.25;
-    at3(g, x, y, z+terrainHeight(x,y)); u.item.rotation.y = d.t*2.4; u.disc.visible = true; if (u.beam) u.beam.visible = true;
+    at3(g, x, y, z+terrainHeight(x,y)); u.item.rotation.y = d.t*2.4; u.disc.visible = !d.pull; if (u.beam) u.beam.visible = !d.pull;g.scale.setScalar(d.pull?1-flight.progress*.35:1);
   }
   for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); disposeWorldObject(e); R3.ent.delete(k); }
   updateFx();

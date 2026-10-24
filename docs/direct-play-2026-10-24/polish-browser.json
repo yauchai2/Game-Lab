@@ -1,0 +1,15 @@
+{
+  "stale": {
+    "rejected": true,
+    "unchanged": true
+  },
+  "portraitFallback": true,
+  "failedSaveVisible": true,
+  "allFourPortraitsReady": true,
+  "rankHeaderVisible": true,
+  "boardFitAndZoom": true,
+  "rankBackToList": true,
+  "offlineCoreRoute": true,
+  "journalCount": true,
+  "errors": []
+}

@@ -1,0 +1,4 @@
+PASS physical pickup delay, midflight save, death, range, offline and exactly-once reward; initial character unlock and old-save compatibility
+PASS concise character sheet, shared wardrobe stage and identity, all four data-backed profiles, escaped nickname, separated stats
+PASS preview/cancel are read-only, locked cosmetic categories rejected, insufficient funds and duplicate purchase guarded
+PASS rotation reset and preserved original equipment/stat owners

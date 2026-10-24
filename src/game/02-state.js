@@ -208,7 +208,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, fo
 function recalc(){ syncBoard(); syncCoreCollection(); for(const slot of Object.keys(SLOTN))if(!canUseGear(G.equip[slot]))G.equip[slot]=null; const old = G.st; G.st = calc(); if(old?.sk?.BEAM?.mode!==G.st.sk.BEAM?.mode)G.signalCharge=0; const h=G.h;if(!G.st.firmware.includes('AK'))h.buffer=0;else h.buffer=Math.min(h.buffer||0,G.st.life*.12); h.hp = old ? h.hp * G.st.life / old.life : G.st.life; G.dirty = true; }
 const achCount = () => Object.keys(G.ach).length;
 function checkAch(){ for (const [id, a] of Object.entries(ACHS)) if ((GAME_FEATURES.cardChoices||id!=='card10') && !G.ach[id] && a.ok()){ G.ach[id] = 1; recalc(); logLine(`成就解鎖：${a.n}（永久傷害 +1%）`, '#c28a00'); addFloat(HX, HY, BZ + 26 + 2, a.n, '#c28a00', 4); SFX('rare'); G.dirty = true; } }
-const charOk = id => CHARS[id].ach ? !!G.ach[CHARS[id].ach] : G.maxDepth >= CHARS[id].need;
+const charOk = id => Object.hasOwn(CHARS,id)&&(G.startingChar===id||(CHARS[id].ach ? !!G.ach[CHARS[id].ach] : G.maxDepth >= CHARS[id].need));
 function pickChar(id){ if (!CHARS[id] || !charOk(id)) return; G.char = id; recalc(); logLine(`角色：${CHARS[id].n}`, '#2b6fa8'); SFX('card'); }
 const cardN = id => G.cards[id] || 0;
 function rollCards(n = 3){
@@ -231,13 +231,13 @@ function resolveOfflineChoices(summary){ if(!GAME_FEATURES.cardChoices)return;
 const xpNeed = L => Math.round(30 * Math.pow(1.32, L-1));
 function logLine(txt, col){ if (G.offline) return; if (typeof bossPush === 'function') bossPush(txt, col && col.length === 7 && col.toLowerCase() === '#2b2552' ? null : col, 'INFO'); G.log.unshift({ txt, col:col || '#2b2552' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
 function addFloat(x, y, z, txt, col, size=3.6, kind='event'){ if (G.offline) return; if(G.floats.length>=20)G.floats.shift(); G.floats.push({ x, y, z, txt, col, size, kind, t:0 }); }
-const PICKUP_RANGE = 12;   // 撿取範圍：收益在進入範圍時結算，吸附動畫只是視覺，距離愈遠飛得愈久
+const PICKUP_RANGE = 12;   // 撿取範圍：範圍內開始吸附，物件本體抵達後結算，距離不改
 function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
 const AUTO_LG_MARGIN = 1.35;   // 自動換裝要換掉暗金核心，新裝備的戰力必須高出 35%；核心仍留在收藏，可一鍵換回
-function serialize(){ return { v:2, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
+function serialize(){ return { v:2, startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
 function migrateEquipmentSlots(input){
@@ -255,6 +255,7 @@ function migrateEquipmentSlots(input){
 function applySave(o){
   if (!o || o.v !== 2) return false;
   o=migrateEquipmentSlots(o);
+  G.startingChar=Object.hasOwn(CHARS,o.startingChar)?o.startingChar:null;
   const uidSeen=new Set(),uidConflicts=new Set();for(const it of Array.isArray(o.inventory)?o.inventory:[]){if(uidSeen.has(it.uid))uidConflicts.add(it.uid);uidSeen.add(it.uid);}
   G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>/^p(?:[0-9]|1[01])$/.test(k)&&Number.isInteger(v)&&v>=0&&v<=3));
   G.castPolicy=o.castPolicy==='combo'?'combo':'balanced';G.signalCharge=0;G.readySince={};G.combat=null;G.castSerial=0;G.signalGainRoot=null;G.h.castT=-1;G.h.swingT=-1;
@@ -269,7 +270,7 @@ function applySave(o){
   G.coreDust=Number.isSafeInteger(o.coreDust)?Math.max(0,o.coreDust):0;G.storageRecycled=Math.max(0,+o.storageRecycled||0);G.whUp=Math.min(WH_UP_MAX,Math.max(0,Math.floor(+o.whUp||0)));G.offUp=Math.min(OFF_UP_MAX,Math.max(0,Math.floor(+o.offUp||0)));G.chips=Math.max(0,+o.chips||0);G.inventoryRevision++;
   for(const group of [G.equip,G.equipBackup])for(const slot of Object.keys(group)){const it=group[slot];if(validGear(it)&&!it.lg){storeGear(it);group[slot]=G.inventory.find(x=>x.uid===it.uid)||it;}}
 
-  G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!CHARS[G.char]) G.char = 'street'; if (!G.ach) G.ach = {}; G.mons = []; G.drops = (Array.isArray(o.groundDrops)?o.groundDrops:[]).filter(validDrop).map(d=>({...d,t:Number.isFinite(d.t)?d.t:0,done:false})); G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
+  G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!Object.hasOwn(CHARS,G.char)) G.char = 'street'; if (!G.ach) G.ach = {}; G.mons = []; G.drops = (Array.isArray(o.groundDrops)?o.groundDrops:[]).filter(validDrop).map(d=>({...d,t:Number.isFinite(d.t)?d.t:0,done:false,pull:d.pull&&Number.isFinite(d.pull.age)&&Number.isFinite(d.pull.duration)&&d.pull.duration>0?{age:Math.max(0,Math.min(d.pull.age,1.65)),duration:Math.max(.85,Math.min(d.pull.duration,1.65))}:null})); G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
   if (o.board && o.board.pieces) sanitizeBoard(o.board); else boardFromLegacy(o.slots || ['FIRE'], o.supp);
   loadProgression(o);normalizeBuilds(uidConflicts);recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
@@ -320,15 +321,23 @@ const validDrop=d=>!!(d&&Number.isFinite(d.x)&&Number.isFinite(d.y)&&(['gold','c
 function dropGround(d){
   [d.x,d.y]=terrainProject(d.x,d.y);
   if(d.kind==='gold'||d.kind==='chip'){
-    const near=G.drops.find(x=>!x.done&&x.kind===d.kind&&Math.hypot(x.x-d.x,x.y-d.y)<8);
+    const near=G.drops.find(x=>!x.done&&!x.pull&&x.kind===d.kind&&Math.hypot(x.x-d.x,x.y-d.y)<8);
     if(near){near.amount+=d.amount;return;}
   }
   G.drops.push(d);
 }
 function collectNearby(dt){
-  for(const d of G.drops){d.t+=dt;if(!d.done&&d.t>=.35&&G.h.dead<=0&&Math.hypot(d.x-G.h.x,d.y-G.h.y)<=PICKUP_RANGE){d.done=true;addFx({k:'pickup',x:d.x,y:d.y,x2:G.h.x,y2:G.h.y,col:d.kind==='gold'?'#e4c379':'#81cbd1',t:0,dur:.35+Math.min(.65,Math.hypot(d.x-G.h.x,d.y-G.h.y)/PICKUP_RANGE*.65)});pickup(d);}}
+  for(const d of G.drops){
+    d.t+=dt;if(d.done||G.h.dead>0)continue;
+    const distance=Math.hypot(d.x-G.h.x,d.y-G.h.y);
+    if(!d.pull&&d.t>=.35&&distance<=PICKUP_RANGE)d.pull={age:0,duration:.85+Math.min(1,distance/PICKUP_RANGE)*.8};
+    if(!d.pull)continue;
+    d.pull.age+=dt;
+    if(G.offline||d.pull.age>=d.pull.duration){d.done=true;pickup(d);}
+  }
   G.drops=G.drops.filter(d=>!d.done);
 }
+function dropVisualPosition(d){const u=d.pull?Math.max(0,Math.min(1,d.pull.age/d.pull.duration)):0,ease=u*u;return {x:d.x+(G.h.x-d.x)*ease,y:d.y+(G.h.y-d.y)*ease,lift:d.pull?Math.sin(u*Math.PI)*3+u*8:0,progress:u};}
 
 /* 六向電路天賦：角色共用所有路徑，以取捨組成流派。 */
 (function expandCircuitTree(){

@@ -3,8 +3,8 @@ const Q = new URLSearchParams(location.search);
 G.equip.weapon = makeItem('weapon', 0, 1); G.equip.weapon.name = '新手摺疊傘';
 G.equip.armor = makeItem('armor', 0, 1); G.equip.armor.name = '粗布衣';
 recalc(); G.h.hp = G.st.life;
-let loadedT = 0;
-if (!Q.has('fresh')){ const o = loadGame(); if (o && applySave(o)) loadedT = o.t || 0; }
+let loadedT = 0,hasLoadedGame=false;
+if (!Q.has('fresh')){ const o = loadGame(); if (o && applySave(o)){loadedT = o.t || 0;hasLoadedGame=true;} }
 G.speed = 1;   // 已拿掉遊戲速度選項
 if (!loadedT) logLine('冒險開始！英雄會自動戰鬥並走近拾取掉落物，裝備可到角色的倉庫管理。', '#2b2552');
 
@@ -62,6 +62,8 @@ if (Q.has('picks')) G.picks = +Q.get('picks');
 if (Q.has('modal')) openModal(Q.get('modal'));
 const gap0 = Q.has('away') ? +Q.get('away') : loadedT ? (Date.now() - loadedT)/1000 : 0;
 if (gap0 > 20) catchUp(gap0, true);
+const introWanted=!hasLoadedGame&&(Q.has('intro')||![...Q.keys()].some(k=>['fresh','static','modal','sim','selftest','give','lvl','char','mons','away'].includes(k)));
+if(introWanted)introStart();
 ui.renderInterval=1000/30;
 ui.suspendRender=()=>G.offline||document.hidden||FXO.stop>0;
 ui.animate(dt => {

@@ -355,7 +355,7 @@ function moveHero(dt){
       for(const m of al)if(m.warning&&monsterWarningContains(m.warning,cx,cy,2))sc-=4;
       if (sc > bs){ bs = sc; best = [cx, cy]; }
     }
-    const loot=G.drops.filter(d=>!d.done&&d.t>.35).sort((a,b)=>Math.hypot(a.x-h.x,a.y-h.y)-Math.hypot(b.x-h.x,b.y-h.y))[0];
+    const loot=G.drops.filter(d=>!d.done&&!d.pull&&d.t>.35).sort((a,b)=>Math.hypot(a.x-h.x,a.y-h.y)-Math.hypot(b.x-h.x,b.y-h.y))[0];
     if(loot&&h.hp>G.st.life*.2&&!al.some(m=>m.warning&&monsterWarningContains(m.warning,loot.x,loot.y,3))){h.gx=loot.x;h.gy=loot.y;h.aiT=.25;}else if(best){h.gx=best[0];h.gy=best[1];}
   }
   const waypoint=terrainWaypoint(h.x,h.y,h.gx,h.gy),dx = waypoint[0] - h.x, dy = waypoint[1] - h.y, d = Math.hypot(dx, dy), want = d > 1.2 ? 24 : 0;

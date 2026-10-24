@@ -324,3 +324,20 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 手機自動收起戰場仍由 uiBattleSize 判定，G.userCz 優先。設定目錄與遊戲設定是兩個工作區，uisettings 與 mbody 互斥顯示、各自捲動；openModal 的 resetScroll 會重置當前入口，renderModal(false) 保留工作位置。
 
 驗證：tools/test_device_workspaces_browser.cjs；來源規則與存檔沿用 tools/run_review_checks.py。不宣稱 Safari 真機效能或完整報讀器驗收通過。
+
+## 直接操作、新局及構築觀摩（2026-10-24，0.45.0 候選）
+
+來源：Alan 本次八項明確要求；計劃／取捨見 docs/direct-play-2026-10-24/plan.md。本節取代先選天賦再按分配，以及新遊戲不加序章的舊行為。
+
+| 能力 | canonical owner | UI 與持久化契約 |
+| --- | --- | --- |
+| 直接天賦 | uiTreeActivate／allocPass／canAllocateTalent | 點合法節點立即加一點；已分配／未連接／挑戰／預算限制不再消耗。方向鍵只移焦點，Enter／Space 執行。詳情退點保持末端連通檢查；探索仍只寫 TALENT_VIEW |
+| 盤上機件拖動 | 05i-wire 的 drag／wireMovePiece／wireRemovePiece | 移動在放開時提交；同類可交換，技能只到已開放終點，配件只到襯墊。無效、區外、取消或過期來源不改配置；只有收回區才移除，配件回庫存，不銷毀。成功保存 WIRE_UNDO；點選選單「移動」再選目標提供無拖曳替代 |
+| 原生拖曳 | 05i-wire 共用 handler | 防止盤面及庫存圖像啟動瀏覽器原生 dragstart；盤上 fill／src 為 touch-action:none，空白區保留原生捲動。拖曳中 uiRefreshLive 不重建盤面。離開技能頁清掉 pending 手勢 |
+| 首次開場 | INTRO／introStart／introRender／introBegin | 無有效存檔才展示短故事及選角，戰鬥／自動存檔暫停。故事可略過，Escape 到選角，不會開始遊戲。選定後才保存與開始，重驗 active／step 防雙次；共用 uxOpenDialog 圈限焦點及 inert |
+| 起始角色 | G.startingChar／charOk／serialize／applySave | 只把選定角色加入原解鎖資格，其他沿用原規則。模型鍵及數值不改；舊檔沒有 startingChar 時為 null，不改暱稱／目前角色。開始前進度另存 INTRO_KEY，重整可接續，不覆蓋 SAVE_KEY |
+| 內容減法 | directHelp／directCharacterLinks／directJournal／directCombatReport | 說明透過共用具名 dialog；配裝／外觀仍走原頁，手記與分析讀真實資料。關閉回觸發控制，沒有平行收藏、戰報或地圖狀態 |
+| 實體吸附 | collectNearby／dropVisualPosition／G.drops | 原距離內開始，0.85–1.65 秒物件本體飛向角色，到達才 pickup 一次。死亡暫停；未收回物件及 pull age／duration 隨原 groundDrops 保存並白名單整理。離線直接結算已開始吸附者，不依賴渲染；跨圖仍沿用原有清場收取 |
+| 構築詳情 | rankClean／rankSnap／rankImport／rankPieceDetails | 新快照保存七部位、節點、策略、卡匣與階級；舊碼缺項明示。白名單、數量上限及 GridLab.normalize 防壞資料；只讀盤用同一 resolve，不臨時換 G.board、不套用別人的物件或資源 |
+
+排行榜沒有新增後端或自動上傳。朋友資料由玩家貼構築碼，示範不宣稱真人。全新／舊檔、拖曳成功／取消／無效、存讀、五尺寸、鍵盤及減少動態由 tools/test_direct_play_browser.cjs／tools/test_direct_play_state.cjs 驗證；真機 Safari、報讀器及長期 FPS 不冒稱已測。

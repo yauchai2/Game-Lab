@@ -1,0 +1,5 @@
+idle-hero.html : 39 inline scripts syntax checked
+idle-hero-review.html : 37 inline scripts syntax checked
+character-review.html : 17 inline scripts syntax checked
+equipment-review.html : 20 inline scripts syntax checked
+PASS review fixtures isolated; production toolbar and save key unchanged
