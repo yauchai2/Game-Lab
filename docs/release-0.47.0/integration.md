@@ -33,4 +33,8 @@ strict audit仍保留兩項既有事件代理按鈕偵測提示，不宣稱全�
 
 ## 發佈狀態
 
-來源待合併／部署，完成後追加實際提交、工作流程與線上證據。
+PR #45已合併。來源／標籤v0.47.0為401a3658c4b47e0a47395fed157e971ff0fde268；Pages提交88d19f0a86195ee50448e9e0aa1fda983ad24e2a，狀態built。Release工作流程40093529090及Pages工作流程40093528098均成功。單檔附件大小14073639位元組，digest與已驗證單檔相符。
+
+[線上核對](live-verification.json)記錄HTTPS下載manifest、入口及全部腳本的SHA-256，標籤來源與Release附件API digest／大小一致；不冒稱重新下載重導附件。[分離腳本啟動](site-browser.json)通過九格選單及技能／打造／設定、24點預算、四職業簡稱及新Logo檢查。直接HTTPS Chromium遇到代理CA信任限制，改以已核對HTTPS雜湊的原檔重播，未停用TLS驗證。
+
+正式試玩：https://yauchai2.github.io/Game-Lab/ 。版本紀錄：https://github.com/yauchai2/Game-Lab/releases/tag/v0.47.0 。所有分支保留。
