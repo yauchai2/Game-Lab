@@ -22,7 +22,7 @@ const TREE = (() => {
 
 /* ---------- game state ---------- */
 const G = {
-  ascension:null,circuits:['pocket'],circuitLayouts:{},circuitPity:0,storyFlags:{},city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
+  ascension:null,ascensionNodes:[],circuits:['pocket'],circuitLayouts:{},circuitPity:0,storyFlags:{},city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
   coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:false, storageRecycled:0, whUp:0, offUp:0, chips:0, equip:Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null])), armory:{}, equipBackup:{}, deferChoices:false, gemTier:{}, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
   pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
   h:{ x:HX, y:HY, vx:0, vy:0, gx:HX, gy:HY, aiT:0, mv:0, hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
@@ -166,7 +166,8 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, fo
   for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; for (const a of [it.imp, ...it.aff]) s[STAT_KEY[a.k]] += a.v; }
   for (const [k, v] of Object.entries(CHARS[G.char].eff)) s[k] += v;
   const asc=typeof ascendInfo==='function'?ascendInfo():null;if(asc)for(const[k,v]of Object.entries(asc.eff))s[k]+=v;
-  s.regen=Math.max(0,s.regen);s.dodge=Math.min(35,s.dodge);s.signatureCd=CHARS[G.char].sig.cd*(G.ascension==='drive'?.9:1);
+  if(typeof ascensionNodeEffects==='function')for(const[k,v]of Object.entries(ascensionNodeEffects()))s[k]+=v;
+  s.regen=Math.max(0,s.regen);s.dodge=Math.min(35,s.dodge);s.signatureCd=CHARS[G.char].sig.cd*(G.ascension==='drive'?.9:1)*Math.max(.7,1+(typeof ascensionTuning==='function'?ascensionTuning().sigCdPct||0:0));
   s.inc += achCount();
   for (const [id, n] of Object.entries(G.cards)){ const c = CARDS[id]; if (c && c.st) s[c.st] += c.v*n; }
   for (const id of Object.keys(G.relics)){ const r = RELICS[id]; if (r && r.st) s[r.st] += r.v; }
@@ -239,7 +240,7 @@ function addFx(e){ if (!G.offline&&G.fx.length<64) G.fx.push(e); }
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
-function serialize(){ return { v:2, careerVersion:1,ascension:G.ascension||null,circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
+function serialize(){ return { v:2, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
 function migrateEquipmentSlots(input){
@@ -274,7 +275,7 @@ function applySave(o){
 
   G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!Object.hasOwn(CHARS,G.char)) G.char = 'street'; if (!G.ach) G.ach = {}; G.mons = []; G.drops = (Array.isArray(o.groundDrops)?o.groundDrops:[]).filter(validDrop).map(d=>({...d,t:Number.isFinite(d.t)?d.t:0,done:false,pull:d.pull&&Number.isFinite(d.pull.age)&&Number.isFinite(d.pull.duration)&&d.pull.duration>0?{age:Math.max(0,Math.min(d.pull.age,1.65)),duration:Math.max(.85,Math.min(d.pull.duration,1.65))}:null})); G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
   if (o.board && o.board.pieces) sanitizeBoard(o.board); else boardFromLegacy(o.slots || ['FIRE'], o.supp);
-  G.ascension=typeof ASCENSIONS!=='undefined'&&ASCENSIONS[G.char]?.some(a=>a.id===o.ascension)?o.ascension:null;G.circuits=Array.isArray(o.circuits)?o.circuits:['pocket',G.board.template];G.circuitLayouts=o.circuitLayouts&&typeof o.circuitLayouts==='object'?Object.fromEntries(Object.entries(o.circuitLayouts).filter(([id])=>Object.hasOwn(GridLab.TEMPLATES,id)).map(([id,b])=>[id,GridLab.adopt({...b,template:id})])):{};G.circuitPity=Math.max(0,Math.min(3,+o.circuitPity||0));if(typeof cleanCircuitInventory==='function')cleanCircuitInventory();
+  G.ascension=typeof ASCENSIONS!=='undefined'&&ASCENSIONS[G.char]?.some(a=>a.id===o.ascension)?o.ascension:null;G.ascensionNodes=typeof ascensionCleanNodes==='function'?ascensionCleanNodes(G.ascension,o.ascensionNodes):[];G.circuits=Array.isArray(o.circuits)?o.circuits:['pocket',G.board.template];G.circuitLayouts=o.circuitLayouts&&typeof o.circuitLayouts==='object'?Object.fromEntries(Object.entries(o.circuitLayouts).filter(([id])=>Object.hasOwn(GridLab.TEMPLATES,id)).map(([id,b])=>[id,GridLab.adopt({...b,template:id})])):{};G.circuitPity=Math.max(0,Math.min(3,+o.circuitPity||0));if(typeof cleanCircuitInventory==='function')cleanCircuitInventory();
   loadProgression(o);normalizeBuilds(uidConflicts);recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
 function saveGame(){if(G.__wipe)return false;try{if(typeof rankCheck==='function')rankCheck();if(typeof profileSave==='function')return profileSave();localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));return true;}catch(e){return false;}}
@@ -366,7 +367,7 @@ function buyCircuitMode(id){
 
 /* 有限路徑、可還原遷移、城市遠征與定向收藏。 */
 const copyState=x=>JSON.parse(JSON.stringify(x));
-function talentBudget(){return Math.min(TALENT_LIMIT,Math.max(0,G.lvl-1)+Math.max(0,Math.floor((G.maxDepth-1)/4)));}
+function talentBudget(){return Math.min(TALENT_LIMIT,Math.max(0,Math.floor((G.lvl-1)/2))+Math.max(0,Math.floor((G.maxDepth-1)/5)));}
 const firmwareCount=pass=>pass.filter(id=>FIRMWARE[id]).length;
 const talentOverLimit=pass=>pass.length>talentBudget()||firmwareCount(pass)>FIRMWARE_LIMIT;
 function passiveLegacy(){return !!G.legacyMode||talentOverLimit(G.pass);}
@@ -375,8 +376,8 @@ function talentName(id){return !passiveLegacy()&&FIRMWARE[id]?FIRMWARE[id].n+'�
 function connectedTalents(pass){const reached=new Set(['S']);let changed=true;while(changed){changed=false;for(const id of pass)if(TREE[id]&&!reached.has(id)&&TREE[id].links.some(k=>reached.has(k))){reached.add(id);changed=true;}}return pass.every(id=>reached.has(id));}
 function talentPlan(pass=G.pass){const left=[...new Set(pass.filter(id=>TREE[id]&&id!=='S'))],out=[];let changed=true;
  while(changed){changed=false;for(const id of left){if(out.includes(id)||out.length>=talentBudget()||FIRMWARE[id]&&firmwareCount(out)>=FIRMWARE_LIMIT)continue;if(TREE[id].links.some(k=>k==='S'||out.includes(k))){out.push(id);changed=true;}}}return out;}
-function convertTalents(){if(G.run||G.train)return false;if(!G.legacyTalent)G.legacyTalent=copyState({pass:G.pass,builds:G.builds,bi:G.bi||0,board:G.board,castPolicy:G.castPolicy});G.pass=talentPlan();G.legacyMode=false;recalc();return true;}
-function restoreLegacyTalents(){if(!G.legacyTalent||G.run||G.train)return false;const old=copyState(G.legacyTalent),board=old.board?.pieces?GridLab.adopt(old.board,G.lvl):G.board;if(!G.circuits.includes(board.template))return false;G.pass=old.pass;G.builds=old.builds;G.bi=old.bi;G.board=board;G.castPolicy=old.castPolicy==='combo'?'combo':'balanced';G.legacyMode=true;recalc();return true;}
+function convertTalents(){if(G.run||G.train)return false;if(!G.legacyTalent)G.legacyTalent=copyState({pass:G.pass,builds:G.builds,bi:G.bi||0,board:G.board,castPolicy:G.castPolicy,legacyMode:G.legacyMode});G.pass=talentPlan();G.legacyMode=false;recalc();return true;}
+function restoreLegacyTalents(){if(!G.legacyTalent||G.run||G.train)return false;const old=copyState(G.legacyTalent),board=old.board?.pieces?GridLab.adopt(old.board,G.lvl):G.board;if(!G.circuits.includes(board.template))return false;G.pass=old.pass;G.builds=old.builds;G.bi=old.bi;G.board=board;G.castPolicy=old.castPolicy==='combo'?'combo':'balanced';G.legacyMode=old.legacyMode!==false;recalc();return true;}
 function refundTalent(id){if(!G.pass.includes(id)||G.run||G.train)return false;const next=G.pass.filter(k=>k!==id);if(!connectedTalents(next))return false;G.pass=next;recalc();return true;}
 function newCity(){return {maxTier:1,fragments:{signal:0,memory:0,power:0},seals:{},clears:{},nexusWins:0,target:'W_ECHO',policy:'safe',last:null};}
 function loadProgression(o){
@@ -388,7 +389,7 @@ function loadProgression(o){
   if(LEGEND_BY[o.city.target])G.city.target=o.city.target;G.city.policy=o.city.policy==='risk'?'risk':'safe';
   if(o.city.last&&typeof o.city.last.text==='string')G.city.last={text:o.city.last.text.slice(0,300)};
  }
- G.legacyMode=o.progressionVersion===1?(o.legacyMode===true||talentOverLimit(G.pass)):G.pass.length>0;
+ G.legacyMode=o.progressionVersion===1?(o.legacyMode===true||firmwareCount(G.pass)>FIRMWARE_LIMIT):G.pass.length>0;
  G.legacyTalent=o.legacyTalent&&Array.isArray(o.legacyTalent.pass)?copyState(o.legacyTalent):null;
  if(o.progressionVersion!==1){G.builds=G.builds.map(b=>b?{...b,legacyMode:true}:b);if(G.pass.length||G.builds.some(Boolean))G.legacyTalent=copyState({pass:G.pass,builds:G.builds,bi:G.bi||0,board:G.board,castPolicy:G.castPolicy});}
  if(G.legacyTalent){G.legacyTalent.pass=G.legacyTalent.pass.filter(id=>TREE[id]&&id!=='S');if(!Array.isArray(G.legacyTalent.builds))G.legacyTalent.builds=[null,null,null];G.legacyTalent.builds=G.legacyTalent.builds.slice(0,3);G.legacyTalent.bi=[0,1,2].includes(G.legacyTalent.bi)?G.legacyTalent.bi:0;}
@@ -461,7 +462,7 @@ function restoreBuild(index,keepMissing=false){if(![0,1,2].includes(index)||inde
  const target=G.builds[index],targetBoard=target?GridLab.adopt(copyState(target.board),G.lvl):null;if(target?.character&&target.character!==G.char)return {ok:false,reason:'構築屬於其他職業，不能轉職'};if(targetBoard&&!G.circuits?.includes(targetBoard.template))return {ok:false,reason:'尚未持有此電路板'};const resolved=inspectBuildGear(target);if(resolved.missing.length&&!keepMissing)return {ok:false,missing:resolved.missing,reason:'部分裝備已不存在'};
  const current=captureBuild();if(!current)return {ok:false,reason:'倉庫已滿，先整理空間再保存目前裝備'};
  G.builds[G.bi||0]=current;G.bi=index;
- if(target){G.board=targetBoard;G.pass=target.pass.slice();G.castPolicy=target.castPolicy==='combo'?'combo':'balanced';G.legacyMode=target.legacyMode===true||talentOverLimit(G.pass);}
+ if(target){G.board=targetBoard;G.pass=target.pass.slice();G.castPolicy=target.castPolicy==='combo'?'combo':'balanced';G.legacyMode=target.legacyMode===true||firmwareCount(G.pass)>FIRMWARE_LIMIT;}
  else{G.board=GridLab.createBoard(G.board.template);G.pass=[];G.castPolicy='balanced';G.legacyMode=false;}
  if(target?.equipment){for(const slot of Object.keys(SLOTN)){const old=G.equip[slot];G.equip[slot]=resolved.equip[slot];if(old!==G.equip[slot])G.equipBackup[slot]=old;}G.autoEquip=false;}
  const use={},cu={};G.board.pieces=G.board.pieces.filter(p=>p.kind!=='support'||(use[p.key+(p.t||1)]=(use[p.key+(p.t||1)]||0)+1)<=gemOwnT(p.key,p.t||1));

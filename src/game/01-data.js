@@ -86,7 +86,7 @@ const SIGNATURE_GEAR = Object.fromEntries([
  ["null_pet", "volt", "offhand", "浮游寵機"],
  ["null_lanyard", "volt", "armor", "控制器頸繩"]
 ].map(([model,owner,slot,label])=>{
- const who={street:'脈衝衛士',frost:'頻譜遊俠',beep:'訊號獵手',volt:'寵機技師'}[owner],id='Y2K_'+model.toUpperCase();
+ const who={street:'戰士',frost:'樂師',beep:'獵手',volt:'寵機師'}[owner],id='Y2K_'+model.toUpperCase();
  return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅對應職業可裝備。'+(SIGNATURE_PENDING.has(model)?'目前以程序式 3D 代用，原始模型待補。':'')+'雜兵 0.001%、精英 0.01%、關主 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
 }));
 for(const gear of Object.values(SIGNATURE_GEAR))LEGENDS[gear.slot].push(gear);
@@ -109,6 +109,15 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.47.0',d:'2026-10-24',t:[
+    '修正快速拖曳接線漏格及觸控捕獲問題，沿實際指標軌跡接線，取消可還原原配置',
+    '共用視窗改用右上角關閉按鈕，子頁返回父頁，確認視窗保留取消與資源保護',
+    '角色總覽移除大型展示舞台，原角色列表頭像框內改為動態3D頭像，緩慢自轉及待機',
+    '十二條昇華各新增三條雙節點分支，共72個天賦，最多四點，具前置、取捨、退點與完整構築觀摩',
+    '職業簡稱為戰士、樂師、獵手、寵機師；一般天賦最多24點，預設顯示全貌，舊有超額配點保留並提供轉換',
+    '接線板固定放大，邊緣拖線可平移，機件拖出盤面收回；六對起終點使用不同顏色與形狀',
+    '換上全新品牌標誌，啟動及離線等待共用呈現；職業機制、裝備詞綴、故事與成就改用視覺化閱讀'
+  ]},
   {v:'0.46.0',d:'2026-10-24',t:[
     '技能只有從對應電源逐格接通終點才生效；寶石只可放同色洞，階級耗電與每技能三枚配件限制帶來組裝取捨',
     '冒險可獲得3×3、4×4、6×6與8×8電路板，提供不同方向及終點配置；可手動換板並保留各板配置',
@@ -448,7 +457,7 @@ const MONSTER_GUIDE=[
 ];
 
 /* 城市路線與韌體是所有角色共用的構築規則。 */
-const TALENT_LIMIT=36, FIRMWARE_LIMIT=2;
+const TALENT_LIMIT=24, FIRMWARE_LIMIT=2;
 const FIRMWARE={
  AK:{n:'冷備份',eff:{lifePct:12,armor:35},d:'技能直傷降低 15%；冷啟動消耗凍結時，入手最大生命 12% 的緩衝盾，持續 4 秒，不疊加'},
  BK:{n:'三頻協定',eff:{crit:-8},d:'同時啟用火、冰、電機件時，技能傷害提高 30%；會心率降低 8%'},

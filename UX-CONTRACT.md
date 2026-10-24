@@ -356,3 +356,35 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 | 備份與離線 | serialize／profileSave／catchUp | 匯出碼只備份目前角色，不冒充整個角色列表備份；只有啟用角色補算離線。新板離線bulk採普通怪率、有限目錄逐種結算，不放大觀測到的稀有掉落。 |
 
 新規則驗證：tools/test_classes_circuits.cjs、tools/test_classes_circuits_browser.cjs；量測限制見docs/classes-circuits-2026-10-24/review.md。舊版幾何引擎保留為00-grid-legacy.js僅做遷移，test_grid.js明確測此遷移引擎；新規則由新測試負責。
+
+
+## 視窗、指標手勢與昇華天賦（2026-10-24，v0.47.0候選）
+
+來源：Alan本輪四項修正。本節取代總覽常駐大舞台；固定職業、板型及物品所有權不變。
+
+| 能力 | canonical owner | 契約 |
+| --- | --- | --- |
+| 詳情／確認關閉 | showOverlay／windowCloseOverlay／uxOpenDialog | 共用標題列右上角×。純返回改為×；付款等確認保留取消。×與Escape執行同一取消，含返回檢視或上一層；保留inert、Tab圈限、取消初始焦點及觸發點返回。header採具名div，避免戰場header全局樣式污染。 |
+| 子頁關閉 | uiTitle／UI_NAV | 有父頁才提供×；設定子頁回目錄、排行榜詳情先回榜單；不退出遊戲，不清除父頁篩選。一般天賦分頁不新增多餘關閉。 |
+| 拖線 | 05i-wire drag／wireMove／GridLab.extend | 逐段取樣真實指標軌跡，只補讀經過格子，不自動尋路。穩定盤面根節點捕獲pointer，重繪內層不丟手勢；非被捕獲指標不改線。pointercancel、blur及離頁還原整次手勢與先前undo。所有路徑仍通過GridLab相鄰、障礙、交叉與終點驗證。 |
+| 原位頭像 | uiSheetIdentity／PV／dressTick | 原頭像框為角色列表按鈕，內部canvas為純展示，不能攔截點擊。頭肩取景與全身共用模型及renderer；原靜態縮圖保留失敗備援。關閉動態停轉；模態遮擋與不可見時停繪。 |
+| 昇華節點 | ASC_TALENTS／ascensionBudget／allocateAscensionNode | 十二昇華各三條二節點分支，共72節點。先分配前置；最多4點。Lv20／深8且已有昇華有2點，Lv30／深12、Lv40／深18各1點。一般天賦預算不共用；舊檔零代選，不能跨昇華或用構築切換繞過。 |
+| 昇華退點 | ascensionNodeState／refundAscensionNode／resetAscensionNodes | 僅末端可單點退，單點及整盤同為每點等級×25金幣。共用確認、執行時重驗profile／昇華／節點JSON／成本，取消、重複與過期不扣款。不能在挑戰／訓練修改；不得透過退點重置寵機CD或刷新回復額度。 |
+| 保存與觀摩 | serialize／applySave／rankClean／rankSnap | 節點白名單、前置、預算及所屬昇華驗證，角色各自保存；排行榜快照呈現實際節點名稱／效果。重選昇華清空原昇華點數並退回完整預算，新昇華自行分配，確認文字明示。 |
+
+天賦資料eff進calc，tune進characters-data既有護盾／回聲／節拍／專技／寵機；不另設平行戰鬥引擎。關主控制與每秒2.5%回復額度仍走原owner。錢包、可用點及退點費用沿uiRefreshLive局部更新，不用高頻重建整個視窗。
+
+放大接線板以data-scroll-key註冊到uxCapturePanel／uxRestorePanel，同頁重繪保留盤內水平／垂直位置，換工作頁則重置。放大時仍可逐格點選並平移視窗完成接線，不只依賴拖曳。
+
+
+## 可讀性與品牌追加（2026-10-24，v0.47.0候選）
+
+本節取代前述需手動放大接線板的規則。技能板固定放大，內部水平捲動；拖線到可視邊緣會平移，仍逐格驗證，不自動尋路。盤上物件拖出可視盤邊鬆手收回，取消手勢或盤內無效落點保持原狀，保留復原及鍵盤／選單替代；不再顯示收回框或全盤切換。
+
+六對端口採紅／藍／綠／金／紫／青，每色一對，另配▲●■◆✚✦，只顯示起／終，完整資訊留在名稱及說明。端口配色由05i-wire.js的PORT_COLORS擁有，不與三類寶石洞混淆；寶石分類仍只有紅／藍／綠，連通規則不變。
+
+職業顯示戰士、樂師、獵手、寵機師。一般天賦最多24點：每兩級1點、每五層深度1點，最多兩韌體；昇華4點獨立。舊超額配置不強刪，不因新預算改為舊戰鬥算法，玩家主動轉換及還原。一般天賦預設按工作區寬高顯示全貌，小節點強調線路結構；放大或節點清單研究效果，合法節點仍直接加點。
+
+品牌唯一來源為src/brand/idle-hero-logo.webp，tools/pack_logo.py嵌入啟動頁與ASSET.logo，brandMarkup共用頁首與離線等待的銀色底座、冰綠訊號邊及短掃光。手機頁首保留180×64標籤，桌面220×84，等待畫面最大320×142。新Logo經生成式去背整理，非逐像素擷取；沒有外部圖片請求。減少動態停用掃光與封包動畫，離線進度依真實補算更新。
+
+職業專技以真實冷卻與三步機制圖呈現；裝備詞綴使用實際同階上下限及meter，不虛構強度評分；成就以達成狀態徽章、故事以既有3D快取縮圖及記事排列。沒有增加另一個常駐3D renderer。手機收起戰場時隱藏body直屬戰場canvas與travel層，避免跨尺寸後舊canvas撐出視窗；HUD保留。未量測真機FPS，不宣稱效能提升百分比。

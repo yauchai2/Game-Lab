@@ -3,7 +3,7 @@ const Q = new URLSearchParams(location.search);
 G.equip.weapon = makeItem('weapon', 0, 1); G.equip.weapon.name = '新手摺疊傘';
 G.equip.armor = makeItem('armor', 0, 1); G.equip.armor.name = '粗布衣';
 recalc(); G.h.hp = G.st.life;
-G.ascension=null;G.circuits=['pocket'];G.circuitLayouts={};G.circuitPity=0;
+G.ascension=null;G.ascensionNodes=[];G.circuits=['pocket'];G.circuitLayouts={};G.circuitPity=0;
 const GAME_NEW_STATE=copyState(G);
 let loadedT = 0,hasLoadedGame=false;
 if (!Q.has('fresh')){ const o = loadGame(); if (o && applySave(o)){loadedT = o.t || 0;hasLoadedGame=true;} }
@@ -41,7 +41,7 @@ ui = mountFigure({
   },
 });
 setupPanel();
-{ const h = document.querySelector('header h1'); if (h) h.innerHTML = `<img class="wm" src="${ASSET.wordmark}" alt="Idle Hero">`; }
+{ const h = document.querySelector('header h1'); if (h) h.innerHTML = brandMarkup('header'); }
 document.documentElement.style.setProperty('--ver', '"v' + VERSION() + '"');
 if (Q.has('legend')){ for (const id of Q.get('legend').split(',')){ const L = LEGEND_BY[id]; if (!L) continue; const sl = Object.keys(LEGENDS).find(k => LEGENDS[k].includes(L)); G.equip[sl] = makeItem(sl, 3, 20, id); } recalc(); }
 if (Q.has('give')){ // testing helpers
