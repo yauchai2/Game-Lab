@@ -41,7 +41,7 @@ function characterEquipment(g,cos,wt,wr){
  const grip=new T3.Group();B.handR.add(grip);grip.rotation.x=Math.PI/2;g.userData.sword=grip;
  for(const slot of Object.keys(SLOTN)){
   const it=G.equip[slot];if(it&&attachSignatureGear(g,it))continue;
-  if(slot==='weapon'){const style={umbrella:0,bat:1,tube:2,saber:3}[cos.weaponStyle]??wt;const w=buildSimpleEquipment(slot,style,wr);grip.add(w);}
+  if(slot==='weapon'){const style={umbrella:0,bat:1,tube:2,saber:3}[cos.weaponStyle]??wt;buildWeapon(grip,style,wr);}
   else if(it){
    if(slot==='offhand'&&cos.offhandStyle&&cos.offhandStyle!=='0')continue;
    const add=(bone,x,y,z)=>{const item=buildSimpleEquipment(slot,Math.min(3,Math.floor(it.il/6)),it.r);item.position.set(x,y,z);B[bone].add(item);};

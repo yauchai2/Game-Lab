@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-24",
+  "browser_verified": false,
+  "checks": [
+    {
+      "command": "node tools/test_equipment_slots.cjs",
+      "exit_code": 0,
+      "stdout": "PASS all seven types at four rarities: generation, pickup, equip, stats, save and build restoration\nPASS old three-slot saves: preserved rolls, collection/backup/build migration, no source mutation, idempotent reload\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_character_stage.cjs",
+      "exit_code": 0,
+      "stdout": "PASS single shared stage and identity, all four data-backed profiles, escaped nickname, separated stats\nPASS preview/cancel are read-only, locked cosmetic categories rejected, insufficient funds and duplicate purchase guarded\nPASS rotation reset and preserved original equipment/stat owners\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_equipment_fit.cjs",
+      "exit_code": 0,
+      "stdout": "PASS source-bound headset mask, unchanged source GLB, unique valid triangle roster, central face protection and generated data parity\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_signature_equipment.cjs",
+      "exit_code": 0,
+      "stdout": "PASS signature pool isolation, exact drop thresholds, owner restrictions, pickup, save identity, character swaps, backup restrictions and offline bulk\nPASS 16 derived asset hashes, inline bytes, geometry budgets and fully embedded GLB dependencies\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_characters.cjs",
+      "exit_code": 0,
+      "stdout": "PASS all four original GLBs: 16-bone skins, normalized weights, bounded deformations, nine real clips, state priority and legacy-key save round trips\nPASS distinct live combat signatures: four-target chain, radial wave, six locks and rate-limited companion attacks\nPASS bounded Aki shield, Milo combo timeout, Ping one-use receipt and no training pet rewards or runtime data in saves\nPASS canonical GLB hashes and texture/triangle/file budgets\n",
+      "stderr": "Scripts \"build/three.js\" and \"build/three.min.js\" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation\n"
+    },
+    {
+      "command": "node tools/test_ux_revision.cjs",
+      "exit_code": 0,
+      "stdout": "PASS three cosmetic categories only, legacy choices cannot spend funds, purchases are idempotent and legacy holdings persist\nPASS cosmetics never change combat stats\nPASS compact type tokens, semantic hierarchy, quality preference validation and decorative non-interactive travel layer\nPASS explicit quality preferences survive real storage write/read and invalid values fall back to auto\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_field_update.cjs",
+      "exit_code": 0,
+      "stdout": "PASS arrival is a short non-blocking effect; story discovery persists silently and deduplicates\nPASS every regional pool and guide resolves to a stat block, size and distinct skill\nPASS salvo commits three avoidable targets, charge respects land and attacks cannot damage outside warnings\nPASS guard reduces direct damage, healing is bounded and bosses rotate attacks then accelerate below half life\nPASS four new real low-poly creatures and three giant boss silhouettes exceed 3× hero height within a 14-mesh budget\nPASS review uses real progress with an explicit boss encounter control\nPASS 42 simultaneous three-target warnings render before an overloaded ordinary effect pool within 160 meshes\nPASS all 45 weapon/offhand/accessory model combinations produce finite real Three.js geometry\n",
+      "stderr": "Scripts \"build/three.js\" and \"build/three.min.js\" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation\n"
+    },
+    {
+      "command": "node tools/test_grid.js",
+      "exit_code": 0,
+      "stdout": "grid tests ok\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_gameplay.js",
+      "exit_code": 0,
+      "stdout": "PASS regular map completes once, reaches the right goal and cannot pay twice\nPASS suspended manual choices remain pending and unchanged on a second settlement\nPASS suspension ignores saved auto choice preferences without consuming queued choices\nPASS every distinct legendary is retained and a normal item replaces the active core only when it is at least 35% stronger\nPASS manual core swaps and restoration preserve ownership, resources and the previous normal item\nPASS duplicate active, locked or corrupted cores are protected and salvaged once\nPASS unprotected stored duplicate upgrades, and restoration resolves the upgraded owned copy\nPASS ordinary auto upgrade remains available without a legendary equipped\nPASS save round trip preserves deferred choices, core modifications and a working restore\nPASS legacy import recovers equipped cores without inheriting another save collection\n10 gameplay checks passed\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_mechanics.js",
+      "exit_code": 0,
+      "stdout": "PASS shared cooldown math handles reduction, focus cost and the same 60% limit\nPASS all six sockets cast after mirroring the same high-haste board\nPASS every standard and mode preview matches direct single-target hits, excluding conditional reactions\nPASS mode and casting capacity affect preview, while conditional burst is excluded\nPASS microscopic hits cannot freeze a boss and adaptation cannot be refreshed away\nPASS high-haste storm leaves real boss action windows instead of permanent control\nPASS only original unique infrared hits charge; forks and repeats cannot feed themselves\nPASS single original cast has a bounded charge budget even across many forked targets\nPASS cold-start reserves one frozen target and obeys its landing radius\nPASS combo policy has a fallback when no generator is equipped\nPASS training restores live charge and cooldowns on cancel and never grants rewards\nPASS recipes unlock once, reject unknown IDs, preserve funds and all old save holdings\nPASS effective damage excludes overkill and preserves secondary source attribution\n13 mechanics checks passed\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_progression.js",
+      "exit_code": 0,
+      "stdout": "PASS path budget stops at 36 despite infinite level and depth growth\nPASS a third firmware is blocked even when it is connected and points remain\nPASS each of the six firmware routes is reachable within the limited budget\nPASS legacy import retains every old node until previewed conversion and allows exact restoration\nPASS refund rejects a bridge, returns a leaf and cannot modify a live expedition\nPASS firmware has real damage trade-offs and conditional rewards\nPASS cold backup grants a bounded expiring shield and all damage paths can consume it\nPASS city entry is gated, does not spend maps or overwrite a run\nPASS stage choices settle once and temporary bonuses disappear on retreat\nPASS a complete safe route yields 14 fragments and one tier-specific seal exactly once\nPASS two successful routes buy the chosen core without random ID, duplicate charge or equipment change\nPASS nexus requires all three same-tier seals, consumes once and unlocks the next tier\nPASS failed nexus never advances and retains completed stage fragments\nPASS route mechanics actually change speed, shield recharge and counterable armour\nPASS save roundtrip preserves route, escrow, target, tier and branch checkpoint\nPASS offline follows the departure policy at a branch without overwriting permanent cards\nPASS active target changes cannot change the reward already promised for a run\nPASS offline can roll legendary drops and advances the same boss pity counter\nPASS corrupt expedition checkpoint safely falls back without creating resources\nPASS training cannot export test shields or save an artificial full heal\nPASS foreground auto choice resumes after grace period and does not stall idle play\nPASS risk bonuses require facing the next encounter and cannot be farmed by immediate retreat\nPASS leaving a city cannot strand a campaign boss that was already active\nPASS targeted world drops respect disabled auto equip and still enter the collection\n24 progression checks passed\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_equipment_depth.js",
+      "exit_code": 0,
+      "stdout": "PASS two loadouts restore exact owned objects, character, strategy, board and talents\nPASS build references block manual and overflow recycling but unreferenced gear remains recyclable\nPASS missing gear blocks the whole switch, explicit fallback changes no ownership\nPASS old saved builds retain their current gear until explicitly saved with equipment\nPASS roundtrip keeps refs canonical; ordinary upgrades do not mutate protected snapshots\nPASS missing referenced UIDs are never reused by later drops, including at the wrap boundary\nPASS ambiguous imported duplicate UIDs cannot silently bind a loadout to the wrong item\nPASS calibration preserves kinds and tiers, locks and item identity across repeated rolls\nPASS tier upgrade is deterministic, pays once, preserves key and never lowers legacy outliers\nPASS T0 needs item level and regional materials; changing funds after preview charges nothing\nPASS changed target, corruption, locked affix and live challenge all prevent payment\nPASS duplicate cores yield one dust and cannot replace a core referenced by a build\nPASS core reconstruction preserves effect, tiers and all values, capped by actual progress\nPASS core reconstruction rejects protected or changed targets and never auto consumes materials offline\nPASS old saves do not inherit dust or equipment refs from another loaded save\nPASS forget inactive gear releases only its own references, keeps all items and board\nPASS legendary T0 pays regional material and dust exactly once; dust roundtrips\nPASS deliberately empty slots clear equipment on restoration\n18 equipment depth checks passed\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_ux.js",
+      "exit_code": 0,
+      "stdout": "UX logic tests passed: crafting guards, modifier coverage, shared search\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_expansion.js",
+      "exit_code": 0,
+      "stdout": "PASS remote drops do not pay by age; proximity pays currency once\nPASS killing a monster creates a gold pile rather than directly paying it\nPASS ordinary gear is retained, manually equip disables auto and protected items cannot be recycled\nPASS full warehouse recycles only the incoming item and counts the outcome\nPASS full stash keeps a new high tier item while protecting locked and worn gear\nPASS save round trip canonicalizes equipped inventory references and pending world drops\nPASS legacy saves start a fresh warehouse without inheriting another save stash or currency\nPASS invalid or duplicate imported gear identities become unique safe integers\nPASS affix tiers unlock by item level and top tier is stronger\nPASS circuit synthesis charges only once when funds suffice and supports are usable\nPASS all 100 talent nodes are reachable and the replay protocol has a real speed cost\nPASS replay support and protocol enqueue bounded non-recursive casts\nPASS fork and recovery effects apply once within their cooldown windows\nPASS twelve map regions and four new monster archetypes participate in capped waves\n14 expansion checks passed\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_offline_return.cjs",
+      "exit_code": 0,
+      "stdout": "PASS suspended manual return preserves old choices without creating more after combat and reload\nPASS suspended automatic return preserves queued decisions and previous acquisitions\nPASS settlement flushes saved ground currency once, then reload cannot grant it again\nPASS 60-second threshold changes the penalty only beyond the existing boundary\nPASS an overlapping catch-up request cannot simulate, report or save twice\nPASS no-report return still saves once and leaves no settlement lock\nPASS unavailable storage is reported without losing earned choices or locking the game\n7 source-backed offline return checks passed\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_update_032.cjs",
+      "exit_code": 0,
+      "stdout": "PASS suspension blocks every award consumer and level reward, preserving saved benefits\nPASS AOE, repeated casts and kill recovery share a bounded healing budget\nPASS damage records a regeneration delay, shield-only damage does not\nPASS small critical hits cannot be larger than large ordinary damage\nPASS 120 seeded maps stay connected and deterministic without consuming combat RNG\nPASS real navigation crosses twelve map shapes without cutting holes or stalling\nPASS feedback validates and URL-encodes only previewed fields, with optional device data\n7 update checks passed\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_world_review.cjs",
+      "exit_code": 0,
+      "stdout": "PASS real hero steering reaches distant coasts around obstacles across all twelve landscapes\nPASS 150 natural land masses have no enclosed interior voids, huge maps exceed 400 units and trees exceed hero height\nPASS desktop floating text scales up and giant maps offer legible follow framing plus full panorama\nPASS coast and giant-map approaches stay walkable and do not spawn directly on the hero\nPASS square/rectangle/natural maps retain open level centers, 18+ prop types and simultaneous mountains/lowlands\nPASS stronger impact retains a shared flash cooldown and offline suppression\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tools/test_terrain_mesh.cjs",
+      "exit_code": 0,
+      "stdout": "PASS twelve real Three.js terrains contain finite merged geometry in fewer than 20 draw meshes each\n[{\"profile\":3,\"meshes\":3,\"vertices\":3666,\"invalid\":false},{\"profile\":8,\"meshes\":3,\"vertices\":37404,\"invalid\":false},{\"profile\":9,\"meshes\":3,\"vertices\":15084,\"invalid\":false},{\"profile\":10,\"meshes\":3,\"vertices\":3342,\"invalid\":false},{\"profile\":1,\"meshes\":3,\"vertices\":13152,\"invalid\":false},{\"profile\":2,\"meshes\":3,\"vertices\":2826,\"invalid\":false},{\"profile\":0,\"meshes\":3,\"vertices\":21450,\"invalid\":false},{\"profile\":4,\"meshes\":3,\"vertices\":3504,\"invalid\":false},{\"profile\":7,\"meshes\":3,\"vertices\":8400,\"invalid\":false},{\"profile\":6,\"meshes\":3,\"vertices\":5298,\"invalid\":false},{\"profile\":5,\"meshes\":3,\"vertices\":25200,\"invalid\":false},{\"profile\":11,\"meshes\":3,\"vertices\":8064,\"invalid\":false}]\nPASS real mesh rays fade foreground occluders, preserve shared materials, ignore objects behind the hero and restore opacity\n",
+      "stderr": "Scripts \"build/three.js\" and \"build/three.min.js\" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation\n"
+    },
+    {
+      "command": "node tools/test_render_resolution.js",
+      "exit_code": 0,
+      "stdout": "PASS auto mobile/desktop defaults, low/medium/high overrides, DPR independence, resolution budgets and aspect safety\n",
+      "stderr": ""
+    },
+    {
+      "command": "python tools/test_font_grid.py",
+      "exit_code": 0,
+      "stdout": "PASS native 12px face preserved; 1541 LCD glyphs, advances and baselines align to the 16px grid\n",
+      "stderr": ""
+    },
+    {
+      "command": "python tools/test_review_build.py",
+      "exit_code": 0,
+      "stdout": "idle-hero.html : 38 inline scripts syntax checked\nidle-hero-review.html : 37 inline scripts syntax checked\ncharacter-review.html : 17 inline scripts syntax checked\nequipment-review.html : 20 inline scripts syntax checked\nPASS review fixtures isolated; production toolbar and save key unchanged\n",
+      "stderr": ""
+    }
+  ]
+}

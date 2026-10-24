@@ -39,7 +39,7 @@ const phSfx = n => { try { SFX(n); } catch (e) {} };
 function phoneProfile(){ return (typeof CHARACTER_PROFILES !== 'undefined' && CHARACTER_PROFILES[G.char]) || {}; }
 function phoneHead(){
   const P = phoneProfile();
-  return `<div class="phs-hello"><span class="phs-star">♥</span> 歡迎光臨 <b>${phEsc(G.heroName || P.n || '阿街')}</b> 的主頁 <span class="phs-star">♥</span></div>
+  return `<div class="phs-hello"><span class="phs-star">♥</span> 歡迎光臨 <b>${phEsc(G.heroName || P.n || '茜')}</b> 的主頁 <span class="phs-star">♥</span></div>
    <div class="phs-rainbow"></div>
    <table class="phs-card"><tr><td class="phs-av">${spr('role', 44)}</td><td><b>${phEsc(P.n || '')}</b><br><small>${phEsc(P.title || '')}</small><br><span class="phs-lv">LV ${G.lvl}</span></td></tr></table>`;
 }
@@ -56,7 +56,7 @@ function phonePage(){
     <fieldset><legend>自我介紹</legend><p>${phEsc(P.identity || '')}</p><p class="phs-q">「${phEsc(P.quote || '…')}」</p></fieldset>
     <fieldset><legend>基本資料</legend><dl class="phs-dl"><dt>生日</dt><dd>${(G.born || [1, 1]).join(' 月 ')} 日</dd><dt>遊戲時間</dt><dd>${phTime(G.time)}</dd><dt>倒下次數</dt><dd>${G.deaths || 0}</dd></dl></fieldset>`;
   if (PH.tab === 1) {
-    const rows = [['累計擊殺', tFmt(G.totalKills)], ['首領擊破', G.bossKills || 0], ['最深深度', G.maxDepth], ['無限之塔最高', (G.towerBest || 0) + ' 層'], ['完成地圖', G.mapsDone || 0], ['打造次數', G.craftN || 0], ['遊戲時間', phTime(G.time)], ['倒下次數', G.deaths || 0]];
+    const rows = [['累計討伐', tFmt(G.totalKills)], ['關主擊破', G.bossKills || 0], ['最深深度', G.maxDepth], ['無限之塔最高', (G.towerBest || 0) + ' 層'], ['完成地圖', G.mapsDone || 0], ['打造次數', G.craftN || 0], ['遊戲時間', phTime(G.time)], ['倒下次數', G.deaths || 0]];
     return `<div class="phs-hello">★ 歷年戰績 ★</div><div class="phs-rainbow"></div><table class="phs-tbl">${rows.map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join('')}</table>`;
   }
   if (PH.tab === 2) {

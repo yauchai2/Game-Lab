@@ -307,3 +307,20 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 選節點／平移／縮放不改金幣、點數、裝備或存檔。城市／訓練鎖定與連接、韌體上限規則維持。方向鍵可研究節點，原生捲動、平移按鈕與清單提供非拖曳替代。角色展示預設收合，不初始化隱藏的 WebGL renderer；裝扮沿用 PV。資料讀數不使用高頻 live-region；只在選節點更新詳情。
 
 驗證入口：tools/test_equipment_slots.cjs、tools/test_character_workspace_browser.cjs、tools/test_character_stage_bundle.cjs。新候選未合併／未發佈；Claude PR #34 的隱藏戰場／效能工作保留獨立，不改其偏好 owner。
+
+
+## 裝置工作頁與 3D 縮圖（2026-10-24，0.44.0 候選）
+
+| 工作 | canonical owner | 行為與資料 |
+| --- | --- | --- |
+| 技能工作頁 | deviceSkillsHtml／wireTopHtml／GridLab | 呈現改裝置面；同色接線、分級、配件庫、拖曳與點選選單均沿用原交易與座標 |
+| 打造 | deviceCraftHtml／craftState／craftDo／gearOperationState | 切換目標與工序不扣資源；執行時再次驗成本／物件，腐化保留共用確認與取消；結果來源為 CRAFT_RESULTS |
+| 設定目錄 | deviceMenuHtml／openModal | CSS 網格，不假扮資料 ARIA grid；九個真實入口及返回邏輯保留 |
+| 實際設定 | uiInstallSettings／uiSyncSettings／GAME_VIEW | 保留原設定 DOM 和事件，不以新 HTML 控制複製另一套偏好；進入頁面時重置其獨立捲軸，修改同頁不回頂部 |
+| 3D 圖像 | ICON3D／deviceThumb／共用模型 builder | 只讀資料、按模型／類型快取；原貌的 cache key 含目前裝備，空欄位顯示空基座；共享資源由 disposeWorldObject 的既有保護處理 |
+
+裝扮的模型優先序與所有權不變，買外觀不改能力。四種普通武器／純外觀改用同一 WEAPON_MODEL；欠原 GLB 的四件保留 pending 來源狀態，同時提供可辨識的程序式 3D 代用模型。縮圖不把程序式版本寫進存檔或冒稱原素材。
+
+手機自動收起戰場仍由 uiBattleSize 判定，G.userCz 優先。設定目錄與遊戲設定是兩個工作區，uisettings 與 mbody 互斥顯示、各自捲動；openModal 的 resetScroll 會重置當前入口，renderModal(false) 保留工作位置。
+
+驗證：tools/test_device_workspaces_browser.cjs；來源規則與存檔沿用 tools/run_review_checks.py。不宣稱 Safari 真機效能或完整報讀器驗收通過。

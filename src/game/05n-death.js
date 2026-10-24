@@ -25,7 +25,7 @@ const DEATHFX = { el:null, shown:false, sec:-1, total:3, hideT:0 };
 })();
 function deathFxEl(){
   if (DEATHFX.el) return DEATHFX.el; const el = DEATHFX.el = document.createElement('div'); el.id = 'deathfx'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
-  el.innerHTML = '<div class="df-veil"></div><div class="df-win"><div class="df-title">▣ SYSTEM.EXE<i>×</i></div><div class="df-body"><span class="df-big">死亡</span><span class="df-sub">YOU DIED</span><div class="df-count">復活倒數<b id="df-n">3</b>秒</div><div class="df-bar"><i id="df-fill"></i></div><div class="df-note">重新開機中</div></div></div>';
+  el.innerHTML = '<div class="df-veil"></div><div class="df-win"><div class="df-title">▣ SYSTEM.EXE<i>×</i></div><div class="df-body"><span class="df-big">力盡</span><span class="df-sub">YOU DIED</span><div class="df-count">復活倒數<b id="df-n">3</b>秒</div><div class="df-bar"><i id="df-fill"></i></div><div class="df-note">重新開機中</div></div></div>';
   document.body.appendChild(el); return el;
 }
 function deathFxUpdate(){

@@ -75,23 +75,12 @@ function goldShopHtml(){
   const btn=(label,ok,fn,tip)=>`<button class="mb"${ok?'':' disabled'} data-tip="${uxEsc(tip)}" onclick="${fn}">${label}</button>`;
   const c=crateCost(),wMax=(G.whUp||0)>=WH_UP_MAX,oMax=(G.offUp||0)>=OFF_UP_MAX;
   return `<details class="ui-section ui-goldshop"><summary>補給站 · 金幣 ${tFmt(G.gold)}</summary>`+
-   row('補給箱','隨機一件目前等級的裝備：魔法 60%、稀有 40%',btn(`開 1 個 · ${tFmt(c)}`,G.gold>=c,'buyCrate(1)','暗金只能靠守關者與城市遠征取得')+btn(`開 10 個 · ${tFmt(c*10)}`,G.gold>=c*10,'buyCrate(10)','一次開十個，倉庫放不下就會停'))+
+   row('補給箱','隨機一件目前等級的裝備：魔法 60%、稀有 40%',btn(`開 1 個 · ${tFmt(c)}`,G.gold>=c,'buyCrate(1)','暗金只能靠關主與城市遠征取得')+btn(`開 10 個 · ${tFmt(c*10)}`,G.gold>=c*10,'buyCrate(10)','一次開十個，倉庫放不下就會停'))+
    row('背包擴建',`容量 ${whCap()}／${200+20*WH_UP_MAX}，每次 +20`,wMax?'<span class="uxmeta">已滿</span>':btn(`擴建 · ${tFmt(whUpCost())}`,G.gold>=whUpCost(),'buyWhUp()','永久增加背包容量'))+
    row('離線儲備',`離線收益最多 ${offCapSec()/3600} 小時，每次 +1 小時（上限 ${6+OFF_UP_MAX}）`,oMax?'<span class="uxmeta">已滿</span>':btn(`延長 · ${tFmt(offUpCost())}`,G.gold>=offUpCost(),'buyOffUp()','永久延長離線結算時數'))+
    `<p class="uxmeta">金幣另外可用在：混沌重鑄、技能升級、天賦重置、角色裝扮。</p></details>`;
 }
-function craftHtml(){
-  const sl=UI_WORK.craftSlot,act=UI_WORK.craftAct,it=G.equip[sl],op=CRAFT[act],state=craftState(sl,act);
-  const slots=`<div class="ui-craft-slots" role="group" aria-label="改機裝備">${Object.keys(SLOTN).map(k=>`<button aria-pressed="${sl===k}" onclick="uiWork('craftSlot','${k}')" data-focus="craftSlot-${k}">${eqico(k,G.equip[k]?.r||0,44,G.equip[k])}<b>${SLOTN[k]}</b><small>${G.equip[k]?RAR[G.equip[k].r].n:'尚未裝備'}</small></button>`).join('')}</div>`;
-  const tabs=uiSegments('craftAct',Object.entries(CRAFT).map(([k,c])=>[k,k==='upgrade'&&it?.lg?'核心重構':c.n,c.d]),'改機動作');
-  let detail='<section class="ui-section"><h3>尚未裝備道具</h3><p>繼續冒險，自動換上裝備後即可改機。</p></section>';
-  if(it){
-    const lines=[`<li><span>${AFF[it.imp.k].t(it.imp.v)}</span><small>固定屬性</small></li>`].concat(it.aff.map((a,i)=>`<li><span>T${affTier(a,it.il)} · ${AFF[a.k].t(a.v)}<br><small>同階區間 ${affRange(a,it).min}–${affRange(a,it).max}${a.v>affRange(a,it).max?' · 舊值高於區間，校準可能降低':''}</small></span><button class="mb lk${it.lk===i?' on':''}" ${it.cr?'disabled':''} aria-label="${it.lk===i?'解除鎖定':'鎖定'}${uxEsc(AFF[a.k].t(a.v))}" onclick="craftLock('${sl}',${i})">${spr(it.lk===i?'lock':'unlock',20)}</button></li>`));
-    const result=CRAFT_RESULTS[sl];
-    detail=`<section class="ui-section ui-craft-detail"><div class="nm">${eqico(sl,it.r,64,it)}<div><h3>${uxEsc(it.name)}</h3><span class="uxmeta">${RAR[it.r].n} · 等級 ${it.il}${it.cr?' · 已腐化':''}</span></div></div><ul>${lines.join('')}</ul>${act==='upgrade'&&it.lg?coreRefineHtml(sl,it):`<div class="ui-craft-operation"><p class="uxmeta">${op.d}</p>${!state.ok?`<p id="craft-reason" class="uxwarning">${state.reason}</p>`:'<span id="craft-reason" hidden></span>'}<button class="mb pri" data-focus="craft-${sl}-${act}" aria-describedby="craft-reason" ${state.ok?'':'disabled'} onclick="craftDo('${sl}','${act}')">${act==='corrupt'?'確認腐化風險':op.n} · ${state.cost} 零件</button></div>`}${act==='recal'?affTierHtml(sl,it):''}${result&&result.it===it?`<div class="uxcraft-result" role="status"><b>${uxEsc(result.msg)}</b> · 消耗 ${result.cost} 零件<details><summary>查看變化</summary><p>之前：${uxEsc(result.before)}</p><p>之後：${uxEsc(result.after)}</p></details></div>`:''}</section>`;
-  }
-  return `<div class="ui-craft-wallet"><span>可用零件</span><strong>${G.parts||0}</strong><span>核心殘晶 ${G.coreDust||0}</span><span>電路點數 ${G.chips||0}</span></div>${slots}${tabs}${detail}<details class="ui-rules"><summary>拾取與自動拆解規則</summary><p class="uxmeta">回收裝備得到零件：普通 1、魔法 2、稀有 5、暗金 12。重複核心另外得到一枚殘晶；構築引用的裝備不會被回收。</p>${rulesBar()}</details>${goldShopHtml()}${circuitShopHtml()}`;
-}
+function craftHtml(){return deviceCraftHtml();}
 
 /* 分離同階校準、指定升階及核心物品等級重構。 */
 const CRAFT_AFFIX_UI={weapon:0,armor:0,ring:0};let GEAR_PENDING=null;
@@ -103,7 +92,7 @@ function affTierState(slot,index){const it=G.equip[slot],a=it?.aff[index],route=
  return {ok:!reason,reason,it,index,from,to,parts,fragments,dust,route,next};
 }
 function coreRefineState(slot){const it=G.equip[slot],route=cityRouteForCore(it?.lg),cap=Math.max(8,G.maxDepth+2*((G.city?.maxTier||1)-1));
- if(!it||!route)return {ok:false,reason:'先裝備一件傳奇核心',parts:0,fragments:0,dust:0,cap};
+ if(!it||!route)return {ok:false,reason:it?'這件裝備不支援城市核心重構，可改用校準或詞綴升階':'先裝備一件傳奇核心',parts:0,fragments:0,dust:0,cap};
  const parts=60+3*it.il,fragments=4+Math.floor(it.il/10),dust=1+Math.floor(it.il/10);
  const reason=G.run||G.train?'先結束挑戰或訓練':it.cr?'已腐化，不能重構':it.lk!=null?'先解除詞綴鎖定':!cityReady()?'先解鎖城市並使用有限天賦':it.il>=cap?`已達目前重構等級 ${cap}，推進深度或城市階級再提高上限`:G.parts<parts?`需要 ${parts} 零件`:(G.city?.fragments[route]||0)<fragments?`需要 ${fragments} 枚${CITY_ROUTES[route].n}碎片`:(G.coreDust||0)<dust?`需要 ${dust} 核心殘晶`:'';
  return {ok:!reason,reason,it,route,cap,parts,fragments,dust,nextLevel:it.il+1};

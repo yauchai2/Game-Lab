@@ -39,11 +39,12 @@ function icon3dUrl(slot, tier, r){
 
 /* 暗金核心：依插槽與序號選模型，固定稀有度最高色並加金色光環與寶石，和一般裝備區隔 */
 function icon3dLegendUrl(id){
-  const key = 'L_' + id; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof LEGENDS === 'undefined') return '';
+  if(typeof SIGNATURE_GEAR!=='undefined'&&SIGNATURE_GEAR[id]&&typeof icon3dProxyGearUrl==='function')return icon3dProxyGearUrl(id);
+  const key = 'L_' + id+'_'+(G.armory[id]?aTier(G.armory[id]):0); if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof LEGENDS === 'undefined') return '';
   let slot = '', idx = 0; for (const sl in LEGENDS){ const i = LEGENDS[sl].findIndex(L => L.id === id); if (i >= 0){ slot = sl; idx = i; } } if (!slot) return '';
   try {
     if (!ICON3D.rd) { if (!icon3dUrl('weapon', 0, 0)) return ''; }
-    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200), m = icon3dModel(slot, idx + 1, 3), halo = new T3.Group(), gold = new T3.MeshBasicMaterial({ color:0xffd24d });
+    const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(28, 1, .1, 200), m = icon3dModel(slot, G.armory[id]?aTier(G.armory[id]):idx+1, 3), halo = new T3.Group(), gold = new T3.MeshBasicMaterial({ color:0xffd24d });
     sc.add(m); m.updateMatrixWorld(true); let b = new T3.Box3().setFromObject(m); const c = b.getCenter(new T3.Vector3()), rad0 = b.getBoundingSphere(new T3.Sphere()).radius; m.position.sub(c);
     const ring = new T3.Mesh(new T3.TorusGeometry(rad0 * 1.08, rad0 * .035, 4, 20), gold); ring.rotation.x = 1.1; halo.add(ring);
     const gem = new T3.Mesh(new T3.OctahedronGeometry(rad0 * .2, 0), gold); gem.position.set(rad0 * .95, rad0 * .75, 0); halo.add(gem); sc.add(halo);
@@ -131,7 +132,8 @@ function obj3d(kind, size){ const u = typeof icon3dObjUrl === 'function' ? icon3
 
 /* Cosmetic thumbnails use the same weapon/accessory builders as the equipped hero. */
 function icon3dCosmeticUrl(cat,id){
-  if(id==='0'||!cosAvailable(cat)||!cosGet(cat,id))return '';
+  if(!cosAvailable(cat)||!cosGet(cat,id))return '';
+  if(id==='0')return typeof icon3dOriginalCosmeticUrl==='function'?icon3dOriginalCosmeticUrl(cat):'';
   if(cat==='weaponStyle')return icon3dUrl('weapon',{umbrella:0,bat:1,tube:2,saber:3}[id],0);
   const key='cos:'+cat+':'+id;if(ICON3D.cache[key])return ICON3D.cache[key];if(ICON3D.fail)return '';
   try{
