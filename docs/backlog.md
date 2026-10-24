@@ -667,4 +667,4 @@ Alan 欣賞參考截圖的技能組裝思考，但不希望照搬；本輪僅發
 
 - [x] REL045-01：重新檢查 Claude 最新分支及 PR，e0b3468 已在主線，沒有遺漏的新遊戲整合。
 - [x] REL045-02：重建至暫存檔，確認與已測試候選單檔及 SHA-256 一致。
-- [ ] REL045-03：合併來源、部署 Pages、建立 Release 與離線附件並核對線上雜湊。
+- [x] REL045-03：PR #41 已合併，來源 d3237f3，Pages ccfb76d；Release 及離線附件雜湊核對完成，見 docs/release-0.45.0/live-verification.json。

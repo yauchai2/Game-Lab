@@ -64,3 +64,10 @@ PR #31 已合併；來源／標籤提交 b7f795fb51960bbc2642f80a7e273f153c1dd55
 PR #39 整合 #38 的裝置介面與 #37 的最新角色文案（截至 e0b3468），已合併。來源／標籤為 2d36f4030e3bcb3d4d78b7d10e955d5cdc5032bc；Pages 提交 efe1aced7b23e1da631f52f59e21cb4c6bffc371，狀態 built。線上版本、入口及兩個雜湊腳本已核對；[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.44.0) 工作流程 40056106608 成功，附件 SHA-256 digest 與大小符合已測試單檔。
 
 證據見 [整合紀錄](release-0.44.0/integration.md) 與 [線上核對](release-0.44.0/live-verification.json)。固定流程已加入每次 release 查核 Claude 最新分支與 PR；不代表其他對話已自動讀取規則。
+
+
+## v0.45.0 已發佈（2026-10-24，香港時間）
+
+PR #41 已合併，來源／標籤 d3237f326d75d98278d749abcc9eb542067f1a23；Pages 提交 ccfb76d2e1bb1173cbe9ec1cd39889d821a26f0e，狀態 built。本次已 fetch 並查核 Claude 最新 e0b3468，無未納入的新遊戲提交，所有分支保留。
+
+[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.45.0) 工作流程 40071666931 成功並附離線單檔；線上 manifest、入口與兩個腳本的 SHA-256，以及附件 digest／大小均已核對。見 [整合紀錄](release-0.45.0/integration.md) 與 [線上核對](release-0.45.0/live-verification.json)。已有存檔直接續玩；短篇序章及起始角色選擇只在新局出現。
