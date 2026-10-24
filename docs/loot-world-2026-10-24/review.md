@@ -1,6 +1,6 @@
 # 技能、背包與世界候選驗收
 
-2026-10-24。分支`codex/deeper-loot-world`，基底main `de81f4a`，候選v0.48.0。已實作及驗證，未合併、未發佈；正式站仍為v0.47.0。
+2026-10-24。[Draft PR #48](https://github.com/yauchai2/Game-Lab/pull/48)已推送，遊戲來源cb40e3e。分支`codex/deeper-loot-world`，基底main `de81f4a`，候選v0.48.0。已實作及驗證，未合併、未發佈；正式站仍為v0.47.0。
 
 ## 逐項交付
 
