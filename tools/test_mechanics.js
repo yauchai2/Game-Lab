@@ -3,10 +3,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const GridLab=require('../src/game/00-grid.js');let checks=0;
 function run(name,code){const math=Object.create(Math);math.random=()=>.99;const c={Math:math,console,Date,GridLab,
  tPick:a=>a[0],tRand:(a,b)=>(a+b)/2,tClamp:(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),tFmt:String,SFX:()=>{},closeModal:()=>{}};
- vm.createContext(c);for(const f of ['01-data.js','02-state.js','03-combat.js'])vm.runInContext(fs.readFileSync(__dirname+'/../src/game/'+f,'utf8'),c);
+ vm.createContext(c);for(const f of ['01-data.js','02-state.js','02b-careers.js','03-combat.js'])vm.runInContext(fs.readFileSync(__dirname+'/../src/game/'+f,'utf8'),c);
  c.assert=assert;vm.runInContext(`
  G.lvl=60;G.offline=true;G.ach=Object.fromEntries(Object.keys(ACHS).map(id=>[id,1]));G.equip.weapon=makeItem('weapon',0,1);recalc();moveHero=()=>{};
- function board(ids,modes={}){G.h.x=HX;G.h.y=HY;G.board=GridLab.createBoard();for(const id of ids){const spot=GridLab.findSpot(G.board,'active',id);assert(spot);const piece=GridLab.place(G.board,'active',id,spot.x,spot.y,spot.rot);piece.mode=modes[id]||null;}recalc();G.readySince={};for(const id of ids)G.cds[id]=999;G.h.castT=-1;G.h.atkCd=999;}
+ function board(ids,modes={}){G.h.x=HX;G.h.y=HY;G.board=GridLab.createBoard('extreme');G.circuits=['pocket','extreme'];for(const id of ids){const spot=GridLab.findSpot(G.board,'active',id);assert(spot);const piece=GridLab.place(G.board,'active',id,spot.x,spot.y,spot.rot);piece.mode=modes[id]||null;const sock=GridLab.sockIndex(piece,G.board);G.board.wires.push({sock,cells:GridLab.route(G.board,sock)});}recalc();G.readySince={};for(const id of ids)G.cds[id]=999;G.h.castT=-1;G.h.atkCd=999;}
  function dummy(boss=false){return {type:'slime',boss,x:HX,y:HY-10,hp:1e12,hpMax:1e12,dmg:0,spdK:0,atkInt:1e9,atkCd:1e9,slot:0,ph:0,skillCd:3,fall:0,dead:false,deadT:0,hurtT:0,lunge:-1,frozen:0};}
  function target(boss=false){G.mons=[dummy(boss)];G.train={start:G.time,t:10000,total:0,dmg:{}};return G.mons[0];}
  function tick(seconds){for(let t=0;t<seconds-1e-8;t+=.05)update(.05);}
@@ -16,9 +16,9 @@ run('shared cooldown math handles reduction, focus cost and the same 60% limit',
  const keys=['HASTE','HASTE','HASTE','FOCUS'];board(['FIRE']);G.supp.FIRE=keys;G.st=calc(G.equip,[],['FIRE'],G.supp);
  assert.equal(G.st.sk.FIRE.cd,GridLab.cooldown(SKILLS.FIRE.cd,keys));assert.equal(G.st.sk.FIRE.cd,SKILLS.FIRE.cd*1.15*.4);
 `);
-run('all six sockets cast after mirroring the same high-haste board',`
- function sample(reverse){G.time=0;G.proj=[];G.timers=[];G.h.x=HX;G.h.y=HY;board(Object.keys(SKILLS).slice(0,6));G.equip.ring={slot:'ring',imp:{k:'crit',v:2},aff:[{k:'haste',v:60}]};
- if(reverse)for(const p of G.board.pieces)p.y=7-p.y;
+run('all six sockets cast after reversing skill order on the same high-haste board',`
+ function sample(reverse){G.time=0;G.proj=[];G.timers=[];G.h.x=HX;G.h.y=HY;board(reverse?Object.keys(SKILLS).slice(0,6).reverse():Object.keys(SKILLS).slice(0,6));G.equip.ring={slot:'ring',imp:{k:'crit',v:2},aff:[{k:'haste',v:60}]};
+
  recalc();const preview=G.st.dps;target();for(const id of G.slots)G.cds[id]=0;tick(60);return {preview,counts:Object.fromEntries(Object.entries(G.train.stats).map(([id,r])=>[id,r.casts]))};}
  const a=sample(false),b=sample(true);assert(Object.values(G.train.stats).some(r=>r.maxWait>.4));assert.equal(Object.keys(a.counts).length,6);assert(Object.values(a.counts).every(n=>n>0));assert.deepEqual(a.counts,b.counts);assert.equal(a.preview,b.preview);
 `);

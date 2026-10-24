@@ -86,8 +86,8 @@ const SIGNATURE_GEAR = Object.fromEntries([
  ["null_pet", "volt", "offhand", "浮游寵機"],
  ["null_lanyard", "volt", "armor", "控制器頸繩"]
 ].map(([model,owner,slot,label])=>{
- const who={street:'AKANE',frost:'REN',beep:'YUI',volt:'TAICHI'}[owner],id='Y2K_'+model.toUpperCase();
- return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅本人可裝備。'+(SIGNATURE_PENDING.has(model)?'目前以程序式 3D 代用，原始模型待補。':'')+'雜兵 0.001%、精英 0.01%、關主 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
+ const who={street:'脈衝衛士',frost:'頻譜遊俠',beep:'訊號獵手',volt:'寵機技師'}[owner],id='Y2K_'+model.toUpperCase();
+ return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅對應職業可裝備。'+(SIGNATURE_PENDING.has(model)?'目前以程序式 3D 代用，原始模型待補。':'')+'雜兵 0.001%、精英 0.01%、關主 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
 }));
 for(const gear of Object.values(SIGNATURE_GEAR))LEGENDS[gear.slot].push(gear);
 const signatureOf = it => it && SIGNATURE_GEAR[it.lg] || null;
@@ -109,6 +109,13 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.46.0',d:'2026-10-24',t:[
+    '技能只有從對應電源逐格接通終點才生效；寶石只可放同色洞，階級耗電與每技能三枚配件限制帶來組裝取捨',
+    '冒險可獲得3×3、4×4、6×6與8×8電路板，提供不同方向及終點配置；可手動換板並保留各板配置',
+    '四職業各有三條昇華，職業創立後固定；玩家自訂名稱，最多保存十二個獨立角色',
+    '排行榜依職業分類，構築詳情展示昇華、板型與完整接線；角色頁恢復常駐3D展示，緩慢自轉並保留待機動作',
+    '移除自動穿裝、自動裝技能與自動接線；新裝備及新電路板一律由玩家決定如何使用'
+  ]},
   {v:'0.45.0',d:'2026-10-24',t:[
     '天賦盤放大節點與效果，合法節點點一下直接加點，保留退點與路徑限制',
     '技能與配件可拖動、交換或拖至收回區，新增點選移動及復原',
@@ -352,10 +359,10 @@ const CARDS = {
 };
 /* 可選角色：外觀（髮色、褲色、膚色）與被動；用最深深度解鎖 */
 const CHARS = {
-  street:{ n:'茜', d:'街頭小子。傷害 +10%', eff:{ inc:10 }, sig:{ n:'街頭衝撞', cd:7, d:'每 7 秒衝撞周圍敵人，傷害 ×7 並擊退' }, need:0, hair:null, pants:null, skin:null },
-  frost: { n:'雪乃', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, sig:{ n:'冷氣護罩', cd:9, d:'每 9 秒冷風吹過全場，凍結雜兵 1.4 秒；關主改累積控制並受適應期限制' }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
-  beep:  { n:'結衣', d:'有 Call 必應。攻速 +12%，吸血 +1.5%', eff:{ apsInc:12, leech:1.5 }, sig:{ n:'連環 Call', cd:6, d:'每 6 秒隨機呼叫 6 個敵人，各受 ×5 傷害' }, need:0, ach:'boss10', hair:'#ff6aa8', pants:'#2b2552', skin:null },
-  volt:  { n:'太一', d:'電波滿格。會心率 +6%，閃電傷害 +30%', eff:{ crit:6, light:30 }, sig:{ n:'訊號塔', cd:8, d:'每 8 秒落雷劈 5 個敵人（必定會心）' }, need:12, hair:'#e0b020', pants:'#8a4a8f', skin:'#e2ac86' },
+ street:{model:'aki',n:'脈衝衛士',title:'近戰與護盾',eff:{inc:10},sig:{n:'短路連打',cd:7,d:'重擊近處目標並連鎖跳電。'},need:0},
+ frost:{model:'milo',n:'頻譜遊俠',title:'音波與節拍',eff:{apsInc:8},sig:{n:'低頻環流',cd:7,d:'釋放範圍音波，持續普攻加快節拍。'},need:0},
+ beep:{model:'ping',n:'訊號獵手',title:'投射與鎖定',eff:{crit:6,apsInc:6},sig:{n:'訊號連射',cd:6,d:'鎖定多個目標發出會心訊號彈。'},need:0},
+ volt:{model:'null',n:'寵機技師',title:'寵機與修復',eff:{inc:8},sig:{n:'寵機出動',cd:8,d:'寵機持續攻擊，定期短暫增幅。'},need:0}
 };
 /* 成就：帳號永久進度。每個成就永久傷害 +1%，部分成就解鎖角色 */
 const ACHS = {

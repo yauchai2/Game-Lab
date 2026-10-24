@@ -1,6 +1,6 @@
 /* 結算、離線選擇與傳奇核心的資源／存檔回歸；不依賴 DOM。 */
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const files=['01-data.js','02-state.js','03-combat.js'];
+const files=['01-data.js','02-state.js','02b-careers.js','03-combat.js'];
 function run(name,code){
   const math=Object.create(Math);math.random=()=>.4;
   const c={console,Math:math,Date,GridLab:require('../src/game/00-grid.js'),
@@ -33,52 +33,47 @@ run('suspension ignores saved auto choice preferences without consuming queued c
   assert.equal(Object.keys(G.cards).length,0);assert.equal(Object.keys(G.relics).length,0);
   assert.equal(summary.cards.length,0);
 `);
-run('every distinct legendary is retained and a normal item replaces the active core only when it is at least 35% stronger',`
-  const a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});
-  assert.strictEqual(G.armory.W_ECHO,a);assert.strictEqual(G.equip.weapon,a);
-  pickup({kind:'item',it:b});assert.strictEqual(G.armory.W_FORK,b);assert.strictEqual(G.equip.weapon,a);
-  const before=G.parts,basePower=G.st.power;
-  const weak=makeItem('weapon',2,1);pickup({kind:'item',it:weak});
-  assert.strictEqual(G.equip.weapon,a);assert.equal(G.parts,before);assert(G.inventory.includes(weak));
-  const strong=makeItem('weapon',2,1000);assert(calc({...G.equip,weapon:strong}).power>basePower*AUTO_LG_MARGIN);
-  pickup({kind:'item',it:strong});
-  assert.strictEqual(G.equip.weapon,strong);assert.strictEqual(G.armory.W_ECHO,a);assert.strictEqual(G.armory.W_FORK,b);assert.strictEqual(G.equipBackup.weapon,a);
-  assert(restoreEquipment('weapon'));assert.strictEqual(G.equip.weapon,a);
+run('all pickups remain manual, including stronger normal gear and distinct cores',`
+  const old=G.equip.weapon,a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});pickup({kind:'item',it:b});
+  assert.strictEqual(G.equip.weapon,old);assert.strictEqual(G.armory.W_ECHO,a);assert.strictEqual(G.armory.W_FORK,b);
+  assert(equipCore('W_ECHO'));const before=G.parts,weak=makeItem('weapon',2,1),strong=makeItem('weapon',2,1000);
+  pickup({kind:'item',it:weak});pickup({kind:'item',it:strong});assert.strictEqual(G.equip.weapon,a);assert.equal(G.parts,before);assert(G.inventory.includes(weak)&&G.inventory.includes(strong));
+  assert(equipStored(strong.uid));assert.strictEqual(G.equipBackup.weapon,a);assert(restoreEquipment('weapon'));assert.strictEqual(G.equip.weapon,a);
 `);
 run('manual core swaps and restoration preserve ownership, resources and the previous normal item',`
   const normal=G.equip.weapon,a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});pickup({kind:'item',it:b});
-  assert.strictEqual(G.equipBackup.weapon,normal);assert(restoreEquipment('weapon'));assert.strictEqual(G.equip.weapon,normal);
+  assert(equipCore('W_ECHO'));assert.strictEqual(G.equipBackup.weapon,normal);assert(restoreEquipment('weapon'));assert.strictEqual(G.equip.weapon,normal);
   const resources=JSON.stringify({gold:G.gold,parts:G.parts});
   for(let i=0;i<10;i++){assert(equipCore('W_FORK'));assert(restoreEquipment('weapon'));}
   assert.equal(JSON.stringify({gold:G.gold,parts:G.parts}),resources);assert.equal(Object.keys(G.armory).length,2);
   assert.equal(equipCore('missing'),false);assert.equal(restoreEquipment('missing'),false);
 `);
 run('duplicate active, locked or corrupted cores are protected and salvaged once',`
-  const a=core('W_ECHO');pickup({kind:'item',it:a});let parts=G.parts;
+  const a=core('W_ECHO');pickup({kind:'item',it:a});equipCore('W_ECHO');let parts=G.parts;
   pickup({kind:'item',it:core('W_ECHO',200)});assert.strictEqual(G.equip.weapon,a);assert.equal(G.parts,parts+12);
   G.armory.W_FORK=core('W_FORK');G.armory.W_FORK.lk=0;const locked=G.armory.W_FORK;
   pickup({kind:'item',it:core('W_FORK',200)});assert.strictEqual(G.armory.W_FORK,locked);
   delete locked.lk;locked.cr=1;pickup({kind:'item',it:core('W_FORK',200)});assert.strictEqual(G.armory.W_FORK,locked);
 `);
 run('unprotected stored duplicate upgrades, and restoration resolves the upgraded owned copy',`
-  const a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});pickup({kind:'item',it:b});equipCore('W_FORK');
+  const a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});pickup({kind:'item',it:b});equipCore('W_ECHO');equipCore('W_FORK');
   const better=core('W_ECHO',100);const parts=G.parts;pickup({kind:'item',it:better});
   assert.strictEqual(G.armory.W_ECHO,better);assert.equal(G.parts,parts+12);assert.strictEqual(G.equip.weapon,b);
   restoreEquipment('weapon');assert.strictEqual(G.equip.weapon,better);
 `);
-run('ordinary auto upgrade remains available without a legendary equipped',`
+run('ordinary upgrades wait for manual equipping',`
   const old=G.equip.weapon,parts=G.parts,better=makeItem('weapon',2,40);pickup({kind:'item',it:better});
-  assert.strictEqual(G.equip.weapon,better);assert.equal(G.parts,parts);assert(G.inventory.includes(old));assert.notStrictEqual(G.equip.weapon,old);
+  assert.strictEqual(G.equip.weapon,old);assert.equal(G.parts,parts);assert(G.inventory.includes(better));assert(equipStored(better.uid));assert.strictEqual(G.equip.weapon,better);
 `);
 run('save round trip preserves deferred choices, core modifications and a working restore',`
-  const a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});pickup({kind:'item',it:b});equipCore('W_FORK');
+  const a=core('W_ECHO'),b=core('W_FORK');pickup({kind:'item',it:a});pickup({kind:'item',it:b});equipCore('W_ECHO');equipCore('W_FORK');
   G.equip.weapon.aff[0].v=777;G.picks=3;G.deferChoices=true;
   const saved=JSON.parse(JSON.stringify(serialize()));assert(applySave(saved));
   assert.equal(G.picks,3);assert.equal(G.deferChoices,true);assert.strictEqual(G.equip.weapon,G.armory.W_FORK);
   assert.equal(G.armory.W_FORK.aff[0].v,777);assert(restoreEquipment('weapon'));assert.strictEqual(G.equip.weapon,G.armory.W_ECHO);
 `);
 run('legacy import recovers equipped cores without inheriting another save collection',`
-  pickup({kind:'item',it:core('W_ECHO')});const saved=JSON.parse(JSON.stringify(serialize()));
+  pickup({kind:'item',it:core('W_ECHO')});equipCore('W_ECHO');const saved=JSON.parse(JSON.stringify(serialize()));
   delete saved.armory;delete saved.equipBackup;delete saved.deferChoices;
   G.armory.W_FORK=core('W_FORK');G.deferChoices=true;assert(applySave(saved));
   assert.equal(Object.keys(G.armory).length,1);assert.strictEqual(G.armory.W_ECHO,G.equip.weapon);

@@ -66,11 +66,11 @@ function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); set
   UI_LIVE_SIGNATURE=uiLiveSignature();uiCityRevealCheckpoint();
 }
 let held = null, heldRot = 0, selPiece = null, selSock = -1;   // 接線板：held 是手上準備放下的配件；selPiece 是選取的機件 id；selSock 是選取的插槽
-const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff', COOL:'#6fd6e8', CRYSTAL:'#d99bff' };
+const GEM_COL=Object.fromEntries(Object.entries(GridLab.GEM_COLOR).map(([id,c])=>[id,{r:'#ed967d',b:'#8db7ef',g:'#80cebd'}[c]]));
 const GEM_IDX=ART_SHEETS.gems.ids;
 const gemIco=(id,size=22)=>{const url=typeof icon3dCircuitUrl==='function'?icon3dCircuitUrl('support',id):'';return url?`<img class="spr gem" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated">`:uiSprite('gems',id,size,'','i');};
 function buildBar(){
-  return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><button class="mb" data-focus="build-save" title="${G.builds[G.bi||0]?.equipment?'已記住角色與三件裝備':'此配置尚未記住裝備'}；切換構築時會自動保存目前配置" onclick="uiSaveBuild()">${G.builds[G.bi||0]?.equipment?'更新構築':'儲存構築'}</button>${uiBuildGearHtml()}${uiPolicyHtml()}</section>`;
+  return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><button class="mb" data-focus="build-save" title="${G.builds[G.bi||0]?.equipment?'已記住此職業的七部位裝備':'此配置尚未記住裝備'}；切換構築時會自動保存目前配置" onclick="uiSaveBuild()">${G.builds[G.bi||0]?.equipment?'更新構築':'儲存構築'}</button>${uiBuildGearHtml()}${uiPolicyHtml()}</section>`;
 }
 function dpsBar(){
   const sk = G.st.sk || {}, ids = Object.keys(sk), tot = ids.reduce((a, id) => a+sk[id].direct*sk[id].estimatedCasts, 0) || 1;
@@ -78,9 +78,9 @@ function dpsBar(){
 }
 let BUILD_PENDING=null;
 function switchBuild(i){if(i===(G.bi||0))return;const result=restoreBuild(i);if(result.missing?.length&&!result.ok){BUILD_PENDING={index:i,target:JSON.stringify(G.builds[i])};showOverlay(`<h2 class="uxdialog-title">構築 ${i+1} 缺少裝備</h2><p>${result.missing.map(slot=>SLOTN[slot]).join('、')}已不存在，尚未切換。可保留缺件部位的目前裝備，載入其餘配置。</p><div class="uxactions"><button class="mb" data-initial-focus onclick="BUILD_PENDING=null;hideOverlay()">保留目前構築</button><button class="mb pri" onclick="uiConfirmBuildFallback()">缺件沿用目前裝備</button></div>`);return;}uiFinishBuild(result,i);}
-function uiFinishBuild(result,i){if(!result.ok){uxAnnounce(result.reason);return;}selPiece=null;held=null;renderModal();uxAnnounce(`已切換構築 ${i+1}${result.legacy?'，舊配置沿用目前裝備':'，已載入裝備並關閉自動換裝'}。`);}
+function uiFinishBuild(result,i){if(!result.ok){uxAnnounce(result.reason);return;}selPiece=null;held=null;renderModal();uxAnnounce(`已切換構築 ${i+1}${result.legacy?'，舊配置沿用目前裝備':'，已載入手動保存的裝備'}。`);}
 function uiConfirmBuildFallback(){const p=BUILD_PENDING;BUILD_PENDING=null;hideOverlay();if(!p||JSON.stringify(G.builds[p.index])!==p.target){uxAnnounce('配置已變動，請重新確認。');return;}uiFinishBuild(restoreBuild(p.index,true),p.index);}
-function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、角色、策略及三件裝備；引用裝備受回收保護。');}
+function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、策略及七部位裝備；引用裝備受回收保護。');}
 function skillsHtml(){return deviceSkillsHtml();}
 
 function treeHtml(){
@@ -119,8 +119,8 @@ function lootToast(it){
 function setDmgNum(v){ G.dmgNum = v; G.dirty = true; renderModal(); }
 function saveHtml(){
   const dn = G.dmgNum == null ? 1 : G.dmgNum;
-  return `<div class="mrow" style="margin-bottom:8px"><button class="mb pri" onclick="wikiOpen()">編年史（查看所有遊戲資訊）</button></div><div class="mct">傷害數字</div><div class="mrow">${[[2, '全部'], [1, '精簡'], [0, '關閉']].map(([v, n]) => `<button class="mb" aria-pressed="${dn === v}" style="${dn === v ? 'background:#1f3fb0;color:#fff' : ''}" onclick="setDmgNum(${v})">${n}</button>`).join('')}</div>` + `<div class="hint">遊戲每 5 秒自動存檔在這個瀏覽器裡。離開頁面後，回來會自動結算離線收益（最多 6 小時）。</div>
-    <div class="mrow"><button class="mb" onclick="doSave()">立即存檔</button><button class="mb" onclick="doExport()">匯出存檔碼</button><button class="mb" onclick="doImport()">匯入存檔碼</button><button class="mb" id="rbtn" onclick="doReset()">${resetArm ? '再按一次確認清除' : '清除存檔'}</button></div>
+  return `<div class="mrow" style="margin-bottom:8px"><button class="mb pri" onclick="wikiOpen()">編年史（查看所有遊戲資訊）</button></div><div class="mct">傷害數字</div><div class="mrow">${[[2, '全部'], [1, '精簡'], [0, '關閉']].map(([v, n]) => `<button class="mb" aria-pressed="${dn === v}" style="${dn === v ? 'background:#1f3fb0;color:#fff' : ''}" onclick="setDmgNum(${v})">${n}</button>`).join('')}</div>` + `<div class="hint">每5秒在此瀏覽器保存角色列表；只有目前角色結算離線收益（最多6小時）。匯出碼只包含目前角色，其他角色請各自匯出。刪除只影響目前角色。</div>
+    <div class="mrow"><button class="mb" onclick="doSave()">立即存檔</button><button class="mb" onclick="doExport()">匯出存檔碼</button><button class="mb" onclick="doImport()">匯入存檔碼</button><button class="mb" id="rbtn" onclick="doReset()">${resetArm ? '確認刪除目前角色' : '刪除目前角色'}</button></div>
     <textarea id="sv" class="sv" placeholder="匯出的存檔碼會顯示在這裡；要匯入時把存檔碼貼在這裡再按「匯入」"></textarea><div id="smsg" class="hint"></div>`;
 }
 /* modal actions */
@@ -148,8 +148,8 @@ function abandonMap(){if(G.run?.city){cityFinish(false);renderModal();return;} i
 const smsg = t => { const e = $('smsg'); if (e) e.textContent = t; };
 function doSave(){ smsg(saveGame() ? '已存檔。' : '這個環境不允許瀏覽器存檔，請改用「匯出存檔碼」。'); }
 function doExport(){ const c = encodeSave(); $('sv').value = c; $('sv').select(); smsg('存檔碼已產生，請整段複製保存。'); }
-function doImport(){ const o = decodeSave($('sv').value); if (!o || !applySave(o)){ smsg('存檔碼無效。'); return; } saveGame(); smsg('匯入完成。'); logLine('已匯入存檔', '#2f9e4f'); renderModal(); }
-function doReset(){ if (!resetArm){ resetArm = true; renderModal(); return; } try { localStorage.removeItem(SAVE_KEY); } catch (e) {} G.__wipe = true; location.search = '?intro=1'; }
+function doImport(){const o=decodeSave($('sv').value);if(!o||o.v!==2){smsg('存檔碼無效。');return;}if(o.char!==G.char){careerImportOther(o);return;}if(!applySave(o)){smsg('存檔碼無效。');return;}const saved=saveGame();smsg(saved?'匯入完成。':'已載入，但本機保存失敗，請匯出備份。');renderModal();}
+function doReset(){ if (!resetArm){ resetArm = true; renderModal(); return; } if(!profileDeleteCurrent()){uxAnnounce('未能清除目前角色，其他角色已保留');return;}G.__wipe=true;location.search='?intro=1'; }
 
 /* 升級三選一 */
 function toggleAuto(){ if(!GAME_FEATURES.cardChoices)return; G.autoCard = !G.autoCard; if (G.autoCard) openCards(); else if (G.picks > 0) openCards(); G.dirty = true; renderModal(); }
@@ -171,9 +171,7 @@ function openRelics(){ if(!GAME_FEATURES.cardChoices)return;
 }
 function pickRelic(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeRelic(id); hideOverlay(); G.dirty = true; if (G.relicPicks > 0) openRelics(); }
 function pickCard(id){ if(!GAME_FEATURES.cardChoices)return; SFX('card'); takeCard(id); hideOverlay(); G.dirty = true; if (G.picks > 0) openCards(); }
-function charHtml(){
-  return `<div class="rc char-card"><div class="rh">角色</div><div class="chars">${Object.entries(CHARS).map(([id, c]) => { const ok = charOk(id), on = G.char === id, pu = typeof icon3dPortraitUrl === 'function' ? icon3dPortraitUrl(id) : '', nm = String(c.n).split(' '); return `<button class="chr${on ? ' on' : ''}${ok ? '' : ' lock'}" ${ok ? '' : 'disabled'} aria-pressed="${on}" onclick="pickChar('${id}');G.dirty=true"><span class="chr-pic">${pu ? `<img alt="" aria-hidden="true" src="${pu}" style="image-rendering:pixelated">` : ''}</span><span class="chr-info"><b>${nm[0]}<small>${nm[1] || ''}</small></b><i>${ok ? (c.title || c.d) : (c.ach ? '成就「' + ACHS[c.ach].n + '」解鎖' : '最深 ' + c.need + ' 層解鎖')}</i>${on ? '<em>使用中 ✓</em>' : ''}</span></button>`; }).join('')}</div><div class="chr-data"><p><span>姓名</span><b>${CHARS[G.char].n}</b></p><p><span>職業</span><b>${CHARS[G.char].title||CHARS[G.char].d}</b></p><p><span>定位</span><b>${CHARS[G.char].role||"—"}</b></p><p><span>專屬</span><b>${CHARS[G.char].sig.n}</b></p></div><div class="char-description">專屬技能「${CHARS[G.char].sig.n}」：${CHARS[G.char].sig.d}${CHARS[G.char].passive?'<br>'+CHARS[G.char].passive:''}</div></div>${typeof characterStoryHtml==='function'?characterStoryHtml():''}`;
-}
+function charHtml(){const c=CHARS[G.char];return `<section class="rc char-card"><h3>${uxEsc(G.heroName||'未命名')}</h3><p>${c.n} · ${ascendInfo()?.n||'尚未昇華'}</p><p>${c.role}</p><button class="mb" onclick="careerProfiles()">角色列表</button></section>${characterStoryHtml()}`;}
 function achHtml(){
   const n = achCount(), tot = Object.keys(ACHS).filter(id=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).length;
   return `<div class="rc wide"><div class="rh">成就 ${n} / ${tot}</div><div class="mute">每個成就永久傷害 +1%，目前共 +${n}%</div><ul class="ach">${Object.entries(ACHS).filter(([id])=>GAME_FEATURES.cardChoices||id!=='card10'||G.ach[id]).map(([id, a]) => `<li class="${G.ach[id] ? 'got' : 'mute'}">${obj3d('medal:'+['#8fd0ff','#ffd24d','#ff9ad0','#5dffa3','#ff9a5a','#c9a8ff'][(id.length+id.charCodeAt(0))%6],36)||xico('badge', id, 26)}<b>${a.n}</b>　${a.d}</li>`).join('')}</ul></div>`;
@@ -185,7 +183,7 @@ function cardsHtml(){
 
 /* offline progress */
 const HELP = {
-  skills:['接線板說明', '主動技能自己施放。從左邊電源拉一條線到右邊的技能插槽，線經過的輔助配件才會強化那個技能。<br>點插槽選技能，再沿著格子點或拖曳畫線；點線尾可以收回一格。<br>點庫存裡的配件，再點線上的空格放置；放下前會顯示傷害變化。<br>相鄰的同款配件各 ×1.2；等級 6 起，金色強化格上的配件 ×1.4。<br>紅叉是壞軌，固定不變，不能放配件也不能走線。<br>等級 8 起可以在機件庫存把三個同款同階配件合成更高階（Ⅱ 強度 ×1.5、Ⅲ ×2）；等級 12 起可以超頻賭一把。燈號顏色：綠是一般，黃是 Ⅱ，粉紅是 Ⅲ。<br>線的總長度與每條線能生效的配件數隨等級增加。構築 1 至 3 各存一套接線板與天賦。'],
+  skills:['接線板說明','電路板以可用格數、洞色與供電構成。先在終點手動裝技能，再從對應起點逐格拉線；完整接通才亮燈並施放。<br>紅、藍、綠配件只可裝在同色洞，每技能最多三枚。Ⅰ／Ⅱ／Ⅲ效果為1／1.35／1.65倍，耗電1／2／3。<br>電路板可在冒險中取得，尺寸由3×3至8×8，不會自動裝備或自動接線。'],
   craft:['改機說明', '用不到的裝備會自動拆成零件。零件可以重新校準數值、改裝詞綴、升級稀有度，或賭一把腐化。<br>鎖定一條詞綴可以保住它；已腐化的裝備不能再改。'],
   maps:['冒險說明', '挑戰詞綴只表示敵人強化或取捨詞綴的數量，不是難度評分。<br>地圖詞綴讓敵人更強，但戰利品更好；每張卡下方的標籤是風險與回報彙總。<br>無限之塔每層殺滿怪上樓，每 10 層是關主，死亡就結束。<br>訓練場用不還手的假人量 30 秒傷害。'],
   goals:['任務與目標', '新手任務一次一個，完成後解鎖新系統。目標達成會自動給獎勵，不用手動領取。']
@@ -193,7 +191,7 @@ const HELP = {
 const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
 const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
 // 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
-const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(['skills','tree','warehouse','craft','menu','settings','rank'].includes(modalTab))return G.autoFold===false?2:3;if(['char','dress','craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
+const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(['skills','tree','warehouse','craft','menu','settings','rank','char','dress'].includes(modalTab))return G.autoFold===false?2:3;if(['char','dress','craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
 const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
@@ -212,7 +210,7 @@ function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未�
 function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 const qm = k => `<button aria-label="${HELP[k] ? HELP[k][0] : '說明'}" class="qm" onclick="showHelp('${k}')">?</button>`;
 function showOverlay(html){ const o = $('ovl'); o.innerHTML = `<div class="mbox small">${html}</div>`; uxOpenDialog(o, o.querySelector('h2,b,.mct')?.textContent || '遊戲提示', hideOverlay); }
-function hideOverlay(){ UI_CHARACTER_PICK=null;UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
+function hideOverlay(){ if(typeof CAREER_UI!=='undefined')CAREER_UI.pending=null;UI_CHARACTER_PICK=null;UI_MAP_PENDING=null;craftPending=null;UI_RESPEC=null;GEAR_PENDING=null;BUILD_PENDING=null;TALENT_CONFIRM=null;CITY_CONFIRM=null;FORGET_BUILD_PENDING=null;uxCloseDialog($('ovl')); }
 function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return (h ? h + ' 小時 ' : '') + (m ? m + ' 分' : (h ? '' : s + ' 秒')); }
 const offYield = fn => { if (typeof MessageChannel === 'function'){ const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); fn(); }; c.port2.postMessage(0); } else setTimeout(fn, 0); };
 const OFF_WINDOW = 600;   // 離線只精確模擬前 10 分鐘，其餘用這段的收益率放大
@@ -231,6 +229,8 @@ function offlineBulk(R, f, w){
   for (let i = hit(.012); i > 0; i--) pickup({ kind:'cart', id:tPick(Object.keys(MODES)) });
   for (let i = hit(.025); i > 0; i--) pickup({ kind:'gem', id:tPick(Object.keys(SUPPS)) });
   for (let i = Math.min(15, hit(.03)); i > 0; i--) pickup({ kind:'map', map:makeMap(d) });
+  // Bulk settlement uses normal-board odds and is bounded by the finite collection.
+  for(const id of circuitPool().filter(id=>!G.circuits.includes(id)))if(Math.random()<1-Math.pow(1-.02/Math.max(1,circuitPool().length),K))collectCircuit(id);
   const boss = Math.min(Math.floor(w.boss*f), Math.floor(R/3600)); if (boss > 0){ G.bossKills = (G.bossKills || 0) + boss; if (G.push && !G.run){ G.depth += boss; G.maxDepth = Math.max(G.maxDepth, G.depth); } }
 }
 function catchUp(sec, report){
