@@ -1,6 +1,6 @@
 /* 技能頁：接線板介面。邏輯在 00-grid.js；這裡負責畫面、點選、拖線與提示。
    狀態：selSock 目前選的插槽、held 手上的輔助配件、selPiece 選取的機件 id（都是暫存，不進存檔）。 */
-let WIRE_UNDO = null, drag = null;   // drag：拖線中的狀態，其他檔案用它判斷「正在操作盤面」
+let WIRE_UNDO = null, drag = null, WIRE_MOVE = null;   // drag：拖線中的狀態，其他檔案用它判斷「正在操作盤面」
 const WIRE_TAG_NAME = { proj:'投射物', area:'範圍', melee:'近戰', fire:'火焰', cold:'冰霜', light:'閃電' };
 const WIRE_PRIORITY = ['HEAVY', 'CRITS', 'HASTE', 'COOL', 'CRYSTAL', 'TWIN', 'FOCUS', 'AREA', 'LEECH', 'FORK', 'RECOVER', 'DELAY'];
 const wActive = i => G.board.pieces.find(p => p.kind === 'active' && GridLab.sockIndex(p) === i);
@@ -79,10 +79,10 @@ function wireBoardHtml(){
   let cells = '';
   const hint = wireHints();
   for (let y = 0; y < B.h; y++) for (let x = 0; x < B.w; x++){ const c = wireCell(x, y, ctx); cells += hint.has(x + ',' + y) ? c.replace('class="pc', 'class="pc hint') : c; }
-  return `<div class="pz wb" role="group" aria-label="接線板，方向鍵移動，Enter 選取或放置" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">${cells}${wireSvg()}</div>`;
+  return `<div class="pz wb" role="group" aria-label="接線板，方向鍵移動，Enter 選取或放置" onmouseleave="pzHover(-1,-1)" style="grid-template-columns:repeat(${B.w},1fr)">${cells}${wireSvg()}</div><button type="button" class="mb wire-drop-remove" data-wire-remove onclick="wireRemoveSelected()">拖到此處收回 · 不會銷毀</button>`;
 }
 function wireBar(){
-  const sel = selSock >= 0, held0 = !!held, btn = (t, fn, on = true) => `<button class="mb" data-tip="${{'自動配置':'替所有技能自動接線，並把可用配件放到最合適的位置','復原':'還原上一次的自動配置或清空','取消選取':'放下手上的配件或取消選取的插槽'}[t] || ''}" ${on ? '' : 'disabled'} onclick="${fn}">${t}</button>`;
+  const sel = selSock >= 0, held0 = !!held, btn = (t, fn, on = true) => `<button class="mb" data-tip="${{'自動配置':'替所有技能自動接線，並把可用配件放到最合適的位置','復原':'還原上一次的配置、移位、收回或清空','取消選取':'放下手上的配件或取消選取的插槽'}[t] || ''}" ${on ? '' : 'disabled'} onclick="${fn}">${t}</button>`;
   return `<div class="pzbar">${btn('自動配置', 'wireAuto()')}${WIRE_UNDO ? btn('復原', 'wireUndo()') : ''}<button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回" data-tip="清掉所有接線，配件收回庫存；可按復原還原"><i></i>全部清空</button>${btn('取消選取', 'uxCancelPiece()', sel || held0 || selPiece != null)}<span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
 }
 function wireSelCard(){
@@ -166,8 +166,8 @@ function wirePlace(x, y){
   if (!GridLab.isInner(x, y) || GridLab.isRock(x, y)){ pzMsg('這格不能放配件'); return; }
   if (!GridLab.isPad(x, y)){ pzMsg('配件只能放在色塊襯墊上'); return; }
   if (wSupportAt(x, y)){ pzMsg('這格已經有配件了'); return; }
-  const p = GridLab.place(B, 'support', held.key, x, y, 0, { t:held.t }); if (!p){ pzMsg('這裡放不下'); return; }
-  const on = !!GridLab.wireOf(B, x, y); if (gemFreeT(held.key, held.t || 1) <= 0) held = null;
+  const before=JSON.stringify(B);const p = GridLab.place(B, 'support', held.key, x, y, 0, { t:held.t }); if (!p){ pzMsg('這裡放不下'); return; }
+  WIRE_UNDO=before;const on = !!GridLab.wireOf(B, x, y); if (gemFreeT(held.key, held.t || 1) <= 0) held = null;
   recalc(); renderModal(); wireSnap('snap'); pzMsg(on ? '已放置，目前預估 DPS ' + tFmt(G.st.dps) : '已放置，但這格沒有線經過，還沒生效');
 }
 /* ---------- 點格子的選單：點終點選技能、點色塊選配件，一步完成 ---------- */
@@ -186,7 +186,7 @@ function wirePickSock(i){
   const a = wActive(i), col = WIRE_COLNAME[GridLab.SOCK_COL[i]];
   const items = Object.entries(SKILLS).filter(([id, K]) => G.lvl >= K.lvl).map(([id, K]) => { const here = a && a.key === id, at = G.board.pieces.find(p => p.kind === 'active' && p.key === id); return `<button class="wpi${here ? ' on' : ''}" onclick="wirePickSkill(${i},'${id}')">${sico(id, 26)}<b>${K.n}</b>${at && !here ? `<small>換位</small>` : ''}</button>`; }).join('');
   const [x, y] = GridLab.SOCKS[i];
-  wirePickOpen(x, y, `<div class="wph">${col}色終點：選一個技能<button class="wpx" onclick="wirePickClose()" aria-label="關閉">✕</button></div><div class="wpg">${items}</div>${a ? `<button class="wpd" onclick="wirePickUnassign(${i})">卸下這個技能</button>` : ''}`);
+  wirePickOpen(x, y, `<div class="wph">${col}色終點：選一個技能<button class="wpx" onclick="wirePickClose()" aria-label="關閉">✕</button></div><div class="wpg">${items}</div>${a ? `<button class="mb" onclick="wirePrepareMove(${a.id})">移動技能</button><button class="wpd" onclick="wirePickUnassign(${i})">卸下這個技能</button>` : ''}`);
 }
 function wirePickSkill(i, key){
   wirePickClose(); const keep = selSock; selSock = i; wireAssign(key);
@@ -202,15 +202,17 @@ function wirePickPad(x, y, w){
 }
 function wirePickGem(x, y, key, t){ wirePickClose(); held = { kind:'support', key, t }; wirePlace(x, y); held = null; }
 function wirePickPiece(x, y, p){
+  selPiece=p.id;selSock=-1;
   const S = SUPPS[p.key];
-  wirePickOpen(x, y, `<div class="wph">${uxEsc(S.n + TIER_NAME[(p.t || 1) - 1])}<button class="wpx" onclick="wirePickClose()" aria-label="關閉">✕</button></div><p class="wpe">${uxEsc(S.d)}</p><button class="wpd" onclick="wirePickTake(${p.id})">收回庫存</button>`);
+  wirePickOpen(x, y, `<div class="wph">${uxEsc(S.n + TIER_NAME[(p.t || 1) - 1])}<button class="wpx" onclick="wirePickClose()" aria-label="關閉">✕</button></div><p class="wpe">${uxEsc(S.d)}</p><button class="mb" onclick="wirePrepareMove(${p.id})">移動配件</button><button class="wpd" onclick="wirePickTake(${p.id})">收回庫存</button>`);
 }
 function wirePickTake(id){ wirePickClose(); wireTake(id); }
 document.addEventListener('pointerdown', e => { if (!e.target.closest || e.target.closest('#wpick') || e.target.closest('.wb')) return; wirePickClose(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') wirePickClose(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape'){wirePickClose();if(WIRE_MOVE){WIRE_MOVE=null;uxAnnounce('已取消移動。');}if(drag?.piece!=null)wireUp({type:'pointercancel'});} });
 function wireTap(x, y){
   if (noClick) return;
   const B = G.board; UX_GRID.x = x; UX_GRID.y = y;
+  if(WIRE_MOVE){const move=WIRE_MOVE;wireMovePiece(move.id,x,y,move.signature);return;}
   if (x === 0 || y === 0 || x === GridLab.W - 1 || y === GridLab.H - 1){ const i = GridLab.sockAt(x, y), r = GridLab.SRCS.findIndex(s => s[0] === x && s[1] === y); if (i >= 0) wirePickSock(i); else if (r >= 0) { wirePickClose(); pzMsg('按住這個起點，拖到同色的終點就接好'); } return; }
   wirePickClose();
   if (held){ wirePlace(x, y); return; }
@@ -237,23 +239,24 @@ function wireBlink(id){ const el = document.querySelector(`.wb .pc.chip[data-ski
 function wireClearAll(){ const B = G.board; if (!B.wires.length && !B.pieces.some(p => p.kind === 'support')) return; WIRE_UNDO = JSON.stringify(B); B.wires = []; B.pieces = B.pieces.filter(p => p.kind === 'active'); selSock = -1; selPiece = null; held = null; recalc(); renderModal(); wireSnap('snap'); uxAnnounce('已全部清空，配件回到庫存，可以按復原'); }
 function wireTake(id){
   const p = G.board.pieces.find(q => q.id === id); if (!p || p.kind !== 'support') return;
-  GridLab.remove(G.board, id); selPiece = null; recalc(); renderModal(); uxAnnounce('已收回庫存');
+  WIRE_UNDO=JSON.stringify(G.board);GridLab.remove(G.board, id); selPiece = null; recalc(); renderModal(); uxAnnounce('已收回庫存');
 }
-function wireClear(){ if (selSock < 0) return; GridLab.clearWire(G.board, selSock); recalc(); renderModal(); uxAnnounce('已清除這條線'); }
+function wireClear(){ if (selSock < 0) return; WIRE_UNDO=JSON.stringify(G.board);GridLab.clearWire(G.board, selSock); recalc(); renderModal(); uxAnnounce('已清除這條線'); }
 function wireAutoOne(){
   if (selSock < 0 || !wActive(selSock)) return;
-  const r = GridLab.autoWire(G.board, selSock, G.lvl); if (!r.ok){ pzMsg(r.reason + '，先清掉別條線或升級加長'); return; }
+  const before=JSON.stringify(G.board);const r = GridLab.autoWire(G.board, selSock, G.lvl);if(r.ok)WIRE_UNDO=before; if (!r.ok){ pzMsg(r.reason + '，先清掉別條線或升級加長'); return; }
   recalc(); renderModal(); uxAnnounce('已自動接線');
 }
 function wireUnassign(){
   const a = wActive(selSock); if (!a) return;
-  GridLab.remove(G.board, a.id); selPiece = null; recalc(); renderModal(); uxAnnounce('已卸下技能，線保留');
+  WIRE_UNDO=JSON.stringify(G.board);GridLab.remove(G.board, a.id); selPiece = null; recalc(); renderModal(); uxAnnounce('已卸下技能，線保留');
 }
 function wireAssign(key){
   const B = G.board; if (!SKILLS[key] || G.lvl < SKILLS[key].lvl) return;
   if (selSock < 0){ const free = [...Array(GridLab.SOCKS.length).keys()].find(i => wOpen(i) && !wActive(i)); if (free == null){ pzMsg('先點一個插槽，再選技能'); return; } selSock = free; }
   const cur = wActive(selSock), other = B.pieces.find(p => p.kind === 'active' && p.key === key);
   if (cur && cur.key === key) return;
+  WIRE_UNDO=JSON.stringify(B);
   if (other && cur){ const k = cur.key, m = cur.mode; cur.key = key; cur.mode = other.mode; other.key = k; other.mode = m; if (!cur.mode) delete cur.mode; if (!other.mode) delete other.mode; }
   else if (other){ other.x = GridLab.SOCKS[selSock][0]; other.y = GridLab.SOCKS[selSock][1]; }
   else if (cur){ cur.key = key; delete cur.mode; }
@@ -290,8 +293,38 @@ function wireUndo(){
 
 /* ---------- 拖曳畫線（滑鼠與觸控） ---------- */
 function wireCellAt(px, py){ const e = document.elementFromPoint(px, py), c = e && e.closest && e.closest('.wb .pc[data-x]'); return c ? [+c.dataset.x, +c.dataset.y] : null; }
+function wireCanMove(p,x,y){
+ if(!p)return false;
+ if(p.kind==='active'){const i=GridLab.sockAt(x,y);return wOpen(i);}
+ return GridLab.isInner(x,y)&&!GridLab.isRock(x,y)&&GridLab.isPad(x,y);
+}
+function wireMovePiece(id,x,y,signature){
+ const p=G.board.pieces.find(q=>q.id===id);
+ if(!p||(signature&&JSON.stringify(p)!==signature)){WIRE_MOVE=null;pzMsg('機件已變動，請重新選取。');return false;}
+ if(p.x===x&&p.y===y){WIRE_MOVE=null;uxAnnounce('位置沒有改變。');return false;}
+ if(!wireCanMove(p,x,y)){pzMsg(p.kind==='active'?'技能只可移到已開放的終點。':'配件只可移到色塊位。');return false;}
+ const target=G.board.pieces.find(q=>q.id!==id&&q.x===x&&q.y===y);
+ if(target&&target.kind!==p.kind){pzMsg('這格不能交換，盤面沒有變更。');return false;}
+ WIRE_UNDO=JSON.stringify(G.board);if(target){target.x=p.x;target.y=p.y;}p.x=x;p.y=y;WIRE_MOVE=null;held=null;selPiece=p.id;selSock=p.kind==='active'?GridLab.sockIndex(p):-1;wirePickClose();recalc();renderModal();uxAnnounce((target?'已交換':'已移動')+wName(p)+'；接線位置保留，可按復原。');return true;
+}
+function wirePrepareMove(id){const p=G.board.pieces.find(q=>q.id===id);if(!p)return;wirePickClose();WIRE_MOVE={id,signature:JSON.stringify(p)};selPiece=id;selSock=-1;uxAnnounce('已選取'+wName(p)+'，點選新的'+(p.kind==='active'?'終點':'色塊位')+'，或按 Escape 取消。');}
+function wireRemovePiece(id,signature){const p=G.board.pieces.find(q=>q.id===id);if(!p||signature&&JSON.stringify(p)!==signature){uxAnnounce('機件已變動，未收回。');return false;}WIRE_UNDO=JSON.stringify(G.board);GridLab.remove(G.board,id);WIRE_MOVE=null;selPiece=null;selSock=-1;wirePickClose();recalc();renderModal();uxAnnounce('已收回'+wName(p)+'，沒有銷毀；可按復原。');return true;}
+function wireRemoveSelected(){const id=WIRE_MOVE?.id??selPiece;if(id!=null)wireRemovePiece(id);else uxAnnounce('按住盤上機件拖到這裡可收回；也可點選機件後移動或收回。');}
+function wirePieceDragMove(ev){
+ const d=drag;if(!d||d.piece==null||ev.pointerId!==d.pointer)return;
+ if(!d.moved&&Math.hypot(ev.clientX-d.sx,ev.clientY-d.sy)<8)return;
+ ev.preventDefault();
+ if(!d.moved){d.moved=true;wirePickClose();const p=G.board.pieces.find(p=>p.id===d.piece);if(!p)return;const ghost=document.createElement('div');ghost.id='wire-ghost';ghost.setAttribute('aria-hidden','true');ghost.textContent=wName(p);document.body.appendChild(ghost);document.querySelector('.wb')?.classList.add('piece-dragging');uxAnnounce('正在移動'+wName(p)+'。');}
+ const ghost=document.getElementById('wire-ghost');if(ghost){ghost.style.left=Math.min(innerWidth-170,Math.max(8,ev.clientX+12))+'px';ghost.style.top=Math.max(8,ev.clientY-42)+'px';}
+ document.querySelectorAll('.wire-target,.wire-target-bad').forEach(e=>e.classList.remove('wire-target','wire-target-bad'));
+ const hit=document.elementFromPoint(ev.clientX,ev.clientY),cell=hit?.closest('.wb .pc[data-x]'),p=G.board.pieces.find(p=>p.id===d.piece);if(cell)cell.classList.add(wireCanMove(p,+cell.dataset.x,+cell.dataset.y)?'wire-target':'wire-target-bad');document.querySelector('[data-wire-remove]')?.classList.toggle('drag-over',!!hit?.closest('[data-wire-remove]'));
+}
+addEventListener('blur',()=>{if(drag?.piece!=null)wireUp({type:'pointercancel'});});
+document.addEventListener('dragstart',e=>{if(e.target.closest?.('.wb,.ui-inventory-grid'))e.preventDefault();});
 function wireDown(ev, x, y){
   if (ev.button > 0 || drag || held) return;
+  const piece=G.board.pieces.find(p=>p.x===x&&p.y===y);
+  if(piece&&!WIRE_MOVE){drag={piece:piece.id,signature:JSON.stringify(piece),sx:ev.clientX,sy:ev.clientY,moved:false,pointer:ev.pointerId};document.addEventListener('pointermove',wireMove,{passive:false});document.addEventListener('pointerup',wireUp);document.addEventListener('pointercancel',wireUp);return;}
   const si = GridLab.SRCS.findIndex(c => c[0] === x && c[1] === y);
   if (si >= 0 && wOpen(si)){   // 按住起點：自動選好這條線（沒技能就先裝一個），清掉舊線，直接往終點拉
     drag = { sx:ev.clientX, sy:ev.clientY, moved:false, at:[x, y], src:si };
@@ -307,8 +340,9 @@ function wireDown(ev, x, y){
 }
 function wireMove(ev){
   const d = drag; if (!d) return;
+  if(d.piece!=null){wirePieceDragMove(ev);return;}
   if (!d.moved && Math.hypot(ev.clientX - d.sx, ev.clientY - d.sy) < 8) return;
-  d.moved = true; ev.preventDefault();
+  if(!d.moved)WIRE_UNDO=JSON.stringify(G.board);d.moved = true; ev.preventDefault();
   if (d.src != null){   // 從起點開拉：此時才選線、補技能、清掉舊線（單純點一下不會動到現有的線）
     const si = d.src; selSock = si; selPiece = null;
     if (!wActive(si)){
@@ -331,9 +365,11 @@ function wireRedrawLive(){   // 拖曳中只更新線與格子，不重建整個
   const html = wireBoardHtml(), t = document.createElement('div'); t.innerHTML = html; const nb = t.firstElementChild;
   wb.innerHTML = nb.innerHTML;
 }
-function wireUp(){
+function wireUp(ev){
   document.removeEventListener('pointermove', wireMove); document.removeEventListener('pointerup', wireUp); document.removeEventListener('pointercancel', wireUp);
-  const d = drag; drag = null; if (!d || !d.moved) return;
+  const d = drag; drag = null;
+  if(d?.piece!=null){document.getElementById('wire-ghost')?.remove();document.querySelector('.wb')?.classList.remove('piece-dragging');document.querySelectorAll('.wire-target,.wire-target-bad').forEach(e=>e.classList.remove('wire-target','wire-target-bad'));document.querySelector('[data-wire-remove]')?.classList.remove('drag-over');if(!d.moved)return;noClick=true;setTimeout(()=>noClick=false,250);if(!ev||ev.type==='pointercancel'){uxAnnounce('已取消移動，盤面沒有變更。');return;}const hit=document.elementFromPoint(ev.clientX,ev.clientY);if(hit?.closest('[data-wire-remove]'))wireRemovePiece(d.piece,d.signature);else{const target=wireCellAt(ev.clientX,ev.clientY);if(target)wireMovePiece(d.piece,...target,d.signature);else uxAnnounce('已取消移動，盤面沒有變更。');}return;}
+  if (!d || !d.moved) return;
   noClick = true; setTimeout(() => { noClick = false; }, 0);
   renderModal(); uxAnnounce(GridLab.connected(G.board, selSock) ? '接通了，目前預估 DPS ' + tFmt(G.st.dps) : '接線中');
 }
@@ -405,7 +441,7 @@ function uiResolvedHtml(){
 }
 
 const WIRE_CSS = `
-body.ui-material #mbody .pz.wb{--cr:#ed967d;--cb:#8db7ef;--cg:#80cebd;--ink:var(--ux-ink);position:relative;display:grid;max-width:460px!important;width:100%;box-sizing:border-box;margin:0 auto;padding:8px;gap:0;border:2px solid var(--ux-edge)!important;outline:0;box-shadow:inset 0 0 0 2px #0004!important;background:var(--ux-ink)!important;touch-action:pan-y;image-rendering:pixelated}
+body.ui-material #mbody .pz.wb{--cr:var(--ux-signal-red);--cb:var(--ux-signal-blue);--cg:var(--ux-signal-green);--ink:var(--ux-ink);position:relative;display:grid;max-width:460px!important;width:100%;box-sizing:border-box;margin:0 auto;padding:8px;gap:0;border:2px solid var(--ux-edge)!important;outline:0;box-shadow:inset 0 0 0 2px #0004!important;background:var(--ux-ink)!important;touch-action:pan-y;image-rendering:pixelated}
 #mbody .pz.wb .pc.pr,#mbody .pz.wb .pc.sr,#mbody .pz.wb .pc.kr{--padc:var(--cr)}#mbody .pz.wb .pc.pb,#mbody .pz.wb .pc.sb,#mbody .pz.wb .pc.kb{--padc:var(--cb)}#mbody .pz.wb .pc.pg,#mbody .pz.wb .pc.sg,#mbody .pz.wb .pc.kg{--padc:var(--cg)}
 body.ui-material #mbody .pz.wb button.pc{position:relative;z-index:1;box-sizing:border-box;margin:2px;min-width:0;min-height:0;aspect-ratio:1;padding:0!important;font-size:9px!important;line-height:1!important;border:1px solid #8b9ab629!important;border-radius:2px!important;background:#ffffff04!important;box-shadow:inset 0 1px #ffffff08!important;color:var(--ux-screen)!important;text-shadow:none!important;overflow:visible;cursor:pointer;isolation:isolate}
 body.ui-material #mbody .pz.wb button.pc.dead{visibility:hidden;pointer-events:none}body.ui-material #mbody .pz.wb button.pc.rk{border:1px solid #6b7d9a!important;background:#34435d!important;box-shadow:inset 1px 1px #96a7bd!important;color:#a5b4cc!important}.pz.wb .pc.rk span{font-size:12px}
