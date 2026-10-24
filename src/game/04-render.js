@@ -620,7 +620,7 @@ function overlay(){
 /* ---------- scene：每一幀同步遊戲狀態到 three 場景，再畫出來 ---------- */
 function disposeWorldObject(root){
   if(!root)return;const sharedGeometry=new Set(Object.values(G_)),sharedMaterial=new Set(Object.values(R3.cache)),done=new Set();
-  root.traverse(o=>{if(!o.isMesh)return;if(!sharedGeometry.has(o.geometry)&&!done.has(o.geometry)){done.add(o.geometry);o.geometry.dispose();}for(const m of Array.isArray(o.material)?o.material:[o.material])if(!sharedMaterial.has(m)&&!done.has(m)){done.add(m);if(m.map&&!sharedMaterial.has(m.map))m.map.dispose();m.dispose();}});
+  root.traverse(o=>{if(!o.isMesh)return;if(!o.geometry.userData?.equipmentShared&&!sharedGeometry.has(o.geometry)&&!done.has(o.geometry)){done.add(o.geometry);o.geometry.dispose();}for(const m of Array.isArray(o.material)?o.material:[o.material])if(!m.userData?.equipmentShared&&!sharedMaterial.has(m)&&!done.has(m)){done.add(m);if(m.map&&!sharedMaterial.has(m.map))m.map.dispose();m.dispose();}});
 }
 function scene(){
   if (window.BOSSON) return '';
@@ -657,7 +657,7 @@ function scene(){
     else z += .3 + Math.sin(d.t*6)*.25;
     at3(g, x, y, z+terrainHeight(x,y)); u.item.rotation.y = d.t*2.4; u.disc.visible = true; if (u.beam) u.beam.visible = true;
   }
-  for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); R3.ent.delete(k); }
+  for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); disposeWorldObject(e); R3.ent.delete(k); }
   updateFx();
   if(typeof worldTravelRender==='function')worldTravelRender();
   updateSceneryOcclusion(R3.scenery,R3.cam,R3.hero,R3.frameDt||0);

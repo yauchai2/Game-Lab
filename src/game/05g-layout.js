@@ -18,7 +18,7 @@ function uiTitle(){
   const box=document.querySelector('#modal > .mbox');if(!box)return;
   let el=$('mttl');if(!el){el=document.createElement('div');el.id='mttl';box.insertBefore(el,$('mbody'));}
   const root=UI_NAV.find(g=>g.pages.includes(modalTab)),back=root&&modalTab!==root.k&&modalTab!=='tree';
-  const hk=MHELP[modalTab],cz=uiBattleSize();document.body.classList.toggle('battle-fold',MOB()&&cz===3);
+  const hk=MHELP[modalTab],cz=uiBattleSize();document.body.classList.toggle('battle-fold',(MOB()&&cz===3)||(typeof GAME_VIEW!=='undefined'&&!!GAME_VIEW.prefs.hideBattle));
   el.innerHTML=`${back?`<button class="ui-back" aria-label="返回${root.n}" onclick="openModal('${root.k}')">返回</button>`:''}<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="切換戰場大小，目前${CZN[cz]}" onclick="cycleCz()">${CZN[cz]}</button>`:''}`;
 }
 function uiSegments(key,items,label){return `<div class="ui-segments" role="group" aria-label="${label}">${items.map(([id,name,tip])=>`<button aria-pressed="${UI_WORK[key]===id}"${tip?` data-tip="${uxEsc(tip)}"`:''} data-focus="${key}-${id}" onclick="uiWork('${key}','${id}')">${name}</button>`).join('')}</div>`;}
@@ -233,6 +233,7 @@ body.d .stats{position:absolute;left:8px;right:8px;top:4px;margin:0;max-width:no
 .ui-map-banner h3,.ui-map-banner>span{background:#ffffffdd;padding:3px 7px;border-radius:4px;width:fit-content}.ui-map-banner>span{display:inline-block}
 @media(max-width:1179px){body.m #mbody{padding:10px}#mbody .pz{max-width:300px}.ui-segments>button{min-height:44px}body.m .ui-inventory-grid{gap:7px}}
 @media(min-width:560px) and (max-width:1179px){body.m #mbody{padding:14px 24px}.ui-inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ui-equipment{grid-template-columns:repeat(3,minmax(0,1fr))}.ui-character-head,.ui-menu-group,.ui-wiki{max-width:900px;margin-left:auto;margin-right:auto}}
+body.d.battle-fold #fig,body.d.battle-fold #fxo{display:none!important}body.d.battle-fold .stage{position:relative;min-height:72vh}body.d.battle-fold .stage::after{content:"戰鬥畫面已隱藏，戰鬥與收益照常進行（設定 → 畫面與觀戰 可重新顯示）";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(80%,420px);padding:14px 16px;text-align:center;line-height:1.6;color:#1d2552;background:#e6e8f6;border:2px solid #fff;outline:2px solid #33407f;box-shadow:4px 4px 0 #1d2552aa}
 body.m.battle-fold .stage{height:96px;min-height:96px;padding:0}body.m.battle-fold #fig,body.m.battle-fold #nexthint,body.m.battle-fold #ctxbtn,body.m.battle-fold #fxo{display:none!important}body.m.battle-fold .stats{position:static!important;margin:4px 6px!important}
 @media(max-height:500px){body.m .stats{top:0}body.m #mttl{min-height:40px}body.m .stage{padding-bottom:30px}body.m #fig{max-height:110px}body.m #mbody{padding:8px}body.m #mtabs{height:48px}body.m{padding-bottom:calc(48px + env(safe-area-inset-bottom))!important}}
 body.ui-material #mbody .ui-menu-group .ui-directory{grid-template-columns:repeat(2,minmax(0,1fr))}
