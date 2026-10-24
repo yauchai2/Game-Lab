@@ -187,13 +187,14 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, fo
   for (const id of slots){ if (!id) continue;
     const K = SKILLS[id], sp = supp[id] || [];
     const pattern=skillPattern(id,G.modeOf[id]),sw=supp===G.supp&&(G.suppW||{})[id]&&G.suppW[id].length===sp.length?G.suppW[id]:null,mod=GridLab.skillMods(sp,id,sw);
+    if(sp.includes('SPREAD')){if(pattern.range)pattern.range*=1.4;if(pattern.width)pattern.width*=1.4;}
     const hit=s.dmg*K.mult*(1+(s.inc+s[K.el]+s.sinc)/100)*
       (Object.values(equip).some(it=>it&&it.lg==='W_MULTI')?1+.15*slots.filter(Boolean).length:1)*
       mod.hit*(modern&&pass.includes('AK')?.85:1)*(modern&&pass.includes('EK')?.85:1)*(modern&&pass.includes('CK')&&slots.length<=3?1.35:1)*(modern&&pass.includes('BK')&&new Set(slots.map(id=>SKILLS[id]?.el)).size===3?1.3:1)*(1+.12*bb.rows)*(bb.pair[id]?1.15:1);
     const cd=GridLab.cooldown(K.cd,sp,s.haste,pattern.cd||1,sw),crit=Math.min(100,s.crit+mod.crit);
     const extra=mod.twin*GridLab.LIMITS.repeatDamage+(mod.repeat?.45:0)+(pass.includes('EK')?(modern?.6:.35):0);
     const direct=skillDirectFactor(id,pattern)+extra*skillDirectFactor(id,pattern,true);
-    s.sk[id]={mode:G.modeOf[id]||null,pattern,hit,cd,crit,has:sp.filter(Boolean),area:mod.area,twin:mod.twin,leech:mod.leech,
+    s.sk[id]={mode:G.modeOf[id]||null,pattern,hit,cd,crit,has:sp.filter(Boolean),supportPower:Object.fromEntries([...new Set(sp)].map(key=>[key,Math.max(...sp.map((id,i)=>id===key?(sw?sw[i]:1):0))])),area:mod.area,twin:mod.twin,leech:mod.leech,
       direct:hit*(1+crit/100*(s.cm/100-1))*direct};
   }
   // Capacity-aware direct-hit preview. Conditions, DoT, signatures and on-kill effects are measured in training instead.
@@ -268,7 +269,7 @@ function applySave(o){
   G.armory = Object.fromEntries(Object.entries(o.armory || {}).filter(([id,it]) => coreSlot(id) && it && it.lg === id && it.slot === coreSlot(id) && Array.isArray(it.aff) && it.imp));
   G.equipBackup = Object.fromEntries(Object.entries(o.equipBackup || {}).filter(([slot,it]) => SLOTN[slot] && it?.slot === slot && Array.isArray(it.aff) && it.imp));
   G.deferChoices = o.deferChoices === true;
-  G.inventory=(Array.isArray(o.inventory)?o.inventory:[]).filter(validGear).slice(0,whCap());
+  G.inventory=(Array.isArray(o.inventory)?o.inventory:[]).filter(validGear).slice(0,200+100*Math.min(WH_UP_MAX,Math.max(0,Math.floor(+o.whUp||0))));
   {const used=new Set();let next=1;for(const it of G.inventory){if(!Number.isSafeInteger(it.uid)||it.uid<1||it.uid>1e8||used.has(it.uid)){while(used.has(next))next++;it.uid=next++;}used.add(it.uid);}G.nextGearId=Math.max(1,...used)+1;}G.autoEquip=false;
   G.coreDust=Number.isSafeInteger(o.coreDust)?Math.max(0,o.coreDust):0;G.storageRecycled=Math.max(0,+o.storageRecycled||0);G.whUp=Math.min(WH_UP_MAX,Math.max(0,Math.floor(+o.whUp||0)));G.offUp=Math.min(OFF_UP_MAX,Math.max(0,Math.floor(+o.offUp||0)));G.chips=Math.max(0,+o.chips||0);G.inventoryRevision++;
   for(const group of [G.equip,G.equipBackup])for(const slot of Object.keys(group)){const it=group[slot];if(validGear(it)&&!it.lg){storeGear(it);group[slot]=G.inventory.find(x=>x.uid===it.uid)||it;}}
@@ -285,7 +286,7 @@ const encodeSave = () => { try { return btoa(unescape(encodeURIComponent(JSON.st
 const decodeSave = str => { try { return JSON.parse(decodeURIComponent(escape(atob(str.trim())))); } catch (e) { return null; } };
 
 
-const WH_UP_MAX=5,OFF_UP_MAX=6,whCap=()=>200+20*(G.whUp||0),offCapSec=()=>(6+(G.offUp||0))*3600;
+const WH_UP_MAX=5,OFF_UP_MAX=6,whCap=()=>200+100*(G.whUp||0),offCapSec=()=>(6+(G.offUp||0))*3600;
 /* Manual equipment ownership; overflow recycling has a visible counter. */
 const validGear=it=>!!(it&&SLOTN[it.slot]&&Number.isInteger(it.r)&&it.r>=0&&it.r<=3&&it.imp&&AFF[it.imp.k]&&Number.isFinite(it.imp.v)&&Number.isFinite(it.il)&&it.il>0&&Array.isArray(it.aff)&&it.aff.every(a=>AFF[a.k]&&Number.isFinite(a.v)));
 function affTier(a,il=1){if(Number.isInteger(a.tier)&&a.tier>=0&&a.tier<=4)return a.tier;const ratio=a.v/AFF[a.k].b(il);return ratio>=1.5?0:ratio>=1.2?1:ratio>=1?2:ratio>=.8?3:4;}
@@ -358,7 +359,7 @@ function dropVisualPosition(d){const u=d.pull?Math.max(0,Math.min(1,d.pull.age/d
  const arms=[['A',-90,4],['D',-30,5],['B',30,4],['E',90,5],['C',150,4],['F',210,5]];
  for(let i=0;i<arms.length;i++){let prev=arms[i][0]+arms[i][2];for(let j=0;j<2;j++){const a=(arms[i][1]+20+j*20)*Math.PI/180,id='R'+i+j;add(id,Math.cos(a)*70,Math.sin(a)*70,j?{life:18}:{dmgPct:5},'#9cacc9');link(prev,id);prev=id;}const next=arms[(i+1)%arms.length];link(prev,next[0]+next[2]);}
 })();
-function buyCircuitSupport(id){if(!['FOCUS','FORK','RECOVER','DELAY'].includes(id)||G.chips<20)return false;G.chips-=20;G.gems[id]=(G.gems[id]||0)+1;G.dirty=true;return true;}
+function buyCircuitSupport(id){if(!['FOCUS','FORK','RECOVER','DELAY','ANCHOR','EXECUTE','BLOOD','CONDUCT','LONG','SPREAD'].includes(id)||G.chips<20)return false;G.chips-=20;G.gems[id]=(G.gems[id]||0)+1;G.dirty=true;return true;}
 
 function buyCircuitMode(id){
   if(!['METEOR_COLDSTART','BEAM_CAPACITOR'].includes(id)||G.chips<20||G.carts[id]||G.lvl<SKILLS[MODES[id].sk].lvl)return false;

@@ -1,5 +1,5 @@
 const{chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs');
-const out='docs/window-ui-ascensions-2026-10-24',base=process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8801/';
+const out=process.env.GAME_LAB_TEST_OUTPUT||'docs/window-ui-ascensions-2026-10-24',base=process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8801/';
 (async()=>{const b=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});const checks=[],errors=[];try{
  const p=await b.newPage({viewport:{width:1440,height:1000},hasTouch:true});p.on('pageerror',e=>errors.push(e.message));await p.goto(base+'?fresh&static&lvl=40&modal=skills',{waitUntil:'domcontentloaded',timeout:90000});await p.evaluate(()=>{hideOverlay();ui.suspendRender=()=>true;G.paused=true;G.maxDepth=18;G.bossKills=10;G.gold=100000;G.heroName='測試角色';});
  const center=async(x,y)=>{const r=await p.locator(`.wb .pc[data-x="${x}"][data-y="${y}"]`).boundingBox();return {x:r.x+r.width/2,y:r.y+r.height/2}};

@@ -1,0 +1,31 @@
+{
+  "reason": "Final UI save-failure recovery and font/build follow-up; unchanged core suites reuse source-checks.json.",
+  "checks": [
+    {
+      "command": "node tools/test_loot_world.cjs",
+      "exit_code": 0,
+      "stdout": "PASS 79 catalog, real combat, conditional supports, safe bulk salvage, old saves and world assertions\n",
+      "stderr": ""
+    },
+    {
+      "command": "python3 tools/test_review_build.py",
+      "exit_code": 0,
+      "stdout": "idle-hero.html : 46 inline scripts syntax checked\nidle-hero-review.html : 37 inline scripts syntax checked\ncharacter-review.html : 17 inline scripts syntax checked\nequipment-review.html : 20 inline scripts syntax checked\nPASS review fixtures isolated; production toolbar and save key unchanged\n",
+      "stderr": ""
+    },
+    {
+      "command": "PYTHONPATH=/tmp/game-font-deps python3 tools/test_font_grid.py",
+      "exit_code": 0,
+      "stdout": "PASS native 12px face preserved; 1576 LCD glyphs, advances and baselines align to the 16px grid\n",
+      "stderr": ""
+    }
+  ],
+  "environment_retry": [
+    {
+      "command": "python3 tools/test_font_grid.py",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "The WOFF2 decoder requires the Brotli Python extension, available at: https://github.com/google/brotli\nTraceback (most recent call last):\n  File \"/workspace/Game-Lab-depth/tools/test_font_grid.py\", line 10, in <module>\n    native, lcd = [TTFont(io.BytesIO(base64.b64decode(data))) for data in encoded]\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/fontTools/ttLib/ttFont.py\", line 320, in __init__\n    self.reader = SFNTReader(file, checkChecksums, fontNumber=fontNumber)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/fontTools/ttLib/woff2.py\", line 53, in __init__\n    raise ImportError(\"No module named brotli\")\nImportError: No module named brotli\n"
+    }
+  ]
+}

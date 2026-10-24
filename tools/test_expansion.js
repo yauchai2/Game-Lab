@@ -41,7 +41,7 @@ check('replay support and protocol enqueue bounded non-recursive casts',`
 check('fork and recovery effects apply once within their cooldown windows',`
  G.board=GridLab.createBoard();GridLab.place(G.board,'active','FIRE',...GridLab.layout(G.board).socks[0]);G.board.wires=[{sock:0,cells:GridLab.route(G.board,0)}];recalc();const a={type:'slime',x:HX+4,y:HY,hp:1e6,hpMax:1e6,dead:false,fall:0},b={...a,x:HX+8};G.mons=[a,b];G.st.sk.FIRE.has=['FORK','RECOVER'];G.h.hp=G.st.life*.5;const hp=G.h.hp;applySkillHit('FIRE',a);assert(G.h.hp>hp);assert(b.hp<1e6);const second=G.h.hp,other=b.hp;applySkillHit('FIRE',a);assert.equal(G.h.hp,second);assert.equal(b.hp,other);
 `);
-check('twelve map regions and four new monster archetypes participate in capped waves',`
- assert.equal(BIOMES.length,12);assert.deepEqual(new Set(MONSTER_GUIDE.map(m=>m[0])),new Set(Object.keys(MTYPES)));for(const id of ['spider','speaker','wisp','crab'])assert(MTYPES[id]);G.lvl=30;G.depth=12;G.spawnCd=0;for(let i=0;i<20;i++)spawnPack();assert(G.mons.length<=hordeCap());assert(hordeCap()<=42);Math.random=()=>.99;assert.equal(makeMap(10).biome,11);
+check('eighteen map regions and ten added monster archetypes participate in capped waves',`
+ assert.equal(BIOMES.length,18);assert.deepEqual(new Set(MONSTER_GUIDE.map(m=>m[0])),new Set(Object.keys(MTYPES)));for(const id of ['spider','speaker','wisp','crab'])assert(MTYPES[id]);G.lvl=30;G.depth=12;G.spawnCd=0;for(let i=0;i<20;i++)spawnPack();assert(G.mons.length<=hordeCap());assert(hordeCap()<=42);Math.random=()=>.99;assert.equal(makeMap(10).biome,17);
 `);
 console.log(passed+' expansion checks passed');

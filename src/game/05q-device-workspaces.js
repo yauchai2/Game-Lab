@@ -26,8 +26,24 @@ function icon3dOriginalCosmeticUrl(cat){
 function deviceCircuitModel(kind,id){
  const g=new T3.Group(),col=kind==='skill'?(SKILLS[id]?.col||'#88c8df'):(GEM_COL[id]||'#8ba5ce'),dark=m3('#334358'),silver=m3('#bdcadb'),accent=m3(col);let hash=0;for(const c of id)hash=(hash*31+c.charCodeAt(0))>>>0;
  mk(new T3.BoxGeometry(3.1,.55,2.7),dark,0,0,0,g);mk(new T3.BoxGeometry(2.65,.3,2.3),silver,0,.4,0,g);for(const side of[-1,1])for(const x of[-.9,0,.9])mk(new T3.BoxGeometry(.25,.22,.55),silver,x,0,side*1.5,g);
- const variant=hash%4;if(variant===0)mk(new T3.OctahedronGeometry(.8,0),accent,0,1,0,g);else if(variant===1)mk(new T3.TorusGeometry(.65,.18,4,8),accent,0,.9,0,g).rotation.x=Math.PI/2;else if(variant===2)for(const x of[-.65,0,.65])mk(new T3.BoxGeometry(.28,.7,.9),accent,x,.9,0,g);else{mk(new T3.ConeGeometry(.8,1.2,4),accent,0,1.1,0,g);mk(new T3.BoxGeometry(1.3,.15,.25),dark,0,.8,.5,g);}
- for(let i=0;i<3;i++)if(hash>>i&1)mk(new T3.BoxGeometry(.2,.12,.2),accent,-.8+i*.65,.62,1,g);g.rotation.set(.65,-.5,0);return g;
+ const order=Object.keys(kind==='skill'?SKILLS:SUPPS),variant=order.indexOf(id);
+ // Each function owns a distinct silhouette; six binary trace pins provide a redundant identifier.
+ if(kind==='skill'){
+  if(['FIRE','METEOR'].includes(id)){mk(new T3.CylinderGeometry(.5,.5,1.4,6),accent,0,1.15,0,g);if(id==='METEOR')for(const x of[-.9,.9])mk(new T3.BoxGeometry(.7,.15,1.2),silver,x,1.2,0,g);}
+  else if(['FROST','PULSE','MAGNET'].includes(id)){const ring=mk(new T3.TorusGeometry(.75,.15,4,id==='FROST'?6:10),accent,0,1,0,g);if(id==='PULSE')for(const x of[-.9,.9])mk(new T3.BoxGeometry(.15,1.3,.5),accent,x,1,0,g);if(id==='MAGNET')mk(new T3.BoxGeometry(.6,.7,.4),dark,0,.4,0,g);}
+  else if(id==='CHAIN'){for(const x of[-.7,0,.7])mk(new T3.OctahedronGeometry(.34,0),accent,x,1,0,g);}
+  else if(id==='SPAM'){for(let i=0;i<3;i++){const card=mk(new T3.BoxGeometry(1.2,.08,.8),silver,i*.25-.25,.8+i*.3,0,g);card.rotation.y=i*.3;}}
+  else if(id==='FLICKER'){mk(new T3.BoxGeometry(1.6,1,.7),silver,0,1,0,g);mk(new T3.CylinderGeometry(.4,.4,.4,8),accent,0,1,.5,g).rotation.x=Math.PI/2;}
+  else if(id==='BEAM'||id==='RAIL'){mk(new T3.BoxGeometry(id==='RAIL'?1.9:.4,.4,id==='RAIL'?.5:1.9),accent,0,1,0,g);if(id==='RAIL')for(const z of[-.4,.4])mk(new T3.BoxGeometry(1.8,.25,.15),silver,0,1,z,g);}
+  else if(id==='DISC'||id==='ORBIT'){mk(new T3.CylinderGeometry(.85,.85,.15,12),accent,0,1,0,g);mk(new T3.CylinderGeometry(.3,.3,.19,8),dark,0,1,0,g);if(id==='ORBIT')mk(new T3.TorusGeometry(1.1,.08,3,12),silver,0,1,0,g).rotation.x=.5;}
+  else if(id==='COIL'){for(const y of[.7,1,1.3])mk(new T3.TorusGeometry(.6,.09,4,10),accent,0,y,0,g).rotation.x=Math.PI/2;}
+  else if(id==='DEFRAG'){for(const[x,y,z]of[[-.5,.8,-.4],[.5,1.2,.3],[0,1.6,-.1]])mk(new T3.BoxGeometry(.55,.55,.55),accent,x,y,z,g);}
+  else if(id==='RELAY'){for(const x of[-.65,.65]){mk(new T3.CylinderGeometry(.18,.18,1.1,5),silver,x,1.1,0,g);mk(new T3.OctahedronGeometry(.35,0),accent,x,1.8,0,g);}mk(new T3.BoxGeometry(1.3,.15,.15),accent,0,1.5,0,g);}
+ }else{
+  const forms=[()=>mk(new T3.BoxGeometry(1.5,.8,.7),accent,0,1,0,g),()=>mk(new T3.TorusGeometry(.65,.16,4,8),accent,0,1,0,g),()=>mk(new T3.ConeGeometry(.65,1.3,4),accent,0,1.1,0,g),()=>mk(new T3.OctahedronGeometry(.7,0),accent,0,1.2,0,g),()=>mk(new T3.CylinderGeometry(.45,.45,1.4,6),accent,0,1.2,0,g),()=>mk(new T3.BoxGeometry(.4,1.5,1.1),accent,0,1.15,0,g)];
+  forms[variant%forms.length]();const group=Math.floor(variant/6);if(group===1)for(const x of[-.9,.9])mk(new T3.BoxGeometry(.2,.7,.2),silver,x,1,0,g);if(group===2)mk(new T3.TorusGeometry(1,.07,3,10),silver,0,1,0,g).rotation.x=Math.PI/2;
+ }
+ for(let i=0;i<6;i++)if((variant+1)>>i&1)mk(new T3.BoxGeometry(.2,.12,.2),accent,-1+i*.4,.62,1,g);g.rotation.set(.65,-.5,0);return g;
 }
 function icon3dCircuitUrl(kind,id){if(kind==='skill'?!SKILLS[id]:!SUPPS[id])return '';return deviceThumb('circuit:'+kind+':'+id,()=>deviceCircuitModel(kind,id));}
 function deviceResource(kind,size=28){const url=deviceThumb('resource:'+kind,()=>{const g=new T3.Group(),silver=m3('#b8c9d8'),dark=m3('#334358'),blue=m3('#80c5d2');if(kind==='parts'){for(const[x,y]of[[-.6,.2],[.5,.5],[0,-.5]])mk(new T3.BoxGeometry(1,.65,.7),silver,x,y,0,g);}else if(kind==='dust'){mk(new T3.OctahedronGeometry(1,0),blue,0,.2,0,g);mk(new T3.CylinderGeometry(1.2,1.2,.3,8),dark,0,-.8,0,g);}else{mk(new T3.BoxGeometry(2.2,.45,2),dark,0,0,0,g);mk(new T3.BoxGeometry(1.5,.25,1.3),blue,0,.35,0,g);for(const x of[-.7,0,.7])mk(new T3.BoxGeometry(.2,.2,.5),silver,x,0,1,g);}g.rotation.set(.5,-.5,0);return g;});return url?`<img src="${url}" alt="" width="${size}" height="${size}">`:'';}
@@ -52,11 +68,11 @@ function icon3dCollectibleUrl(kind,id){
 }
 function deviceSkillsHtml(){
  const connected=GridLab.resolve(G.board,G.lvl).filter(r=>r.wired).length;
- return `<div class="device-workspace device-skills"><div class="device-heading"><div><span class="device-eyebrow">技能接線</span><h3>${GridLab.layout(G.board).n}</h3><span>${GridLab.layout(G.board).size}×${GridLab.layout(G.board).size} · 供電 ${GridLab.powerUsed(G.board)}／${GridLab.layout(G.board).power}</span></div><button class="mb" onclick="careerCircuits()">更換電路板</button></div>${wireGuideHtml()}<section class="device-console" aria-label="技能組裝工作區">${wireTopHtml()}</section>${wireSelCard()}<section class="device-inventory"><h3>技能與配件庫</h3>${uiInventoryHtml()}</section>${DIRECT_VIEW.builds?buildBar():''}<div class="direct-analysis-tools"><button class="mb" onclick="directBuildTools()">構築配置</button><button class="mb" onclick="directCombatReport()">戰鬥分析</button>${directHelpButton('skills')}</div></div>`;
+ return `<div class="device-workspace device-skills"><div class="device-heading"><div><span class="device-eyebrow">技能接線</span><h3>${GridLab.layout(G.board).n}</h3><span>${GridLab.layout(G.board).size}×${GridLab.layout(G.board).size} · 供電 ${GridLab.powerUsed(G.board)}／${GridLab.layout(G.board).power}</span></div><button class="mb" onclick="careerCircuits()">更換電路板</button></div>${wireGuideHtml()}<section class="device-console" aria-label="技能組裝工作區">${wireTopHtml()}</section>${wireSelCard()}<section class="device-inventory"><h3>技能與配件庫</h3><p class="device-caption">條件式配件的收益隨階級提升；同款條件只取最高階，傷害代價仍累計。供電及每技能三枚上限不變。</p>${uiInventoryHtml()}</section>${DIRECT_VIEW.builds?buildBar():''}<div class="direct-analysis-tools"><button class="mb" onclick="directBuildTools()">構築配置</button><button class="mb" onclick="directCombatReport()">戰鬥分析</button>${directHelpButton('skills')}</div></div>`;
 }
 function deviceMenuHtml(){
- const groups=[['遊戲',[['settings','遊戲設定','畫面與戰鬥'],['save','存檔備份','匯入與匯出']]],['進度',[['goals','目標','里程碑獎勵'],['ach','成就','挑戰紀錄'],['dex','圖鑑','技能與收藏'],['rank','排行榜','歷史構築']]],['資訊',[['log','更新日誌','版本紀錄'],['feedback','意見回饋','回報與建議'],['wiki','編年史','完整資料']]]];
- return `<div class="device-workspace device-menu"><div class="device-directory" role="group" aria-label="設定與資料工具">${groups.flatMap(([group,items])=>items.map(([id,n,d])=>`<button class="mb device-directory-card" data-focus="directory-${id}" onclick="${id==='wiki'?'wikiOpen()':`openModal('${id}')`}">${obj3d(id==='rank'?'ach':id==='wiki'?'dex':id,48)}<b>${n}</b><small>${group} · ${d}</small></button>`)).join('')}</div></div>`;
+ const groups=[['遊戲',[['settings','遊戲設定','畫面與戰鬥'],['save','存檔備份','匯入與匯出']]],['進度',[['goals','目標','里程碑獎勵'],['ach','成就','挑戰紀錄'],['dex','圖鑑','個人收藏進度'],['rank','排行榜','歷史構築']]],['資訊',[['log','更新日誌','版本紀錄'],['feedback','意見回饋','回報與建議'],['wiki','編年史','完整機制參考']]]];
+ return `<div class="device-workspace device-menu"><div class="device-directory" role="group" aria-label="設定與資料工具">${groups.flatMap(([group,items])=>items.map(([id,n,d])=>`<button class="mb device-directory-card" data-focus="directory-${id}" onclick="${id==='wiki'?'wikiOpen()':`openModal('${id}')`}">${obj3d(id,48)}<b>${n}</b><small>${group} · ${d}</small></button>`)).join('')}</div></div>`;
 }
 function deviceCraftHtml(){
  const slot=UI_WORK.craftSlot,it=G.equip[slot],act=UI_WORK.craftAct,operation=CRAFT[act],state=craftState(slot,act),result=CRAFT_RESULTS[slot];

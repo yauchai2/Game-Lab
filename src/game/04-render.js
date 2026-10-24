@@ -325,7 +325,8 @@ function buildWorldScenery(bi){
   function merge(g){const out=bake(g);g.traverse(o=>{if(o.isMesh&&!shared.has(o.geometry))o.geometry.dispose();});return out;}
   for(const prop of terrainScenery(p)){
     const z=BZ+terrainHeight(prop.x,prop.y,p),large=prop.radius!=null||['rock','lamp','tent','column'].includes(prop.kind),holder=large?new T3.Group():small;
-    if(prop.kind==='tree')treeAt(holder,bi%6,prop.x,z,prop.y,prop.scale);
+    if(bi>=12&&bi<18&&prop.radius!=null){const o=buildIndustrialLandmark(bi-12,prop.variant||0);o.updateMatrixWorld(true);const size=new T3.Box3().setFromObject(o).getSize(new T3.Vector3());o.scale.setScalar(Math.max(2,prop.radius)*1.65/Math.max(size.x,size.z,1));o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);}
+    else if(prop.kind==='tree')treeAt(holder,bi===3||bi===5?4:bi%6,prop.x,z,prop.y,prop.scale);
     else{
       const o=prop.kind==='building'?buildWorldBuilding(prop.height,bi,prop.variant):prop.kind==='bike'?buildWorldBike():prop.kind==='grass'?buildWorldGrass(bi):['warehouse','cabin','pavilion','windmill','ruin','boulder','tent','log','bench','planter','crate','flowers','column'].includes(prop.kind)?buildLandscapeProp(prop.kind,bi,prop.variant||0):buildDeco(prop.kind,1);
       o.scale.multiplyScalar(prop.scale);o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);
@@ -459,7 +460,7 @@ function r3init(){
 }
 function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相機視野
   const fig0 = document.getElementById('fig'), vb0 = fig0.viewBox.baseVal, ptv = innerHeight > innerWidth;
-  const frameRatio=document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig0.getBoundingClientRect().width):MOB()?mobRatio():Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig0.getBoundingClientRect().width)));
+  const frameRatio=battleFrameRatio(fig0);
   if(vb0.width && Math.abs(vb0.height/vb0.width-frameRatio)>.01)fig0.setAttribute('viewBox',`0 0 ${vb0.width} ${vb0.width*frameRatio}`);
   const fig = document.getElementById('fig'), r = fig.getBoundingClientRect(), W = Math.max(2, r.width), H = Math.max(2, r.height), dpr = Math.min(2, window.devicePixelRatio || 1);
   const cv = R3.rd.domElement; cv.style.imageRendering = R3.clean?'auto':'pixelated'; cv.style.left = (r.left + scrollX) + 'px'; cv.style.top = (r.top + scrollY) + 'px'; cv.style.width = W + 'px'; cv.style.height = H + 'px';
@@ -660,7 +661,7 @@ function scene(){
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
-  for (const m of G.mons){ const g = entFor(m, () => m.boss?buildCircuitBoss(biomeNow(),m.bossForm):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g); }
+  for (const m of G.mons){ const g = entFor(m, () => m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
@@ -727,3 +728,28 @@ function buildCircuitBoss(bi,form=bi%3){
  root.userData.limbs=body.userData.limbs;root.userData.simple=true;root.userData.s=4;root.userData.mats=[];root.traverse(o=>{if(o.isMesh){o.material=o.material.clone();root.userData.mats.push(o.material);}});return root;
 }
 
+
+function buildStreetMonster(type){
+ const g=new T3.Group(),dark=m3('#2d4255'),metal=m3('#a4b6c0'),signal=m3(type==='furnace'?'#de9957':type==='shard'?'#adb5e4':'#83c8c1');
+ const box=(w,h,d,m,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m,x,y,z,g),cyl=(r,h,m,x,y,z)=>mk(new T3.CylinderGeometry(r,r,h,8),m,x,y,z,g);
+ if(type==='scanner'){mk(new T3.ConeGeometry(8,3,3),metal,0,14,0,g);box(4,3,9,dark,0,14,2);box(3,2,2,signal,0,14,7);for(const x of[-7,7])cyl(2,2,dark,x,14,0);}
+ if(type==='roller'){for(const x of[-5,5])cyl(6,3,dark,x,7,0).rotation.z=Math.PI/2;box(9,9,11,metal,0,10,0);box(5,2,1,signal,0,13,6);mk(new T3.ConeGeometry(4,8,4),metal,0,9,10,g).rotation.x=Math.PI/2;}
+ if(type==='antenna'){box(8,7,6,dark,0,10,0);for(const x of[-5,5])box(2,10,2,metal,x,5,0);box(1,15,1,metal,0,22,0);for(const y of[22,27])box(12,1,1,signal,0,y,0);cyl(3,2,signal,0,15,0);}
+ if(type==='cable'){mk(new T3.IcosahedronGeometry(6,0),metal,0,18,0,g).scale.set(1,.7,1);for(let i=0;i<6;i++){const a=i*Math.PI/3;box(1,12,1,i%2?signal:dark,Math.cos(a)*4,9,Math.sin(a)*4);}cyl(2,3,signal,0,22,0);}
+ if(type==='furnace'){for(const x of[-6,6])box(4,6,15,dark,x,4,0);box(12,13,11,metal,0,13,0);box(8,7,1,dark,0,14,6);for(const x of[-2,0,2])box(1,5,1,signal,x,14,6.7);for(const x of[-4,4])cyl(1.5,9,dark,x,23,-2);}
+ if(type==='shard'){mk(new T3.OctahedronGeometry(6,0),signal,0,13,0,g).scale.set(.65,1.6,.65);for(const x of[-7,7])mk(new T3.TetrahedronGeometry(4,0),metal,x,12,0,g);mk(new T3.TorusGeometry(7,.7,3,8),dark,0,13,0,g).rotation.x=.8;}
+ const out=bake(g);out.userData.simple=true;out.userData.streetType=type;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+}
+
+/* Regional structures use reserved landmark footprints, never block navigable routes. */
+function buildIndustrialLandmark(theme,variant=0){
+ const g=new T3.Group(),steel=m3('#445969'),silver=m3('#a9b9be'),signal=m3(['#bd8d57','#81b7c0','#a3afcd','#bdad82','#83c5bc','#c1b97e'][theme]),rock=m3('#7a7d78');
+ const box=(w,h,d,mat,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),mat,x,y,z,g),cyl=(r,h,mat,x,y,z)=>mk(new T3.CylinderGeometry(r,r,h,8),mat,x,y,z,g);
+ if(theme===0){box(15,12,12,steel,0,6,0);for(const x of[-4,4]){cyl(2,18,silver,x,18,0);box(3,5,1,signal,x,6,6.5);}for(const z of[-3,3])box(18,1,1,silver,0,4,z);}
+ if(theme===1){box(20,2,12,steel,0,1,0);for(const x of[-6,0,6]){cyl(2.4,7,silver,x,5,0).rotation.z=Math.PI/2;mk(new T3.TorusGeometry(3,.7,4,12),signal,x,5,0,g).rotation.y=Math.PI/2;}box(1,12,1,steel,-8,7,3);}
+ if(theme===2){box(12,2,12,steel,0,1,0);box(2,12,2,silver,0,8,0);const dish=mk(new T3.ConeGeometry(8,4,10),silver,0,15,0,g);dish.rotation.z=.5;mk(new T3.TorusGeometry(7,.5,4,12),signal,0,16,0,g).rotation.x=Math.PI/2;box(.5,10,.5,steel,4,19,0);}
+ if(theme===3){for(const[x,z,h]of[[-5,-2,9],[3,2,14],[7,-3,6]]){const b=box(8,h,7,rock,x,h/2,z);b.rotation.y=x*.2;box(6,.5,7.2,signal,x,h*.6,z);}box(23,1,3,steel,0,1,8);}
+ if(theme===4){for(const x of[-5,5]){cyl(4,18,silver,x,9,0);for(const y of[4,12])mk(new T3.TorusGeometry(4.2,.6,4,10),signal,x,y,0,g).rotation.x=Math.PI/2;cyl(2.8,1,steel,x,18.5,0);}box(12,2,3,steel,0,4,0);}
+ if(theme===5){box(18,3,12,steel,0,1.5,0);for(const x of[-7,7])box(3,18,3,silver,x,10,0);box(18,3,4,silver,0,20,0);for(const y of[7,12,17])box(10,.5,1,signal,0,y,0);box(16,1,4,rock,0,3,4);}
+ g.rotation.y=(variant%4)*Math.PI/2;g.userData.theme=theme;return g;
+}

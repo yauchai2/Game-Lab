@@ -9,6 +9,11 @@ Object.assign(MTYPES,{ranger:{hp:1.2,dmg:1.1,xp:1.6,g:1.4,spd:16,atk:1.8},lanter
 const MONSTER_TRAITS={slime:{size:'小型',scale:.8,skill:'leap'},skel:{size:'中型',scale:1,skill:'cleave'},brute:{size:'大型',scale:1.3,skill:'charge'},drone:{size:'小型',scale:.85,skill:'salvo'},bomb:{size:'中型',scale:1,skill:'blast'},spider:{size:'小型',scale:.8,skill:'charge'},speaker:{size:'大型',scale:1.55,skill:'pulse'},wisp:{size:'小型',scale:.9,skill:'salvo'},crab:{size:'大型',scale:1.65,skill:'guard'},ranger:{size:'中型',scale:1,skill:'salvo'},lantern:{size:'中型',scale:1.1,skill:'mend'},mole:{size:'中型',scale:1.15,skill:'burrow'},golem:{size:'大型',scale:1.4,skill:'stomp'},boss:{size:'巨型關主',scale:1,skill:'boss'}};
 const MONSTER_SKILL_NAMES={leap:'躍擊',cleave:'橫掃',charge:'直線衝鋒',salvo:'三連射擊',blast:'延遲爆破',pulse:'回音震波',guard:'甲殼防禦',mend:'同伴修復',burrow:'鑽地突襲',stomp:'重踏',boss:'階段攻勢'};
 const REGION_MOBS=[['slime','spider','ranger','golem'],['crab','mole','bomb','lantern'],['wisp','skel','ranger','golem'],['bomb','crab','mole','golem'],['drone','speaker','lantern','ranger'],['spider','speaker','slime','lantern'],['drone','wisp','ranger','mole'],['crab','spider','lantern','golem'],['wisp','mole','ranger','lantern'],['speaker','bomb','golem','ranger'],['drone','brute','speaker','mole'],['spider','wisp','bomb','lantern']];
+const NEW_MONSTERS=['scanner','roller','antenna','cable','furnace','shard'];
+Object.assign(MTYPES,{scanner:{hp:.9,dmg:1.1,xp:1.5,g:1.4,spd:22,atk:1.8},roller:{hp:2.5,dmg:1.6,xp:2.2,g:2,spd:18,atk:2},antenna:{hp:1.8,dmg:.7,xp:2.5,g:2,spd:9,atk:2.4},cable:{hp:1.5,dmg:1.6,xp:2,g:1.8,spd:17,atk:2.1},furnace:{hp:4.8,dmg:2.1,xp:3.5,g:3,spd:8,atk:2.8},shard:{hp:.7,dmg:1.25,xp:1.5,g:1.4,spd:29,atk:1.3}});
+Object.assign(MONSTER_TRAITS,{scanner:{size:'小型',scale:1,skill:'salvo'},roller:{size:'大型',scale:1.25,skill:'charge'},antenna:{size:'大型',scale:1.1,skill:'mend'},cable:{size:'中型',scale:1,skill:'pulse'},furnace:{size:'大型',scale:1.4,skill:'stomp'},shard:{size:'小型',scale:1,skill:'leap'}});
+REGION_MOBS.push(['furnace','roller','bomb','antenna'],['cable','crab','scanner','lantern'],['scanner','shard','antenna','drone'],['roller','mole','shard','golem'],['cable','antenna','furnace','wisp'],['shard','scanner','roller','skel']);
+REGION_MOBS[3]=['furnace','bomb','roller','golem'];REGION_MOBS[5]=['roller','scanner','speaker','antenna'];REGION_MOBS[8]=['antenna','scanner','ranger','shard'];
 function spawnPack(){
   if(G.run?.city?.awaitChoice)return;
   const R = G.run, d = lvlNow(), mods = R ? R.map.mods : [], kills = R ? R.kills : G.kills, need = R ? R.need : G.need, bossOut = R ? R.bossOut : G.bossOut;
@@ -227,12 +232,17 @@ function applySkillHit(id,m,mult=1,origin=G.eventOrigin||'primary'){
   const source=SKILLS[id].n+(origin==='primary'?'':origin==='repeat'?'·回放':'·觸發');G.src=source;
   if (G.fx.length < 36){ const el = SKILLS[id].el, k = el === 'fire' ? 'embers' : el === 'cold' ? 'snow' : Math.random() < .5 ? 'zap' : 'shard'; addFx({ k, x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, t:0, dur:k === 'embers' ? .7 : k === 'snow' ? .8 : .4 }); }
   if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
+  const supportPower=key=>k.supportPower?.[key]||1;
+  if(k.has.includes('EXECUTE')&&m.hp/m.hpMax<.35)mult*=1+supportPower('EXECUTE');
+  if(k.has.includes('BLOOD')&&G.h.hp/G.st.life<.5)mult*=1+.9*supportPower('BLOOD');
+  if(k.has.includes('CONDUCT')&&(m.frozen>0||m.burn>0||m.shock>0))mult*=1+.75*supportPower('CONDUCT');
+  if(k.has.includes('LONG')&&Math.hypot(m.x-G.h.x,m.y-G.h.y)>24)mult*=1+.8*supportPower('LONG');
   const el = SKILLS[id].el; let rx = null;   /* 元素反應：火燒、閃電標記，加上冰凍，三者互相放大 */
   if (m.frozen > 0 && el === 'fire'){ mult *= 1.4; m.frozen = 0; rx = '融化'; } else if (m.frozen > 0 && el === 'light'){ mult *= 1.3; rx = '超導'; } else if (m.burn > 0 && el === 'cold') rx = '蒸氣';
   if (m.shock > 0 && (el === 'fire' || el === 'cold')){ mult *= 1.25; m.shock = 0; rx = rx || '過載'; }
   if (lgOn('R_LAST') && G.h.hp < G.st.life*.35) mult *= 1.4;
   const r=rollDmg(k.hit*mult,k.crit);hitMon(m,r.dmg,r.crit,source);signalHit(id,m,origin);
-  if(k.has.includes('RECOVER')&&G.time>=(G.recoverAt||0)){G.h.hp=Math.min(safeLife(),G.h.hp+safeLife()*.03);G.recoverAt=G.time+.8;}
+  if(k.has.includes('RECOVER')&&G.time>=(G.recoverAt||0)){heroRecover(safeLife()*.03);G.recoverAt=G.time+.8;}
   if(k.has.includes('FORK')&&G.time>=(G.forkAt||0)){G.forkAt=G.time+.25;const other=G.mons.filter(o=>o!==m&&!o.dead&&!(o.fall>0)).sort((a,b)=>Math.hypot(a.x-m.x,a.y-m.y)-Math.hypot(b.x-m.x,b.y-m.y))[0];if(other&&other!==m){hitMon(other,r.dmg*.25,false,SKILLS[id].n+'·分線');addFx({k:'bolt',pts:[[m.x,m.y,BZ+8],[other.x,other.y,BZ+8]],t:0,dur:.3});}}
   if (el === 'fire'){ m.burn = 3; m.burnD = Math.max(m.burnD || 0, r.dmg*.2); } else if (el === 'light') m.shock = 4;
   if (rx){ if (G.floats.length < 30) addFloat(m.x + 2, m.y, BZ + 22, rx, rx === '融化' ? '#ff7a3d' : rx === '超導' ? '#e0c020' : rx === '蒸氣' ? '#7fb6ff' : '#c28aff', 4.4);
@@ -256,6 +266,7 @@ function performSkill(id,repeat,origin){
     kick(K0.cd>=4?1.7:.65,K0.cd>=4?.22:0,K0.col,K0.cd>=4?.6:.2); }
   if(origin==='primary'){if(k.has.includes('DELAY'))G.timers.push({id,t:.6,rep:.45});if(G.pass.includes('EK'))G.timers.push({id,t:.8,rep:s.firmware.includes('EK')?.6:.35});}
   const near = (m0, n, ex) => G.mons.filter(m => !m.dead && m !== m0 && !(ex && ex.has(m))).sort((a, b) => Math.hypot(a.x - m0.x, a.y - m0.y) - Math.hypot(b.x - m0.x, b.y - m0.y)).slice(0, n);
+  if(EXPANSION_SKILLS.has(id))return castExpansionSkill(id,repeat,origin,prim,al);
   if (id === 'FIRE'){ const tg = prim; G.proj.push({k:'fire',tg,t:0,dur:.4,mul:repeat,origin}); return; }
   if (id === 'FROST'){
     addFx({ k:'nova', t:0, dur:.55 });
@@ -459,7 +470,7 @@ function update(dt){
     if (!h.castFired && h.castT >= .25){ h.castFired = true; castSkill(h.castSk,1,'primary');delete G.readySince[h.castSk]; G.lgC = (G.lgC || 0) + 1; if ((lgOn('W_ECHO') && G.lgC % 4 === 0) || (lgOn('R_DIAL') && Math.random() < .2)) G.timers.push({ t:.3, id:h.castSk, rep:1 }); if (s.sk[h.castSk] && s.sk[h.castSk].twin) for (let i = 0; i < s.sk[h.castSk].twin; i++) G.timers.push({ t:.25*(i + 1), id:h.castSk }); }
     if(h.castT>=GridLab.LIMITS.castTime-1e-9) h.castT = -1;
   }
-  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if (t.echo){ const al = castMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({k:'meteor',x:q.x,y:q.y,t:0,dur:.9,mul:t.mul,origin:'repeat'}); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id,m,s.sk[t.id].pattern.crush,'repeat'); } } else if (t.flick){ const k = s.sk[t.id], al = aliveMons().filter(m => !(m.fall > 0)).sort((a, b) => Math.hypot(a.x - G.h.x, a.y - G.h.y) - Math.hypot(b.x - G.h.x, b.y - G.h.y)).slice(0, 5);
+  if (G.timers.length){ for (const t of G.timers){ t.t -= dt; if (t.t <= 0){ t.done = true; if(t.expansion){expansionPulse(t);} else if (t.echo){ const al = castMons(); if (al.length && s.sk[t.echo]){ const q = tPick(al); G.proj.push({k:'meteor',x:q.x,y:q.y,t:0,dur:.9,mul:t.mul,origin:'repeat'}); } } else if (t.crush){ if (s.sk[t.id]){ addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.5 }); SFX('boom'); for (const m of aliveMons()) if (Math.hypot(m.x - G.h.x, m.y - G.h.y) < 14) applySkillHit(t.id,m,s.sk[t.id].pattern.crush,'repeat'); } } else if (t.flick){ const k = s.sk[t.id], al = aliveMons().filter(m => !(m.fall > 0)).sort((a, b) => Math.hypot(a.x - G.h.x, a.y - G.h.y) - Math.hypot(b.x - G.h.x, b.y - G.h.y)).slice(0, 5);
         if (k && al.length){ const q = al[t.flick.i % al.length], a = Math.random()*6.28; addFx({ k:'boom', x:G.h.x, y:G.h.y, z:BZ + 5, t:0, dur:.2 }); addFx({ k:'ghost', x:G.h.x, y:G.h.y, x2:q.x, y2:q.y, col:'#ff9ae0', t:0, dur:.35 });
           [G.h.x,G.h.y]=terrainProject(q.x+Math.cos(a)*3.5,q.y+Math.sin(a)*3.5); G.h.vx = G.h.vy = 0; G.h.dash = null; G.h.gx = G.h.x; G.h.gy = G.h.y;
           addFx({ k:'slash', x:q.x, y:q.y, z:BZ + 7, t:0, dur:.22 }); SFX('crit'); kick(.12);
@@ -500,4 +511,27 @@ function monsterSkillTick(m,dt){
   if(w.skill==='charge'||w.skill==='burrow'){const [x,y]=terrainProject(w.x2,w.y2);if(w.skill==='burrow'||terrainSegment(m.x,m.y,x,y)){m.x=x;m.y=y;}addFx({k:'ghost',x:w.x,y:w.y,x2:m.x,y2:m.y,col:'#b6c5d1',t:0,dur:.3});}
   for(const [x,y]of w.points)addFx({k:w.skill==='pulse'?'ring':'boom',x,y,z:BZ+2,col:w.skill==='salvo'?'#a2cae2':'#dbb08c',t:0,dur:.45,big:m.boss});
   m.skillsUsed=(m.skillsUsed||0)+1;m.warning=null;m.skillCd=m.boss?(m.enraged?2.7:4.2):5+(m.slot%3);
+}
+
+/* Bounded street devices. Replays cannot recursively schedule another cast. */
+const EXPANSION_SKILLS=new Set(['DISC','COIL','ORBIT','RAIL','DEFRAG','RELAY']);
+function expansionLine(id,from,to,mul,origin,width=3,max=3){
+ const dx=to.x-from.x,dy=to.y-from.y,length=Math.hypot(dx,dy)||1,ux=dx/length,uy=dy/length;
+ const targets=castMons().map(m=>({m,along:(m.x-from.x)*ux+(m.y-from.y)*uy,side:Math.abs((m.x-from.x)*uy-(m.y-from.y)*ux)})).filter(q=>q.along>=-2&&q.along<=length+6&&q.side<=width).sort((a,b)=>a.along-b.along).slice(0,max);
+ addFx({k:'bolt',pts:[[from.x,from.y,BZ+8],[to.x,to.y,BZ+8]],t:0,dur:.35,col:SKILLS[id].col});let total=0;for(const q of targets)total+=applySkillHit(id,q.m,mul,origin);return total;
+}
+function expansionPulse(t){
+ const k=G.st.sk[t.id];if(!k)return;
+ if(t.line){const total=expansionLine(t.id,t.from,t.to,t.mul,t.origin,3*(k.has.includes('SPREAD')?1.4:1));heroRecover(total*(G.st.leech/100+(k.leech?.12:0)));return;}
+ const center=t.follow?G.h:t,range=t.range*(k.has.includes('SPREAD')?1.4:1),targets=castMons().filter(m=>Math.hypot(m.x-center.x,m.y-center.y)<=range).sort((a,b)=>Math.hypot(a.x-center.x,a.y-center.y)-Math.hypot(b.x-center.x,b.y-center.y)).slice(0,4);
+ addFx({k:'ring',x:center.x,y:center.y,col:SKILLS[t.id].col,t:0,dur:.5});let total=0;for(const m of targets)total+=applySkillHit(t.id,m,t.mul,t.origin);heroRecover(total*(G.st.leech/100+(k.leech?.12:0)));
+}
+function castExpansionSkill(id,mul,origin,prim,al){
+ const k=G.st.sk[id],h=G.h;let total=0;
+ if(id==='DISC'){const from={x:h.x,y:h.y},to={x:prim.x,y:prim.y};total=expansionLine(id,from,to,mul,origin,3*(k.has.includes('SPREAD')?1.4:1));G.timers.push({t:.65,id,expansion:true,line:true,from:to,to:from,mul:mul*.65,origin});}
+ if(id==='COIL'||id==='ORBIT'){for(let i=0;i<(id==='COIL'?4:3);i++)G.timers.push({t:.05+i*(id==='COIL'?.65:.55),id,expansion:true,x:prim.x,y:prim.y,follow:id==='ORBIT',range:id==='COIL'?18:20,mul,origin});}
+ if(id==='RAIL'){const angle=Math.atan2(prim.y-h.y,prim.x-h.x);total=expansionLine(id,h,{x:h.x+Math.cos(angle)*85,y:h.y+Math.sin(angle)*85},mul,origin,2.5*(k.has.includes('SPREAD')?1.4:1));}
+ if(id==='DEFRAG'){const target=al.slice().sort((a,b)=>a.hp/a.hpMax-b.hp/b.hpMax)[0];total=applySkillHit(id,target,mul*(target.hp/target.hpMax<.35?1.8:1),origin);addFx({k:'slash',x:target.x,y:target.y,z:BZ+9,t:0,dur:.35});}
+ if(id==='RELAY'){const target=al.find(m=>m.shock>0)||prim,charged=target.shock>0;if(charged)target.shock=0;const targets=charged?al.filter(m=>Math.hypot(m.x-target.x,m.y-target.y)<22*(k.has.includes('SPREAD')?1.4:1)).slice(0,5):[target];for(const m of targets)total+=applySkillHit(id,m,mul*(charged?1.6:1),origin);addFx({k:'boom',x:target.x,y:target.y,z:BZ+7,t:0,dur:.5});}
+ heroRecover(total*(G.st.leech/100+(k.leech?.12:0)));
 }
