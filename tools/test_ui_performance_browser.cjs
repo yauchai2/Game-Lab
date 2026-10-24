@@ -22,7 +22,7 @@ const url=process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8767/dist/idle-hero.h
  await p.evaluate(()=>{G.spawnCd=.1;G.paused=false;window.__offlineFrames=0;const r=ui.render;ui.render=()=>{if(G.offline)window.__offlineFrames++;return r()};catchUp(3600,true)});
  await p.waitForFunction(()=>!G.offline,{},{timeout:90000});
  assert.equal(await p.evaluate(()=>window.__offlineFrames),0);assert(await p.evaluate(()=>G.totalKills>10));
- assert(await p.getByText('おかえりなさい！',{exact:true}).isVisible());
+ assert(await p.getByText('歡迎回家！',{exact:true}).isVisible());
  await p.evaluate(()=>{hideOverlay();openModal('char')});
  await p.screenshot({path:'/tmp/game-lab-typography-mobile.png'});
  assert.deepEqual(errors,[]);console.log('PASS unified regular typography, stable live panel, shared atlas, offline render suspension and boot completion');
