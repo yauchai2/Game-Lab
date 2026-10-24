@@ -88,6 +88,10 @@ function makeItem(slot, rar, il, forcedCore=null){
   if (LG) G.legSeen[LG.id] = 1;
   return LG ? { slot, r:rar, il, name, imp, aff, lg:LG.id } : { slot, r:rar, il, name, imp, aff };
 }
+function refinedImplicitValue(it,il){
+ const expected=gearImplicit(it.slot,il);if(expected.k===it.imp.k)return expected.v;
+ const oldSlot={armor:'armor',crit:'ring',dmg:'weapon'}[it.imp.k];return oldSlot?gearImplicit(oldSlot,il).v:it.imp.v;
+}
 function rollSignatureGear(kind,il){
   if(Math.random() >= (SIGNATURE_DROP[kind]||0))return null;
   const gear=tPick(Object.values(SIGNATURE_GEAR));return makeItem(gear.slot,3,il,gear.id);

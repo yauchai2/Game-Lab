@@ -117,7 +117,7 @@ function gearOperationConfirm(){const p=GEAR_PENDING;GEAR_PENDING=null;hideOverl
  if(!s.ok||G.equip[p.slot]!==p.it||JSON.stringify(p.it)!==p.stamp||gearOperationCost(s)!==p.cost){uxAnnounce('裝備、成本或挑戰狀態已變動，沒有扣除材料。');return;}
  G.parts-=s.parts;if(s.fragments)G.city.fragments[s.route]-=s.fragments;G.coreDust=(G.coreDust||0)-s.dust;
  if(p.kind==='tier')p.it.aff[p.index]=s.next;
- else{const old={...p.it};p.it.aff=p.it.aff.map(a=>({...a,tier:affTier(a,old.il),v:Math.max(a.v,affValue(a.k,s.nextLevel,affTier(a,old.il),affQuality(a,old),1.35))}));p.it.il=s.nextLevel;const value=gearImplicit(p.slot,s.nextLevel).v;p.it.imp={...p.it.imp,v:Math.max(p.it.imp.v,value)};}
+ else{const old={...p.it};p.it.aff=p.it.aff.map(a=>({...a,tier:affTier(a,old.il),v:Math.max(a.v,affValue(a.k,s.nextLevel,affTier(a,old.il),affQuality(a,old),1.35))}));p.it.il=s.nextLevel;const value=refinedImplicitValue(p.it,s.nextLevel);p.it.imp={...p.it.imp,v:Math.max(p.it.imp.v,value)};}
  G.craftN++;G.inventoryRevision++;checkQuest();recalc();renderModal();uxAnnounce(`${p.kind==='tier'?'詞綴升階':'核心重構'}完成，消耗 ${p.cost}。`);
 }
 function uiAffixPick(slot,index){if(!G.equip[slot]?.aff[index])return;CRAFT_AFFIX_UI[slot]=index;renderModal();}
