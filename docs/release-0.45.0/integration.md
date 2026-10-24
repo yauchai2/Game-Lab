@@ -18,4 +18,6 @@
 
 ## 發佈狀態
 
-待來源 PR 合併後推送部署，完成時補上 source／Pages／Release 與線上核對證據。
+PR #41 已合併，來源／標籤 v0.45.0 指向 d3237f326d75d98278d749abcc9eb542067f1a23。Pages 提交 ccfb76d2e1bb1173cbe9ec1cd39889d821a26f0e，狀態 built。Release 工作流程 40071666931 成功，附件 idle-hero.html 的大小及 GitHub SHA-256 digest 與已測試單檔相符。線上 version.json、入口及所有腳本已以 HTTPS 核對；證據見 live-verification.json。
+
+分離式部署產物另以已核對 HTTPS 雜湊的同一份內容重播，啟動、九個入口及技能／打造／設定三頁無頁面錯誤，見 site-browser.json。雲端 Chromium 直接連外遇到連線限制，未停用 TLS 驗證；不宣稱直接連外瀏覽器、Safari 真機或長時間效能已通過。
