@@ -7,9 +7,9 @@ function uiSprite(sheet,id,size=24,extra='',tag='span'){
 }
 const ICON_IDX=ART_SHEETS.icons.ids,SK_IDX=ART_SHEETS.skills.ids;
 function spr(name,size=30){return uiSprite('icons',name,size);}
-function sico(id,size=30){return uiSprite('skills',id,size);}
+function sico(id,size=30){const url=typeof icon3dCircuitUrl==='function'?icon3dCircuitUrl('skill',id):'';return url?`<img class="spr" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated">`:uiSprite('skills',id,size);}
 const SHEETS={relic:['relics'],legend:['legends'],badge:['badges']};
-function xico(kind,id,size=24){if(kind==='legend'&&typeof EQUIPMENT_ICONS!=='undefined'&&SIGNATURE_GEAR[id]&&EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model])return `<img class="spr eq3d" src="${EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model]}" width="${size}" height="${size}" alt="" style="vertical-align:middle;margin-right:4px;object-fit:contain;image-rendering:pixelated">`;if(kind==='legend'&&typeof icon3dLegendUrl==='function'){const url=icon3dLegendUrl(id);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
+function xico(kind,id,size=24){if((kind==='relic'||kind==='badge')&&typeof icon3dCollectibleUrl==='function'){const url=icon3dCollectibleUrl(kind,id);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}if(kind==='legend'&&typeof EQUIPMENT_ICONS!=='undefined'&&SIGNATURE_GEAR[id]&&EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model])return `<img class="spr eq3d" src="${EQUIPMENT_ICONS[SIGNATURE_GEAR[id].model]}" width="${size}" height="${size}" alt="" style="vertical-align:middle;margin-right:4px;object-fit:contain;image-rendering:pixelated">`;if(kind==='legend'&&typeof icon3dLegendUrl==='function'){const url=icon3dLegendUrl(id);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}return SHEETS[kind]?uiSprite(SHEETS[kind][0],id,size,'vertical-align:middle;margin-right:4px'):'';}
 function eqico(slot,r,size=32,it){
   if(typeof icon3dUrl==='function'){const url=icon3dUrl(slot,it&&typeof aTier==='function'?aTier(it):0,r|0);if(url)return `<img class="spr eq3d" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated;vertical-align:middle;margin-right:4px">`;}
   return uiSprite('equips',slot+'-'+Math.max(0,Math.min(r|0,3)),size,'vertical-align:middle;margin-right:4px');}
@@ -68,7 +68,7 @@ function renderModal(resetScroll = false){ const uxPanel = uxCapturePanel(); set
 let held = null, heldRot = 0, selPiece = null, selSock = -1;   // 接線板：held 是手上準備放下的配件；selPiece 是選取的機件 id；selSock 是選取的插槽
 const GEM_COL = { HEAVY:'#ff7a8a', AREA:'#ffb84a', HASTE:'#5fd0a0', LEECH:'#e05a7a', TWIN:'#8f7bff', CRITS:'#4aa8ff', COOL:'#6fd6e8', CRYSTAL:'#d99bff' };
 const GEM_IDX=ART_SHEETS.gems.ids;
-const gemIco=(id,size=22)=>uiSprite('gems',id,size,'','i');
+const gemIco=(id,size=22)=>{const url=typeof icon3dCircuitUrl==='function'?icon3dCircuitUrl('support',id):'';return url?`<img class="spr gem" alt="" aria-hidden="true" src="${url}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;image-rendering:pixelated">`:uiSprite('gems',id,size,'','i');};
 function buildBar(){
   return `<section class="ui-build" aria-label="構築配置"><div><b>構築</b>${[0,1,2].map(i=>`<button class="mb" aria-label="構築 ${i+1}" aria-pressed="${(G.bi||0)===i}" onclick="switchBuild(${i})">${i+1}</button>`).join('')}</div><button class="mb" data-focus="build-save" title="${G.builds[G.bi||0]?.equipment?'已記住角色與三件裝備':'此配置尚未記住裝備'}；切換構築時會自動保存目前配置" onclick="uiSaveBuild()">${G.builds[G.bi||0]?.equipment?'更新構築':'儲存構築'}</button>${uiBuildGearHtml()}${uiPolicyHtml()}</section>`;
 }
@@ -81,10 +81,8 @@ function switchBuild(i){if(i===(G.bi||0))return;const result=restoreBuild(i);if(
 function uiFinishBuild(result,i){if(!result.ok){uxAnnounce(result.reason);return;}selPiece=null;held=null;renderModal();uxAnnounce(`已切換構築 ${i+1}${result.legacy?'，舊配置沿用目前裝備':'，已載入裝備並關閉自動換裝'}。`);}
 function uiConfirmBuildFallback(){const p=BUILD_PENDING;BUILD_PENDING=null;hideOverlay();if(!p||JSON.stringify(G.builds[p.index])!==p.target){uxAnnounce('配置已變動，請重新確認。');return;}uiFinishBuild(restoreBuild(p.index,true),p.index);}
 function uiSaveBuild(){if(!saveBuild()){uxAnnounce('城市或訓練進行中，或倉庫已滿，尚未更新構築。');return;}renderModal();uxAnnounce('已保存技能、天賦、角色、策略及三件裝備；引用裝備受回收保護。');}
-function skillsHtml(){
-  // 接線板放最上面，收起戰場時一打開就能直接編輯；構築管理與電路合成放在下面
-  return wireGuideHtml() + wireTopHtml() + dpsBar() + wireSelCard() + uiInventoryHtml() + `<details class="ui-section ui-adv"><summary>進階：構築切換、目前生效、戰鬥報告</summary>${buildBar()}${uiResolvedHtml()}${uiCombatHtml()}</details>`;
-}
+function skillsHtml(){return deviceSkillsHtml();}
+
 function treeHtml(){
   return uiTalentWorkspaceHtml();
 }
@@ -195,7 +193,7 @@ const HELP = {
 const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
 const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
 // 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
-const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(['skills','tree','warehouse'].includes(modalTab))return G.autoFold===false?2:3;if(['char','dress','craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
+const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(['skills','tree','warehouse','craft','menu','settings'].includes(modalTab))return G.autoFold===false?2:3;if(['char','dress','craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
 const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }

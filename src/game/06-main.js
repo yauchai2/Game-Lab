@@ -1,6 +1,6 @@
 /* ---------- boot ---------- */
 const Q = new URLSearchParams(location.search);
-G.equip.weapon = makeItem('weapon', 0, 1); G.equip.weapon.name = '新手短劍';
+G.equip.weapon = makeItem('weapon', 0, 1); G.equip.weapon.name = '新手摺疊傘';
 G.equip.armor = makeItem('armor', 0, 1); G.equip.armor.name = '粗布衣';
 recalc(); G.h.hp = G.st.life;
 let loadedT = 0;

@@ -107,16 +107,8 @@ function wireSelCard(){
 
 function wireNextUnlock(){ const l = GridLab.SOCK_LV.find(v => v > G.lvl); return l ? `升到 Lv${l} 會解鎖下一個終點。` : ''; }
 function wireGuideHtml(){
-  const tier = wTier(), step = wireStep(), B = G.board;
-  if (tier === 1){
-    const txt = step === 1 ? '點亮起的<b>終點</b>，選一個技能。' : `技能已經接好電線，會自動出手。${G.lvl < 4 ? '升到 Lv4 會解鎖色塊，可以放配件讓技能變強。' : ''}`;
-    return `<section class="wguide${step > 1 ? ' ok' : ''}" aria-label="新手引導"><p class="wwhat">電線把<b>起點⚡</b>接到<b>終點（技能）</b>，技能才會出手。</p><p class="wnow">${txt}</p></section>`;
-  }
-  const what = step === 1 ? '<p class="wwhat">接線板是讓技能變強的電路：<b>起點⚡</b>經過<b>電線</b>接到<b>終點（技能插槽）</b>，電線經過的<b>色塊</b>放上配件，技能就更強。</p>' : '';
-  const txt = ['', '點亮起的<b>終點</b>，選一個技能：電線會自動接好。', '接上電線：從亮起的<b>起點⚡</b>開始，點或拖到亮起的<b>終點</b>就會自動接好。', '點線上亮起的<b>色塊</b>，選一個配件放上去；和線同色的色塊效果 ×2。', tier === 2 ? `完成了！想更強：按住起點重新拉線，讓電線繞去更多色塊。${wireNextUnlock()}` : '完成了！想更強：讓電線繞去更多色塊，尤其是和線同色的色塊。'][step];
-  const chips = ['裝技能', '接電線', '放配件'].map((n, i) => `<li class="${step > i + 1 ? 'done' : step === i + 1 ? 'now' : ''}"><b>${step > i + 1 ? '✓' : i + 1}</b>${n}</li>`).join('');
-  const cta = step >= 2 && step < 4 ? `<button class="mb wcta" onclick="wireAuto()">一鍵幫我設好</button>` : '';
-  return `<section class="wguide${step === 4 ? ' ok' : ''}" aria-label="新手引導">${what}<ol>${chips}</ol><p class="wnow">${txt}</p>${cta}</section>`;
+ const tier=wTier(),step=wireStep(),texts={1:'點終點選擇技能，電線會自動接好。',2:'從起點接到同色終點，技能才會出手。',3:'點線上的配件位放機件，同色效果加倍。',4:tier===1?'技能已接通；等級 4 解鎖配件。':'技能已接通 · 同色配件效果 ×2。'};
+ return `<p class="device-wire-note" aria-label="接線提示">${texts[step]}${tier===2?wireNextUnlock():''}</p>`;
 }
 function wireLegendHtml(){
   return `<div class="wlegend" aria-hidden="true"><span><i class="lg src">⚡</i>起點（電源，顏色＝線的顏色）</span><span><i class="lg sock"></i>終點（技能插槽，接同色）</span>${wTier() > 1 ? '<span><i class="lg pad">●</i>色塊：放配件，同色 ×2</span>' : ''}</div>`;
@@ -127,9 +119,9 @@ function wireTopHtml(){
     const B = G.board; let ch = false;
     for (const a of B.pieces.filter(p => p.kind === 'active')){ const i = GridLab.sockIndex(a); if (i >= 0 && wOpen(i) && !GridLab.connected(B, i) && !GridLab.getWire(B, i) && GridLab.autoWire(B, i, G.lvl).ok) ch = true; }
     if (ch) recalc();
-    return `${wireBoardHtml()}${wireLegendHtml()}`;
+    return `${wireBoardHtml()}<details class="device-wire-help"><summary>接線說明</summary>${wireLegendHtml()}</details>`;
   }
-  return `${wireBoardHtml()}${wireLegendHtml()}${wireBar()}`;
+  return `${wireBoardHtml()}${wireBar()}<details class="device-wire-help"><summary>接線說明</summary>${wireLegendHtml()}</details>`;
 }
 
 /* ---------- 說明與可及性 ---------- */
@@ -413,113 +405,26 @@ function uiResolvedHtml(){
 }
 
 const WIRE_CSS = `
-/* 顏色接線板：天藍白雲底、深藍粗描邊、紅藍綠三色襯墊與電源；實心色塊加一點高光，配合 Y2K 低面數 3D 的畫面 */
-body #mbody .pz.wb{--cr:#ff6a3d;--cb:#3f86ff;--cg:#35d493;--ink:#14204f;position:relative;padding:8px;gap:0;max-width:360px!important;margin:6px auto;touch-action:pan-y;border:3px solid var(--ink)!important;border-radius:0;outline:2px solid #fff;box-shadow:3px 3px 0 #33407f!important;
- background:radial-gradient(circle at 50% 50%,#ffffff10 0 1px,#0000 1.5px) 0 0/12px 12px,linear-gradient(#2a3680,#18205a)!important}
+body.ui-material #mbody .pz.wb{--cr:#ed967d;--cb:#8db7ef;--cg:#80cebd;--ink:var(--ux-ink);position:relative;display:grid;max-width:460px!important;width:100%;box-sizing:border-box;margin:0 auto;padding:8px;gap:0;border:2px solid var(--ux-edge)!important;outline:0;box-shadow:inset 0 0 0 2px #0004!important;background:var(--ux-ink)!important;touch-action:pan-y;image-rendering:pixelated}
 #mbody .pz.wb .pc.pr,#mbody .pz.wb .pc.sr,#mbody .pz.wb .pc.kr{--padc:var(--cr)}#mbody .pz.wb .pc.pb,#mbody .pz.wb .pc.sb,#mbody .pz.wb .pc.kb{--padc:var(--cb)}#mbody .pz.wb .pc.pg,#mbody .pz.wb .pc.sg,#mbody .pz.wb .pc.kg{--padc:var(--cg)}
-body.ui-material #mbody .pz.wb button.pc:not(.pd):not(.src):not(.fill):not(.sk):not(.lock):not(.rk):not(.dead):not(.chip),body #mbody .pz.wb button.pc{margin:3px;min-width:0;font-size:9px;line-height:1.05;position:relative;border:0!important;border-radius:0!important;background:linear-gradient(#3b4896,#2f3b86)!important;box-shadow:inset 0 0 0 1px #5663b8,inset 0 2px 0 #ffffff1a,inset 0 -2px 0 #0000003d!important}
-#mbody .pz.wb button.pc span{pointer-events:none;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:9px;line-height:1.1;max-width:100%;word-break:break-all;white-space:normal;overflow:hidden}
-#mbody .pz.wb button.pc.fill{gap:1px;padding:1px!important}
-#mbody .pz.wb button.pc.dead{background:transparent!important;box-shadow:none!important;opacity:0}
-#mbody .pz.wb button.pc.rk{background:repeating-linear-gradient(45deg,var(--ink) 0 4px,#ffd54a 4px 8px)!important;box-shadow:inset 0 0 0 2px var(--ink)!important;color:#fff!important;font-size:14px;font-weight:700;text-shadow:0 0 2px var(--ink),0 0 2px var(--ink)}
-/* 色塊襯墊：配件只能放在這裡；線經過時變成空心環，讓線看得見 */
-#mbody .pz.wb button.pc.pd{background:radial-gradient(circle,color-mix(in srgb,var(--padc) 80%,#fff) 0 19%,#fff0 23%),linear-gradient(#3b4896,#2f3b86)!important}
-body.ui-material #mbody .pz.wb button.pc.pd:not(.fill){box-shadow:inset 0 0 0 1px #5663b8,inset 0 2px 0 #ffffff1a,inset 0 -2px 0 #0000003d!important}
-#mbody .pz.wb button.pc.pd:not(.fill)::before{content:none}
-#mbody .pz.wb button.pc.pd:not(.fill) span{display:none}
-#mbody .pz.wb button.pc.pd.wr:not(.fill){background:radial-gradient(circle,color-mix(in srgb,var(--padc) 80%,#fff) 0 22%,#fff0 27%),linear-gradient(#3b4896,#2f3b86)!important}
-/* 電源：同色的插頭方塊 */
-#mbody .pz.wb button.pc.src{touch-action:none;cursor:grab;background:linear-gradient(#ffffff90,#fff0 52%),var(--padc)!important;box-shadow:inset 0 0 0 2px #fff,inset 0 -3px 0 #0003!important;color:#fff!important}
-#mbody .pz.wb button.pc.src span{font-size:15px;font-weight:800;text-shadow:1px 1px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink);-webkit-line-clamp:1}
-#mbody .pz.wb button.pc.src.off{opacity:.35;filter:saturate(.4)}
-/* 技能插槽：深藍晶片，邊框顏色就是它要接的電源顏色，右上角 LED（接通亮綠燈，出手時閃一下） */
-#mbody .pz.wb button.pc.chip,#mbody .pz.wb button.pc.sk.empty,#mbody .pz.wb button.pc.lock{border-radius:0!important}
-#mbody .pz.wb button.pc.chip{color:#fff!important;background:linear-gradient(#4a5bb0,#232e70)!important;box-shadow:inset 0 0 0 3px var(--padc),inset 0 0 0 5px #fff!important}
-#mbody .pz.wb button.pc.chip::after{content:"";position:absolute;top:5px;right:5px;width:5px;height:5px;background:#53606f;box-shadow:0 0 0 1px #0007}
-#mbody .pz.wb button.pc.chip.lnk::after{background:#5dffa3;box-shadow:0 0 5px #5dffa3,0 0 0 1px #0007}
-#mbody .pz.wb button.pc.chip.blink::after{animation:wireled .5s ease-out}
-@keyframes wireled{0%{background:#fff;box-shadow:0 0 12px 4px #fff}100%{background:#5dffa3;box-shadow:0 0 5px #5dffa3}}
-#mbody .pz.wb button.pc.sk.empty{background:linear-gradient(#f4f5ff,#cfd5f2)!important;box-shadow:inset 0 0 0 3px var(--padc),inset 0 0 0 5px var(--ink)!important;color:var(--ink)!important}
-#mbody .pz.wb button.pc.lock{background:#141a4a!important;box-shadow:inset 0 0 0 2px #3a4690!important;color:#8e9ad8!important}
-#mbody .pz.wb button.pc.ac,#mbody .pz.wb button.pc.chip,#mbody .pz.wb button.pc.bus,#mbody .pz.wb button.pc.sk{z-index:2}
-#mbody .pz.wb button.pc.sel{outline:2px solid #fff;outline-offset:2px;z-index:3}#mbody .pz.wb button.pc.sel::before{content:"";position:absolute;inset:-5px;border:2px solid #070b26;pointer-events:none;z-index:5}
-/* 配件：色彩是配件種類，外圈是襯墊顏色，同色襯墊右上角顯示 ×2 */
-#mbody .pz.wb button.pc.ac{background:linear-gradient(135deg,#ffffffb0,#fff0 48%),var(--pc)!important;box-shadow:inset 0 0 0 2px var(--ink),inset 0 0 0 5px var(--padc),0 1px 0 #0003!important;color:#1b1b30!important}
-#mbody .pz.wb button.pc.ac.mt::before{content:"×2";position:absolute;right:0;top:-1px;font-size:9px;font-weight:800;color:#fff;text-shadow:1px 1px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink);z-index:3}
-#mbody .pz.wb button.pc.ac.lnk::after{content:"";position:absolute;left:3px;top:3px;width:4px;height:4px;background:#5dffa3;box-shadow:0 0 4px #5dffa3,0 0 0 1px #0008}
-#mbody .pz.wb button.pc.ac.t2{outline:2px solid #ffd24d;outline-offset:-2px}#mbody .pz.wb button.pc.ac.t2.lnk::after{background:#ffd24d;box-shadow:0 0 5px #ffd24d,0 0 0 1px #0008}
-#mbody .pz.wb button.pc.ac.t3{outline:2px solid #ff6ad5;outline-offset:-2px}#mbody .pz.wb button.pc.ac.t3.lnk::after{background:#ff6ad5;box-shadow:0 0 6px #ff6ad5,0 0 0 1px #0008}
-.ui-inventory-grid .gt.tier2{box-shadow:inset 0 0 0 2px #ffd24d}.ui-inventory-grid .gt.tier3{box-shadow:inset 0 0 0 2px #ff6ad5}.uxforge h4{margin:10px 0 2px}
-/* 精簡：配件庫存四欄小卡、DPS 條縮小，讓板子、庫存同屏 */
-body.ui-material #mbody .ui-inventory-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
-body.ui-material #mbody .ui-inventory-grid .gt{min-height:64px;padding:16px 2px 3px!important;gap:2px}
-body #mbody .dpsbar{padding:5px 8px;margin:4px 0}.ui-inventory{margin:8px 0}
-.uxforge summary{cursor:pointer;padding:4px 0}
-#mbody .pz.wb button.pc.fill.off{filter:saturate(.3) brightness(1.05);opacity:.8}
-#mbody .pz.wb button.pc.pv.ok{box-shadow:inset 0 0 0 2px #19865a!important;background-color:#b8f5d055!important}
-#mbody .pz.wb button.pc.pv.bad{box-shadow:inset 0 0 0 2px #bd342b!important;background-color:#ffc4c455!important}
-.wsvg{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);pointer-events:none;z-index:1;overflow:visible;shape-rendering:geometricPrecision}
-.wsvg polyline{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.wsvg .wo{stroke:#070b26;stroke-width:.4}.wsvg .wh{stroke:#ffffff99;stroke-width:.07;transform:translate(-.04px,-.04px)}
-.wsvg .wl{stroke-width:.28}.wsvg .wl.c-r{stroke:#ff5a3c}.wsvg .wl.c-b{stroke:#3c7dff}.wsvg .wl.c-g{stroke:#2fd08a}.wsvg .wl.part{stroke-dasharray:.34 .16}.wsvg .wl.sel{stroke-width:.3}
-.wsvg .wk{fill:#141a4a;stroke-width:.06}.wsvg .wk.kr{stroke:#ff9a80}.wsvg .wk.kb{stroke:#8ab4ff}.wsvg .wk.kg{stroke:#7be8b4}
-.wsvg .wf{stroke:#fff;stroke-width:.07;stroke-dasharray:.07 .5;animation:wireflow 1s linear infinite}
-@keyframes wireflow{to{stroke-dashoffset:-1.14}}
-@media(prefers-reduced-motion:reduce){.wsvg .wf{animation:none}#mbody .pz.wb button.pc.chip.blink::after{animation:none}}
-.wsel .wchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:8px}
-#mbody .wsel .wch{min-width:0;min-height:40px;padding:3px 4px!important;display:flex;flex-direction:row;align-items:center;gap:4px;font-size:11px!important;text-align:left;white-space:normal;color:var(--ux-ink,#172751)!important}
-#mbody .wsel .wch b{font-size:11px;line-height:1.15;color:inherit}#mbody .wsel .wch small{display:block;font-size:9px;opacity:.75}
-#mbody .wsel .wch.on{outline:2px solid #2f7fc4;background:#dce8ff!important}
-.wstat{font-size:11px;margin-left:auto}
-/* 板邊的復位開關 */
-#mbody .wreset{display:inline-flex;align-items:center;gap:6px}#mbody .wreset i{display:inline-block;width:16px;height:9px;border-radius:5px;background:#9aa6c4;box-shadow:inset 0 0 0 1px #5d6c7c;position:relative}#mbody .wreset i::after{content:"";position:absolute;left:1px;top:1px;width:7px;height:7px;border-radius:50%;background:#e8eef9;box-shadow:0 0 0 1px #5d6c7c}
-
-/* 新手引導：三步驟，只亮目前一步 */
-.wguide{margin:4px 0 6px;padding:7px 9px;background:#fffbe0;border:2px solid #e2b93b;box-shadow:2px 2px 0 #b6892355}
-.wguide ol{display:flex;gap:6px;margin:0 0 5px;padding:0;list-style:none}.wguide li{flex:1;display:flex;align-items:center;gap:5px;padding:3px 5px;background:#eef0f7;color:#8a93ad;font-size:13px}
-.wguide li b{display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;background:#c8cfe3;color:#fff;font-size:12px}
-.wguide li.now{background:#fff;color:#172751;outline:2px solid #e2b93b}.wguide li.now b{background:#d79a00}.wguide li.done{color:#3a7a52}.wguide li.done b{background:#3fa76a}
-.wguide .wwhat{margin:0 0 6px;font-size:13px;line-height:1.5;color:#3d2a00;font-weight:500}.wguide .wwhat b{color:#172751}
-.wguide .wnow{margin:0;font-size:15px;line-height:1.55;color:#3d2a00;font-weight:650}.wguide .wnow b{color:#b25d00}
-.wguide .wcta{margin-top:6px;min-height:38px;font-weight:700;background:linear-gradient(#ffd96a,#f0a91c)!important;color:#3d2a00!important}
-.wlegend{display:flex;flex-wrap:wrap;gap:4px 12px;margin:5px 0 2px;font-size:12px;color:#33407f}.wlegend span{display:inline-flex;align-items:center;gap:4px}
-.wlegend i.lg{display:inline-block;width:16px;height:16px;line-height:16px;text-align:center;font-style:normal;font-size:10px;border:2px solid #14204f;color:#fff}
-#mbody .wlegend i.lg.src{background:#ff5a3c;border-color:#fff;box-shadow:0 0 0 1px #14204f}#mbody .wlegend i.lg.sock{background:#f4f5ff;border-color:#3c7dff;box-shadow:0 0 0 1px #14204f}#mbody .wlegend i.lg.pad{background:#2f3b86;color:#2fd08a;border-color:#5663b8;box-shadow:0 0 0 1px #14204f}
-#mbody .pz.wb .lb{position:absolute;font-style:normal;font-size:9px;line-height:1;white-space:nowrap;color:#fff;pointer-events:none;z-index:4}
-#mbody .pz.wb .lb.in{left:0;right:0;bottom:2px;text-align:center;text-shadow:1px 1px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
-#mbody .pz.wb .lb:not(.in){left:0;right:0;top:0;text-align:center;font-size:8px;padding:2px 0 1px;background:var(--padc);text-shadow:1px 1px 0 var(--ink)}
-#mbody .pz.wb button.pc.chip{padding:11px 6px 7px!important;overflow:hidden}
-#mbody .pz.wb button.pc.chip span{font-size:9px!important;line-height:1.05!important;max-height:2.2em;overflow:hidden}
-body.ui-material #mbody .pz.wb button.pc.chip{background:linear-gradient(#4a5bb0,#232e70)!important;box-shadow:inset 0 0 0 5px var(--padc),inset 0 0 0 7px #fff!important}
-#mbody .pz.wb button.pc.chip::before{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--padc);z-index:1}
-#mbody .pz.wb button.pc.sk.empty span{font-size:10px;font-weight:700}
-.wpick{position:fixed;z-index:70;width:min(300px,calc(100vw - 12px));background:#e6e8f6;border:2px solid #fff;outline:2px solid #33407f;box-shadow:4px 4px 0 #1d2552aa;color:#1d2552;padding:0}
-.wpick .wph{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px;background:linear-gradient(#3a4a8c,#1c2750);color:#fff;font-size:13px;font-weight:700}
-.wpick .wpx{min-width:28px;min-height:28px;padding:0;border:0;background:#ffffff26;color:#fff;font-size:14px}
-.wpick .wpg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:6px;max-height:42vh;overflow:auto}
-.wpick .wpi{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:62px;padding:5px 2px;background:linear-gradient(#fff,#d6def0);border:2px solid #7d8bbd;color:#1d2552;font-size:11px}
-.wpick .wpi b{font-size:11px;line-height:1.15;text-align:center}.wpick .wpi small{font-size:10px;color:#5a6690}
-.wpick .wpi.on{outline:3px solid #3c7dff;outline-offset:-3px}.wpick .wpi.no{opacity:.45}
-.wpick .wpd{display:block;width:calc(100% - 12px);margin:0 6px 6px;min-height:38px}.wpick .wpe{margin:6px 8px;font-size:12px;line-height:1.5}
-@keyframes wirehint{0%,100%{box-shadow:0 0 0 2px #fff27a,0 0 6px 2px #ffd400}50%{box-shadow:0 0 0 3px #fff,0 0 14px 5px #ffd400}}
-#mbody .pz.wb button.pc.hint{animation:wirehint 1s ease-in-out infinite;z-index:3}
-@media(prefers-reduced-motion:reduce){#mbody .pz.wb button.pc.hint{animation:none;outline:3px solid #ffd400}}
-.wguide p{margin:0;font-size:15px;line-height:1.55;color:#3d2a00;font-weight:650}.wguide.ok{background:#e6f7ec;border-color:#6bbf8a;box-shadow:2px 2px 0 #3a7a5233}.wguide.ok p{color:#1d5d3a;font-size:13px}.wguide.ok ol{display:none}
-.ui-inventory .nw{display:none}
-details.ui-adv{margin:10px 0}details.ui-adv>summary{cursor:pointer;padding:8px 4px;font-size:14px;font-weight:650}
-#mbody .pzbar .mb:first-child{background:linear-gradient(180deg,#ffd86a,#e0a020)!important;color:#3d2a00!important;border-color:#8a5d00!important}
-/* 板子的低解析感：硬邊角、實心色塊、掃描線 */
-#mbody .pz.wb{image-rendering:pixelated;outline-offset:0}
-#mbody .pz.wb::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;background:repeating-linear-gradient(0deg,#0000 0 3px,#ffffff08 3px 4px)}
-body.d #mbody .pz.wb{max-width:min(100%,620px)!important;padding:12px}
-body.d #mbody .pz.wb button.pc{font-size:11px}body.d #mbody .pz.wb button.pc span{font-size:11px}
-body.d .wsvg{inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
-#mbody .pz.wb button.pc.sk span,#mbody .pz.wb button.pc.lock span{white-space:normal;word-break:break-all;font-size:10px!important;font-weight:700;line-height:1.1;letter-spacing:0}
-#mbody .pz.wb button.pc.chip span{color:#fff!important;text-shadow:1px 1px 0 #0a1230}
-#mbody .pz.wb button.pc.sk.empty span{color:var(--ink)!important}#mbody .pz.wb button.pc.lock span{color:#8e9ad8!important}
-#mbody .pz.wb button.pc.ac span{font-size:9px!important;font-weight:700}
-body.d #mbody .pz.wb button.pc.sk span,body.d #mbody .pz.wb button.pc.lock span{font-size:12px!important}
+body.ui-material #mbody .pz.wb button.pc{position:relative;z-index:1;box-sizing:border-box;margin:2px;min-width:0;min-height:0;aspect-ratio:1;padding:0!important;font-size:9px!important;line-height:1!important;border:1px solid #8b9ab629!important;border-radius:2px!important;background:#ffffff04!important;box-shadow:inset 0 1px #ffffff08!important;color:var(--ux-screen)!important;text-shadow:none!important;overflow:visible;cursor:pointer;isolation:isolate}
+body.ui-material #mbody .pz.wb button.pc.dead{visibility:hidden;pointer-events:none}body.ui-material #mbody .pz.wb button.pc.rk{border:1px solid #6b7d9a!important;background:#34435d!important;box-shadow:inset 1px 1px #96a7bd!important;color:#a5b4cc!important}.pz.wb .pc.rk span{font-size:12px}
+body.ui-material #mbody .pz.wb button.pc.pd{border-color:#92a7c426!important;background:#111d33!important;box-shadow:inset 1px 1px #0004!important}.pz.wb .pc.pd::after{content:"";position:absolute;inset:calc(50% - 3px);border-radius:50%;border:1px solid var(--padc);background:var(--padc);opacity:.8;pointer-events:none}
+body.ui-material #mbody .pz.wb button.pc.src,body.ui-material #mbody .pz.wb button.pc.sk,body.ui-material #mbody .pz.wb button.pc.chip{z-index:3;border:2px solid var(--padc)!important;background:linear-gradient(#354667,#192a46)!important;box-shadow:inset 1px 1px #c3d2ed55,0 1px 0 #0008!important;color:#f1f4ff!important}
+body.ui-material #mbody .pz.wb button.pc.src{background:linear-gradient(#d3dcea,#a6b7d0)!important;color:var(--ux-ink)!important}.pz.wb .pc.src>span{position:absolute;inset:2px 0 8px;font-size:13px!important;display:grid;place-items:center}.pz.wb .pc .lb{position:absolute;bottom:1px;left:0;right:0;font:7px/1 "Cubic 11",sans-serif!important;font-style:normal;text-align:center;letter-spacing:0!important;pointer-events:none;white-space:nowrap}
+.pz.wb .pc.sk>span,.pz.wb .pc.ac>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.pz.wb .pc.sk.empty>span{position:static;clip-path:none;width:auto;height:auto;display:block;font-size:8px!important;line-height:1!important;white-space:nowrap}.pz.wb .pc.sk>img{position:absolute;left:50%;top:2px;transform:translateX(-50%);margin:0!important;width:16px!important;height:16px!important}
+body.ui-material #mbody .pz.wb button.pc.lock{background:#29364e!important;color:#9badc8!important;border-color:#697b97!important;box-shadow:inset 1px 1px #ffffff12!important}.pz.wb .pc.lock>span{font-size:8px!important;line-height:1;white-space:nowrap}
+body.ui-material #mbody .pz.wb button.pc.ac{z-index:3;background:linear-gradient(#d2dce9,#859ab7)!important;border:1px solid var(--padc)!important;box-shadow:inset 1px 1px #ffffffa0,inset -1px -1px #34435b!important}.pz.wb .pc.ac>img{position:relative;z-index:2;width:20px!important;height:20px!important;max-width:95%;max-height:95%;object-fit:contain;margin:0!important}.pz.wb .pc.ac::after{display:none}.pz.wb .pc.mt::before{content:"×2";position:absolute;right:-1px;top:-3px;font:8px/1 "Cubic 11",sans-serif;color:#f5f8ff;background:var(--ux-ink);padding:1px;z-index:4;pointer-events:none}
+body.ui-material #mbody .pz.wb button.pc.sel{outline:2px solid #fff!important;outline-offset:1px;z-index:4}.pz.wb .pc.hint{outline:1px dashed #e5e5b1;outline-offset:1px}.pz.wb .pc:focus-visible{outline:3px solid #fff!important;outline-offset:1px;z-index:5}.pz.wb .pc.chip.blink{outline:2px solid #fff}
+.wsvg{position:absolute;inset:10px;width:calc(100% - 20px);height:calc(100% - 20px);pointer-events:none;z-index:2;overflow:visible;fill:none;stroke-linecap:round;stroke-linejoin:round}.wsvg .wo{stroke:#071323;stroke-width:.34}.wsvg .wl{stroke-width:.18}.wsvg .c-r{stroke:var(--cr)}.wsvg .c-b{stroke:var(--cb)}.wsvg .c-g{stroke:var(--cg)}.wsvg .wh{stroke:#ffffff90;stroke-width:.035}.wsvg .wf{stroke:#fff7;stroke-width:.03;stroke-dasharray:.12 .3}.wsvg .wk{fill:var(--ux-ink);stroke-width:.04}.wsvg .wk.kr{stroke:var(--cr)}.wsvg .wk.kb{stroke:var(--cb)}.wsvg .wk.kg{stroke:var(--cg)}
+.device-console .pzbar{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0 0!important;padding:0!important;position:static!important;background:none!important}.device-console .pzbar .mb{min-height:44px;font-size:12px!important;padding:5px 8px!important}body.ui-material #mbody .device-console .pzbar .wstat{width:100%;margin:4px 0 0;color:var(--ux-screen)!important;font-size:11px!important}.device-console #pzmsg{color:var(--ux-screen)!important;font-size:12px}.wreset i{display:none}
+.device-wire-note{font-size:12px!important;line-height:1.6!important;margin:0 0 8px;color:var(--ux-muted)}.device-wire-note b{font-weight:400}.device-wire-help{margin-top:8px;font-size:12px}.device-wire-help summary{min-height:36px;display:flex;align-items:center;cursor:pointer}.wlegend{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0;font-size:12px}.wlegend>span{display:flex;gap:6px;align-items:center}.wlegend .lg{display:inline-block;width:16px;height:16px;border:1px solid var(--ux-edge);font-size:12px;font-style:normal;line-height:16px;text-align:center}.wlegend .src{background:#aebdd3;color:var(--ux-ink)}.wlegend .sock{background:var(--ux-ink)}.wlegend .pad{color:#80cebd;background:var(--ux-ink)}
+.wpick{position:fixed;z-index:70;width:min(320px,calc(100vw - 16px));box-sizing:border-box;background:var(--ux-screen);color:var(--ux-ink);border:2px solid var(--ux-edge);box-shadow:3px 3px 0 #17275180}.wph{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--ux-blue);color:#fff;padding:6px 10px;font-size:13px}.wpx{min-width:44px;min-height:44px}.wpg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:8px;max-height:45vh;overflow:auto}.wpi{min-width:0;min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px;gap:4px;font-family:"Cubic 11",sans-serif;color:var(--ux-ink);background:#d5dfed;border:1px solid var(--ux-edge)}.wpi b,.wpi small{font-size:12px;line-height:1.4;font-weight:400}.wpi.on{outline:2px solid var(--ux-blue);outline-offset:-3px}.wpi.no{opacity:.5}.wpd{display:block;margin:6px 8px;width:calc(100% - 16px);min-height:44px}.wpe{font-size:13px;line-height:1.6;margin:10px}
+.wsel .wchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.wsel .wch{min-width:0;min-height:44px;white-space:normal;font-size:12px}.wsel .wch b{font-size:12px}.device-skills .ui-inventory .nw{display:none}
+@media(prefers-reduced-motion:reduce){.pz.wb .pc{animation:none!important;transition:none!important}}
+@media(forced-colors:active){.wsvg .wl,.wsvg .wo{stroke:CanvasText}.pz.wb .pc.pd::after{border-color:CanvasText}.pz.wb .pc.sel{outline-color:Highlight!important}}
 `;
+
 
 /* ---------- 從庫存直接拖到接線板：配件拖到格子、技能拖到右邊插槽（滑鼠移動 6 像素或觸控長按後開始） ---------- */
 (function(){

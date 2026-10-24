@@ -1,0 +1,67 @@
+[
+  {
+    "file": "src/game/01-data.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/04-render.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/05-ui.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/05b-dress.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/05c-craft.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/05f-ux.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/05g-layout.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/05i-wire.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/05m-icon3d.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/06-main.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/characters-render.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/equipment-render.js",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "file": "src/game/05q-device-workspaces.js",
+    "exit_code": 0,
+    "stderr": ""
+  }
+]

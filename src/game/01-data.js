@@ -87,7 +87,7 @@ const SIGNATURE_GEAR = Object.fromEntries([
  ["null_lanyard", "volt", "armor", "控制器頸繩"]
 ].map(([model,owner,slot,label])=>{
  const who={street:'AKI',frost:'MILO',beep:'PING',volt:'NULL'}[owner],id='Y2K_'+model.toUpperCase();
- return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅本人可裝備。'+(SIGNATURE_PENDING.has(model)?'目前只有參考圖，暫用簡模。':'')+'小怪 0.001%、菁英 0.01%、首領 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
+ return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅本人可裝備。'+(SIGNATURE_PENDING.has(model)?'目前以程序式 3D 代用，原始模型待補。':'')+'小怪 0.001%、菁英 0.01%、首領 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
 }));
 for(const gear of Object.values(SIGNATURE_GEAR))LEGENDS[gear.slot].push(gear);
 const signatureOf = it => it && SIGNATURE_GEAR[it.lg] || null;
@@ -109,6 +109,12 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.44.0',d:'2026-10-24',t:[
+    '技能頁重整為深藍訊號組裝台，精簡提示與接線標示，保留分級操作及原有接線玩法',
+    '打造頁改為目標裝備、詞綴、工序與成本的整備工作區，保留鎖定、升階與腐化確認',
+    '設定目錄改為圖像網格，畫面與戰鬥控制使用一致的裝置外殼',
+    '裝備原貌、武器外觀、技能及配件補上 3D 模型縮圖；四種武器恢復不同輪廓，欠模型專裝以程序式 3D 代用'
+  ]},
   {v:'0.43.0',d:'2026-10-24',t:[
     '角色頁重整為身份、重要讀數、防禦摘要與分類能力表，角色展示可自行展開',
     '裝備擴充為頭部、身體、手部、飾品、鞋子、武器與副手七類，舊收藏及構築自動轉換；裝扮仍為三類',

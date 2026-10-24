@@ -171,7 +171,7 @@ function uxRestoreFocus(t){
   if (el && !el.closest('[inert]') && !el.disabled) el.focus({ preventScroll:true });
 }
 function uxCapturePanel(){ return { focus:uxFocusToken(), scroll:document.getElementById('mbody')?.scrollTop || 0, details:[...document.querySelectorAll('#mbody details')].map(el=>el.open) }; }
-function uxRestorePanel(s, reset){ if(reset)document.getElementById('mbody').scrollTop=0; if (!reset){ document.getElementById('mbody').scrollTop = s.scroll;document.querySelectorAll('#mbody details').forEach((el,i)=>{if(s.details[i]!=null)el.open=s.details[i]});uxRestoreFocus(s.focus); } }
+function uxRestorePanel(s, reset){ if(reset){document.getElementById('mbody').scrollTop=0;const settings=document.getElementById('uisettings');if(settings)settings.scrollTop=0;} if (!reset){ document.getElementById('mbody').scrollTop = s.scroll;document.querySelectorAll('#mbody details').forEach((el,i)=>{if(s.details[i]!=null)el.open=s.details[i]});uxRestoreFocus(s.focus); } }
 function uxLayerSync(){
   for (const [el, was] of UX_INERT) el.inert = was;
   UX_INERT.clear();

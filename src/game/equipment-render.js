@@ -1,7 +1,7 @@
 /* Static reader for build-time normalized user meshes. No runtime network requests. */
 const EQUIPMENT_RENDER={cache:new Map()};
 function equipmentModel(id){
- if(typeof EQUIPMENT_GLB==='undefined'||!EQUIPMENT_GLB[id])return null;
+ if(typeof EQUIPMENT_GLB==='undefined'||!EQUIPMENT_GLB[id])return typeof equipmentProxyModel==='function'?equipmentProxyModel(id):null;
  if(EQUIPMENT_RENDER.cache.has(id))return EQUIPMENT_RENDER.cache.get(id).clone(true);
  const bin=Uint8Array.from(atob(EQUIPMENT_GLB[id]),c=>c.charCodeAt(0)),view=new DataView(bin.buffer),n=view.getUint32(12,true),doc=JSON.parse(new TextDecoder().decode(bin.subarray(20,20+n))),start=28+n;
  const types={5121:Uint8Array,5123:Uint16Array,5125:Uint32Array,5126:Float32Array},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4};
