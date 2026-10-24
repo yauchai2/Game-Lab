@@ -67,5 +67,10 @@
       "title": "暫放交接文件與專案記憶備份（上線前清除）"
     }
   ],
-  "all_branches_preserved": true
+  "all_branches_preserved": true,
+  "merged_pr": 52,
+  "released_source": "cf0382089483843466ecc63590528c43dfc00c51",
+  "pages_commit": "764c138fada90d5fba52c48c5e90c8a9bf88c62a",
+  "release_run": 40141178138,
+  "pages_run": 40141169461
 }
