@@ -87,7 +87,7 @@ const SIGNATURE_GEAR = Object.fromEntries([
  ["null_lanyard", "volt", "armor", "控制器頸繩"]
 ].map(([model,owner,slot,label])=>{
  const who={street:'AKI',frost:'MILO',beep:'PING',volt:'NULL'}[owner],id='Y2K_'+model.toUpperCase();
- return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅本人可裝備。'+(SIGNATURE_PENDING.has(model)?'目前只有參考圖，暫用簡模。':'')+'雜兵 0.001%、精英 0.01%、首領 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
+ return [id,{id,model,owner,slot,name:who+'・'+label,aff:slot==='weapon'?['dmg','inc','crit','aps']:slot==='armor'?['life','armor','regen','haste']:['crit','cm','haste','inc'],pending:SIGNATURE_PENDING.has(model),d:who+' 專屬裝備；僅本人可裝備。'+(SIGNATURE_PENDING.has(model)?'目前只有參考圖，暫用簡模。':'')+'雜兵 0.001%、精英 0.01%、關主 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。'}];
 }));
 for(const gear of Object.values(SIGNATURE_GEAR))LEGENDS[gear.slot].push(gear);
 const signatureOf = it => it && SIGNATURE_GEAR[it.lg] || null;
@@ -97,7 +97,7 @@ const LEGEND_BY = {}; for (const sl in LEGENDS) for (const L of LEGENDS[sl]) LEG
 
 const SKILLS = {
   FIRE:  { n:'灼熱電池', lvl:1,  cd:2.6, mult:2.6, el:'fire',  col:'#ff7a2a', tg:1.4, d:'丟出過熱的電池，命中時爆炸' },
-  FROST: { n:'冷氣爆發', lvl:5,  cd:4.2, mult:1.9, el:'cold',  col:'#7fd3ff', tg:1.8, d:'冷風傷害敵人並凍結 1.4 秒；首領需累積控制，凍結後有適應期' },
+  FROST: { n:'冷氣爆發', lvl:5,  cd:4.2, mult:1.9, el:'cold',  col:'#7fd3ff', tg:1.8, d:'冷風傷害敵人並凍結 1.4 秒；關主需累積控制，凍結後有適應期' },
   CHAIN: { n:'紅外線連鎖', lvl:10, cd:3.2, mult:2.3, el:'light', col:'#ffe45c', tg:1.7, d:'紅外線在 3 個敵人間傳送（後續每跳 70%）' },
   METEOR:{ n:'流星衛星', lvl:18, cd:8.0, mult:6.2, el:'fire',  col:'#ff4a1c', tg:1.9, d:'舊衛星從天而降，轟炸全場' },
   PULSE: { n:'重低音砲', lvl:8,  cd:5.0, mult:2.2, el:'light', col:'#c28aff', tg:1.6, d:'音浪從身邊炸開，震退並傷害附近敵人' },
@@ -112,6 +112,7 @@ const CHANGELOG = [
   {v:'0.44.0',d:'2026-10-24',t:[
     '全遊戲文案改為日系風格：四位角色更名為茜 AKANE、蓮 REN、結衣 YUI、太一 TAICHI，稱號、台詞與身世一併改寫',
     '用語統一：怪物改稱魔物、守關者改稱關主、擊殺改稱討伐、暴擊改稱會心；部分技能與稱號名稱也換成和風說法',
+    '離線歸來問候改為「おかえりなさい！」、倒下大字改為「力盡」、獲得改稱入手、首領統一稱關主',
   ]},
   {v:'0.43.0',d:'2026-10-24',t:[
     '角色頁重整為身份、重要讀數、防禦摘要與分類能力表，角色展示可自行展開',
@@ -291,7 +292,7 @@ const MODES = {
   PULSE_ECHO:   { sk:'PULSE',  n:'迴響喇叭', hint:'喇叭好像聽到了自己的聲音。', d:'0.5 秒後再響一次（60% 傷害）' },
   PULSE_SONIC:  { sk:'PULSE',  n:'超音波', hint:'聲音太高，聽不見但是很痛。', d:'範圍 +60%，傷害 -25%' },
   MAGNET_CRUSH: { sk:'MAGNET', n:'黑洞磁鐵', hint:'吸過來之後好像還有下文。', d:'吸過來 0.5 秒後坍縮，近身敵人再受 200% 傷害' },
-  MAGNET_STICKY:{ sk:'MAGNET', n:'黏性磁鐵', hint:'被吸住的東西動不了。', d:'被吸過來的敵人凍結 2 秒；首領需累積控制並受適應期限制' },
+  MAGNET_STICKY:{ sk:'MAGNET', n:'黏性磁鐵', hint:'被吸住的東西動不了。', d:'被吸過來的敵人凍結 2 秒；關主需累積控制並受適應期限制' },
   FLICKER_STORM:{ sk:'FLICKER', n:'閃光風暴', hint:'快門按到停不下來。', d:'一次閃 8 下，每下 50% 傷害，沒有最後一擊加成' },
   FLICKER_REAP: { sk:'FLICKER', n:'收割閃打', hint:'它只對倒下的目標感興趣。', d:'討伐目標時立刻追加一次閃打，可連續觸發' },
   FLICKER_TRAIL:{ sk:'FLICKER', n:'殘影拖尾', hint:'留下的殘影也會咬人。', d:'每一下命中點留下殘影，0.4 秒後再造成 22% 傷害' },
@@ -342,7 +343,7 @@ const CARDS = {
 /* 可選角色：外觀（髮色、褲色、膚色）與被動；用最深深度解鎖 */
 const CHARS = {
   street:{ n:'茜', d:'街頭小子。傷害 +10%', eff:{ inc:10 }, sig:{ n:'街頭衝撞', cd:7, d:'每 7 秒衝撞周圍敵人，傷害 ×7 並擊退' }, need:0, hair:null, pants:null, skin:null },
-  frost: { n:'雪乃', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, sig:{ n:'冷氣護罩', cd:9, d:'每 9 秒冷風吹過全場，凍結雜兵 1.4 秒；首領改累積控制並受適應期限制' }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
+  frost: { n:'雪乃', d:'愛吹冷氣。冷氣傷害 +30%，生命回復 +1.5', eff:{ cold:30, regen:1.5 }, sig:{ n:'冷氣護罩', cd:9, d:'每 9 秒冷風吹過全場，凍結雜兵 1.4 秒；關主改累積控制並受適應期限制' }, need:6, hair:'#3d7fd0', pants:'#5a6fb0', skin:'#f6d8c8' },
   beep:  { n:'結衣', d:'有 Call 必應。攻速 +12%，吸血 +1.5%', eff:{ apsInc:12, leech:1.5 }, sig:{ n:'連環 Call', cd:6, d:'每 6 秒隨機呼叫 6 個敵人，各受 ×5 傷害' }, need:0, ach:'boss10', hair:'#ff6aa8', pants:'#2b2552', skin:null },
   volt:  { n:'太一', d:'電波滿格。會心率 +6%，閃電傷害 +30%', eff:{ crit:6, light:30 }, sig:{ n:'訊號塔', cd:8, d:'每 8 秒落雷劈 5 個敵人（必定會心）' }, need:12, hair:'#e0b020', pants:'#8a4a8f', skin:'#e2ac86' },
 };
@@ -432,7 +433,7 @@ const MONSTER_GUIDE=[
 /* 城市路線與韌體是所有角色共用的構築規則。 */
 const TALENT_LIMIT=36, FIRMWARE_LIMIT=2;
 const FIRMWARE={
- AK:{n:'冷備份',eff:{lifePct:12,armor:35},d:'技能直傷降低 15%；冷啟動消耗凍結時，獲得最大生命 12% 的緩衝盾，持續 4 秒，不疊加'},
+ AK:{n:'冷備份',eff:{lifePct:12,armor:35},d:'技能直傷降低 15%；冷啟動消耗凍結時，入手最大生命 12% 的緩衝盾，持續 4 秒，不疊加'},
  BK:{n:'三頻協定',eff:{crit:-8},d:'同時啟用火、冰、電機件時，技能傷害提高 30%；會心率降低 8%'},
  CK:{n:'單頻放大',eff:{apsInc:-15},d:'最多 3 種主動機件時，技能傷害提高 35%；停用整列、整欄及同元素共鳴，攻速降低 15%'},
  DK:{n:'超頻協定',eff:{haste:25,lifePct:-22},d:'技能急速 +25%；最大生命降低 22%'},
@@ -440,7 +441,7 @@ const FIRMWARE={
  FK:{n:'電池孤注',eff:{cm:70,lifePct:-25},d:'會心傷害 +70%；每格電荷放電加成由 35% 改為 45%，最大生命降低 25%'}
 };
 const CITY_ROUTES={
- signal:{n:'廢訊號網',biome:6,pool:['drone','wisp','spider'],d:'分散的快速敵人，首領以更短間隔追擊；連鎖、遠距及移動覆蓋較有利',cores:['W_FORK','R_DIAL','R_LINK'],threat:'敵人移速 +30%，分散入場'},
+ signal:{n:'廢訊號網',biome:6,pool:['drone','wisp','spider'],d:'分散的快速敵人，關主以更短間隔追擊；連鎖、遠距及移動覆蓋較有利',cores:['W_FORK','R_DIAL','R_LINK'],threat:'敵人移速 +30%，分散入場'},
  memory:{n:'磁帶迴廊',biome:7,pool:['crab','speaker','spider'],d:'成群單位帶回充護盾；持續命中阻止回充，聚怪與範圍傷害較有利',cores:['W_ECHO','A_RESET','A_PHOENIX'],threat:'護盾為最大生命 18%，停火 3 秒後回充'},
  power:{n:'地下電源區',biome:9,pool:['speaker','brute','crab'],d:'重裝敵人承受傷害降低 25%；燃燒、電標記或凍結可解除減傷，適合鋪墊後爆發',cores:['W_MULTI','A_RIPOSTE','R_LAST'],threat:'重裝減傷 25%，敵人傷害 +15%'}
 };

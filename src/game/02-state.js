@@ -217,7 +217,7 @@ function rollCards(n = 3){
   return out;
 }
 function rollRelics(n = 3){ const pool = Object.keys(RELICS).filter(id => !G.relics[id]); const out = []; while (out.length < n && pool.length) out.push(pool.splice(Math.floor(Math.random()*pool.length), 1)[0]); return out; }
-function takeRelic(id){ if(!GAME_FEATURES.cardChoices)return; G.relics[id] = 1; G.relicPicks = Math.max(0, G.relicPicks - 1); G.offerR = null; recalc(); logLine(`獲得遺物：${RELICS[id].n}`, '#c28a00'); }
+function takeRelic(id){ if(!GAME_FEATURES.cardChoices)return; G.relics[id] = 1; G.relicPicks = Math.max(0, G.relicPicks - 1); G.offerR = null; recalc(); logLine(`入手遺物：${RELICS[id].n}`, '#c28a00'); }
 function takeCard(id){ if(!GAME_FEATURES.cardChoices)return; G.cards[id] = cardN(id) + 1; G.picks = Math.max(0, G.picks - 1); G.offer = null; recalc(); const c = CARDS[id]; logLine(`改裝：${c.n}`, c.sk ? '#8e3fd1' : '#2b6fa8'); }
 function resolveOfflineChoices(summary){ if(!GAME_FEATURES.cardChoices)return;
   if (!G.autoCard){
