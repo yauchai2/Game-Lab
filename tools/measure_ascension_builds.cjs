@@ -1,0 +1,16 @@
+/* All legal <=4-point trees, fixed profession-only combat probes. */
+const fs=require('node:fs'),assert=require('node:assert/strict'),{createRuntime}=require('./lib/offline-runtime.cjs');
+const catalog=createRuntime(5),jobs=JSON.parse(catalog.evaluate('JSON.stringify(ASCENSIONS)')),defs=JSON.parse(catalog.evaluate('JSON.stringify(ASC_TALENTS)')),rows=[];
+function sets(nodes){let out=[[]];for(const root of nodes.filter(n=>!n.parent)){const core=nodes.find(n=>n.parent===root.id);out=out.flatMap(s=>[s,[...s,root.id],[...s,root.id,core.id]]).filter(s=>s.length<=4);}return out;}
+for(const[job,ascs]of Object.entries(jobs))for(const asc of ascs)for(const targets of [1,8])for(const nodes of sets(defs[asc.id])){
+ const r=createRuntime(311);const row=JSON.parse(r.evaluate(`
+ G.char=${JSON.stringify(job)};G.ascension=${JSON.stringify(asc.id)};G.ascensionNodes=${JSON.stringify(nodes)};G.lvl=40;G.maxDepth=18;G.bossKills=10;G.offline=true;G.time=0;G.sigT=0;G.characterRuntime=null;recalc();G.h.hp=G.st.life*.5;G.h.x=HX;G.h.y=HY;
+ G.mons=Array.from({length:${targets}},(_,i)=>({x:HX+8+i*2,y:HY,hp:1e12,hpMax:1e12,dead:false,fall:0,boss:false,frozen:0}));
+ let damage=0,requested=0,healed=0,nextBasic=0;hitMon=(m,n)=>{damage+=n;};rollDmg=n=>({dmg:n*(1+G.st.crit/100*(G.st.cm/100-1)),crit:false});const recover=heroRecover;heroRecover=n=>{requested+=n;const actual=recover(n);healed+=actual;return actual;};
+ for(let i=0;i<2400;i++){G.time=i*.05;G.h.hp=Math.min(G.h.hp,G.st.life*.5);for(const m of G.mons)m.frozen=Math.max(0,m.frozen-.05);if(G.time>=nextBasic){damage+=G.st.hit*(1+G.st.crit/100*(G.st.cm/100-1));characterBasicHit(G.mons[0]);nextBasic=G.time+1/G.st.aps;}characterCombatTick(.05);G.sigT+=.05;if(G.sigT>=G.st.signatureCd){G.sigT=0;y2kSignature(G.mons,G.st);}}
+ JSON.stringify({job:G.char,ascension:G.ascension,nodes:G.ascensionNodes,targets:${targets},life:G.st.life,regen:G.st.regen,dps:+(damage/120).toFixed(3),petHealingPerSec:+(healed/120).toFixed(3),requestedHealingPerSec:+(requested/120).toFixed(3)});
+ `));rows.push(row);
+}
+for(const row of rows){const base=rows.find(r=>r.ascension===row.ascension&&r.targets===row.targets&&!r.nodes.length);row.relative=+(row.dps/base.dps).toFixed(3);assert(row.relative>.5&&row.relative<1.8,'unexpected profession amplification: '+JSON.stringify(row));assert(row.petHealingPerSec<=row.life*.025+.01,'shared recovery cap escaped');}
+const summaries=Object.keys(defs).map(asc=>({ascension:asc,targets:[1,8].map(targets=>{const group=rows.filter(r=>r.ascension===asc&&r.targets===targets);return {targets,cases:group.length,min:Math.min(...group.map(r=>r.relative)),max:Math.max(...group.map(r=>r.relative)),top:group.slice().sort((a,b)=>b.dps-a.dps).slice(0,2)};})}));
+fs.writeFileSync('docs/window-ui-ascensions-2026-10-24/balance.json',JSON.stringify({scenario:'All legal <=4-point trees, 120 seconds, level 40 identical gear, basic attacks and profession mechanics, fixed full-health dense targets, expected crit. No skill-board synergies, movement or survival model. Pet healing measured under continuous HP deficit, with real shared cap.',summaries,rows},null,2)+'\n');console.log('PASS',rows.length,'legal talent-tree combat probes; relative profession damage bounded, shared recovery cap preserved');

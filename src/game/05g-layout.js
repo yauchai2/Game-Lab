@@ -20,7 +20,7 @@ function uiTitle(){
   const root=UI_NAV.find(g=>g.pages.includes(modalTab)),back=root&&modalTab!==root.k&&modalTab!=='tree';
   const rankBack=modalTab==='rank'&&RANK_UI.open,backName=rankBack?'排行榜':root?.n;
   const hk=MHELP[modalTab],cz=uiBattleSize();document.body.classList.toggle('battle-fold',(MOB()&&cz===3)||(typeof GAME_VIEW!=='undefined'&&!!GAME_VIEW.prefs.hideBattle));
-  el.innerHTML=`${back?`<button class="ui-back" aria-label="返回${backName}" onclick="${rankBack?'rankOpen(null)':`openModal('${root.k}')`}">返回</button>`:''}<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="切換戰場大小，目前${CZN[cz]}" onclick="cycleCz()">${CZN[cz]}</button>`:''}`;
+  el.innerHTML=`<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="切換戰場大小，目前${CZN[cz]}" onclick="cycleCz()">${CZN[cz]}</button>`:''}${back?`<button class="window-close" aria-label="關閉${UI_TITLE[modalTab]}，返回${backName}" title="返回${backName}" onclick="${rankBack?'rankOpen(null)':`openModal('${root.k}')`}">×</button>`:''}`;
 }
 function uiSegments(key,items,label){return `<div class="ui-segments" role="group" aria-label="${label}">${items.map(([id,name,tip])=>`<button aria-pressed="${UI_WORK[key]===id}"${tip?` data-tip="${uxEsc(tip)}"`:''} data-focus="${key}-${id}" onclick="uiWork('${key}','${id}')">${name}</button>`).join('')}</div>`;}
 function uiWork(key,id){
@@ -292,13 +292,14 @@ function uiLiveSignature(){
   if(modalTab==='warehouse')return JSON.stringify([G.inventoryRevision,G.autoEquip,G.storageRecycled,G.armory,G.equip,G.builds]);
   if(modalTab==='tree')return JSON.stringify([G.lvl,G.maxDepth,G.pass,G.st,!!G.run,!!G.train,G.legacyMode]);
   if(modalTab==='skills')return JSON.stringify([G.lvl,G.board,G.circuits,G.gems,G.carts,G.seen,G.st.dps,G.chips]);
-  if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.ascension,G.bossKills,G.maxDepth,G.st,G.cos,G.cards,G.picks,G.relicPicks]);
+  if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.ascension,G.ascensionNodes,G.bossKills,G.maxDepth,G.st,G.cos,G.cards,G.picks,G.relicPicks]);
   if(modalTab==='dress'){const e=cosGet(dSel.cat,dSel.id);return JSON.stringify([G.lvl,G.equip,G.char,G.cos,G.own,e?G.gold>=e[3]:true]);}
   if(modalTab==='craft')return JSON.stringify([G.parts,G.equip,G.coreDust,G.city?.fragments,G.city?.maxTier,G.maxDepth,!!G.run,!!G.train]);
   if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,G.run?.city,G.city,G.towerBest,!!G.train,G.trainLast,G.maxDepth]);
   return modalTab;
 }
 function uiRefreshLive(){
+  if(typeof careerTalentRefresh==='function')careerTalentRefresh();
   if(modalTab==='settings')uiSyncSettings();
   const gold=$('cv-gold');if(gold)gold.textContent=tFmt(G.gold);
   if(G.offline||document.body.classList.contains('watch-mode'))return;

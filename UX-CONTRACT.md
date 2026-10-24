@@ -356,3 +356,22 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 | 備份與離線 | serialize／profileSave／catchUp | 匯出碼只備份目前角色，不冒充整個角色列表備份；只有啟用角色補算離線。新板離線bulk採普通怪率、有限目錄逐種結算，不放大觀測到的稀有掉落。 |
 
 新規則驗證：tools/test_classes_circuits.cjs、tools/test_classes_circuits_browser.cjs；量測限制見docs/classes-circuits-2026-10-24/review.md。舊版幾何引擎保留為00-grid-legacy.js僅做遷移，test_grid.js明確測此遷移引擎；新規則由新測試負責。
+
+
+## 視窗、指標手勢與昇華天賦（2026-10-24，v0.47.0候選）
+
+來源：Alan本輪四項修正。本節取代總覽常駐大舞台；固定職業、板型及物品所有權不變。
+
+| 能力 | canonical owner | 契約 |
+| --- | --- | --- |
+| 詳情／確認關閉 | showOverlay／windowCloseOverlay／uxOpenDialog | 共用標題列右上角×。純返回改為×；付款等確認保留取消。×與Escape執行同一取消，含返回檢視或上一層；保留inert、Tab圈限、取消初始焦點及觸發點返回。header採具名div，避免戰場header全局樣式污染。 |
+| 子頁關閉 | uiTitle／UI_NAV | 有父頁才提供×；設定子頁回目錄、排行榜詳情先回榜單；不退出遊戲，不清除父頁篩選。一般天賦分頁不新增多餘關閉。 |
+| 拖線 | 05i-wire drag／wireMove／GridLab.extend | 逐段取樣真實指標軌跡，只補讀經過格子，不自動尋路。穩定盤面根節點捕獲pointer，重繪內層不丟手勢；非被捕獲指標不改線。pointercancel、blur及離頁還原整次手勢與先前undo。所有路徑仍通過GridLab相鄰、障礙、交叉與終點驗證。 |
+| 原位頭像 | uiSheetIdentity／PV／dressTick | 原頭像框為角色列表按鈕，內部canvas為純展示，不能攔截點擊。頭肩取景與全身共用模型及renderer；原靜態縮圖保留失敗備援。關閉動態停轉；模態遮擋與不可見時停繪。 |
+| 昇華節點 | ASC_TALENTS／ascensionBudget／allocateAscensionNode | 十二昇華各三條二節點分支，共72節點。先分配前置；最多4點。Lv20／深8且已有昇華有2點，Lv30／深12、Lv40／深18各1點。一般天賦預算不共用；舊檔零代選，不能跨昇華或用構築切換繞過。 |
+| 昇華退點 | ascensionNodeState／refundAscensionNode／resetAscensionNodes | 僅末端可單點退，單點及整盤同為每點等級×25金幣。共用確認、執行時重驗profile／昇華／節點JSON／成本，取消、重複與過期不扣款。不能在挑戰／訓練修改；不得透過退點重置寵機CD或刷新回復額度。 |
+| 保存與觀摩 | serialize／applySave／rankClean／rankSnap | 節點白名單、前置、預算及所屬昇華驗證，角色各自保存；排行榜快照呈現實際節點名稱／效果。重選昇華清空原昇華點數並退回完整預算，新昇華自行分配，確認文字明示。 |
+
+天賦資料eff進calc，tune進characters-data既有護盾／回聲／節拍／專技／寵機；不另設平行戰鬥引擎。關主控制與每秒2.5%回復額度仍走原owner。錢包、可用點及退點費用沿uiRefreshLive局部更新，不用高頻重建整個視窗。
+
+放大接線板以data-scroll-key註冊到uxCapturePanel／uxRestorePanel，同頁重繪保留盤內水平／垂直位置，換工作頁則重置。放大時仍可逐格點選並平移視窗完成接線，不只依賴拖曳。

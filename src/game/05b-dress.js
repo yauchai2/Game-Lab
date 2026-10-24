@@ -56,11 +56,11 @@ function dressMount(){
       const end=()=>{PV.drag=null;PV.cv.style.cursor='grab';};PV.cv.addEventListener('pointerup',end);PV.cv.addEventListener('pointercancel',end);PV.cv.addEventListener('lostpointercapture',end);
       if(!PV.timer)PV.timer=setInterval(dressTick,40);
     }
-    host.appendChild(PV.cv);PV.lastTime=null;dressTick();
+    PV.cv.style.pointerEvents=host.dataset.framing==='portrait'?'none':'auto';host.appendChild(PV.cv);PV.lastTime=null;dressTick();
   }catch(e){PV.failed=true;PV.rd?.dispose();PV.rd=null;PV.cv?.remove();dressPreviewFailure(host);}
 }
 function dressTick(){
-  if(!PV.rd||!PV.cv.isConnected||!['char','dress'].includes(modalTab)||$('modal').hidden||document.hidden){PV.lastTime=null;PV.drag=null;return;}
+  if(!PV.rd||!PV.cv.isConnected||!['char','dress'].includes(modalTab)||$('modal').hidden||document.hidden||(typeof UX_LAYERS!=='undefined'&&UX_LAYERS.length)){PV.lastTime=null;PV.drag=null;return;}
   // A scrolled-out stage must not spend GPU time while the player reads lower sections.
   const host=PV.cv.parentElement,rect=host.getBoundingClientRect(),panel=$('mbody').getBoundingClientRect();
   if(rect.bottom<panel.top||rect.top>panel.bottom){PV.lastTime=null;return;}
@@ -72,7 +72,7 @@ function dressTick(){
       dressDisposePreview();
       const g=buildHero(aTier(A),A?A.r:0,aTier(W),W?W.r:0,cos);g.scale.setScalar(1);PV.hero=g;PV.sc.add(g);g.updateMatrixWorld(true);
       const box=new T3.Box3();g.traverse(o=>{if(o.isMesh&&o.visible&&!['RingGeometry','CircleGeometry'].includes(o.geometry.type)){o.geometry.computeBoundingBox();box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld));}});
-      if(box.isEmpty())throw Error('Empty character model');PV.box=box;PV.sig=sig;
+      if(box.isEmpty())throw Error('Empty character model');PV.box=box;PV.sig=sig;const head=Object.values(g.userData.B||{}).find(b=>/head/i.test(b.name));PV.portraitFocus=head?head.getWorldPosition(new T3.Vector3()):new T3.Vector3((box.min.x+box.max.x)/2,box.min.y+(box.max.y-box.min.y)*.82,0);
       PV.plinth.position.set((box.min.x+box.max.x)/2,box.min.y-.8,0);
     }
     if(PV.hero.userData.y2k)characterPreviewAnimate(PV.hero,dt,matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -82,7 +82,7 @@ function dressTick(){
     PV.hero.rotation.y=PV.yaw;
     const buffer=r3BufferSize(w,h,devicePixelRatio||1,R3.clean,r3ViewQuality(),innerWidth);PV.cv.style.imageRendering=R3.clean?'auto':'pixelated';
     if(PV.cv.width!==buffer.width||PV.cv.height!==buffer.height)PV.rd.setSize(buffer.width,buffer.height,false);
-    const b=PV.box,cx=(b.min.x+b.max.x)/2,cy=(b.min.y+b.max.y)/2,span=Math.hypot(b.max.x-b.min.x,b.max.z-b.min.z),vh=Math.max((b.max.y-b.min.y)*1.18,span*h/w*1.1),vw=vh*w/h;
+    const portrait=host.dataset.framing==='portrait',b=PV.box,cx=portrait?PV.portraitFocus.x:(b.min.x+b.max.x)/2,cy=portrait?PV.portraitFocus.y-.8:(b.min.y+b.max.y)/2,span=Math.hypot(b.max.x-b.min.x,b.max.z-b.min.z),vh=portrait?(b.max.y-b.min.y)*.44:Math.max((b.max.y-b.min.y)*1.18,span*h/w*1.1),vw=vh*w/h;
     PV.cam.left=-vw/2;PV.cam.right=vw/2;PV.cam.top=vh/2;PV.cam.bottom=-vh/2;PV.cam.position.set(cx,cy+1,80);PV.cam.lookAt(cx,cy,0);PV.cam.updateProjectionMatrix();PV.rd.render(PV.sc,PV.cam);host.dataset.preview='ready';
   }catch(e){PV.failed=true;PV.cv.remove();dressPreviewFailure(host);}
 }
