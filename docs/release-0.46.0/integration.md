@@ -18,4 +18,8 @@
 
 ## 發佈狀態
 
-來源已推送；合併、部署、標籤及附件的最終結果會在核對成功後補入，證據檔為live-verification.json。
+PR #43已合併。來源／標籤v0.46.0為f7adc3357f5eed8dba7c95547c4ba2eb69f39797；Pages提交b853777fc8e6cc2874dbb951c4b96dc229a3eb83，狀態built。Release工作流程40077472352及Pages工作流程40077490150均成功；離線附件idle-hero.html大小13540403位元組，SHA-256為b538ffd1eb0d1734344f4db1fb17a494e6040f54c80f4d61bf032d72bb689133。
+
+線上manifest、入口及全部腳本已透過正常TLS的HTTPS下載並逐一核對SHA-256；標籤來源、Release附件API digest及大小與已測試產物一致，未宣稱直接重新下載重導附件。見[live-verification.json](live-verification.json)及[Claude分支查核](claude-integration.json)。
+
+分離式部署的瀏覽器啟動檢查見site-browser.json；若雲端瀏覽器直接HTTPS連線受限，僅以已核對HTTPS雜湊的原始內容重播，未停用TLS驗證。
