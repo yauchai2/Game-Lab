@@ -996,7 +996,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  {v:'0.53.5',d:'2026-10-25',t:['手機版面板上方的把手可上下自由拖動，放手就停在該高度，輕點恢復自動；把手上不再有文字'],},
+  {v:'0.53.5',d:'2026-10-25',t:['手機版面板上方的把手可上下自由拖動，放手就停在該高度，輕點恢復自動；把手上不再有文字，標題列拿掉重複的戰場大小按鈕'],},
   {v:'0.53.4',d:'2026-10-25',t:['角色會主動走向怪群，不再遠離繞圈等怪撞過來','背包的目前配裝改為緊湊兩排，減少捲動','手機版面板往下捲時自動收起戰鬥畫面，捲回頂部恢復；面板上方新增把手可上滑展開、下滑回到戰鬥','配件選單顯示每個配件的效果，不適用的標明原因','配件規則說明改為收起','任務與目標頁改為分類進度條，只顯示數字與獎勵'],},
   {v:'0.53.3',d:'2026-10-25',t:['補給站、電路合成、城市遠征、訓練場改為圖像卡片，說明與按鈕更清楚','無限之塔畫面精簡','天賦頁工具列重新排版','點彈窗外面的空位也可關閉彈窗','修正卡匣彈窗點選技能後沒有反應','電腦版戰鬥畫面頂部多出的空位已移除','全面提高過小的文字，手機與電腦版都更易讀'],},
   {v:'0.53.2',d:'2026-10-25',t:['無限之塔畫面精簡：塔身、最高樓層、討伐進度與資源一目了然','昇華職業改用3D圖示','背包與配裝的裝備圖示放大','配件格內恢復隱約的虛線，順著線的方向流動，接通後更明顯','天賦樹手機改為單指捲動頁面，兩指拖動移動天賦盤，兩指開合縮放，不再需要「手指拖盤」按鈕','換曲時音樂慢慢淡出再淡入，不再突然切換','「直傷預估」統一顯示為 DPS','角色與怪物頭上的血條變細；我方血條為綠色，敵人為紅橙色，首領為深紅色','模式卡匣改為：點卡匣後彈出視窗，直接選要裝到哪個技能，不必先在接線板選技能','合成與超頻頁面改為圖像卡片，一眼看到合成前後的配件與花費','接線板的上一步、下一步按鈕改為粗線圖示加文字']},
@@ -5323,7 +5323,7 @@ function uiTitle(){
   uiSyncBattleFrame();if(typeof installPlayStyle==='function')installPlayStyle();
   if(typeof lootWorldStyles==='function'){lootWorldStyles();lootBattleRestore();}
   if(typeof audSyncBattle==='function')audSyncBattle(!GAME_VIEW.watch&&(document.body.classList.contains('battle-fold')||!!GAME_VIEW.prefs.hideBattle));
-  el.innerHTML=`<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()?`<button aria-label="${document.body.classList.contains('battle-fold')?'顯示戰場':'切換戰場大小，目前'+CZN[cz]}" onclick="${document.body.classList.contains('battle-fold')?'restoreBattleView()':'cycleCz()'}">${document.body.classList.contains('battle-fold')?'展':CZN[cz]}</button>`:''}${back?`<button class="window-back" aria-label="返回${backName}" title="返回${backName}" onclick="${rankBack?'rankOpen(null)':`openModal('${root.k}')`}">←</button>`:''}`;
+  el.innerHTML=`<h2>${UI_TITLE[modalTab]||'更多'}</h2>${hk?`<button aria-label="${HELP[hk][0]}" onclick="showHelp('${hk}')">?</button>`:''}${MOB()&&document.body.classList.contains('battle-fold')?`<button aria-label="顯示戰場" onclick="restoreBattleView()">展</button>`:''}${back?`<button class="window-back" aria-label="返回${backName}" title="返回${backName}" onclick="${rankBack?'rankOpen(null)':`openModal('${root.k}')`}">←</button>`:''}`;
 }
 function uiSegments(key,items,label){return `<div class="ui-segments" role="group" aria-label="${label}">${items.map(([id,name,tip,dot])=>`<button aria-pressed="${UI_WORK[key]===id}"${tip?` data-tip="${uxEsc(tip)}"`:''} data-focus="${key}-${id}" onclick="uiWork('${key}','${id}')">${key==='adventure'&&id==='season'?'<img src="'+studioMachine('core')+'" alt="" width="24" height="24">':''}${name}${dot?'<i class="rd" aria-hidden="true"></i><span class="uxsr">有新內容</span>':''}</button>`).join('')}</div>`;}
 function uiWork(key,id){
