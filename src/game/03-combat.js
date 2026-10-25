@@ -386,7 +386,16 @@ function moveHero(dt){
       if (sc > bs){ bs = sc; best = [cx, cy]; }
     }
     const loot=G.drops.filter(d=>!d.done&&!d.pull&&d.t>.35).sort((a,b)=>Math.hypot(a.x-h.x,a.y-h.y)-Math.hypot(b.x-h.x,b.y-h.y))[0];
-    if(loot&&h.hp>G.st.life*.2&&!al.some(m=>m.warning&&monsterWarningContains(m.warning,loot.x,loot.y,3))){h.gx=loot.x;h.gy=loot.y;h.aiT=.25;}else if(best){h.gx=best[0];h.gy=best[1];}
+    if(loot&&h.hp>G.st.life*.2&&!al.some(m=>m.warning&&monsterWarningContains(m.warning,loot.x,loot.y,3))){h.gx=loot.x;h.gy=loot.y;h.aiT=.25;}else{
+      /* 主動靠近怪群：停在約 15 的距離，太近才後退，不再繞圈等怪撞過來；預警範圍內或沒有怪時才用隨機漫遊點。 */
+      let near=null,nd=1e9;for(const m of al){if(m.training)continue;const d=Math.hypot(m.x-h.x,m.y-h.y);if(d<nd){nd=d;near=m;}}
+      let pick=best;
+      if(near){const D=15,ux=(h.x-near.x)/(nd||1),uy=(h.y-near.y)/(nd||1);let tx,ty;
+        if(nd>D+3){tx=near.x+ux*D;ty=near.y+uy*D;}else if(nd<D-6){tx=near.x+ux*(D+4);ty=near.y+uy*(D+4);}else{const s=Math.random()<.5?1:-1;tx=h.x-uy*8*s;ty=h.y+ux*8*s;}
+        const[cx,cy]=terrainProject(tx,ty,terrainNow());
+        if(!al.some(m=>m.warning&&monsterWarningContains(m.warning,cx,cy,2)))pick=[cx,cy];h.aiT=.3;}
+      if(pick){h.gx=pick[0];h.gy=pick[1];}
+    }
   }
   const waypoint=terrainWaypoint(h.x,h.y,h.gx,h.gy),dx = waypoint[0] - h.x, dy = waypoint[1] - h.y, d = Math.hypot(dx, dy), want = d > 1.2 ? 24 : 0;
   h.vx += ((d ? dx/d : 0)*want - h.vx)*Math.min(1, dt*6); h.vy += ((d ? dy/d : 0)*want - h.vy)*Math.min(1, dt*6);
