@@ -1,0 +1,39 @@
+name: Deploy feedback Worker
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - codex/feedback-service-setup
+    paths:
+      - services/feedback/**
+      - .github/workflows/feedback-worker.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: feedback-worker-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: services/feedback
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install deployment dependencies
+        run: npm install --package-lock=false
+      - name: Run feedback service unit tests
+        run: node ../../tools/test_feedback_worker.mjs
+      - name: Deploy Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.FEEDBACK_CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: c516539d1c4f0ec5b48e531e35190bcb
+        run: npm run deploy
