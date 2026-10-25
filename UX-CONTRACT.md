@@ -467,3 +467,5 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - 05aa-onboarding-focus只負責教學顯示／導覽、賽季組合與暫時紫色主題，不另建獎勵／賽季／背包owner。稍後不阻塞戰鬥，設定可續接；完成後收起。學習中viewBlocked禁止自動觀戰，所有舊偏好仍由GAME_VIEW管理。
 - 季頁沿用02g-rift、02e-season及activityRecipesHtml owner；僅合併導航和閱讀。rift舊入口映射season；phase／資源改變才完整刷新，秒數／擊殺只更新data-rift-status文字，避免每秒重建長頁與失焦。此條取代上一節包含整秒／擊殺的完整live signature規則。
 - riftThemeUpdate快照並還原clearColor／alpha與燈光，scene重建後沿用當前階段。舞台背景保持透明，因cv3使用負z-index；不能用不透明.stage蓋住世界。body直接子header與內頁header必須分開隱藏。
+
+- 05ab-intro-logo擁有INTRO_LOGO短暫展示生命週期，INTRO.cover獨立於既有故事step0至3並保存續接。標題不改角色／獎勵；進入故事introStep即dispose。減少動態及暫停時貼圖載妥後不重繪，隱藏分頁不推進角度。原始GLB不隨遊戲分發，logo-3d-asset嵌入已驗證單網格衍生版與同模型PNG，啟動／無GPU皆無外部請求；boot及標題不使用舊2D Logo。

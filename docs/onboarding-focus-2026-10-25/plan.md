@@ -8,4 +8,4 @@
 
 紫色氣氛使用可還原的場景燈光／clear color及CSS主題token，不做整頁blur或高成本後處理，保留紅藍綠端口與生命條語意色。
 
-3D Logo附件94ace1de4ec645d2fa99f0f1de72a45d.glb超過download_file每檔32MiB限制，尚未取得／檢視模型bytes。已向Alan請求小於32MiB的ZIP；不冒稱已導入。Game Asset Production技能已讀，本機game-dev CLI不存在；收到可讀來源後可用本地GLB／Three／圖像工具檢查，保留原件與hash，不使用付費生成或替代Logo。
+3D Logo已經由Alan後續Drive連結取得，原件SHA-256 bb4166293ad90770efedce2f401d487fd42ba523d7302821d2066a64bc067009。以Blender本地減面、保留UV、512px WebP貼圖製作0.81MB衍生版；原件不變更、不加入repo。開局新增標題舞台使用即時3D，320×180固定解析與慢速40秒自轉；開始故事即釋放。減少動態停轉、同模型PNG為無GPU後備。Game Asset Production CLI本機不存在，改用本地Blender、Python靜態檢查及真實Three.js GPU驗證，沒有付費生成。
