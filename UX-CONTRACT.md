@@ -460,3 +460,10 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - 05z-experience.EXHIBIT只讀預覽；技能面板優先於背景塔樓，隱藏祖先及離開時dispose。動作與特效不呼叫實戰castSkill，不修改G或派獎；召喚／持續技能共用實際模型／幾何。
 - 05h-view擁有uiFxVersion2遷移及watch暫時展開；prefs.hideBattle不因觀戰覆寫，離開恢復。手機尺寸規則不得再以正常模式max-height限制觀戰canvas，隱藏工作列同步移除margin。音量仍由audio.js單一gain配合audSyncBattle，不疊乘、不解除off。
 - 05y-stage-control掉落訊息屬於.stage，重要性由importantLoot集中判斷；普通獲取仍正常結算但不全部播報。BOSS顯示採活體查詢，不讀歷史bossOut旗標。Rift面板的live signature包含階段／整秒／擊殺與素材，不讓來源面板停在舊狀態。
+
+## 新手與賽季聚焦（2026-10-25，候選）
+
+- 02h-onboarding擁有G.tutorial版本1與三步實作狀態，由serialize／applySave保存；新角色introBegin開始，舊存檔缺失維持null。真討伐與手動裝備事件、GridLab.resolve通電推進；離線／暫停不發教學獎勵。首次無未穿裝備時只生成一次教學武器，走既有地面掉落與拾取，不自動裝備。
+- 05aa-onboarding-focus只負責教學顯示／導覽、賽季組合與暫時紫色主題，不另建獎勵／賽季／背包owner。稍後不阻塞戰鬥，設定可續接；完成後收起。學習中viewBlocked禁止自動觀戰，所有舊偏好仍由GAME_VIEW管理。
+- 季頁沿用02g-rift、02e-season及activityRecipesHtml owner；僅合併導航和閱讀。rift舊入口映射season；phase／資源改變才完整刷新，秒數／擊殺只更新data-rift-status文字，避免每秒重建長頁與失焦。此條取代上一節包含整秒／擊殺的完整live signature規則。
+- riftThemeUpdate快照並還原clearColor／alpha與燈光，scene重建後沿用當前階段。舞台背景保持透明，因cv3使用負z-index；不能用不透明.stage蓋住世界。body直接子header與內頁header必須分開隱藏。

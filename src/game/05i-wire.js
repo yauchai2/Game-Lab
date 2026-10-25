@@ -180,7 +180,7 @@ function wirePickSock(i,atSource=false){
 function wirePickSkill(i, key){
   wirePickClose(); const keep = selSock; selSock = i; wireAssign(key);
 
-  selSock = -1; selPiece = null; renderModal(); wireSnap('pick');skillPreview(key);
+  selSock = -1; selPiece = null; renderModal(); wireSnap('pick');skillPreview(key,true);
 }
 function wirePickUnassign(i){ wirePickClose(); const keep = selSock; selSock = i; wireUnassign(); selSock = -1; selPiece = null; renderModal(); }
 function wirePickPad(x, y, w){
@@ -405,7 +405,7 @@ function uiInventoryPick(kind, key, t = 1){
   if (noClick) return;
   const def = kind === 'active' ? SKILLS[key] : SUPPS[key]; if (!def) return;if(kind==='active'&&!skillAvailable(key)){if(G.lvl<def.lvl){pzMsg('等級'+def.lvl+'開放這個技能。')}else skillBlueprintBuy(key);return;}noticeRead(kind==='active'?'skills':'gems',key);
   const reason = kind === 'active' ? (G.lvl < def.lvl ? `等級 ${def.lvl} 解鎖` : '') : gemFreeT(key, t) <= 0 ? (gemOwnT(key, t) ? '全部已放在接線板上，先收回一個' : '尚未持有，可繼續冒險或用合成取得') : '';
-  if (!reason){ if (kind === 'active'){if(selSock>=0&&wOpen(selSock))wireAssign(key);skillPreview(key);return;}noticeRead('gems',key);pzHold(kind,key,t);return; }
+  if (!reason){ if (kind === 'active'){if(selSock>=0&&wOpen(selSock))wireAssign(key);skillPreview(key,true);return;}noticeRead('gems',key);pzHold(kind,key,t);return; }
   showOverlay(`<h2 class="uxdialog-title">${uxEsc(def.n)}</h2><p>${uxEsc(def.d)}</p><p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回機件庫存</button>`);
 }
 function uiResolvedHtml(){

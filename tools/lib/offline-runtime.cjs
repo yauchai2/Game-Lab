@@ -40,7 +40,7 @@ function createRuntime(seed = 11) {
     },
   };
   vm.createContext(context);
-  for (const file of ['01-data.js', '02-state.js', '02b-careers.js','02c-ascension-talents.js','02d-season.js','02e-player-status.js','02f-tower-systems.js','02g-rift.js', '03-combat.js', 'characters-data.js', '05-ui.js']) {
+  for (const file of ['01-data.js', '02-state.js', '02b-careers.js','02c-ascension-talents.js','02d-season.js','02e-player-status.js','02f-tower-systems.js','02g-rift.js','02h-onboarding.js', '03-combat.js', 'characters-data.js', '05-ui.js']) {
     vm.runInContext(fs.readFileSync(path.join(root, 'src/game', file), 'utf8'), context, { filename: file });
   }
   const evaluate = code => vm.runInContext(code, context, { timeout: 120000 });
