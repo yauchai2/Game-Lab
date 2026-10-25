@@ -125,7 +125,7 @@ function saveHtml(){
     <textarea id="sv" class="sv" placeholder="匯出的存檔碼會顯示在這裡；要匯入時把存檔碼貼在這裡再按「匯入」"></textarea><div id="smsg" class="hint"></div>`;
 }
 /* modal actions */
-function cartsHtml(){const sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active'),ids=Object.keys(MODES).filter(id=>(G.carts[id]||0)>0);let h=sp?`<p class="uxmeta">${SKILLS[sp.key].n} · ${sp.mode?MODES[sp.mode].n:'標準模式'} ${sp.mode?'<button class="mb" onclick="equipCart(\'\')">卸下</button>':''}</p>`:'<p class="uxmeta">先選盤面技能才可裝卡匣；點格子可查看提示，裝上才鑑定。</p>';
+function cartsHtml(){const sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active'),ids=Object.keys(MODES).filter(id=>(G.carts[id]||0)>0);let h=`<ol class="cart-guide"><li class="${sp?'':'now'}">先在接線板上點一下技能晶片</li><li class="${sp?'now':''}">再點下面屬於該技能的卡匣，就會裝上</li><li>裝上後才鑑定效果；想換就按「卸下」</li></ol>`+(sp?`<p class="uxmeta">${SKILLS[sp.key].n} · ${sp.mode?MODES[sp.mode].n:'標準模式'} ${sp.mode?'<button class="mb" onclick="equipCart(\'\')">卸下</button>':''}</p>`:'<p class="uxmeta">先選盤面技能才可裝卡匣；點格子可查看提示，裝上才鑑定。</p>');
  if(!ids.length)return h+'<p>還沒有卡匣。冒險或電路合成都能取得。</p>';
  return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],ok=sp&&sp.key===M.sk&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${noticeHas('carts',id)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>可用 ${f}／${n}</small></button>`;}).join('')+'</div>';
 }
