@@ -21,6 +21,13 @@ function wireStatus(){
   const B = G.board, used = GridLab.wireLen(B), pads = B.wires.reduce((a, w) => a + w.cells.filter(c => GridLab.isPad(c[0], c[1],G.board)).length, 0), put = B.pieces.filter(p => p.kind === 'support' && GridLab.wireOf(B, p.x, p.y)).length;
   return `線 ${used} 格　線經過襯墊 ${pads}　已放配件 ${put}`;
 }
+function wireGemFlow(x, y, w, lit){   // 線穿過配件格時，在格內畫出隱約的虛線，接通時流動
+  if (!w) return '';
+  const L = GridLab.layout(G.board), i = w.cells.findIndex(c => c[0] === x && c[1] === y); if (i < 0) return '';
+  const prev = i ? w.cells[i - 1] : L.srcs[w.sock], next = i < w.cells.length - 1 ? w.cells[i + 1] : (GridLab.connected(G.board, w.sock) ? L.socks[w.sock] : null);
+  const m = n => `${.5 + (n[0] - x) / 2},${.5 + (n[1] - y) / 2}`, pts = [prev && m(prev), '.5,.5', next && m(next)].filter(Boolean).join(' ');
+  return `<svg class="gflow${lit ? ' lit' : ''}" viewBox="0 0 1 1" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}"/></svg>`;
+}
 function wireSvg(){
   const B = G.board, pt = (x, y) => `${(x + .5).toFixed(2)},${(y + .5).toFixed(2)}`;
   const liveSockets=new Set(GridLab.resolve(B,G.lvl).filter(r=>r.wired).map(r=>r.sock));let o = '', holes = '';
@@ -72,7 +79,7 @@ function wireCell(x, y, ctx){
   const s = wSupportAt(x, y), w = GridLab.wireOf(B, x, y), pc = (wTier() === 1 && !s) ? '' : GridLab.padColor(x, y,G.board), match = !!(pc && w && GridLab.layout(G.board).colors[w.sock] === pc);
   if (s){
     const lk = ctx.linked.has(s.id), cls = ['pc', 'fill', 'ac', 'pd', 'p' + pc, lk ? 'lnk' : w ? 'off' : '', s.id === selPiece ? 'sel' : '', match ? 'mt' : '', (s.t || 1) > 1 ? 't' + s.t : ''].filter(Boolean).join(' ');
-    return `<button type="button" class="${cls}" style="--pc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]};--padc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]}" ${ev}>${gemIco(s.key, 20)}<span>${SUPPS[s.key].n}${TIER_NAME[(s.t || 1) - 1]}</span></button>`;
+    return `<button type="button" class="${cls}" style="--pc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]};--padc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]}" ${ev}>${wireGemFlow(x, y, w, lk)}${gemIco(s.key, 20)}<span>${SUPPS[s.key].n}${TIER_NAME[(s.t || 1) - 1]}</span></button>`;
   }
   return `<button type="button" class="pc${pc ? ' pd p' + pc : ''}${w ? ' wr' : ''}${match ? ' mt' : ''}" ${ev}>${pc ? `<span></span>` : ''}</button>`;
 }
