@@ -578,16 +578,18 @@ addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(typeof AUD==='undefi
  if(document.body)start();else addEventListener('DOMContentLoaded',start);
 })();
 (function(){const st=document.createElement('style');st.textContent=`body.d:not(:has(>header)){grid-template-areas:"st rt"!important;grid-template-rows:minmax(0,1fr)!important}`;document.head.appendChild(st)})();
-/* 手機版：面板上方的把手，上滑把面板展開成全螢幕，下滑回到戰鬥畫面，輕點則切換大小。 */
-(function(){const st=document.createElement('style');st.textContent=`#panel-grip{display:none}body.m #panel-grip{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 4px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}#panel-grip i{display:block;width:44px;height:5px;background:#7990ac;box-shadow:0 1px #fff}#panel-grip span{font-size:11px;color:var(--ux-muted)}`;document.head.appendChild(st);
- const mount=()=>{const m=document.querySelector('#modal>.mbox');if(!m||m.querySelector('#panel-grip'))return;const g=document.createElement('div');g.id='panel-grip';g.setAttribute('role','button');g.setAttribute('aria-label','拖曳把手：上滑展開面板，下滑回到戰鬥畫面，輕點切換大小');g.innerHTML='<i></i><span>上滑展開面板　下滑看戰鬥</span>';
-  let y0=null;g.addEventListener('pointerdown',e=>{y0=e.clientY;g.setPointerCapture?.(e.pointerId);});
-  g.addEventListener('pointerup',e=>{if(y0==null)return;const dy=e.clientY-y0;y0=null;if(dy<-24){if(G.userCz){G.cz=3;G.dirty=true;}else AUTO_FOLD.on=true;mobTitle();}else if(dy>24){if(!G.userCz){AUTO_FOLD.on=false;if(GAME_VIEW.prefs.hideBattle)restoreBattleView();else mobTitle();}else if(document.body.classList.contains('battle-fold'))restoreBattleView();else{G.cz=1;G.dirty=true;mobTitle();}}else if(document.body.classList.contains('battle-fold'))restoreBattleView();else cycleCz();});
+/* 手機版：面板上方的把手，可上下自由拖到任何高度，放手即固定；輕點則回到自動大小。 */
+(function(){const st=document.createElement('style');st.textContent=`#panel-grip{display:none}body.m #panel-grip{display:flex;align-items:center;justify-content:center;height:26px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}#panel-grip i{display:block;width:56px;height:6px;background:#7990ac;box-shadow:0 1px #fff}`;document.head.appendChild(st);
+ const mount=()=>{const m=document.querySelector('#modal>.mbox');if(!m||m.querySelector('#panel-grip'))return;const g=document.createElement('div');g.id='panel-grip';g.setAttribute('role','separator');g.setAttribute('aria-label','拖曳調整戰鬥畫面高度，輕點恢復自動');g.innerHTML='<i></i>';
+  let y0=null,h0=0,moved=false;const save=()=>{try{CUSTOM_H.v==null?localStorage.removeItem('ih-custh'):localStorage.setItem('ih-custh',String(Math.round(CUSTOM_H.v)));}catch(e){}};
+  g.addEventListener('pointerdown',e=>{y0=e.clientY;moved=false;h0=document.getElementById('fig')?.getBoundingClientRect().height||200;g.setPointerCapture?.(e.pointerId);});
+  g.addEventListener('pointermove',e=>{if(y0==null)return;const dy=e.clientY-y0;if(Math.abs(dy)>6)moved=true;if(!moved)return;const vh=visualViewport?.height||innerHeight,was=uiBattleSize(),v=Math.max(30,Math.min(h0+dy,vh*.62));CUSTOM_H.v=v;AUTO_FOLD.on=false;if(uiBattleSize()!==was)uiTitle();else uiSyncBattleFrame();});
+  g.addEventListener('pointerup',()=>{if(y0==null)return;y0=null;if(moved){save();uiTitle();}else{CUSTOM_H.v=null;save();AUTO_FOLD.on=false;uiTitle();}});
   g.addEventListener('pointercancel',()=>{y0=null;});m.insertBefore(g,m.firstChild);};
  const go=()=>{mount();new MutationObserver(mount).observe(document.getElementById('modal')||document.body,{childList:true,subtree:true});};
  if(document.getElementById('modal'))go();else addEventListener('DOMContentLoaded',go);})();
 /* 手機版：面板內容往下捲時自動收起戰鬥畫面讓面板變大，捲回頂部時自動恢復；手動選過戰鬥畫面大小就不再自動切換。 */
-(function(){document.addEventListener('scroll',e=>{const t=e.target;if(!t||t.id!=='mbody'||!document.body.classList.contains('m')||G.userCz||document.body.classList.contains('watch-mode'))return;
+(function(){document.addEventListener('scroll',e=>{const t=e.target;if(!t||t.id!=='mbody'||!document.body.classList.contains('m')||G.userCz||CUSTOM_H.v!=null||document.body.classList.contains('watch-mode'))return;
  const st=t.scrollTop,dir=st-AUTO_FOLD.last;AUTO_FOLD.last=st;const now=performance.now();
  if(!AUTO_FOLD.on&&dir>0&&st>90&&t.scrollHeight-t.clientHeight>340){AUTO_FOLD.on=true;AUTO_FOLD.t=now;mobTitle();}
  else if(AUTO_FOLD.on&&dir<0&&st<8&&now-AUTO_FOLD.t>600){AUTO_FOLD.on=false;mobTitle();}},true);})();
