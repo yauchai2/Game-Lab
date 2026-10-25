@@ -10,3 +10,5 @@
 - 已重新 fetch 全部分支及 open PR，Claude 遊戲提交 e0b3468 已包含，內部備份及歷史研究改名不混入遊戲。每次 release 仍須 fresh fetch，保留所有分支與 tag，來源先 push。
 - Cloudflare 回饋及 Ko-fi 未接通，不假稱可用，不索取聊天 Token；全球排名、真機及長期平衡仍待完成。
 - 唯一全專案待辦 docs/backlog.md；繁中全形標點、銀灰藍紫 Y2K／Cubic 11、低面數像素酷感。公開文字不可提參考遊戲、內部研究、帳號或公司資源。
+
+進行中PHONE-01：codex/phone-natural-turn，base fe88546。手機卡片以實際GLB預製48格透明轉台，正交自然角度、16秒旋轉；刪除舊平面縮圖退路與runtime縮圖renderer。全屏內頁維持正面可讀。尚未發佈，不把正式0.50.0當已更新。驗證與截圖docs/phone-natural-2026-10-25/。

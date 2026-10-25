@@ -449,3 +449,5 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - 音訊仍audio.js單一生命週期；audSample帶battle分類，隱藏只中止戰鬥voice及其解碼後播放，音樂／介面聲保留，off照常全靜音。手機從共享版面收回空間，頂部既有控制保留顯示戰場入口。
 
 - 舊塔地上掉落依towerRoomVersion一次遷移到可達區，只移位置，不改數量或預派收益；新房版本再次讀檔不得再遷移。
+
+個人手機縮圖唯一來源為phone-preview.js，由tools/pack_phone_preview.cjs使用phoneModelLoad的GLB與材質預製；phoneMini只輸出快取圖集，與全屏phoneGLInit模型相同。縮圖轉台不改PH內頁角度、存檔或裝扮；CSS減少動態停用圖集播放。
