@@ -96,5 +96,8 @@ body.ui-material #mbody .talent-node{position:absolute;transform:translate(-50%,
 @media(max-width:359px){body.ui-material #mbody .bag-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}body.ui-material #mbody .bag-grid .ui-item-tile{min-height:44px}.rig-layout{gap:6px}.rig-person img{width:60px;height:60px}.sheet-identity{column-gap:4px}.equipment-compare{grid-template-columns:1fr}.sheet-rows>div{gap:6px;padding-left:4px;padding-right:4px}}
 @media(prefers-reduced-motion:reduce){.talent-node,.sheet-portrait{animation:none!important;transition:none!important}}
 @media(forced-colors:active){.talent-node i{border-color:ButtonText;opacity:1}.talent-node.got i{background:Highlight;color:HighlightText}.talent-plane line{stroke:CanvasText}.talent-plane line.connected{stroke:Highlight}.sheet-surface,.equipment-rig,.talent-summary{forced-color-adjust:auto}}
+body.ui-material #mbody .equipment-rig .rig-slot .ui-item-tile>.spr{width:88px!important;height:88px!important;max-width:100%;margin:0!important}body.ui-material #mbody .equipment-rig :is(.rig-weapon,.rig-offhand) .ui-item-tile>.spr{width:112px!important;height:112px!important}body.ui-material #mbody .equipment-rig .rig-slot .ui-item-tile{min-height:108px}
+body.ui-material #mbody .bag-grid .ui-item-tile>.spr{width:88%!important;height:auto!important;aspect-ratio:1;max-width:64px}
+@media(max-width:359px){body.ui-material #mbody .equipment-rig .rig-slot .ui-item-tile>.spr{width:64px!important;height:64px!important}}
 `;
 (function(){const style=document.createElement('style');style.textContent=CHARACTER_WORKSPACE_CSS;document.head.appendChild(style)})();
