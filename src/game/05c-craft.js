@@ -72,14 +72,15 @@ function buyCrate(n){
 function buyWhUp(){if((G.whUp||0)>=WH_UP_MAX||G.gold<whUpCost())return;G.gold-=whUpCost();G.whUp++;G.dirty=true;uxAnnounce(`背包容量增加到 ${whCap()}。`);renderModal();}
 function buyOffUp(){if((G.offUp||0)>=OFF_UP_MAX||G.gold<offUpCost())return;G.gold-=offUpCost();G.offUp++;G.dirty=true;uxAnnounce(`離線收益上限延長到 ${offCapSec()/3600} 小時。`);renderModal();}
 function goldShopHtml(){
-  const row=(name,desc,btns)=>`<div class="ui-shoprow"><div><b>${name}</b><small>${desc}</small></div><div class="ui-shopbtns">${btns}</div></div>`;
+  const card=(ico,name,desc,extra,btns)=>`<article class="shop-card"><div class="shop-ico">${ico}</div><div class="shop-info"><b>${name}</b><span>${desc}</span>${extra||''}</div><div class="shop-btns">${btns}</div></article>`;
   const btn=(label,ok,fn,tip)=>`<button class="mb"${ok?'':' disabled'} data-tip="${uxEsc(tip)}" onclick="${fn}">${label}</button>`;
-  const c=crateCost(),wMax=(G.whUp||0)>=WH_UP_MAX,oMax=(G.offUp||0)>=OFF_UP_MAX;
-  return `<details class="ui-section ui-goldshop"><summary>補給站 · 金幣 ${tFmt(G.gold)}</summary>`+
-   row('補給箱','隨機一件目前等級的裝備：魔法 60%、稀有 40%',btn(`開 1 個 · ${tFmt(c)}`,G.gold>=c,'buyCrate(1)','暗金只能靠BOSS與城市遠征取得')+btn(`開 10 個 · ${tFmt(c*10)}`,G.gold>=c*10,'buyCrate(10)','一次開十個，倉庫放不下就會停'))+
-   row('背包擴建',`容量 ${whCap()}／${200+100*WH_UP_MAX}，每次 +100`,wMax?'<span class="uxmeta">已滿</span>':btn(`擴建 · ${tFmt(whUpCost())}`,G.gold>=whUpCost(),'buyWhUp()','永久增加背包容量'))+
-   row('離線儲備',`離線收益最多 ${offCapSec()/3600} 小時，每次 +1 小時（上限 ${6+OFF_UP_MAX}）`,oMax?'<span class="uxmeta">已滿</span>':btn(`延長 · ${tFmt(offUpCost())}`,G.gold>=offUpCost(),'buyOffUp()','永久延長離線結算時數'))+
-   `<p class="uxmeta">金幣另外可用在：混沌重鑄、技能升級、天賦重置、角色裝扮。</p></details>`;
+  const bar=(v,m)=>`<i class="shop-bar"><u style="width:${Math.round(v/m*100)}%"></u></i>`;
+  const c=crateCost(),wMax=(G.whUp||0)>=WH_UP_MAX,oMax=(G.offUp||0)>=OFF_UP_MAX,wTop=200+100*WH_UP_MAX;
+  return `<details class="ui-section ui-goldshop" open><summary>補給站 · 金幣 ${tFmt(G.gold)}</summary><p class="shop-intro">用金幣買裝備與永久升級。</p><div class="shop-list">`+
+   card(eqico('armor',2,52),'補給箱','開箱得到一件目前等級的裝備：魔法 60%、稀有 40%。','',btn(`開 1 個<small>${tFmt(c)} 金幣</small>`,G.gold>=c,'buyCrate(1)','暗金只能靠BOSS與城市遠征取得')+btn(`開 10 個<small>${tFmt(c*10)} 金幣</small>`,G.gold>=c*10,'buyCrate(10)','一次開十個，倉庫放不下就會停'))+
+   card(spr('adventure',40),'背包擴建','增加背包格數，每次 +100。',`<em>${whCap()}／${wTop} 格</em>${bar(whCap()-200,100*WH_UP_MAX)}`,wMax?'<span class="shop-max">已滿</span>':btn(`擴建<small>${tFmt(whUpCost())} 金幣</small>`,G.gold>=whUpCost(),'buyWhUp()','永久增加背包容量'))+
+   card(spr('heart',40),'離線儲備','離開遊戲期間最多累積幾小時的收益，每次 +1 小時。',`<em>${offCapSec()/3600}／${6+OFF_UP_MAX} 小時</em>${bar(offCapSec()/3600-6,OFF_UP_MAX)}`,oMax?'<span class="shop-max">已滿</span>':btn(`延長<small>${tFmt(offUpCost())} 金幣</small>`,G.gold>=offUpCost(),'buyOffUp()','永久延長離線結算時數'))+
+   `</div><p class="uxmeta">金幣另外可用在：混沌重鑄、技能升級、天賦重置、角色裝扮。</p></details>`;
 }
 function craftHtml(){return deviceCraftHtml();}
 
