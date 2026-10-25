@@ -30,7 +30,7 @@ with tempfile.TemporaryDirectory(prefix='game-lab-pages-') as temp:
     # Retain fingerprinted scripts so a browser with a cached older index can finish loading.
     if parent:
         names = git('ls-tree', '-r', '--name-only', parent).splitlines()
-        if any(not re.fullmatch(r'(index\.html|version\.json|\.nojekyll|(?:vendor|game)\.[0-9a-f]{16}\.js|lab/buildcraft/(?:index\.html|style\.css|engine\.js|app\.js))', n) for n in names):
+        if any(not re.fullmatch(r'(index\.html|version\.json|\.nojekyll|[a-z][a-z0-9-]*\.[0-9a-f]{16}\.js|lab/buildcraft/(?:index\.html|style\.css|engine\.js|app\.js))', n) for n in names):
             sys.exit('Unexpected deployment files; inspect gh-pages before publishing.')
         git('read-tree', parent, env=env)
     else:

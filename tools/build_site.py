@@ -25,12 +25,32 @@ out.mkdir(parents=True, exist_ok=True)
 page = (ROOT / 'index.html').read_text()
 scripts = re.findall(r'<script src="([^"]+)"></script>', page)
 assets = {}
-for group, paths in [('vendor', [p for p in scripts if p.startswith('src/vendor/')]),
-                     ('game', [p for p in scripts if not p.startswith('src/vendor/')])]:
+HEAVY = {'audio-assets', 'brand-asset', 'font', 'characters-assets', 'equipment-assets', 'phone-assets',
+         'phone-preview', 'gear-fallbacks', 'logo-3d-asset'}   # 幾乎不變的大型資源：各自帶雜湊，改程式時瀏覽器不必重載
+def emit(stem, paths):
     data = '\n;\n'.join((ROOT / p).read_text() for p in paths).encode()
-    name = f'{group}.{hashlib.sha256(data).hexdigest()[:16]}.js'
+    name = f'{stem}.{hashlib.sha256(data).hexdigest()[:16]}.js'
     (out / name).write_bytes(data)
     assets[name] = hashlib.sha256(data).hexdigest()
+chunk, n = [], 0
+def flush():
+    global chunk, n
+    if chunk:
+        n += 1
+        emit(f'game-{n}', chunk)
+        chunk = []
+vendor = [p for p in scripts if p.startswith('src/vendor/')]
+emit('vendor', vendor)
+for p in scripts:
+    if p in vendor:
+        continue
+    stem = Path(p).stem
+    if stem in HEAVY:
+        flush()
+        emit(stem, [p])
+    else:
+        chunk.append(p)
+flush()
 tags = '\n'.join(f'<script defer src="{name}"></script>' for name in assets)
 page = re.sub(r'<script src="[^"]+"></script>\s*', '', page)
 page = page.replace('</body>', tags + '\n</body>')
