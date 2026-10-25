@@ -1,13 +1,32 @@
-# 回饋服務設定進度
+# 回饋服務部署與驗證
 
-2026-10-25，香港時間。
+2026-10-25，香港時間。來源基準 main e67f73b；任務分支 `codex/feedback-service-setup`。本次已部署後端，未合併／發佈遊戲。
 
-- 基準 main e67f73b；任務分支 codex/feedback-service-setup。
-- 已核對 AGENTS.md、README.md、services/feedback/README.md、Worker 原始碼、Wrangler 設定、接續紀錄及回饋相關待辦。沒有修改正式遊戲或發佈。
-- Alan 已登入 Cloudflare 與 GitHub，並明確批准兩個 90 日 Token（至 2027-01-23）：Cloudflare 目前帳戶 Workers Scripts Edit / Account Settings Read；GitHub 僅 Game-Lab Issues Read and write 與必要 Metadata Read。兩個 Token 已建立，原文不寫入文件或程式碼。
-- Cloudflare Git 建立流程只列出自動建立廣權限 Token，未列出自訂 Token，故沒有按部署，也沒有建立該廣權限 Token。
-- 本環境 shell 無法解析 GitHub／Cloudflare 網域；工作目錄 .git 不可寫。電腦控制拒絕操作 Terminal。改備 GitHub Actions 路線。
-- 已提交 .github/workflows/feedback-worker.yml：僅任務分支相關路徑推送觸發，或手動；contents read；先執行現有 Worker 單元測試，再部署；不發佈遊戲 Pages。部署步驟讀取 FEEDBACK_CLOUDFLARE_API_TOKEN，未有密鑰原文。
-- 下一步待使用者確認將已批准 Cloudflare Token 存入 Game-Lab Actions secret FEEDBACK_CLOUDFLARE_API_TOKEN（新增憑證目的地）。目前 Secret 值未輸入，Worker 未部署、GITHUB_TOKEN／RATE_SALT 未存入 Worker、endpoint 仍空白。
-- 確認後：設定 Actions Secret、核對建置結果並重跑部署；在 Cloudflare 設定 GITHUB_TOKEN 與 RATE_SALT；真實提交及防重複驗證；任務分支更新 endpoint、驗證候選並提 PR。正式遊戲合併／發佈沿既有規範。
-- Token 原文僅留在本次受控瀏覽器操作的暫存變數及一次性顯示頁；若操作狀態遺失，不能假稱仍可讀取，需按實際顯示情況恢復或安全輪替。
+## 已部署、已驗證
+
+- 公開端點：`https://game-lab-feedback.yauchaichan.workers.dev/feedback`。
+- Worker：game-lab-feedback；Durable Object `FEEDBACK_GATE` 與限流 binding `RATE_LIMIT` 已掛上。ALLOWED_ORIGIN 為 `https://yauchai2.github.io`；Workers Logs／Traces 關閉。
+- `GITHUB_TOKEN`、`RATE_SALT` 已存入 Cloudflare 生產環境加密 Secrets。GitHub Token 僅 Game-Lab Issues Read and write／必要 Metadata Read。Cloudflare 部署 Token 僅目前帳戶 Workers Scripts Edit／Account Settings Read，存入 GitHub Actions Secret `FEEDBACK_CLOUDFLARE_API_TOKEN`。
+- Alan 已批准建立兩項 Token，並於要求「部署」後批准新增 GitHub Actions Secret 目的地。兩個 Token 至 2027-01-23 到期；到期前需輪替。私密值沒有寫入儲存庫，操作暫存及一次性顯示頁已清除。
+- [完整成功執行 40188521467](https://github.com/yauchai2/Game-Lab/actions/runs/40188521467)：Worker 單元測試、部署、真實提交、防重複及候選打包均成功。驗證來源 667d8c7。
+- 真實 [測試 Issue #59](https://github.com/yauchai2/Game-Lab/issues/59)，requestId `2fa1b10b-5a07-4922-a531-0e56d78d93d9`。同一請求重試返回同一單號；改內容但沿用 ID 返回409。預檢204、CORS origin正確、外部 origin403、無效輸入400、真實提交200。
+- Actions artifact `feedback-candidate-and-evidence` 包含 `live-smoke.json` 與 `idle-hero-feedback-candidate.html`，保留14日。正式建置仍由版本發佈流程負責。
+
+## 修改範圍與維護
+
+- `.github/workflows/feedback-worker.yml`：contents read；Node24；只在任務分支相關路徑推送或手動執行。先單元測試再部署，部署 Secret 只傳入部署步驟。沒有建立 Cloudflare Git 自動部署的廣權限 Token。
+- `services/feedback/live-smoke.mjs`：真實測試會建立一張公開維護者測試單；只有提交訊息包含 `[live-feedback-test]` 才在自動流程執行，普通部署不會反覆開測試單。不需 GitHub Token，走公開 Worker。
+- `src/game/feedback-config.js`：只更新公開端點，不包含憑證。
+- Worker 程式與原有遊戲表單邏輯未變。
+- 首次工作流測試因 cwd 指向服務目錄，測試寫證據路徑失敗；已於 a3e846d 改從 repo root 執行。之後全部通過。
+
+## 環境限制與替代
+
+本地工作目錄 .git 不可寫，shell 無法解析外部網域；電腦控制拒絕操作 Terminal。Cloudflare Git 部署頁沒有列出自訂 Token，只提供建立更廣權限 Token，因此沒有沿該路線部署。改採已批准的 GitHub Actions 與 Cloudflare Dashboard Secrets，成功完成。
+
+## 下一步／驗證界線
+
+- 後端已接通；正式遊戲 Pages 的 endpoint 仍是舊版本空值。需合併本分支、按現有規範重建正式單檔並確認遊戲版本後發佈，才可宣稱正式站遊戲表單可用。
+- 本次沒有修改 main、gh-pages、tag 或 release，亦沒有動到其他對話的分支。
+- 最終正式站仍需表單端到端驗收；本次是真實公開 HTTP／GitHub 送達驗證，沒有冒稱 Safari 真機驗收。
+- 部署 Token 到期只影響再部署；GitHub 回饋 Token 到期會中止開單。輪替後更新相應 Secret，不需公開原文。
