@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-10-25T00:37:08.428020+00:00",
+  "manifest": {
+    "version": "0.50.0",
+    "commit": "a22aaaf5c39024e42de1fb0da1c4f0e116db185c",
+    "sha256": "7af396f501004f3253e7347abc77fc071c127181418db7bb133b47fbb369d59a",
+    "standalone_sha256": "39252f1dbf8eea6d250e00d0a467aea2b2f578dfc5f462453afad4581c2aa364",
+    "assets": {
+      "vendor.170c6789f43217c9.js": "170c6789f43217c96b3170f4b42fafe135de7f7cd48497a4218f9757ee1d49fa",
+      "game.5a412c4011599bf9.js": "5a412c4011599bf9c165913696011ef886c64d4a88fa600102d3c9f38294a6e4"
+    }
+  },
+  "verified": {
+    "index.html": {
+      "sha256": "7af396f501004f3253e7347abc77fc071c127181418db7bb133b47fbb369d59a",
+      "bytes": 249310
+    },
+    "vendor.170c6789f43217c9.js": {
+      "sha256": "170c6789f43217c96b3170f4b42fafe135de7f7cd48497a4218f9757ee1d49fa",
+      "bytes": 669884
+    },
+    "game.5a412c4011599bf9.js": {
+      "sha256": "5a412c4011599bf9c165913696011ef886c64d4a88fa600102d3c9f38294a6e4",
+      "bytes": 15686055
+    }
+  },
+  "release_url": "https://github.com/yauchai2/Game-Lab/releases/tag/v0.50.0",
+  "asset_digest": "sha256:39252f1dbf8eea6d250e00d0a467aea2b2f578dfc5f462453afad4581c2aa364",
+  "asset_bytes": 16606095,
+  "asset_id": 673698852,
+  "tag_source": "a22aaaf5c39024e42de1fb0da1c4f0e116db185c",
+  "pages_commit": "1111a86f712fea6ad6f6ce5970df29943c446281",
+  "pages_status": "built",
+  "asset_verification": "GitHub API digest and size match tested standalone; attachment redirect not downloaded",
+  "release_run": 40147334072,
+  "pages_run": 40147329463
+}
