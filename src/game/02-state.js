@@ -24,7 +24,7 @@ const TREE = (() => {
 const G = {
   unread:{skills:[],gear:[],cores:[],gems:[],carts:[],maps:[],boards:[]},summons:[],airSupply:null,airBuffs:[],damageLog:[],deathReport:null,
   ascension:null,ascensionNodes:[],circuits:['pocket'],circuitLayouts:{},circuitPity:0,storyFlags:{},city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
-  coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:false, storageRecycled:0, whUp:0, offUp:0, chips:0, equip:Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null])), armory:{}, equipBackup:{}, deferChoices:false, gemTier:{}, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
+  skillCollectionVersion:1,skillBooks:{},skillPity:0,coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:false, storageRecycled:0, whUp:0, offUp:0, chips:0, equip:Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null])), armory:{}, equipBackup:{}, deferChoices:false, gemTier:{}, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
   pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
   h:{ x:HX, y:HY, vx:0, vy:0, gx:HX, gy:HY, aiT:0, mv:0, hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
   lgK:0, lgC:0, mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
@@ -71,7 +71,7 @@ const TIER_NAME = ['', 'Ⅱ', 'Ⅲ'];
 function normTier(){ const t = {}; for (const id of Object.keys(SUPPS)){ const a = G.gemTier && G.gemTier[id]; if (!Array.isArray(a)) continue; const tot = G.gems[id] || 0; const n3 = Math.min(Math.max(0, a[1] | 0), tot), n2 = Math.min(Math.max(0, a[0] | 0), tot - n3); if (n2 || n3) t[id] = [n2, n3]; } G.gemTier = t; }
 const passPoints = () => Math.max(0,talentBudget()-G.pass.length);
 const nodeOpen = id => !G.pass.includes(id) && id !== 'S' && TREE[id].links.some(l => l === 'S' || G.pass.includes(l));
-const biomeNow = () => G.run ? G.run.map.biome : Math.floor((G.depth - 1)/4) % BIOMES.length;
+const biomeNow = () => G.run ? G.run.map.biome : (typeof towerNormalBiome==='function'?towerNormalBiome(Math.floor((G.depth-1)/4)):Math.floor((G.depth-1)/4)%BIOMES.length);
 const lvlNow = () => G.run ? G.run.map.lvl : G.depth;
 const runQ = () => G.run ? G.run.map.mods.reduce((a, m) => a + MODS[m].q, 0) : 0;
 
@@ -137,7 +137,7 @@ function restoreEquipment(slot){
 }
 function makeMap(lvl){
   const keys = Object.keys(MODS).sort(() => Math.random() - .5).slice(0, 2 + Math.floor(Math.random()*3));
-  return { id:Math.random().toString(36).slice(2, 8), lvl, biome:Math.floor(Math.random()*BIOMES.length), mods:keys };
+  return { id:Math.random().toString(36).slice(2, 8), lvl, biome:Math.floor(Math.random()*(typeof TOWER_BIOME_START==='number'?TOWER_BIOME_START:BIOMES.length)), mods:keys };
 }
 
 /* ---------- 目標 ---------- */
@@ -243,11 +243,11 @@ const xpNeed = L => Math.round(30 * Math.pow(1.32, L-1));
 function logLine(txt, col){ if (G.offline) return; if (typeof bossPush === 'function') bossPush(txt, col && col.length === 7 && col.toLowerCase() === '#2b2552' ? null : col, 'INFO'); G.log.unshift({ txt, col:col || '#2b2552' }); if (G.log.length > 9) G.log.pop(); G.dirty = true; }
 function addFloat(x, y, z, txt, col, size=3.6, kind='event'){ if (G.offline) return; if(G.floats.length>=20)G.floats.shift(); G.floats.push({ x, y, z, txt, col, size, kind, t:0 }); }
 const PICKUP_RANGE = 26;   // 撿取範圍：範圍內開始吸附，物件本體抵達後結算，距離不改
-function addFx(e){ if (!G.offline&&G.fx.length<(viewEffectsReduced()?14:64)) G.fx.push(e); }
+function addFx(e){if(G.offline)return;const cap=viewEffectsReduced()?14:64;if(G.fx.length>=cap&&e.sustained){const i=G.fx.findIndex(f=>!f.sustained);if(i>=0)G.fx.splice(i,1);}if(G.fx.length<cap)G.fx.push(e);}
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
-function serialize(){ return { v:2,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
+function serialize(){ return { v:2,towerRoomVersion:1,skillCollectionVersion:1,skillBooks:G.skillBooks||{},skillPity:G.skillPity||0,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
 function migrateEquipmentSlots(input){
@@ -287,6 +287,7 @@ function applySave(o){
   if (o.board && o.board.pieces) sanitizeBoard(o.board); else boardFromLegacy(o.slots || ['FIRE'], o.supp);
   G.ascension=typeof ASCENSIONS!=='undefined'&&ASCENSIONS[G.char]?.some(a=>a.id===o.ascension)?o.ascension:null;G.ascensionNodes=typeof ascensionCleanNodes==='function'?ascensionCleanNodes(G.ascension,o.ascensionNodes):[];G.circuits=Array.isArray(o.circuits)?o.circuits:['pocket',G.board.template];G.circuitLayouts=o.circuitLayouts&&typeof o.circuitLayouts==='object'?Object.fromEntries(Object.entries(o.circuitLayouts).filter(([id])=>Object.hasOwn(GridLab.TEMPLATES,id)).map(([id,b])=>[id,GridLab.adopt({...b,template:id})])):{};G.circuitPity=Math.max(0,Math.min(3,+o.circuitPity||0));if(typeof cleanCircuitInventory==='function')cleanCircuitInventory();
   loadProgression(o);if(typeof seasonRunValid==='function'){if(G.run?.city&&!seasonRunValid(G.run.city))G.run=null;cleanTowerStair(G.run);}
+  if(typeof skillCollectionMigrate==='function')skillCollectionMigrate(o);if(G.run?.tower){G.run.map.biome=towerBiome(G.run.floor);if(o.towerRoomVersion!==1)for(const d of G.drops){const p=terrainProject(d.x,d.y),dist=Math.hypot(p[0]-HX,p[1]-HY)||1;[d.x,d.y]=terrainProject(HX+(p[0]-HX)*Math.min(1,24/dist),HY+(p[1]-HY)*Math.min(1,24/dist));}}
   normalizeBuilds(uidConflicts);recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
 function saveGame(){if(G.__wipe)return false;try{if(typeof rankCheck==='function')rankCheck();if(typeof profileSave==='function')return profileSave();localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));return true;}catch(e){return false;}}
@@ -333,7 +334,7 @@ function collectEquipment(it){
 
   G.off&&(G.off.stored=(G.off.stored||0)+1);G.dirty=true;return true;
 }
-const validDrop=d=>!!(d&&Number.isFinite(d.x)&&Number.isFinite(d.y)&&(d.kind==='boost'?['power','guard'].includes(d.boost):d.kind==='circuit'?Object.hasOwn(GridLab.TEMPLATES,d.id):['gold','chip'].includes(d.kind)?Number.isFinite(d.amount)&&d.amount>0:d.kind==='item'?validGear(d.it):d.kind==='gem'?SUPPS[d.id]:d.kind==='cart'?MODES[d.id]:d.kind==='map'?d.map&&BIOMES[d.map.biome]:false));
+const validDrop=d=>!!(d&&Number.isFinite(d.x)&&Number.isFinite(d.y)&&(d.kind==='boost'?['power','guard'].includes(d.boost):d.kind==='skill'?Object.hasOwn(SKILLS,d.id):d.kind==='circuit'?Object.hasOwn(GridLab.TEMPLATES,d.id):['gold','chip'].includes(d.kind)?Number.isFinite(d.amount)&&d.amount>0:d.kind==='item'?validGear(d.it):d.kind==='gem'?SUPPS[d.id]:d.kind==='cart'?MODES[d.id]:d.kind==='map'?d.map&&BIOMES[d.map.biome]:false));
 function dropGround(d){
   [d.x,d.y]=terrainProject(d.x,d.y);
   if(d.kind==='gold'||d.kind==='chip'){
@@ -512,15 +513,15 @@ function terrainHash(text){let n=2166136261;for(const c of String(text))n=Math.i
 function terrainKey(){const r=G.run;return G.train?'training':r?.map?'map:'+r.map.id+':'+(r.city?.stage??r.floor??0):'depth:'+G.depth;}
 let TERRAIN_CACHE=null;
 function terrainBuild(key){
-  const seed=terrainHash(key),training=key==='training',profile=training?0:seed%12,cell=6;
+  const seed=terrainHash(key),training=key==='training',tower=key.startsWith('map:tower:'),room=tower?towerTheme(+key.split(':').at(-1)):null,profile=tower?11:training?0:seed%12,cell=6;
   // Rounded land masses with low-frequency coast variation, never letter-shaped cut-outs.
-  const sizeRoll=(seed>>>16)%12,sizeClass=training?'training':sizeRoll===0?'giant':sizeRoll<3?'large':sizeRoll<7?'medium':'regular';
-  const shapeRoll=(seed>>>24)%5,shapeClass=training||shapeRoll===0?'square':shapeRoll===1?'rectangle':'natural';
+  const sizeRoll=(seed>>>16)%12,sizeClass=tower?'regular':training?'training':sizeRoll===0?'giant':sizeRoll<3?'large':sizeRoll<7?'medium':'regular';
+  const shapeRoll=(seed>>>24)%5,shapeClass=tower||training||shapeRoll===0?'square':shapeRoll===1?'rectangle':'natural';
   const span=sizeClass==='giant'?540+(seed>>>5)%19*6:sizeClass==='large'?330+(seed>>>5)%9*6:sizeClass==='medium'?246+(seed>>>5)%7*6:144+(seed>>>5)%9*6;
-  const nx=training?17:Math.round(span/cell),ny=training?17:Math.round(span*(shapeClass==='square'?1:.78+(seed>>>11)%23/100)/cell);
+  const nx=tower?23:training?17:Math.round(span/cell),ny=tower?19:training?17:Math.round(span*(shapeClass==='square'?1:.78+(seed>>>11)%23/100)/cell);
   const ox=HX-Math.floor(nx/2)*cell-cell/2,oy=HY-Math.floor(ny/2)*cell-cell/2,w=nx*cell/2,h=ny*cell/2;
   const names=['林間海岸','起伏山丘','寬闊河灣','高原盆地','海岸台地','城市綠洲','山麓營地','古城廣場','風車高地','雪嶺低谷','石柱遺跡','工業庭院'];
-  const clearRadius=training?24:Math.max(34,Math.min(56,Math.min(w,h)*.34));
+  const clearRadius=tower?20:training?24:Math.max(34,Math.min(56,Math.min(w,h)*.34));
   const groundCells=[],lookup=new Map();
   for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
     const x=ox+(i+.5)*cell,y=oy+(j+.5)*cell,u=(x-HX)/w,v=(y-HY)/h,angle=Math.atan2(v,u);
@@ -530,11 +531,12 @@ function terrainBuild(key){
   }
   const groundLookup=new Map(lookup),landmarks=[];
   const pick=(index)=>groundCells[terrainHash(key+':'+index)%groundCells.length];
-  const count=training?0:Math.min(64,Math.round(groundCells.length/110)+3);
+  const count=tower?6:training?0:Math.min(64,Math.round(groundCells.length/110)+3);
   for(let n=0;n<count*12&&landmarks.length<count;n++){
     const c=pick(n),urban=[5,7,11].includes(profile),variant=terrainHash(key+':object:'+n);
-    const family=profile===7?['cabin','pavilion','tree','building']:profile===11?['warehouse','building','tree','pavilion']:urban?['building','building','tree','pavilion']:profile===8?['windmill','tree','boulder','cabin']:profile===10?['ruin','boulder','tree','ruin']:profile===6?['tree','cabin','tree','boulder']:['tree','tree','boulder','tree'];
-    const kind=family[landmarks.length%family.length],radius=kind==='warehouse'?16:kind==='building'?13:kind==='cabin'?9:kind==='ruin'?9:kind==='pavilion'?8:kind==='windmill'?7:kind==='boulder'?12:3;
+    const family=tower?({prison:['cellblock','barrier','cellblock','console'],lab:['labtank','console','labtank','vent'],reactor:['generator','vent','server','generator']}[room.id]):profile===7?['cabin','pavilion','tree','building']:profile===11?['warehouse','building','tree','pavilion']:urban?['building','building','tree','pavilion']:profile===8?['windmill','tree','boulder','cabin']:profile===10?['ruin','boulder','tree','ruin']:profile===6?['tree','cabin','tree','boulder']:['tree','tree','boulder','tree'];
+    const kind=family[landmarks.length%family.length],radius=tower?6:kind==='warehouse'?16:kind==='building'?13:kind==='cabin'?9:kind==='ruin'?9:kind==='pavilion'?8:kind==='windmill'?7:kind==='boulder'?12:3;
+    if(tower&&Math.hypot(c.x-HX-22,c.y-HY+18)<radius+16)continue;
     if(Math.hypot(c.x-HX,c.y-HY)<clearRadius+radius+7||Math.hypot((c.x-HX)/w,(c.y-HY)/h)>.79)continue;
     if(landmarks.some(o=>Math.hypot(o.x-c.x,o.y-c.y)<o.radius+radius+12))continue;
     const scale=kind==='tree'?2.4+(variant%22)/10:1;
@@ -546,7 +548,7 @@ function terrainBuild(key){
   const cells=groundCells.filter(c=>seen.has(c.k));for(const k of lookup.keys())if(!seen.has(k))lookup.delete(k);
   const edges=cells.filter(c=>[[1,0],[-1,0],[0,1],[0,-1]].some(([di,dj])=>{const i=c.i+di,j=c.j+dj;return i<0||i>=nx||j<0||j>=ny||!groundLookup.has(j*nx+i);}));
   const bounds=[Math.min(...groundCells.map(c=>c.x))-3,Math.max(...groundCells.map(c=>c.x))+3,Math.min(...groundCells.map(c=>c.y))-3,Math.max(...groundCells.map(c=>c.y))+3];
-  return {key,seed,profile,sizeClass,shapeClass,clearRadius,name:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:training?0:[24,48,20,58,36,10,54,12,48,72,46,14][profile]};
+  return {key,seed,profile,sizeClass,shapeClass,clearRadius,name:tower?room.n:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:tower||training?0:[24,48,20,58,36,10,54,12,48,72,46,14][profile]};
 }
 
 function terrainNow(){const key=terrainKey();if(TERRAIN_CACHE?.key!==key)TERRAIN_CACHE=terrainBuild(key);return TERRAIN_CACHE;}
@@ -605,6 +607,7 @@ function terrainSpawnPoints(){
 }
 
 function terrainScenery(p=terrainNow()){
+ if(p.key.startsWith('map:tower:'))return p.landmarks;
   if(p.key==='training')return [];const out=p.landmarks.map(o=>({...o})),occupied=(x,y,r)=>p.landmarks.some(o=>Math.hypot(o.x-x,o.y-y)<o.radius+r+4);
   const count=Math.min(260,Math.round(p.groundCells.length*.15));
   for(let i=0;i<count;i++){const c=p.cells[terrainHash(p.key+':detail:'+i)%p.cells.length];if(Math.hypot(c.x-HX,c.y-HY)<p.clearRadius+5||occupied(c.x,c.y,3))continue;

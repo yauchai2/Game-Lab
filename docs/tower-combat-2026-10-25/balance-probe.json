@@ -1,0 +1,293 @@
+{
+  "method": "Four jobs, identical RNG seed, generated rare ilvl30 gear, manually routed three basic skills without supports or ascensions; 240s normal combat then 120s tower if depth8 earned. Offline flag suppresses visuals and uses offline reward rules. No authoritative player telemetry or real-device FPS.",
+  "rows": [
+    {
+      "job": "戰士",
+      "initial": {
+        "life": 1295,
+        "directDps": 2119.968553846154
+      },
+      "normal": {
+        "depth": 11,
+        "deaths": 0,
+        "level": 35
+      },
+      "tower": {
+        "floor": 12,
+        "best": 11,
+        "deaths": 0
+      }
+    },
+    {
+      "job": "樂師",
+      "initial": {
+        "life": 1295,
+        "directDps": 2083.8119756043957
+      },
+      "normal": {
+        "depth": 12,
+        "deaths": 0,
+        "level": 35
+      },
+      "tower": {
+        "floor": 11,
+        "best": 10,
+        "deaths": 0
+      }
+    },
+    {
+      "job": "獵手",
+      "initial": {
+        "life": 1295,
+        "directDps": 2131.8888728571424
+      },
+      "normal": {
+        "depth": 11,
+        "deaths": 0,
+        "level": 35
+      },
+      "tower": {
+        "floor": 12,
+        "best": 11,
+        "deaths": 0
+      }
+    },
+    {
+      "job": "寵機師",
+      "initial": {
+        "life": 1295,
+        "directDps": 2107.4677021978023
+      },
+      "normal": {
+        "depth": 11,
+        "deaths": 0,
+        "level": 35
+      },
+      "tower": {
+        "floor": 13,
+        "best": 12,
+        "deaths": 0
+      }
+    }
+  ],
+  "bossAcquisition": {
+    "advanced": 201,
+    "rare": 34,
+    "drops": 235,
+    "opportunities": 400
+  },
+  "skills": [
+    {
+      "id": "FIRE",
+      "name": "灼熱電池",
+      "access": "等級開放",
+      "cooldown": 2.6,
+      "multiplier": 2.6,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 1
+    },
+    {
+      "id": "FROST",
+      "name": "冷氣爆發",
+      "access": "等級開放",
+      "cooldown": 4.2,
+      "multiplier": 1.9,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.45238095238095233
+    },
+    {
+      "id": "CHAIN",
+      "name": "紅外線連鎖",
+      "access": "等級開放",
+      "cooldown": 3.2,
+      "multiplier": 2.3,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.7187499999999999
+    },
+    {
+      "id": "METEOR",
+      "name": "流星衛星",
+      "access": "稀有圖紙",
+      "cooldown": 8,
+      "multiplier": 6.2,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.775
+    },
+    {
+      "id": "PULSE",
+      "name": "重低音砲",
+      "access": "等級開放",
+      "cooldown": 5,
+      "multiplier": 2.2,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.44000000000000006
+    },
+    {
+      "id": "MAGNET",
+      "name": "超強磁石",
+      "access": "等級開放",
+      "cooldown": 6,
+      "multiplier": 1.5,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.25
+    },
+    {
+      "id": "SPAM",
+      "name": "迷惑郵件",
+      "access": "等級開放",
+      "cooldown": 3.6,
+      "multiplier": 1.1,
+      "directFactor": 6,
+      "relativeDirectPerSecond": 1.8333333333333335
+    },
+    {
+      "id": "FLICKER",
+      "name": "連拍閃擊",
+      "access": "等級開放",
+      "cooldown": 3.4,
+      "multiplier": 1.7,
+      "directFactor": 3.5,
+      "relativeDirectPerSecond": 1.75
+    },
+    {
+      "id": "BEAM",
+      "name": "雷射指示棒",
+      "access": "等級開放",
+      "cooldown": 5.5,
+      "multiplier": 4.5,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.8181818181818182
+    },
+    {
+      "id": "DISC",
+      "name": "回帶飛盤",
+      "access": "進階圖紙",
+      "cooldown": 3.8,
+      "multiplier": 2.2,
+      "directFactor": 1.65,
+      "relativeDirectPerSecond": 0.9552631578947368
+    },
+    {
+      "id": "COIL",
+      "name": "街角線圈",
+      "access": "進階圖紙",
+      "cooldown": 6,
+      "multiplier": 1.2,
+      "directFactor": 4,
+      "relativeDirectPerSecond": 0.7999999999999999
+    },
+    {
+      "id": "ORBIT",
+      "name": "磁帶環刃",
+      "access": "進階圖紙",
+      "cooldown": 5.8,
+      "multiplier": 1.25,
+      "directFactor": 3,
+      "relativeDirectPerSecond": 0.646551724137931
+    },
+    {
+      "id": "RAIL",
+      "name": "軌道放電",
+      "access": "進階圖紙",
+      "cooldown": 4.8,
+      "multiplier": 4.2,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.8750000000000001
+    },
+    {
+      "id": "DEFRAG",
+      "name": "碎片清除",
+      "access": "稀有圖紙",
+      "cooldown": 5,
+      "multiplier": 2.9,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.58
+    },
+    {
+      "id": "RELAY",
+      "name": "中繼崩解",
+      "access": "進階圖紙",
+      "cooldown": 7,
+      "multiplier": 2.4,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.34285714285714286
+    },
+    {
+      "id": "SWARM",
+      "name": "口袋蜂群",
+      "access": "進階圖紙",
+      "cooldown": 14,
+      "multiplier": 0.8,
+      "directFactor": 0,
+      "relativeDirectPerSecond": 0
+    },
+    {
+      "id": "GUARDIAN",
+      "name": "重型護衛",
+      "access": "稀有圖紙",
+      "cooldown": 18,
+      "multiplier": 2.1,
+      "directFactor": 0,
+      "relativeDirectPerSecond": 0
+    },
+    {
+      "id": "ARROWS",
+      "name": "電磁箭雨",
+      "access": "稀有圖紙",
+      "cooldown": 8.5,
+      "multiplier": 3.8,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.44705882352941173
+    },
+    {
+      "id": "GIANTBLADE",
+      "name": "巨型光刃",
+      "access": "稀有圖紙",
+      "cooldown": 10,
+      "multiplier": 5.4,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.54
+    },
+    {
+      "id": "OVERTURE",
+      "name": "失真終章",
+      "access": "稀有圖紙",
+      "cooldown": 6.8,
+      "multiplier": 1.5,
+      "directFactor": 3,
+      "relativeDirectPerSecond": 0.6617647058823529
+    },
+    {
+      "id": "RIFT",
+      "name": "稜鏡斷層",
+      "access": "進階圖紙",
+      "cooldown": 7.2,
+      "multiplier": 4.2,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.5833333333333334
+    },
+    {
+      "id": "RESONANCE",
+      "name": "低頻震盪",
+      "access": "稀有圖紙",
+      "cooldown": 9,
+      "multiplier": 4.6,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.5111111111111111
+    },
+    {
+      "id": "GRAVITY",
+      "name": "引力封鎖",
+      "access": "稀有圖紙",
+      "cooldown": 11,
+      "multiplier": 3.6,
+      "directFactor": 1,
+      "relativeDirectPerSecond": 0.32727272727272727
+    }
+  ],
+  "limits": [
+    "Short deterministic sample; not long-term or optimal-build balance.",
+    "Summons deliberately excluded from direct-only preview; compare actual damage telemetry when tuning.",
+    "Rare skills trade sustained area or control for direct damage; rarity does not guarantee higher DPS."
+  ]
+}

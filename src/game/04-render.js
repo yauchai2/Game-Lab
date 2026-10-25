@@ -320,9 +320,11 @@ function bake(g){   // 把靜態場景依材質合併成少數幾個網格，上
   return out;
 }
 const stoneM = () => m3('#d6d0ea');
-function buildPortal(){const g=new T3.Group();g.userData={glows:[],rings:[]};return g;}
+function buildPortal(){
+ if(G.run?.tower)return buildTowerExit();const g=new T3.Group();g.userData={glows:[],rings:[]};return g;}
 
 function buildWorldScenery(bi){
+ if(G.run?.tower)return buildTowerRoom(terrainNow(),towerTheme());
   const p=terrainNow(),root=new T3.Group(),small=new T3.Group(),occluders=[],shared=new Set(Object.values(G_));
   function merge(g){const out=bake(g);g.traverse(o=>{if(o.isMesh&&!shared.has(o.geometry))o.geometry.dispose();});return out;}
   for(const prop of terrainScenery(p)){
@@ -417,11 +419,12 @@ function buildWorldGrass(bi){
 
 /* ---------- 掉落物 ---------- */
 function buildDrop(d){
-  const g = new T3.Group(), col = d.kind==='boost'?'#80cebd':d.kind==='circuit'?'#80cebd':d.kind === 'gem' ? GEM_COL[d.id]||'#a87bf0' : d.kind === 'cart' ? '#3fd0ee' : d.kind === 'map' ? BIOMES[d.map.biome].glow : d.kind==='gold'?'#e4ba58':d.kind==='chip'?'#62c8ce':RAR[d.it.r].g, rare = !['gold','chip'].includes(d.kind)&&(d.kind !== 'item' || d.it.r >= 2), item = new T3.Group(); g.add(item); g.userData.item = item;
+  const g = new T3.Group(), col = d.kind==='skill'?SKILLS[d.id].col:d.kind==='boost'?'#80cebd':d.kind==='circuit'?'#80cebd':d.kind === 'gem' ? GEM_COL[d.id]||'#a87bf0' : d.kind === 'cart' ? '#3fd0ee' : d.kind === 'map' ? BIOMES[d.map.biome].glow : d.kind==='gold'?'#e4ba58':d.kind==='chip'?'#62c8ce':RAR[d.it.r].g, rare = !['gold','chip'].includes(d.kind)&&(d.kind !== 'item' || d.it.r >= 2), item = new T3.Group(); g.add(item); g.userData.item = item;
   if(d.kind==='boost'){mk(new T3.BoxGeometry(4,3,3),m3('#adc7ce'),0,2,0,item);mk(new T3.BoxGeometry(1,3.2,3.2),m3(d.boost==='power'?'#d7a76b':'#80cebd'),0,2,0,item);}
   else if(d.kind==='circuit'){mk(new T3.BoxGeometry(3,.4,3),m3('#294858'),0,1.5,0,item);for(const x of[-.8,0,.8])mk(new T3.BoxGeometry(.35,.2,2.2),m3('#80cebd'),x,1.85,0,item);}
   else if (d.kind === 'cart'){ mk(new T3.BoxGeometry(2.6, 3.2, .9), m3(col, { emissive:col, emissiveIntensity:.3 }), 0, 2.4, 0, item); mk(new T3.BoxGeometry(1.6, .9, 1.1), m3('#fff0c0'), 0, 3.2, 0, item); }
   else if (d.kind === 'gem') mk(new T3.OctahedronGeometry(1.7, 0), m3(col, { emissive:col, emissiveIntensity:.25 }), 0, 2.2, 0, item);
+  else if(d.kind==='skill'){mk(roundedG(3,.6,4),m3('#b8c9d5'),0,2,0,item);mk(roundedG(2,.1,2.8),m3(SKILLS[d.id].col),0,2.4,0,item);}
   else if (d.kind === 'map'){ mk(cylG(.9, .9, 4.4, 6), m3('#fff0c0'), 0, 1.6, 0, item).rotation.z = Math.PI/2; for (const sx of [-2.3, 2.3]) mk(ico(.7, 0), m3('#ffd35a'), sx, 1.6, 0, item); mk(ico(.7, 0), m3(BIOMES[d.map.biome].portal, { emissive:col, emissiveIntensity:.4 }), 0, 2.6, 0, item); }
   else if(d.kind==='gold'){mk(cylG(1.4,1.4,.6,6),m3('#e4ba58'),0,1,0,item).rotation.z=.2;}
   else if(d.kind==='chip'){mk(new T3.BoxGeometry(2.8,.5,2.8),m3('#62c8ce'),0,1,0,item);mk(new T3.BoxGeometry(1.3,.6,1.3),m3('#24364d'),0,1.5,0,item);}
@@ -472,7 +475,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   if(typeof GAME_VIEW!=='undefined'&&GAME_VIEW.prefs.shake===false){FXO.shake=0;FXO.punch=0;}
   FXO.yaw += (FXO.yawT - FXO.yaw)*Math.min(1, fdt*8); FXO.zoom += (FXO.zoomT - FXO.zoom)*Math.min(1, fdt*8); FXO.shake *= Math.pow(.0008, fdt); FXO.punch *= Math.pow(.003, fdt); FXO.flash *= Math.pow(.02, fdt);
   { const o = document.getElementById('fxo'), low = G.st && G.h.hp < G.st.life*.3 && G.h.dead <= 0, a = viewEffectsReduced()?0:Math.max(FXO.flash, low ? .22 + .08*Math.sin(now/180) : 0); if (o){ o.style.opacity = a > .01 ? a.toFixed(2) : 0; o.style.background = `radial-gradient(ellipse at center, ${FXO.flash>.05?'color-mix(in srgb, '+FXO.fc+' 16%, transparent)':'transparent'} 0%, transparent 45%, ${FXO.flash > .12 || !low ? FXO.fc : '#ff2a50'} 140%)`; } }
-  const plan=terrainNow(),framing=terrainCameraWindow(plan,innerWidth,!!FXO.overview),focus=framing.follow?{x:G.h.x,y:G.h.y}:{x:HX,y:HY};
+  const plan=terrainNow(),framing=terrainCameraWindow(plan,innerWidth,!!FXO.overview),focus=G.run?.stair?{x:G.h.x,y:G.h.y}:framing.follow?{x:G.h.x,y:G.h.y}:{x:HX,y:HY};if(G.run?.stair&&!G.run.stair.reduced){framing.follow=true;framing.view=90;}
   R3.focusX=R3.focusX??focus.x;R3.focusY=R3.focusY??focus.y;
   R3.focusX+=(focus.x-R3.focusX)*Math.min(1,fdt*4);R3.focusY+=(focus.y-R3.focusY)*Math.min(1,fdt*4);
   const cam = R3.cam, tgt = new T3.Vector3(R3.focusX,BZ+terrainHeight(R3.focusX,R3.focusY,plan)+6,R3.focusY); cam.position.copy(tgt).add((innerHeight > innerWidth ? new T3.Vector3(.34, .8, 1) : new T3.Vector3(1, .86, 1)).normalize().applyAxisAngle(new T3.Vector3(0, 1, 0), FXO.yaw).multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
@@ -578,7 +581,7 @@ function updateFx(){
   };
   const sph=geo('fxs',()=>ico(1,1)),disc=geo('fxd',()=>new T3.CircleGeometry(1,20).rotateX(-Math.PI/2)),ring=geo('fxr',()=>new T3.RingGeometry(.83,1,24).rotateX(-Math.PI/2)),box=geo('fxf',()=>new T3.BoxGeometry(1,.25,1));
   const warnings=G.mons.filter(m=>!m.dead&&m.warning&&!(m.frozen>0)).map(m=>({k:'danger',...m.warning,t:1-m.warning.t/m.warning.duration,col:m.boss?'#c45b64':'#c87e48'}));
-  for(const e of warnings.concat(G.fx)){const fade=1-e.t;
+  for(const e of warnings.concat(G.fx.filter(e=>e.sustained),G.fx.filter(e=>!e.sustained))){const fade=1-e.t;
     if(renderSpectacleFx(e,add,geo))continue;
     if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}
     if(e.k==='danger'){
@@ -664,7 +667,7 @@ function scene(){
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
-  for (const m of G.mons){ const g = entFor(m, () => m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g); }
+  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? buildSlime() : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
@@ -782,10 +785,31 @@ function renderSupportWorld(){
 }
 function renderSpectacleFx(e,add,geo){
  const reduced=viewEffectsReduced();
- if(e.k==='arrowstorm'){const n=reduced?5:24;for(let i=0;i<n;i++){const a=i*2.399,r=5+((i*17)%25),x=e.x+Math.cos(a)*r,y=e.y+Math.sin(a)*r,fall=Math.max(0,Math.min(1,(e.t-.25-(i%3)*.04)/.5)),o=add(geo('arrowshaft',()=>new T3.CylinderGeometry(.28,.28,13,4)),e.col,1-e.t*.5,x,y,BZ+8+(1-fall)*65);o.rotation.z=-.16;add(geo('arrowtip',()=>new T3.ConeGeometry(1.2,4,4)),e.col,1-e.t*.5,x,y,BZ+2+(1-fall)*65);}return true;}
- if(e.k==='giantblade'){const u=reduced?Math.min(1,e.t*1.5):Math.max(0,Math.min(1,(e.t-.35)/.4)),z=BZ+20+(1-u)*75,o=add(geo('giantblade',()=>new T3.BoxGeometry(5,45,1.5)),e.col,1-e.t*.4,e.x,e.y,z);o.rotation.z=(1-u)*-.6;const h=add(geo('giantguard',()=>new T3.BoxGeometry(18,3,3)),'#d9eaf1',1-e.t*.4,e.x,e.y,z+19);h.rotation.z=o.rotation.z;add(geo('giantgrip',()=>new T3.CylinderGeometry(1.3,1.3,13,6)),'#334b65',1-e.t*.4,e.x,e.y,z+27);return true;}
+ if(e.k==='arrowstorm'){const n=reduced?6:24;for(let i=0;i<n;i++){const a=i*2.399,r=5+((i*17)%25),phase=(e.t*6+i/n)%1,z=BZ+3+(1-phase)*78,x=e.x+Math.cos(a)*r,y=e.y+Math.sin(a)*r,fade=Math.min(1,(1-e.t)*7);const o=add(geo('arrowshaft',()=>new T3.CylinderGeometry(.3,.3,14,4)),e.col,fade,x,y,z+8);o.rotation.z=-.16;add(geo('arrowtip',()=>new T3.ConeGeometry(1.4,4,4)),e.col,fade,x,y,z);}return true;}
+ if(e.k==='giantblade'){const u=Math.max(0,Math.min(1,(e.t-.28)/.22)),angle=(1-u)*-.7,z=BZ+46+(1-u)*60,fade=Math.min(1,(1-e.t)*5),o=add(geo('giantblade2',()=>new T3.BoxGeometry(9,78,2.5)),e.col,fade,e.x,e.y,z);o.rotation.z=angle;for(const[k,dy]of[['guard',35],['grip',49],['tip',-45]]){const geom=k==='guard'?geo('giantguard2',()=>new T3.BoxGeometry(34,5,5)):k==='grip'?geo('giantgrip2',()=>new T3.CylinderGeometry(2,2,22,6)):geo('gianttip2',()=>new T3.ConeGeometry(6,12,4)),q=add(geom,k==='guard'?'#d9eaf1':k==='grip'?'#334b65':e.col,fade,e.x-Math.sin(angle)*dy,e.y,z+Math.cos(angle)*dy);q.rotation.z=angle+(k==='tip'?Math.PI:0);}return true;}
+ if(e.k==='riftfield'){for(let i=0;i<3;i++){const u=Math.max(0,Math.min(1,(e.t-i*.18)*2)),offset=(i-1)*12,x=e.x+Math.cos(e.angle)*offset,y=e.y+Math.sin(e.angle)*offset,q=add(geo('riftblade',()=>new T3.OctahedronGeometry(1,0)),e.col,(1-e.t)*.8,x,y,BZ+6+Math.sin(u*Math.PI)*10);q.scale.set(3,6+Math.sin(u*Math.PI)*12,1.5);q.rotation.z=e.angle;}return true;}
+ if(e.k==='resonance'||e.k==='gravitywell'){const ring=geo('signalring',()=>new T3.TorusGeometry(1,.035,4,32).rotateX(Math.PI/2)),n=reduced?2:5;for(let i=0;i<n;i++){const phase=(e.t*(e.k==='resonance'?4:2)+i/n)%1,r=e.k==='gravitywell'?24*(1-phase):8+phase*28,q=add(ring,e.col,(1-phase)*(1-e.t),e.x,e.y,BZ+.8+i*.4,r);if(e.k==='gravitywell')q.rotation.z=.1*Math.sin(e.t*8+i);}return true;}
  if(e.k==='musicwave'){const n=reduced?3:9;for(let i=0;i<n;i++){const along=e.t*45,x=e.x+Math.cos(e.angle)*along+Math.sin(e.angle)*((i%3)-1)*5,y=e.y+Math.sin(e.angle)*along-Math.cos(e.angle)*((i%3)-1)*5,z=BZ+5+Math.sin(e.t*7+i)*3+i%3*4;add(geo('noteball',()=>new T3.OctahedronGeometry(1.2,0)),e.col,1-e.t,x,y,z);add(geo('notestem',()=>new T3.BoxGeometry(.5,6,.5)),e.col,1-e.t,x+1,y,z+3);}return true;}
  return false;
 }
 
-function buildTowerStairs(){const g=new T3.Group(),shell=m3('#8799ae'),trim=m3('#d9e7ed'),light=m3('#80cebd');for(let i=0;i<6;i++){mk(roundedG(9,1.4,2.3),i%2?shell:trim,0,1+i*1.5,5-i*2,g);mk(roundedG(8,.14,.3),light,0,1.8+i*1.5,6-i*2,g);}for(const x of[-5,5]){mk(curvedPipe([[x,3,7],[x,7,1],[x,12,-6]],.35),trim,0,0,0,g);for(const z of[5,-5])mk(new T3.CylinderGeometry(.25,.25,5,6),shell,x,z<0?8:3.5,z,g);}return bake(g);}
+function buildTowerStairs(){const g=new T3.Group(),shell=m3('#718799'),trim=m3('#c8dce0'),light=m3('#80cebd',{emissive:'#80cebd',emissiveIntensity:.5});for(let i=0;i<8;i++){mk(roundedG(13,1.8,2.5),shell,0,1+i*2,7-i*2,g);mk(roundedG(12,.18,.35),light,0,2+i*2,8-i*2,g);}for(const x of[-7,7]){mk(curvedPipe([[x,4,9],[x,11,1],[x,19,-9]],.4),trim,0,0,0,g);for(const z of[7,-7])mk(new T3.CylinderGeometry(.3,.3,6,6),shell,x,z<0?15:4,z,g);}mk(roundedG(16,2,4),shell,0,16.5,-9,g);return bake(g);}
+
+function buildTowerRoom(p,theme){const g=new T3.Group(),metal=m3(theme.board.l),dark=m3(theme.board.d),wall=m3('#314356'),glow=m3(theme.col,{emissive:theme.col,emissiveIntensity:.4});const[x0,x1,y0,y1]=p.bounds;
+ for(const x of[x0,x1])for(let y=y0+4;y<y1;y+=12){mk(roundedG(2.5,7,9),wall,x,BZ+3,y,g);mk(roundedG(.6,.3,5),glow,x,BZ+7,y,g);}for(let x=x0+5;x<x1;x+=12){mk(roundedG(9,7,2.5),wall,x,BZ+3,y0,g);mk(roundedG(5,.3,.6),glow,x,BZ+7,y0,g);}
+ for(const prop of p.landmarks){const q=new T3.Group();q.position.set(prop.x,BZ,prop.y);g.add(q);if(prop.kind==='cellblock'||prop.kind==='barrier'){mk(roundedG(11,1,10),dark,0,.5,0,q);for(const x of[-4,-2,0,2,4])mk(new T3.CylinderGeometry(.25,.25,13,5),metal,x,7,-3,q);mk(roundedG(11,1,1),wall,0,13,-3,q);for(const x of[-5,5])mk(roundedG(.7,13,6),wall,x,7,-1,q);}
+ else if(prop.kind==='labtank'){mk(new T3.CylinderGeometry(4,4.6,2,8),dark,0,1,0,q);mk(new T3.CylinderGeometry(3.7,3.7,14,8),m3(theme.col,{transparent:true,opacity:.35}),0,9,0,q);mk(ico(2.5,1),m3('#8eb0b2'),0,9,0,q).scale.set(.7,1.6,.7);mk(new T3.CylinderGeometry(4.2,4.2,1,8),metal,0,16,0,q);}
+ else if(prop.kind==='generator'){mk(roundedG(9,10,8),dark,0,5,0,q);for(const z of[-2,0,2])mk(new T3.TorusGeometry(3.8,.5,5,10),metal,0,7,z,q);mk(ico(2.4,1),glow,0,7,2,q);}
+ else{mk(roundedG(8,6,6),dark,0,3,0,q);mk(roundedG(6,.5,4),metal,0,6.3,0,q);for(const x of[-2,0,2])mk(roundedG(.5,3,.4),glow,x,3,3.2,q);}}
+ // Inlaid lanes and grilles remain inside the collision-backed floor.
+ for(let x=x0+8;x<x1-6;x+=12)for(const y of[HY-6,HY+6])mk(roundedG(7,.12,.3),glow,x,BZ+.15,y,g);
+ const out=bake(g);out.userData.occluders=[];out.userData.towerTheme=theme.id;return out;}
+function buildTowerExit(){const g=new T3.Group(),dark=m3('#26384b'),col=m3(towerTheme().col,{emissive:towerTheme().col,emissiveIntensity:.5});for(const x of[-5,5])mk(roundedG(2,14,3),dark,x,7,0,g);mk(roundedG(12,2,3),dark,0,14,0,g);const strip=mk(roundedG(8,.4,.4),col,0,13,1.7,g);g.userData.glows=[strip];g.userData.rings=[];return g;}
+function buildTowerCreature(id,boss=false){const g=new T3.Group(),kind={warden:'jailer',chimera:'specimen',executor:'sentinel'}[id]||id,dark=m3('#29384e'),metal=m3('#a2b7c3'),col=m3(kind==='specimen'?'#8fc9b2':kind==='sentinel'?'#9da9ed':'#d5a281'),legs=[],arms=[];
+ if(kind==='jailer'){mk(roundedG(10,13,7),dark,0,14,0,g);mk(new T3.CylinderGeometry(4.5,5.5,7,8),metal,0,24,0,g);for(const x of[-2,0,2])mk(roundedG(.4,4,.5),dark,x,24,4.1,g);for(const x of[-7,7]){const a=new T3.Group();a.position.set(x,19,0);g.add(a);mk(roundedG(4,13,4),metal,0,-5,0,a);mk(ico(3,0),col,0,-12,0,a);arms.push(a);}for(const x of[-3,3]){const l=mk(roundedG(4,10,5),dark,x,5,0,g);legs.push(l);}mk(curvedPipe([[-7,7,1],[-10,3,3],[-6,2,6]],.6),metal,0,0,0,g);}
+ else if(kind==='specimen'){mk(new T3.SphereGeometry(6,8,5),col,0,14,0,g).scale.set(.9,1.5,.8);mk(ico(4,1),metal,0,25,0,g);for(const x of[-2,2])mk(ico(.8,0),m3('#243343'),x,25,3.5,g);for(let i=0;i<4;i++){const a=i*Math.PI/2,l=mk(curvedPipe([[0,12,0],[Math.cos(a)*8,6,Math.sin(a)*8],[Math.cos(a)*10,0,Math.sin(a)*10]],1.2),dark,0,0,0,g);legs.push(l);}for(const x of[-1,1]){const a=mk(curvedPipe([[x*3,18,0],[x*10,15,2],[x*12,8,4]],1.1),metal,0,0,0,g);arms.push(a);}}
+ else{mk(new T3.CylinderGeometry(6,8,7,8),dark,0,16,0,g);mk(new T3.SphereGeometry(5,8,5),metal,0,23,0,g).scale.set(1,.6,1);mk(new T3.CylinderGeometry(2,2,1,10),col,0,23,4.8,g).rotation.x=Math.PI/2;for(let i=0;i<3;i++){const a=i*2.094,l=mk(curvedPipe([[0,14,0],[Math.cos(a)*8,8,Math.sin(a)*8],[Math.cos(a)*10,0,Math.sin(a)*10]],1),metal,0,0,0,g);legs.push(l);}for(const x of[-4,4])mk(new T3.CylinderGeometry(.9,.9,12,6),dark,x,18,6,g).rotation.x=Math.PI/2;}
+ const body=new T3.Group(),moving=new Set([...legs,...arms]);for(const c of [...g.children])if(!moving.has(c))body.add(c);g.add(bake(body));
+ g.userData.towerRig={legs,arms};g.userData.simple=true;g.userData.s=boss?2.2:1.2;return g;}
+function animateTowerCreature(m,g){const r=g.userData.towerRig,t=G.time+m.ph;for(let i=0;i<r.legs.length;i++)r.legs[i].rotation.x=Math.sin(t*3+i*Math.PI)*.08;for(let i=0;i<r.arms.length;i++)r.arms[i].rotation.z=m.warning?(i?-.7:.7):Math.sin(t*1.5+i)*.05;}
+function towerDiorama(floor=1){return deviceThumb('tower-diorama:'+towerTheme(floor).id+':'+(floor-1)%10,()=>{const g=new T3.Group(),dark=m3('#26384e'),metal=m3('#94acbc'),signal=m3(towerTheme(floor).col);mk(new T3.CylinderGeometry(7,9,2,8),dark,0,0,0,g);for(let i=0;i<10;i++){const y=2+i*2;mk(roundedG(10,1.6,8),i%2?metal:dark,0,y,0,g);for(const x of[-3,0,3])mk(roundedG(1,.6,.3),i===(floor-1)%10?signal:metal,x,y,4.1,g);mk(roundedG(3,.4,2),signal,6,y,i%2?2:-2,g);}mk(new T3.ConeGeometry(7,4,4),dark,0,24,0,g);g.rotation.y=-.45;return g;});}

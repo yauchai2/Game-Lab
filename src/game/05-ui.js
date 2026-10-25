@@ -31,7 +31,7 @@ function panelHtml(){
     <div class="rc wide"><div class="rh">事件</div><ol class="log">${G.log.map(l => `<li style="color:${l.col}">${l.txt}</li>`).join('')}</ol></div>`;
 }
 function codexHtml(){
-  const lg = Object.values(LEGEND_BY), nl = lg.filter(L => G.legSeen[L.id]).length, md = Object.keys(MODES), nm = md.filter(id => G.seen[id]).length, sk = Object.keys(SKILLS), ns = sk.filter(id => G.lvl >= SKILLS[id].lvl).length;
+  const lg = Object.values(LEGEND_BY), nl = lg.filter(L => G.legSeen[L.id]).length, md = Object.keys(MODES), nm = md.filter(id => G.seen[id]).length, sk = Object.keys(SKILLS), ns = sk.filter(id => typeof skillAvailable==='function'?skillAvailable(id):G.lvl>=SKILLS[id].lvl).length;
   const slotOf = id => Object.keys(LEGENDS).find(k => LEGENDS[k].some(L => L.id === id));
   return `<p class="uxmeta">圖鑑記錄你的收藏與解鎖；完整效果與機制請查編年史。</p><div class="rc wide"><div class="rh">圖鑑</div><div class="mute">關主暗金保底：連續 ${G.pity || 0} 件沒出，下一件暗金機率 ${Math.round(Math.min(1, .1 + .06*(G.pity || 0))*100)}%</div>
     <div class="mct" style="margin:8px 0 3px">元素反應</div><ul class="ach"><li class="got">${obj3d('orb:#ff7a3d',28)}<b>火焰</b> 命中的敵人燃燒 3 秒，持續受到傷害</li><li class="got">${obj3d('orb:#ffe04a',28)}<b>閃電</b> 命中的敵人被標記 4 秒</li><li class="got">${obj3d('orb:#ff9ad0',28)}<b>融化</b> 火焰打到凍結的敵人：傷害 +40%，解除凍結</li><li class="got">${obj3d('orb:#8fe8ff',28)}<b>超導</b> 閃電打到凍結的敵人：傷害 +30%</li><li class="got">${obj3d('orb:#c9d3ff',28)}<b>蒸氣</b> 冰霜打到燃燒的敵人：周圍 8 格內敵人受到 40% 傷害，熄滅燃燒</li><li class="got">${obj3d('orb:#ff5a8a',28)}<b>過載</b> 火焰或冰霜打到被閃電標記的敵人：傷害 +25%</li></ul>
@@ -40,7 +40,7 @@ function codexHtml(){
     <div class="mct" style="margin:8px 0 3px">模式卡匣 ${nm} / ${md.length}</div><ul class="ach">${md.map(id => { const M = MODES[id], has = G.seen[id]; return `<li class="${has ? 'got' : 'mute'}"><b>${has ? M.n : '？？？'}</b> ${has ? `（${SKILLS[M.sk].n}）${M.d}` : `（${SKILLS[M.sk].n}）${M.hint}${G.carts[id] ? '　已持有未鑑定' : ''}`}</li>`; }).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">魔物</div><ul class="ach">${MONSTER_GUIDE.map(([id, n, d]) => { const k = (G.mk || {})[id] || 0; return `<li class="${k ? 'got' : 'mute'}"><b>${k ? n : '？？？'}</b> ${k ? `${d}（討伐 ${k}）` : '還沒遇到'}</li>`; }).join('')}</ul>
     <div class="mct" style="margin:8px 0 3px">輔助配件</div><ul class="ach">${Object.keys(SUPPS).map(g => { const has = (G.gems[g] || 0) > 0 || (G.seenG || {})[g]; return `<li class="${has ? 'got' : 'mute'}"><b>${has ? SUPPS[g].n : '？？？'}</b> ${has ? SUPPS[g].d : '還沒取得'}</li>`; }).join('')}</ul>
-    <div class="mct" style="margin:8px 0 3px">技能 ${ns} / ${sk.length}</div><ul class="ach">${sk.map(id => { const K = SKILLS[id], has = G.lvl >= K.lvl; return `<li class="${has ? 'got' : 'mute'}"><b>${has ? K.n : '？？？'}</b> ${has ? K.d : `（Lv. ${K.lvl} 解鎖）`}</li>`; }).join('')}</ul></div>`;
+    <div class="mct" style="margin:8px 0 3px">技能 ${ns} / ${sk.length}</div><ul class="ach">${sk.map(id => { const K = SKILLS[id], has = typeof skillAvailable==='function'?skillAvailable(id):G.lvl>=K.lvl; return `<li class="${has ? 'got' : 'mute'}"><b>${has ? K.n : '？？？'}</b> ${has ? K.d : `（Lv. ${K.lvl} 解鎖）`}</li>`; }).join('')}</ul></div>`;
 }
 function logHtml(){
   try { localStorage.setItem('ih_log_seen', CHANGELOG[0].v); } catch (e) {}
@@ -239,6 +239,7 @@ function offlineBulk(R, f, w){
   // Bulk kills use the conservative normal-monster rate; never multiply an observed rare item.
   for(let i=hit(SIGNATURE_DROP.normal);i>0;i--){const gear=tPick(Object.values(SIGNATURE_GEAR));pickup({kind:'item',it:makeItem(gear.slot,3,d,gear.id)});}
   for (let i = 0; i < nItems; i++) pickup({ kind:'item', it:makeItem(tPick(Object.keys(SLOTN)), rarityRoll(false), d) });
+  if(typeof skillDropFor==='function')for(let i=Math.min(8,hit(.004));i>0;i--){const id=skillDropFor({boss:false},true);if(id)pickup({kind:'skill',id});}
   for (let i = hit(.012); i > 0; i--) pickup({ kind:'cart', id:tPick(Object.keys(MODES)) });
   for (let i = hit(.025); i > 0; i--) pickup({ kind:'gem', id:tPick(Object.keys(SUPPS)) });
   for (let i = Math.min(15, hit(.03)); i > 0; i--) pickup({ kind:'map', map:makeMap(d) });
@@ -472,7 +473,7 @@ function setupPanel(){
     const dl = document.createElement('div'); dl.className = 'dlg'; document.querySelector('.stage').appendChild(dl);
     const q = [], who = t => /關主/.test(t) ? 'WARNING' : /倒下/.test(t) ? 'GAME OVER?' : /暗金/.test(t) ? 'LEGENDARY' : 'SYSTEM';
     let busy = false; const next = () => { if (!q.length){ busy = false; return; } busy = true; const fr = $('fig').getBoundingClientRect(), sr = dl.parentElement.getBoundingClientRect(); dl.style.top = (fr.top - sr.top + fr.height*.78) + 'px'; const t = q.shift(); dl.innerHTML = `<b>${who(t)}</b>${t}<i></i>`; dl.classList.add('show'); setTimeout(() => { dl.classList.remove('show'); setTimeout(next, 300); }, 2600); };
-    const base = logLine; logLine = (t, c) => { base(t, c); if (!G.offline && /升級了|關主|地圖完成/.test(t) && q.length < 3){ q.push(t); if (!busy) next(); } };
+    const base = logLine; logLine = (t, c) => { base(t, c); if (!G.offline && /升級了|地圖完成/.test(t) && q.length < 3){ q.push(t); if (!busy) next(); } };
   }
   const el = document.createElement('div'); el.className = 'rpg'; el.id = 'rpg'; document.querySelector('.stage').after(el);
   const m = document.createElement('div'); m.className = 'modal'; m.id = 'modal'; m.hidden = true; m.innerHTML = `<div class="mbox"><div class="mtabs" id="mtabs"></div><div id="mbody"></div></div>`;
