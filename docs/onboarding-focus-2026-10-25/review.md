@@ -1,6 +1,6 @@
 # 新手與賽季聚焦候選
 
-分支：codex/onboarding-season-focus。來源base e67f73b，正式仍v0.51.0；本次尚未合併或發佈。dist/idle-hero.html為本分支候選，內部版本字串沿用0.51.0，不能把它當新正式版。
+已推送來源e3d4bc0，draft PR #60：https://github.com/yauchai2/Game-Lab/pull/60 。分支：codex/onboarding-season-focus。來源base e67f73b，正式仍v0.51.0；本次尚未合併或發佈。dist/idle-hero.html為本分支候選，內部版本字串沿用0.51.0，不能把它當新正式版。
 
 ## 需求對照
 
@@ -31,3 +31,5 @@
 取得可讀的原始Logo後再檢查幾何、材質、紋理及體積，使用開局單一展示生命週期加入低解析慢速自轉、減少動態與fallback；保留原件hash。此項尚無實作，不用其他Logo代替。完成後依Alan下一步指示整合及發佈；每次release仍須fresh fetch檢查Claude。
 
 推送前重新fetch全部heads，main仍e67f73b；open PR為draft #12及內部備份draft #10。另見codex/feedback-service-setup新分支，屬回饋服務獨立工作，本次不覆寫或納入。未執行release。
+
+PR已建立；App附件工具連線中斷，未能附到聊天附件列，GitHub PR本身可直接開啟。
