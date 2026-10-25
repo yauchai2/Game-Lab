@@ -419,8 +419,9 @@ function buildWorldGrass(bi){
 
 /* ---------- 掉落物 ---------- */
 function buildDrop(d){
-  const g = new T3.Group(), col = d.kind==='skill'?SKILLS[d.id].col:d.kind==='boost'?'#80cebd':d.kind==='circuit'?'#80cebd':d.kind === 'gem' ? GEM_COL[d.id]||'#a87bf0' : d.kind === 'cart' ? '#3fd0ee' : d.kind === 'map' ? BIOMES[d.map.biome].glow : d.kind==='gold'?'#e4ba58':d.kind==='chip'?'#62c8ce':RAR[d.it.r].g, rare = !['gold','chip'].includes(d.kind)&&(d.kind !== 'item' || d.it.r >= 2), item = new T3.Group(); g.add(item); g.userData.item = item;
+  const g = new T3.Group(), col = d.kind==='rift'?'#b8a2ef':d.kind==='skill'?SKILLS[d.id].col:d.kind==='boost'?'#80cebd':d.kind==='circuit'?'#80cebd':d.kind === 'gem' ? GEM_COL[d.id]||'#a87bf0' : d.kind === 'cart' ? '#3fd0ee' : d.kind === 'map' ? BIOMES[d.map.biome].glow : d.kind==='gold'?'#e4ba58':d.kind==='chip'?'#62c8ce':RAR[d.it.r].g, rare = !['gold','chip'].includes(d.kind)&&(d.kind !== 'item' || d.it.r >= 2), item = new T3.Group(); g.add(item); g.userData.item = item;
   if(d.kind==='boost'){mk(new T3.BoxGeometry(4,3,3),m3('#adc7ce'),0,2,0,item);mk(new T3.BoxGeometry(1,3.2,3.2),m3(d.boost==='power'?'#d7a76b':'#80cebd'),0,2,0,item);}
+  else if(d.kind==='rift'){mk(new T3.OctahedronGeometry(2,0),m3('#b8a2ef'),0,2,0,item);}
   else if(d.kind==='circuit'){mk(new T3.BoxGeometry(3,.4,3),m3('#294858'),0,1.5,0,item);for(const x of[-.8,0,.8])mk(new T3.BoxGeometry(.35,.2,2.2),m3('#80cebd'),x,1.85,0,item);}
   else if (d.kind === 'cart'){ mk(new T3.BoxGeometry(2.6, 3.2, .9), m3(col, { emissive:col, emissiveIntensity:.3 }), 0, 2.4, 0, item); mk(new T3.BoxGeometry(1.6, .9, 1.1), m3('#fff0c0'), 0, 3.2, 0, item); }
   else if (d.kind === 'gem') mk(new T3.OctahedronGeometry(1.7, 0), m3(col, { emissive:col, emissiveIntensity:.25 }), 0, 2.2, 0, item);
@@ -581,6 +582,7 @@ function updateFx(){
   };
   const sph=geo('fxs',()=>ico(1,1)),disc=geo('fxd',()=>new T3.CircleGeometry(1,20).rotateX(-Math.PI/2)),ring=geo('fxr',()=>new T3.RingGeometry(.83,1,24).rotateX(-Math.PI/2)),box=geo('fxf',()=>new T3.BoxGeometry(1,.25,1));
   const warnings=G.mons.filter(m=>!m.dead&&m.warning&&!(m.frozen>0)).map(m=>({k:'danger',...m.warning,t:1-m.warning.t/m.warning.duration,col:m.boss?'#c45b64':'#c87e48'}));
+  for(const stain of G.stains||[])add(disc,'#632b43',Math.min(.55,(12-stain.t)/5),stain.x,stain.y,BZ+.15,stain.r);
   for(const e of warnings.concat(G.fx.filter(e=>e.sustained),G.fx.filter(e=>!e.sustained))){const fade=1-e.t;
     if(renderSpectacleFx(e,add,geo))continue;
     if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}
@@ -623,7 +625,7 @@ function terrainCameraWindow(p,width,overview=false){
 function toggleWorldOverview(){FXO.overview=!FXO.overview;FXO.zoomT=1;G.dirty=true;if(typeof renderModal==='function')renderModal();}
 function overlay(){
   const k = pxu(); let s = '';
-  const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = Math.max(14,w*k*.8), H2 = Math.max(3,1.5*k); return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
+  const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = Math.max(14,w*k*.8), H2 = Math.max(2,Math.min(3,.65*k)); return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
   if (G.h.dead <= 0) s += bar(G.h.x, G.h.y, BZ + 36*CK, 9, G.h.hp/G.st.life, '#ff6a8a');
   for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)) s += bar(m.x, m.y, BZ + (m.boss?140:m.type==='golem'?48:m.type==='lantern'?38:(m.type==='slime'?11:m.type==='brute'?32:m.type==='drone'?24:m.type==='bomb'?20:28)*(MONSTER_TRAITS[m.type]?.scale||1))*CK, m.boss?26:8, m.hp/m.hpMax, '#ff6a8a');
   if(G.h.dead<=0&&G.time<(G.h.bufferUntil||0)&&G.h.buffer>0)s+=bar(G.h.x,G.h.y,BZ+40*CK,9,G.h.buffer/(G.st.life*.12),'#57dce8');
@@ -675,7 +677,7 @@ function scene(){
     else z += .3 + Math.sin(d.t*6)*.25;
     at3(g, x, y, z+terrainHeight(x,y)); u.item.rotation.y = d.t*2.4; u.disc.visible = !d.pull; if (u.beam) u.beam.visible = !d.pull;g.scale.setScalar(d.pull?1-flight.progress*.35:1);
   }
-  renderSupportWorld();
+  renderSupportWorld();renderRiftWorld();
   for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); disposeWorldObject(e); R3.ent.delete(k); }
   updateFx();
   if(typeof worldTravelRender==='function')worldTravelRender();
@@ -813,3 +815,6 @@ function buildTowerCreature(id,boss=false){const g=new T3.Group(),kind={warden:'
  g.userData.towerRig={legs,arms};g.userData.simple=true;g.userData.s=boss?2.2:1.2;return g;}
 function animateTowerCreature(m,g){const r=g.userData.towerRig,t=G.time+m.ph;for(let i=0;i<r.legs.length;i++)r.legs[i].rotation.x=Math.sin(t*3+i*Math.PI)*.08;for(let i=0;i<r.arms.length;i++)r.arms[i].rotation.z=m.warning?(i?-.7:.7):Math.sin(t*1.5+i)*.05;}
 function towerDiorama(floor=1){return deviceThumb('tower-diorama:'+towerTheme(floor).id+':'+(floor-1)%10,()=>{const g=new T3.Group(),dark=m3('#26384e'),metal=m3('#94acbc'),signal=m3(towerTheme(floor).col);mk(new T3.CylinderGeometry(7,9,2,8),dark,0,0,0,g);for(let i=0;i<10;i++){const y=2+i*2;mk(roundedG(10,1.6,8),i%2?metal:dark,0,y,0,g);for(const x of[-3,0,3])mk(roundedG(1,.6,.3),i===(floor-1)%10?signal:metal,x,y,4.1,g);mk(roundedG(3,.4,2),signal,6,y,i%2?2:-2,g);}mk(new T3.ConeGeometry(7,4,4),dark,0,24,0,g);g.rotation.y=-.45;return g;});}
+
+function buildRiftHand(){const g=new T3.Group(),body=m3('#455478'),dark=m3('#28374f'),glow=m3('#ad9ae2',{emissive:'#ad9ae2',emissiveIntensity:.5});mk(roundedG(7,4,5),dark,0,3,0,g);for(let i=0;i<5;i++){const x=(i-2)*1.5,h=i===0?6:i===4?8:10+Math.sin(i)*2;mk(curvedPipe([[x,4,0],[x,7,-1],[x*.8,h,-2],[x*.7,h+1,-.5]],.65),body,0,0,0,g);mk(new T3.SphereGeometry(.8,6,4),glow,x*.7,h+1,-.5,g);}for(const o of g.children){o.position.multiplyScalar(1.6);o.scale.multiplyScalar(1.6);}mk(new T3.TorusGeometry(10,.3,4,32),glow,0,10,0,g).rotation.z=.45;const band=mk(new T3.TorusGeometry(1,.025,4,64),glow,0,.4,0,g);band.rotation.x=Math.PI/2;band.material=glow.clone();band.material.depthTest=false;band.material.depthWrite=false;band.material.transparent=true;band.material.opacity=.75;band.renderOrder=4;g.userData.band=band;return g;}
+function renderRiftWorld(){const e=riftState().encounter;if(!e||e.key!==terrainKey())return;const g=entFor(e,buildRiftHand);at3(g,e.x,e.y,BZ+terrainHeight(e.x,e.y));g.userData.band.scale.setScalar(e.phase==='dormant'?7:e.radius);g.userData.band.material.emissiveIntensity=.4+Math.sin(G.time*3)*.1;if(['complete','failed'].includes(e.phase))g.scale.setScalar(Math.max(.05,1-e.age/5));}

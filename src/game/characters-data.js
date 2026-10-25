@@ -7,7 +7,7 @@ const CHARACTER_PROFILES={
  volt:{model:'null',n:'寵機師',title:'寵機與修復',quote:'啟動，保持連線。',identity:'職業｜電子寵機改裝',role:'召喚、持續輸出、修復增益',passive:'寵機每8次有效攻擊可修復1.5%生命，受共用回復額度限制。',eff:{inc:8},sig:{n:'寵機出動',cd:8,d:'寵機持續自動索敵，每8秒增幅4秒，期間寵機傷害提高50%。'},story:['透過可移動的電子寵機提供持續火力，在雙核連擊、維修與熔核濺射中選擇改裝方向。','寵機是職業能力，其他技能仍需手動組裝並接通電路才能生效。']}
 };
 for(const[key,p]of Object.entries(CHARACTER_PROFILES))Object.assign(CHARS[key],p,{d:p.title+'。'+p.role});
-ACHS.boss10.d='討伐關主30次，留下資深討伐紀錄。';
+ACHS.boss10.d='討伐BOSS30次，留下資深討伐紀錄。';
 function characterRuntime(){if(!G.characterRuntime||G.characterRuntime.id!==G.char)G.characterRuntime={id:G.char,combo:0,lastHit:-10,petCd:0,battery:0,boostUntil:0,receipt:false};return G.characterRuntime;}
 function characterBasicHit(target){
  if(G.train)return;const r=characterRuntime(),h=G.h,t=typeof ascensionTuning==='function'?ascensionTuning():{};

@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const GridLab=require('../src/game/00-grid.js');let checks=0;
 function run(name,code){const math=Object.create(Math);math.random=()=>.99;const c={Math:math,console,Date,GridLab,
  tPick:a=>a[0],tRand:(a,b)=>(a+b)/2,tClamp:(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),tFmt:String,SFX:()=>{},closeModal:()=>{}};
- vm.createContext(c);for(const f of ['01-data.js','02-state.js','02b-careers.js','03-combat.js'])vm.runInContext(fs.readFileSync(__dirname+'/../src/game/'+f,'utf8'),c);
+ vm.createContext(c);for(const f of ['01-data.js','02-state.js','02b-careers.js','02g-rift.js','03-combat.js'])vm.runInContext(fs.readFileSync(__dirname+'/../src/game/'+f,'utf8'),c);
  c.assert=assert;vm.runInContext(`
  G.lvl=60;G.offline=true;G.ach=Object.fromEntries(Object.keys(ACHS).map(id=>[id,1]));G.equip.weapon=makeItem('weapon',0,1);recalc();moveHero=()=>{};
  function board(ids,modes={}){G.h.x=HX;G.h.y=HY;G.board=GridLab.createBoard('extreme');G.circuits=['pocket','extreme'];for(const id of ids){const spot=GridLab.findSpot(G.board,'active',id);assert(spot);const piece=GridLab.place(G.board,'active',id,spot.x,spot.y,spot.rot);piece.mode=modes[id]||null;const sock=GridLab.sockIndex(piece,G.board);G.board.wires.push({sock,cells:GridLab.route(G.board,sock)});}recalc();G.readySince={};for(const id of ids)G.cds[id]=999;G.h.castT=-1;G.h.atkCd=999;G.h.blinkCount=0;G.h.blinkWindow=G.time;G.h.blinkRestUntil=0;G.summons=[];}

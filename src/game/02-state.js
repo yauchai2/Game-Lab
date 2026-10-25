@@ -103,7 +103,7 @@ function rollSignatureGear(kind,il){
 function rarityRoll(boss){
   const bonus = Math.min(8, lvlNow()*.25) + runQ()*6 + (G.run && G.run.map.mods.includes('lucky') ? 4 : 0), w = [RAR[0].w - bonus*2, RAR[1].w, RAR[2].w + bonus, RAR[3].w + bonus*.3];
   let r = Math.random()*w.reduce((a, b) => a + b, 0), i = 0; while (r > w[i] && i < 3) r -= w[i++];
-  if (boss){ if (i < 2) i = 2; if (Math.random() < Math.min(1, .1 + .06*(G.pity || 0) + (G.relics.LUCK ? .03 : 0))) i = 3; }   // 關主暗金保底：每次沒出就 +6%，最多 15 件必出
+  if (boss){ if (i < 2) i = 2; if (Math.random() < Math.min(1, .1 + .06*(G.pity || 0) + (G.relics.LUCK ? .03 : 0))) i = 3; }   // BOSS暗金保底：每次沒出就 +6%，最多 15 件必出
   if (boss){ if (i === 3) G.pity = 0; else G.pity = (G.pity || 0) + 1; }
   return i;
 }
@@ -247,7 +247,7 @@ function addFx(e){if(G.offline)return;const cap=viewEffectsReduced()?14:64;if(G.
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
-function serialize(){ return { v:2,towerRoomVersion:1,skillCollectionVersion:1,skillBooks:G.skillBooks||{},skillPity:G.skillPity||0,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
+function serialize(){ return { v:2,activityLoot:G.activityLoot,rift:G.rift,towerRoomVersion:1,skillCollectionVersion:1,skillBooks:G.skillBooks||{},skillPity:G.skillPity||0,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
 function migrateEquipmentSlots(input){
@@ -265,7 +265,7 @@ function migrateEquipmentSlots(input){
 function applySave(o){
   if (!o || o.v !== 2) return false;
   o=migrateEquipmentSlots(o);
-  if(typeof seasonClean==='function'){G.season=seasonClean(o.season);seasonEnsure();}
+  if(typeof seasonClean==='function'){G.season=seasonClean(o.season);G.rift=riftClean(o.rift);G.activityLoot={tower:Math.max(0,Math.min(1e6,Math.floor(o.activityLoot?.tower)||0)),season:Math.max(0,Math.min(1e6,Math.floor(o.activityLoot?.season)||0))};seasonEnsure();}
   G.secrets=[...new Set((Array.isArray(o.secrets)?o.secrets:[]).filter(id=>['arcade','floor13','radio'].includes(id)))];if(typeof clearHeroAilments==='function')clearHeroAilments();
   G.unread=cleanUnread(o.unread);G.summons=[];G.airSupply=null;G.airBuffs=[];G.damageLog=[];G.h.fatalSource=null;G.h.airShield=0;G.h.airShieldUntil=0;G.deathReport=cleanDeathReport(o.deathReport);
   G.startingChar=Object.hasOwn(CHARS,o.startingChar)?o.startingChar:null;
@@ -334,7 +334,7 @@ function collectEquipment(it){
 
   G.off&&(G.off.stored=(G.off.stored||0)+1);G.dirty=true;return true;
 }
-const validDrop=d=>!!(d&&Number.isFinite(d.x)&&Number.isFinite(d.y)&&(d.kind==='boost'?['power','guard'].includes(d.boost):d.kind==='skill'?Object.hasOwn(SKILLS,d.id):d.kind==='circuit'?Object.hasOwn(GridLab.TEMPLATES,d.id):['gold','chip'].includes(d.kind)?Number.isFinite(d.amount)&&d.amount>0:d.kind==='item'?validGear(d.it):d.kind==='gem'?SUPPS[d.id]:d.kind==='cart'?MODES[d.id]:d.kind==='map'?d.map&&BIOMES[d.map.biome]:false));
+const validDrop=d=>!!(d&&Number.isFinite(d.x)&&Number.isFinite(d.y)&&(d.kind==='boost'?['power','guard'].includes(d.boost):d.kind==='rift'?Number.isFinite(d.amount)&&d.amount>0&&d.amount<=100:d.kind==='skill'?Object.hasOwn(SKILLS,d.id):d.kind==='circuit'?Object.hasOwn(GridLab.TEMPLATES,d.id):['gold','chip'].includes(d.kind)?Number.isFinite(d.amount)&&d.amount>0:d.kind==='item'?validGear(d.it):d.kind==='gem'?SUPPS[d.id]:d.kind==='cart'?MODES[d.id]:d.kind==='map'?d.map&&BIOMES[d.map.biome]:false));
 function dropGround(d){
   [d.x,d.y]=terrainProject(d.x,d.y);
   if(d.kind==='gold'||d.kind==='chip'){
@@ -440,7 +440,7 @@ function forgeTargetCore(id){const C=G.city||(G.city=newCity()),route=cityRouteF
 }
 function validCityRun(R){const c=R?.city;return !!(c&&CITY_ROUTES[c.route]&&Number.isInteger(c.tier)&&c.tier>=1&&c.tier<=8&&Number.isInteger(c.stage)&&c.stage>=1&&c.stage<=3&&Number.isFinite(c.bank)&&c.bank>=0&&Array.isArray(c.branches)&&c.branches.length===c.stage-1&&c.branches.every(id=>CITY_BRANCHES[id])&&LEGEND_BY[c.target]&&c.settled===false&&Number.isFinite(R.kills)&&Number.isFinite(R.need)&&BIOMES[R.map?.biome]&&Number.isFinite(R.map?.lvl));}
 function heroDamage(damage,source='未分類傷害',kind='直接命中'){
- if(!Number.isFinite(damage)||damage<=0)return 0;const h=G.h,before=h.hp,base=G.time<(h.bufferUntil||0)?h.buffer||0:0,supply=G.time<(h.airShieldUntil||0)?h.airShield||0:0,airUsed=Math.min(supply,damage),classUsed=Math.min(base,damage-airUsed),absorbed=airUsed+classUsed;
+ if(!Number.isFinite(damage)||damage<=0)return 0;if(lgOn('O_TOWER')&&G.h.hp>G.st.life*.8)damage*=.85;const h=G.h,before=h.hp,base=G.time<(h.bufferUntil||0)?h.buffer||0:0,supply=G.time<(h.airShieldUntil||0)?h.airShield||0:0,airUsed=Math.min(supply,damage),classUsed=Math.min(base,damage-airUsed),absorbed=airUsed+classUsed;
  h.airShield=supply-airUsed;h.buffer=base-classUsed;h.hp-=damage-absorbed;if(typeof recordIncoming==='function')recordIncoming(damage-absorbed,absorbed,source,kind,before>0&&h.hp<=0);if(damage>absorbed)h.lastDamageAt=G.time;return damage-absorbed;
 }
 
@@ -536,7 +536,7 @@ function terrainBuild(key){
     const c=pick(n),urban=[5,7,11].includes(profile),variant=terrainHash(key+':object:'+n);
     const family=tower?({prison:['cellblock','barrier','cellblock','console'],lab:['labtank','console','labtank','vent'],reactor:['generator','vent','server','generator']}[room.id]):profile===7?['cabin','pavilion','tree','building']:profile===11?['warehouse','building','tree','pavilion']:urban?['building','building','tree','pavilion']:profile===8?['windmill','tree','boulder','cabin']:profile===10?['ruin','boulder','tree','ruin']:profile===6?['tree','cabin','tree','boulder']:['tree','tree','boulder','tree'];
     const kind=family[landmarks.length%family.length],radius=tower?6:kind==='warehouse'?16:kind==='building'?13:kind==='cabin'?9:kind==='ruin'?9:kind==='pavilion'?8:kind==='windmill'?7:kind==='boulder'?12:3;
-    if(tower&&Math.hypot(c.x-HX-22,c.y-HY+18)<radius+16)continue;
+    if(tower&&Math.hypot(c.x-HX-38,c.y-HY+34)<radius+16)continue;
     if(Math.hypot(c.x-HX,c.y-HY)<clearRadius+radius+7||Math.hypot((c.x-HX)/w,(c.y-HY)/h)>.79)continue;
     if(landmarks.some(o=>Math.hypot(o.x-c.x,o.y-c.y)<o.radius+radius+12))continue;
     const scale=kind==='tree'?2.4+(variant%22)/10:1;
@@ -627,10 +627,10 @@ function terrainScenery(p=terrainNow()){
 /* 斷線年代：短篇地方記憶，不以對話框打斷掛機。只保存已發現的章節。 */
 const FIELD_STORIES=[
  ['潮聲裡的呼號','渡船員 阿澄','停電後第七年，海邊的樹仍替電台擋風。有人把回家的頻率刻在樹幹上。','巨像倒下時，舊收音機傳來一句：下一班船，還會回來。'],
- ['山路沒有盡頭','巡山員 留言','山丘上的路牌已經褪色。跟著風聲走，能找到仍在轉動的天線。','關主胸口掉出一張車票。終點寫著：山頂電台。'],
+ ['山路沒有盡頭','巡山員 留言','山丘上的路牌已經褪色。跟著風聲走，能找到仍在轉動的天線。','BOSS胸口掉出一張車票。終點寫著：山頂電台。'],
  ['河灣的晚班','渡船員 阿澄','河水淹過了舊月台。那盞靠岸燈一直亮著，像在等最後一位乘客。','水面靜下來後，你聽見遠處有人試著呼叫這座島。'],
  ['盆地裡的回音','修理工 小禾','所有鐘都停在同一分鐘。只有地下電纜，偶爾還會傳來腳步般的脈衝。','電纜重新亮起了一小段。訊號向山那邊延伸。'],
- ['海岸的備忘錄','渡船員 阿澄','海風帶來別座島的聲音。別丟掉舊卡匣，也許裡面還留著某人的地址。','關主終於停止巡邏。遠方海岸亮起一盞很小的燈。'],
+ ['海岸的備忘錄','渡船員 阿澄','海風帶來別座島的聲音。別丟掉舊卡匣，也許裡面還留著某人的地址。','BOSS終於停止巡邏。遠方海岸亮起一盞很小的燈。'],
  ['沒有關門的城市','鄰居廣播','樓宇裡已經沒有人，街角電單車的方向燈卻仍在閃。這座城似乎還沒下班。','街角喇叭播出了一段走調的收工音樂。'],
  ['營火熄滅之後','修理工 小禾','帳篷裡的地圖圈著同一座山。大家說，只要電台還亮，迷路的人就不算失蹤。','營地的短波機又響了。這次，另一端有人回答。'],
  ['舊城的約定','鐘樓留言','廣場上的長椅留著一個空位。從前每逢黃昏，修理工們會在這裡交換零件與消息。','鐘樓響了一次，像有人終於記起了約定。'],

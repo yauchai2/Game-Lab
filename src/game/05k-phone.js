@@ -42,7 +42,7 @@ function phonePage(){
     <fieldset><legend>自我介紹</legend><p>${phEsc(P.identity || '')}</p><p class="phs-q">「${phEsc(P.quote || '…')}」</p></fieldset>
     <fieldset><legend>基本資料</legend><dl class="phs-dl"><dt>生日</dt><dd>${(G.born || [1, 1]).join(' 月 ')} 日</dd><dt>遊戲時間</dt><dd>${phTime(G.time)}</dd><dt>倒下次數</dt><dd>${G.deaths || 0}</dd></dl></fieldset>`;
   if (PH.tab === 1) {
-    const rows = [['累計討伐', tFmt(G.totalKills)], ['關主擊破', G.bossKills || 0], ['最深深度', G.maxDepth], ['無限之塔最高', (G.towerBest || 0) + ' 層'], ['完成地圖', G.mapsDone || 0], ['打造次數', G.craftN || 0], ['遊戲時間', phTime(G.time)], ['倒下次數', G.deaths || 0]];
+    const rows = [['累計討伐', tFmt(G.totalKills)], ['BOSS擊破', G.bossKills || 0], ['最深深度', G.maxDepth], ['無限之塔最高', (G.towerBest || 0) + ' 層'], ['完成地圖', G.mapsDone || 0], ['打造次數', G.craftN || 0], ['遊戲時間', phTime(G.time)], ['倒下次數', G.deaths || 0]];
     return `<div class="phs-hello">★ 歷年戰績 ★</div><div class="phs-rainbow"></div><table class="phs-tbl">${rows.map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join('')}</table>`;
   }
   if (PH.tab === 2) {
@@ -151,7 +151,7 @@ function phoneFitGL(){
  const G3=PH.gl;if(!G3)return;const w=innerWidth,h=innerHeight,K=PHG.K;
  // A shared logical pixel scale keeps the shell and readable screen in balance.
  G3.rd.setPixelRatio(Math.min(1,Math.max(.5,420/w)));G3.rd.setSize(w,h);G3.scrW=w;G3.scrH=h;
- G3.tgtScale=PH.zoom?Math.min(w*.86/(PHG_SCREEN.w*K),h*.86/(PHG_SCREEN.h*K)):Math.min(w*.84/(.95*K),h*.82/(1.25*K));
+ G3.tgtScale=(PH.zoom?Math.min(w*.86/(PHG_SCREEN.w*K),h*.86/(PHG_SCREEN.h*K)):Math.min(w*.84/(.95*K),h*.82/(1.25*K)))*(PH.zoomScale||1);
  if(!G3.viewScale)G3.viewScale=G3.tgtScale;
  G3.pivot.updateMatrixWorld(true);const sp=new T3.Vector3();G3.sA.getWorldPosition(sp);
  G3.tgtR=5000;G3.tgtX=PH.zoom?sp.x:0;G3.tgtY=PH.zoom?sp.y:0;document.getElementById('ph-root')?.classList.toggle('zoom',PH.zoom);
@@ -206,7 +206,7 @@ function phoneFit(){
   const root = document.getElementById('ph-root'); if (!root) return;
   const vw = innerWidth, vh = innerHeight, M = PHONE_META;
   const sN = Math.min(vw * .94 / (M.body[1] - M.body[0]), vh * .92 / 830, 1.5), sZ = Math.min(vw * .98 / PH_SCREEN.w, vh * .96 / (PH_SCREEN.h + 60), 3);
-  const s = PH.zoom ? sZ : sN, shift = PH.zoom ? (PH_SCREEN.y + PH_SCREEN.h / 2 - M.h / 2) : (435 - M.h / 2);
+  const s = (PH.zoom ? sZ : sN)*(PH.zoomScale||1), shift = PH.zoom ? (PH_SCREEN.y + PH_SCREEN.h / 2 - M.h / 2) : (435 - M.h / 2);
   const fit = document.getElementById('ph-fit'); fit.style.setProperty('--s', s); fit.style.setProperty('--dy', (-shift * s) + 'px');
   root.classList.toggle('zoom', PH.zoom);
 }
@@ -227,7 +227,7 @@ function phoneSet(tab){ PH.tab = (tab + PH_TABS.length) % PH_TABS.length; phoneR
 const phoneSfx = phSfx;
 function phoneAct(a){
   if (a === 'close') return phoneClose();
-  if (a === 'zoom') { PH.zoom = !PH.zoom; phoneSfx(PH.zoom ? 'ph_zoom' : 'ph_zoomout'); phoneFit(); return; }
+  if (a === 'zoom') { PH.zoomScale=1;PH.zoom = !PH.zoom; phoneSfx(PH.zoom ? 'ph_zoom' : 'ph_zoomout'); phoneFit(); return; }
   phoneSfx(a === 'next' || a === 'prev' || a === 'home' || a === 'links' ? 'ph_tab' : 'ph_key');
   if (a === 'next') return phoneSet(PH.tab + 1);
   if (a === 'prev') return phoneSet(PH.tab - 1);
@@ -260,7 +260,7 @@ function phoneTilt(now){
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
  if(!PH.drag){PH.ry+=(PH.face-PH.ry)*.08;PH.rx+=(0-PH.rx)*.08;if(Math.abs(PH.face-PH.ry)<1)PH.flipping=false;}
  // Front-facing orthographic reading view; drag still permits inspection.
- return [PH.rx,PH.ry];
+ const idle=!reduced&&!PH.zoom&&(PH.zoomScale||1)<=1.05&&!PH.drag&&!PH.flipping&&now-(PH.release||0)>2500,t=(now-PH.t0)/1000,gate=Math.max(0,Math.min(1,(t-1.2)/2));return [PH.rx+(idle?Math.sin(t*.5)*2*gate:0),PH.ry+(idle?Math.sin(t*.28)*6*gate:0)];
 }
 
 function phoneLoop(now){
@@ -273,11 +273,11 @@ function phoneLoop(now){
 function phoneOpen(){
   if(!document.getElementById('phone-pixel-style')){const st=document.createElement('style');st.id='phone-pixel-style';st.textContent=PHONE_PIXEL_CSS;document.head.appendChild(st);}
   if (PH.open || typeof PHONE_IMG === 'undefined') return;
-  PH.open = true; PH.closing = false; PH.tab = 0; PH.zoom = false; PH.rx=0;PH.ry=0;PH.tx=PH.ty=0; PH.face = 0; PH.flipping = false; PH.release = 0; PH.t0 = performance.now()-(matchMedia('(prefers-reduced-motion: reduce)').matches?1200:0);
+  PH.open = true; PH.closing = false; PH.tab = 0; PH.zoom = false; PH.zoomScale=1; PH.rx=0;PH.ry=0;PH.tx=PH.ty=0; PH.face = 0; PH.flipping = false; PH.release = 0; PH.t0 = performance.now()-(matchMedia('(prefers-reduced-motion: reduce)').matches?1200:0);
   const host = document.createElement('div'); host.id = 'ph-host'; PH.gl = null;
   let glOk = false; if (typeof PHONE_GLB !== 'undefined' && typeof T3 !== 'undefined') { try { host.innerHTML = phoneBuildGL(); document.body.appendChild(host); phoneGLInit(host.querySelector('#ph-root')); glOk = true; } catch (e) { PH.gl = null; host.remove(); } }
   if (!glOk) { host.innerHTML = phoneBuild(); document.body.appendChild(host); }
-  const root = document.getElementById('ph-root');
+  const root = document.getElementById('ph-root');phoneGestureMount(root);
   root.addEventListener('click', phonePress); root.addEventListener('pointerdown', phoneDown); root.addEventListener('pointermove', phoneMove); root.addEventListener('pointerup', phoneUp); root.addEventListener('dblclick', phoneFlip); root.addEventListener('pointercancel', phoneUp);
   document.addEventListener('keydown', phoneKey, true); addEventListener('resize', phoneFit);
   phoneFit(); phoneRender(false); if (!PH.gl) document.getElementById('ph-enter').classList.add('in');

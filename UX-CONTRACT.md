@@ -451,3 +451,12 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - 舊塔地上掉落依towerRoomVersion一次遷移到可達區，只移位置，不改數量或預派收益；新房版本再次讀檔不得再遷移。
 
 個人手機縮圖唯一來源為phone-preview.js，由tools/pack_phone_preview.cjs使用phoneModelLoad的GLB與材質預製；phoneMini只輸出快取圖集，與全屏phoneGLInit模型相同。縮圖轉台不改PH內頁角度、存檔或裝扮；CSS減少動態停用圖集播放。
+
+## 斷訊裂隙與操作狀態（2026-10-25）
+
+- 02g-rift.js擁有遭遇、專屬素材、鍛造與清理；存檔由02-state.serialize／applySave處理。地圖key、paid及階段防重複結算，刷新保留時間／擊殺並可補回未完成敵群；離線不主動生成裂隙，不把靜態本機存檔當伺服器權威。
+- 專屬配方為W_RIFT／R_RIFT、O_TOWER、R_SEASON，owner排除一般暗金池及城市定向清單；先驗證素材及未持有，經既有核心收藏owner收取，再扣素材，不自動換裝。塔／賽季只在既有一次勝利提交處增加素材。
+- 05i-wire.js擁有手動配置；05z-experience.WIRE_HISTORY只保存當前角色／板型／寶石庫存版本的40步配置，不回滾獎勵或貨幣。05f-ux.uxRestorePanel及共用視窗owner保留捲動、焦點與關閉；庫存選取不隱式呼叫playFocusBoard，明確「查看接線板」導覽仍可捲動。
+- 05z-experience.EXHIBIT只讀預覽；技能面板優先於背景塔樓，隱藏祖先及離開時dispose。動作與特效不呼叫實戰castSkill，不修改G或派獎；召喚／持續技能共用實際模型／幾何。
+- 05h-view擁有uiFxVersion2遷移及watch暫時展開；prefs.hideBattle不因觀戰覆寫，離開恢復。手機尺寸規則不得再以正常模式max-height限制觀戰canvas，隱藏工作列同步移除margin。音量仍由audio.js單一gain配合audSyncBattle，不疊乘、不解除off。
+- 05y-stage-control掉落訊息屬於.stage，重要性由importantLoot集中判斷；普通獲取仍正常結算但不全部播報。BOSS顯示採活體查詢，不讀歷史bossOut旗標。Rift面板的live signature包含階段／整秒／擊殺與素材，不讓來源面板停在舊狀態。

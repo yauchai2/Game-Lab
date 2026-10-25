@@ -41,6 +41,7 @@ function icon3dUrl(slot, tier, r){
 
 /* 核心只展示模型；稀有度由外框呈現，GPU失敗使用同模型預製縮圖。 */
 function icon3dLegendUrl(id){
+  if(['W_RIFT','R_RIFT','O_TOWER','R_SEASON'].includes(id)&&typeof buildActivityCore==='function')return deviceThumb('activity-core:'+id,()=>buildActivityCore(id));
   if(typeof SIGNATURE_GEAR!=='undefined'&&SIGNATURE_GEAR[id]&&typeof icon3dProxyGearUrl==='function')return icon3dProxyGearUrl(id);
   const key = 'L_' + id+'_'+(G.armory[id]?aTier(G.armory[id]):0); if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof LEGENDS === 'undefined') return legendFallbackUrl(id);
   let slot = '', idx = 0; for (const sl in LEGENDS){ const i = LEGENDS[sl].findIndex(L => L.id === id); if (i >= 0){ slot = sl; idx = i; } } if (!slot) return '';

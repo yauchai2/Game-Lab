@@ -1,14 +1,14 @@
 /* 戰場讀數、像素圖集及全視窗觀戰。只保存本機呈現偏好，不改遊戲存檔。 */
 const VIEW_KEY='idle-hero-view-v1', VIEW_ATLASES=Object.fromEntries(Object.entries(ART_SHEETS).map(([key,s])=>[key,[s.cols,s.rows]]));
-const GAME_VIEW={prefs:{idle:60,pixels:true,glitch:true,uiFx:2,quality:'auto',hideBattle:false,shake:true,reducedEffects:false},atlases:{},ready:Promise.resolve(),watch:false,last:performance.now(),pointers:new Set(),swallow:new Set(),clickUntil:0,trigger:null,inert:new Map(),scroll:[],tab:null,initialized:false,pulseAt:-1000,pulseTimer:0};
-const UI_FX_NAMES=['關閉','輕微','標準','強烈'];
+const GAME_VIEW={prefs:{idle:60,pixels:true,glitch:true,uiFx:1,uiFxVersion:2,quality:'auto',hideBattle:false,shake:true,reducedEffects:false},atlases:{},ready:Promise.resolve(),watch:false,last:performance.now(),pointers:new Set(),swallow:new Set(),clickUntil:0,trigger:null,inert:new Map(),scroll:[],tab:null,initialized:false,pulseAt:-1000,pulseTimer:0};
+const UI_FX_NAMES=['關閉','標準','強烈'];
 const UI_FX_CSS=`
-.view-fx-sample{display:flex;align-items:center;gap:14px;position:relative;min-height:68px;padding:10px;border:2px solid var(--ux-edge);background:#d0dcec;color:#172751;overflow:hidden}.view-fx-sample i{width:72px;height:18px;background:linear-gradient(90deg,#5086ae 75%,#172751 75%);border:2px solid #172751}.view-fx-sample b{font-weight:400;font-size:16px}.view-fx-sample::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#13264d66 0 var(--ui-lines,1px),transparent var(--ui-lines,1px) var(--ui-step,4px));opacity:var(--ui-grain,0)}body[data-ui-fx="2"] .view-fx-sample::after{background-image:repeating-linear-gradient(0deg,#13264d66 0 1px,transparent 1px 4px),repeating-linear-gradient(90deg,#13264d22 0 1px,transparent 1px 4px)}body[data-ui-fx="3"] .view-fx-sample i{clip-path:polygon(0 0,90% 0,90% 20%,100% 20%,100% 80%,90% 80%,90% 100%,0 100%)}
+.view-fx-sample{display:flex;align-items:center;gap:14px;position:relative;min-height:68px;padding:10px;border:2px solid var(--ux-edge);background:#d0dcec;color:#172751;overflow:hidden}.view-fx-sample i{width:72px;height:18px;background:linear-gradient(90deg,#5086ae 75%,#172751 75%);border:2px solid #172751}.view-fx-sample b{font-weight:400;font-size:16px}.view-fx-sample::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#13264d66 0 var(--ui-lines,1px),transparent var(--ui-lines,1px) var(--ui-step,4px));opacity:var(--ui-grain,0)}body[data-ui-fx="2"] .view-fx-sample::after{background-image:repeating-linear-gradient(0deg,#13264d66 0 1px,transparent 1px 4px),repeating-linear-gradient(90deg,#13264d22 0 1px,transparent 1px 4px)}
 
 :root{--ui-fx-cyan:#57efff;--ui-fx-magenta:#ff73be}
 body[data-ui-fx="1"]{--ui-grain:.12;--ui-lines:1px;--ui-step:5px}
 body[data-ui-fx="2"]{--ui-grain:.24;--ui-lines:1px;--ui-step:4px}
-body[data-ui-fx="3"]{--ui-grain:.36;--ui-lines:2px;--ui-step:6px}
+
 /* 色彩由材質與預先量化圖集提供；LCD 字模預先生成，不做整面 SVG 合成。 */
 body.ui-pixelfx :where(#modal>.mbox,#ovl>.mbox,#wiki>.wkb),body.ui-pixelfx.ui-fx-document main>section{position:relative}
 body.ui-pixelfx :where(#modal>.mbox,#ovl>.mbox,#wiki>.wkb)::after,body.ui-pixelfx.ui-fx-document header::after{content:"";position:absolute;inset:0;z-index:40;pointer-events:none;opacity:var(--ui-grain);background-image:repeating-linear-gradient(0deg,#13264d50 0 var(--ui-lines,1px),transparent var(--ui-lines,1px) var(--ui-step,4px)),linear-gradient(90deg,transparent 8%,var(--ui-fx-cyan) 8% 29%,transparent 29% 62%,var(--ui-fx-magenta) 62% 77%,transparent 77%);background-size:100% 100%,100% 2px;background-position:0 var(--ui-band-top,0px),0 -10px;background-repeat:no-repeat;mix-blend-mode:multiply}
@@ -52,7 +52,7 @@ function viewApplyPrefs(){
   }
   document.querySelectorAll('[data-view-idle]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.viewIdle===GAME_VIEW.prefs.idle)));
   document.querySelectorAll('[data-view-setting]').forEach(b=>{const on=GAME_VIEW.prefs[b.dataset.viewSetting];b.setAttribute('aria-pressed',String(on));b.textContent=b.dataset.viewSetting==='pixels'?(on?'像素圖示':'原始圖示'):b.dataset.viewSetting==='hideBattle'?(on?'戰鬥畫面：隱藏':'戰鬥畫面：顯示'):(on?'動態衝擊：開':'動態衝擊：關');});
-  document.body.classList.toggle('battle-off',!!GAME_VIEW.prefs.hideBattle);document.body.classList.toggle('reduced-effects',!!GAME_VIEW.prefs.reducedEffects);if(typeof audSyncBattle==='function')audSyncBattle(GAME_VIEW.prefs.hideBattle||document.body.classList.contains('battle-fold'));if(GAME_VIEW.prefs.shake===false){FXO.shake=0;FXO.punch=0;}if(typeof uiTitle==='function'&&GAME_VIEW.initialized)uiTitle();if(typeof guidanceViewSettings==='function')guidanceViewSettings();
+  document.body.classList.toggle('battle-off',!GAME_VIEW.watch&&!!GAME_VIEW.prefs.hideBattle);document.body.classList.toggle('reduced-effects',!!GAME_VIEW.prefs.reducedEffects);if(typeof audSyncBattle==='function')audSyncBattle(!GAME_VIEW.watch&&(GAME_VIEW.prefs.hideBattle||document.body.classList.contains('battle-fold')));if(GAME_VIEW.prefs.shake===false){FXO.shake=0;FXO.punch=0;}if(typeof uiTitle==='function'&&GAME_VIEW.initialized)uiTitle();if(typeof guidanceViewSettings==='function')guidanceViewSettings();
 }
 function viewPreparePixels(){
   // 原圖保持不變。以每格 24 邏輯像素取樣，所有尺寸共用同一份圖集。
@@ -75,7 +75,7 @@ function viewRenderHUD(){
   if(!GAME_VIEW.hud)return;
   const hp=Math.max(0,Math.round(G.h.hp)),max=Math.max(1,Math.round(G.st.life)),need=Math.max(1,xpNeed(G.lvl)),xp=Math.max(0,Math.floor(G.xp));
   const hpRatio=tClamp(hp/max),xpRatio=tClamp(xp/need),R=G.run;
-  const values={level:G.lvl,hp:`${tFmt(hp)} / ${tFmt(max)}`,gold:tFmt(G.gold),dps:tFmt(G.st.dps),progress:`${R?(R.tower?'塔 '+R.floor+' 層':'地圖 '+lvlNow()):'深度 '+lvlNow()} · ${Math.min(R?R.kills:G.kills,R?R.need:G.need)}／${R?R.need:G.need}${G.h.dead>0?' · 復活中':G.bossOut?' · 關主':''}`};
+  const values={level:G.lvl,hp:`${tFmt(hp)} / ${tFmt(max)}`,gold:tFmt(G.gold),dps:tFmt(G.st.dps),progress:`${R?(R.tower?'塔 '+R.floor+' 層':'地圖 '+lvlNow()):'深度 '+lvlNow()} · 擊殺 ${Math.min(R?R.kills:G.kills,R?R.need:G.need)}／${R?R.need:G.need}${G.h.dead>0?' · 復活中':G.mons.some(m=>m.boss&&!m.dead)?' · BOSS':''}`};
   for(const [key,value] of Object.entries(values))if(GAME_VIEW.fields[key].textContent!==String(value))GAME_VIEW.fields[key].textContent=value;
   const hpBar=GAME_VIEW.fields.hpbar,xpBar=GAME_VIEW.fields.xpbar;
   const setBar=(el,ratio,now,max)=>{const percent=String(Math.round(ratio*100)),pixel=Math.ceil(ratio*50)*2+'%';if(el.getAttribute('aria-valuenow')!==percent){el.setAttribute('aria-valuenow',percent);el.style.setProperty('--fill',percent+'%');}if(el.style.getPropertyValue('--pixel-fill')!==pixel)el.style.setProperty('--pixel-fill',pixel);const text=`${now}／${max}`;if(el.getAttribute('aria-valuetext')!==text)el.setAttribute('aria-valuetext',text);};
@@ -85,23 +85,23 @@ function viewRenderHUD(){
 }
 function viewBlocked(){
   const active=document.activeElement;
-  return document.hidden||G.offline||BOSS.on||UX_LAYERS.length>0||!!held||!!drag||GAME_VIEW.pointers.size>0||(GAME_FEATURES.cardChoices&&!G.deferChoices&&(G.picks>0||G.relicPicks>0))||
+  return document.hidden||(typeof PH!=='undefined'&&PH.open)||G.offline||BOSS.on||UX_LAYERS.length>0||!!held||!!drag||GAME_VIEW.pointers.size>0||(GAME_FEATURES.cardChoices&&!G.deferChoices&&(G.picks>0||G.relicPicks>0))||
     !!active?.closest('input,textarea,select,[contenteditable="true"]')||!!document.querySelector('.stepwrap.open');
 }
 function viewEnterWatch(){
   if(GAME_VIEW.watch||viewBlocked())return false;
   GAME_VIEW.trigger=uxFocusToken();GAME_VIEW.scroll=[...document.querySelectorAll('#mbody,#uisettings')].map(el=>[el,el.scrollTop]);GAME_VIEW.pageScroll=[scrollX,scrollY];
-  GAME_VIEW.watch=true;document.body.classList.add('watch-mode');
+  GAME_VIEW.watch=true;document.body.classList.add('watch-mode');viewApplyPrefs();
   // 與共用 dialog 的 inert 分開持有；開啟 dialog 前一定先離開觀戰。
   for(const el of document.body.children)if(el!==document.querySelector('.stage')&&el.id!=='watch-return'&&!['SCRIPT','STYLE','CANVAS'].includes(el.tagName)&&el.id!=='fxo'&&el.id!=='uxstatus'){
     GAME_VIEW.inert.set(el,el.inert);el.inert=true;
   }
-  $('watch-return').hidden=false;$('watch-return').focus({preventScroll:true});viewRenderHUD();
+  uiSyncBattleFrame();$('watch-return').hidden=false;$('watch-return').focus({preventScroll:true});viewRenderHUD();
   uxAnnounce('已進入觀戰。點一下或按 Escape 返回操作台。');return true;
 }
 function viewExitWatch(){
   GAME_VIEW.last=performance.now();if(!GAME_VIEW.watch)return false;
-  GAME_VIEW.watch=false;document.body.classList.remove('watch-mode');$('watch-return').hidden=true;
+  GAME_VIEW.watch=false;document.body.classList.remove('watch-mode');viewApplyPrefs();uiSyncBattleFrame();$('watch-return').hidden=true;
   for(const [el,inert] of GAME_VIEW.inert)el.inert=inert;GAME_VIEW.inert.clear();
   // 布局恢復後才還原捲動與焦點；不重建面板或輸入欄位。
   for(const [el,top] of GAME_VIEW.scroll)el.scrollTop=top;
@@ -119,7 +119,7 @@ function viewRestorePrefs(prefs){
  GAME_VIEW.prefs.quality=['auto','low','medium','high'].includes(prefs.quality)?prefs.quality:'auto';
  if([0,30,60,120].includes(prefs.idle))GAME_VIEW.prefs.idle=prefs.idle;
  GAME_VIEW.prefs.hideBattle=prefs.hideBattle===true;
- if([0,1,2,3].includes(prefs.uiFx))GAME_VIEW.prefs.uiFx=prefs.uiFx;
+ if([0,1,2,3].includes(prefs.uiFx))GAME_VIEW.prefs.uiFx=prefs.uiFxVersion===2?Math.min(2,prefs.uiFx):prefs.uiFx===0?0:prefs.uiFx===3?2:1;GAME_VIEW.prefs.uiFxVersion=2;
  for(const k of ['pixels','glitch','shake','reducedEffects'])if(typeof prefs[k]==='boolean')GAME_VIEW.prefs[k]=prefs[k];
 }
 function viewInit(){
@@ -127,13 +127,13 @@ function viewInit(){
   document.body.insertAdjacentHTML('beforeend',viewFxDefs());
   const style=document.createElement('style');style.id='viewstyles';style.textContent=VIEW_CSS+UI_FX_CSS+UX_MATERIAL_CSS;document.body.classList.add('ui-material');document.head.appendChild(style);
   const hud=$('stats');hud.className='stats battle-hud';hud.setAttribute('role','group');hud.setAttribute('aria-label','戰場狀態');
-  hud.innerHTML='<div class="hud-left"><div class="hud-level" data-tip="角色等級；討伐魔物入手經驗"><span>LV</span><b data-hud="level"></b></div><div class="hud-vitals"><div class="hud-healthline"><span>HP</span><b data-hud="hp"></b></div><div class="hud-meter hud-hp" data-hud="hpbar" role="progressbar" aria-label="生命" aria-valuemin="0" aria-valuemax="100"><i></i></div><div class="hud-meter hud-xp" data-hud="xpbar" role="progressbar" aria-label="經驗" aria-valuemin="0" aria-valuemax="100"><span>XP</span><i></i></div></div><div class="hud-progress" data-hud="progress"></div></div><div class="hud-right"><div data-tip="金幣：升級天賦、洗點與購買用"><span>G</span><b data-hud="gold"></b></div><div data-tip="單體直傷預估（DPS），實戰會因範圍與連動不同"><span>DPS</span><b data-hud="dps"></b></div></div>';
+  hud.innerHTML='<div class="hud-left"><div class="hud-level" data-tip="角色等級；討伐魔物入手經驗"><span>LV</span><b data-hud="level"></b></div><div class="hud-vitals"><div class="hud-healthline"><span>HP</span><b data-hud="hp"></b></div><div class="hud-meter hud-hp" data-hud="hpbar" role="progressbar" aria-label="生命" aria-valuemin="0" aria-valuemax="100"><i></i></div><div class="hud-meter hud-xp" data-hud="xpbar" role="progressbar" aria-label="經驗" aria-valuemin="0" aria-valuemax="100"><span>XP</span><i></i></div></div><div class="hud-progress" data-hud="progress"></div></div><div class="hud-right"><div data-tip="金幣：升級天賦、洗點與購買用"><span>G</span><b data-hud="gold"></b></div><div data-tip="DPS（DPS），實戰會因範圍與連動不同"><span>DPS</span><b data-hud="dps"></b></div></div>';
   GAME_VIEW.hud=hud;GAME_VIEW.fields=Object.fromEntries([...hud.querySelectorAll('[data-hud]')].map(el=>[el.dataset.hud,el]));ui.drawStats=viewRenderHUD;
   const back=document.createElement('button');back.id='watch-return';back.type='button';back.hidden=true;back.setAttribute('aria-label','返回操作台');back.innerHTML='<span><i aria-hidden="true"></i>觀戰中 · 點一下返回<span class="watch-key"> ／ Esc</span></span>';back.onclick=()=>viewExitWatch();document.body.appendChild(back);
   const settings=document.createElement('section');settings.className='view-settings';settings.setAttribute('aria-label','畫面與觀戰');settings.innerHTML='<h3>畫面與觀戰</h3><div class="ui-setting-grid"><div class="view-options" role="group" aria-label="圖示與動態效果"><button type="button" data-view-setting="hideBattle" data-tip="隱藏 3D 戰鬥畫面並停止繪製，戰鬥與收益照常進行；電腦較慢或長時間掛機時可省電"></button><button type="button" data-view-setting="pixels"></button><button type="button" data-view-setting="glitch"></button></div><div class="ui-setting-block"><h4>自動觀戰</h4><div class="view-options" role="group" aria-label="自動觀戰等待時間">'+[[0,'關閉'],[30,'30 秒'],[60,'60 秒'],[120,'2 分鐘']].map(([s,t])=>`<button type="button" data-view-idle="${s}">${t}</button>`).join('')+'</div></div><button type="button" id="watch-now">立即觀戰 ↗</button></div><details class="ui-rules"><summary>畫面與觀戰說明</summary><p>像素質感套用整個操作介面。震動、衝擊與訊號可獨立關閉；系統減少動態效果時會停用動畫。觀戰填滿遊戲視窗，點一下或按 Esc 返回；編輯、拖曳及選獎勵時不自動切換。</p></details>';
   $('uisettings').append(settings);
   const quality=document.createElement('section');quality.className='ui-setting-block view-quality';quality.innerHTML='<h4>3D 畫質</h4><div class="view-options" role="group" aria-label="3D 畫質">'+[['auto','自動'],['low','低'],['medium','中'],['high','高']].map(([key,label])=>`<button type="button" data-view-quality="${key}" aria-pressed="false">${label}</button>`).join('')+'</div><p id="view-quality-summary" class="uxmeta"></p><p class="uxmeta">自動：手機中畫質，桌機高畫質。只調整 3D 清晰度，像素字體保持不變。</p>';settings.querySelector('.ui-setting-grid').prepend(quality);
-  const control=document.createElement('div');control.className='view-fx-control ui-setting-block';control.innerHTML='<div><label for="ui-fx-level">介面像素質感</label><output for="ui-fx-level" id="ui-fx-name"></output></div><div class="view-fx-sample" aria-hidden="true"><span>像素訊號</span><i></i><b>24 / 48</b></div><input id="ui-fx-level" type="range" min="0" max="3" step="1" aria-describedby="ui-fx-help"><div class="view-fx-ticks" aria-hidden="true"><span>關閉</span><span>輕微</span><span>標準</span><span>強烈</span></div><p id="ui-fx-help" class="uxsr">即時預覽紋理密度及深度。關閉時保留像素字體，輕微為疏線，標準為細網格，強烈為粗階梯；不降低文字可讀性。</p>';
+  const control=document.createElement('div');control.className='view-fx-control ui-setting-block';control.innerHTML='<div><label for="ui-fx-level">介面像素質感</label><output for="ui-fx-level" id="ui-fx-name"></output></div><div class="view-fx-sample" aria-hidden="true"><span>像素訊號</span><i></i><b>24 / 48</b></div><input id="ui-fx-level" type="range" min="0" max="2" step="1" aria-describedby="ui-fx-help"><div class="view-fx-ticks" aria-hidden="true"><span>關閉</span><span>標準</span><span>強烈</span></div><p id="ui-fx-help" class="uxsr">即時預覽紋理密度及深度。關閉時保留像素字體，標準為疏線，強烈為細網格；不降低文字可讀性。</p>';
   settings.querySelector('.ui-setting-grid').prepend(control);
   control.addEventListener('input',()=>{GAME_VIEW.prefs.uiFx=+$('ui-fx-level').value;GAME_VIEW.last=performance.now();viewSavePrefs();viewApplyPrefs();viewFxPulse();});
   settings.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.id==='watch-now'){if(!viewEnterWatch())uxAnnounce('請先完成目前的輸入、機件放置或選擇，再開始觀戰。');return;}if(b.dataset.viewQuality)GAME_VIEW.prefs.quality=b.dataset.viewQuality;else if(b.dataset.viewSetting)GAME_VIEW.prefs[b.dataset.viewSetting]=!GAME_VIEW.prefs[b.dataset.viewSetting];else if(b.dataset.viewIdle!==undefined)GAME_VIEW.prefs.idle=+b.dataset.viewIdle;GAME_VIEW.last=performance.now();viewSavePrefs();viewApplyPrefs();});

@@ -6,7 +6,7 @@ const earlyK = () => Math.max(0, 8 - G.lvl);
 const MTYPES = { slime:{ hp:1, dmg:.8, xp:1, g:1, spd:15, atk:1.5 }, skel:{ hp:1.25, dmg:1.1, xp:1.3, g:1.2, spd:17, atk:1.35 }, brute:{ hp:2.7, dmg:1.7, xp:2.4, g:2.2, spd:11, atk:1.8 }, boss:{ hp:15, dmg:2.3, xp:14, g:12, spd:9, atk:1.9 }, drone:{ hp:.6, dmg:.7, xp:1.2, g:1.1, spd:24, atk:1.3 }, bomb:{ hp:1.4, dmg:1.2, xp:1.8, g:1.6, spd:12, atk:2.2 } };
 Object.assign(MTYPES,{spider:{hp:.8,dmg:1.1,xp:1.3,g:1.2,spd:27,atk:1},speaker:{hp:2,dmg:1.8,xp:2,g:1.8,spd:10,atk:2.1},wisp:{hp:.65,dmg:1.35,xp:1.5,g:1.4,spd:22,atk:1.25},crab:{hp:3.2,dmg:2,xp:2.7,g:2.4,spd:9,atk:2.2}});
 Object.assign(MTYPES,{ranger:{hp:1.2,dmg:1.1,xp:1.6,g:1.4,spd:16,atk:1.8},lantern:{hp:1.1,dmg:.6,xp:2,g:1.6,spd:13,atk:2.3},mole:{hp:1.8,dmg:1.4,xp:1.8,g:1.6,spd:20,atk:1.8},golem:{hp:5.4,dmg:2.2,xp:4,g:3.3,spd:7,atk:2.8}});
-const MONSTER_TRAITS={slime:{size:'小型',scale:.8,skill:'leap'},skel:{size:'中型',scale:1,skill:'cleave'},brute:{size:'大型',scale:1.3,skill:'charge'},drone:{size:'小型',scale:.85,skill:'salvo'},bomb:{size:'中型',scale:1,skill:'blast'},spider:{size:'小型',scale:.8,skill:'charge'},speaker:{size:'大型',scale:1.55,skill:'pulse'},wisp:{size:'小型',scale:.9,skill:'salvo'},crab:{size:'大型',scale:1.65,skill:'guard'},ranger:{size:'中型',scale:1,skill:'salvo'},lantern:{size:'中型',scale:1.1,skill:'mend'},mole:{size:'中型',scale:1.15,skill:'burrow'},golem:{size:'大型',scale:1.4,skill:'stomp'},boss:{size:'巨型關主',scale:1,skill:'boss'}};
+const MONSTER_TRAITS={slime:{size:'小型',scale:.8,skill:'leap'},skel:{size:'中型',scale:1,skill:'cleave'},brute:{size:'大型',scale:1.3,skill:'charge'},drone:{size:'小型',scale:.85,skill:'salvo'},bomb:{size:'中型',scale:1,skill:'blast'},spider:{size:'小型',scale:.8,skill:'charge'},speaker:{size:'大型',scale:1.55,skill:'pulse'},wisp:{size:'小型',scale:.9,skill:'salvo'},crab:{size:'大型',scale:1.65,skill:'guard'},ranger:{size:'中型',scale:1,skill:'salvo'},lantern:{size:'中型',scale:1.1,skill:'mend'},mole:{size:'中型',scale:1.15,skill:'burrow'},golem:{size:'大型',scale:1.4,skill:'stomp'},boss:{size:'巨型BOSS',scale:1,skill:'boss'}};
 const MONSTER_SKILL_NAMES={leap:'躍擊',cleave:'橫掃',charge:'直線衝鋒',salvo:'三連射擊',blast:'延遲爆破',pulse:'回音震波',guard:'甲殼防禦',mend:'同伴修復',burrow:'鑽地突襲',stomp:'重踏',boss:'階段攻勢'};
 const REGION_MOBS=[['slime','spider','ranger','golem'],['crab','mole','bomb','lantern'],['wisp','skel','ranger','golem'],['bomb','crab','mole','golem'],['drone','speaker','lantern','ranger'],['spider','speaker','slime','lantern'],['drone','wisp','ranger','mole'],['crab','spider','lantern','golem'],['wisp','mole','ranger','lantern'],['speaker','bomb','golem','ranger'],['drone','brute','speaker','mole'],['spider','wisp','bomb','lantern']];
 Object.assign(MTYPES,{jailer:{hp:8,dmg:2.1,xp:4,g:4,spd:7,atk:2.6},specimen:{hp:6,dmg:1.9,xp:3.8,g:3.5,spd:12,atk:2.4},sentinel:{hp:5,dmg:1.8,xp:3.4,g:3,spd:9,atk:2.7}});
@@ -20,9 +20,9 @@ function spawnPack(){
   if(G.run?.city?.awaitChoice)return;
   const R = G.run, d = lvlNow(), mods = R ? R.map.mods : [], kills = R ? R.kills : G.kills, need = R ? R.need : G.need, bossOut = R ? R.bossOut : G.bossOut;
   if (!R && G.need < 60) G.need = 60;   /* 舊存檔的門檻較低，大群怪的玩法改成 60 */
-  pushHoldCheck(); const bossNow = (R || (G.push && !G.pushHold)) && kills >= need && !bossOut && !(R && R.tower && R.floor % 10 !== 0) && (G.h.hp >= G.st.life*(G.bossHp || 0)/100 || R);   // 推進模式：生命低於設定值就先不開打
+  pushHoldCheck(); const bossNow = !['expand','contain'].includes(riftState().encounter?.phase) && (R || (G.push && !G.pushHold)) && kills >= need && !bossOut && !(R && R.tower && R.floor % 10 !== 0) && (G.h.hp >= G.st.life*(G.bossHp || 0)/100 || R);   // 推進模式：生命低於設定值就先不開打
   let types;
-  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的關主出現了！`, '#8e3fd1'); }
+  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的BOSS出現了！`, '#8e3fd1'); }
   else {const n=Math.min(hordeCap()-G.mons.filter(m=>!m.dead).length,4+Math.floor(Math.random()*4)+(mods.includes('more')?2:0)+(mods.includes('swarm')?3:0));const pool=R?.tower?towerTheme(R.floor).pool:(REGION_MOBS[biomeNow()]||REGION_MOBS[0]);types=Array.from({length:Math.max(0,n)},()=>tPick(pool));}
   if(R?.tower&&!bossNow){const big=['jailer','specimen','sentinel'],small=towerTheme(R.floor).pool.filter(id=>!big.includes(id));types=types.map(()=>tPick(small));if(types.length&&G.mons.filter(m=>!m.dead&&big.includes(m.type)).length<2&&Math.random()<.35)types[0]=towerTheme(R.floor).pool[0];}
   if(bossNow&&R?.tower)for(const m of G.mons)if(!m.dead){m.dead=true;m.deadT=.4;}
@@ -48,11 +48,11 @@ function killMon(m){
   if(!m.training){const board=circuitDrop(m.boss?'boss':m.elite?'elite':'normal');if(board)dropGround({kind:'circuit',id:board,x:m.x,y:m.y,t:0});}
   if(m.training){m.hp=m.hpMax;return;}
   if(typeof skillDropFor==='function'){const sk=skillDropFor(m);if(sk)dropGround({kind:'skill',id:sk,x:m.x,y:m.y,t:0});}
-  m.dead = true; m.deadT = 0; SFX('kill'); if (!G.train && G.mk) G.mk[m.type] = (G.mk[m.type] || 0) + 1; const T = MTYPES[m.type], d = lvlNow(), R = G.run, q = runQ(), mods = R ? R.map.mods : [];
+  riftOnKill(m);deathStain(m);m.dead = true; m.deadT = 0; SFX('kill'); if (!G.train && G.mk) G.mk[m.type] = (G.mk[m.type] || 0) + 1; const T = MTYPES[m.type], d = lvlNow(), R = G.run, q = runQ(), mods = R ? R.map.mods : [];
   let hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk * (G.relics.CALC ? 1.2 : 1) * (offPen() ? .75 : 1))), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
   if (m.elite){ gold *= 4; xp *= 4; } if (mods.includes('wise')) xp = Math.round(xp*1.5);
   if (G.relics.PIG) gold = Math.round(gold*1.3);
-  dropGround({kind:'gold',amount:gold,x:m.x,y:m.y,t:0});if(m.boss||m.elite||Math.random()<.08)dropGround({kind:'chip',amount:m.boss?5:m.elite?2:1,x:m.x+2,y:m.y,t:0});G.totalKills++; if (m.boss){ G.bossKills = (G.bossKills || 0) + 1; if (GAME_FEATURES.cardChoices && Object.keys(G.relics).length < Object.keys(RELICS).length) G.relicPicks++; kick(2.4, .5, '#fff6c0', 1); hitStop(.14); if (G.fx.length < 40) addFx({ k:'ring', x:m.x, y:m.y, col:'#fff6c0', t:0, dur:.7 }); if (Math.random() < .25 && typeof COS !== 'undefined'){ const pool = []; for (const [c] of COS_CATS) for (const e of COS[c]) if (e[3] > 0 && !G.own[c + ':' + e[0]]) pool.push([c, e]); if (pool.length){ const [c, e] = tPick(pool); G.own[c + ':' + e[0]] = 1; logLine(`關主掉落裝扮：${e[1]}`, '#c28a00'); } } }
+  dropGround({kind:'gold',amount:gold,x:m.x,y:m.y,t:0});if(m.boss||m.elite||Math.random()<.08)dropGround({kind:'chip',amount:m.boss?5:m.elite?2:1,x:m.x+2,y:m.y,t:0});G.totalKills++; if (m.boss){ G.bossKills = (G.bossKills || 0) + 1; if (GAME_FEATURES.cardChoices && Object.keys(G.relics).length < Object.keys(RELICS).length) G.relicPicks++; kick(2.4, .5, '#fff6c0', 1); hitStop(.14); if (G.fx.length < 40) addFx({ k:'ring', x:m.x, y:m.y, col:'#fff6c0', t:0, dur:.7 }); if (Math.random() < .25 && typeof COS !== 'undefined'){ const pool = []; for (const [c] of COS_CATS) for (const e of COS[c]) if (e[3] > 0 && !G.own[c + ':' + e[0]]) pool.push([c, e]); if (pool.length){ const [c, e] = tPick(pool); G.own[c + ':' + e[0]] = 1; logLine(`BOSS掉落裝扮：${e[1]}`, '#c28a00'); } } }
   gainXp(xp); if (R) R.kills++; else G.kills++; checkGoals();
   if (R && R.tower && R.floor % 10 !== 0 && R.kills >= R.need) towerNext();
   if (G.relics.FOOD) heroRecover(G.st.life*.01);
@@ -70,17 +70,17 @@ function killMon(m){
   if (m.boss){
     fieldDiscover(terrainNow().profile,true);
     if (R){ completeRun(); }
-    else { G.bossOut = false; G.kills = 0; G.pushFail = 0; G.pushHold = false; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗關主！進入深度 ${G.depth}`, '#2f9e4f'); } }
+    else { G.bossOut = false; G.kills = 0; G.pushFail = 0; G.pushHold = false; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗BOSS！進入深度 ${G.depth}`, '#2f9e4f'); } }
   }
 }
-/* 無限之塔：每層殺滿一定數量進下一層，每 10 層是關主層，打贏加一條規則並給遺物 */
+/* 無限之塔：每層殺滿一定數量進下一層，每 10 層是BOSS層，打贏加一條規則並給遺物 */
 const towerLvl = f => Math.max(3, G.maxDepth-6) + Math.floor(f*0.8);
 function towerStart(){
   if (G.run || G.maxDepth < 8) return; const f = 1;
   G.run = { tower:true, floor:f, map:{ id:'tower', lvl:towerLvl(f), biome:towerBiome(f), mods:[] }, kills:0, need:24 + 2*f, bossOut:false };
   G.mons.forEach(m => { m.dead = true; m.deadT = 0; }); G.proj.length = 0; G.spawnCd = .8; G.h.hp = G.st.life; logLine('進入無限之塔', '#8e3fd1'); closeModal();
 }
-function towerNext(){const R=G.run;if(!R?.tower||R.stair)return;const f=R.floor;if(R.kills<R.need||f%10===0&&!R.bossOut)return;G.towerBest=Math.max(G.towerBest||0,f);G.parts=(G.parts||0)+3+Math.floor(f/5);G.gold+=Math.round(30*Math.pow(1.12,f));if(typeof clearHeroAilments==='function')clearHeroAilments();R.stair={from:f,paid:true,age:0,duration:1.6,x:G.h.x,y:G.h.y};for(const m of G.mons)m.dead=true;G.proj=[];G.timers=[];G.summons=[];G.h.castT=-1;G.dirty=true;SFX('stair');if(typeof towerStairTick!=='function'){delete R.stair;towerCommitFloor();return;}if(G.offline)towerStairTick(0,true);}
+function towerNext(){const R=G.run;if(!R?.tower||R.stair)return;const f=R.floor;if(R.kills<R.need||f%10===0&&!R.bossOut)return;G.towerBest=Math.max(G.towerBest||0,f);if(f%10===0)activityEarn('tower');G.parts=(G.parts||0)+3+Math.floor(f/5);G.gold+=Math.round(30*Math.pow(1.12,f));if(typeof clearHeroAilments==='function')clearHeroAilments();R.stair={from:f,paid:true,age:0,duration:1.6,x:G.h.x,y:G.h.y};for(const m of G.mons)if(!m.dead){m.dead=true;m.deadT=0;deathStain(m);}G.proj=[];G.timers=[];G.summons=[];G.h.castT=-1;G.dirty=true;SFX('stair');if(typeof towerStairTick!=='function'){delete R.stair;towerCommitFloor();return;}if(G.offline)towerStairTick(0,true);}
 function towerCommitFloor(){
   const R = G.run;if (!R || !R.tower) return;const f=R.floor;
   const bossFloor = f % 10 === 0; R.floor++;
@@ -91,7 +91,7 @@ function towerCommitFloor(){
     if (GAME_FEATURES.cardChoices && Object.keys(G.relics).length < Object.keys(RELICS).length) G.relicPicks++;
     dropGround({ x:tRand(8, 22), y:tRand(HY + 6, HY + 16), kind:'item', it:makeItem(tPick(Object.keys(SLOTN)), rarityRoll(true), R.map.lvl), t:0 });
   }
-  addFloat(G.h.x, G.h.y, BZ + 26, `第 ${R.floor} 層`, '#8e3fd1', 4.6); logLine(`無限之塔：第 ${R.floor} 層${R.floor % 10 === 0 ? '（關主層）' : ''}`, '#8e3fd1'); kick(.5, .25, '#d8c0ff'); G.dirty = true;
+  addFloat(G.h.x, G.h.y, BZ + 26, `第 ${R.floor} 層`, '#8e3fd1', 4.6); logLine(`無限之塔：第 ${R.floor} 層${R.floor % 10 === 0 ? '（BOSS層）' : ''}`, '#8e3fd1'); kick(.5, .25, '#d8c0ff'); G.dirty = true;
 }
 function completeRun(){
   if (!G.run) return;
@@ -113,6 +113,7 @@ function gainXp(xp){
 /* ---------- loot handling ---------- */
 function pickup(d){const before={gold:G.gold,parts:G.parts,chips:G.chips};const out=pickupInternal(d);if(!G.offline&&typeof lootReceipt==='function'){let receipt=d;if(d.kind==='item'&&!G.inventory.includes(d.it)&&G.armory[d.it.lg]!==d.it)receipt=G.parts>before.parts?{kind:'recycled',amount:G.parts-before.parts}:G.gold>before.gold?{kind:'gold',amount:G.gold-before.gold}:null;if(d.kind==='map'&&!G.maps.includes(d.map))receipt={kind:'gold',amount:G.gold-before.gold};if(d.kind==='skill'&&G.chips>before.chips)receipt={kind:'chip',amount:G.chips-before.chips};if(d.kind==='circuit'&&G.parts>before.parts)receipt={kind:'recycled',amount:G.parts-before.parts};if(receipt)lootReceipt(receipt);}return out;}
 function pickupInternal(d){
+  if(d.kind==='rift'){riftState().shards+=d.amount;G.dirty=true;return;}
   if(d.kind==='skill'){const fresh=collectSkill(d.id);if(fresh&&G.off)G.off.skillBooks=(G.off.skillBooks||0)+1;return;}
   if(d.kind==='boost'){applyAirBoost(d.boost);return;}
   if(['gem','cart'].includes(d.kind))noticeNew({gem:'gems',cart:'carts'}[d.kind],d.id);
@@ -219,14 +220,14 @@ const castMons = () => aliveMons().filter(m => Math.hypot(m.x - G.h.x, m.y - G.h
 function nearestMon(fightOnly, from){ let best = null, bd = 1e9; const [fx, fy] = from || [G.h.x, G.h.y]; for (const m of G.mons){ if (m.dead || m.fall > 0 || (fightOnly && !m.fight)) continue; const d = Math.hypot(m.x - fx, m.y - fy); if (d < bd && d < 60){ bd = d; best = m; } } return best; }
 
 function revive(){if(typeof clearHeroAilments==='function')clearHeroAilments(); const h = G.h; h.dead = 0;h.fatalSource=null; h.drama={kind:'rise',start:G.time,duration:.7}; h.x = HX; h.y = HY; h.vx = h.vy = 0; h.hp = G.st.life; G.spawnCd = 1; }
-/* 推進連敗保護：連輸兩次關主就先停止挑戰、在原地刷；等級 +2 或 DPS +15% 後自動再挑戰。避免掛機一直循環送死 */
+/* 推進連敗保護：連輸兩次BOSS就先停止挑戰、在原地刷；等級 +2 或 DPS +15% 後自動再挑戰。避免掛機一直循環送死 */
 function pushFailed(){
   if (!G.push) return;
   G.pushFail = (G.pushFail || 0) + 1;
-  if (G.pushFail >= 2 && !G.pushHold){ G.pushHold = true; G.holdLvl = G.lvl; G.holdDps = G.st.dps; logLine('連續倒下，先在這裡累積實力，變強後自動再挑戰關主', '#c9892b'); }
+  if (G.pushFail >= 2 && !G.pushHold){ G.pushHold = true; G.holdLvl = G.lvl; G.holdDps = G.st.dps; logLine('連續倒下，先在這裡累積實力，變強後自動再挑戰BOSS', '#c9892b'); }
 }
 function pushHoldCheck(){
-  if (G.pushHold && (G.lvl >= (G.holdLvl || 0) + 2 || G.st.dps >= (G.holdDps || 0)*1.15)){ G.pushHold = false; G.pushFail = 1; logLine('變強了，再次挑戰關主', '#2f9e4f'); }
+  if (G.pushHold && (G.lvl >= (G.holdLvl || 0) + 2 || G.st.dps >= (G.holdDps || 0)*1.15)){ G.pushHold = false; G.pushFail = 1; logLine('變強了，再次挑戰BOSS', '#2f9e4f'); }
 }
 function heroDie(){
   const h=G.h;
@@ -240,6 +241,8 @@ function heroDie(){
 function skillDmg(id){ const k = G.st.sk[id]; return k; }
 function applySkillHit(id,m,mult=1,origin=G.eventOrigin||'primary'){
   const k=G.st.sk[id];if(!k||!m||m.dead||m.fall>0)return 0;
+  if(lgOn('W_RIFT')){const distance=Math.hypot(m.x-G.h.x,m.y-G.h.y);mult*=distance>18?1.45:distance<10?.8:1;}
+  if(lgOn('O_TOWER')&&G.h.hp<G.st.life*.35)mult*=1.3;if(lgOn('R_SEASON'))mult*=m.shock>0?1.35:.85;
   const source=SKILLS[id].n+(origin==='primary'?'':origin==='repeat'?'·回放':origin==='summon'?'·召喚':'·觸發');G.src=source;
   if (G.fx.length < 36){ const el = SKILLS[id].el, k = el === 'fire' ? 'embers' : el === 'cold' ? 'snow' : Math.random() < .5 ? 'zap' : 'shard'; addFx({ k, x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, t:0, dur:k === 'embers' ? .7 : k === 'snow' ? .8 : .4 }); }
   if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
@@ -366,7 +369,7 @@ function performProj(p){
 /* 主角自己走位：在怪少的地方繞圈，邊走邊打；招式前搖時有機率閃開（見 s.dodge） */
 const ARENA_R = 40;
 function moveHero(dt){
-  const h = G.h; [h.x,h.y]=terrainProject(h.x??HX,h.y??HY); if (h.x === undefined){ h.x = HX; h.y = HY; h.vx = h.vy = 0; h.gx = HX; h.gy = HY; h.aiT = 0; h.mv = 0; }
+  const h = G.h; riftPursuit(); [h.x,h.y]=terrainProject(h.x??HX,h.y??HY); if (h.x === undefined){ h.x = HX; h.y = HY; h.vx = h.vy = 0; h.gx = HX; h.gy = HY; h.aiT = 0; h.mv = 0; }
   h.aiT -= dt;
   if (h.aiT <= 0){
     h.aiT = .4 + Math.random()*.4; const al = aliveMons(); let best = null, bs = -1e9;
@@ -414,12 +417,13 @@ function trainEnd(abort){
   G.dirty=true;
 }
 function update(dt){
-  worldTravelAdvance(dt);if(typeof towerStairTick==='function'&&towerStairTick(dt))return;
+  worldTravelAdvance(dt);riftTick(dt);if(typeof towerStairTick==='function'&&towerStairTick(dt))return;
   if(G.run?.city?.awaitChoice){const c=G.run.city;if(!Number.isFinite(c.choiceAt)||c.choiceAt>Date.now())c.choiceAt=Date.now();if(G.offline||Date.now()-c.choiceAt>=15000)cityChoose(c.policy,c.stage);else return;}
   G.src = '其他';
   if (G.train){ G.train.t -= dt; for (const m of G.mons) if (!m.dead){ m.hp = m.hpMax; } if (G.train.t <= 0) trainEnd(); }
   G.time += dt;supportWorldTick(dt);if(typeof heroAilmentTick==='function'){heroAilmentTick(dt);if(G.h.hp<=0&&G.h.dead<=0)heroDie();} if ((G.time*2 | 0) !== G._ac){ G._ac = G.time*2 | 0; checkAch(); } const h = G.h, s = G.st;
   for (const f of G.floats) f.t += dt/1.1; if (G.floats.length) G.floats = G.floats.filter(f => f.t < 1);
+  for(const stain of G.stains||[])stain.t+=dt;G.stains=(G.stains||[]).filter(s=>s.t<12&&s.key===terrainKey());
   for (const e of G.fx) e.t += dt/e.dur; if (G.fx.length) G.fx = G.fx.filter(e => e.t < 1);
   if (h.hurtT > 0) h.hurtT -= dt;
   if(!G.train)collectNearby(dt);
@@ -515,7 +519,7 @@ function monsterSkillTick(m,dt){
   const dist=Math.hypot(G.h.x-m.x,G.h.y-m.y);
   if(!m.warning&&m.skillCd<=0&&dist<55){
     let skill=MONSTER_TRAITS[m.type]?.skill||'cleave';
-    if(m.boss){const turn=m.skillTurn||0,low=m.hp<m.hpMax*.5;skill=[['stomp','charge','pulse'],['salvo','pulse','charge'],['burrow','stomp','salvo']][m.bossForm??0][turn%3];m.skillTurn=turn+1;if(low&&!m.enraged){m.enraged=true;addFloat(m.x,m.y,BZ+40,'關主 · 覺醒','#8c415e',18,'event');} }
+    if(m.boss){const turn=m.skillTurn||0,low=m.hp<m.hpMax*.5;skill=[['stomp','charge','pulse'],['salvo','pulse','charge'],['burrow','stomp','salvo']][m.bossForm??0][turn%3];m.skillTurn=turn+1;if(low&&!m.enraged){m.enraged=true;addFloat(m.x,m.y,BZ+40,'BOSS · 覺醒','#8c415e',18,'event');} }
     if(skill==='mend'){const allies=G.mons.filter(o=>o!==m&&!o.dead&&!o.boss&&Math.hypot(o.x-m.x,o.y-m.y)<30&&o.hp<o.hpMax).slice(0,3);for(const o of allies){o.hp=Math.min(o.hpMax,o.hp+o.hpMax*.12);addFx({k:'bolt',pts:[[m.x,m.y,BZ+8],[o.x,o.y,BZ+8]],col:'#71c7b4',t:0,dur:.4});}m.skillCd=7;return;}
     if(skill==='guard'){m.guardUntil=G.time+2.5;m.skillCd=7;addFx({k:'ring',x:m.x,y:m.y,col:'#86c9d8',t:0,dur:2.5});return;}
     const line=skill==='charge',rad=m.boss?skill==='stomp'?26:skill==='pulse'?30:8:skill==='stomp'?12:skill==='pulse'?13:skill==='cleave'?8:6;
