@@ -1,6 +1,6 @@
 # v0.51.0 裂隙與介面整合驗收
 
-2026-10-25，香港時間。來源分支codex/rift-experience-release，基底fe88546，包含手機修正4799ed7／PR #56。以下為候選已實作與驗證；正式發佈證據另見../release-0.51.0/integration.md。
+2026-10-25，香港時間。來源分支codex/rift-experience-release，基底fe88546，包含手機修正4799ed7／PR #56。已隨v0.51.0合併、發佈及正式HTTPS驗證；正式證據見../release-0.51.0/integration.md。
 
 ## 本輪要求對照
 
@@ -45,7 +45,7 @@
 - 19個視窗／真實pointer與CDP touch流程、15個背包／手機／像素預覽流程通過，證據各在window-regression／loot-regression。
 - 單檔預覽零外部請求、真實模型及七部位顯示通過，見bundle-results.json；字體網格與研究預覽隔離檢查屬於33套件。
 - 靜態audit仍有05k-phone.js第91／101行兩個既有委派事件偵測提示，實際按鍵已由瀏覽器驗證，沒有宣稱strict audit全綠。DESIGN lint沒有錯誤。
-- 12組固定來源樣本：四職業，深度4／等級10／ilvl6稀有裝／單FIRE，以及深度8／等級35／ilvl15或30稀有裝／三基礎技能，無輔助、天賦、昇華。全數封閉，起始樣本約21至43秒，成熟樣本約19至21秒，最高同時12隻事件怪。沒有量測玩家群體或宣稱長期流派平衡；下一步要觀察低裝備、稀有構築及高深度的實玩分佈，不能把同一RNG樣本當勝率。
+- 12組固定來源樣本：四職業，深度4／等級10／ilvl6稀有裝／單FIRE，以及深度8／等級35／ilvl15或30稀有裝／三基礎技能，無輔助、天賦、昇華。全數封閉，起始樣本約21至43秒，成熟樣本約19至21秒，最高同時12隻事件怪。樣本固定區域、關閉自動推進（G.push=false）；自然推進或撤離會使未完成遭遇取消，不把固定區域結果當成自動推進下的完成率。沒有量測玩家群體或宣稱長期流派平衡；下一步要觀察低裝備、稀有構築及高深度的實玩分佈，不能把同一RNG樣本當勝率。
 - 未測真機Safari／FPS；全球排名、Cloudflare代發回饋與贊助收款仍未接通，未當成此次已完成內容。
 
 主要截圖：pixel-settings.png、important-loot.png、circuit-colors.png、support-colors.png、tower-live.png、rift-hand.png、tower-stairs-death.png、mobile-watch.png、phone-zoom.png、loot-sources.png、preview-GIANTBLADE.png，以及page-*.png。
