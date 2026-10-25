@@ -31,7 +31,8 @@ jobs:
       - name: Install deployment dependencies
         run: npm install --package-lock=false
       - name: Run feedback service unit tests
-        run: node ../../tools/test_feedback_worker.mjs
+        working-directory: .
+        run: node tools/test_feedback_worker.mjs
       - name: Deploy Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.FEEDBACK_CLOUDFLARE_API_TOKEN }}
