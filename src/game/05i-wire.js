@@ -60,12 +60,12 @@ function wireCell(x, y, ctx){
       if (!wOpen(i) && wTier() < 3) return `<button type="button" class="pc dead" tabindex="-1" aria-hidden="true" disabled></button>`;
       if (!wOpen(i)) return `<button type="button" class="pc lock k${col}" ${ev}><span>L${GridLab.layout(G.board).levels[i]}</span></button>`;
       const a = wActive(i), wired = GridLab.connected(B, i);
-      if (!a) return `<button type="button" class="pc sk empty k${col}${selSock === i ? ' sel' : ''}" ${portStyle} ${ev}><span>終</span><i class="port-shape" aria-hidden="true">${WIRE_SHAPES[i]}</i></button>`;
-      return `<button type="button" class="pc fill sk chip k${col}${selSock === i ? ' sel' : ''}${wired ? ' lnk' : ' open'}" data-skill="${a.key}" ${portStyle} ${ev}><span class="port-word">終</span><i class="port-shape" aria-hidden="true">${WIRE_SHAPES[i]}</i></button>`;
+      if (!a) return `<button type="button" class="pc sk empty k${col}${selSock === i ? ' sel' : ''}" ${portStyle} ${ev}><span>終</span></button>`;
+      return `<button type="button" class="pc fill sk chip k${col}${selSock === i ? ' sel' : ''}${wired ? ' lnk' : ' open'}" data-skill="${a.key}" ${portStyle} ${ev}>${sico(a.key,20)}<span class="port-word">終</span>${wired?'<i class="port-ok" aria-hidden="true"></i>':''}</button>`;
     }
     const ri = GridLab.layout(G.board).srcs.findIndex(s => s[0] === x && s[1] === y);
     if (ri >= 0 && !wOpen(ri) && wTier() < 3) return `<button type="button" class="pc dead" tabindex="-1" aria-hidden="true" disabled></button>`;
-    if (ri >= 0) return `<button type="button" class="pc bus src s${GridLab.layout(G.board).colors[ri]}${wOpen(ri) ? '' : ' off'}${selSock === ri ? ' sel' : ''}" style="--padc:${PORT_COLORS[GridLab.layout(G.board).colors[ri]]}" ${ev}><span>起</span><i class="port-shape" aria-hidden="true">${WIRE_SHAPES[ri]}</i></button>`;
+    if (ri >= 0) return `<button type="button" class="pc bus src s${GridLab.layout(G.board).colors[ri]}${wOpen(ri) ? '' : ' off'}${selSock === ri ? ' sel' : ''}" style="--padc:${PORT_COLORS[GridLab.layout(G.board).colors[ri]]}" ${ev}><span>起</span></button>`;
     return `<button type="button" class="pc dead" tabindex="-1" aria-hidden="true" disabled></button>`;
   }
   if (GridLab.isRock(x, y,G.board)) return `<button type="button" class="pc rk" ${ev}><span>✕</span></button>`;
@@ -173,14 +173,14 @@ function wirePickOpen(x, y, html){
 function wirePickSock(i,atSource=false){
   if (!wOpen(i)){ pzMsg(`這個終點要到等級 ${GridLab.layout(G.board).levels[i]} 才解鎖`); return; }
   const a = wActive(i), col = WIRE_COLNAME[GridLab.layout(G.board).colors[i]];
-  const items = Object.entries(SKILLS).filter(([id, K]) => skillAvailable(id)).map(([id, K]) => { const here = a && a.key === id, at = G.board.pieces.find(p => p.kind === 'active' && p.key === id); return `<button class="wpi${here ? ' on' : ''}" onclick="wirePickSkill(${i},'${id}')">${sico(id,26)}<b>${K.n}${playNewBadge('skills',id)}</b><small>${skillFindLabel(id)}${at&&!here?' · 換位':''}</small></button>`; }).join('');
+  const items = Object.entries(SKILLS).filter(([id, K]) => skillAvailable(id)).map(([id, K]) => { const here = a && a.key === id, at = G.board.pieces.find(p => p.kind === 'active' && p.key === id); return `<button class="wpi${here ? ' on' : ''}" onclick="wirePickSkill(${i},'${id}')">${sico(id,26)}<b>${K.n}${playNewBadge('skills',id)}</b><small>${here?'已裝上':at?'換位到這裡':'點選裝上'}</small></button>`; }).join('');
   const [x, y] = (atSource?GridLab.layout(G.board).srcs:GridLab.layout(G.board).socks)[i];
   wirePickOpen(x, y, `<div class="wph">${col}色線路：選一個技能<button class="wpx" onclick="wirePickClose()" aria-label="關閉">✕</button></div><div class="wpg">${items}</div>${a ? `<button class="mb skill-preview-link" onclick="skillPreview('${a.key}')">攻擊預覽</button><button class="mb" onclick="wirePrepareMove(${a.id})">移動技能</button><button class="wpd" onclick="wirePickUnassign(${i})">卸下這個技能</button>` : ''}`);
 }
 function wirePickSkill(i, key){
   wirePickClose(); const keep = selSock; selSock = i; wireAssign(key);
 
-  selSock = -1; selPiece = null; renderModal(); wireSnap('pick');skillPreview(key,true);
+  selSock = -1; selPiece = null; renderModal(); wireSnap('pick');pzMsg(`已裝上 ${SKILLS[key].n}。下一步：按住「起」拖到「終」接線。想看效果可點終點的「攻擊預覽」。`);
 }
 function wirePickUnassign(i){ wirePickClose(); const keep = selSock; selSock = i; wireUnassign(); selSock = -1; selPiece = null; renderModal(); }
 function wirePickPad(x, y, w){
@@ -189,7 +189,7 @@ function wirePickPad(x, y, w){
   for (const k of Object.keys(SUPPS)) for (const t of [3, 2, 1]){ if (gemFreeT(k, t) <= 0) continue; const ok=a&&GridLab.fits(k,a)&&GridLab.GEM_COLOR[k]===GridLab.padColor(x,y,G.board)&&GridLab.powerUsed(G.board)+GridLab.TIER_COST[t-1]<=GridLab.layout(G.board).power; items.push(`<button class="wpi${ok ? '' : ' no'}" ${ok ? '' : 'disabled'} onclick="wirePickGem(${x},${y},'${k}',${t})">${gemIco(k, 26)}<b>${SUPPS[k].n}${TIER_NAME[t - 1]}</b><small>${ok ? '×' + gemFreeT(k, t) : '不適用'}</small></button>`); }
   wirePickOpen(x, y, `<div class="wph">${col}色色塊洞 · 剩餘供電 ${GridLab.layout(G.board).power-GridLab.powerUsed(G.board)}：選配件<button class="wpx" onclick="wirePickClose()" aria-label="關閉">✕</button></div>${items.length ? `<div class="wpg">${items.join('')}</div>` : '<p class="wpe">庫存沒有配件。打怪或到「打造」頁取得。</p>'}`);
 }
-function wirePickGem(x, y, key, t){ wirePickClose(); held = { kind:'support', key, t }; wirePlace(x, y); held = null; }
+function wirePickGem(x, y, key, t){ wirePickClose(); held = { kind:'support', key, t }; wirePlace(x, y); held = null; renderModal(); }
 function wirePickPiece(x, y, p){
   selPiece=p.id;selSock=-1;
   const S = SUPPS[p.key];
@@ -312,7 +312,7 @@ function wireMove(ev){
  if(d.piece!=null){wirePieceDragMove(ev);return;}
  if(!d.moved&&Math.hypot(ev.clientX-d.sx,ev.clientY-d.sy)<8)return;
  ev.preventDefault();
- if(!d.moved){WIRE_UNDO=d.before;d.moved=true;wirePickClose();const wb=document.querySelector('.wb');if(wb){try{wb.setPointerCapture(d.pointer);d.capture=wb;}catch(e){}wb.addEventListener('lostpointercapture',wireLostCapture,{once:true});}}
+ if(!d.moved){WIRE_UNDO=d.before;d.moved=true;wirePickClose();const wb=document.body;try{wb.setPointerCapture(d.pointer);d.capture=wb;}catch(e){}}
  if(d.src!=null){selSock=d.src;selPiece=null;GridLab.clearWire(G.board,selSock);d.src=null;recalc();}
  const rect=document.querySelector('.wb')?.getBoundingClientRect(),step=Math.max(2,(rect?.width||300)/G.board.w/4),distance=Math.hypot(ev.clientX-d.px,ev.clientY-d.py),count=Math.min(512,Math.max(1,Math.ceil(distance/step)));
  let changed=false,done=false;
@@ -405,7 +405,7 @@ function uiInventoryPick(kind, key, t = 1){
   if (noClick) return;
   const def = kind === 'active' ? SKILLS[key] : SUPPS[key]; if (!def) return;if(kind==='active'&&!skillAvailable(key)){if(G.lvl<def.lvl){pzMsg('等級'+def.lvl+'開放這個技能。')}else skillBlueprintBuy(key);return;}noticeRead(kind==='active'?'skills':'gems',key);
   const reason = kind === 'active' ? (G.lvl < def.lvl ? `等級 ${def.lvl} 解鎖` : '') : gemFreeT(key, t) <= 0 ? (gemOwnT(key, t) ? '全部已放在接線板上，先收回一個' : '尚未持有，可繼續冒險或用合成取得') : '';
-  if (!reason){ if (kind === 'active'){if(selSock>=0&&wOpen(selSock))wireAssign(key);skillPreview(key,true);return;}noticeRead('gems',key);pzHold(kind,key,t);return; }
+  if (!reason){ if (kind === 'active'){if(selSock>=0&&wOpen(selSock)){wireAssign(key);pzMsg(`已裝上 ${SKILLS[key].n}。下一步：按住「起」拖到「終」接線。`);}else skillPreview(key,true);return;}noticeRead('gems',key);pzHold(kind,key,t);return; }
   showOverlay(`<h2 class="uxdialog-title">${uxEsc(def.n)}</h2><p>${uxEsc(def.d)}</p><p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回機件庫存</button>`);
 }
 function uiResolvedHtml(){
@@ -422,10 +422,11 @@ body.ui-material #mbody .pz.wb button.pc{position:relative;z-index:1;box-sizing:
 body.ui-material #mbody .pz.wb button.pc.dead{visibility:hidden;pointer-events:none}body.ui-material #mbody .pz.wb button.pc.rk{border:1px solid #6b7d9a!important;background:#34435d!important;box-shadow:inset 1px 1px #96a7bd!important;color:#a5b4cc!important}.pz.wb .pc.rk span{font-size:12px}
 body.ui-material #mbody .pz.wb button.pc.pd{border-color:#92a7c426!important;background:#111d33!important;box-shadow:inset 1px 1px #0004!important}.pz.wb .pc.pd::after{content:"";position:absolute;inset:calc(50% - 3px);border-radius:50%;border:1px solid var(--padc);background:var(--padc);opacity:.8;pointer-events:none}
 body.ui-material #mbody .pz.wb button.pc.src,body.ui-material #mbody .pz.wb button.pc.sk,body.ui-material #mbody .pz.wb button.pc.chip{z-index:3;border:2px solid var(--padc)!important;background:linear-gradient(#354667,#192a46)!important;box-shadow:inset 1px 1px #c3d2ed55,0 1px 0 #0008!important;color:#f1f4ff!important}
+#mbody .pz.wb .pc.src,#mbody .pz.wb .pc.sk,#mbody .pz.wb .pc.wr,#mbody .pz.wb .pc.ac{touch-action:none}
 body.ui-material #mbody .pz.wb button.pc.src{background:linear-gradient(#d3dcea,#a6b7d0)!important;color:var(--ux-ink)!important}.pz.wb .pc.src>span{position:absolute;inset:2px 0 8px;font-size:13px!important;display:grid;place-items:center}.pz.wb .pc .lb{position:absolute;bottom:1px;left:0;right:0;font:7px/1 "Cubic 11",sans-serif!important;font-style:normal;text-align:center;letter-spacing:0!important;pointer-events:none;white-space:nowrap}
 .pz.wb .pc.sk>span,.pz.wb .pc.ac>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.pz.wb .pc.sk.empty>span{position:static;clip-path:none;width:auto;height:auto;display:block;font-size:8px!important;line-height:1!important;white-space:nowrap}.pz.wb .pc.sk>img{position:absolute;left:50%;top:2px;transform:translateX(-50%);margin:0!important;width:16px!important;height:16px!important}
 body.ui-material #mbody .pz.wb button.pc.lock{background:#29364e!important;color:#9badc8!important;border-color:#697b97!important;box-shadow:inset 1px 1px #ffffff12!important}.pz.wb .pc.lock>span{font-size:8px!important;line-height:1;white-space:nowrap}
-body.ui-material #mbody .pz.wb button.pc.ac{z-index:3;background:linear-gradient(#d2dce9,#859ab7)!important;border:1px solid var(--padc)!important;box-shadow:inset 1px 1px #ffffffa0,inset -1px -1px #34435b!important}.pz.wb .pc.ac>img{position:relative;z-index:2;width:20px!important;height:20px!important;max-width:95%;max-height:95%;object-fit:contain;margin:0!important}.pz.wb .pc.ac::after{display:none}.pz.wb .pc.mt::before{content:"";position:absolute;right:-1px;top:-3px;font:8px/1 "Cubic 11",sans-serif;color:#f5f8ff;background:var(--ux-ink);padding:1px;z-index:4;pointer-events:none}
+body.ui-material #mbody .pz.wb button.pc.ac{z-index:3;background:#16233f!important;border:1px solid var(--padc)!important;box-shadow:none!important}body.ui-material #mbody .pz.wb button.pc.ac.off{opacity:.55}.pz.wb .pc.ac>img{position:relative;z-index:2;width:20px!important;height:20px!important;max-width:95%;max-height:95%;object-fit:contain;margin:0!important}.pz.wb .pc.ac::after{display:none}.pz.wb .pc.mt::before{content:"";position:absolute;right:-1px;top:-3px;font:8px/1 "Cubic 11",sans-serif;color:#f5f8ff;background:var(--ux-ink);padding:1px;z-index:4;pointer-events:none}
 body.ui-material #mbody .pz.wb button.pc.sel{outline:2px solid #fff!important;outline-offset:1px;z-index:4}.pz.wb .pc.hint{outline:1px dashed #e5e5b1;outline-offset:1px}.pz.wb .pc:focus-visible{outline:3px solid #fff!important;outline-offset:1px;z-index:5}.pz.wb .pc.chip.blink{outline:2px solid #fff}
 .wsvg{position:absolute;inset:10px;width:calc(100% - 20px);height:calc(100% - 20px);pointer-events:none;z-index:2;overflow:visible;fill:none;stroke-linecap:round;stroke-linejoin:round}.wsvg .wo{stroke:#071323;stroke-width:.34}.wsvg .wl{stroke-width:.18}.wsvg .c-r{stroke:var(--cr)}.wsvg .c-b{stroke:var(--cb)}.wsvg .c-g{stroke:var(--cg)}.wsvg .wh{stroke:#ffffff90;stroke-width:.035}.wsvg .wf{stroke:#fff7;stroke-width:.03;stroke-dasharray:.12 .3}.wsvg .wk{fill:var(--ux-ink);stroke-width:.04}.wsvg .wk.kr{stroke:var(--cr)}.wsvg .wk.kb{stroke:var(--cb)}.wsvg .wk.kg{stroke:var(--cg)}
 .device-console .pzbar{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0 0!important;padding:0!important;position:static!important;background:none!important}.device-console .pzbar .mb{min-height:44px;font-size:12px!important;padding:5px 8px!important}body.ui-material #mbody .device-console .pzbar .wstat{width:100%;margin:4px 0 0;color:var(--ux-screen)!important;font-size:11px!important}.device-console #pzmsg{color:var(--ux-screen)!important;font-size:12px}.wreset i{display:none}
@@ -458,7 +459,7 @@ body.ui-material #mbody .pz.wb button.pc.sel{outline:2px solid #fff!important;ou
     else { const i = GridLab.sockAt(c[0], c[1],G.board); if (i < 0){ pzMsg('技能要拖到板邊的插槽上'); return; } if (!wOpen(i)){ pzMsg('這個插槽還沒解鎖'); return; } selSock = i; held = null; wireAssign(info.key); }
   }
   document.addEventListener('pointerdown', ev => {
-    if (dr || ev.button > 0) return; const b = ev.target.closest && ev.target.closest('#mbody .ui-inventory-grid .gt'); if (!b) return;
+    if (dr || ev.button > 0 || ev.pointerType === 'touch') return; const b = ev.target.closest && ev.target.closest('#mbody .ui-inventory-grid .gt'); if (!b) return;
     const info = parse(b); if (!info) return;
     dr = { el:b, info, sx:ev.clientX, sy:ev.clientY, on:false, last:ev };
     document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', cancelUp); document.addEventListener('touchmove', tm, { passive:false });
@@ -468,4 +469,4 @@ body.ui-material #mbody .pz.wb button.pc.sel{outline:2px solid #fff!important;ou
 })();
 (function(){const st=document.createElement('style');st.textContent='#mbody .ui-inventory-grid .gt,.wb .pc{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}';document.head.appendChild(st);})();
 
-(function(){const s=document.createElement('style');s.textContent='.wb .chip.open>img{filter:grayscale(1);opacity:.4}.wb .chip.lnk::after{content:"";position:absolute;right:1px;top:1px;width:5px;height:5px;background:var(--ux-signal-green);box-shadow:0 0 0 1px var(--ux-ink)}';document.head.appendChild(s)})();
+(function(){const s=document.createElement('style');s.textContent='.wb .chip.open>img{filter:grayscale(1);opacity:.4}body.ui-material #mbody .pz.wb button.pc.lnk{outline:none!important}.wb .chip.lnk::after{display:none!important}.wb .port-ok{position:absolute;right:7px;bottom:9px;width:10px;height:5px;border-left:3px solid #7be0a3;border-bottom:3px solid #7be0a3;transform:rotate(-45deg);pointer-events:none}';document.head.appendChild(s)})();
