@@ -2,8 +2,8 @@
 
 2026-10-25，香港時間。先讀本頁再查相關差異，避免重複研究。
 
-- 目前正式 v0.49.1：來源 cf03820、Pages 764c138，驗證見 docs/release-0.49.1/integration.md。
-- v0.50.0 候選：codex/tower-combat-overhaul，base 0dbb328。TOWER-01 至 17 已實作，準備提交及發佈；詳細對照 docs/tower-combat-2026-10-25/review.md。
+- 目前正式 v0.50.0：來源／tag a22aaaf，Pages 1111a86，Release 40147334072／Pages 40147329463 成功；HTTPS入口與兩腳本 SHA、附件 digest／大小、tag 已核對。證據 docs/release-0.50.0/integration.md。
+- v0.50.0 來源 codex/tower-combat-overhaul（fa23127），PR #54 已合併；發佈證據 codex/release-050。TOWER-01 至 17 已實作、驗證及發佈；詳細對照 docs/tower-combat-2026-10-25/review.md。
 - 最終驗證：32 個來源套件全部通過，新增 282 斷言；11 個塔樓戰鬥流程、19 個視窗觸控流程、15 個背包流程、單檔預覽通過。沒有真機 Safari／FPS或長期終局平衡認證。靜態 audit 保留兩個既有 phone 代理事件偵測提示，design lint 無錯誤。
 - 23 主動技能分 8 基礎／7 進階／8 稀有，21 輔助；手動配裝及接線，未接通終點不生效。普通地圖18種、塔樓另3種室內房；舊塔落地物一次遷到室內可達區，不預先派收益。
 - 隱藏戰場只停戰鬥音效，音樂繼續；手機不顯示隱藏提示列，保留「展」復原。箭雨／巨大劍等持續演出總傷害預算固定。
