@@ -102,10 +102,13 @@ function questHtml(){
   const v = Math.min(q.goal, GOAL_STAT[q.k]());
   return `<div class="mct">新手任務　${G.quest || 0}/${QUESTS.length}</div><div class="gls"><div class="gl"><b>${obj3d('goals',30)}${q.n}</b><span class="mute">${q.t}　獎勵：${goalRewardText(q.rw)}${q.un ? '　（完成後開放：' + (q.un === 'craft' ? '改機' : '天賦盤') + '）' : ''}</span><i style="--p:${Math.round(v/q.goal*100)}%"></i><em>${v} / ${q.goal}</em>${taskButton(q)}</div></div>`;
 }
+const GOAL_GROUP={kills:['討伐魔物','隻'],lvl:['角色等級','級'],depth:['最深街區','層'],runs:['地圖通關','張'],modes:['卡匣鑑定','種']};
+const goalRewardShort=r=>[r.gold&&`金幣 ${r.gold}`,r.parts&&`零件 ${r.parts}`,r.gem&&`配件·${SUPPS[r.gem].n}`,r.cart&&`卡匣·${G.seen[r.cart]?MODES[r.cart].n:SKILLS[MODES[r.cart].sk].n}`].filter(Boolean).join('、');
 function goalsHtml(){
   const done = GOALS.filter(a => G.goals[a.id]).length;
-  return questHtml() + `<div class="mct">目標　${done}/${GOALS.length}${qm('goals')}</div><div class="gls">` + GOALS.map(a => { const v = Math.min(a.goal, GOAL_STAT[a.k]()), ok = G.goals[a.id];
-    return `<div class="gl${ok ? ' ok' : ''}"><b>${obj3d(ok?'ach':'goals',30)}${a.n}</b><span class="mute">${a.goal} ${GOAL_UNIT[a.k]}　獎勵：${goalRewardText(a.rw)}</span><i style="--p:${Math.round(v/a.goal*100)}%"></i><em>${ok ? '完成' : v + ' / ' + a.goal}</em>${taskButton(a)}</div>`; }).join('') + '</div>';
+  const groups=Object.keys(GOAL_GROUP).map(k=>{const list=GOALS.filter(a=>a.k===k);if(!list.length)return '';const cur=GOAL_STAT[k](),next=list.find(a=>!G.goals[a.id]),top=list[list.length-1].goal;
+    return `<article class="goal-card"><div class="goal-head">${obj3d(next?'goals':'ach',30)}<b>${GOAL_GROUP[k][0]}</b><strong>${cur}</strong><small>${GOAL_GROUP[k][1]}</small></div><i class="goal-track"><u style="width:${Math.min(100,Math.round(cur/top*100))}%"></u>${list.map(a=>`<s class="${G.goals[a.id]?'ok':''}" style="left:${Math.min(100,Math.round(a.goal/top*100))}%"></s>`).join('')}</i><ul class="goal-steps">${list.map(a=>`<li class="${G.goals[a.id]?'ok':a===next?'next':''}" title="${uxEsc(a.n)}"><span>${G.goals[a.id]?'✓':a===next?'▶':'·'}</span><b>${a.goal}</b><em>${uxEsc(goalRewardShort(a.rw))}</em>${a===next?taskButton(a).replace(/>[^<]*→</,'>→<'):''}</li>`).join('')}</ul></article>`}).join('');
+  return questHtml() + `<div class="mct">目標　${done}/${GOALS.length}${qm('goals')}</div><div class="goal-list">${groups}</div>`;
 }
 function mapsHtml(){ return uiAdventureHtml(); }
 
