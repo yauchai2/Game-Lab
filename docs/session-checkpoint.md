@@ -9,4 +9,6 @@
 - 像素三段uiFxVersion2、重要掉落屬於stage右下、展開音樂0.6倍且off不解除。手機去Start與留白、任務五秒退場、watch暫時展開後還原。手機卡片16秒轉台、內頁輕擺／zoom停定，wheel與雙指可用。塔樓邊緣樓梯、屍體退場、24血跡12秒淡出；世界細血條。
 - 33來源套件、新190斷言、16整合＋9精修＋19視窗觸控＋15背包及單檔通過。12固定區域構築樣本全封閉，G.push=false，不代表自動換區完成率或長期平衡。無真機Safari／FPS認證。static audit仍兩個既有phone委派偵測提示，design lint無錯誤。
 - Claude已fresh fetch全heads／open PR，e0b3468已包含；內部備份及歷史研究改名排除。每次release仍重新查Claude，來源先push再發佈，不刪分支／tag。
-- 繁中全形標點、銀灰藍紫Y2K／Cubic11、低面數像素酷感；公開文字不可提參考遊戲、內部研究、帳號或公司資源。全球排名、Cloudflare回饋、Ko-fi仍未接通，不假稱可用。
+- 繁中全形標點、銀灰藍紫Y2K／Cubic11、低面數像素酷感；公開文字不可提參考遊戲、內部研究、帳號或公司資源。全球排名及Cloudflare回饋仍未接通；Ko-fi方案已由下方Patreon工作取代。
+
+- Patreon贊助頁：codex/sponsor-page，基於main e67f73b；Alan確認 https://www.patreon.com/c/alanycchan。沿用設定→贊助，完整說明／FAQ及公開創作者連結，無付款／帳號綁定。來源與離線單檔瀏覽器已驗證；未合併、未發佈。驗收及限制見 docs/patreon-support-2026-10-25/review.md。
