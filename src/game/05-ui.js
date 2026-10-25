@@ -137,7 +137,7 @@ function uiCartPick(id){
   showOverlay(`<h2 class="uxdialog-title">${uxEsc(name)}</h2><p>${uxEsc(G.seen[id]?M.d:M.hint)}</p>${body}<button class="mb" onclick="hideOverlay()">取消</button>`);
 }
 function equipCartTo(id,pieceId){
-  const p=G.board.pieces.find(q=>q.id===pieceId&&q.kind==='active');if(!p||!MODES[id]||MODES[id].sk!==p.key||!G.carts[id])return;
+  const p=G.board.pieces.find(q=>String(q.id)===String(pieceId)&&q.kind==='active');if(!p||!MODES[id]||MODES[id].sk!==p.key||!G.carts[id])return;
   if(p.mode===id){delete p.mode;}
   else{if(cartFree(id)<=0){const o=G.board.pieces.find(q=>q!==p&&q.mode===id);if(o)delete o.mode;}p.mode=id;
     if(!G.seen[id]){G.seen[id]=1;logLine(`鑑定完成：${MODES[id].n}，${MODES[id].d}`,'#1f9bbf');checkGoals();}}
@@ -493,6 +493,8 @@ function setupPanel(){
   m.addEventListener('pointerdown', e => { if (e.target === m && !MOB() && !DESK()) closeModal(); });
   const o = document.createElement('div'); o.className = 'modal'; o.id = 'ovl'; o.hidden = true;
   document.body.append(m, o);
+  // 點彈窗外面的空位也可關閉（劇情開場與無法取消的視窗除外）。
+  o.addEventListener('click',e=>{if(e.target!==o||o.hidden||(typeof INTRO!=='undefined'&&INTRO.active)||!OVERLAY_CLOSE)return;windowCloseOverlay();});
   // 跨尺寸使用同一操作台，不重新載入或重建引擎指令。
   const hint = () => { let h = $('nexthint');
     if (!h){ h = document.createElement('button'); h.type = 'button'; h.id = 'nexthint'; h.onclick = () => { if (h.dataset.tab) openModal(h.dataset.tab); }; document.body.appendChild(h); }
