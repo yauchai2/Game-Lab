@@ -64,7 +64,7 @@ function renderModal(resetScroll = false){ if(typeof wireHistoryObserve==='funct
   if(!settings) $('mbody').innerHTML = modalTab === 'warehouse' ? warehouseHtml() : modalTab === 'char' ? uiCharacterHtml() : modalTab === 'skills' ? skillsHtml() : modalTab === 'tree' ? treeHtml() : modalTab === 'maps' ? mapsHtml() : modalTab === 'goals' ? goalsHtml() : modalTab === 'ach' ? `<div class="rpgm">${achHtml()}</div>` : modalTab === 'craft' ? craftHtml() : modalTab === 'dress' ? dressHtml() : modalTab === 'rank' ? rankHtml() : modalTab === 'dex' ? `<div class="rpgm">${codexHtml()}</div>` : modalTab === 'log' ? logHtml() : modalTab === 'feedback' ? feedbackHtml() : modalTab === 'support' ? supportHtml() : modalTab === 'save' ? saveHtml() : uiMenuHtml();
   if(!settings&&typeof taskGuideHtml==='function'){const inventory=TASK_GUIDE?.key==='modes'?document.getElementById('uxinventory'):null;if(inventory)inventory.insertAdjacentHTML('beforebegin',taskGuideHtml());else $('mbody').insertAdjacentHTML('afterbegin',taskGuideHtml());}
   uxRestorePanel(uxPanel,resetScroll);if(resetScroll)uxAnimatePanel();
-  UI_LIVE_SIGNATURE=uiLiveSignature();uiCityRevealCheckpoint();
+  if(typeof onboardingMount==='function')onboardingMount();UI_LIVE_SIGNATURE=uiLiveSignature();uiCityRevealCheckpoint();
 }
 let held = null, heldRot = 0, selPiece = null, selSock = -1;   // 接線板：held 是手上準備放下的配件；selPiece 是選取的機件 id；selSock 是選取的插槽
 const GEM_COL=Object.fromEntries(Object.entries(GridLab.GEM_COLOR).map(([id,c])=>[id,{r:'#ed967d',b:'#8db7ef',g:'#80cebd'}[c]]));
@@ -192,7 +192,7 @@ const HELP = {
 const MTN = { char:'角色', skills:'戰鬥', craft:'打造', tree:'成長', maps:'冒險', menu:'更多', dress:'角色', goals:'收藏', ach:'收藏', dex:'收藏', log:'更多', save:'更多' };
 const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
 // 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
-const uiBattleSize=()=>{if(G.userCz)return Math.max(1,G.cz==null?1:G.cz);if(['skills','tree','warehouse','craft','menu','settings','rank','char','dress'].includes(modalTab))return G.autoFold===false?2:3;if(['char','dress','craft','warehouse','settings'].includes(modalTab))return 2;return G.cz==null?1:G.cz;};
+const uiBattleSize=()=>G.userCz?Math.max(1,Math.min(3,G.cz==null?1:G.cz)):['warehouse','skills','craft','tree','dress'].includes(modalTab)?2:1;
 const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
@@ -210,7 +210,7 @@ function rulesBar(){
   return `<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>拾取規則</b>${['全部撿', '魔法以上', '稀有以上'].map((n, i) => `<button class="mb" style="${G.filter === i ? 'background:#1f3fb0;color:#fff;' : ''}" onclick="setFilter(${i})">${n}</button>`).join('')}${qm('craft')}</div>`;
 }
 function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未開放.txt</div><div style="font-size:13px;line-height:1.7">升到 ${L} 級開放${k === 'craft' ? '改機（拆裝備得零件，重洗與改裝詞綴）' : '天賦盤（升級得到的點數在這裡分配）'}。</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
-function showHelp(k){ const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
+function showHelp(k){ if(k==='maps')return directHelp('maps');const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 const qm = k => `<button aria-label="${HELP[k] ? HELP[k][0] : '說明'}" class="qm" onclick="showHelp('${k}')">?</button>`;
 let OVERLAY_CLOSE=null;
 function windowCloseOverlay(){const close=OVERLAY_CLOSE||hideOverlay;OVERLAY_CLOSE=null;close();}
@@ -394,7 +394,7 @@ function setupPanel(){
     .dlg i{position:absolute;left:12px;right:34px;bottom:4px;height:3px;background:repeating-linear-gradient(90deg,#8fb6ff 0 8px,transparent 8px 11px);transform-origin:left;animation:dlgt 2.6s linear forwards}
     @keyframes dlgb{50%{transform:translateY(-2px)}} @keyframes dlgt{from{transform:scaleX(0)}to{transform:scaleX(1)}}
     body.m{height:100vh;height:100dvh;overflow:hidden;padding:env(safe-area-inset-top) 0 calc(56px + env(safe-area-inset-bottom)) !important;gap:0;display:flex;flex-direction:column}   /* 手機：戰鬥區在上、面板在下，分頁列固定在最底 */
-    body.m header,body.m #readout{display:none}
+    body.m>header,body.m #readout{display:none}
     body.m .stage{flex:none;position:relative;width:100%} body.m #fig{margin:0;display:block;width:100%}
     body.m .stats{position:absolute !important;top:4px;left:6px;right:6px;z-index:4;padding:3px 8px !important;margin:0 !important;background:rgba(242,247,255,.82);border:1.5px solid var(--ink);grid-template-columns:1.3fr 1.5fr .8fr .8fr .9fr} body.m .stats::before{display:none}
     body.m .stat .k{font-size:11px} body.m .stat .v{font-size:16px !important} body.m .stat.small .v{font-size:15px !important}

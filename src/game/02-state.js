@@ -24,7 +24,7 @@ const TREE = (() => {
 const G = {
   unread:{skills:[],gear:[],cores:[],gems:[],carts:[],maps:[],boards:[]},summons:[],airSupply:null,airBuffs:[],damageLog:[],deathReport:null,
   ascension:null,ascensionNodes:[],circuits:['pocket'],circuitLayouts:{},circuitPity:0,storyFlags:{},city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
-  skillCollectionVersion:1,skillBooks:{},skillPity:0,coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:false, storageRecycled:0, whUp:0, offUp:0, chips:0, equip:Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null])), armory:{}, equipBackup:{}, deferChoices:false, gemTier:{}, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
+  tutorial:null,skillCollectionVersion:1,skillBooks:{},skillPity:0,coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:false, storageRecycled:0, whUp:0, offUp:0, chips:0, equip:Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null])), armory:{}, equipBackup:{}, deferChoices:false, gemTier:{}, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
   pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
   h:{ x:HX, y:HY, vx:0, vy:0, gx:HX, gy:HY, aiT:0, mv:0, hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
   lgK:0, lgC:0, mons:[], drops:[], proj:[], fx:[], floats:[], timers:[], log:[], st:null, dirty:true, offline:false, paused:false, off:null, lastWall:Date.now(),
@@ -124,7 +124,7 @@ function equipCore(id){
   const slot = coreSlot(id), it = G.armory?.[id];
   if (!slot || !it || !canUseGear(it) || G.equip[slot]?.lg === id) return false;
   if(G.equip[slot]&&!G.equip[slot].lg)storeGear(G.equip[slot]);
-  G.autoEquip=false;G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
+  if(typeof onboardingEvent==='function')onboardingEvent('equip');G.autoEquip=false;G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
   recalc(); G.dirty = true; return true;
 }
 function restoreEquipment(slot){
@@ -132,7 +132,7 @@ function restoreEquipment(slot){
   if (!last || last.slot !== slot) return false;
   const it = last.lg ? G.armory[last.lg] : last;
   if (!it || !canUseGear(it)) return false;
-  G.autoEquip=false;G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
+  if(typeof onboardingEvent==='function')onboardingEvent('equip');G.autoEquip=false;G.equipBackup[slot] = G.equip[slot]; G.equip[slot] = it;
   recalc(); G.dirty = true; return true;
 }
 function makeMap(lvl){
@@ -247,7 +247,7 @@ function addFx(e){if(G.offline)return;const cap=viewEffectsReduced()?14:64;if(G.
 
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
-function serialize(){ return { v:2,activityLoot:G.activityLoot,rift:G.rift,towerRoomVersion:1,skillCollectionVersion:1,skillBooks:G.skillBooks||{},skillPity:G.skillPity||0,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
+function serialize(){ return { v:2,tutorial:G.tutorial,activityLoot:G.activityLoot,rift:G.rift,towerRoomVersion:1,skillCollectionVersion:1,skillBooks:G.skillBooks||{},skillPity:G.skillPity||0,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
 function migrateEquipmentSlots(input){
@@ -265,7 +265,7 @@ function migrateEquipmentSlots(input){
 function applySave(o){
   if (!o || o.v !== 2) return false;
   o=migrateEquipmentSlots(o);
-  if(typeof seasonClean==='function'){G.season=seasonClean(o.season);G.rift=riftClean(o.rift);G.activityLoot={tower:Math.max(0,Math.min(1e6,Math.floor(o.activityLoot?.tower)||0)),season:Math.max(0,Math.min(1e6,Math.floor(o.activityLoot?.season)||0))};seasonEnsure();}
+  if(typeof seasonClean==='function'){G.season=seasonClean(o.season);G.rift=riftClean(o.rift);G.tutorial=typeof onboardingClean==='function'?onboardingClean(o.tutorial):null;G.activityLoot={tower:Math.max(0,Math.min(1e6,Math.floor(o.activityLoot?.tower)||0)),season:Math.max(0,Math.min(1e6,Math.floor(o.activityLoot?.season)||0))};seasonEnsure();}
   G.secrets=[...new Set((Array.isArray(o.secrets)?o.secrets:[]).filter(id=>['arcade','floor13','radio'].includes(id)))];if(typeof clearHeroAilments==='function')clearHeroAilments();
   G.unread=cleanUnread(o.unread);G.summons=[];G.airSupply=null;G.airBuffs=[];G.damageLog=[];G.h.fatalSource=null;G.h.airShield=0;G.h.airShieldUntil=0;G.deathReport=cleanDeathReport(o.deathReport);
   G.startingChar=Object.hasOwn(CHARS,o.startingChar)?o.startingChar:null;
@@ -317,7 +317,7 @@ function storeGear(it){
 function equipStored(uid){
   const it=G.inventory.find(x=>x.uid===uid);if(!it||G.equip[it.slot]===it)return false;
   const old=G.equip[it.slot];if(old&&!old.lg&&!storeGear(old))return false;
-  G.equipBackup[it.slot]=old;G.equip[it.slot]=it;G.autoEquip=false;recalc();G.inventoryRevision++;return true;
+  G.equipBackup[it.slot]=old;G.equip[it.slot]=it;G.autoEquip=false;recalc();G.inventoryRevision++;if(typeof onboardingEvent==='function')onboardingEvent('equip');return true;
 }
 function recycleStored(uid){
   const it=G.inventory.find(x=>x.uid===uid);if(!it||it.kept||it.cr||it.lk!=null||Object.values(G.equip).includes(it)||Object.values(G.equipBackup).includes(it)||gearReferenced(it))return false;

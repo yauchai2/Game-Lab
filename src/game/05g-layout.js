@@ -32,7 +32,7 @@ function uiWork(key,id){
 }
 function uiMenuHtml(){return deviceMenuHtml();}
 
-function charSegHtml(){return `<div class="ui-segments" role="group" aria-label="角色分頁"><button aria-pressed="${modalTab==='char'}" data-focus="char-stats" onclick="openModal('char')">總覽</button><button aria-pressed="${modalTab==='tree'}" data-focus="char-talent"${tabOpen('tree')?'':' class="lock"'} onclick="${tabOpen('tree')?"openModal('tree')":"lockTip('tree')"}">${tabOpen('tree')?'天賦':'天賦 Lv'+TAB_LVL.tree}${passPoints()>0&&tabOpen('tree')?' ●':''}</button><button aria-pressed="${modalTab==='dress'}" data-focus="char-dress" onclick="openModal('dress')">裝扮</button></div>`;}
+function charSegHtml(){return `<div class="ui-segments" role="group" aria-label="角色分頁"><button aria-pressed="${modalTab==='char'}" data-focus="char-stats" onclick="openModal('char')">總覽</button><button aria-pressed="${modalTab==='tree'}" data-focus="char-talent"${tabOpen('tree')?'':' class="lock"'} onclick="${tabOpen('tree')?"openModal('tree')":"lockTip('tree')"}">${tabOpen('tree')?'天賦':'天賦 Lv'+TAB_LVL.tree}${passPoints()>0&&tabOpen('tree')?' <span class="attention-dot" role="img" aria-label="有可用天賦點">●</span>':''}</button><button aria-pressed="${modalTab==='dress'}" data-focus="char-dress" onclick="openModal('dress')">裝扮</button></div>`;}
 let UI_CHARACTER_PICK = null, UI_CHARACTER_STAGE_VISIT = '';
 function uiCharacterCode(id=G.char){return {street:'PULSE',frost:'SPECTRUM',beep:'TRACKER',volt:'MECHANIST'}[id]||'';}
 function uiCharacterIdentity(){
@@ -273,19 +273,20 @@ body.ui-material #uisettings .ui-setting-grid>button{width:100%;min-height:60px;
 #uisettings .ui-rules>summary{min-height:44px;padding:10px 0;box-sizing:border-box}.ui-settings-intro h3{margin:0 0 8px!important}
 `;
 function uiAdventureHtml(){
+  if(UI_WORK.adventure==='rift')UI_WORK.adventure='season';
   if(G.run?.city?.awaitChoice)UI_WORK.adventure='city';
   const R=G.run,mode=UI_WORK.adventure;
-  const nav=uiSegments('adventure',[['maps','地圖','消耗地圖卡進入挑戰，打贏有額外獎勵'],['city','城市遠征','三段路線加BOSS，取得傳奇核心碎片'],['season','斷訊季','巡迴委託與終局'],['rift','斷訊裂隙','接觸斷訊手，收束裂隙取得專屬碎片'],['tower','無限之塔','一路往上爬，死亡就結束，記錄最高層'],['training','訓練場','對假人測試 DPS，不影響進度']],'冒險分類');
+  const nav=uiSegments('adventure',[['maps','地圖','消耗地圖卡進入挑戰，打贏有額外獎勵'],['city','城市遠征','三段路線加BOSS，取得傳奇核心碎片'],['season','賽季','本期裂隙、巡迴與專屬核心'],['tower','無限之塔','一路往上爬，死亡就結束，記錄最高層'],['training','訓練場','對假人測試 DPS，不影響進度']],'冒險分類');
   const current=R?.city?uiCityRunHtml():R?`<section class="ui-section"><div class="ui-map-state"><b>${R.tower?'無限之塔 第 '+R.floor+' 層':BIOMES[R.map.biome].n}</b><span>進行中</span></div><div class="ui-progress" role="progressbar" aria-label="地圖討伐進度" aria-valuemin="0" aria-valuemax="${R.need}" aria-valuenow="${Math.min(R.kills,R.need)}"><i style="width:${Math.min(100,R.kills/R.need*100)}%"></i></div><p id="ui-run-count" class="uxmeta">討伐 ${Math.min(R.kills,R.need)}／${R.need}</p>${runMods(R)}<button class="mb" onclick="uiLeaveMap()">離開目前挑戰</button></section>`:`<section class="ui-section"><div class="ui-map-state"><b>一般冒險</b><span>深度 ${G.depth}</span></div><p id="ui-normal-count" class="uxmeta">討伐 ${Math.min(G.kills,G.need)}／${G.need}${G.push?'':'，原地刷怪'}</p></section>`;
-  if(mode==='rift')return nav+riftPanelHtml();
-  if(mode==='season')return (R?current:'')+nav+seasonHtml();
+  if(mode==='rift'){UI_WORK.adventure='season';return nav+seasonHubHtml();}
+  if(mode==='season')return nav+seasonHubHtml();
   if(mode==='tower')return nav+towerConsoleHtml();
   if(mode==='city')return (R?current:'')+nav+(R?.city?'<details class="ui-section"><summary>查看城市目標與下次出發設定</summary>'+uiCityHtml()+'</details>':uiCityHtml());
   if(mode==='training'){
     const L=G.trainLast,mx=L?.rows.length?L.rows[0][1]:1;
     return current+nav+`<section class="ui-section"><h3>訓練場</h3><p class="uxmeta">選目標，測 30 秒傷害。</p><div class="view-options ui-scenes" role="group" aria-label="訓練目標">${[['single','單體假人','dummy1'],['crowd','群體假人','dummy5']].map(([id,name,k])=>`<button class="mb ui-scenebtn" aria-pressed="${(G.trainingPreset||'crowd')===id}" ${G.train?'disabled':''} onclick="uiTrainingPreset('${id}')">${(u=>u?`<img class="ui-scene" alt="" aria-hidden="true" src="${u}" style="image-rendering:pixelated">`:'')(icon3dSceneUrl(k))}<span>${name}</span></button>`).join('')}</div>${G.train?`<p id="ui-train-time">測量中，剩 ${Math.ceil(G.train.t)} 秒</p><button class="mb" onclick="trainEnd(true)">取消測量</button>`:`<button class="mb pri" ${R?'disabled':''} onclick="trainStart()">開始測量</button>`}<details><summary>測量說明</summary><p class="uxmeta">測試不掉落獎勵；開始時清空測試電荷，結束或取消後還原原有電荷。單體預估不等同多目標實測。</p></details>${L?`<p>上次結果：每秒約 <b>${tFmt(L.dps)}</b>（${L.n||5} 隻合計）</p>${L.rows.map(([k,v])=>`<div class="gl"><b>${uxEsc(k)}</b><i style="--p:${Math.round(v/mx*100)}%"></i><em>${L.total?Math.round(v/L.total*100):0}%　${tFmt(v/(L.duration||30))}／秒</em></div>`).join('')}<details><summary>出手與連動結果</summary>${Object.entries(L.stats||{}).map(([id,row])=>`<p>${SKILLS[id].n}：${row.casts} 次出手／${row.repeats} 次回放，最長等候 ${row.maxWait.toFixed(1)} 秒</p>`).join('')}${uiComboSummary(L.combos)}</details>`:'<p class="uxmeta">完成測量後，保留傷害分布、出手次數與連動結果。</p>'}</section>`;
   }
-  return uiWorldViewHtml()+current+nav+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><div class="ui-mgroups" role="group" aria-label="地圖庫存">${G.maps.length?uiMapGroups():'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏BOSS便有機會取得。</p>'}</div>`;
+  return nav+(R?current:'')+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><div class="ui-mgroups" role="group" aria-label="地圖庫存">${G.maps.length?uiMapGroups():'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏BOSS便有機會取得。</p>'}</div>`;
 }
 let UI_MAP_PENDING=null;
 function uiInspectMap(encoded){let id;try{id=decodeURIComponent(encoded);}catch(_){return;}const m=G.maps.find(x=>x.id===id);if(!m)return;noticeRead('maps',id);UI_MAP_PENDING={id,stamp:JSON.stringify(m)};const biome=BIOMES[m.biome],land=terrainBuild('map:'+m.id+':0'),q=m.mods.reduce((sum,k)=>sum+(MODS[k]?.q||0),0);showOverlay(`<h2 class="uxdialog-title">${biome.n} · Lv. ${m.lvl}</h2><div class="ui-map-banner" style="--land:${biome.board.l};--land2:${biome.board.m}"><span>挑戰詞綴 ${mapChallenge(m.mods)} · 戰利品 +${Math.round(q*100)}%</span></div><p>${land.name} · ${land.bounds[1]-land.bounds[0]} × ${land.bounds[3]-land.bounds[2]} · 起伏最高 ${land.amplitude} 單位</p><ul>${m.mods.length?m.mods.map(k=>`<li>${mapKind(k)} · ${MODS[k].n}</li>`).join(''):'<li>沒有額外詞綴</li>'}</ul>${m.mods.includes('rich')?'<p>金幣 +60%</p>':''}${m.mods.includes('lucky')?'<p>稀有度提升</p>':''}<p>進入會消耗這張地圖，離開不退還。${G.run||G.train?'先結束目前挑戰或訓練。':''}</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回地圖</button><button class="mb pri" ${G.run||G.train?'disabled':''} onclick="uiUseMapPreview()">進入 · 消耗這張地圖</button></div>`);}
@@ -304,7 +305,7 @@ function uiLiveSignature(){
   if(modalTab==='char')return JSON.stringify([G.lvl,G.equip,G.armory,G.equipBackup,G.char,G.heroName,G.ascension,G.ascensionNodes,G.bossKills,G.maxDepth,G.st,G.cos,G.cards,G.picks,G.relicPicks]);
   if(modalTab==='dress'){const e=cosGet(dSel.cat,dSel.id);return JSON.stringify([G.lvl,G.equip,G.char,G.cos,G.own,e?G.gold>=e[3]:true]);}
   if(modalTab==='craft')return JSON.stringify([G.parts,G.equip,G.coreDust,G.city?.fragments,G.city?.maxTier,G.maxDepth,!!G.run,!!G.train]);
-  if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,!!G.run?.stair,G.run?.city,G.city,G.towerBest,G.season,G.activityLoot,UI_WORK.adventure==='rift'?[G.rift?.shards,G.rift?.clears,G.rift?.encounter?.id,G.rift?.encounter?.phase,G.rift?.encounter?.kills,Math.floor(G.rift?.encounter?.age||0),G.rift?.encounter?.track]:null,!!G.run?.stair,!!G.train,G.trainLast,G.maxDepth]);
+  if(modalTab==='maps')return JSON.stringify([G.maps,G.run?.map.id,G.run?.floor,!!G.run?.stair,G.run?.city,G.city,G.towerBest,G.season,G.activityLoot,['rift','season'].includes(UI_WORK.adventure)?[G.rift?.shards,G.rift?.clears,G.rift?.encounter?.id,G.rift?.encounter?.phase,G.rift?.encounter?.track]:null,!!G.run?.stair,!!G.train,G.trainLast,G.maxDepth]);
   return modalTab;
 }
 function uiRefreshLive(){
