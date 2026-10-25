@@ -91,7 +91,7 @@ function wireBoardHtml(){
   return `<div class="pz wb" role="group" aria-label="接線板，方向鍵移動，Enter 選取或放置" onmouseleave="pzHover(-1,-1)" style="--board-min:${B.w*48+20}px;grid-template-columns:repeat(${B.w},1fr)">${cells}${wireSvg()}</div>`;
 }
 function wireBar(){
- return `<div class="pzbar"><button class="mb" aria-label="上一步" data-tip="上一步" ${WIRE_HISTORY.index>0?'':'disabled'} onclick="wireHistoryStep(-1)">↶</button><button class="mb" aria-label="下一步" data-tip="下一步" ${WIRE_HISTORY.index<WIRE_HISTORY.rows.length-1?'':'disabled'} onclick="wireHistoryStep(1)">↷</button><button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回"><i></i>全部清空</button><span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
+ return `<div class="pzbar"><button class="mb" aria-label="上一步" data-tip="上一步" ${WIRE_HISTORY.index>0?'':'disabled'} onclick="wireHistoryStep(-1)"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 7 4 12l5 5M5 12h9a5 5 0 0 1 0 10h-3" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 -4)"/></svg><span>上一步</span></button><button class="mb" aria-label="下一步" data-tip="下一步" ${WIRE_HISTORY.index<WIRE_HISTORY.rows.length-1?'':'disabled'} onclick="wireHistoryStep(1)"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m15 7 5 5-5 5M19 12h-9a5 5 0 0 0 0 10h3" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 -4)"/></svg><span>下一步</span></button><button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回"><i></i>全部清空</button><span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
 }
 function wireSelCard(){
   const B = G.board;
@@ -388,14 +388,17 @@ function wireOver(id, t){
 }
 function wireForgeHtml(){
   if (G.lvl < FORGE_LV.merge) return '';
-  let h = ''; const m = [], o = [];
+  const over = G.lvl >= FORGE_LV.over, m = [], o = [], tier = n => TIER_NAME[n - 1];
   for (const [id, S] of Object.entries(SUPPS)) for (const t of [1, 2]){
-    if (gemFreeT(id, t) >= 3) m.push(`<button class="mb" ${(G.parts || 0) >= MERGE_COST[t - 1] ? '' : 'disabled'} onclick="wireMerge('${id}',${t})">${S.n}${TIER_NAME[t - 1]} ×3 → ${TIER_NAME[t]}（零件 ${MERGE_COST[t - 1]}）</button>`);
-    if (G.lvl >= FORGE_LV.over && gemFreeT(id, t) >= 1) o.push(`<button class="mb" ${G.chips >= OVER_COST ? '' : 'disabled'} onclick="wireOver('${id}',${t})">${S.n}${TIER_NAME[t - 1]}</button>`);
+    if (gemFreeT(id, t) >= 3){ const ok = (G.parts || 0) >= MERGE_COST[t - 1];
+      m.push(`<button class="forge-card${ok ? '' : ' short'}" ${ok ? '' : 'disabled'} onclick="wireMerge('${id}',${t})" aria-label="${uxEsc(S.n + tier(t))}三個合成${tier(t + 1)}，零件 ${MERGE_COST[t - 1]}"><span class="forge-row"><span class="forge-gem">${gemIco(id, 30)}<i>×3</i></span><span class="forge-arrow" aria-hidden="true">➜</span><span class="forge-gem up t${t + 1}">${gemIco(id, 36)}<i>${tier(t + 1)}</i></span></span><b>${S.n}</b><small>零件 ${MERGE_COST[t - 1]}${ok ? '' : '（不足）'}</small></button>`); }
+    if (over && gemFreeT(id, t) >= 1){ const ok = G.chips >= OVER_COST;
+      o.push(`<button class="forge-card over${ok ? '' : ' short'}" ${ok ? '' : 'disabled'} onclick="wireOver('${id}',${t})" aria-label="超頻${uxEsc(S.n + tier(t))}"><span class="forge-row"><span class="forge-gem">${gemIco(id, 34)}<i>${tier(t)}</i></span></span><b>${S.n}</b><small>${OVER_COST} 電路點數</small></button>`); }
   }
-  h += `<details class="uxforge"><summary>合成${G.lvl >= FORGE_LV.over ? '與超頻' : ''}　零件 ${G.parts || 0}${G.lvl >= FORGE_LV.over ? `　電路點數 ${G.chips}` : ''}</summary><h4 title="三個同款同階合成一個更高階，Ⅱ ×1.35、Ⅲ ×1.65">合成</h4>${m.length ? `<div class="uxactions">${m.join('')}</div>` : '<p class="uxmeta">需要三個同款同階的可用配件</p>'}`;
-  if (G.lvl >= FORGE_LV.over) h += `<h4 title="獻祭最低階的另一個配件，花 ${OVER_COST} 電路點數：50% 升階、35% 沒變、15% 燒毀">超頻（${OVER_COST} 點）</h4>${o.length ? `<div class="uxactions">${o.join('')}</div>` : '<p class="uxmeta">需要至少兩個可用配件</p>'}`;
-  return h + '</details>';
+  const chip = (k, v) => `<span class="forge-chip"><em>${k}</em><b>${v}</b></span>`;
+  return `<details class="uxforge"><summary>合成${over ? '與超頻' : ''}　${chip('零件', G.parts || 0)}${over ? chip('電路點數', G.chips) : ''}</summary>
+    <h4>合成<small>三個同款同階合成一個更高階：Ⅱ ×1.35、Ⅲ ×1.65</small></h4>${m.length ? `<div class="forge-grid">${m.join('')}</div>` : '<p class="forge-empty">需要三個同款同階的可用配件</p>'}
+    ${over ? `<h4>超頻<small>獻祭最低階的另一個配件，花 ${OVER_COST} 點：50% 升階　35% 不變　15% 燒毀</small></h4>${o.length ? `<div class="forge-grid">${o.join('')}</div>` : '<p class="forge-empty">需要至少兩個可用配件</p>'}` : ''}</details>`;
 }
 
 /* ---------- 庫存與目前生效 ---------- */
