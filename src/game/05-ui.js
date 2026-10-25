@@ -210,22 +210,22 @@ const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
 // 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
 const AUTO_FOLD={on:false,t:0,last:0};
 const CUSTOM_H={v:(()=>{try{const x=parseFloat(localStorage.getItem('ih-custh'));return x>=0?x:null}catch(e){return null}})()};
-const uiBattleSize=()=>CUSTOM_H.v!=null&&typeof MOB==='function'&&MOB()?(CUSTOM_H.v<=70?3:2):G.userCz?Math.max(1,Math.min(3,G.cz==null?1:G.cz)):AUTO_FOLD.on?3:['warehouse','skills','craft','tree','dress'].includes(modalTab)?2:1;
+const uiBattleSize=()=>AUTO_FOLD.on&&!G.userCz?3:CUSTOM_H.v!=null&&typeof MOB==='function'&&MOB()?(CUSTOM_H.v<=70?3:2):G.userCz?Math.max(1,Math.min(3,G.cz==null?1:G.cz)):AUTO_FOLD.on?3:['warehouse','skills','craft','tree','dress'].includes(modalTab)?2:1;
 const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
 function battleFrameRatio(fig){return document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig.getBoundingClientRect().width):MOB()?mobRatio():Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig.getBoundingClientRect().width)));}
 function uiSyncBattleFrame(){const fig=$('fig'),vb=fig?.viewBox?.baseVal;if(!vb?.width)return;const ratio=battleFrameRatio(fig);if(Math.abs(vb.height/vb.width-ratio)>.01)fig.setAttribute('viewBox',`0 0 ${vb.width} ${vb.width*ratio}`);}
-const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; if(CUSTOM_H.v!=null)return Math.max(30,Math.min(CUSTOM_H.v,h*.62))/Math.max(1,innerWidth); return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
+const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; if(CUSTOM_H.v!=null&&!AUTO_FOLD.on)return Math.max(30,Math.min(CUSTOM_H.v,h*.62))/Math.max(1,innerWidth); return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
 const RISKM = Object.keys(MODS).filter(k => ['challenge','mixed'].includes(MODS[k].kind));
 function runMods(R){
   const mods = R.map.mods || []; if (!mods.length) return '';
   const q = mods.reduce((a, k) => a + MODS[k].q, 0);
   return `<ul>${mods.map(k => `<li style="color:${RISKM.includes(k) ? '#d03a3a' : '#1d8a4c'}">${MODS[k].n}</li>`).join('')}</ul><div class="agg"><span>挑戰詞綴 <b>${mapChallenge(mods)}</b></span><span>戰利品 <b>+${Math.round(q*100)}%</b></span><span>金幣 <b>${mods.includes('rich') ? '+60%' : '+0%'}</b></span><span>稀有度 <b>${mods.includes('lucky') ? '提升' : '一般'}</b></span></div>`;
 }
-function setFilter(i){ G.filter = i; G.dirty = true; renderModal(); }
+function setFilter(i){ G.filter = i; G.dirty = true; renderModal(); if(typeof uxAnnounce==='function')uxAnnounce('拾取規則：'+['全部撿','魔法以上','稀有以上'][i]); }
 function rulesBar(){
-  return `<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>拾取規則</b>${['全部撿', '魔法以上', '稀有以上'].map((n, i) => `<button class="mb" style="${G.filter === i ? 'background:#1f3fb0;color:#fff;' : ''}" onclick="setFilter(${i})">${n}</button>`).join('')}${qm('craft')}</div>`;
+  return `<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>拾取規則</b>${['全部撿', '魔法以上', '稀有以上'].map((n, i) => `<button class="mb${G.filter === i ? ' on' : ''}" aria-pressed="${G.filter === i}" onclick="setFilter(${i})">${G.filter === i ? '✓ ' : ''}${n}</button>`).join('')}${qm('craft')}</div>`;
 }
 function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未開放.txt</div><div style="font-size:13px;line-height:1.7">升到 ${L} 級開放${k === 'craft' ? '改機（拆裝備得零件，重洗與改裝詞綴）' : '天賦盤（升級得到的點數在這裡分配）'}。</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 function showHelp(k){ if(k==='maps')return directHelp('maps');const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
