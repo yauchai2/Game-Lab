@@ -238,7 +238,7 @@ function buildDeco(kind, k){
     case 'bush': for (const [x, y, z, r] of [[-1.6, 1.8, 0, 2.2], [1.2, 2.2, .6, 2.6], [.2, 1.6, -1.6, 2]]) mk(ico(r, 1), m3('#86dca4'), x, y, z, g); for (const [x, y, z] of [[1.8, 4, 1.6], [-.4, 3.4, 1.6], [2.6, 2.6, -.4]]) mk(ico(.45, 0), m3('#ff6a8a'), x, y, z, g); break;
     case 'mush': mk(cylG(.9, 1.2, 2.6, 6), m3('#fff0e0'), 0, 1.3, 0, g); mk(new T3.SphereGeometry(2.6, 8, 5, 0, 6.283, 0, 1.55), m3('#ff7a9a'), 0, 2.4, 0, g); for (const [x, z] of [[-1, 1], [1.1, .4], [0, -1.3]]) mk(ico(.38, 0), m3('#ffffff'), x, 4.5 - (x*x + z*z)*.12, z, g); break;
     case 'cactus': mk(cylG(1.5, 1.7, 8, 7), m3('#86dca4'), 0, 4, 0, g); mk(ico(1.5, 1), m3('#86dca4'), 0, 8, 0, g); for (const sx of [-1, 1]){ mk(cylG(.8, .8, 2.4, 6), m3('#86dca4'), sx*2.6, 6.2, 0, g); mk(roundedG(1.8, .8, .8), m3('#86dca4'), sx*1.7, 4.2, 0, g); } mk(ico(.5, 0), m3('#ff8fb8'), 0, 9.3, 0, g); break;
-    case 'rock': mk(new T3.DodecahedronGeometry(2.8, 0), m3('#b9b3d6'), 0, 2, 0, g).scale.set(1.2, .9, 1); mk(new T3.DodecahedronGeometry(1.5, 0), m3('#cdc8e8'), 2.4, 1, 1.2, g); break;
+    case 'rock': mk(new T3.DodecahedronGeometry(2.8, 1), m3('#b9b3d6'), 0, 2, 0, g).scale.set(1.2, .9, 1); mk(new T3.DodecahedronGeometry(1.5, 1), m3('#cdc8e8'), 2.4, 1, 1.2, g); mk(new T3.DodecahedronGeometry(.9, 0), m3('#a9a3c6'), -2.4, .6, 1.8, g); break;
     case 'skull': mk(ico(1.8, 1), m3('#fbf6ea'), 0, 2, 0, g).scale.set(1.2, 1, 1.3); mk(roundedG(2, 1, 1.6), m3('#fbf6ea'), 0, 1, 1.8, g); for (const sx of [-1, 1]){ mk(geo('sock', () => new T3.CircleGeometry(1, 10)), basic('#2b2552'), sx*.8, 2.4, 2.1, g).scale.set(.55, .6, 1); cone(g, '#fff0d0', sx*2.4, 3.2, 0, .5, 3.4, 5, 0, -sx*1.0); } break;
     case 'crystal': for (const [x, z, h, c] of [[0, 0, 9, '#8fe0ff'], [-2, 1, 5.5, '#b9a8ff'], [2, .6, 6.5, '#ffb0dd'], [.6, -2, 4, '#c8f2ff']]) mk(new T3.OctahedronGeometry(1.3, 0), m3(c, { emissive:c, emissiveIntensity:.18, transparent:true, opacity:.92 }), x, h/2, z, g).scale.set(.9, h/2.6, .9); break;
     case 'snowman': mk(ico(3.1, 1), m3('#ffffff'), 0, 3, 0, g); mk(ico(2.3, 1), m3('#ffffff'), 0, 7, 0, g); mk(ico(1.8, 1), m3('#ffffff'), 0, 10, 0, g); cone(g, '#ff9a5a', 0, 10, 2, .35, 1.8, 5, Math.PI/2); mk(new T3.TorusGeometry(1.7, .45, 4, 8), m3('#ff8fb8'), 0, 8.3, 0, g).rotation.x = Math.PI/2; for (const sx of [-.6, .6]) mk(ico(.2, 0), basic('#2b2552'), sx, 10.4, 1.65, g); break;
@@ -328,11 +328,11 @@ function buildWorldScenery(bi){
   const p=terrainNow(),root=new T3.Group(),small=new T3.Group(),occluders=[],shared=new Set(Object.values(G_));
   function merge(g){const out=bake(g);g.traverse(o=>{if(o.isMesh&&!shared.has(o.geometry))o.geometry.dispose();});return out;}
   for(const prop of terrainScenery(p)){
-    const z=BZ+terrainHeight(prop.x,prop.y,p),large=prop.radius!=null||['rock','lamp','tent','column'].includes(prop.kind),holder=large?new T3.Group():small;
+    const z=BZ+terrainHeight(prop.x,prop.y,p),large=prop.radius!=null||['rock','lamp','tent','column','lighthouse','arch','obelisk','radiotower','billboard','container','statue','satellite','totem','phonebooth'].includes(prop.kind),holder=large?new T3.Group():small;
     if(bi>=12&&bi<18&&prop.radius!=null){const o=buildIndustrialLandmark(bi-12,prop.variant||0);o.updateMatrixWorld(true);const size=new T3.Box3().setFromObject(o).getSize(new T3.Vector3());o.scale.setScalar(Math.max(2,prop.radius)*1.65/Math.max(size.x,size.z,1));o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);}
     else if(prop.kind==='tree')treeAt(holder,bi===3||bi===5?4:bi%6,prop.x,z,prop.y,prop.scale);
     else{
-      const o=prop.kind==='building'?buildWorldBuilding(prop.height,bi,prop.variant):prop.kind==='bike'?buildWorldBike():prop.kind==='grass'?buildWorldGrass(bi):['warehouse','cabin','pavilion','windmill','ruin','boulder','tent','log','bench','planter','crate','flowers','column'].includes(prop.kind)?buildLandscapeProp(prop.kind,bi,prop.variant||0):buildDeco(prop.kind,1);
+      const o=prop.kind==='building'?buildWorldBuilding(prop.height,bi,prop.variant):prop.kind==='bike'?buildWorldBike():prop.kind==='grass'?buildWorldGrass(bi):(['warehouse','cabin','pavilion','windmill','ruin','boulder','tent','log','bench','planter','crate','flowers','column'].includes(prop.kind)||EXTRA_PROPS.includes(prop.kind))?buildLandscapeProp(prop.kind,bi,prop.variant||0):buildDeco(prop.kind,1);
       o.scale.multiplyScalar(prop.scale);o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);
     }
     if(large){const batch=merge(holder),materials=[];batch.traverse(o=>{if(o.isMesh){o.material=o.material.clone();materials.push(o.material);}});batch.userData.fade={materials,opacity:1,target:1};root.add(batch);occluders.push(batch);}
@@ -358,7 +358,58 @@ function updateSceneryOcclusion(root,camera,hero,dt){
     for(const m of f.materials){const translucent=f.opacity<.995;if(m.transparent!==translucent){m.transparent=translucent;m.depthWrite=!translucent;m.needsUpdate=true;}m.opacity=f.opacity;}
   }
 }
+/* 地圖擺設：圓柱、球體、圓環與斜面組合的輪廓，避免全是方塊；顏色隨生態與變體輪替。 */
+const EXTRA_PROPS=['reed','stump','fern','pond','haystack','fence','well','scarecrow','lighthouse','campfire','totem','arch','obelisk','statue','brokenwall','lantern','flagpole','radiotower','phonebooth','busstop','hydrant','trashcan','billboard','streetclock','satellite','container','pallets','barrel','pipes','solar','swing','umbrella','dock','kiosk','boatwreck','cairn','icespire','hotspring','mailbox','tire'];
+function buildExtraProp(kind,bi,variant=0){
+  const g=new T3.Group(),v=variant%5,pal=[['#e8a5b5','#9fc6e8','#f2d98a','#a8d8b9','#c3a8e6'],['#f2c0a0','#8fb8d8','#e8d88a','#b8d8a8','#d8a8d0']][bi%2],tone=m3(pal[v]),stone=m3('#84939b'),light=m3('#d6d8cc'),wood=m3('#846b57'),darkWood=m3('#5c4a3e'),dark=m3('#384d5b'),metal=m3('#a9b8c4'),leaf=m3(BIOMES[bi].t1),glass=m3('#6fb0d0'),warm=basic('#ffe8a8'),red=m3('#d46a6a'),yellow=m3('#e8c45a');
+  const cyl=(rt,rb,h,mat,x=0,y=h/2,z=0,n=10)=>mk(cylG(rt,rb,h,n),mat,x,y,z,g),ball=(r,mat,x,y,z,sy=1)=>{const o=mk(ico(r,1),mat,x,y,z,g);o.scale.y=sy;return o;},box=(w,h,d,mat,x=0,y=h/2,z=0)=>mk(roundedG(w,h,d),mat,x,y,z,g);
+  switch(kind){
+    case 'reed':for(let i=0;i<7;i++){const a=i*2.4,r=.4+i*.3,h=4+(i%3)*1.6,o=cyl(.12,.16,h,leaf,Math.cos(a)*r,h/2,Math.sin(a)*r,5);o.rotation.z=Math.cos(a)*.18;o.rotation.x=Math.sin(a)*.18;if(i%2)cyl(.34,.34,1.3,wood,Math.cos(a)*r,h+.2,Math.sin(a)*r,6);}break;
+    case 'stump':cyl(2.4,3,2.6,wood);cyl(2.2,2.2,.2,light,0,2.7);for(let i=0;i<3;i++){const a=i*2.1;ball(.9,leaf,Math.cos(a)*3.2,.6,Math.sin(a)*3.2,.6);}break;
+    case 'fern':for(let i=0;i<6;i++){const a=i*1.05,o=mk(new T3.ConeGeometry(.45,4.2,4),leaf,Math.cos(a)*1.3,1.8,Math.sin(a)*1.3,g);o.rotation.z=-Math.cos(a)*.9;o.rotation.x=Math.sin(a)*.9;}break;
+    case 'pond':{const w=mk(cylG(5.5,5.8,.4,14),m3('#6fb6d4',{transparent:true,opacity:.85}),0,.2,0,g);w.scale.z=.75;for(let i=0;i<7;i++){const a=i*.9;ball(.9,stone,Math.cos(a)*6.3,.5,Math.sin(a)*4.8,.7);}mk(cylG(1,1,.1,6),leaf,1.5,.5,.5,g);}break;
+    case 'haystack':cyl(3.4,3.6,3,m3('#d8b866'));mk(new T3.ConeGeometry(3.6,3,10),m3('#e8cc7a'),0,4.4,0,g);cyl(3.7,3.7,.3,wood,0,1.5);break;
+    case 'fence':for(let i=-2;i<=2;i++)cyl(.3,.34,3.4,wood,i*2.4,1.7,0,6);box(12,.5,.4,wood,0,2.8);box(12,.5,.4,wood,0,1.5);break;
+    case 'well':cyl(2.6,2.8,2.6,stone,0,1.3,0,10);cyl(1.9,1.9,.2,m3('#2f5878'),0,2.6);for(const x of [-2,2])cyl(.25,.25,5,wood,x,4.6,0,6);const roof=mk(new T3.ConeGeometry(3.6,2.2,4),red,0,7.8,0,g);roof.rotation.y=Math.PI/4;break;
+    case 'scarecrow':cyl(.25,.25,7,wood,0,3.5,0,6);box(6,.4,.4,wood,0,5.4);ball(1.1,yellow,0,7.6,0);mk(new T3.ConeGeometry(1.5,1.2,8),darkWood,0,8.9,0,g);box(2.6,2.6,1,tone,0,4.3);break;
+    case 'lighthouse':cyl(2.4,3.8,16,light,0,8);for(const y of [4,9])cyl(2.9-y*.08,2.9-y*.08,1.2,red,0,y,0);cyl(3.2,3.2,.6,dark,0,16.3);cyl(2,2,2.4,glass,0,17.8);mk(new T3.ConeGeometry(2.8,2.4,10),red,0,20.2,0,g);break;
+    case 'campfire':for(let i=0;i<6;i++){const a=i*1.05;ball(.9,stone,Math.cos(a)*2.8,.5,Math.sin(a)*2.8,.7);}for(let i=0;i<3;i++){const o=cyl(.3,.3,3.4,wood,0,1.2,0,6);o.rotation.z=1.1;o.rotation.y=i*2.1;}mk(new T3.ConeGeometry(1.1,3,6),basic('#ff9a4a'),0,2.2,0,g);mk(new T3.ConeGeometry(.6,2,6),basic('#ffe27a'),0,1.9,0,g);break;
+    case 'totem':for(let i=0;i<4;i++){cyl(1.3-i*.05,1.3,2.2,i%2?tone:wood,0,1.1+i*2.2,0,8);box(2.6,.5,.3,i%2?red:yellow,0,1.1+i*2.2,1.15);}mk(new T3.ConeGeometry(1.4,1.8,8),red,0,9.7,0,g);box(6,.5,.5,wood,0,6.6);break;
+    case 'arch':for(const x of [-5,5]){cyl(1.6,1.9,13,stone,x,6.5,0,8);ball(1.5,light,x,13.4,0,.6);}{const t=mk(new T3.TorusGeometry(5,1.4,6,14,Math.PI),stone,0,12.8,0,g);}box(3,2,3,light,0,18,0);break;
+    case 'obelisk':{const o=mk(new T3.CylinderGeometry(1.2,2.4,17,4),stone,0,8.5,0,g);o.rotation.y=Math.PI/4;mk(new T3.ConeGeometry(1.4,3,4),tone,0,18.5,0,g).rotation.y=Math.PI/4;box(6,1.2,6,light,0,.6);ball(.8,m3('#8fe0ff',{emissive:'#8fe0ff',emissiveIntensity:.3}),0,10,1.4);}break;
+    case 'statue':cyl(2.6,3,2.4,light,0,1.2,0,8);cyl(1.2,1.6,6,stone,0,5.4,0,8);ball(1.5,stone,0,9.4,0);box(5,.8,.8,stone,0,7.6);break;
+    case 'brokenwall':box(11,5,2,stone,-1,2.5);box(5,8,2,stone,6.5,4);box(3,2.5,2,light,-6,1.25,.4);ball(1.4,stone,0,.7,3,.6);ball(1,light,4,.5,3.4,.6);break;
+    case 'lantern':cyl(.2,.28,7,dark,0,3.5,0,6);cyl(1,1.3,2,warm,0,7.6);mk(new T3.ConeGeometry(1.6,1.2,6),red,0,9.2,0,g);cyl(1.4,1.4,.3,dark,0,6.5);break;
+    case 'flagpole':cyl(.22,.3,13,metal,0,6.5,0,6);ball(.5,yellow,0,13.2,0);box(4.4,2.8,.2,tone,2.4,11.2);break;
+    case 'radiotower':for(const [x,z] of [[-2,-2],[2,-2],[-2,2],[2,2]]){const o=cyl(.2,.3,18,metal,x*.6,9,z*.6,5);o.rotation.z=-x*.03;o.rotation.x=z*.03;}for(let y=3;y<18;y+=4){const r=3.2-y*.12;cyl(r,r,.2,metal,0,y,0,4);}cyl(.15,.15,6,red,0,20,0,5);ball(.6,basic('#ff4a4a'),0,23.2,0);break;
+    case 'phonebooth':box(3.4,8,3.4,red,0,4);box(2.6,5.4,.2,glass,0,4.6,1.75);box(2.6,5.4,.2,glass,0,4.6,-1.75);box(3.8,.8,3.8,dark,0,8.2);box(1.4,1,.3,warm,0,7.4,1.8);break;
+    case 'busstop':box(10,.5,4,metal,0,6.6);for(const x of [-4.6,4.6])cyl(.22,.22,6.4,dark,x,3.2,0,6);box(.3,5,3.6,glass,-4.6,3.2,0).material=m3('#9ecbe0',{transparent:true,opacity:.6});box(4,.5,1.2,tone,0,2.2,-1.2);box(.6,2.8,.4,yellow,5.8,1.4);break;
+    case 'hydrant':cyl(.9,1.1,2.6,red,0,1.3,0,8);ball(1,red,0,2.8,0,.7);cyl(.4,.4,2.2,red,0,1.5,0,6).rotation.z=Math.PI/2;cyl(1.2,1.2,.4,dark,0,.2,0,8);break;
+    case 'trashcan':cyl(1.3,1.1,3.2,m3('#6f8f7f'),0,1.6,0,10);cyl(1.45,1.45,.4,dark,0,3.4,0,10);for(const a of [0,2.1,4.2])cyl(.08,.08,3.1,dark,Math.cos(a)*1.2,1.6,Math.sin(a)*1.2,4);break;
+    case 'billboard':cyl(.4,.5,9,metal,-4,4.5,0,6);cyl(.4,.5,9,metal,4,4.5,0,6);box(12,6,.6,dark,0,11);box(11,5,.2,tone,0,11,.4);box(7,1.2,.2,warm,0,12.2,.55);box(4,.8,.2,m3('#ffffff'),-2,10,.55);break;
+    case 'streetclock':cyl(.4,.5,9,dark,0,4.5,0,8);cyl(2,2,.8,light,0,10,0,16).rotation.x=Math.PI/2;box(.2,1.6,.2,dark,0,10.6,.5);box(1.2,.2,.2,dark,.5,10,.5);ball(.5,yellow,0,12.3,0);break;
+    case 'satellite':cyl(.5,.7,4,metal,0,2,0,6);{const dish=mk(new T3.SphereGeometry(4,12,6,0,6.283,0,1.2),light,0,6,0,g);dish.rotation.x=-.9;dish.material=m3('#d6d8cc',{side:T3.DoubleSide});}cyl(.15,.15,3,metal,0,8.3,2.4,5).rotation.x=.9;cyl(2,2.4,.6,stone,0,.3);break;
+    case 'container':box(14,7,5,tone,0,3.5);for(let i=-5;i<=5;i+=2)box(.3,6.4,5.2,dark,i,3.5);box(14.4,.5,5.4,dark,0,7.1);box(.4,5,2,metal,7.1,3.5,0);break;
+    case 'pallets':for(let i=0;i<3;i++){box(5,.6,5,wood,0,.3+i*2.8);box(5,.6,1,darkWood,0,1.6+i*2.8,-2);box(5,.6,1,darkWood,0,1.6+i*2.8,2);}box(4,3,4,tone,0,5.4);break;
+    case 'barrel':for(const [x,z] of [[0,0],[2.6,.8],[1,-2.4]]){cyl(1.3,1.3,3.2,tone,x,1.6,z,12);cyl(1.36,1.36,.3,dark,x,1,z,12);cyl(1.36,1.36,.3,dark,x,2.4,z,12);}break;
+    case 'pipes':for(let i=0;i<3;i++){const o=cyl(1.2,1.2,10,i%2?metal:tone,0,1.2+i*.6,(i-1)*2.2,12);o.rotation.z=Math.PI/2;}for(const x of [-3,3])box(.6,.6,7,dark,x,.3);break;
+    case 'solar':for(let i=0;i<3;i++){const p=box(5,.3,3.4,m3('#2d4f78'),(i-1)*5.6,3.4,0);p.rotation.x=-.5;cyl(.2,.2,3.4,metal,(i-1)*5.6,1.7,-.4,5);}break;
+    case 'swing':for(const x of [-3,3]){const a=cyl(.25,.25,7.4,metal,x,3.4,-1.4,5);a.rotation.x=.25;const b=cyl(.25,.25,7.4,metal,x,3.4,1.4,5);b.rotation.x=-.25;}cyl(.25,.25,6.6,metal,0,6.8,0,5).rotation.z=Math.PI/2;box(2.4,.3,1,tone,-1,2.4);box(2.4,.3,1,yellow,1.2,2.4);break;
+    case 'umbrella':cyl(.18,.18,7,metal,0,3.5,0,5);mk(new T3.ConeGeometry(5,2,10),tone,0,7.6,0,g);cyl(1.5,1.5,.3,light,3.6,2.6,0,10);cyl(.15,.15,2.6,metal,3.6,1.3,0,5);break;
+    case 'dock':box(4,.5,14,wood,0,1.6);for(const z of [-5.5,0,5.5])for(const x of [-1.7,1.7])cyl(.25,.25,3,darkWood,x,.7,z,6);box(6,.3,.3,metal,0,3.2,7);break;
+    case 'kiosk':box(6,5,5,tone,0,2.5);mk(new T3.ConeGeometry(5.2,2.4,4),red,0,6.2,0,g).rotation.y=Math.PI/4;box(5,.8,1.4,m3('#ffffff'),0,3.6,3);box(5.2,.5,.8,wood,0,2.8,3);break;
+    case 'boatwreck':{const hull=mk(new T3.SphereGeometry(4.5,10,6,0,6.283,Math.PI/2,Math.PI/2),m3('#8c5c4c'),0,3.4,0,g);hull.scale.set(1.6,.9,.7);hull.rotation.z=.2;}cyl(.25,.3,9,wood,0,5,0,6).rotation.z=.3;box(3,2.4,.2,light,1.4,6.5);break;
+    case 'cairn':for(let i=0;i<5;i++)ball(2.4-i*.38,i%2?stone:light,(i%2)*.3,1.6+i*1.5,0,.7);break;
+    case 'icespire':for(const [x,z,h] of [[0,0,10],[-2,1.4,6],[2,1,7.5],[.6,-2,5]]){const o=mk(new T3.ConeGeometry(1.4,h,5),m3('#bfe8ff',{transparent:true,opacity:.9,emissive:'#7fd3ff',emissiveIntensity:.15}),x,h/2,z,g);o.rotation.z=x*.05;}break;
+    case 'hotspring':cyl(5,5.4,.6,stone,0,.3,0,14);cyl(4.3,4.3,.3,m3('#7fc8d8',{transparent:true,opacity:.8}),0,.7,0,14);for(const [x,z,r] of [[-1,.6,.9],[1.2,-.4,.7],[.2,1.4,.6]])ball(r,m3('#ffffff',{transparent:true,opacity:.55}),x,2.6+r,z);break;
+    case 'mailbox':cyl(.2,.25,3.4,wood,0,1.7,0,6);box(1.8,1.4,2.8,tone,0,3.8);mk(new T3.CylinderGeometry(.9,.9,2.8,10,1,false,0,Math.PI),tone,0,4.5,0,g).rotation.x=Math.PI/2;box(.2,1,.2,red,1.1,4.4);break;
+    case 'tire':for(let i=0;i<3;i++){const o=mk(new T3.TorusGeometry(1.3,.55,6,12),dark,0,.6+i*1.1,0,g);o.rotation.x=Math.PI/2;}break;
+  }
+  return g;
+}
+
 function buildLandscapeProp(kind,bi,variant){
+  if(EXTRA_PROPS.includes(kind))return buildExtraProp(kind,bi,variant);
   const g=new T3.Group(),stone=m3('#84939b'),light=m3('#d6d8cc'),wood=m3('#846b57'),dark=m3('#384d5b'),leaf=m3(BIOMES[bi].t1),accent=m3('#819caa');
   const box=(w,h,d,mat,x=0,y=h/2,z=0)=>mk(roundedG(w,h,d),mat,x,y,z,g);
   if(kind==='warehouse'){
@@ -391,17 +442,29 @@ function buildLandscapeProp(kind,bi,variant){
   }return g;
 }
 function buildWorldBuilding(height,bi,variant=0){
-  const g=new T3.Group(),shell=m3('#b7c4d4'),glass=m3(bi%2?'#456b8f':'#417f9b'),trim=m3('#e2e8ed'),roof=m3('#6f8092');
+  const g=new T3.Group(),shell=m3(['#b7c4d4','#c9bfd8','#bcd0c8','#d4c8b8'][variant%4]),glass=m3(bi%2?'#456b8f':'#417f9b'),trim=m3('#e2e8ed'),roof=m3('#6f8092'),kind=variant%4;
+  const win=(r,y,n,w,h)=>{for(let i=0;i<n;i++){const a=i/n*6.283,o=mk(roundedG(w,h,.3),glass,Math.cos(a)*r,y,Math.sin(a)*r,g);o.rotation.y=-a+Math.PI/2;}};
+  if(kind===3){   // 圓塔：錐形收分、環形窗帶、頂部穹頂與天線
+    mk(cylG(10,12,height,16),shell,0,height/2,0,g);for(let y=7;y<height-3;y+=7)win(11.2-y/height*1.6,y,10,3.2,4);
+    mk(cylG(12.4,12.4,1.4,16),trim,0,height+.4,0,g);mk(new T3.SphereGeometry(8,12,6,0,6.283,0,1.5),roof,0,height+1,0,g);mk(cylG(.25,.3,8,5),trim,0,height+10,0,g);
+    mk(roundedG(6,8,.35),glass,0,4,11.6,g);return g;
+  }
+  if(kind===2){   // 退台樓：三層逐級收窄，帶屋頂花園
+    const tiers=[[26,.5],[19,.3],[13,.2]];let y=0;tiers.forEach(([w,f],i)=>{const h=height*(i===0?.5:i===1?.3:.2);mk(roundedG(w,h,w),shell,0,y+h/2,0,g);mk(roundedG(w+2,1.2,w+2),trim,0,y+h+.4,0,g);
+      for(let yy=y+5;yy<y+h-2;yy+=6)for(const u of [-.3,.3]){mk(roundedG(w*.28,3.6,.25),glass,u*w,yy,w/2+.15,g);mk(roundedG(.25,3.6,w*.28),glass,w/2+.15,yy,u*w,g);}
+      if(i>0)for(const [x,z] of [[-1,-1],[1,1]])mk(new T3.IcosahedronGeometry(1.6,1),m3(BIOMES[bi].t1),x*w*.3,y+h+2,z*w*.3,g);y+=h+1;});
+    mk(cylG(1.6,1.6,5,8),roof,0,y+2.5,0,g);return g;
+  }
   mk(roundedG(24,height,24),shell,0,height/2,0,g);
   mk(roundedG(26,1.5,26),trim,0,height+.5,0,g);
   mk(roundedG(21,.8,21),roof,0,height+1.5,0,g);
-  mk(roundedG(7,3,6),roof,4,height+3,-4,g);
+  mk(roundedG(7,3,6),roof,4,height+3,-4,g);mk(cylG(2.2,2.2,3.5,10),trim,-6,height+3.4,5,g);
   for(let y=7;y<height-3;y+=7)for(const u of [-8,-2,4,10]){
     mk(roundedG(3.4,4.5,.25),glass,u-1,y,12.2,g);
     mk(roundedG(.25,4.5,3.4),glass,12.2,y,u-1,g);
   }
   mk(roundedG(6,8,.35),glass,-4,4,12.3,g);
-  if(variant%3===0){mk(roundedG(28,2,9),roof,0,10,15,g);for(const x of [-11,11])mk(roundedG(1,10,1),trim,x,5,18,g);}
+  if(variant%3===0){mk(roundedG(28,2,9),roof,0,10,15,g);for(const x of [-11,11])mk(cylG(.6,.6,10,8),trim,x,5,18,g);}
   if(variant%3===1)mk(roundedG(10,7,9),roof,-4,height+5,3,g);
   return g;
 }

@@ -67,7 +67,7 @@ function killMon(m){
   if (Math.random() < (m.boss ? .35 : .025)) dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'gem', id:tPick(Object.keys(SUPPS)), t:0 });
   if (Math.random() < (m.boss && !R ? 1 : .03)) dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'map', map:makeMap(d + (Math.random() < .3 ? 1 : 0)), t:0 });
   if(R?.city&&!m.boss)cityStageClear();
-  if (m.boss){
+  if (m.boss&&!m.riftBoss){
     fieldDiscover(terrainNow().profile,true);
     if (R){ completeRun(); }
     else { G.bossOut = false; G.kills = 0; G.pushFail = 0; G.pushHold = false; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗BOSS！進入深度 ${G.depth}`, '#2f9e4f'); } }
@@ -269,6 +269,11 @@ function applySkillHit(id,m,mult=1,origin=G.eventOrigin||'primary'){
     for (const o of near){ addFx({ k:'boom', x:o.x, y:o.y, z:BZ + 6, t:0, dur:.3 }); applySkillHit(id,o,mult*.5,'proc'); } G.inFork = false; }
   return r.dmg;
 }
+function knockMon(m,fx,fy,dist){
+  if(!m||m.dead||m.fall>0)return;const dx=m.x-fx,dy=m.y-fy,d=Math.hypot(dx,dy)||1;
+  const k=m.boss?.15:m.elite?.5:(MONSTER_TRAITS[m.type]?.scale>1.2?.6:1),go=dist*k;if(go<.5)return;
+  m.x+=dx/d*go;m.y+=dy/d*go;
+}
 const safeLife=()=>G.st.life;
 function castSkill(id,repeat=1,origin=repeat===1?'primary':'repeat'){
   if(typeof wireBlink==='function'&&repeat===1)wireBlink(id);
@@ -309,7 +314,7 @@ function performSkill(id,repeat,origin){
   }
   if (id === 'PULSE'){
     const R=p.range,sm=p.each, wave = (r, mu) => { addFx({ k:'nova', t:0, dur:.45 });
-      for (const m of al){ const dx = m.x - h.x, dy = m.y - h.y, d = Math.hypot(dx, dy) || 1; if (d > r) continue; total += applySkillHit(id, m, repeat*mu); if (!m.dead){ m.x += dx/d*7; m.y += dy/d*7; } } };
+      for (const m of al){ const dx = m.x - h.x, dy = m.y - h.y, d = Math.hypot(dx, dy) || 1; if (d > r) continue; total += applySkillHit(id, m, repeat*mu); if (!m.dead) knockMon(m,h.x,h.y,9); } };
     wave(R, sm); if(p.echo&&origin==='primary')G.timers.push({t:.5,id,rep:p.echo}); SFX('boom');
   }
   if (id === 'MAGNET'){
@@ -331,7 +336,7 @@ function performSkill(id,repeat,origin){
     SFX('fire'); const base = Math.atan2(prim.y - h.y, prim.x - h.x), w=p.width,spent=p.capacitor&&origin==='primary'?G.signalCharge:0,mu=repeat*p.each*(1+spent*(s.firmware.includes('FK')?.45:.35));
     if(spent){G.signalCharge=0;combatCombo('chargeSpent',spent);addFx({k:'ring',x:h.x,y:h.y,col:'#57efff',t:0,dur:.5});}
     const shoot = (ang, m2) => { const ux = Math.cos(ang), uy = Math.sin(ang);
-      for (const m of al){ const dx = m.x - h.x, dy = m.y - h.y, al2 = dx*ux + dy*uy; if (al2 > 0 && al2 < 90 && Math.abs(dx*uy - dy*ux) < w) total += applySkillHit(id, m, mu*m2); }
+      for (const m of al){ const dx = m.x - h.x, dy = m.y - h.y, al2 = dx*ux + dy*uy; if (al2 > 0 && al2 < 90 && Math.abs(dx*uy - dy*ux) < w) { total += applySkillHit(id, m, mu*m2); const side=dx*uy-dy*ux; knockMon(m,m.x-uy*(side<0?-1:1),m.y+ux*(side<0?-1:1),5); } }
       addFx({ k:'bolt', pts:[[h.x + 3.4, h.y - 3.6, BZ + 9.2], [h.x + ux*90, h.y + uy*90, BZ + 8]], t:0, dur:.35 }); };
     if(p.sweep){ for (const d of [-.61, 0, .61]) shoot(base+d,1); } else shoot(base, 1);
   }
@@ -347,7 +352,7 @@ function performProj(p){
   if (p.k === 'fire'){
     SFX('boom'); const k = s.sk.FIRE, m = p.tg; if (!k) return; if (m.dead && !G.mons.includes(m)) return;
     const targets = k.area ? castMons() : (m.dead ? [] : [m]); let total = 0;
-    for (const q of targets){ total += applySkillHit('FIRE', q, p.mul); addFx({ k:'boom', x:q.x, y:q.y, z:BZ + 6, t:0, dur:.4 });
+    for (const q of targets){ total += applySkillHit('FIRE', q, p.mul); knockMon(q,h.x,h.y,3); addFx({ k:'boom', x:q.x, y:q.y, z:BZ + 6, t:0, dur:.4 });
       if (k.mode === 'FIRE_BLAST'){ for (const o of G.mons) if (!o.dead && o !== q && Math.hypot(o.x - q.x, o.y - q.y) < 14) total += applySkillHit('FIRE', o, p.mul*.6); }
       if (k.mode === 'FIRE_SPLIT'){ const t2 = G.mons.filter(o => !o.dead && o !== q).sort((a, b) => Math.hypot(a.x - q.x, a.y - q.y) - Math.hypot(b.x - q.x, b.y - q.y)).slice(0, 2);
         for (const o of t2){ total += applySkillHit('FIRE', o, p.mul*.5); addFx({ k:'boom', x:o.x, y:o.y, z:BZ + 6, t:0, dur:.4 }); } } }
@@ -360,7 +365,7 @@ function performProj(p){
     for(const q of al){
       if(pattern.radius&&Math.hypot(q.x-p.x,q.y-p.y)>pattern.radius)continue;
       const factor=pattern.primary?(q===top?pattern.primary:pattern.splash):p.coldBoost&&q===p.target?pattern.coldBonus:1;
-      total+=applySkillHit('METEOR',q,p.mul*factor);
+      total+=applySkillHit('METEOR',q,p.mul*factor);knockMon(q,p.x,p.y,4);
     }
     if (k.leech) heroRecover(total*.12); heroRecover(total*s.leech/100);
   }
