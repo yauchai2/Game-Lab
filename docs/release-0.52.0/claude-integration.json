@@ -1,0 +1,99 @@
+{
+  "checked_at": "2026-10-25T11:55:02.048384+00:00",
+  "base": "e67f73b934ccb8accb8ab33205fb4b237846e8a8",
+  "claude": [
+    {
+      "branch": "origin/claude/handoff-backup-docs",
+      "commit": "45ecb31365c78816723c655be7600ae3b1330aa5",
+      "included": false,
+      "reason": "內部備份或歷史研究文件，無新遊戲程式，保留分支不納入發佈",
+      "unique_paths": [
+        "A\tdocs/handoff/HANDOFF.md",
+        "A\tdocs/handoff/README.md",
+        "A\tdocs/handoff/backlog.md",
+        "A\tdocs/handoff/memory.md"
+      ]
+    },
+    {
+      "branch": "origin/claude/project-thread-0y5wy1",
+      "commit": "6373edd926f7a3abc75de3ec2cbda5592abf96f4",
+      "included": true,
+      "reason": "已包含於整合來源",
+      "unique_paths": []
+    },
+    {
+      "branch": "origin/claude/project-thread-afu9rh",
+      "commit": "4fad995e5179cec89202865905abf214dd1524f2",
+      "included": true,
+      "reason": "已包含於整合來源",
+      "unique_paths": []
+    },
+    {
+      "branch": "origin/claude/project-thread-kg811g",
+      "commit": "91a8a85c405acc6925a4dbd61479a564bb65301e",
+      "included": true,
+      "reason": "已包含於整合來源",
+      "unique_paths": []
+    },
+    {
+      "branch": "origin/claude/project-thread-md2o27",
+      "commit": "1ea3943fc1d6fd52878c8e26b32b1c895ba469d6",
+      "included": true,
+      "reason": "已包含於整合來源",
+      "unique_paths": []
+    },
+    {
+      "branch": "origin/claude/project-thread-yw9jjp",
+      "commit": "e0b3468a4585a1d105452af46afd83705dc1b4e3",
+      "included": true,
+      "reason": "已包含於整合來源",
+      "unique_paths": []
+    },
+    {
+      "branch": "origin/claude/project-thread-z3r5g1",
+      "commit": "fd689ed332116345defec9ae8ac3bddfedd659b6",
+      "included": false,
+      "reason": "內部備份或歷史研究文件，無新遊戲程式，保留分支不納入發佈",
+      "unique_paths": [
+        "M\tdocs/backlog.md",
+        "M\tdocs/prototype-grid-and-mod-design.md",
+        "R097\tdocs/auto-wanderer-research.md\tdocs/reference-game-research.md"
+      ]
+    },
+    {
+      "branch": "origin/claude/release-workflow",
+      "commit": "0c91243945b506913375a28a2488cd9395720083",
+      "included": true,
+      "reason": "已包含於整合來源",
+      "unique_paths": []
+    }
+  ],
+  "integrated_prs": [
+    {
+      "number": 60,
+      "branch": "codex/onboarding-season-focus",
+      "commit": "fd7b6aea280549f2e9c567c3db3f3b472a6ff105"
+    },
+    {
+      "number": 61,
+      "branch": "codex/feedback-service-setup",
+      "commit": "7b415a3b65c2b5a7dda1312af461b2575699f823"
+    },
+    {
+      "number": 62,
+      "branch": "codex/sponsor-page",
+      "commit": "2a99591e660646371c542f97a704cc2dec426ed2"
+    }
+  ],
+  "excluded_prs": [
+    {
+      "number": 12,
+      "reason": "未完成歷史四角色草稿，現行角色另有後續實作；保留草稿，不重覆覆蓋"
+    },
+    {
+      "number": 10,
+      "reason": "內部交接備份，不能進入公開遊戲"
+    }
+  ],
+  "all_branches_preserved": true
+}

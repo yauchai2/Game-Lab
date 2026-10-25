@@ -1,0 +1,20 @@
+{
+  "source_sha256": "bb4166293ad90770efedce2f401d487fd42ba523d7302821d2066a64bc067009",
+  "source_bytes": 52700964,
+  "source_triangles": 499960,
+  "triangles": 15000,
+  "vertices": 26074,
+  "derived_bytes": 814732,
+  "derived_sha256": "9504162c6c587c583550125a9c134f8b4276b4db2b755846ac6f67c143d42df2",
+  "texture_max": 512,
+  "source": "Alan supplied 3D logo",
+  "rights": "User supplied for this project; no third-party redistribution license asserted",
+  "changes": [
+    "center and normalize width",
+    "decimate to about 15000 triangles, preserve UVs",
+    "resize connected textures to max 512",
+    "remove normal map, retain base color and metallic/roughness maps",
+    "encode 512px embedded textures as WebP quality 94"
+  ],
+  "blender": "4.3.2"
+}

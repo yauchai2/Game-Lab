@@ -1,6 +1,6 @@
 # 遊戲內回饋代發
 
-狀態：服務端與遊戲介面已準備，尚未部署。Alan目前沒有Cloudflare專案或回饋API。未配置端點時遊戲只保留／下載草稿，不假報提交成功。
+狀態（2026-10-25，香港時間）：Cloudflare Worker 已部署並通過真實 GitHub 提交及防重複驗證。端點為 `https://game-lab-feedback.yauchaichan.workers.dev/feedback`，測試單 [#59](https://github.com/yauchai2/Game-Lab/issues/59)，[驗證與候選產物](https://github.com/yauchai2/Game-Lab/actions/runs/40188521467)。前端 endpoint 已更新於 `codex/feedback-service-setup`；正式遊戲仍待合併、重建與版本發佈，不能宣稱正式站表單已接通。完整維護及證據見 [設定紀錄](../../docs/feedback-service-setup-2026-10-25.md)。
 
 1. 建立Cloudflare帳號與Worker（可用免費方案，實際額度依平台當時條款）。GitHub Pages只放前端，不能保存代發憑證。
 2. 建立僅安裝於Game-Lab的GitHub App，Repository permissions僅Issues讀寫；產生PKCS#8格式RSA私鑰，記下App ID與Installation ID。私鑰若為PKCS#1，在本機轉成PKCS#8後再存Secret。不要把私鑰、Token或會話代理憑證寫進repo。

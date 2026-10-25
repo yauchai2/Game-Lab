@@ -425,7 +425,17 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - `05w-signal-studio.js`擁有塔／巡迴／贊助／整備設備的呈現，以及天賦hover浮層。設備內容呼叫原有改機、回收、合成及商店函式；不複製付費邏輯。資訊浮層不取代原天賦點選詳情，觸控與鍵盤可達。
 - 返回←是導向上一頁／上一層；×是收起獨立視窗或取消。只有明確父頁回呼的嵌套視窗採返回；確認視窗仍×取消且不扣款。共用showOverlay與uiTitle實作，不以個別頁面替代。
 - `audio.js`唯一音訊生命週期／靜音擁有者。來源先手勢解鎖，音樂切換不另開無限播放器，音效解碼未完成時重查靜音／背景，最多8個同時聲源。樣本由pack_audio.py內嵌，source provenance記原始及衍生hash；打包不能默默改用網上熱連結。
-- `SUPPORT_CONFIG.url`只接受確認的Ko-fi或GitHub Sponsors公開收款頁。Alan已選Ko-fi，但網址未提供；不可從帳號猜測網址，不處理卡資料、不把贊助當已付款／提供戰力。Cloudflare憑證與GitHub代發憑證只用安全設定，電郵不是帳號授權。
+- 歷史贊助方案為未提供網址的 Ko-fi／GitHub Sponsors；已由下方 2026-10-25 Patreon 契約取代。Cloudflare憑證與GitHub代發憑證只用安全設定，電郵不是帳號授權。
+
+## Patreon 贊助契約（2026-10-25）
+
+業務來源：Alan 在本聊天要求完成贊助頁、選定 Patreon 並確認公開網址 https://www.patreon.com/c/alanycchan。
+
+- `SUPPORT_CONFIG.url` 是唯一目的地設定；`supportDestination` 只接受 HTTPS Patreon 公開創作者路徑，拒絕其他網域、帳密、非預設埠、片段及非創作者查詢。正規化至 www.patreon.com，不從玩家存檔或網址參數讀取目的地。
+- `supportHtml` 沿用設定 → 贊助及共用返回鍵。付款入口為原生連結，另開分頁且帶 noopener noreferrer；原頁不離開、不寫存檔、不宣稱付款成功。未配置／非法設定時顯示原因及 disabled 控制，沒有假連結。
+- Patreon 處理登入、方案、訂閱及付款；遊戲不收集付款資料、不傳存檔、不連結 Patreon 與遊戲帳號。保持原有自願支持、不售戰力規則；不虛構價錢、福利或退款承諾。
+- Alan 最新指示要求簡約、禮貌感謝及表達製作遊戲的興趣；以兩句平實文字取代付款長文與 FAQ，保留自願支持短句。返回及鳴謝沿用 openModal／showOverlay／Escape，沒有新表單、彈窗或非同步狀態。捲動與焦點仍由 05f／05g 共用 owner 管理。
+- 驗證：`node tools/test_support_browser.cjs`；含手機／桌機、真實連結點擊的攔截驗證、錯誤設定、鍵盤、存檔不變及離線單檔。沒有執行真實付款驗證。
 
 ## 任務導引、集合與狀態（2026-10-24）
 
@@ -460,3 +470,12 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - 05z-experience.EXHIBIT只讀預覽；技能面板優先於背景塔樓，隱藏祖先及離開時dispose。動作與特效不呼叫實戰castSkill，不修改G或派獎；召喚／持續技能共用實際模型／幾何。
 - 05h-view擁有uiFxVersion2遷移及watch暫時展開；prefs.hideBattle不因觀戰覆寫，離開恢復。手機尺寸規則不得再以正常模式max-height限制觀戰canvas，隱藏工作列同步移除margin。音量仍由audio.js單一gain配合audSyncBattle，不疊乘、不解除off。
 - 05y-stage-control掉落訊息屬於.stage，重要性由importantLoot集中判斷；普通獲取仍正常結算但不全部播報。BOSS顯示採活體查詢，不讀歷史bossOut旗標。Rift面板的live signature包含階段／整秒／擊殺與素材，不讓來源面板停在舊狀態。
+
+## 新手與賽季聚焦（2026-10-25，候選）
+
+- 02h-onboarding擁有G.tutorial版本1與三步實作狀態，由serialize／applySave保存；新角色introBegin開始，舊存檔缺失維持null。真討伐與手動裝備事件、GridLab.resolve通電推進；離線／暫停不發教學獎勵。首次無未穿裝備時只生成一次教學武器，走既有地面掉落與拾取，不自動裝備。
+- 05aa-onboarding-focus只負責教學顯示／導覽、賽季組合與暫時紫色主題，不另建獎勵／賽季／背包owner。稍後不阻塞戰鬥，設定可續接；完成後收起。學習中viewBlocked禁止自動觀戰，所有舊偏好仍由GAME_VIEW管理。
+- 季頁沿用02g-rift、02e-season及activityRecipesHtml owner；僅合併導航和閱讀。rift舊入口映射season；phase／資源改變才完整刷新，秒數／擊殺只更新data-rift-status文字，避免每秒重建長頁與失焦。此條取代上一節包含整秒／擊殺的完整live signature規則。
+- riftThemeUpdate快照並還原clearColor／alpha與燈光，scene重建後沿用當前階段。舞台背景保持透明，因cv3使用負z-index；不能用不透明.stage蓋住世界。body直接子header與內頁header必須分開隱藏。
+
+- 05ab-intro-logo擁有INTRO_LOGO短暫展示生命週期，INTRO.cover獨立於既有故事step0至3並保存續接。標題不改角色／獎勵；進入故事introStep即dispose。減少動態及暫停時貼圖載妥後不重繪，隱藏分頁不推進角度。原始GLB不隨遊戲分發，logo-3d-asset嵌入已驗證單網格衍生版與同模型PNG，啟動／無GPU皆無外部請求；boot及標題不使用舊2D Logo。
