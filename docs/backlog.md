@@ -851,3 +851,7 @@ TOWER-01至17已隨v0.50.0合併、發佈並核對正式HTTPS來源；詳見[本
 - [x] RIFT-29：查核Claude整合並發佈單一release。
 
 RIFT-01至29已隨v0.51.0合併、發佈及正式HTTPS驗證。來源ba31214，Pages f4fd771；PHONE-01修正4799ed7／PR #56已納入並合併。逐項驗收見rift-experience-2026-10-25/review.md。
+
+### STYLE-17／PLAY-02 後端進度（2026-10-25）
+
+Worker 已部署，真實回饋單 #59、防重複、CORS 及候選打包通過；前端端點已更新於 codex/feedback-service-setup。正式遊戲仍待合併、版本發佈與表單驗收，所以保留原有待辦未完成狀態。證據與Token到期維護見 [部署紀錄](feedback-service-setup-2026-10-25.md)。
