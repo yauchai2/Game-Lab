@@ -1,6 +1,6 @@
 /* 結算、離線選擇與傳奇核心的資源／存檔回歸；不依賴 DOM。 */
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const files=['01-data.js','02-state.js','02b-careers.js','03-combat.js'];
+const files=['01-data.js','02-state.js','02b-careers.js','02g-rift.js','03-combat.js'];
 function run(name,code){
   const math=Object.create(Math);math.random=()=>.4;
   const c={console,Math:math,Date,GridLab:require('../src/game/00-grid.js'),

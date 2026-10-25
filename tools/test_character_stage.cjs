@@ -10,7 +10,7 @@ r.evaluate(`renderModal=()=>{};phoneButtonHtml=()=>'';uxAnnounce=()=>{};G.heroNa
 const overview=r.evaluate(`modalTab='char';uiCharacterHtml()`);
 assert.equal((overview.match(/id="pvhost"/g)||[]).length,1);
 assert.equal((overview.match(/角色分頁/g)||[]).length,1);
-for(const text of ['配裝與核心','單體直傷預估','生命與防禦','角色列表','職業專技','個人資料','裝扮'])assert(overview.includes(text),text);
+for(const text of ['配裝與核心','DPS','生命與防禦','角色列表','職業專技','個人資料','裝扮'])assert(overview.includes(text),text);
 assert(!overview.includes('IDLE HERO ID'));assert(!overview.includes('角色頁與裝扮'));assert(overview.includes('&lt;玩家&gt;'));
 const before=r.evaluate('JSON.stringify([G.equip,G.st,G.gold,G.own,G.cos])');
 r.evaluate(`modalTab='dress';dressPick('weaponStyle','saber')`);

@@ -72,7 +72,7 @@ function wireCell(x, y, ctx){
   const s = wSupportAt(x, y), w = GridLab.wireOf(B, x, y), pc = (wTier() === 1 && !s) ? '' : GridLab.padColor(x, y,G.board), match = !!(pc && w && GridLab.layout(G.board).colors[w.sock] === pc);
   if (s){
     const lk = ctx.linked.has(s.id), cls = ['pc', 'fill', 'ac', 'pd', 'p' + pc, lk ? 'lnk' : w ? 'off' : '', s.id === selPiece ? 'sel' : '', match ? 'mt' : '', (s.t || 1) > 1 ? 't' + s.t : ''].filter(Boolean).join(' ');
-    return `<button type="button" class="${cls}" style="--pc:${GEM_COL[s.key] || '#a87bf0'}" ${ev}>${gemIco(s.key, 20)}<span>${SUPPS[s.key].n}${TIER_NAME[(s.t || 1) - 1]}</span></button>`;
+    return `<button type="button" class="${cls}" style="--pc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]};--padc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]}" ${ev}>${gemIco(s.key, 20)}<span>${SUPPS[s.key].n}${TIER_NAME[(s.t || 1) - 1]}</span></button>`;
   }
   return `<button type="button" class="pc${pc ? ' pd p' + pc : ''}${w ? ' wr' : ''}${match ? ' mt' : ''}" ${ev}>${pc ? `<span></span>` : ''}</button>`;
 }
@@ -84,8 +84,7 @@ function wireBoardHtml(){
   return `<div class="pz wb" role="group" aria-label="接線板，方向鍵移動，Enter 選取或放置" onmouseleave="pzHover(-1,-1)" style="--board-min:${B.w*48+20}px;grid-template-columns:repeat(${B.w},1fr)">${cells}${wireSvg()}</div>`;
 }
 function wireBar(){
-  const sel = selSock >= 0, held0 = !!held, btn = (t, fn, on = true) => `<button class="mb" data-tip="${{'復原':'還原上一次的配置、移位、收回或清空','取消選取':'放下手上的配件或取消選取的插槽'}[t] || ''}" ${on ? '' : 'disabled'} onclick="${fn}">${t}</button>`;
-  return `<div class="pzbar">${WIRE_UNDO ? btn('復原', 'wireUndo()') : ''}<button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回" data-tip="清掉所有接線，配件收回庫存；可按復原還原"><i></i>全部清空</button>${btn('取消選取', 'uxCancelPiece()', sel || held0 || selPiece != null)}<span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
+ return `<div class="pzbar"><button class="mb" aria-label="上一步" data-tip="上一步" ${WIRE_HISTORY.index>0?'':'disabled'} onclick="wireHistoryStep(-1)">↶</button><button class="mb" aria-label="下一步" data-tip="下一步" ${WIRE_HISTORY.index<WIRE_HISTORY.rows.length-1?'':'disabled'} onclick="wireHistoryStep(1)">↷</button><button class="mb wreset" onclick="wireClearAll()" aria-label="全部清空，線與配件收回"><i></i>全部清空</button><span class="mute wstat">${wireStatus()}</span><span id="pzmsg" class="mute"></span></div>`;
 }
 function wireSelCard(){
   const B = G.board;
@@ -98,7 +97,7 @@ function wireSelCard(){
   const p = B.pieces.find(q => q.id === selPiece && q.kind === 'support');
   if (p){
     const S = SUPPS[p.key], res = GridLab.resolve(B, G.lvl), r = res.find(q => q.linked.includes(p.id)), k = r ? r.linked.indexOf(p.id) : -1, wt = k >= 0 ? r.weights[k] : 0;
-    const why = r ? `${SKILLS[r.key].n}${wt !== 1 ? `，強度 ×${wt.toFixed(2)}` : ''}` : res.some(q => q.missed.includes(p.id)) ? '技能標籤不符，不生效' : GridLab.wireOf(B, p.x, p.y) ? '這條線尚未接通' : '沒有線經過，還沒生效';
+    const why = r ? `${SKILLS[r.key].n}${wt !== 1 ? `，強度 ×${wt.toFixed(2)}` : ''}` : res.some(q => q.missed.includes(p.id)) ? '技能標籤不符，不生效' : GridLab.wireOf(B, p.x, p.y) ? '這條線尚未接通' : '沒有線經過，尚未生效';
     const pcol = GridLab.padColor(p.x, p.y,G.board), bonus = pcol ? `　${WIRE_COLNAME[pcol]}色襯墊` : '';
     return `<section class="uxinspect wsel" aria-label="選中的配件"><div class="uxinspect-head">${gemIco(p.key, 24)}<b>${uxEsc(S.n + TIER_NAME[(p.t || 1) - 1])}</b><button class="uxquiet" onclick="uxCancelPiece()">取消</button></div><div class="uxeffect">${uxEsc(S.d)}</div><div class="uxmeta">${uxEsc(why)}${bonus}</div><div class="uxactions"><button class="mb" onclick="wireTake(${p.id})">收回庫存</button></div></section>`;
   }
@@ -134,7 +133,7 @@ function pzRot(){}      // 接線板沒有旋轉，保留給鍵盤 R 的舊綁�
 function pzHold(kind, key, t = 1){
   if (noClick) return;
   UX_LAST_SOURCE = uxFocusToken(); held = held && held.key === key && (held.t || 1) === t ? null : { kind, key, t }; heldRot = 0; selPiece = null; selSock = -1;
-  renderModal(); if (held) uiRevealSelection();
+  renderModal(); if (held) uiRevealSelection();if(kind==='active'&&held)skillPreview(key);
 }
 function pzDel(){ if (selPiece != null) wireTake(selPiece); }
 function wireSelectSock(i){
@@ -147,7 +146,7 @@ function wireExtend(x, y){
   const B = G.board; if (!wActive(selSock)){ pzMsg('先在下面選一個技能裝到這個插槽'); return; }
   const r = GridLab.extendTo(B, selSock, x, y, G.lvl);
   if (!r.ok){ pzMsg(r.reason); return; }
-  if(r.connected){selSock=-1;selPiece=null;}recalc(); renderModal(); wireSnap(r.connected ? 'pick' : 'snap'); if (r.connected) uxAnnounce('接通了，目前預估 DPS ' + tFmt(G.st.dps));
+  if(r.connected){selSock=-1;selPiece=null;}recalc(); renderModal(); wireSnap(r.connected ? 'pick' : 'snap'); if (r.connected) uxAnnounce('已接通，目前預估 DPS ' + tFmt(G.st.dps));
 }
 function wirePlace(x, y){
   const B = G.board;
@@ -158,7 +157,7 @@ function wirePlace(x, y){
   if (wSupportAt(x, y)){ pzMsg('這格已經有配件了'); return; }
   const before=JSON.stringify(B);const p = GridLab.place(B, 'support', held.key, x, y, 0, { t:held.t }); if (!p){ pzMsg('這裡放不下'); return; }
   WIRE_UNDO=before;const on = !!GridLab.wireOf(B, x, y); if (gemFreeT(held.key, held.t || 1) <= 0) held = null;
-  recalc(); renderModal(); wireSnap('snap'); pzMsg(on ? '已放置，目前預估 DPS ' + tFmt(G.st.dps) : '已放置，但這格沒有線經過，還沒生效');
+  recalc(); renderModal(); wireSnap('snap'); pzMsg(on ? '已放置，目前預估 DPS ' + tFmt(G.st.dps) : '已放置，但這格沒有線經過，尚未生效');
 }
 /* ---------- 點格子的選單：點終點選技能、點色塊選配件，一步完成 ---------- */
 function wirePickClose(){ const e = document.getElementById('wpick'); if (e) e.remove(); }
@@ -176,12 +175,12 @@ function wirePickSock(i,atSource=false){
   const a = wActive(i), col = WIRE_COLNAME[GridLab.layout(G.board).colors[i]];
   const items = Object.entries(SKILLS).filter(([id, K]) => skillAvailable(id)).map(([id, K]) => { const here = a && a.key === id, at = G.board.pieces.find(p => p.kind === 'active' && p.key === id); return `<button class="wpi${here ? ' on' : ''}" onclick="wirePickSkill(${i},'${id}')">${sico(id,26)}<b>${K.n}${playNewBadge('skills',id)}</b><small>${skillFindLabel(id)}${at&&!here?' · 換位':''}</small></button>`; }).join('');
   const [x, y] = (atSource?GridLab.layout(G.board).srcs:GridLab.layout(G.board).socks)[i];
-  wirePickOpen(x, y, `<div class="wph">${col}色線路：選一個技能<button class="wpx" onclick="wirePickClose()" aria-label="關閉">✕</button></div><div class="wpg">${items}</div>${a ? `<button class="mb" onclick="wirePrepareMove(${a.id})">移動技能</button><button class="wpd" onclick="wirePickUnassign(${i})">卸下這個技能</button>` : ''}`);
+  wirePickOpen(x, y, `<div class="wph">${col}色線路：選一個技能<button class="wpx" onclick="wirePickClose()" aria-label="關閉">✕</button></div><div class="wpg">${items}</div>${a ? `<button class="mb skill-preview-link" onclick="skillPreview('${a.key}')">攻擊預覽</button><button class="mb" onclick="wirePrepareMove(${a.id})">移動技能</button><button class="wpd" onclick="wirePickUnassign(${i})">卸下這個技能</button>` : ''}`);
 }
 function wirePickSkill(i, key){
   wirePickClose(); const keep = selSock; selSock = i; wireAssign(key);
 
-  selSock = -1; selPiece = null; renderModal(); wireSnap('pick');
+  selSock = -1; selPiece = null; renderModal(); wireSnap('pick');skillPreview(key);
 }
 function wirePickUnassign(i){ wirePickClose(); const keep = selSock; selSock = i; wireUnassign(); selSock = -1; selPiece = null; renderModal(); }
 function wirePickPad(x, y, w){
@@ -256,6 +255,7 @@ function wireAssign(key){
 function wireAuto(){pzMsg('請自行裝配機件及接線。');}
 
 function wireUndo(){
+  if(typeof wireHistoryStep==='function'){wireHistoryStep(-1);return;}
   if (!WIRE_UNDO) return;
   G.board = GridLab.adopt(JSON.parse(WIRE_UNDO), G.lvl); WIRE_UNDO = null; selSock = -1; selPiece = null; held = null; recalc(); renderModal(); uxAnnounce('已復原');
 }
@@ -346,7 +346,7 @@ function wireUp(ev){
   if (!d || !d.moved) return;
   if(ev?.type==='pointercancel'){G.board=JSON.parse(d.before);WIRE_UNDO=d.undo;selSock=-1;selPiece=null;recalc();renderModal();noClick=true;setTimeout(()=>noClick=false,250);uxAnnounce('已取消接線，還原原有配置。');return;}
   noClick = true; setTimeout(() => { noClick = false; }, 0);
-  const port=selSock,done=GridLab.connected(G.board,selSock),empty=!wActive(selSock);if(done){selSock=-1;selPiece=null;}renderModal();if(done&&empty)wirePickSock(port,true);uxAnnounce(done?'接通了，目前預估 DPS '+tFmt(G.st.dps):'接線中');
+  const port=selSock,done=GridLab.connected(G.board,selSock),empty=!wActive(selSock);if(done){selSock=-1;selPiece=null;}renderModal();if(done&&empty)wirePickSock(port,true);uxAnnounce(done?'已接通，目前預估 DPS '+tFmt(G.st.dps):'接線中');
 }
 function dpsWith(B){ const keep = G.board; G.board = B; syncBoard(); const d = calc().dps; G.board = keep; syncBoard(); return d; }
 function pzHover(x, y){
@@ -405,7 +405,7 @@ function uiInventoryPick(kind, key, t = 1){
   if (noClick) return;
   const def = kind === 'active' ? SKILLS[key] : SUPPS[key]; if (!def) return;if(kind==='active'&&!skillAvailable(key)){if(G.lvl<def.lvl){pzMsg('等級'+def.lvl+'開放這個技能。')}else skillBlueprintBuy(key);return;}noticeRead(kind==='active'?'skills':'gems',key);
   const reason = kind === 'active' ? (G.lvl < def.lvl ? `等級 ${def.lvl} 解鎖` : '') : gemFreeT(key, t) <= 0 ? (gemOwnT(key, t) ? '全部已放在接線板上，先收回一個' : '尚未持有，可繼續冒險或用合成取得') : '';
-  if (!reason){ if (kind === 'active'){wireAssign(key);playFocusBoard();return;}noticeRead('gems',key);pzHold(kind,key,t);playFocusBoard();return; }
+  if (!reason){ if (kind === 'active'){if(selSock>=0&&wOpen(selSock))wireAssign(key);skillPreview(key);return;}noticeRead('gems',key);pzHold(kind,key,t);return; }
   showOverlay(`<h2 class="uxdialog-title">${uxEsc(def.n)}</h2><p>${uxEsc(def.d)}</p><p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回機件庫存</button>`);
 }
 function uiResolvedHtml(){

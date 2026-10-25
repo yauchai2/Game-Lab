@@ -171,7 +171,7 @@ function uxRestoreFocus(t){
   if (el && !el.closest('[inert]') && !el.disabled) el.focus({ preventScroll:true });
 }
 function uxCapturePanel(){ return { focus:uxFocusToken(), scroll:document.getElementById('mbody')?.scrollTop || 0, scrollers:Object.fromEntries([...document.querySelectorAll('#mbody [data-scroll-key]')].map(el=>[el.dataset.scrollKey,{left:el.scrollLeft,top:el.scrollTop}])), details:[...document.querySelectorAll('#mbody details')].map(el=>el.open) }; }
-function uxRestorePanel(s, reset){ if(reset){document.getElementById('mbody').scrollTop=0;const settings=document.getElementById('uisettings');if(settings)settings.scrollTop=0;} if (!reset){ for(const el of document.querySelectorAll('#mbody [data-scroll-key]')){const pos=s.scrollers?.[el.dataset.scrollKey];if(pos){el.scrollLeft=pos.left;el.scrollTop=pos.top;}}document.getElementById('mbody').scrollTop = s.scroll;document.querySelectorAll('#mbody details').forEach((el,i)=>{if(s.details[i]!=null)el.open=s.details[i]});uxRestoreFocus(s.focus); } }
+function uxRestorePanel(s, reset){ if(reset){document.getElementById('mbody').scrollTop=0;const settings=document.getElementById('uisettings');if(settings)settings.scrollTop=0;} if (!reset){ for(const el of document.querySelectorAll('#mbody [data-scroll-key]')){const pos=s.scrollers?.[el.dataset.scrollKey];if(pos){el.scrollLeft=pos.left;el.scrollTop=pos.top;}}document.getElementById('mbody').scrollTop = s.scroll;document.querySelectorAll('#mbody details').forEach((el,i)=>{if(s.details[i]!=null)el.open=s.details[i]});uxRestoreFocus(s.focus);document.getElementById('mbody').scrollTop=s.scroll; } }
 function uxLayerSync(){
   for (const [el, was] of UX_INERT) el.inert = was;
   UX_INERT.clear();

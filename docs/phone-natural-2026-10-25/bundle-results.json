@@ -1,0 +1,8 @@
+{
+  "version": "0.50.0",
+  "single_inline_document": true,
+  "external_requests": [],
+  "page_errors": [],
+  "preview_ready": true,
+  "method": "HTTP document intercepted; all other network requests rejected; not a native file URL test."
+}

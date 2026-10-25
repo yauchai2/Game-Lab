@@ -1,12 +1,13 @@
 # Game Lab 精簡接續紀錄
 
-2026-10-25，香港時間。先讀本頁再查相關差異，避免重複研究。
+2026-10-25，香港時間。先讀本頁及相關差異，避免重複研究。
 
-- 目前正式 v0.50.0：來源／tag a22aaaf，Pages 1111a86，Release 40147334072／Pages 40147329463 成功；HTTPS入口與兩腳本 SHA、附件 digest／大小、tag 已核對。證據 docs/release-0.50.0/integration.md。
-- v0.50.0 來源 codex/tower-combat-overhaul（fa23127），PR #54 已合併；發佈證據 codex/release-050。TOWER-01 至 17 已實作、驗證及發佈；詳細對照 docs/tower-combat-2026-10-25/review.md。
-- 最終驗證：32 個來源套件全部通過，新增 282 斷言；11 個塔樓戰鬥流程、19 個視窗觸控流程、15 個背包流程、單檔預覽通過。沒有真機 Safari／FPS或長期終局平衡認證。靜態 audit 保留兩個既有 phone 代理事件偵測提示，design lint 無錯誤。
-- 23 主動技能分 8 基礎／7 進階／8 稀有，21 輔助；手動配裝及接線，未接通終點不生效。普通地圖18種、塔樓另3種室內房；舊塔落地物一次遷到室內可達區，不預先派收益。
-- 隱藏戰場只停戰鬥音效，音樂繼續；手機不顯示隱藏提示列，保留「展」復原。箭雨／巨大劍等持續演出總傷害預算固定。
-- 已重新 fetch 全部分支及 open PR，Claude 遊戲提交 e0b3468 已包含，內部備份及歷史研究改名不混入遊戲。每次 release 仍須 fresh fetch，保留所有分支與 tag，來源先 push。
-- Cloudflare 回饋及 Ko-fi 未接通，不假稱可用，不索取聊天 Token；全球排名、真機及長期平衡仍待完成。
-- 唯一全專案待辦 docs/backlog.md；繁中全形標點、銀灰藍紫 Y2K／Cubic 11、低面數像素酷感。公開文字不可提參考遊戲、內部研究、帳號或公司資源。
+- 正式目前v0.50.0，來源a22aaaf、Pages1111a86，證據docs/release-0.50.0/integration.md。
+- v0.51.0候選在/workspace/Game-Lab-rift，codex/rift-experience-release，base fe88546；已含手機修正4799ed7／PR #56。RIFT-01至28已實作／本機驗證，RIFT-29待提交與正式發佈，完整對照docs/rift-experience-2026-10-25/review.md。
+- 新02g-rift擁有觸碰啟動、18秒擴張、55秒22擊殺收束、專屬落地碎片及40片鍛造兩核心。最多48生成／12存活，paid防重複，刷新補剩餘敵人不重置總額。塔十層鎖片、賽季中樞結晶各3換獨有核心，不自動裝備。
+- 新05z-experience為共用40步配置歷史／EXHIBIT即時3D塔與技能預覽／手機gesture，皆不另建戰鬥或獎勵owner。庫存選取不自動playFocusBoard；真正入口已測。線／終點／配件顏色同源；BOSS查活體，DPS是單體直傷預估。
+- 三段較輕像素設定uiFxVersion2；重要掉落屬於stage右下；展開音樂0.6倍且off保持。手機去Start及34px留白、任務五秒退出、watch全屏暫時展開再還原；phone卡片轉台／內頁輕擺，zoom停定，wheel／雙指已測。塔邊緣樓梯、敵人死亡消失、24血跡12秒淡出。
+- 最終來源33套件全通過，新增190斷言；16整合＋9精修＋19視窗觸控＋15背包流程通過，單檔通過。之後僅將舊wireUndo入口轉到共用history，單檔重建，正式HTTPS會再跑整合16。static audit保留既有phone委派2提示，design lint無錯誤。12組固定樣本全封閉；未做真機Safari／FPS或長期平衡。
+- 已fresh fetch全部heads／open PR，Claude e0b3468已包含，內部備份及研究改名排除，逐SHA docs/release-0.51.0/claude-integration.json；所有分支保留。來源先push、PRmerge，再獨立release工作目錄publish_pages及release.yml v0.51.0，驗HTTPS SHA／live browser，最後proof PR更新待辦。
+- 本機server8807；logs /tmp/rift-source.log、rift-browser.log、rift-polish.log、rift-bundle.log。字體檢查須PYTHONPATH=/tmp/game-font-deps。
+- 唯一全專案待辦docs/backlog.md。繁中全形標點，銀灰藍紫Y2K／Cubic11、低面數像素酷感；公開文字不得提參考遊戲、內部研究或帳號資源。Cloudflare代發、Ko-fi、全球排名仍未完成，不假稱可用。

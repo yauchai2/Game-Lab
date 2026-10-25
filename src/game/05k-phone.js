@@ -42,7 +42,7 @@ function phonePage(){
     <fieldset><legend>自我介紹</legend><p>${phEsc(P.identity || '')}</p><p class="phs-q">「${phEsc(P.quote || '…')}」</p></fieldset>
     <fieldset><legend>基本資料</legend><dl class="phs-dl"><dt>生日</dt><dd>${(G.born || [1, 1]).join(' 月 ')} 日</dd><dt>遊戲時間</dt><dd>${phTime(G.time)}</dd><dt>倒下次數</dt><dd>${G.deaths || 0}</dd></dl></fieldset>`;
   if (PH.tab === 1) {
-    const rows = [['累計討伐', tFmt(G.totalKills)], ['關主擊破', G.bossKills || 0], ['最深深度', G.maxDepth], ['無限之塔最高', (G.towerBest || 0) + ' 層'], ['完成地圖', G.mapsDone || 0], ['打造次數', G.craftN || 0], ['遊戲時間', phTime(G.time)], ['倒下次數', G.deaths || 0]];
+    const rows = [['累計討伐', tFmt(G.totalKills)], ['BOSS擊破', G.bossKills || 0], ['最深深度', G.maxDepth], ['無限之塔最高', (G.towerBest || 0) + ' 層'], ['完成地圖', G.mapsDone || 0], ['打造次數', G.craftN || 0], ['遊戲時間', phTime(G.time)], ['倒下次數', G.deaths || 0]];
     return `<div class="phs-hello">★ 歷年戰績 ★</div><div class="phs-rainbow"></div><table class="phs-tbl">${rows.map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join('')}</table>`;
   }
   if (PH.tab === 2) {
@@ -151,7 +151,7 @@ function phoneFitGL(){
  const G3=PH.gl;if(!G3)return;const w=innerWidth,h=innerHeight,K=PHG.K;
  // A shared logical pixel scale keeps the shell and readable screen in balance.
  G3.rd.setPixelRatio(Math.min(1,Math.max(.5,420/w)));G3.rd.setSize(w,h);G3.scrW=w;G3.scrH=h;
- G3.tgtScale=PH.zoom?Math.min(w*.86/(PHG_SCREEN.w*K),h*.86/(PHG_SCREEN.h*K)):Math.min(w*.84/(.95*K),h*.82/(1.25*K));
+ G3.tgtScale=(PH.zoom?Math.min(w*.86/(PHG_SCREEN.w*K),h*.86/(PHG_SCREEN.h*K)):Math.min(w*.84/(.95*K),h*.82/(1.25*K)))*(PH.zoomScale||1);
  if(!G3.viewScale)G3.viewScale=G3.tgtScale;
  G3.pivot.updateMatrixWorld(true);const sp=new T3.Vector3();G3.sA.getWorldPosition(sp);
  G3.tgtR=5000;G3.tgtX=PH.zoom?sp.x:0;G3.tgtY=PH.zoom?sp.y:0;document.getElementById('ph-root')?.classList.toggle('zoom',PH.zoom);
@@ -206,7 +206,7 @@ function phoneFit(){
   const root = document.getElementById('ph-root'); if (!root) return;
   const vw = innerWidth, vh = innerHeight, M = PHONE_META;
   const sN = Math.min(vw * .94 / (M.body[1] - M.body[0]), vh * .92 / 830, 1.5), sZ = Math.min(vw * .98 / PH_SCREEN.w, vh * .96 / (PH_SCREEN.h + 60), 3);
-  const s = PH.zoom ? sZ : sN, shift = PH.zoom ? (PH_SCREEN.y + PH_SCREEN.h / 2 - M.h / 2) : (435 - M.h / 2);
+  const s = (PH.zoom ? sZ : sN)*(PH.zoomScale||1), shift = PH.zoom ? (PH_SCREEN.y + PH_SCREEN.h / 2 - M.h / 2) : (435 - M.h / 2);
   const fit = document.getElementById('ph-fit'); fit.style.setProperty('--s', s); fit.style.setProperty('--dy', (-shift * s) + 'px');
   root.classList.toggle('zoom', PH.zoom);
 }
@@ -227,7 +227,7 @@ function phoneSet(tab){ PH.tab = (tab + PH_TABS.length) % PH_TABS.length; phoneR
 const phoneSfx = phSfx;
 function phoneAct(a){
   if (a === 'close') return phoneClose();
-  if (a === 'zoom') { PH.zoom = !PH.zoom; phoneSfx(PH.zoom ? 'ph_zoom' : 'ph_zoomout'); phoneFit(); return; }
+  if (a === 'zoom') { PH.zoomScale=1;PH.zoom = !PH.zoom; phoneSfx(PH.zoom ? 'ph_zoom' : 'ph_zoomout'); phoneFit(); return; }
   phoneSfx(a === 'next' || a === 'prev' || a === 'home' || a === 'links' ? 'ph_tab' : 'ph_key');
   if (a === 'next') return phoneSet(PH.tab + 1);
   if (a === 'prev') return phoneSet(PH.tab - 1);
@@ -259,8 +259,8 @@ function phoneFlip(ev){ if (ev.target.closest('.ph-screen,.ph-key,.ph-close')) r
 function phoneTilt(now){
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
  if(!PH.drag){PH.ry+=(PH.face-PH.ry)*.08;PH.rx+=(0-PH.rx)*.08;if(Math.abs(PH.face-PH.ry)<1)PH.flipping=false;}
- // Orthographic projection, fixed isometric presentation; drag still permits inspection.
- return [PH.rx,PH.ry];
+ // Front-facing orthographic reading view; drag still permits inspection.
+ const idle=!reduced&&!PH.zoom&&(PH.zoomScale||1)<=1.05&&!PH.drag&&!PH.flipping&&now-(PH.release||0)>2500,t=(now-PH.t0)/1000,gate=Math.max(0,Math.min(1,(t-1.2)/2));return [PH.rx+(idle?Math.sin(t*.5)*2*gate:0),PH.ry+(idle?Math.sin(t*.28)*6*gate:0)];
 }
 
 function phoneLoop(now){
@@ -273,11 +273,11 @@ function phoneLoop(now){
 function phoneOpen(){
   if(!document.getElementById('phone-pixel-style')){const st=document.createElement('style');st.id='phone-pixel-style';st.textContent=PHONE_PIXEL_CSS;document.head.appendChild(st);}
   if (PH.open || typeof PHONE_IMG === 'undefined') return;
-  PH.open = true; PH.closing = false; PH.tab = 0; PH.zoom = false; PH.rx=0;PH.ry=0;PH.tx=PH.ty=0; PH.face = 0; PH.flipping = false; PH.release = 0; PH.t0 = performance.now()-(matchMedia('(prefers-reduced-motion: reduce)').matches?1200:0);
+  PH.open = true; PH.closing = false; PH.tab = 0; PH.zoom = false; PH.zoomScale=1; PH.rx=0;PH.ry=0;PH.tx=PH.ty=0; PH.face = 0; PH.flipping = false; PH.release = 0; PH.t0 = performance.now()-(matchMedia('(prefers-reduced-motion: reduce)').matches?1200:0);
   const host = document.createElement('div'); host.id = 'ph-host'; PH.gl = null;
   let glOk = false; if (typeof PHONE_GLB !== 'undefined' && typeof T3 !== 'undefined') { try { host.innerHTML = phoneBuildGL(); document.body.appendChild(host); phoneGLInit(host.querySelector('#ph-root')); glOk = true; } catch (e) { PH.gl = null; host.remove(); } }
   if (!glOk) { host.innerHTML = phoneBuild(); document.body.appendChild(host); }
-  const root = document.getElementById('ph-root');
+  const root = document.getElementById('ph-root');phoneGestureMount(root);
   root.addEventListener('click', phonePress); root.addEventListener('pointerdown', phoneDown); root.addEventListener('pointermove', phoneMove); root.addEventListener('pointerup', phoneUp); root.addEventListener('dblclick', phoneFlip); root.addEventListener('pointercancel', phoneUp);
   document.addEventListener('keydown', phoneKey, true); addEventListener('resize', phoneFit);
   phoneFit(); phoneRender(false); if (!PH.gl) document.getElementById('ph-enter').classList.add('in');
@@ -296,33 +296,10 @@ function phoneClose(instant){
   document.getElementById('ph-root').classList.add('leaving');
   setTimeout(done, 520);
 }
-/* 角色頁小手機：用同一個 3D 模型以正交等距視角離屏渲染 24 格低解像度轉台圖，拼成精靈圖後由 CSS 逐格播放 */
-const PH_MINI = { url:'', wait:0, W:52, H:76, N:1 };
-function phoneMiniSprite(){
-  if (PH_MINI.url) return PH_MINI.url;
-  try {
-    if (typeof T3 === 'undefined' || typeof T3.WebGLRenderer !== 'function') return '';
-    const M = phoneModelLoad(), img = M.mat.map && M.mat.map.image;
-    if (!img) { if (!PH_MINI.wait) PH_MINI.wait = setTimeout(() => { PH_MINI.wait = 0; if (typeof modalTab !== 'undefined' && !$('modal').hidden && modalTab === 'char') renderModal(); }, 350); return ''; }
-    const W = PH_MINI.W, H = PH_MINI.H, N = PH_MINI.N, cv = document.createElement('canvas'), rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true, preserveDrawingBuffer:true });
-    rd.setPixelRatio(1); rd.setSize(W, H, false); rd.setClearColor(0x000000, 0); rd.outputColorSpace = T3.SRGBColorSpace;
-    const sc = new T3.Scene(), hh = .64, hw = hh * W / H, cam = new T3.OrthographicCamera(-hw, hw, hh, -hh, .01, 20), pivot = new T3.Group(), mesh = new T3.Mesh(M.g, M.mat);
-    sc.add(new T3.HemisphereLight(0xffffff, 0x6677aa, 2.1)); const dl = new T3.DirectionalLight(0xffffff, 2.2); dl.position.set(-.8, 1.4, 2); sc.add(dl); const rim = new T3.DirectionalLight(0x8fd0ff, 1.2); rim.position.set(2, .5, -1.5); sc.add(rim);
-    mesh.rotation.x = Math.PI / 2; mesh.position.set(-M.c.x, M.c.z, -M.c.y); pivot.add(mesh); sc.add(pivot); cam.position.set(0, 0, 5);
-    const sheet = document.createElement('canvas'); sheet.width = W * N; sheet.height = H; const sx = sheet.getContext('2d');
-    for (let i = 0; i < N; i++) { pivot.rotation.set(.14, -.24, 0, 'YXZ'); rd.render(sc, cam); sx.drawImage(cv, i * W, 0); }
-    rd.dispose(); rd.forceContextLoss && rd.forceContextLoss();
-    return PH_MINI.url = sheet.toDataURL('image/png');
-  } catch (e) { return ''; }
-}
+/* Same GLB as the opened phone, baked once into a transparent orthographic turntable.
+   No texture-loading placeholder model and no runtime thumbnail WebGL context. */
 function phoneMini(){
-  const sp = phoneMiniSprite();
-  if (sp) return `<span class="ph-mini2" aria-hidden="true" style="background-image:url(${sp})"></span>`;
-  return phoneMiniCss();
-}
-function phoneMiniCss(){
-  const M = PHONE_META, T = M.sideW; let sl = ''; for (let i = 0; i < 12; i++) sl += `<div class="ph-plane ph-slice" style="transform:translateZ(${(-T / 2 + 4 + (T - 8) * i / 11).toFixed(1)}px)"></div>`;
-  return `<span class="ph-mini" aria-hidden="true"><span class="ph-mini-s"><span class="ph-mini-spin" style="width:${M.w}px;height:${M.h}px">${sl}<span class="ph-plane ph-back" style="transform:rotateY(180deg) translateZ(${T / 2}px)"></span><span class="ph-plane ph-front" style="transform:translateZ(${T / 2}px)"></span></span></span></span>`;
+  return `<span class="ph-mini2" aria-hidden="true" style="background-image:url(${PHONE_PREVIEW})"></span>`;
 }
 function phoneButtonHtml(){
   return typeof PHONE_IMG === 'undefined' ? '' : `<button class="ph-open" aria-label="開啟角色手機" data-tip="全屏的 3D 手機，查看角色資訊" onclick="phoneOpen()">${phoneMini()}</button>`;
@@ -363,13 +340,8 @@ function phoneButtonHtml(){
 .ui-character-head{position:relative;min-height:158px}
 .ph-open{position:absolute;right:8px;top:8px;bottom:8px;z-index:2;display:flex;align-items:center;justify-content:center;width:104px;margin:0;padding:0!important;min-height:0!important;background:linear-gradient(#d9dfe9,#bcc5d3)!important;border:1px solid #8793a6!important;box-shadow:inset 0 2px 5px #5d6a7f88,inset 0 -1px 0 #fff!important;border-radius:6px!important;cursor:pointer;overflow:hidden}
 .ph-open:hover{filter:brightness(1.12)}.ph-open:active{transform:translateY(2px)}
-.ph-mini2{display:block;flex:none;width:104px;height:152px;background-repeat:no-repeat;background-size:104px 152px;image-rendering:pixelated;animation:none}@keyframes phMini2{to{background-position:-2496px 0}}
-.ph-mini{position:relative;flex:none;width:104px;height:150px;perspective:360px;perspective-origin:50% 40%;transform-style:preserve-3d}
-.ph-mini-s{position:absolute;left:52px;top:76px;width:0;height:0;transform-style:preserve-3d;transform:scale(.118)}
-.ph-mini-spin{position:absolute;left:-320px;top:-435px;transform-style:preserve-3d;transform:rotateX(4deg) rotateY(-24deg);animation:phMiniSpin 48s linear infinite}
-@keyframes phMiniSpin{from{transform:rotateX(4deg) rotateY(-24deg)}to{transform:rotateX(4deg) rotateY(336deg)}}
-
-.ph-mini .ph-plane,.ph-plane{image-rendering:pixelated}.ph-mini .ph-plane{display:block}.ph-sp{position:absolute;color:#ffe45c;font-style:normal;font-size:14px;text-shadow:0 0 6px #fff;animation:phSpk 1.2s steps(3) infinite}.ph-sp1{right:-2px;top:6px}.ph-sp2{left:-2px;bottom:12px;animation-delay:.5s;color:#9ff}
+.ph-mini2{display:block;flex:none;width:104px;height:152px;background-repeat:no-repeat;background-size:4992px 152px;image-rendering:pixelated;animation:phMini2 16s steps(48) infinite}@keyframes phMini2{to{background-position:-4992px 0}}
+.ph-plane{image-rendering:pixelated}
 @keyframes phSpk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
 .ph-rb{font:15px/1.2 "Cubic 11",system-ui!important;background:linear-gradient(90deg,#ff5a5a,#ffb84a,#fff25a,#6aff7a,#5ad8ff,#b07aff,#ff6ad8,#ff5a5a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;animation:phRb 2s linear infinite;filter:drop-shadow(1px 1px 0 #000)}
 .ph-new{position:absolute;right:-4px;top:-6px;z-index:2;padding:7px 8px;font:700 12px "Cubic 11",system-ui;font-style:normal;color:#d00;background:#ffe45c;clip-path:polygon(50% 0,61% 20%,82% 8%,80% 32%,100% 38%,84% 55%,96% 78%,72% 74%,64% 100%,50% 82%,36% 100%,28% 74%,4% 78%,16% 55%,0 38%,20% 32%,18% 8%,39% 20%);animation:phNew .9s steps(2) infinite;transform:rotate(12deg)}
@@ -415,7 +387,7 @@ function phoneButtonHtml(){
 #ph-root .ph-close{border-radius:50%!important;width:34px;height:34px;padding:0;font-size:16px;border:1px solid #5d7fa8;outline:0;color:#0b2a55;background:radial-gradient(circle at 35% 28%,#fff 0,#bfe0ff 30%,#5b9ae0 75%,#3a6db5);box-shadow:0 2px 5px #0008,inset 0 -3px 4px #2a5aa066}
 .ph-open-txt{text-shadow:0 0 6px #ff9ad9}
 .ph-root.zoom .ph-hint{opacity:.4}
-@media (prefers-reduced-motion:reduce){.ph-open,.ph-mini-spin,.ph-mini2,.ph-new,.ph-rb,.ph-open-txt small{animation:none}.ph-enter.in{animation-duration:.01s}.ph-grid,.ph-stars,.ph-mq span,.phs-tick span,.phs-rainbow{animation:none}}
+@media (prefers-reduced-motion:reduce){.ph-open,.ph-mini2,.ph-new,.ph-rb,.ph-open-txt small{animation:none}.ph-enter.in{animation-duration:.01s}.ph-grid,.ph-stars,.ph-mq span,.phs-tick span,.phs-rainbow{animation:none}}
 `; document.head.appendChild(s);
  const f = document.createElement('style'); f.textContent = typeof PHONE_IMG === 'undefined' ? '' : `.ph-front{background-image:url(${PHONE_IMG.front})}.ph-back{background-image:url(${PHONE_IMG.back})}.ph-side{background-image:url(${PHONE_IMG.side})}.ph-sideL{background-image:url(${PHONE_IMG.side});transform-style:preserve-3d}.ph-slice{background-image:url(${PHONE_IMG.slice})}`; document.head.appendChild(f); })();
 

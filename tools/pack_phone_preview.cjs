@@ -1,0 +1,10 @@
+/* Bake the actual phone mesh once; the game plays this atlas without a thumbnail renderer. */
+const {chromium}=require('playwright'),fs=require('node:fs');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader']});try{
+const p=await b.newPage();await p.goto(process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8806/?fresh&static',{waitUntil:'domcontentloaded'});
+await p.evaluate(()=>{hideOverlay();G.paused=true;phoneModelLoad()});await p.waitForFunction(()=>PHG.model?.mat.map.image?.complete);
+const url=await p.evaluate(()=>{const M=phoneModelLoad(),W=52,H=76,N=48,cv=document.createElement('canvas'),rd=new T3.WebGLRenderer({canvas:cv,alpha:true,antialias:false,preserveDrawingBuffer:true});rd.setPixelRatio(1);rd.setSize(W,H,false);rd.setClearColor(0,0);rd.outputColorSpace=T3.SRGBColorSpace;
+const sc=new T3.Scene(),hh=.71,hw=hh*W/H,cam=new T3.OrthographicCamera(-hw,hw,hh,-hh,.01,20),pivot=new T3.Group(),mesh=new T3.Mesh(M.g,M.mat);sc.add(new T3.HemisphereLight(0xffffff,0x6677aa,2.1));const dl=new T3.DirectionalLight(0xffffff,2.2);dl.position.set(-.8,1.4,2);sc.add(dl);const rim=new T3.DirectionalLight(0x8fd0ff,1.2);rim.position.set(2,.5,-1.5);sc.add(rim);
+mesh.rotation.x=Math.PI/2;mesh.position.set(-M.c.x,M.c.z,-M.c.y);pivot.add(mesh);sc.add(pivot);cam.position.set(0,0,5);const sheet=document.createElement('canvas');sheet.width=W*N;sheet.height=H;const ctx=sheet.getContext('2d');for(let i=0;i<N;i++){pivot.rotation.set(.06,-.15+i*Math.PI*2/N,-.07,'YXZ');rd.render(sc,cam);ctx.drawImage(cv,i*W,0);}rd.dispose();rd.forceContextLoss();return sheet.toDataURL('image/png')});
+fs.writeFileSync('src/game/phone-preview.js','/* Actual phone GLB, orthographic 52x76 x 48 frames. Rebuild with tools/pack_phone_preview.cjs. */\nconst PHONE_PREVIEW = '+JSON.stringify(url)+';\n');console.log('Baked 48 transparent phone turntable frames');
+}finally{await b.close()}})().catch(e=>{console.error(e);process.exitCode=1});
