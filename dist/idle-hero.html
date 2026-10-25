@@ -7852,10 +7852,10 @@ function supportDestination(value=SUPPORT_CONFIG.url){
 function supportHtml(){
   const destination=supportDestination();
   return `<section class="support-console" aria-labelledby="support-heading">
-    <header class="support-hero"><div class="support-disc" aria-hidden="true">♡</div><p class="support-kicker">IDLE HERO / 開發手記</p><h3 id="support-heading">多謝你，一齊留喺呢個頻道。</h3></header>
-    <div class="support-letter"><p>製作遊戲一直是我的興趣。從街區的小風景，到每一件裝備、每一條接線，能慢慢把想法做出來，是一件很開心的事。</p><p>謝謝你願意花時間玩 Idle Hero，也謝謝每一個分享和建議。希望這個小小的世界，能陪你度過一些輕鬆的時光。</p><p>如果你喜歡這個作品，也想支持我繼續創作，可以到 Patreon 看看。無論如何，很高興你來過。</p></div>
+    <header class="support-hero"><div class="support-disc" aria-hidden="true">♡</div><p class="support-kicker">IDLE HERO</p><h3 id="support-heading">支持開發</h3></header>
+    <div class="support-letter"><p>Idle Hero 是我的個人興趣作品。謝謝你遊玩，歡迎透過 Patreon 支持開發。</p></div>
     <div class="support-channel">
-      ${destination?`<a class="mb support-cta" href="${uxEsc(destination)}" target="_blank" rel="noopener noreferrer">到 Patreon 支持創作 ↗<span class="uxsr">（另開分頁）</span></a>`:'<button class="mb support-cta" type="button" disabled aria-describedby="support-unavailable">Patreon 贊助尚未開放</button><p id="support-unavailable" class="support-unavailable">創作者頁準備中，謝謝你的心意。</p>'}
+      ${destination?`<a class="mb support-cta" href="${uxEsc(destination)}" target="_blank" rel="noopener noreferrer">前往 Patreon ↗<span class="uxsr">（另開分頁）</span></a>`:'<button class="mb support-cta" type="button" disabled aria-describedby="support-unavailable">Patreon 贊助尚未開放</button><p id="support-unavailable" class="support-unavailable">Patreon 頁面準備中。</p>'}
       <p class="support-note">自願支持，不影響遊戲內容與進度。</p>
     </div>
     <footer class="support-footer"><div class="uxactions"><button class="mb" data-focus="support-feedback" onclick="openModal('feedback')">留下意見</button><button class="mb" data-focus="support-credits" onclick="audioCredits()">聲音鳴謝</button></div></footer>

@@ -434,7 +434,7 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - `SUPPORT_CONFIG.url` 是唯一目的地設定；`supportDestination` 只接受 HTTPS Patreon 公開創作者路徑，拒絕其他網域、帳密、非預設埠、片段及非創作者查詢。正規化至 www.patreon.com，不從玩家存檔或網址參數讀取目的地。
 - `supportHtml` 沿用設定 → 贊助及共用返回鍵。付款入口為原生連結，另開分頁且帶 noopener noreferrer；原頁不離開、不寫存檔、不宣稱付款成功。未配置／非法設定時顯示原因及 disabled 控制，沒有假連結。
 - Patreon 處理登入、方案、訂閱及付款；遊戲不收集付款資料、不傳存檔、不連結 Patreon 與遊戲帳號。保持原有自願支持、不售戰力規則；不虛構價錢、福利或退款承諾。
-- Alan 最新指示要求簡約、禮貌感謝及表達製作遊戲的興趣；以三段手記取代付款長文與 FAQ，保留自願支持短句。返回及鳴謝沿用 openModal／showOverlay／Escape，沒有新表單、彈窗或非同步狀態。捲動與焦點仍由 05f／05g 共用 owner 管理。
+- Alan 最新指示要求簡約、禮貌感謝及表達製作遊戲的興趣；以兩句平實文字取代付款長文與 FAQ，保留自願支持短句。返回及鳴謝沿用 openModal／showOverlay／Escape，沒有新表單、彈窗或非同步狀態。捲動與焦點仍由 05f／05g 共用 owner 管理。
 - 驗證：`node tools/test_support_browser.cjs`；含手機／桌機、真實連結點擊的攔截驗證、錯誤設定、鍵盤、存檔不變及離線單檔。沒有執行真實付款驗證。
 
 ## 任務導引、集合與狀態（2026-10-24）

@@ -12,3 +12,5 @@
 - 繁中全形標點、銀灰藍紫Y2K／Cubic11、低面數像素酷感；公開文字不可提參考遊戲、內部研究、帳號或公司資源。全球排名及Cloudflare回饋仍未接通；Ko-fi方案已由下方Patreon工作取代。
 
 - Patreon贊助頁：codex/sponsor-page，基於main e67f73b；Alan確認 https://www.patreon.com/c/alanycchan。沿用設定→贊助，完整說明／FAQ及公開創作者連結，無付款／帳號綁定。來源與離線單檔瀏覽器已驗證；未合併、未發佈。驗收及限制見 docs/patreon-support-2026-10-25/review.md。
+
+- Patreon文案再精簡：標題「支持開發」，正文兩句說明個人興趣作品及感謝遊玩，按鈕「前往 Patreon」。沿用PR #62，未發佈。
