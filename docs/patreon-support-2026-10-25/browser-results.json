@@ -1,0 +1,11 @@
+{
+  "url": "http://127.0.0.1:8780/dist/idle-hero.html",
+  "checks": [
+    "設定 → 贊助 uses the confirmed Patreon creator, isolated in a new tab",
+    "missing/invalid URLs cannot produce payment links; public Patreon creator routes accepted",
+    "320/390/844/1440px: no horizontal overflow, concise thank-you copy, credits/Escape and reduced motion",
+    "keyboard CTA opens correct destination; sponsorship browsing leaves save data unchanged"
+  ],
+  "errors": [],
+  "externalPaymentTested": false
+}

@@ -10,6 +10,7 @@
 - 像素三段uiFxVersion2、重要掉落屬於stage右下、展開音樂0.6倍且off不解除。手機去Start與留白、任務五秒退場、watch暫時展開後還原。手機卡片16秒轉台、內頁輕擺／zoom停定，wheel與雙指可用。塔樓邊緣樓梯、屍體退場、24血跡12秒淡出；世界細血條。
 - 33來源套件、新190斷言、16整合＋9精修＋19視窗觸控＋15背包及單檔通過。12固定區域構築樣本全封閉，G.push=false，不代表自動換區完成率或長期平衡。無真機Safari／FPS認證。static audit仍兩個既有phone委派偵測提示，design lint無錯誤。
 - Claude已fresh fetch全heads／open PR，e0b3468已包含；內部備份及歷史研究改名排除。每次release仍重新查Claude，來源先push再發佈，不刪分支／tag。
-- 繁中全形標點、銀灰藍紫Y2K／Cubic11、低面數像素酷感；公開文字不可提參考遊戲、內部研究、帳號或公司資源。全球排名、Cloudflare回饋、Ko-fi仍未接通，不假稱可用。
-
-- 2026-10-25 回饋更新：codex/feedback-service-setup 已部署 Cloudflare Worker，真實 Issue #59、同ID重試防重複、CORS及候選打包通過。正式 Pages 仍待合併／版本發佈，不應再將後端描述為未部署。Token至2027-01-23，維護及驗證見 docs/feedback-service-setup-2026-10-25.md。main及正式遊戲未改。
+- v0.52.0整合進行中：獨立codex/release-052，已納入PR #60（fd7b6ae）、#61（7b415a3）及#62（2a99591），來源待驗證／推送／合併後發佈。正式仍0.51.0。
+- 回饋Worker已部署，公開端點只存feedback-config，憑證留Secrets；既有真實收單#59及防重複／CORS證據見feedback-service-setup-2026-10-25.md，兩項Token2027-01-23到期需輪替。
+- Patreon頁為Alan確認的公開創作者頁，簡短個人作品介紹、自願支持、不售戰力；不宣稱已測交易。全球排名仍未接通。
+- 繁中全形標點、銀灰藍紫Y2K／Cubic11、低面數像素酷感；公開文字不可提參考遊戲、內部研究、帳號或公司資源。
