@@ -1,0 +1,21 @@
+// Explicit live smoke test: creates one public maintainer test Issue.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const endpoint='https://game-lab-feedback.yauchaichan.workers.dev/feedback';
+const origin='https://yauchai2.github.io';
+const requestId=crypto.randomUUID();
+const payload={requestId,category:'其他',title:'回饋服務部署驗收（維護者測試）',details:'維護者驗證 Cloudflare 回饋服務：真實提交與相同請求重試，預期只建立一張 Issue。',version:'0.0.0'};
+const post=(data,source=origin)=>fetch(endpoint,{method:'POST',headers:{Origin:source,'Content-Type':'application/json'},body:JSON.stringify(data),signal:AbortSignal.timeout(20000)});
+const preflight=await fetch(endpoint,{method:'OPTIONS',headers:{Origin:origin,'Access-Control-Request-Method':'POST','Access-Control-Request-Headers':'content-type'},signal:AbortSignal.timeout(20000)});
+assert.equal(preflight.status,204);assert.equal(preflight.headers.get('access-control-allow-origin'),origin);
+assert.equal((await post(payload,'https://untrusted.invalid')).status,403);
+assert.equal((await post({...payload,title:''})).status,400);
+const first=await post(payload);const firstBody=await first.json();
+assert.equal(first.status,200,JSON.stringify(firstBody));assert.equal(firstBody.ok,true);assert(Number.isSafeInteger(firstBody.receipt));
+const duplicate=await post(payload);const duplicateBody=await duplicate.json();
+assert.equal(duplicate.status,200);assert.equal(duplicateBody.receipt,firstBody.receipt);
+const changed=await post({...payload,details:'Same ID, changed content.'});assert.equal(changed.status,409);
+const evidence={endpoint,checkedAt:new Date().toISOString(),requestId,receipt:firstBody.receipt,issueUrl:'https://github.com/yauchai2/Game-Lab/issues/'+firstBody.receipt,checks:{preflight:204,allowedOrigin:origin,rejectedOrigin:403,invalidInput:400,realSubmission:200,duplicateSameReceipt:true,changedRequest:409}};
+fs.mkdirSync('/tmp/game-lab-feedback-evidence',{recursive:true});
+fs.writeFileSync('/tmp/game-lab-feedback-evidence/live-smoke.json',JSON.stringify(evidence,null,2)+'\n');
+console.log(JSON.stringify(evidence,null,2));
