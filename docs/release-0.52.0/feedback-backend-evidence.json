@@ -1,0 +1,16 @@
+{
+  "endpoint": "https://game-lab-feedback.yauchaichan.workers.dev/feedback",
+  "checkedAt": "2026-10-25T11:21:59.622Z",
+  "requestId": "2fa1b10b-5a07-4922-a531-0e56d78d93d9",
+  "receipt": 59,
+  "issueUrl": "https://github.com/yauchai2/Game-Lab/issues/59",
+  "checks": {
+    "preflight": 204,
+    "allowedOrigin": "https://yauchai2.github.io",
+    "rejectedOrigin": 403,
+    "invalidInput": 400,
+    "realSubmission": 200,
+    "duplicateSameReceipt": true,
+    "changedRequest": 409
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "endpoint": "https://game-lab-feedback.yauchaichan.workers.dev/feedback",
+  "origin": "https://yauchai2.github.io",
+  "method": "OPTIONS",
+  "status": 204,
+  "allowed_origin": "https://yauchai2.github.io",
+  "verified": true
+}

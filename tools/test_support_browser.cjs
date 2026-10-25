@@ -1,6 +1,6 @@
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict'),fs=require('node:fs');
-const out='docs/patreon-support-2026-10-25';
+const out=process.env.GAME_LAB_TEST_OUTPUT||'docs/patreon-support-2026-10-25';
 const url=process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8780/';
 (async()=>{
   fs.mkdirSync(out,{recursive:true});
@@ -32,6 +32,8 @@ const url=process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8780/';
     await p.evaluate(value=>{SUPPORT_CONFIG.url=value;renderModal()},original);
     for(const size of [{width:320,height:568},{width:390,height:844},{width:844,height:390},{width:1440,height:1000}]){
       await p.setViewportSize(size);
+      // This fixture suspends rendering; explicitly perform the normal resize frame.
+      await p.evaluate(()=>{scene();WORLD_TRAVEL.remaining=0;worldTravelRender()});
       await p.emulateMedia({reducedMotion:'reduce'});
       await p.locator('.support-console').waitFor();
       assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
