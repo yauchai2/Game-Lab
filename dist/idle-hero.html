@@ -996,6 +996,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.53.6',d:'2026-10-25',t:['手機版面板：即使已自己拉過把手，往下捲內容仍會自動收起戰鬥畫面，捲回頂部恢復到你設定的高度'],},
   {v:'0.53.5',d:'2026-10-25',t:['手機版面板上方的把手可上下自由拖動，放手就停在該高度，輕點恢復自動；把手上不再有文字，標題列拿掉重複的戰場大小按鈕'],},
   {v:'0.53.4',d:'2026-10-25',t:['角色會主動走向怪群，不再遠離繞圈等怪撞過來','背包的目前配裝改為緊湊兩排，減少捲動','手機版面板往下捲時自動收起戰鬥畫面，捲回頂部恢復；面板上方新增把手可上滑展開、下滑回到戰鬥','配件選單顯示每個配件的效果，不適用的標明原因','配件規則說明改為收起','任務與目標頁改為分類進度條，只顯示數字與獎勵'],},
   {v:'0.53.3',d:'2026-10-25',t:['補給站、電路合成、城市遠征、訓練場改為圖像卡片，說明與按鈕更清楚','無限之塔畫面精簡','天賦頁工具列重新排版','點彈窗外面的空位也可關閉彈窗','修正卡匣彈窗點選技能後沒有反應','電腦版戰鬥畫面頂部多出的空位已移除','全面提高過小的文字，手機與電腦版都更易讀'],},
@@ -4358,13 +4359,13 @@ const MHELP = { skills:'skills', craft:'craft', maps:'maps', goals:'goals' };
 // 戰場大小：0 大、1 中、2 小、3 收起；自動模式下，編輯技能接線時收起，其他整理頁縮小
 const AUTO_FOLD={on:false,t:0,last:0};
 const CUSTOM_H={v:(()=>{try{const x=parseFloat(localStorage.getItem('ih-custh'));return x>=0?x:null}catch(e){return null}})()};
-const uiBattleSize=()=>CUSTOM_H.v!=null&&typeof MOB==='function'&&MOB()?(CUSTOM_H.v<=70?3:2):G.userCz?Math.max(1,Math.min(3,G.cz==null?1:G.cz)):AUTO_FOLD.on?3:['warehouse','skills','craft','tree','dress'].includes(modalTab)?2:1;
+const uiBattleSize=()=>AUTO_FOLD.on&&!G.userCz?3:CUSTOM_H.v!=null&&typeof MOB==='function'&&MOB()?(CUSTOM_H.v<=70?3:2):G.userCz?Math.max(1,Math.min(3,G.cz==null?1:G.cz)):AUTO_FOLD.on?3:['warehouse','skills','craft','tree','dress'].includes(modalTab)?2:1;
 const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
 function battleFrameRatio(fig){return document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig.getBoundingClientRect().width):MOB()?mobRatio():Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig.getBoundingClientRect().width)));}
 function uiSyncBattleFrame(){const fig=$('fig'),vb=fig?.viewBox?.baseVal;if(!vb?.width)return;const ratio=battleFrameRatio(fig);if(Math.abs(vb.height/vb.width-ratio)>.01)fig.setAttribute('viewBox',`0 0 ${vb.width} ${vb.width*ratio}`);}
-const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; if(CUSTOM_H.v!=null)return Math.max(30,Math.min(CUSTOM_H.v,h*.62))/Math.max(1,innerWidth); return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
+const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; if(CUSTOM_H.v!=null&&!AUTO_FOLD.on)return Math.max(30,Math.min(CUSTOM_H.v,h*.62))/Math.max(1,innerWidth); return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
 const RISKM = Object.keys(MODS).filter(k => ['challenge','mixed'].includes(MODS[k].kind));
 function runMods(R){
   const mods = R.map.mods || []; if (!mods.length) return '';
@@ -5889,7 +5890,7 @@ addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(typeof AUD==='undefi
  const go=()=>{mount();new MutationObserver(mount).observe(document.getElementById('modal')||document.body,{childList:true,subtree:true});};
  if(document.getElementById('modal'))go();else addEventListener('DOMContentLoaded',go);})();
 /* 手機版：面板內容往下捲時自動收起戰鬥畫面讓面板變大，捲回頂部時自動恢復；手動選過戰鬥畫面大小就不再自動切換。 */
-(function(){document.addEventListener('scroll',e=>{const t=e.target;if(!t||t.id!=='mbody'||!document.body.classList.contains('m')||G.userCz||CUSTOM_H.v!=null||document.body.classList.contains('watch-mode'))return;
+(function(){document.addEventListener('scroll',e=>{const t=e.target;if(!t||t.id!=='mbody'||!document.body.classList.contains('m')||G.userCz||document.body.classList.contains('watch-mode'))return;
  const st=t.scrollTop,dir=st-AUTO_FOLD.last;AUTO_FOLD.last=st;const now=performance.now();
  if(!AUTO_FOLD.on&&dir>0&&st>90&&t.scrollHeight-t.clientHeight>340){AUTO_FOLD.on=true;AUTO_FOLD.t=now;mobTitle();}
  else if(AUTO_FOLD.on&&dir<0&&st<8&&now-AUTO_FOLD.t>600){AUTO_FOLD.on=false;mobTitle();}},true);})();

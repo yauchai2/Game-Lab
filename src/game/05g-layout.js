@@ -589,7 +589,7 @@ addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(typeof AUD==='undefi
  const go=()=>{mount();new MutationObserver(mount).observe(document.getElementById('modal')||document.body,{childList:true,subtree:true});};
  if(document.getElementById('modal'))go();else addEventListener('DOMContentLoaded',go);})();
 /* 手機版：面板內容往下捲時自動收起戰鬥畫面讓面板變大，捲回頂部時自動恢復；手動選過戰鬥畫面大小就不再自動切換。 */
-(function(){document.addEventListener('scroll',e=>{const t=e.target;if(!t||t.id!=='mbody'||!document.body.classList.contains('m')||G.userCz||CUSTOM_H.v!=null||document.body.classList.contains('watch-mode'))return;
+(function(){document.addEventListener('scroll',e=>{const t=e.target;if(!t||t.id!=='mbody'||!document.body.classList.contains('m')||G.userCz||document.body.classList.contains('watch-mode'))return;
  const st=t.scrollTop,dir=st-AUTO_FOLD.last;AUTO_FOLD.last=st;const now=performance.now();
  if(!AUTO_FOLD.on&&dir>0&&st>90&&t.scrollHeight-t.clientHeight>340){AUTO_FOLD.on=true;AUTO_FOLD.t=now;mobTitle();}
  else if(AUTO_FOLD.on&&dir<0&&st<8&&now-AUTO_FOLD.t>600){AUTO_FOLD.on=false;mobTitle();}},true);})();
