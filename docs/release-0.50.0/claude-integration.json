@@ -1,0 +1,71 @@
+{
+  "checked_at": "2026-10-25T00:34:18.598662+00:00",
+  "base": "0dbb328b3fc893a0209f4147f2997619e3f8fbae",
+  "claude": [
+    {
+      "branch": "origin/claude/handoff-backup-docs",
+      "commit": "45ecb31365c78816723c655be7600ae3b1330aa5",
+      "included": false,
+      "reason": "內部備份或歷史研究改名，無新增遊戲程式"
+    },
+    {
+      "branch": "origin/claude/project-thread-0y5wy1",
+      "commit": "6373edd926f7a3abc75de3ec2cbda5592abf96f4",
+      "included": true,
+      "reason": "已包含於基底"
+    },
+    {
+      "branch": "origin/claude/project-thread-afu9rh",
+      "commit": "4fad995e5179cec89202865905abf214dd1524f2",
+      "included": true,
+      "reason": "已包含於基底"
+    },
+    {
+      "branch": "origin/claude/project-thread-kg811g",
+      "commit": "91a8a85c405acc6925a4dbd61479a564bb65301e",
+      "included": true,
+      "reason": "已包含於基底"
+    },
+    {
+      "branch": "origin/claude/project-thread-md2o27",
+      "commit": "1ea3943fc1d6fd52878c8e26b32b1c895ba469d6",
+      "included": true,
+      "reason": "已包含於基底"
+    },
+    {
+      "branch": "origin/claude/project-thread-yw9jjp",
+      "commit": "e0b3468a4585a1d105452af46afd83705dc1b4e3",
+      "included": true,
+      "reason": "已包含於基底"
+    },
+    {
+      "branch": "origin/claude/project-thread-z3r5g1",
+      "commit": "fd689ed332116345defec9ae8ac3bddfedd659b6",
+      "included": false,
+      "reason": "內部備份或歷史研究改名，無新增遊戲程式"
+    },
+    {
+      "branch": "origin/claude/release-workflow",
+      "commit": "0c91243945b506913375a28a2488cd9395720083",
+      "included": true,
+      "reason": "已包含於基底"
+    }
+  ],
+  "open_prs": [
+    {
+      "baseRefName": "codex/ux-optimization",
+      "headRefName": "codex/y2k-characters",
+      "isDraft": true,
+      "number": 12,
+      "title": "Y2K four-hero candidate: uploaded models, skeletons and nine animation clips"
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "claude/handoff-backup-docs",
+      "isDraft": true,
+      "number": 10,
+      "title": "暫放交接文件與專案記憶備份（上線前清除）"
+    }
+  ],
+  "all_branches_preserved": true
+}

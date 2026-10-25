@@ -4,7 +4,7 @@ r.evaluate(`
 let checks=0;function ok(value,message){checks++;if(!value)throw Error(message)}
 function target(x=HX+10,y=HY){return {type:'slime',x,y,hp:1e9,hpMax:1e9,dead:false,fall:0,frozen:0,shock:0,burn:0,hurtT:0,atkCd:999,lunge:-1,slot:0,skillCd:999,ph:0};}
 G.lvl=50;G.maxDepth=30;G.h.hp=1e9;
-ok(Object.keys(SKILLS).length===20&&Object.keys(SUPPS).length===21,'catalog expanded');
+ok(Object.keys(SKILLS).length===23&&Object.keys(SUPPS).length===21,'catalog expanded');
 for(const id of Object.keys(SKILLS))ok(GridLab.ACTIVES[id]&&SKILLS[id].cd===GridLab.ACTIVES[id].cd,'active parity '+id);
 for(const id of Object.keys(SUPPS))ok(GridLab.SUPPORTS[id]&&GridLab.GEM_COLOR[id],'support registry and category '+id);
 for(const id of EXPANSION_SKILLS){G.board=GridLab.createBoard('extreme');GridLab.place(G.board,'active',id,...GridLab.layout(G.board).socks[0]);G.board.wires=[{sock:0,cells:GridLab.route(G.board,0)}];recalc();const m=target();G.mons=[m];G.h.hp=G.st.life;G.timers=[];G.proj=[];castSkill(id);for(const timer of G.timers.filter(t=>t.expansion))expansionPulse(timer);ok(m.hp<1e9,'actual damage '+id);ok(G.timers.filter(t=>t.expansion).length<=4,'bounded ticks '+id);ok(Number.isFinite(G.st.sk[id].direct),'honest finite preview '+id);const saved=serialize();ok(applySave(saved)&&G.board.pieces.some(p=>p.key===id),'save preserves '+id);}
@@ -24,6 +24,6 @@ document.querySelector=()=>null;showOverlay=()=>{};hideOverlay=()=>{};renderModa
 lootCleanupAsk();const fresh=makeItem('weapon',0,10);storeGear(fresh);normal.kept=true;const before=G.parts;lootCleanupConfirm();ok(G.parts===before&&G.inventory.includes(normal)&&G.inventory.includes(fresh),'stale protection and new arrivals never removed');
 normal.kept=false;lootCleanupAsk();const expected=lootTotals([normal,fresh]);lootCleanupConfirm();ok(G.parts===before+expected.parts&&!G.inventory.includes(normal)&&!G.inventory.includes(fresh),'bulk recycler gives exact resources');const after=G.parts;lootCleanupConfirm();ok(G.parts===after,'double confirm pays once');
 G.whUp=5;G.inventory=[];G.equip={};G.equipBackup={};G.builds=[null,null,null];for(let i=0;i<330;i++)storeGear(makeItem('head',0,10));const saved=serialize();ok(whCap()===700,'expansion capacity');G.whUp=0;ok(applySave(saved)&&G.inventory.length===330&&whCap()===700,'expanded inventory loads before capacity clamp');
-ok(BIOMES.length===18&&REGION_MOBS.length===18,'new regions reachable');for(const id of NEW_MONSTERS)ok(MTYPES[id]&&MONSTER_TRAITS[id]&&MONSTER_GUIDE.some(r=>r[0]===id),'new enemy fully registered '+id);
+ok(BIOMES.length===21&&BIOMES.filter(b=>!b.towerOnly).length===18&&REGION_MOBS.length===18,'new regions reachable');for(const id of NEW_MONSTERS)ok(MTYPES[id]&&MONSTER_TRAITS[id]&&MONSTER_GUIDE.some(r=>r[0]===id),'new enemy fully registered '+id);
 console.log('PASS',checks,'catalog, real combat, conditional supports, safe bulk salvage, old saves and world assertions');
 `);

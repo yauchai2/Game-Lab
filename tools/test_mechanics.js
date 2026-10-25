@@ -25,7 +25,7 @@ run('all six sockets cast after reversing skill order on the same high-haste boa
 run('every standard and mode preview matches direct single-target hits, excluding conditional reactions',`
  Math.random=()=>.5;for(const id of Object.keys(SKILLS))for(const mode of [null,...Object.keys(MODES).filter(m=>MODES[m].sk===id)]){
   G.proj=[];G.timers=[];board([id],{[id]:mode});target();const k=G.st.sk[id];k.hit=10;k.crit=0;
-  castSkill(id);tick(2);const actual=Object.entries(G.train.damage||{}).filter(([label])=>label===SKILLS[id].n||label.startsWith(SKILLS[id].n+'·')&&!label.includes('·召喚')).reduce((n,[,d])=>n+d,0);
+  castSkill(id);tick(4.2);const actual=Object.entries(G.train.damage||{}).filter(([label])=>label===SKILLS[id].n||label.startsWith(SKILLS[id].n+'·')&&!label.includes('·召喚')).reduce((n,[,d])=>n+d,0);
   assert(Math.abs(actual-10*skillDirectFactor(id,k.pattern))<1e-7,id+' '+mode+' '+actual);
  }
 `);

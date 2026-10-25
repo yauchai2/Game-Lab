@@ -432,9 +432,20 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - `05x-guidance-play.js`擁有任務目的地／到達指引、單一IntersectionObserver、狀態邊緣及彩蛋呈現；仍由openModal／renderModal控制導航及捲動。切頁清除過期指引，未解鎖不可繞過tabOpen。
 - `05g-layout`持有背包篩選／48件批次／DPS比較快取，物件仍由inventory及armory擁有。observer重建先斷開舊實例；清理／裝備／屬性變動須使快取失效。紅點源自原unread資料，移除標籤不可刪讀屏物件資訊。
 - `02e-player-status.js`控制玩家異常及敵人毒層，傷害只走heroDamage／hitMon；不得另做死亡或收益。新命中才附加，持續傷害不再觸發附加；凍結不能永久刷新。訓練暫存／還原異常，死亡、復活、讀檔及塔換層清除。
-- `GAME_VIEW.prefs.shake/reducedEffects`獨立保存；audio.js保持唯一播放器。battle-fold／battle-off改暫停狀態，不改mode；未完成解碼重查隱藏狀態，還原不解除原有靜音。
+- `GAME_VIEW.prefs.shake/reducedEffects`獨立保存；audio.js保持唯一播放器。battle-fold／battle-off只暫停帶戰鬥分類的音效，不改mode或停背景音樂；未完成解碼重查音效分類及隱藏狀態，還原不解除原有靜音。
 - 遊戲主介面完全移除直屬header，標誌僅啟動／等待頁；手機預設正交正面0°／0°且DOM投影跟隨同一矩陣。
 
 ## 縮圖失敗退路（2026-10-25）
 
 `gear-fallbacks.js`由pack_gear_fallbacks.cjs重用現有模型產生，隨index及離線單檔內嵌。icon3dUrl及icon3dLegendUrl是一般裝備／核心縮圖唯一入口，render拋錯後使用預製圖；專屬模型經icon3dProxyGearUrl取同一預製資料。禁止在個別頁先繞去舊JPEG或舊像素圖。此fallback不另開WebGL context。mountFigure的header選項預設保留，只有正式遊戲明確false。
+
+## 塔樓場景與技能取得（2026-10-25）
+
+- 02f-tower-systems擁有塔主題對照、技能圖紙資格／分級／保底／定向成本與遷移；G.run仍是唯一樓層與戰鬥擁有者，原塔結算paid guard不變。序列化skillBooks／skillPity，合法groundDrop增加skill；未知ID不進集合。原技能資料及倍率仍01-data，GridLab.ACTIVES對齊。
+- terrainBuild對map:tower:floor產生小型平坦房間，terrainScenery只取室內家具；一般生態與makeMap排除towerOnly。03-combat負責刷怪、拾取、實際分段傷害；04-render只畫模型、臨時鏡頭焦點及持續效果，不能派獎。
+- 05y-stage-control只管理暫時Boss／登階提示及最多三條拾取通知，Boss物件WeakSet避免每幀重播警示；不建立另一套怪物血量或背包。舊logLine關主對話不再觸發。
+- 單點起點由wirePickSock(i,true)顯示選擇；拖動沿原wireDown／Move／Up，快跨格、pointercancel、同色洞與有限供電仍走GridLab；空線可保存，沒有技能不會施放或顯示通電電流。
+- 取得按鈕確認時重查等級、已持有及資源，取消不扣款、重按不重扣；圖鑑／技能庫／彈出選擇共用skillAvailable。兌換只解鎖，不自動配置。
+- 音訊仍audio.js單一生命週期；audSample帶battle分類，隱藏只中止戰鬥voice及其解碼後播放，音樂／介面聲保留，off照常全靜音。手機從共享版面收回空間，頂部既有控制保留顯示戰場入口。
+
+- 舊塔地上掉落依towerRoomVersion一次遷移到可達區，只移位置，不改數量或預派收益；新房版本再次讀檔不得再遷移。
