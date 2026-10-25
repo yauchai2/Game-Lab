@@ -125,11 +125,24 @@ function saveHtml(){
     <textarea id="sv" class="sv" placeholder="匯出的存檔碼會顯示在這裡；要匯入時把存檔碼貼在這裡再按「匯入」"></textarea><div id="smsg" class="hint"></div>`;
 }
 /* modal actions */
-function cartsHtml(){const sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active'),ids=Object.keys(MODES).filter(id=>(G.carts[id]||0)>0);let h=`<ol class="cart-guide"><li class="${sp?'':'now'}">先在接線板上點一下技能晶片</li><li class="${sp?'now':''}">再點下面屬於該技能的卡匣，就會裝上</li><li>裝上後才鑑定效果；想換就按「卸下」</li></ol>`+(sp?`<p class="uxmeta">${SKILLS[sp.key].n} · ${sp.mode?MODES[sp.mode].n:'標準模式'} ${sp.mode?'<button class="mb" onclick="equipCart(\'\')">卸下</button>':''}</p>`:'<p class="uxmeta">先選盤面技能才可裝卡匣；點格子可查看提示，裝上才鑑定。</p>');
+function cartsHtml(){const sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active'),ids=Object.keys(MODES).filter(id=>(G.carts[id]||0)>0);let h=`<ol class="cart-guide"><li class="now">點下面的卡匣</li><li>在彈出的視窗選要裝到哪個技能</li><li>裝上後才鑑定效果；再點同一個技能可以卸下</li></ol>`;
  if(!ids.length)return h+'<p>還沒有卡匣。冒險或電路合成都能取得。</p>';
- return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],ok=sp&&sp.key===M.sk&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${noticeHas('carts',id)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>可用 ${f}／${n}</small></button>`;}).join('')+'</div>';
+ return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],has=G.board.pieces.some(p=>p.kind==='active'&&p.key===M.sk),ok=has&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${noticeHas('carts',id)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>${has?`可用 ${f}／${n}・點選裝上`:`需先裝上${SKILLS[M.sk].n}`}</small></button>`;}).join('')+'</div>';
 }
-function uiCartPick(id){noticeRead('carts',id);const M=MODES[id],sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active');if(!M||!G.carts[id])return;if(sp?.key===M.sk&&cartFree(id)>0)return equipCart(id);const reason=!sp?'先選盤面上的主動技能':sp.key!==M.sk?'適用於'+SKILLS[M.sk].n+'，目前選了'+SKILLS[sp.key].n:'全部已裝上，先卸下其他同款卡匣';showOverlay(`<h2 class="uxdialog-title">${uxEsc(G.seen[id]?M.n:'未鑑定的'+SKILLS[M.sk].n+'卡匣')}</h2><p>${uxEsc(G.seen[id]?M.d:M.hint)}</p><p>${reason}</p><button class="mb" data-initial-focus onclick="hideOverlay()">返回卡匣</button>`);}
+function uiCartPick(id){
+  noticeRead('carts',id);const M=MODES[id];if(!M||!G.carts[id])return;
+  const name=G.seen[id]?M.n:'未鑑定的'+SKILLS[M.sk].n+'卡匣',ps=G.board.pieces.filter(p=>p.kind==='active'&&p.key===M.sk);
+  const rows=ps.map(p=>{const cur=p.mode?(p.mode===id?'已裝這張':'目前：'+(G.seen[p.mode]?MODES[p.mode].n:'未鑑定卡匣')):'目前：標準模式';return `<button class="mb cart-target" data-initial-focus onclick="equipCartTo('${id}','${p.id}')">${sico(p.key,22)}<b>${SKILLS[p.key].n}</b><small>插槽 ${GridLab.sockIndex(p,G.board)+1}　${cur}</small></button>`}).join('');
+  const body=ps.length?`<p class="uxmeta">要裝到哪個技能？${cartFree(id)<=0?'（這張已裝在別處，選擇後會移過來）':''}</p><div class="cart-targets">${rows}</div>`:`<p>這張卡匣只能用在${SKILLS[M.sk].n}，盤面上還沒有這個技能。先到「主動技能」把它裝上，再回來裝卡匣。</p>`;
+  showOverlay(`<h2 class="uxdialog-title">${uxEsc(name)}</h2><p>${uxEsc(G.seen[id]?M.d:M.hint)}</p>${body}<button class="mb" onclick="hideOverlay()">取消</button>`);
+}
+function equipCartTo(id,pieceId){
+  const p=G.board.pieces.find(q=>q.id===pieceId&&q.kind==='active');if(!p||!MODES[id]||MODES[id].sk!==p.key||!G.carts[id])return;
+  if(p.mode===id){delete p.mode;}
+  else{if(cartFree(id)<=0){const o=G.board.pieces.find(q=>q!==p&&q.mode===id);if(o)delete o.mode;}p.mode=id;
+    if(!G.seen[id]){G.seen[id]=1;logLine(`鑑定完成：${MODES[id].n}，${MODES[id].d}`,'#1f9bbf');checkGoals();}}
+  hideOverlay();recalc();renderModal();uxAnnounce(p.mode?`已把${MODES[id].n}裝到${SKILLS[p.key].n}。`:`已卸下${SKILLS[p.key].n}的卡匣。`);
+}
 function equipCart(id){
   const p = G.board.pieces.find(q => q.id === selPiece && q.kind === 'active'); if (!p) return;
   if (!id){ delete p.mode; recalc(); renderModal(); return; }
