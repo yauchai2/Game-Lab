@@ -203,19 +203,20 @@ function buildSkel(){
   head.scale.setScalar(2.05); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
   addShadow(g, 4.6); return g;
 }
-function buildDrone(){   // 無人機：圓身、兩具旋翼、紅色獨眼，貼著半空飛
-  const g = new T3.Group(), hex = ['#9fb8e8', '#e8c27a', '#bfe6ff', '#e89a8a', '#7a8fe8', '#ffb0d8'][biomeNow()%6];
-  mk(ico(1, 1), ownMat(g, hex), 0, 8, 0, g).scale.set(4.2, 2.6, 4.2); mk(ico(.9, 0), ownMat(g, '#ffffff'), 0, 9.6, -.4, g).scale.set(2, 1, 2);
-  mk(ico(1, 0), basic('#ff3a5a'), 0, 8, 3.9, g).scale.set(1.1, 1.1, .6); mk(cylG(.12, .12, 2.4, 4), ownMat(g, '#2b2552'), 0, 11.2, -1, g);
-  const ro = []; for (const sx of [-1, 1]){ mk(new T3.BoxGeometry(.5, 1.6, .5), ownMat(g, '#2b2552'), sx*4.2, 8.6, 0, g); const r = mk(cylG(3.4, 3.4, .22, 12), ownMat(g, '#ffffff', { transparent:true, opacity:.55 }), sx*4.2, 9.5, 0, g); ro.push(r); }
+function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));f.position.set(x,y,z);parent.add(f);return f;}
+function buildDrone(){   // 塑膠袋飛靈：半透明白袋身、兩條提手、簡化臉，貼著半空飄
+  const g = new T3.Group(), hex = ['#f4f8ff', '#fff3d8', '#e6f6ff', '#ffe6e2', '#e8ecff', '#ffeaf4'][biomeNow()%6];
+  mk(ico(1, 1), ownMat(g, hex, { transparent:true, opacity:.92 }), 0, 8, 0, g).scale.set(4.2, 3.4, 3.2); mk(ico(.9, 0), ownMat(g, '#ffffff'), 0, 11, -.2, g).scale.set(2.4, 1.2, 1.6);
+  faceMesh(4.6, 0, 8.2, 3.3, g);
+  const ro = []; for (const sx of [-1, 1]){ const r = mk(new T3.TorusGeometry(1.7, .28, 4, 8), ownMat(g, hex), sx*2.4, 12.2, 0, g); r.rotation.x = Math.PI/2; ro.push(r); }
   g.userData.rotors = ro; g.userData.s = .9; g.scale.setScalar(.9); g.rotation.order='YXZ';addShadow(g,3.6);return g;
 }
-function buildBomb(){   // 自爆機器人：深色圓身、引信火花，越接近死亡越閃紅
+function buildBomb(){   // 氣球炸彈：圓氣球、繩結與火花，越接近死亡越閃紅
   const g = new T3.Group();
-  mk(ico(1, 1), ownMat(g, '#3a3560'), 0, 4.6, 0, g).scale.set(4.6, 4.4, 4.6); mk(ico(1, 0), ownMat(g, '#6a62a8'), -1.4, 6.4, -.8, g).scale.set(1.6, 1.2, 1.6);
-  mk(cylG(.35, .45, 2, 5), ownMat(g, '#c9a064'), 0, 9.8, 0, g); const sp = mk(ico(.9, 1), basic('#ff9a3c'), 0, 11.2, 0, g); g.userData.spark = sp;
-  for (const sx of [-1, 1]){ mk(new T3.BoxGeometry(1.6, .5, .3), basic('#7ef0ff'), sx*1.5, 5.4, 4.5, g); mk(new T3.BoxGeometry(1.8, 1, 2.4), ownMat(g, '#2b2552'), sx*2, .5, 1, g); }
-  mk(new T3.BoxGeometry(3.4, .5, .3), basic('#ff3a5a'), 0, 3.4, 4.5, g);
+  mk(ico(1, 1), ownMat(g, '#ff6f8f'), 0, 6, 0, g).scale.set(4.6, 5.2, 4.6); mk(ico(1, 0), ownMat(g, '#ffd0dc'), -1.6, 8.2, -.6, g).scale.set(1.2, 1.5, 1.2);
+  faceMesh(5, 0, 6, 4.6, g);
+  mk(cylG(.3, .5, 1.4, 5), ownMat(g, '#d94a6c'), 0, .8, 0, g); const sp = mk(ico(.9, 1), basic('#ff9a3c'), 0, 11.8, 0, g); g.userData.spark = sp;
+  mk(cylG(.12, .12, 2.2, 4), ownMat(g, '#2b2552'), 0, 10.8, 0, g);
   g.userData.s = .85; g.scale.setScalar(.85); g.rotation.order = 'YXZ'; addShadow(g, 5); return g;
 }
 function buildBrute(boss){
@@ -646,7 +647,7 @@ function monLook(m, g){
       else if (q === 'mole'){ const dg = Math.sin(t*(m.fight ? 10 : 6)); L.pawL.rotation.x = dg*.8 - lg; L.pawR.rotation.x = -dg*.8 - lg; } } }
   else if (ps.m01){ g.scale.setScalar(base); g.position.y += lg*4; g.rotation.x = -.2*lg; g1MonsterPlay(g, m); }
   else if (m.type === 'slime'){ g.scale.setScalar(base); const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
-  else if (m.type === 'drone'){ g.scale.setScalar(base); g.position.y += 5 + Math.sin(t*4 + m.ph)*1.6 + lg*3; g.rotation.x = .25 + lg*.5; for (const r of ps.rotors) r.rotation.y = t*40; }
+  else if (m.type === 'drone'){ g.scale.setScalar(base); g.position.y += 5 + Math.sin(t*4 + m.ph)*1.6 + lg*3; g.rotation.x = .25 + lg*.5; ps.rotors.forEach((r,i)=>{r.rotation.z = Math.sin(t*9 + i*3)*.5;}); }
   else if (m.type === 'bomb'){ const low = 1 - tClamp(m.hp/m.hpMax), sq = 1 + .06*Math.sin(t*(5 + low*14)); g.scale.set(base*sq, base/sq, base*sq); g.position.y += Math.abs(Math.sin(t*5))*1.2 + lg*3; g.rotation.x = lg*.4; ps.spark.scale.setScalar(.7 + .5*Math.abs(Math.sin(t*12))); ps.spark.material.color.set(Math.sin(t*(8 + low*20)) > 0 ? '#ff3a2a' : '#ffd35a'); }
   else {
     const B = ps.B, w = Math.sin(t*9), f = Math.sin(t*3), big = m.type === 'brute' || m.type === 'boss';
