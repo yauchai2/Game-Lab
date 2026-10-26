@@ -19,14 +19,15 @@ index 04931e1..b647439 100644
   G.stains.push({x:m.x,y:m.y,t:0,r,blobs,key:terrainKey()});if(G.stains.length>10)G.stains.shift()}
  function deathVisualTick(dt){for(const e of G.fx)e.t+=dt/e.dur;G.fx=G.fx.filter(e=>e.t<1);for(const f of G.floats)f.t+=dt/1.1;G.floats=G.floats.filter(f=>f.t<1);for(const m of G.mons)if(m.dead)m.deadT=(Number.isFinite(m.deadT)?m.deadT:0)+dt;G.mons=G.mons.filter(m=>!m.dead||m.deadT<.6);G.stains=(G.stains||[]).filter(s=>{s.t+=dt;return s.t<12&&s.key===terrainKey()})}
 diff --git a/src/game/04-render.js b/src/game/04-render.js
-index 379f64f..573fdc9 100644
+index 797fc14..e53c7ca 100644
 --- a/src/game/04-render.js
 +++ b/src/game/04-render.js
-@@ -210,13 +210,21 @@ function buildSkel(){
+@@ -203,13 +203,26 @@ function buildSkel(){
    head.scale.setScalar(2.05); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
    addShadow(g, 4.6); return g;
  }
 -function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));if(parent.userData.mats)parent.userData.mats.push(f.material);else parent.userData.mats=[f.material];f.position.set(x,y,z);parent.add(f);return f;}
+-function buildMascot(){   // 電台吉祥物：圓滾滾的小收音機精靈，頭頂一根小天線，跟在角色身後
 +function faceMesh(w,x,y,z,parent,kind='enemy'){
 + const group=new T3.Group();group.position.set(x,y,z);parent.add(group);
 + const add=(geometry,color,px=0,py=0,pz=0)=>{const material=new T3.MeshBasicMaterial({color});material.userData.deviceIndicator=true;const mesh=new T3.Mesh(geometry,material);mesh.position.set(px,py,pz);group.add(mesh);(parent.userData.mats||=[]).push(material);return mesh;};
@@ -36,17 +37,25 @@ index 379f64f..573fdc9 100644
 + add(new T3.BoxGeometry(w*.075,w*.045,w*.018),'#EBA548',w*.25,w*.04,w*.027);
 + group.userData.deviceIndicator=true;return group;
 +}
- function buildMascot(){   // 電台吉祥物：圓滾滾的小收音機精靈，頭頂一根小天線，跟在角色身後
++function buildMascot(){   // 隨行收音機：切面外殼、偏置調諧器、側面喇叭，沒有擬人笑臉
    const g = new T3.Group();
-   mk(ico(1, 1), ownMat(g, '#ffe58a'), 0, 3.2, 0, g).scale.set(2.6, 2.3, 2.3);
-   for (const sx of [-1, 1]) mk(ico(.6, 0), ownMat(g, '#ffd05a'), sx*2, 5.2, 0, g).scale.set(.8, 1.2, .5);
-   mk(new T3.CylinderGeometry(.14, .14, 2.6, 5), ownMat(g, '#8a7fd8'), 0, 6.4, 0, g); g.userData.tip = mk(ico(.45, 0), ownMat(g, '#ff7a6e'), 0, 7.8, 0, g);
+-  mk(ico(1, 1), ownMat(g, '#ffe58a'), 0, 3.2, 0, g).scale.set(2.6, 2.3, 2.3);
+-  for (const sx of [-1, 1]) mk(ico(.6, 0), ownMat(g, '#ffd05a'), sx*2, 5.2, 0, g).scale.set(.8, 1.2, .5);
+-  mk(new T3.CylinderGeometry(.14, .14, 2.6, 5), ownMat(g, '#8a7fd8'), 0, 6.4, 0, g); g.userData.tip = mk(ico(.45, 0), ownMat(g, '#ff7a6e'), 0, 7.8, 0, g);
 -  faceMesh(3.4, 0, 3.4, 2.4, g);
-+  faceMesh(3.4, 0, 3.4, 2.4, g, 'companion');
++  mk(ico(1, 1), ownMat(g, '#D4BC60'), 0, 3.2, 0, g).scale.set(2.7, 2.1, 2.2);
++  const dark=ownMat(g,'#283D49'),trim=ownMat(g,'#91AAA6');
++  mk(new T3.BoxGeometry(3.6,.55,2.7),dark,0,1.65,0,g);
++  mk(new T3.BoxGeometry(2.8,.35,2),trim,-.25,5.05,-.15,g);
++  // One offset tuner, not paired eyes; a side grille reads as actual radio hardware.
++  faceMesh(2.9,-.45,3.6,2.05,g,'companion');
++  mk(new T3.CylinderGeometry(.48,.48,.35,6),dark,2.45,4.2,-.65,g).rotation.z=Math.PI/2;
++  for(let i=0;i<3;i++)mk(new T3.BoxGeometry(.12,.18,1.5),dark,2.48,2.8+i*.4,0,g);
++  mk(new T3.CylinderGeometry(.14,.14,2.6,5),trim,-.8,6.1,-.3,g);g.userData.tip=mk(ico(.36,0),ownMat(g,'#EA7950'),-.8,7.5,-.3,g);
    g.userData.s = 1; g.scale.setScalar(1.5); addShadow(g, 2.4); return g;
  }
  function mascotUpdate(){
-@@ -735,14 +743,14 @@ function updateFx(){
+@@ -727,14 +740,14 @@ function updateFx(){
    };
    const sph=geo('fxs',()=>ico(1,1)),disc=geo('fxd',()=>new T3.CircleGeometry(1,20).rotateX(-Math.PI/2)),ring=geo('fxr',()=>new T3.RingGeometry(.83,1,24).rotateX(-Math.PI/2)),box=geo('fxf',()=>new T3.BoxGeometry(1,.25,1));
    const warnings=G.mons.filter(m=>!m.dead&&m.warning&&!(m.frozen>0)).map(m=>({k:'danger',...m.warning,t:1-m.warning.t/m.warning.duration,col:m.boss?'#c45b64':'#c87e48'}));
@@ -66,7 +75,7 @@ index 379f64f..573fdc9 100644
    for(const e of warnings.concat(G.fx.filter(e=>e.sustained),G.fx.filter(e=>!e.sustained))){const fade=1-e.t;
      if(renderSpectacleFx(e,add,geo))continue;
      if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}
-@@ -873,14 +881,14 @@ function buildRegionLandmark(bi){
+@@ -864,14 +877,18 @@ function buildRegionLandmark(bi){
  }
  /* 可獨立擺動的肢體：以關節為原點合批，再掛到魔物身上旋轉 */
  function monLimb(root,px,py,pz,fn){const lg=new T3.Group();fn(lg);const b=bake(lg);b.position.set(px,py,pz);root.add(b);return b;}
@@ -75,15 +84,20 @@ index 379f64f..573fdc9 100644
  function buildFieldMonster(type,variant=0){
   let limbs=null;const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
   const box=(w,h,d,mat,x,y,z)=>mk(roundedG(w,h,d),mat,x,y,z,g);
-  if(type==='skel'){   // 紙箱人：方箱身、膠帶、簡化臉
+- if(type==='skel'){   // 紙箱人：方箱身、膠帶、簡化臉
++ if(type==='skel'){   // 訊號搬運箱：偏置掃描模組、封箱帶、折蓋；不畫五官
    const cb=m3(variant===1?'#d3b07c':'#c9a06a'),tape=m3('#eadfbf'),sh=m3('#8d6e4a');
    box(12,13,9,cb,0,13,0);box(13,2,10,sh,0,20,0);box(2.4,13.5,9.4,tape,2,13,0);box(12.6,1.6,2,tape,0,20.8,3.2);
 -  const face=new T3.Mesh(new T3.PlaneGeometry(9,9),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));face.position.set(-1.2,14,4.6);g.add(face);
-+  faceMesh(9,-1.2,14,4.6,g);
++  box(4.5,3.2,.6,dark,-2.9,15.3,4.8);
++  faceMesh(4.7,-2.9,15.4,5.2,g);
++  for(let i=0;i<3;i++)box(2.8,.28,.25,sh,-2.9,12.3-i*.65,4.7);
++  box(.5,9,.25,sh,5.3,13.2,4.7);
++  const flap=box(5,.65,4,cb,-4,21,0);flap.rotation.z=-.16;
    limbs={legL:[-3,7,0,l=>{mk(roundedG(3.6,7,4),dark,0,-3.5,0,l);mk(roundedG(4.6,2,6),sh,0,-6.5,1,l);}],legR:[3,7,0,l=>{mk(roundedG(3.6,7,4),dark,0,-3.5,0,l);mk(roundedG(4.6,2,6),sh,0,-6.5,1,l);}],
      armL:[-7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}],armR:[7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}]};
   }else if(type==='golem'){
-@@ -999,3 +1007,11 @@ function towerDiorama(floor=1){return deviceThumb('tower-diorama:'+towerTheme(fl
+@@ -990,3 +1007,11 @@ function towerDiorama(floor=1){return deviceThumb('tower-diorama:'+towerTheme(fl
 
  function buildRiftHand(){const g=new T3.Group(),body=m3('#455478'),dark=m3('#28374f'),glow=m3('#ad9ae2',{emissive:'#ad9ae2',emissiveIntensity:.5});mk(roundedG(7,4,5),dark,0,3,0,g);for(let i=0;i<5;i++){const x=(i-2)*1.5,h=i===0?6:i===4?8:10+Math.sin(i)*2;mk(curvedPipe([[x,4,0],[x,7,-1],[x*.8,h,-2],[x*.7,h+1,-.5]],.65),body,0,0,0,g);mk(new T3.SphereGeometry(.8,6,4),glow,x*.7,h+1,-.5,g);}for(const o of g.children){o.position.multiplyScalar(1.6);o.scale.multiplyScalar(1.6);}mk(new T3.TorusGeometry(10,.3,4,32),glow,0,10,0,g).rotation.z=.45;const band=mk(new T3.TorusGeometry(1,.025,4,64),glow,0,.4,0,g);band.rotation.x=Math.PI/2;band.material=glow.clone();band.material.depthTest=false;band.material.depthWrite=false;band.material.transparent=true;band.material.opacity=.75;band.renderOrder=4;g.userData.band=band;return g;}
  function renderRiftWorld(){const e=riftState().encounter;if(!e||e.key!==terrainKey())return;const g=entFor(e,buildRiftHand);at3(g,e.x,e.y,BZ+terrainHeight(e.x,e.y));g.userData.band.scale.setScalar(e.phase==='dormant'?7:e.radius);g.userData.band.material.emissiveIntensity=.4+Math.sin(G.time*3)*.1;if(['complete','failed'].includes(e.phase))g.scale.setScalar(Math.max(.05,1-e.age/5));}

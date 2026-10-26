@@ -20,3 +20,5 @@
 - **2026-10-26，Asia/Hong_Kong，血跡／臉最新修訂：** Alan要求巨型血跡隨體型，並特別澄清不要貼上去的卡通笑臉。已真正移除cardboardFace Canvas與Plane，不換新臉貼圖；legacy10類＋同伴用BoxGeometry燈槽，M06/M07/B04重匯出冷峻指示窗。deathStain按實際body span縮放全blobs，街區血跡提高至道路／斑馬線之上（修掉被路面蓋住）。1x2x4x比例、飛濺、11builder無map／fade、34HUD、12GLB重匯入、10gameplay過。tools/style/blood-face-main.patch可獨立套main，亦已在Claude6fcaef6套用／Three.js執行驗證。尚未發佈。
 
 - **截圖澄清：** Alan指黃色天線同伴及紙箱怪的兩眼／彎笑嘴／腮紅；不要用幾何重做同樣笑哈哈表情。main仍有cardboardFace，PR84候選已移除，尚未合併。
+
+- **笑臉移除後精修：** 同伴改切面收音機／側旋鈕／偏置天線、紙箱怪改偏置掃描器／摺縫／翹蓋。docs/style-complete/device-refinement.png為原生渲染，254／700tri且零maps，blood-face suite再驗通過。standalone patch同步更新且main apply-check過，預覽已重建；未合併發佈。

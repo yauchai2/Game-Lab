@@ -88,3 +88,9 @@ node tools/style/test_healthbars.cjs
 ```
 
 `dist/idle-hero.html`為正常存檔版本；`dist/street-style-preview.html`僅本機生成、進度只在頁面記憶體，不入git。網站可用`python3 tools/build_site.py /tmp/street-style-site`建到本機檢查；本輪沒有publish／merge main／Release。
+
+## 移除笑臉後的造型精修
+
+Alan要求再優化截圖中的兩個物件。黃色同伴改為切面收音機殼、偏置天線／調諧槽、側置旋鈕與三道側面喇叭槽，收斂圓耳與過甜配色；旋鈕移到側面，避免前方再次讀成眼口。紙箱怪保留封箱帶與搬運肢體，加入偏置掃描器、排氣槽、直向摺縫和翹起的折蓋。沒有畫五官、增加貼圖或更改同伴跟隨／慶祝、怪物戰鬥行為。
+
+[原生幾何渲染](device-refinement.png)／[渲染記錄](device-refinement.json)：同伴254三角面，紙箱怪700面，兩者零貼圖；11類無臉貼圖／死亡淡出與體型血跡檢查通過。此處紙箱怪為legacy procedural版本；完整街頭模式的skel仍沿既有M05映射，沒有另換模型造成不一致。獨立main patch已包含本次精修並重新通過apply-check，候選預覽已重建。未合併或發佈。
