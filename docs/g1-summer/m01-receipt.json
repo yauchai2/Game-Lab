@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "7ed725f",
+  "glbSha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+  "manifestFilesVerified": 24,
+  "triangles": 684,
+  "meshObjects": 3,
+  "animations": [
+    "Hop",
+    "Idle",
+    "Hurt"
+  ],
+  "gameIntegration": "pending Claude G1 reader; source bytes received and verified"
+}

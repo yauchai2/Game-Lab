@@ -1,0 +1,50 @@
+{
+  "source": {
+    "sourceCommit": "b7f0629032bae844f509085d85389d1bdea38f65",
+    "materialSha256": "ea9114d9faf5765849224c0b22b760182f2ef725b9dfa820f7d2bb0af154c43c",
+    "storage": "page-lifetime memory",
+    "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險"
+  },
+  "checks": [
+    "Claude G1 street terrain loads with its real collision and shop placement",
+    "source geometry, UVs, rig and all nine animation clips retained; two real signature models equipped",
+    "existing auto combat advances, spawns enemies and retains canonical equipment stats",
+    "material A/B switches without modifying source atlas or baseline material",
+    "three summer radio story panels are readable and cycle in the live sandbox",
+    "all nine existing clips execute with candidate material and the unchanged skeleton",
+    "repeated A/B rebuilds retain valid shader rendering",
+    "save, wipe and settings stay in page memory; real player storage unchanged",
+    "review controls remain reachable at 390px and 320px",
+    "reset returns to live combat"
+  ],
+  "geometry": {
+    "sameGeometry": true,
+    "sameRig": true,
+    "clips": 9,
+    "originalFilter": 1006,
+    "newFilter": 1003,
+    "material": "g1_summer_aki",
+    "equipped": [
+      "aki_headphones",
+      "aki_baton"
+    ],
+    "uniforms": 0
+  },
+  "clips": [
+    "attack",
+    "cast",
+    "dash",
+    "death",
+    "hurt",
+    "idle",
+    "run",
+    "victory",
+    "walk"
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "limits": [
+    "Software WebGL, not real-device performance certification.",
+    "Monster candidate integration and death A/B depend on collaborative source/asset delivery; not claimed by this material test."
+  ]
+}

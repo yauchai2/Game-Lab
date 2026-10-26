@@ -1,7 +1,7 @@
 {
   "version": 1,
   "type": "non-destructive runtime material recipes",
-  "status": "candidate; integration and visual checks in progress",
+  "status": "candidate; 10 software WebGL material and sandbox checks passed",
   "assets": [
     {
       "source": "assets/characters/aki.glb",
@@ -43,5 +43,6 @@
     "No new character or replacement monster is claimed.",
     "Preserves original asset files and all four-limb proportions.",
     "Original map is cloned; renderer shader recolors classified blue/olive/ivory regions only."
-  ]
+  ],
+  "validation": "docs/g1-summer/validation.json"
 }
