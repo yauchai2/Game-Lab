@@ -444,7 +444,7 @@ function update(dt){
   if (h.hurtT > 0) h.hurtT -= dt;
   if(!G.train)collectNearby(dt);
   if (h.dead > 0){ h.dead -= dt; G.mons = G.mons.filter(m => (m.deadT += dt) < .4); if (h.dead <= 0) revive(); return; }
-  { const alive = G.mons.filter(m => !m.dead).length, bossUp = G.mons.some(m => m.boss && !m.dead); G.spawnCd -= dt; if (G.spawnCd <= 0 && alive < hordeCap() && !bossUp && !G.train){ spawnPack(); G.spawnCd = (alive < hordeCap()*.5 ? .2 : .45) * (1 + earlyK()*.18); } }
+  { const alive = G.mons.filter(m => !m.dead).length, bossUp = G.mons.some(m => m.boss && !m.dead); G.spawnCd -= dt; if (G.spawnCd <= 0 && alive < hordeCap() && !bossUp && !G.train && !['expand','contain'].includes(riftState().encounter?.phase)){   /* 裂隙進行中只在紫圈邊緣出怪 */ spawnPack(); G.spawnCd = (alive < hordeCap()*.5 ? .2 : .45) * (1 + earlyK()*.18); } }
   const frozen=typeof heroFrozen==='function'&&heroFrozen();if(!frozen)moveHero(dt);else{h.vx=h.vy=h.mv=0;h.castT=h.swingT=-1;}
   for (const m of G.mons){
     if (m.dead){ m.deadT += dt; continue; }

@@ -216,7 +216,7 @@ const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
 const uiHudPad=()=>MOB()&&document.body.classList.contains('ui-material')&&!document.body.classList.contains('battle-fold')&&!document.body.classList.contains('watch-mode')?72:0;
-function battleFrameRatio(fig){return document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig.getBoundingClientRect().width):MOB()?mobRatio()+uiHudPad()/Math.max(1,innerWidth):Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig.getBoundingClientRect().width)));}
+function battleFrameRatio(fig){return document.body.classList.contains('watch-mode')||document.body.classList.contains('d')?(visualViewport?.height||innerHeight)/Math.max(1,fig.getBoundingClientRect().width):MOB()?mobRatio()+uiHudPad()/Math.max(1,innerWidth):Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig.getBoundingClientRect().width)));}
 function uiSyncBattleFrame(){const fig=$('fig'),vb=fig?.viewBox?.baseVal;if(!vb?.width)return;const ratio=battleFrameRatio(fig);if(Math.abs(vb.height/vb.width-ratio)>.01)fig.setAttribute('viewBox',`0 0 ${vb.width} ${vb.width*ratio}`);}
 const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; if(CUSTOM_H.v!=null&&!AUTO_FOLD.on)return Math.max(30,Math.min(CUSTOM_H.v,h*.62))/Math.max(1,innerWidth); return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
 const RISKM = Object.keys(MODS).filter(k => ['challenge','mixed'].includes(MODS[k].kind));
