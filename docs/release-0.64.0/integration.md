@@ -9,3 +9,5 @@
 - 本輪血跡／11類無貼圖與fade、10gameplay已通過；原生精修渲染零maps。完整資產、動畫、狀態、存檔、網站回歸與限制見docs/style-complete/README.md。既有兩項stale VM測試於乾淨baseline相同失敗，並非全套歷史測試全綠；未宣稱真機FPS或Safari驗收。
 
 來源需先PR合併main再發佈Pages；線上雜湊、source commit、Release附件將於完成後追加驗證。
+
+發佈前本輪重跑：4角色×9clips、16gear、22type＋4Boss、A/B、三地區、320／390、24實體街區、六章boss kill／save／offline-map邊界、分檔網站390px／頭像／proxy全部通過。證據位於docs/style-complete的runtime-validation、story-dense-validation、site-validation等JSON。

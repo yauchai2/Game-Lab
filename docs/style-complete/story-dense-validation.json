@@ -1,8 +1,8 @@
 {
   "dense": {
     "actors": 24,
-    "drawCalls": 423,
-    "triangles": 69706,
+    "drawCalls": 429,
+    "triangles": 69760,
     "profile": 5,
     "street": true,
     "material": "MeshBasicMaterial",
