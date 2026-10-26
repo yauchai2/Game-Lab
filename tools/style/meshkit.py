@@ -83,4 +83,3 @@ def beam(name,a,b,width,depth,key):
     ob=box(name,(a+b)/2,(width,depth,(b-a).length),key,.035)
     ob.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler()
     return ob
-
