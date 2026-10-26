@@ -1,0 +1,10 @@
+{
+  "file": "assets/equipment-completion/null_lanyard/null_lanyard.glb",
+  "sha256": "85f5b9ca44c7a7486dc4edfb246b31ad2e53a839d34669662959497ad625554b",
+  "bytes": 8928,
+  "triangles": 220,
+  "importedMeshes": 1,
+  "textures": 0,
+  "unlit": true,
+  "authorship": "Original local Blender geometry, Game-Lab; no external model or paid provider."
+}

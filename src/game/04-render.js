@@ -155,6 +155,7 @@ function buildHeroAccessories(B,cos){
 // 普通裝備先用簡模；專裝由 equipment-render.js 掛到角色骨架。
 const WOV = new URLSearchParams(location.search);   // 測試用：?wt=0..3&wr=0..3 直接指定武器外觀
 function buildSimpleEquipment(slot,tier=0,rarity=0){
+ if(typeof ordinaryEquipmentModel==='function')return ordinaryEquipmentModel(slot,tier,rarity,true);
  const g=new T3.Group(),col=['#bbc8d2','#8bbcd5','#d5bf80','#c99174'][rarity]||'#bbc8d2',shell=m3(col),dark=m3('#34435a');g.userData.placeholder=slot;
  if(slot==='weapon'){mk(new T3.CylinderGeometry(.45,.45,2,6),dark,0,0,0,g);mk(roundedG(1.2,5+tier,.8),shell,0,3,0,g);mk(roundedG(.8,.5,.9),m3('#81cbd1'),0,5,0,g);}
  else if(slot==='head'){mk(new T3.CylinderGeometry(2.6,2.9,1.2,8),shell,0,0,0,g);mk(roundedG(3,.3,1.5),dark,0,-.2,2,g);}
@@ -592,6 +593,7 @@ function buildDrop(d){
   else if(d.kind==='gold'){mk(cylG(1.4,1.4,.6,6),m3('#e4ba58'),0,1,0,item).rotation.z=.2;}
   else if(d.kind==='chip'){mk(new T3.BoxGeometry(2.8,.5,2.8),m3('#62c8ce'),0,1,0,item);mk(new T3.BoxGeometry(1.3,.6,1.3),m3('#24364d'),0,1.5,0,item);}
   else if (signatureOf(d.it)&&typeof equipmentModel==='function'){const model=equipmentModel(signatureOf(d.it).model);if(model){model.scale.setScalar(5);model.position.y=3;item.add(model);}}
+  else if(typeof ordinaryEquipmentModel==='function'){const model=ordinaryEquipmentModel(d.it.slot,aTier(d.it),d.it.r),bounds=new T3.Box3().setFromObject(model),size=bounds.getSize(new T3.Vector3()),center=bounds.getCenter(new T3.Vector3()),scale=5/Math.max(size.x,size.y,size.z);model.position.copy(center).multiplyScalar(-scale);model.position.y+=3;model.scale.setScalar(scale);item.add(model);}
   else if (d.it.slot === 'weapon'){ const w = new T3.Group(); item.add(w); mk(new T3.BoxGeometry(.9, 5.6, .35), m3(col, { emissive:col, emissiveIntensity:.15 }), 0, 3.8, 0, w); mk(cylG(.35, .35, 2, 5), m3('#7a5a8a'), 0, 0, 0, w); mk(new T3.BoxGeometry(2.4, .5, .8), m3('#ffd35a'), 0, 1, 0, w); w.rotation.z = Math.PI/3; w.position.y = 1.6; }
   else if (d.it.slot === 'armor'){ mk(cylG(1.5, 2.1, 3.2, 7), m3(col, { emissive:col, emissiveIntensity:.15 }), 0, 2, 0, item); for (const sx of [-1, 1]) mk(ico(1, 0), m3(col), sx*2, 3.3, 0, item); }
   else { mk(new T3.TorusGeometry(1.4, .45, 5, 8), m3('#ffe27a'), 0, 2, 0, item).rotation.x = Math.PI/2.6; mk(ico(.75, 0), m3(col, { emissive:col, emissiveIntensity:.35 }), 0, 3.5, 0, item); }

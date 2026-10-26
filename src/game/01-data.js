@@ -104,7 +104,7 @@ Object.assign(RARE_NAMES,{head:['夜航頻率','靜電視界','都市殘響','�
 Object.assign(LEGENDS,{head:[{id:'H_BROADBAND',name:'寬頻耳罩',aff:['life','haste','armor','regen'],d:'偏重生命、技能急速與持續回復的頭部裝備。'}],gloves:[{id:'G_CONTACT',name:'超頻觸點',aff:['aps','crit','cm','life'],d:'偏重攻擊速度與會心的手部裝備。'}],boots:[{id:'B_LASTTRAIN',name:'末班快線',aff:['life','haste','regen','armor'],d:'偏重技能急速與生存的鞋子。'}],offhand:[{id:'O_REFLECTOR',name:'訊號反射板',aff:['armor','life','haste','light'],d:'偏重護甲與閃電傷害的副手裝備。'}]});
 // User supplied Y2K signature gear: kept out of ordinary rarity/pity/forge pools.
 const SIGNATURE_DROP = {normal:.00001, elite:.0001, boss:.001};
-const SIGNATURE_PENDING = new Set(['ping_clip','milo_md_strap','ping_bag_strap','null_lanyard']);
+const SIGNATURE_PENDING = new Set(); // Four formerly missing assets now have original authored GLBs.
 const SIGNATURE_GEAR = Object.fromEntries([
  ["aki_headphones", "street", "head", "修補耳機"],
  ["aki_baton", "street", "weapon", "改裝伸縮電棍"],

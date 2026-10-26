@@ -1,6 +1,6 @@
-# 全遊戲街頭風格整合 — 0.64.0 候選
+# 全遊戲街頭風格整合 — v0.64.0 已發佈
 
-2026-10-26，Asia/Taipei。Alan授權「根據Ice Cream.mp4後的更新風格，繼續做哂全部需要的更新」。這次完成一套可玩的原生整合候選，不再停在M04或四隻樣板。分支`codex/ice-cream-style-complete`；以0.61.1開始，已納入Claude最新0.62.0（main `fd4ed11`）的六章、首領標記與同伴。**未合併／未發佈本批0.64改動。Claude後續`6fcaef6`的0.63精華玩法仍在其獨立分支，不混入本風格PR；本批預留0.64版本，待其落main後再同步基底，不覆寫其玩法。**
+2026-10-26，Asia/Hong_Kong。Alan授權「根據Ice Cream.mp4後的更新風格，繼續做哂全部需要的更新」。本批已隨PR84合併並發佈v0.64.0，來源／tag為2f7c889；[發佈與正式站驗證](../release-0.64.0/integration.md)。Claude後續精華系統已撤回，未加入。本文件列的是首輪整合交付，不代表全遊戲精修已全部完成。四件裝備代用品的後續補完見[下一批](../equipment-completion/README.md)，尚未發佈。
 
 審查PR：[Game-Lab #84](https://github.com/yauchai2/Game-Lab/pull/84)。
 
@@ -87,7 +87,7 @@ node tools/style/test_story_dense.cjs
 node tools/style/test_healthbars.cjs
 ```
 
-`dist/idle-hero.html`為正常存檔版本；`dist/street-style-preview.html`僅本機生成、進度只在頁面記憶體，不入git。網站可用`python3 tools/build_site.py /tmp/street-style-site`建到本機檢查；本輪沒有publish／merge main／Release。
+`dist/idle-hero.html`為正常存檔版本；`dist/street-style-preview.html`僅本機生成、進度只在頁面記憶體，不入git。網站可用`python3 tools/build_site.py /tmp/street-style-site`建到本機檢查；v0.64.0已依發佈流程上線，後續候選是否發佈另依其交接紀錄。
 
 ## 移除笑臉後的造型精修
 

@@ -13,5 +13,5 @@
     "biomes",
     "chapterDepths"
   ],
-  "result": "identical; only approved presentation text, palette, geometry derivations and model mappings changed"
+  "result": "identical after normalizing only the four explicitly completed-model warnings; no stat, pool or owner differences"
 }

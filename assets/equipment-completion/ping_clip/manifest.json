@@ -1,0 +1,10 @@
+{
+  "file": "assets/equipment-completion/ping_clip/ping_clip.glb",
+  "sha256": "b1391e60edae7dc1695719e44c14672f005e683f555b7d9eff8b9c291cefc36a",
+  "bytes": 9016,
+  "triangles": 232,
+  "importedMeshes": 1,
+  "textures": 0,
+  "unlit": true,
+  "authorship": "Original local Blender geometry, Game-Lab; no external model or paid provider."
+}
