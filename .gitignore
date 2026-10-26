@@ -3,3 +3,5 @@ tools/font/*.ttf
 /assets/monsters/**/__pycache__/
 /assets/monsters/**/*.blend1
 /tools/style/__pycache__/
+/dist/street-audio-review.html
+/tools/__pycache__/

@@ -1,219 +1,441 @@
 {
-  "license": "CC0-1.0",
+  "license": "Project-original",
+  "source": "tools/build_street_audio.py",
+  "external_samples": false,
+  "reference_recording_sampled": false,
   "sources": [
     {
       "asset": "drift.mp3",
-      "source_sha256": "05a80fdeda3bd40b356573a2917284418ba58d70ec24bc9cddb28cf2115d9fb6",
-      "conversion": [
-        "-t",
-        "72",
-        "-af",
-        "highpass=f=65,lowpass=f=10000,loudnorm=I=-20:TP=-2:LRA=9,afade=t=in:d=1,afade=t=out:st=70:d=2",
-        "-ar",
-        "32000",
-        "-ac",
-        "2",
-        "-b:a",
-        "64k",
-        "-map_metadata",
-        "-1"
-      ],
-      "sha256": "e6683f8358d64c91fed612c88a5a070548be406e9b5c3fda39791e70c9e290c2",
-      "bytes": 576620
+      "kind": "music",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "631179afd0c96b5a91765b6f3a7bc44dd32d24babef593437864cb9c8c08d60a",
+      "source_sha256": "c6e8b9b7740a476e9f439af0ecc125989c98ce08028b07b44d375f12dcd3f978",
+      "bytes": 370124,
+      "duration": 36.9230625,
+      "sample_rate": 32000,
+      "bpm": 104,
+      "bars": 16,
+      "mood": "sunny",
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
     },
     {
       "asset": "haze.mp3",
-      "source_sha256": "e2dbd95fa7e4bcc9e31b861ee1471b64f2dfa2a1d6facc458ab634f952ca567e",
-      "conversion": [
-        "-t",
-        "72",
-        "-af",
-        "highpass=f=80,lowpass=f=8500,loudnorm=I=-22:TP=-2:LRA=9,afade=t=in:d=1,afade=t=out:st=70:d=2",
-        "-ar",
-        "32000",
-        "-ac",
-        "2",
-        "-b:a",
-        "64k",
-        "-map_metadata",
-        "-1"
-      ],
-      "sha256": "864edf60d2b684c621595163448987cd60d559d1052a7b6cb68ebdde11169eee",
-      "bytes": 576620
+      "kind": "music",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "e6f9a1ea8b9dd558727d6995fc2808cce4dc2376ce4813036e70b9494653aa2e",
+      "source_sha256": "ca9e2b7a5cd5e453f0eb3fadda5d8a51b18941b45d32240236085ff2d3f5d0f4",
+      "bytes": 418364,
+      "duration": 41.739125,
+      "sample_rate": 32000,
+      "bpm": 92,
+      "bars": 16,
+      "mood": "night",
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
+    },
+    {
+      "asset": "underpass.mp3",
+      "kind": "music",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "e5870d257ede31eae85d1765140a429ad0f89a47925dc221371fef66d73486ae",
+      "source_sha256": "055a0f70db5a66b70745a13d4eae9c7a9b8046800201e1d9a6dee77bf7df12c4",
+      "bytes": 343844,
+      "duration": 34.28571875,
+      "sample_rate": 32000,
+      "bpm": 112,
+      "bars": 16,
+      "mood": "industrial",
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
     },
     {
       "asset": "rush.mp3",
-      "source_sha256": "c30ae8521119deefd0e22224310e45c07ca726c20760dd93e64e02b9b59a8e6c",
-      "conversion": [
-        "-t",
-        "60",
-        "-af",
-        "highpass=f=65,lowpass=f=10500,loudnorm=I=-20:TP=-2:LRA=8,afade=t=in:d=0.5,afade=t=out:st=58:d=2",
-        "-ar",
-        "32000",
-        "-ac",
-        "2",
-        "-b:a",
-        "64k",
-        "-map_metadata",
-        "-1"
-      ],
-      "sha256": "00b2aa4a910c6105b423ac1901ae5fe4bb269d417141ed78a8ad628ca068e659",
-      "bytes": 480716
+      "kind": "music",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "41e7adddfa791370153414affc8c42c4d0f0c283259c06003bccd1d3bf6f7fda",
+      "source_sha256": "844d8e4a2ce2a3414275eccd94791152fd0ad86cbd6220f447e75076deb52046",
+      "bytes": 310724,
+      "duration": 30.96775,
+      "sample_rate": 32000,
+      "bpm": 124,
+      "bars": 16,
+      "mood": "battle",
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
     },
     {
-      "asset": "click_003.mp3",
-      "source": "Audio/click_003.ogg",
-      "source_sha256": "2fa929138bc3a0f432696588f66eac94b8f6d463905ec8808c6461ce4b054292",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "cd8e98fc321aa3b59d45ff45f7532e4ca81196f882099f1a8c60eb71812d8253",
-      "bytes": 668
+      "asset": "radio.mp3",
+      "kind": "music",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "fbd5dda8712a7d3ed9ab874efe4918634f6bcb8229bd2c75aa247d9f5620553c",
+      "source_sha256": "132a15dd7450c07e666862dadf60b371a20064586bef67a000d9d5da67899799",
+      "bytes": 185444,
+      "duration": 18.46153125,
+      "sample_rate": 32000,
+      "bpm": 104,
+      "bars": 8,
+      "mood": "intro",
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
     },
     {
-      "asset": "close_001.mp3",
-      "source": "Audio/close_001.ogg",
-      "source_sha256": "44af8249b933e0fd35ec957a638bb1a0b01f85b53fbe9674bf77bd3ca3168ef4",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "10648bcc12828e8c708e1104e7d3276956369ac0ebf991b858c9cee731dd6a1a",
-      "bytes": 1532
+      "asset": "sf_hit.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "87462fa228d53ec923e993f36cd19287463cb0f86363b9e678798aea5a218bc7",
+      "source_sha256": "d4bdb642b874693f252239970b1f1df8e6df4fbc0ad296ed5fc996c74dd7daaf",
+      "bytes": 2060,
+      "duration": 0.15,
+      "sample_rate": 32000,
+      "event": "hit"
     },
     {
-      "asset": "confirmation_002.mp3",
-      "source": "Audio/confirmation_002.ogg",
-      "source_sha256": "33b17a9a9a2397c62b285c52c33a907fdffb476909c99e42dde603f6a7a8b12c",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "ade8fba6ccb473bf47003efc9270588fc54363ec94a6ebe70f3750e87436a740",
-      "bytes": 3836
+      "asset": "sf_crit.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "182b1f1050a70c8634cf6fd67b5671d70c08356180598aa2e61f3df09b2b1e28",
+      "source_sha256": "e3b4e299e27dcbe11909b564eb9d06137851c742e4d89a63fb95dae6a75c5050",
+      "bytes": 2636,
+      "duration": 0.23,
+      "sample_rate": 32000,
+      "event": "crit"
     },
     {
-      "asset": "drop_003.mp3",
-      "source": "Audio/drop_003.ogg",
-      "source_sha256": "43d086d50f90493a98cd2e09aa6dbf150d164f1578e1ec768d21cb185571ad87",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "fcadffdb8cd72f31f382cfd914983ed1726d8c5c556a5457dab8ab9c2a4ed50e",
-      "bytes": 1676
+      "asset": "sf_kill.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "022ee86ac7dfeffd35e785a25ef74ec87fc9befae6b93f0ec75f9e5737f3dd16",
+      "source_sha256": "94487945cb1efab1ceeccb92f492f96c484b28e92eebfc9ead7abd3d8312b34d",
+      "bytes": 2636,
+      "duration": 0.24,
+      "sample_rate": 32000,
+      "event": "kill"
     },
     {
-      "asset": "error_006.mp3",
-      "source": "Audio/error_006.ogg",
-      "source_sha256": "a97513d7fd2b12b1210c423be943b4c1ab0e899b11db95855e9b74836e646ae0",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "5bc58382141d58a3be12932c76706605e53fc5d2a3905afb8c44d9f278289a22",
-      "bytes": 3548
+      "asset": "sf_hurt.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "07022f06b23b5c6ccd180e1966ea3f1fc00a2c26507141239e5d860e2747ccc9",
+      "source_sha256": "661b4d109f557282e02e01b1fadfdce75409f03c532566a3552e7132dc86e33b",
+      "bytes": 3212,
+      "duration": 0.3,
+      "sample_rate": 32000,
+      "event": "hurt"
     },
     {
-      "asset": "glass_004.mp3",
-      "source": "Audio/glass_004.ogg",
-      "source_sha256": "2379b58f953e3d86982aa8cddcae763022c6258e9820171bf905ce58b4e97766",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "4474e3f34c0c90544d4d4de8d0f19833ae37ba651ea855963fbe645fb5f08d07",
-      "bytes": 4700
+      "asset": "sf_die.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "767fbc49f042d275e4625eb9b22aac6dfbce7b5e10c24a2bc31eb506d377949d",
+      "source_sha256": "1acfe8694dc6beb3576d80c0cf2c91ff1f80ad5ee294121b853eda454dbb33ce",
+      "bytes": 6092,
+      "duration": 0.65,
+      "sample_rate": 32000,
+      "event": "die"
     },
     {
-      "asset": "glitch_001.mp3",
-      "source": "Audio/glitch_001.ogg",
-      "source_sha256": "da78c642bbd95da2c364ed0e991ebbfc5a4c0d281165d932b5819e0dd31a39d2",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "0a17d7547bf09d22c28547b7274e435679ec80e51f7f94603ea33f3ec7c16507",
-      "bytes": 668
+      "asset": "sf_fire.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "5c284369adc1e2cec9575c758cc9b5987413aea457e4e54d309e9616635c65af",
+      "source_sha256": "a9cdbbd83fa119fa84f131aa41ee1d994b954ef5f6ecb5bf1d8f55bac8ddcf3d",
+      "bytes": 3212,
+      "duration": 0.3,
+      "sample_rate": 32000,
+      "event": "fire"
     },
     {
-      "asset": "maximize_002.mp3",
-      "source": "Audio/maximize_002.ogg",
-      "source_sha256": "cc51162cb4506158b953b121bf479aad070056533ade5c5cd2f980183127ceb4",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "84a41c2c15ca199ab850498463c3a303e95b425cd7f1bdc0c0f66b94c36fcd84",
-      "bytes": 2108
+      "asset": "sf_boom.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "e4d1aa194c49e2c05f29cee18fd6f84d20f162e3d6556591cb362dccf367e982",
+      "source_sha256": "ef429efca8b57dcc19c95bfd8a61aea6096bb7768fbd95cbf95b8ad5fd791e68",
+      "bytes": 4652,
+      "duration": 0.48,
+      "sample_rate": 32000,
+      "event": "boom"
     },
     {
-      "asset": "minimize_002.mp3",
-      "source": "Audio/minimize_002.ogg",
-      "source_sha256": "670e47846dc003fe29d39c8dfebb8635bfcacae3c0916392c0e8bff659493ad6",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "d4eb43935ded261e201a942460f2c93fee229b571b9669f6f34f3a945a18df3a",
-      "bytes": 2108
+      "asset": "sf_frost.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "9569911074e35e72b9b1eceb5c7921eb726de55b550c4af8db6801cf48ae27d9",
+      "source_sha256": "6710b8d178011017444f59f131829d6291790b9510b98d55e5df91b39193fd29",
+      "bytes": 3500,
+      "duration": 0.36,
+      "sample_rate": 32000,
+      "event": "frost"
     },
     {
-      "asset": "open_002.mp3",
-      "source": "Audio/open_002.ogg",
-      "source_sha256": "24ff224fe2c09c6aed1b41249825382dc74cf324b887ff279d8494912ce2beee",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "6d91ff0fc1b8dedd35a74dd1ee671da44faac53a4309ffd053f8ec5ffced7549",
-      "bytes": 2540
+      "asset": "sf_chain.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "ea5f743e4968079516472b3287c46b1b43dcd3e2fb1b6321c6bde0785aa56044",
+      "source_sha256": "309d1cbb5453afefdb5df1c4a83fda9150abf10d8e5f178dde352d69216a145d",
+      "bytes": 2348,
+      "duration": 0.19,
+      "sample_rate": 32000,
+      "event": "chain"
     },
     {
-      "asset": "pluck_001.mp3",
-      "source": "Audio/pluck_001.ogg",
-      "source_sha256": "be97ec4893a02d6eccfb678daa76c83e34cb2583b834ec2593d2641def739fa4",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "0412ec0185eb8ebaa1ebfafe9fdbc043fbb640fbf5686f831e613eab8bccaca5",
-      "bytes": 1244
+      "asset": "sf_meteor.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "bf2f411c3d0772bd0c984a694f4401e2b9a608181a16cfd8e8caf64a1c5423bd",
+      "source_sha256": "3aeaf789769e8b01b6dc3b2ee6395fcf8f8994e0626058be70cc5047e19fd91f",
+      "bytes": 5228,
+      "duration": 0.56,
+      "sample_rate": 32000,
+      "event": "meteor"
     },
     {
-      "asset": "scratch_003.mp3",
-      "source": "Audio/scratch_003.ogg",
-      "source_sha256": "2d80371b55ebe2e8b916b84093a8ae7717d09a80c6b617079ade5bd0dacba7b7",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "64317586bc3294ed0b08a98b79416e4141576290014ebd239f22e2ab28a254fd",
-      "bytes": 1388
+      "asset": "sf_pick.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "23d7c8c8ade9b46ef82b07727f045ab3c18b76cc0fc8c3bb3f035ea15025227c",
+      "source_sha256": "0d89051d2dcdde99df075706394741b29e3ac980361212976c86aab40c63fb79",
+      "bytes": 1772,
+      "duration": 0.12,
+      "sample_rate": 32000,
+      "event": "pick"
     },
     {
-      "asset": "select_003.mp3",
-      "source": "Audio/select_003.ogg",
-      "source_sha256": "9a612fd2f513d52a296906b41071c990f75defe56be3bee60d2d4e2423b51b8b",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "450c29b67b80bc3d0539684d31d0e6cff6480f590046bce2e794f0264b0f85aa",
-      "bytes": 2828
+      "asset": "sf_rare.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "fbd13569008f25326c49f6761b5be09b511eba14f7ab1c7637decabd76ab4a4f",
+      "source_sha256": "66c796d79ecc2e4b659857158b5a9539e54af679bbcd57e69a6c5f3c999b47db",
+      "bytes": 6092,
+      "duration": 0.68,
+      "sample_rate": 32000,
+      "event": "rare"
     },
     {
-      "asset": "switch_004.mp3",
-      "source": "Audio/switch_004.ogg",
-      "source_sha256": "541c19cc1ab712a9efc5765df602e7d0da09d9cafdd297ce1e19b092289fd62f",
-      "conversion": [
-        "loudnorm I=-23 TP=-3 LRA=6",
-        "24kHz mono 48kbps MP3"
-      ],
-      "sha256": "0f18c57019a0855e815865402ff306f8eb329f90c6c5fb3c24f73b35761ddf6b",
-      "bytes": 3548
+      "asset": "sf_lvl.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "6ae6133f1b91dd4baba70ed8e1677db7650bc4d0018f6eef7f234702cebe52df",
+      "source_sha256": "c08a9f8e29a791cf7b092ec753ae246ebca8992a71987e9cab79d2c63ddfed23",
+      "bytes": 6668,
+      "duration": 0.75,
+      "sample_rate": 32000,
+      "event": "lvl"
+    },
+    {
+      "asset": "sf_card.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "eaae33f8839da0d7754b9864fa3f8e242fb09178f8dfd7abf391d1e032ce68e9",
+      "source_sha256": "6ca70f514a219a669914ef563c7b034483c27927335b2d4c04224a5f381b7f69",
+      "bytes": 2636,
+      "duration": 0.22,
+      "sample_rate": 32000,
+      "event": "card"
+    },
+    {
+      "asset": "sf_snap.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "621da483434d8d7c715ec28dbd183379affc07fc2671503c5b915ae2dabab7fb",
+      "source_sha256": "8dcb3445915f8654735b1be3304a94a35e2e75427994d7ed7aeb64d422ae07d1",
+      "bytes": 1196,
+      "duration": 0.07,
+      "sample_rate": 32000,
+      "event": "snap"
+    },
+    {
+      "asset": "sf_ph_open.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "3ad42ba7954d58267733ef77dcf3ab96d986574ec243ec97eb8c304b3b1937eb",
+      "source_sha256": "e3ffd5f5ea8c9dd64feb553e1a5ba35d66d137a9d943762fc7b9e9b0f4793f2c",
+      "bytes": 2636,
+      "duration": 0.25,
+      "sample_rate": 32000,
+      "event": "ph_open"
+    },
+    {
+      "asset": "sf_ph_on.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "7ef5ebb676c13d7571aafa446a1635dc7ef166c650a784dff96bd4a843c41d27",
+      "source_sha256": "ef92370d703a0723fdc09e33d00d0249eeb3436ae071e6708f9698b5d0450410",
+      "bytes": 3500,
+      "duration": 0.35,
+      "sample_rate": 32000,
+      "event": "ph_on"
+    },
+    {
+      "asset": "sf_ph_key.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "90d7cddff0b4bf556970e376c81dce4d25d289fd1a04ab0d3c43cf92828d5024",
+      "source_sha256": "03dc4c41db5f0c395f8dd576f0ef0adf2dcbe3f98a59ae522e18acc0afd12045",
+      "bytes": 1196,
+      "duration": 0.045,
+      "sample_rate": 32000,
+      "event": "ph_key"
+    },
+    {
+      "asset": "sf_ph_tab.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "7d2b97e8b67626d707bfd278c5f7dfe3d195ebde0c76e1f64cfd1f0c392478da",
+      "source_sha256": "00781f81d9347238add2dbfe8e4fbf4f1bd2e469f9fa6972066189cbba11bc53",
+      "bytes": 1484,
+      "duration": 0.1,
+      "sample_rate": 32000,
+      "event": "ph_tab"
+    },
+    {
+      "asset": "sf_ph_zoom.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "0f877c52ce81a6a777ed778857eaf7392de740d5a312c1445c1813cb3ccec742",
+      "source_sha256": "0a43f9343a2bd80424ac5c8c8cd9cd63d03a9a3341f8945ffd63f6d22ca744ad",
+      "bytes": 2060,
+      "duration": 0.16,
+      "sample_rate": 32000,
+      "event": "ph_zoom"
+    },
+    {
+      "asset": "sf_ph_zoomout.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "5a7001374ef0d1cfdbbb4847d6a8b2be773c57e6f17e70f33fe5b57f01b5c03d",
+      "source_sha256": "b9895cb4ca39bd7a45d0e9d65166386c7cdfeba43122d879332e47b75af31262",
+      "bytes": 2060,
+      "duration": 0.17,
+      "sample_rate": 32000,
+      "event": "ph_zoomout"
+    },
+    {
+      "asset": "sf_ph_off.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "1bd5c2140a0715faa5718be8b0af79b13d88e9581d9b5fe79e64f4eb10679c6a",
+      "source_sha256": "815ebde03c7e7d0dc8d1463dfd7800e99676e209ad2de5ae77d28533b919cd45",
+      "bytes": 2924,
+      "duration": 0.28,
+      "sample_rate": 32000,
+      "event": "ph_off"
+    },
+    {
+      "asset": "sf_stair.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "fc1f54b79f32cb1ecc00d83a9df4f59bde0745ada6b42bc87c9d9cad5404d2ff",
+      "source_sha256": "8a832f37ccddedeefa58a6ab137147b6e0d392aca61c4db45926f158c6425194",
+      "bytes": 3500,
+      "duration": 0.35,
+      "sample_rate": 32000,
+      "event": "stair"
+    },
+    {
+      "asset": "sf_season.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "bb6310033191620e2064302eb96efb4bde02bb94796997c347a32ea3541c6ed4",
+      "source_sha256": "35d955e08c88c37b723d77238ee7fc1c85cff6ea85edf1e7f0f09014287980ab",
+      "bytes": 5228,
+      "duration": 0.55,
+      "sample_rate": 32000,
+      "event": "season"
+    },
+    {
+      "asset": "sf_pulse.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "423180242b66ba27fa47be4085bf4e10f23d8be7b5c49775a454a9492a8052e8",
+      "source_sha256": "ea34eee110ab5a205553daae84f1fc11cca58f4f80ea77b1886f9ef2c0cd8e46",
+      "bytes": 3500,
+      "duration": 0.35,
+      "sample_rate": 32000,
+      "event": "pulse"
+    },
+    {
+      "asset": "sf_magnet.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "ba9dacbce7d185012a33d4e8e745a290c42330c8c102f31deba66e076df4980d",
+      "source_sha256": "b219ac2760ca91ff4a8e61b81305463d58d20cf9225a8537e19d720c451740c0",
+      "bytes": 2924,
+      "duration": 0.27,
+      "sample_rate": 32000,
+      "event": "magnet"
+    },
+    {
+      "asset": "sf_spam.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "f2c8f5e821475a2f91750dedd20eded694e12cb8554bda9674d1c89e33a93cf8",
+      "source_sha256": "12af7fcc3c35518bf5421c821ded8a0fbb4f234757e7c993ac5cee112a8d6a78",
+      "bytes": 2060,
+      "duration": 0.18,
+      "sample_rate": 32000,
+      "event": "spam"
+    },
+    {
+      "asset": "sf_flicker.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "a647225d9dbd6976634ad077ce104feb6577fbaec0a84061741e382c7365912b",
+      "source_sha256": "8796692450555bc36716deef755b6214d5fe46f31a193582a569ccbb6a648288",
+      "bytes": 1772,
+      "duration": 0.14,
+      "sample_rate": 32000,
+      "event": "flicker"
+    },
+    {
+      "asset": "sf_beam.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "6a1d4a8673cee5f8c1c2b01c80919cb3af71b51eb3bedd5a6db38e66a0053f9f",
+      "source_sha256": "820dd593741cafb7a97af96a8d4f7bd5bbafb9841915ae543a3e803253a0f02c",
+      "bytes": 4076,
+      "duration": 0.4,
+      "sample_rate": 32000,
+      "event": "beam"
+    },
+    {
+      "asset": "sf_arrows.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "904f6aa02c53eb370c5e99cfe9568aff3d7685b19d2d7c7e7bfc98d2b9a67e4d",
+      "source_sha256": "1c1cfe84b483f971aabe68cf5007dd7ca89356fb5cac1153eb284aa8069f3b15",
+      "bytes": 2060,
+      "duration": 0.18,
+      "sample_rate": 32000,
+      "event": "arrows"
+    },
+    {
+      "asset": "sf_summon.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "ed8adf1ddf80effef27254cfaefb5b920625cc95d2b03605afba3ea0b0dd8978",
+      "source_sha256": "c1869386e1f6fd6a6a2ac345ff406b3ead634e4a9fc279fe7d84373fb9e8f1c4",
+      "bytes": 4076,
+      "duration": 0.4,
+      "sample_rate": 32000,
+      "event": "summon"
+    },
+    {
+      "asset": "sf_rift.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "e041feb9f1f4dc5f98d628aca8f95ee1edff868948d32b08c0ba99ad3848e151",
+      "source_sha256": "e9566e61007fd0ddfcc30d01917d5da0fc6fa812de61a6e3aeace3e58fe10a59",
+      "bytes": 4652,
+      "duration": 0.5,
+      "sample_rate": 32000,
+      "event": "rift"
+    },
+    {
+      "asset": "sf_resonance.mp3",
+      "kind": "sfx",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "88fb45b10dda5065061f906cd026452891c764ed4fcee5c814c6ba5a0a584b9c",
+      "source_sha256": "cd013fe63e66388ceea06b0d862dbbccf990a9559e119c1995447b6b9a13379a",
+      "bytes": 4364,
+      "duration": 0.45,
+      "sample_rate": 32000,
+      "event": "resonance"
     }
   ]
 }

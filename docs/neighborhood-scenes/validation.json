@@ -1,0 +1,1097 @@
+{
+  "terrain": {
+    "rows": [
+      {
+        "key": "map:neighborhood-check-0:0",
+        "profile": 11,
+        "site": true,
+        "slope": 0.21108352235059075,
+        "cells": 1755,
+        "reachable": 1755
+      },
+      {
+        "key": "map:neighborhood-check-1:0",
+        "profile": 8,
+        "site": true,
+        "slope": 0.6885197978216667,
+        "cells": 1019,
+        "reachable": 1019
+      },
+      {
+        "key": "map:neighborhood-check-2:0",
+        "profile": 9,
+        "site": true,
+        "slope": 1.7584606510531633,
+        "cells": 968,
+        "reachable": 968
+      },
+      {
+        "key": "map:neighborhood-check-3:0",
+        "profile": 10,
+        "site": true,
+        "slope": 0.9793511190271766,
+        "cells": 1723,
+        "reachable": 1723
+      },
+      {
+        "key": "map:neighborhood-check-4:0",
+        "profile": 11,
+        "site": true,
+        "slope": 0.13764984375095646,
+        "cells": 950,
+        "reachable": 950
+      },
+      {
+        "key": "map:neighborhood-check-5:0",
+        "profile": 0,
+        "site": true,
+        "slope": 0.47289954832791514,
+        "cells": 756,
+        "reachable": 756
+      },
+      {
+        "key": "map:neighborhood-check-6:0",
+        "profile": 1,
+        "site": true,
+        "slope": 0.6957704037640506,
+        "cells": 1824,
+        "reachable": 1824
+      },
+      {
+        "key": "map:neighborhood-check-7:0",
+        "profile": 2,
+        "site": true,
+        "slope": 1.2612156789485847,
+        "cells": 864,
+        "reachable": 864
+      },
+      {
+        "key": "map:neighborhood-check-8:0",
+        "profile": 3,
+        "site": true,
+        "slope": 0.6165967536713168,
+        "cells": 610,
+        "reachable": 610
+      },
+      {
+        "key": "map:neighborhood-check-9:0",
+        "profile": 4,
+        "site": true,
+        "slope": 0.477833015124862,
+        "cells": 1897,
+        "reachable": 1897
+      },
+      {
+        "key": "map:neighborhood-check-10:0",
+        "profile": 8,
+        "site": true,
+        "slope": 0.9255168074118263,
+        "cells": 876,
+        "reachable": 876
+      },
+      {
+        "key": "map:neighborhood-check-11:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.2526944243992109,
+        "cells": 3967,
+        "reachable": 3967
+      },
+      {
+        "key": "map:neighborhood-check-12:0",
+        "profile": 6,
+        "site": true,
+        "slope": 0.5168281906643148,
+        "cells": 643,
+        "reachable": 643
+      },
+      {
+        "key": "map:neighborhood-check-13:0",
+        "profile": 5,
+        "site": true,
+        "slope": 0.2422604800712178,
+        "cells": 610,
+        "reachable": 610
+      },
+      {
+        "key": "map:neighborhood-check-14:0",
+        "profile": 8,
+        "site": true,
+        "slope": 1.6932219020197845,
+        "cells": 970,
+        "reachable": 970
+      },
+      {
+        "key": "map:neighborhood-check-15:0",
+        "profile": 11,
+        "site": true,
+        "slope": 0.9623003338494649,
+        "cells": 564,
+        "reachable": 564
+      },
+      {
+        "key": "map:neighborhood-check-16:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.44948012260202275,
+        "cells": 929,
+        "reachable": 929
+      },
+      {
+        "key": "map:neighborhood-check-17:0",
+        "profile": 9,
+        "site": true,
+        "slope": 0.9005709020340711,
+        "cells": 330,
+        "reachable": 330
+      },
+      {
+        "key": "map:neighborhood-check-18:0",
+        "profile": 0,
+        "site": true,
+        "slope": 0.9731896680893418,
+        "cells": 1541,
+        "reachable": 1541
+      },
+      {
+        "key": "map:neighborhood-check-19:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.7663725752327073,
+        "cells": 506,
+        "reachable": 506
+      },
+      {
+        "key": "map:neighborhood-check-20:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.7416481852787283,
+        "cells": 986,
+        "reachable": 986
+      },
+      {
+        "key": "map:neighborhood-check-21:0",
+        "profile": 8,
+        "site": true,
+        "slope": 1.2059197863241529,
+        "cells": 845,
+        "reachable": 845
+      },
+      {
+        "key": "map:neighborhood-check-22:0",
+        "profile": 9,
+        "site": true,
+        "slope": 1.551426677331147,
+        "cells": 1116,
+        "reachable": 1116
+      },
+      {
+        "key": "map:neighborhood-check-23:0",
+        "profile": 6,
+        "site": true,
+        "slope": 0.25465466726877606,
+        "cells": 1956,
+        "reachable": 1956
+      },
+      {
+        "key": "map:neighborhood-check-24:0",
+        "profile": 3,
+        "site": true,
+        "slope": 1.0842930839568776,
+        "cells": 2146,
+        "reachable": 2146
+      },
+      {
+        "key": "map:neighborhood-check-25:0",
+        "profile": 8,
+        "site": true,
+        "slope": 0.6973700262445945,
+        "cells": 1743,
+        "reachable": 1743
+      },
+      {
+        "key": "map:neighborhood-check-26:0",
+        "profile": 1,
+        "site": true,
+        "slope": 0.9641155628604228,
+        "cells": 982,
+        "reachable": 982
+      },
+      {
+        "key": "map:neighborhood-check-27:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.3133914671951731,
+        "cells": 1707,
+        "reachable": 1707
+      },
+      {
+        "key": "map:neighborhood-check-28:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.18628691889864146,
+        "cells": 290,
+        "reachable": 290
+      },
+      {
+        "key": "map:neighborhood-check-29:0",
+        "profile": 4,
+        "site": true,
+        "slope": 0.8760074582328707,
+        "cells": 921,
+        "reachable": 921
+      },
+      {
+        "key": "map:neighborhood-check-30:0",
+        "profile": 10,
+        "site": true,
+        "slope": 1.0016825818206732,
+        "cells": 887,
+        "reachable": 887
+      },
+      {
+        "key": "map:neighborhood-check-31:0",
+        "profile": 9,
+        "site": true,
+        "slope": 1.3955305789565364,
+        "cells": 428,
+        "reachable": 428
+      },
+      {
+        "key": "map:neighborhood-check-32:0",
+        "profile": 8,
+        "site": true,
+        "slope": 0.9436522649733083,
+        "cells": 6014,
+        "reachable": 6014
+      },
+      {
+        "key": "map:neighborhood-check-33:0",
+        "profile": 11,
+        "site": true,
+        "slope": 0.9407593037715059,
+        "cells": 1329,
+        "reachable": 1329
+      },
+      {
+        "key": "map:neighborhood-check-34:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.4723705366427573,
+        "cells": 3116,
+        "reachable": 3116
+      },
+      {
+        "key": "map:neighborhood-check-35:0",
+        "profile": 9,
+        "site": true,
+        "slope": 2.2651957151795923,
+        "cells": 571,
+        "reachable": 571
+      },
+      {
+        "key": "map:neighborhood-check-36:0",
+        "profile": 8,
+        "site": true,
+        "slope": 0.8381049391628765,
+        "cells": 1578,
+        "reachable": 1578
+      },
+      {
+        "key": "map:neighborhood-check-37:0",
+        "profile": 3,
+        "site": true,
+        "slope": 0.4783452762473388,
+        "cells": 868,
+        "reachable": 868
+      },
+      {
+        "key": "map:neighborhood-check-38:0",
+        "profile": 6,
+        "site": true,
+        "slope": 0.27411580522822404,
+        "cells": 916,
+        "reachable": 916
+      },
+      {
+        "key": "map:neighborhood-check-39:0",
+        "profile": 5,
+        "site": true,
+        "slope": 1.2329598899227903,
+        "cells": 1015,
+        "reachable": 1015
+      },
+      {
+        "key": "map:neighborhood-check-40:0",
+        "profile": 1,
+        "site": true,
+        "slope": 1.4401413447622364,
+        "cells": 818,
+        "reachable": 818
+      },
+      {
+        "key": "map:neighborhood-check-41:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.3597702312919815,
+        "cells": 874,
+        "reachable": 874
+      },
+      {
+        "key": "map:neighborhood-check-42:0",
+        "profile": 3,
+        "site": true,
+        "slope": 2.283003657167649,
+        "cells": 507,
+        "reachable": 507
+      },
+      {
+        "key": "map:neighborhood-check-43:0",
+        "profile": 4,
+        "site": true,
+        "slope": 0.5704574883311788,
+        "cells": 510,
+        "reachable": 510
+      },
+      {
+        "key": "map:neighborhood-check-44:0",
+        "profile": 9,
+        "site": true,
+        "slope": 1.4951624800075018,
+        "cells": 4839,
+        "reachable": 4839
+      },
+      {
+        "key": "map:neighborhood-check-45:0",
+        "profile": 10,
+        "site": true,
+        "slope": 1.2679606852537997,
+        "cells": 911,
+        "reachable": 911
+      },
+      {
+        "key": "map:neighborhood-check-46:0",
+        "profile": 11,
+        "site": true,
+        "slope": 1.1595553234895277,
+        "cells": 1449,
+        "reachable": 1449
+      },
+      {
+        "key": "map:neighborhood-check-47:0",
+        "profile": 8,
+        "site": true,
+        "slope": 1.6744631139753225,
+        "cells": 394,
+        "reachable": 394
+      },
+      {
+        "key": "map:neighborhood-check-48:0",
+        "profile": 5,
+        "site": true,
+        "slope": 0.6742936481687585,
+        "cells": 349,
+        "reachable": 349
+      },
+      {
+        "key": "map:neighborhood-check-49:0",
+        "profile": 10,
+        "site": true,
+        "slope": 1.702659844798001,
+        "cells": 1918,
+        "reachable": 1918
+      },
+      {
+        "key": "map:neighborhood-check-50:0",
+        "profile": 0,
+        "site": true,
+        "slope": 0.832261057494142,
+        "cells": 396,
+        "reachable": 396
+      },
+      {
+        "key": "map:neighborhood-check-51:0",
+        "profile": 3,
+        "site": true,
+        "slope": 1.657629923848519,
+        "cells": 441,
+        "reachable": 441
+      },
+      {
+        "key": "map:neighborhood-check-52:0",
+        "profile": 6,
+        "site": true,
+        "slope": 1.6596624426065376,
+        "cells": 436,
+        "reachable": 436
+      },
+      {
+        "key": "map:neighborhood-check-53:0",
+        "profile": 5,
+        "site": true,
+        "slope": 1.0041055654717979,
+        "cells": 1459,
+        "reachable": 1459
+      },
+      {
+        "key": "map:neighborhood-check-54:0",
+        "profile": 4,
+        "site": true,
+        "slope": 0.8776082976178439,
+        "cells": 3733,
+        "reachable": 3733
+      },
+      {
+        "key": "map:neighborhood-check-55:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.34146518093519573,
+        "cells": 1138,
+        "reachable": 1138
+      },
+      {
+        "key": "map:neighborhood-check-56:0",
+        "profile": 10,
+        "site": true,
+        "slope": 1.4041939217890675,
+        "cells": 904,
+        "reachable": 904
+      },
+      {
+        "key": "map:neighborhood-check-57:0",
+        "profile": 9,
+        "site": false,
+        "cells": 259,
+        "reachable": 259
+      },
+      {
+        "key": "map:neighborhood-check-58:0",
+        "profile": 8,
+        "site": true,
+        "slope": 0.6723490060035477,
+        "cells": 1021,
+        "reachable": 1021
+      },
+      {
+        "key": "map:neighborhood-check-59:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.17097266794453775,
+        "cells": 3036,
+        "reachable": 3036
+      },
+      {
+        "key": "map:neighborhood-check-60:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.1967918383344468,
+        "cells": 846,
+        "reachable": 846
+      },
+      {
+        "key": "map:neighborhood-check-61:0",
+        "profile": 4,
+        "site": true,
+        "slope": 1.437346816767823,
+        "cells": 342,
+        "reachable": 342
+      },
+      {
+        "key": "map:neighborhood-check-62:0",
+        "profile": 5,
+        "site": true,
+        "slope": 1.3457772835828414,
+        "cells": 1009,
+        "reachable": 1009
+      },
+      {
+        "key": "map:neighborhood-check-63:0",
+        "profile": 6,
+        "site": true,
+        "slope": 2.1364683272217038,
+        "cells": 1600,
+        "reachable": 1600
+      },
+      {
+        "key": "map:neighborhood-check-64:0",
+        "profile": 3,
+        "site": true,
+        "slope": 0.47456366247802695,
+        "cells": 3065,
+        "reachable": 3065
+      },
+      {
+        "key": "map:neighborhood-check-65:0",
+        "profile": 4,
+        "site": true,
+        "slope": 0.6312443542920637,
+        "cells": 440,
+        "reachable": 440
+      },
+      {
+        "key": "map:neighborhood-check-66:0",
+        "profile": 1,
+        "site": true,
+        "slope": 0.38940290636594055,
+        "cells": 309,
+        "reachable": 309
+      },
+      {
+        "key": "map:neighborhood-check-67:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.8448200445676357,
+        "cells": 551,
+        "reachable": 551
+      },
+      {
+        "key": "map:neighborhood-check-68:0",
+        "profile": 3,
+        "site": true,
+        "slope": 0.6745422271674884,
+        "cells": 1522,
+        "reachable": 1522
+      },
+      {
+        "key": "map:neighborhood-check-69:0",
+        "profile": 4,
+        "site": true,
+        "slope": 2.157941755066886,
+        "cells": 724,
+        "reachable": 724
+      },
+      {
+        "key": "map:neighborhood-check-70:0",
+        "profile": 10,
+        "site": true,
+        "slope": 2.0350469383059453,
+        "cells": 499,
+        "reachable": 499
+      },
+      {
+        "key": "map:neighborhood-check-71:0",
+        "profile": 5,
+        "site": true,
+        "slope": 1.1971395914098673,
+        "cells": 1512,
+        "reachable": 1512
+      },
+      {
+        "key": "map:neighborhood-check-72:0",
+        "profile": 4,
+        "site": true,
+        "slope": 1.2277459338440342,
+        "cells": 7103,
+        "reachable": 7103
+      },
+      {
+        "key": "map:neighborhood-check-73:0",
+        "profile": 11,
+        "site": true,
+        "slope": 0.1345854862575402,
+        "cells": 3179,
+        "reachable": 3179
+      },
+      {
+        "key": "map:neighborhood-check-74:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.7501980581517891,
+        "cells": 560,
+        "reachable": 560
+      },
+      {
+        "key": "map:neighborhood-check-75:0",
+        "profile": 1,
+        "site": true,
+        "slope": 1.2622753330958276,
+        "cells": 11043,
+        "reachable": 11043
+      },
+      {
+        "key": "map:neighborhood-check-76:0",
+        "profile": 0,
+        "site": true,
+        "slope": 0.6109492969730224,
+        "cells": 3927,
+        "reachable": 3927
+      },
+      {
+        "key": "map:neighborhood-check-77:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.7814440596593781,
+        "cells": 586,
+        "reachable": 586
+      },
+      {
+        "key": "map:neighborhood-check-78:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.4304009976089123,
+        "cells": 10416,
+        "reachable": 10416
+      },
+      {
+        "key": "map:neighborhood-check-79:0",
+        "profile": 1,
+        "site": true,
+        "slope": 0.6747712333453174,
+        "cells": 3611,
+        "reachable": 3611
+      },
+      {
+        "key": "map:neighborhood-check-80:0",
+        "profile": 9,
+        "site": true,
+        "slope": 0.7115075908091026,
+        "cells": 388,
+        "reachable": 388
+      },
+      {
+        "key": "map:neighborhood-check-81:0",
+        "profile": 6,
+        "site": true,
+        "slope": 1.6910489994200457,
+        "cells": 2768,
+        "reachable": 2768
+      },
+      {
+        "key": "map:neighborhood-check-82:0",
+        "profile": 7,
+        "site": true,
+        "slope": 1.0228732994646146,
+        "cells": 1335,
+        "reachable": 1335
+      },
+      {
+        "key": "map:neighborhood-check-83:0",
+        "profile": 4,
+        "site": true,
+        "slope": 0.6946428941459404,
+        "cells": 1874,
+        "reachable": 1874
+      },
+      {
+        "key": "map:neighborhood-check-84:0",
+        "profile": 1,
+        "site": true,
+        "slope": 0.17570325445802942,
+        "cells": 1305,
+        "reachable": 1305
+      },
+      {
+        "key": "map:neighborhood-check-85:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.6314805267170643,
+        "cells": 2003,
+        "reachable": 2003
+      },
+      {
+        "key": "map:neighborhood-check-86:0",
+        "profile": 11,
+        "site": true,
+        "slope": 0.1420765464692986,
+        "cells": 1617,
+        "reachable": 1617
+      },
+      {
+        "key": "map:neighborhood-check-87:0",
+        "profile": 4,
+        "site": true,
+        "slope": 1.6729532577007786,
+        "cells": 864,
+        "reachable": 864
+      },
+      {
+        "key": "map:neighborhood-check-88:0",
+        "profile": 1,
+        "site": true,
+        "slope": 0.6510534799365886,
+        "cells": 2048,
+        "reachable": 2048
+      },
+      {
+        "key": "map:neighborhood-check-89:0",
+        "profile": 6,
+        "site": true,
+        "slope": 0.6713319822399404,
+        "cells": 384,
+        "reachable": 384
+      },
+      {
+        "key": "map:neighborhood-check-90:0",
+        "profile": 0,
+        "site": true,
+        "slope": 0.5629462208181335,
+        "cells": 1226,
+        "reachable": 1226
+      },
+      {
+        "key": "map:neighborhood-check-91:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.5248376965080712,
+        "cells": 571,
+        "reachable": 571
+      },
+      {
+        "key": "map:neighborhood-check-92:0",
+        "profile": 6,
+        "site": true,
+        "slope": 1.0902125336633963,
+        "cells": 1248,
+        "reachable": 1248
+      },
+      {
+        "key": "map:neighborhood-check-93:0",
+        "profile": 5,
+        "site": true,
+        "slope": 1.3868475891274592,
+        "cells": 408,
+        "reachable": 408
+      },
+      {
+        "key": "map:neighborhood-check-94:0",
+        "profile": 0,
+        "site": true,
+        "slope": 0.2904435236102558,
+        "cells": 3265,
+        "reachable": 3265
+      },
+      {
+        "key": "map:neighborhood-check-95:0",
+        "profile": 11,
+        "site": true,
+        "slope": 0.564650607511616,
+        "cells": 396,
+        "reachable": 396
+      },
+      {
+        "key": "map:neighborhood-check-96:0",
+        "profile": 10,
+        "site": true,
+        "slope": 2.5576651639321835,
+        "cells": 1100,
+        "reachable": 1100
+      },
+      {
+        "key": "map:neighborhood-check-97:0",
+        "profile": 1,
+        "site": true,
+        "slope": 1.1197785189328866,
+        "cells": 555,
+        "reachable": 555
+      },
+      {
+        "key": "map:neighborhood-check-98:0",
+        "profile": 0,
+        "site": true,
+        "slope": 1.056956771285369,
+        "cells": 2183,
+        "reachable": 2183
+      },
+      {
+        "key": "map:neighborhood-check-99:0",
+        "profile": 11,
+        "site": true,
+        "slope": 0.3745404927589032,
+        "cells": 624,
+        "reachable": 624
+      },
+      {
+        "key": "map:neighborhood-check-100:0",
+        "profile": 0,
+        "site": true,
+        "slope": 0.7267201175611371,
+        "cells": 492,
+        "reachable": 492
+      },
+      {
+        "key": "map:neighborhood-check-101:0",
+        "profile": 3,
+        "site": true,
+        "slope": 1.9461687680387096,
+        "cells": 362,
+        "reachable": 362
+      },
+      {
+        "key": "map:neighborhood-check-102:0",
+        "profile": 6,
+        "site": true,
+        "slope": 0.6888327045379938,
+        "cells": 2173,
+        "reachable": 2173
+      },
+      {
+        "key": "map:neighborhood-check-103:0",
+        "profile": 1,
+        "site": true,
+        "slope": 0.3584546555898852,
+        "cells": 997,
+        "reachable": 997
+      },
+      {
+        "key": "map:neighborhood-check-104:0",
+        "profile": 0,
+        "site": true,
+        "slope": 0.47270656504382585,
+        "cells": 762,
+        "reachable": 762
+      },
+      {
+        "key": "map:neighborhood-check-105:0",
+        "profile": 11,
+        "site": true,
+        "slope": 0.30473676700954866,
+        "cells": 360,
+        "reachable": 360
+      },
+      {
+        "key": "map:neighborhood-check-106:0",
+        "profile": 10,
+        "site": true,
+        "slope": 0.2827676687418615,
+        "cells": 915,
+        "reachable": 915
+      },
+      {
+        "key": "map:neighborhood-check-107:0",
+        "profile": 9,
+        "site": false,
+        "cells": 415,
+        "reachable": 415
+      },
+      {
+        "key": "map:neighborhood-check-108:0",
+        "profile": 4,
+        "site": true,
+        "slope": 1.0984444792124308,
+        "cells": 399,
+        "reachable": 399
+      },
+      {
+        "key": "map:neighborhood-check-109:0",
+        "profile": 7,
+        "site": true,
+        "slope": 1.5821815004348068,
+        "cells": 372,
+        "reachable": 372
+      },
+      {
+        "key": "map:neighborhood-check-110:0",
+        "profile": 5,
+        "site": true,
+        "slope": 0.8565019246513674,
+        "cells": 1371,
+        "reachable": 1371
+      },
+      {
+        "key": "map:neighborhood-check-111:0",
+        "profile": 10,
+        "site": true,
+        "slope": 1.1100365202328648,
+        "cells": 890,
+        "reachable": 890
+      },
+      {
+        "key": "map:neighborhood-check-112:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.7616293077517126,
+        "cells": 1015,
+        "reachable": 1015
+      },
+      {
+        "key": "map:neighborhood-check-113:0",
+        "profile": 0,
+        "site": true,
+        "slope": 0.5705953223543042,
+        "cells": 1193,
+        "reachable": 1193
+      },
+      {
+        "key": "map:neighborhood-check-114:0",
+        "profile": 1,
+        "site": true,
+        "slope": 2.2526779217060775,
+        "cells": 296,
+        "reachable": 296
+      },
+      {
+        "key": "map:neighborhood-check-115:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.35359316373287014,
+        "cells": 1413,
+        "reachable": 1413
+      },
+      {
+        "key": "map:neighborhood-check-116:0",
+        "profile": 7,
+        "site": true,
+        "slope": 0.23492375754935485,
+        "cells": 962,
+        "reachable": 962
+      },
+      {
+        "key": "map:neighborhood-check-117:0",
+        "profile": 4,
+        "site": true,
+        "slope": 1.3415153809412754,
+        "cells": 966,
+        "reachable": 966
+      },
+      {
+        "key": "map:neighborhood-check-118:0",
+        "profile": 1,
+        "site": true,
+        "slope": 0.9254604941143172,
+        "cells": 7276,
+        "reachable": 7276
+      },
+      {
+        "key": "map:neighborhood-check-119:0",
+        "profile": 2,
+        "site": true,
+        "slope": 0.24620618305966208,
+        "cells": 425,
+        "reachable": 425
+      }
+    ],
+    "samples": {
+      "0": "map:neighborhood-check-5:0",
+      "1": "map:neighborhood-check-6:0",
+      "2": "map:neighborhood-check-7:0",
+      "3": "map:neighborhood-check-8:0",
+      "4": "map:neighborhood-check-9:0",
+      "5": "map:neighborhood-check-13:0",
+      "6": "map:neighborhood-check-12:0",
+      "7": "map:neighborhood-check-11:0",
+      "8": "map:neighborhood-check-1:0",
+      "9": "map:neighborhood-check-2:0",
+      "10": "map:neighborhood-check-3:0",
+      "11": "map:neighborhood-check-0:0"
+    },
+    "noSite": true,
+    "legacy": true
+  },
+  "journal": {
+    "upcoming": "<div class=\"street-chapter\"><b>第1章 · 電台前街</b><p>唱片店 阿夏：找回電台天線零件，確認前街為何收到重複的試音。</p><p>沿前街追查走音喇叭，讓店家先恢復各自的廣播。</p><span>沿街探索至深度 3，再追查首領。</span></div>",
+    "inMap": "<div class=\"street-chapter\"><b>第1章 · 電台前街</b><p>唱片店 阿夏：找回電台天線零件，確認前街為何收到重複的試音。</p><p>沿前街追查走音喇叭，讓店家先恢復各自的廣播。</p><span>回到街區討伐首領，接續這段主線。</span></div>",
+    "done": "<details class=\"ui-rules\"><summary>夏日主線 · 已找回 6／6</summary><div class=\"street-chapter\"><b>六章主線 · 各站已恢復</b><p>各處的地方留言仍可繼續收錄，失物已歸還，電台留著今晚的節目。</p></div><details class=\"field-entry\"><summary>第一章　電台前街 · 電台天線零件</summary><p class=\"uxmeta\">走音喇叭</p><p>阿夏把掉下的天線零件收好，請你先別碰還在供電的總線。喇叭裡的試音每次都帶著一聲車鈴；橋下修理攤的小禾，正好在找她的鈴。</p><p>前街已恢復連線。帶著車鈴的線索，去問橋下的小禾。</p></details><details class=\"field-entry\"><summary>第二章　高架橋下 · 腳踏車鈴</summary><p class=\"uxmeta\">回音柱</p><p>車鈴卡在回音柱的接口旁，隨每次重播輕響。小禾把它裝回腳踏車，再將接口切回正確頻道；剩下的雜訊裡，有夜市老闆娘報出的餐牌。</p><p>橋下恢復回應。下一段試播來自商店街與夜市。</p></details><details class=\"field-entry\"><summary>第三章　商店街與夜市 · 老闆娘的收音機</summary><p class=\"uxmeta\">跑出來的招牌</p><p>老闆娘接過收音機，先替等候的客人播回點餐號。錯頻的錄音仍留下半句月台提示；她把時間寫在餐牌背面，請你交給河邊站務員核對。</p><p>夜市的歌回來了。沿站務呼號，追查車站與河邊。</p></details><details class=\"field-entry\"><summary>第四章　車站與河邊 · 站務員的麥克風</summary><p class=\"uxmeta\">失控的月台廣播</p><p>站務員用找回的麥克風重新報站，乘客照常趕上末班。那段重播並非現場廣播，而是山路舊發射機的試音排程；小禾帶著工具，先去找開機鑰匙。</p><p>月台報站恢復。下一段訊號：山路電塔與商場地下。</p></details><details class=\"field-entry\"><summary>第五章　山路電塔與商場地下 · 舊發射機的鑰匙</summary><p class=\"uxmeta\">重播機</p><p>小禾用鑰匙打開發射機，發現「暑假最後一天」是忘了撤下的試音標題。她沒有拔掉街區電源，只改正配送到各站的排程；最後還需要屋頂電台確認每一站都能回覆。</p><p>重播排程已修正。帶著各站的回覆，回屋頂試音。</p></details><details class=\"field-entry\"><summary>第六章　屋頂天線 · 吉祥物的貼紙</summary><p class=\"uxmeta\">錯頻本體</p><p>天線零件裝回電台，車鈴、收音機、麥克風和鑰匙各自回到主人手上。大家在屋頂輪流試音：候船、點餐、報站與晚間節目都能各自播出。小收音機留下那張貼紙，記住今天一起接好線的人。</p><p>各站已恢復。街區仍有各自的歌，請慢慢走回家。</p></details></details>",
+    "chapter": 6,
+    "fields": [
+      "ch"
+    ],
+    "chapters": [
+      {
+        "depth": 3,
+        "contact": "唱片店 阿夏",
+        "request": "找回電台天線零件，確認前街為何收到重複的試音。",
+        "lead": "沿前街追查走音喇叭，讓店家先恢復各自的廣播。",
+        "text": "阿夏把掉下的天線零件收好，請你先別碰還在供電的總線。喇叭裡的試音每次都帶著一聲車鈴；橋下修理攤的小禾，正好在找她的鈴。"
+      },
+      {
+        "depth": 7,
+        "contact": "修理工 小禾",
+        "request": "找回腳踏車鈴，排查橋墩旁的回音接口。",
+        "lead": "鈴聲是追查方向，不是故障源；先隔離錯頻的回音柱。",
+        "text": "車鈴卡在回音柱的接口旁，隨每次重播輕響。小禾把它裝回腳踏車，再將接口切回正確頻道；剩下的雜訊裡，有夜市老闆娘報出的餐牌。"
+      },
+      {
+        "depth": 12,
+        "contact": "夜市老闆娘",
+        "request": "取回店裡的收音機，讓點餐和報站各自回到正確頻道。",
+        "lead": "攔下失控招牌，讓客人沿原來的路回家。",
+        "text": "老闆娘接過收音機，先替等候的客人播回點餐號。錯頻的錄音仍留下半句月台提示；她把時間寫在餐牌背面，請你交給河邊站務員核對。"
+      },
+      {
+        "depth": 18,
+        "contact": "河邊站務員",
+        "request": "找回麥克風，把月台提示與轉播排程對上。",
+        "lead": "讓失控廣播停止循環，留出乘客上下車的空間。",
+        "text": "站務員用找回的麥克風重新報站，乘客照常趕上末班。那段重播並非現場廣播，而是山路舊發射機的試音排程；小禾帶著工具，先去找開機鑰匙。"
+      },
+      {
+        "depth": 25,
+        "contact": "修理工 小禾",
+        "request": "取回舊發射機鑰匙，修正把試音送往全街的排程。",
+        "lead": "電仍要留給店家；只處理重播機的錯頻指令。",
+        "text": "小禾用鑰匙打開發射機，發現「暑假最後一天」是忘了撤下的試音標題。她沒有拔掉街區電源，只改正配送到各站的排程；最後還需要屋頂電台確認每一站都能回覆。"
+      },
+      {
+        "depth": 35,
+        "contact": "街角電台的大家",
+        "request": "完成最後一輪試音，確認每個街區都能各自選台。",
+        "lead": "回覆不是要變成同一首歌，而是讓每一站都被聽見。",
+        "text": "天線零件裝回電台，車鈴、收音機、麥克風和鑰匙各自回到主人手上。大家在屋頂輪流試音：候船、點餐、報站與晚間節目都能各自播出。小收音機留下那張貼紙，記住今天一起接好線的人。"
+      }
+    ]
+  },
+  "captures": [
+    {
+      "profile": 3,
+      "key": "map:neighborhood-check-8:0",
+      "site": {
+        "x": -33,
+        "y": 48,
+        "radius": 6,
+        "kind": "worksite",
+        "scale": 1,
+        "variant": 3,
+        "rotation": 3.141592653589793,
+        "siteSlope": 0.6165967536713168
+      },
+      "name": "橋下修理坪",
+      "actualProfile": 3,
+      "actualKey": "map:neighborhood-check-8:0",
+      "nativeWorksites": 1,
+      "occluders": 27,
+      "drawCalls": 172
+    },
+    {
+      "profile": 5,
+      "key": "map:neighborhood-check-13:0",
+      "site": {
+        "x": 45,
+        "y": 78,
+        "radius": 6,
+        "kind": "worksite",
+        "scale": 1,
+        "variant": 5,
+        "rotation": 3.141592653589793,
+        "siteSlope": 0.2422604800712178
+      },
+      "name": "前街唱片巷",
+      "actualProfile": 5,
+      "actualKey": "map:neighborhood-check-13:0",
+      "nativeWorksites": 1,
+      "occluders": 22,
+      "drawCalls": 220
+    },
+    {
+      "profile": 11,
+      "key": "map:neighborhood-check-0:0",
+      "site": {
+        "x": -45,
+        "y": 54,
+        "radius": 6,
+        "kind": "worksite",
+        "scale": 1,
+        "variant": 11,
+        "rotation": 3.141592653589793,
+        "siteSlope": 0.21108352235059075
+      },
+      "name": "港口收貨坪",
+      "actualProfile": 11,
+      "actualKey": "map:neighborhood-check-0:0",
+      "nativeWorksites": 1,
+      "occluders": 73,
+      "drawCalls": 327
+    }
+  ],
+  "errors": [],
+  "scope": "120 seeded terrains, connected navigation/collision and 12 local scenes; existing chapter state and save; native geometry and scene captures."
+}

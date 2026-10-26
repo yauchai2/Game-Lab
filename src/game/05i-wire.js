@@ -57,7 +57,6 @@ function wireHints(){
   }
   return h;
 }
-function wireCp(x,y){const m=GridLab.mustAt(x,y,G.board);if(m<0)return '';const w=GridLab.getWire(G.board,m),hit=!!w&&w.cells.some(c=>c[0]===x&&c[1]===y),col=GridLab.layout(G.board).colors[m];return `<i class="cpm${hit?' hit':''}" style="--cpc:${PORT_COLORS[col]}" aria-hidden="true"></i>`;}
 function wireCell(x, y, ctx){
   const B = G.board, L = G.lvl, ev = `data-x="${x}" data-y="${y}" data-focus="cell-${x}-${y}" tabindex="${UX_GRID.x === x && UX_GRID.y === y ? 0 : -1}" title="${uxEsc(uxGridLabel(x,y))}" aria-label="${uxEsc(uxGridLabel(x, y))}" onfocus="uxGridFocus(this)" onclick="wireTap(${x},${y})" onpointerdown="wireDown(event,${x},${y})" onmouseenter="pzHover(${x},${y})"`;
   const W = GridLab.layout(G.board).w, H = GridLab.layout(G.board).h, edge = x === 0 || y === 0 || x === W - 1 || y === H - 1;
@@ -80,9 +79,9 @@ function wireCell(x, y, ctx){
   const s = wSupportAt(x, y), w = GridLab.wireOf(B, x, y), pc = (wTier() === 1 && !s) ? '' : GridLab.padColor(x, y,G.board), match = !!(pc && w && GridLab.layout(G.board).colors[w.sock] === pc);
   if (s){
     const lk = ctx.linked.has(s.id), cls = ['pc', 'fill', 'ac', 'pd', 'p' + pc, lk ? 'lnk' : w ? 'off' : '', s.id === selPiece ? 'sel' : '', match ? 'mt' : '', (s.t || 1) > 1 ? 't' + s.t : ''].filter(Boolean).join(' ');
-    return `<button type="button" class="${cls}" style="--pc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]};--padc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]}" ${ev}>${wireGemFlow(x, y, w, lk)}${gemIco(s.key, 20)}<span>${SUPPS[s.key].n}${TIER_NAME[(s.t || 1) - 1]}</span>${wireCp(x,y)}</button>`;
+    return `<button type="button" class="${cls}" style="--pc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]};--padc:${PORT_COLORS[GridLab.GEM_COLOR[s.key]]}" ${ev}>${wireGemFlow(x, y, w, lk)}${gemIco(s.key, 20)}<span>${SUPPS[s.key].n}${TIER_NAME[(s.t || 1) - 1]}</span></button>`;
   }
-  return `<button type="button" class="pc${pc ? ' pd p' + pc : ''}${w ? ' wr' : ''}${match ? ' mt' : ''}" ${ev}>${pc ? `<span></span>` : ''}${wireCp(x,y)}</button>`;
+  return `<button type="button" class="pc${pc ? ' pd p' + pc : ''}${w ? ' wr' : ''}${match ? ' mt' : ''}" ${ev}>${pc ? `<span></span>` : ''}</button>`;
 }
 function wireBoardHtml(){
   const B = G.board, res = GridLab.resolve(B, G.lvl), ctx = { linked:new Set(res.flatMap(r => r.linked)) };
@@ -115,7 +114,7 @@ function wireSelCard(){
 
 function wireNextUnlock(){return '取得不同電路板可增加可用格與終點。';}
 function wireGuideHtml(){const n=GridLab.resolve(G.board,G.lvl).filter(r=>r.wired).length;return `<p class="device-wire-note">${n?'已接通 '+n+' 個技能。':'點起點選技能，或按住起點拖線。'}配件只可入同色洞，供電 ${GridLab.powerUsed(G.board)}／${GridLab.layout(G.board).power}。</p>`;}
-function wireLegendHtml(){return '<p>起點 ⚡ → 相鄰電線 → 對應終點，完整接通才會亮燈及施放技能。進階電路板上有 ◇ 必經點，線要全部經過才算接通。紅、藍、綠寶石只可入同色洞；每技能最多三枚配件，Ⅰ／Ⅱ／Ⅲ耗電1／2／3。</p>';}
+function wireLegendHtml(){return '<p>起點 ⚡ → 相鄰電線 → 對應終點，完整接通才會亮燈及施放技能。紅、藍、綠寶石只可入同色洞；每技能最多三枚配件，Ⅰ／Ⅱ／Ⅲ耗電1／2／3。</p>';}
 function wireZoom(){WIRE_ZOOM=!WIRE_ZOOM;renderModal();}
 function wireTopHtml(){wireInstallStyles();return `<div data-scroll-key="wire-board" class="wire-board-scroll${WIRE_ZOOM?' zoomed':''}" tabindex="0" aria-label="電路板視窗，放大時可水平捲動">${wireBoardHtml()}</div>${wireBar()}`;}
 
@@ -154,7 +153,6 @@ function wireExtend(x, y){
   const B = G.board; if (!wActive(selSock)){ pzMsg('先在下面選一個技能裝到這個插槽'); return; }
   const r = GridLab.extendTo(B, selSock, x, y, G.lvl);
   if (!r.ok){ pzMsg(r.reason); return; }
-  if(r.needMust)pzMsg('線頭到了終點，但還沒經過所有◇必經點：從線尾收回，再繞過去');
   if(r.connected){selSock=-1;selPiece=null;}recalc(); renderModal(); wireSnap(r.connected ? 'pick' : 'snap'); if (r.connected) uxAnnounce('已接通，目前預估 DPS ' + tFmt(G.st.dps));
 }
 function wirePlace(x, y){
@@ -332,7 +330,7 @@ function wireMove(ev){
   const w=GridLab.getWire(G.board,selSock);d.at=c;
   if(w?.cells.length>=2&&w.cells.at(-2)[0]===c[0]&&w.cells.at(-2)[1]===c[1]){GridLab.shrink(G.board,selSock);changed=true;continue;}
   if(!GridLab.isInner(...c,G.board))continue;
-  const result=GridLab.extend(G.board,selSock,...c,G.lvl);if(result.ok){changed=true;if(result.connected){done=true;break;}if(result.needMust)pzMsg('到了終點，但還沒經過所有◇必經點：回頭繞過去');}else if(/必經點/.test(result.reason||''))pzMsg(result.reason);
+  const result=GridLab.extend(G.board,selSock,...c,G.lvl);if(result.ok){changed=true;if(result.connected){done=true;break;}}
  }
  d.px=ev.clientX;d.py=ev.clientY;
  if(changed){recalc();wireRedrawLive();}if(done)wireUp();else wireSchedulePan(d);
@@ -433,7 +431,6 @@ const WIRE_CSS = `
 body.ui-material #mbody .pz.wb{--cr:var(--ux-signal-red);--cb:var(--ux-signal-blue);--cg:var(--ux-signal-green);--ink:var(--ux-ink);position:relative;display:grid;max-width:460px!important;width:100%;box-sizing:border-box;margin:0 auto;padding:8px;gap:0;border:2px solid var(--ux-edge)!important;outline:0;box-shadow:inset 0 0 0 2px #0004!important;background:var(--ux-ink)!important;touch-action:pan-y;image-rendering:pixelated}
 #mbody .pz.wb .pc.pr,#mbody .pz.wb .pc.sr,#mbody .pz.wb .pc.kr{--padc:var(--cr)}#mbody .pz.wb .pc.pb,#mbody .pz.wb .pc.sb,#mbody .pz.wb .pc.kb{--padc:var(--cb)}#mbody .pz.wb .pc.pg,#mbody .pz.wb .pc.sg,#mbody .pz.wb .pc.kg{--padc:var(--cg)}
 body.ui-material #mbody .pz.wb button.pc{position:relative;z-index:1;box-sizing:border-box;margin:2px;min-width:0;min-height:0;aspect-ratio:1;padding:0!important;font-size:9px!important;line-height:1!important;border:1px solid #8b9ab629!important;border-radius:2px!important;background:#ffffff04!important;box-shadow:inset 0 1px #ffffff08!important;color:var(--ux-screen)!important;text-shadow:none!important;overflow:visible;cursor:pointer;isolation:isolate}
-body.ui-material #mbody .pz.wb button.pc .cpm{position:absolute;left:50%;top:50%;width:46%;height:46%;transform:translate(-50%,-50%) rotate(45deg);border:2px solid var(--cpc);background:#ffffff40;box-sizing:border-box;pointer-events:none;z-index:3;box-shadow:0 0 0 1px #0a1230}body.ui-material #mbody .pz.wb button.pc .cpm.hit{background:var(--cpc)}
 body.ui-material #mbody .pz.wb button.pc.dead{visibility:hidden;pointer-events:none}body.ui-material #mbody .pz.wb button.pc.rk{border:1px solid #6b7d9a!important;background:#34435d!important;box-shadow:inset 1px 1px #96a7bd!important;color:#a5b4cc!important}.pz.wb .pc.rk span{font-size:12px}
 body.ui-material #mbody .pz.wb button.pc.pd{border-color:#92a7c426!important;background:#111d33!important;box-shadow:inset 1px 1px #0004!important}.pz.wb .pc.pd::after{content:"";position:absolute;inset:calc(50% - 3px);border-radius:50%;border:1px solid var(--padc);background:var(--padc);opacity:.8;pointer-events:none}
 body.ui-material #mbody .pz.wb button.pc.src,body.ui-material #mbody .pz.wb button.pc.sk,body.ui-material #mbody .pz.wb button.pc.chip{z-index:3;border:2px solid var(--padc)!important;background:linear-gradient(#354667,#192a46)!important;box-shadow:inset 1px 1px #c3d2ed55,0 1px 0 #0008!important;color:#f1f4ff!important}

@@ -113,7 +113,7 @@ function gainXp(xp){
 }
 
 /* ---------- loot handling ---------- */
-function pickup(d){const before={gold:G.gold,parts:G.parts,chips:G.chips};const out=pickupInternal(d);if(!G.offline&&typeof lootReceipt==='function'){let receipt=d;if(d.kind==='item'&&!G.inventory.includes(d.it)&&G.armory[d.it.lg]!==d.it)receipt=G.parts>before.parts?{kind:'recycled',amount:G.parts-before.parts}:G.gold>before.gold?{kind:'gold',amount:G.gold-before.gold}:null;if(d.kind==='map'&&!G.maps.includes(d.map))receipt={kind:'gold',amount:G.gold-before.gold};if(d.kind==='skill'&&G.chips>before.chips)receipt={kind:'chip',amount:G.chips-before.chips};if(d.kind==='circuit'&&G.parts>before.parts)receipt={kind:'recycled',amount:G.parts-before.parts};if(receipt)lootReceipt(receipt);}return out;}
+function pickup(d){const before={gold:G.gold,parts:G.parts,chips:G.chips};const out=pickupInternal(d);if(!G.offline&&typeof SFX==='function'&&(['gem','cart'].includes(d.kind)||d.kind==='item'&&(G.inventory.includes(d.it)||G.armory[d.it.lg]===d.it)||d.kind==='map'&&G.maps.includes(d.map)))SFX('pick');if(!G.offline&&typeof lootReceipt==='function'){let receipt=d;if(d.kind==='item'&&!G.inventory.includes(d.it)&&G.armory[d.it.lg]!==d.it)receipt=G.parts>before.parts?{kind:'recycled',amount:G.parts-before.parts}:G.gold>before.gold?{kind:'gold',amount:G.gold-before.gold}:null;if(d.kind==='map'&&!G.maps.includes(d.map))receipt={kind:'gold',amount:G.gold-before.gold};if(d.kind==='skill'&&G.chips>before.chips)receipt={kind:'chip',amount:G.chips-before.chips};if(d.kind==='circuit'&&G.parts>before.parts)receipt={kind:'recycled',amount:G.parts-before.parts};if(receipt)lootReceipt(receipt);}return out;}
 function pickupInternal(d){
   if(d.kind==='rift'){riftState().shards+=d.amount;G.dirty=true;return;}
   if(d.kind==='skill'){const fresh=collectSkill(d.id);if(fresh&&G.off)G.off.skillBooks=(G.off.skillBooks||0)+1;return;}
@@ -584,14 +584,14 @@ function recordDeath(){if(G.offline)return;const hits=(G.damageLog||[]).filter(r
 function blinkConsume(){const h=G.h;if(h.blinkRestUntil){if(G.time<h.blinkRestUntil)return false;h.blinkRestUntil=0;h.blinkCount=0;h.blinkWindow=G.time;}if(G.time-(h.blinkWindow??-99)>2){h.blinkWindow=G.time;h.blinkCount=0;}h.blinkCount=(h.blinkCount||0)+1;if(h.blinkCount>=6){h.blinkRestUntil=G.time+1.8;G.cds.FLICKER=Math.max(G.cds.FLICKER||0,1.8);}return true;}
 function summonDevices(id,mul,origin){const large=id==='GUARDIAN',cap=large?1:3,life=large?16:14;G.summons=G.summons||[];const existing=G.summons.filter(p=>p.skill===id);for(const p of existing){p.until=G.time+life;p.mul=Math.max(p.mul,mul);}for(let i=existing.length;i<cap;i++){const a=i*2.094,[x,y]=terrainProject(G.h.x+Math.cos(a)*6,G.h.y+Math.sin(a)*6);G.summons.push({skill:id,large,x,y,until:G.time+life,atk:.3+i*.2,mul,seed:i,attackAge:9});}G.h.drama={kind:'summon',start:G.time,duration:.6};}
 function castSpectacle(id,mul,origin,prim){
- if(id==='SWARM'||id==='GUARDIAN'){summonDevices(id,mul,origin);SFX('card');return;}
+ if(id==='SWARM'||id==='GUARDIAN'){summonDevices(id,mul,origin);SFX(id.toLowerCase());return;}
  G.h.drama={kind:id==='GIANTBLADE'?'leap':'cast',start:G.time,duration:id==='GIANTBLADE'?1.5:.9};
  const angle=Math.atan2(prim.y-G.h.y,prim.x-G.h.x),schedule=(t,share,extra={})=>G.timers.push({t,id,spectacle:true,mul:mul*share,origin,x:prim.x,y:prim.y,...extra});
  if(id==='OVERTURE'){for(let i=0;i<6;i++)schedule(.05+i*.48,.5,{x:G.h.x,y:G.h.y,angle});}
  else if(id==='ARROWS'){for(let i=0;i<6;i++)schedule(.4+i*.55,1/6);addFx({sustained:true,k:'arrowstorm',x:prim.x,y:prim.y,z:BZ,t:0,dur:3.8,col:SKILLS[id].col});}
  else if(id==='GIANTBLADE'){schedule(1.85,.7,{main:true});schedule(2.35,.15);schedule(2.85,.15);addFx({sustained:true,k:'giantblade',x:prim.x,y:prim.y,z:BZ,t:0,dur:3.6,col:SKILLS[id].col});}
  else{const n=id==='RIFT'?3:id==='RESONANCE'?4:6;for(let i=0;i<n;i++)schedule(.35+i*(id==='RIFT'?.75:id==='RESONANCE'?.8:.5),1/n,{pulse:i,angle,x:prim.x+(id==='RIFT'?Math.cos(angle)*(i-1)*12:0),y:prim.y+(id==='RIFT'?Math.sin(angle)*(i-1)*12:0)});addFx({sustained:true,k:id==='RIFT'?'riftfield':id==='RESONANCE'?'resonance':'gravitywell',x:prim.x,y:prim.y,angle,t:0,dur:3.5,col:SKILLS[id].col});}
- SFX(id==='GIANTBLADE'?'boom':'chain');
+ SFX(id.toLowerCase());
 }
 function spectacleImpact(t){const k=G.st.sk[t.id];if(!k)return;let total=0;
  if(t.id==='OVERTURE'){const to={x:t.x+Math.cos(t.angle)*45,y:t.y+Math.sin(t.angle)*45};total=expansionLine(t.id,t,to,t.mul,t.origin,7*(k.has.includes('SPREAD')?1.4:1),5);addFx({k:'musicwave',x:t.x,y:t.y,angle:t.angle,col:SKILLS[t.id].col,t:0,dur:1.3});}
