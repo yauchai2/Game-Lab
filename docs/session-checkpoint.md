@@ -1,5 +1,10 @@
 # Game Lab 最新接續紀錄
 
+**v0.64.0已正式發佈（2026-10-26，Asia/Hong_Kong）。** Alan本輪授權release；PR84已合併，來源／tag為2f7c889，Pages為076180d。正式manifest、入口及21腳本SHA-256、Release附件digest／大小均吻合，直接正式站390px Chromium啟動通過。Release與證據見[整合紀錄](release-0.64.0/integration.md)。
+
+包含完整街頭風格、12精怪／4角色／16裝備衍生、尺寸血跡、移除笑臉與收音機／搬運箱精修。Claude最新7be9377已整合（僅文件），其精華系統已撤回，不在此版。所有分支／舊tag保留。下列為較早候選過程紀錄，未發佈字樣不再代表目前狀態。
+
+
 - **2026-10-26，Asia/Taipei，全遊戲0.64候選：** Alan明確要求依Ice Cream後風格做完全部需要更新，已在獨立codex/ice-cream-style-complete實作。main最新fd4ed11／0.62，已納入Claude六章／同伴／章節Boss標記，沿唯一storyFlags.ch，不建四章平行狀態。
 - **實作：** 十二款精怪（新製十款＋M01／M04）共8128面，22type＋Boss原生映射；四角色與16裝備無貼圖unlit純色面，原件、位置／skin／九clips／triangle order精確保留；21地區色階、場景unlit、幾何招牌、移除點紋／地面斑紋、UI頭像縮圖、十二地方留言／職業日常、音樂情境選曲。職業／四肢／玩法數值／SAVE_KEY不改。新資源packed由初版25MB降至約4.5MB（二十衍生GLB約3.15MB）。
 - **驗證：** docs/style-complete/README.md為入口；十二GLB Blender重匯入、20衍生精確資料比對、4×9clips／16裝備／22types／4Boss／A-B／單隻fade／elite/status／320390通過；24實體街區及六次原生主線kill／save／offline-map邊界通過。10既有gameplay與17音源驗證通過。兩個既有stale VM測試於乾淨68934eb相同失敗，已記錄。

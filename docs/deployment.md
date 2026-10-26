@@ -105,3 +105,7 @@ PR #50合併，來源／tag78e989151c3dd0eba0cbf7000138227e68d9fb3b，Pages5d6b4
 ## v0.49.1遺漏修補（2026-10-25）
 
 PR #52合併，來源／tagcf0382089483843466ecc63590528c43dfc00c51，Pages764c138fada90d5fba52c48c5e90c8a9bf88c62a。Release40141178138／Pages40141169461成功。正式HTTPS版本、入口／腳本雜湊及附件digest／大小一致；直接正式站驗證主header生命週期及全部裝備／核心縮圖失敗退路通過。[整合與限制](release-0.49.1/integration.md)。來源先push，Claude所有分支及PR已重新查核，全部分支／tag保留。
+
+## v0.64.0 已發佈（2026-10-26，香港時間）
+
+PR84已合併，來源／標籤2f7c889f6a272d278d0aa44335dfc58151c0f2e3；Pages076180d07bcfaa5d05c8a0f00c29bf2a7a717b78。Pages40324674500與Release40324886785成功。正式manifest、入口、21腳本SHA-256及附件digest／大小已核對，直接正式站390px Chromium啟動通過。[整合與證據](release-0.64.0/integration.md)。已重新查核所有遠端分支與PR，Claude最新7be9377文件合入、已撤回精華不納入，所有分支保留。
