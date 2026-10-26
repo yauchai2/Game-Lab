@@ -822,7 +822,7 @@ function scene(){
   mascotUpdate();
   // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
-  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
+  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm,m.chap??null):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
@@ -889,12 +889,21 @@ function buildFieldMonster(type,variant=0){
  {const F={mole:[4.2,0,6.2,5.9],lantern:[4,0,13,4.1],ranger:[3.6,0,10.5,2.7]}[type];if(F)faceMesh(F[0],F[1],F[2],F[3],g);}
  const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
-function buildCircuitBoss(bi,form=bi%3){
+function buildCircuitBoss(bi,form=bi%3,chap=null){
  const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);
  const dark=m3('#394d61'),silver=m3('#bdc8cf'),signal=m3(form===0?'#9dbda1':form===1?'#8cb9d0':'#bba8cb');
  if(form===0){for(const x of [-12,12]){mk(new T3.IcosahedronGeometry(6,0),dark,x,26,0,ex);mk(new T3.ConeGeometry(3,12,5),signal,x,32,0,ex);}}
  if(form===1){for(const x of [-12,12]){mk(roundedG(7,22,12),dark,x,24,0,ex);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,ex).rotation.x=Math.PI/2;}mk(roundedG(1,18,1),silver,0,39,0,ex);}
  if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,ex);for(const x of [-13,13])mk(roundedG(5,18,3),silver,x,21,3,ex);}
+ if(chap!==null){   // 主線首領：在身體上加一個一眼認得出的標記
+  const hot=m3('#ff9a6e'),warm=m3('#ffd36a'),pale=m3('#e8eef2');
+  if(chap===0){const h=mk(new T3.ConeGeometry(7,16,8,1,true),warm,0,40,0,ex);h.rotation.z=Math.PI/2;mk(new T3.CylinderGeometry(2,2,6,8),dark,-8,40,0,ex).rotation.z=Math.PI/2;}
+  if(chap===1){for(const y of [34,40,46])mk(new T3.TorusGeometry(8-(y-34)/4,.9,4,14),signal,0,y,0,ex).rotation.x=Math.PI/2;}
+  if(chap===2){mk(roundedG(26,12,2),pale,0,42,-2,ex);mk(roundedG(22,8,1),hot,0,42,-.5,ex);for(const x of [-9,0,9])mk(new T3.SphereGeometry(1.3,6,5),warm,x,42,.4,ex);}
+  if(chap===3){for(const x of [-14,0,14]){mk(new T3.CylinderGeometry(3,5,7,8),dark,x,38,0,ex);mk(new T3.CircleGeometry(2.6,10),warm,x,38,5.2,ex);}}
+  if(chap===4){for(const x of [-9,9]){const r=mk(new T3.TorusGeometry(6,1.6,5,12),pale,x,38,0,ex);r.rotation.y=Math.PI/2;mk(new T3.CylinderGeometry(1,1,3,6),hot,x,38,0,ex).rotation.z=Math.PI/2;}}
+  if(chap===5){for(let i=0;i<5;i++){const a=(i-2)*.5;mk(new T3.ConeGeometry(1.6,18,5),i%2?hot:signal,Math.sin(a)*8,44+Math.cos(a)*4,0,ex).rotation.z=-a;}mk(new T3.IcosahedronGeometry(3.2,0),warm,0,38,0,ex);}
+ }
  root.add(bake(ex));   // 肩甲與光環另外合併；手腳保持獨立，才能跟著擺動
  root.userData.limbs=body.userData.limbs;root.userData.simple=true;root.userData.s=4;root.userData.mats=[];root.traverse(o=>{if(o.isMesh){o.material=o.material.clone();root.userData.mats.push(o.material);}});return root;
 }

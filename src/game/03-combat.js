@@ -35,7 +35,7 @@ function spawnPack(){
     const rf=rifts[packRift],sx=t==='boss'?G.h.x+tRand(-14,14):rf[0]+tRand(-3,3),sy=t==='boss'?G.h.y-18+tRand(-6,6):rf[1]+tRand(-3,3);
     const el = t !== 'boss' && (d >= 6 || mods.includes('elite')) && Math.random() < (mods.includes('elite') ? .3 : .06);   // 精英：體型大、金環、血厚、賞金多
     G.mons.push({ type:t, boss:t === 'boss', elite:el, x:sx, y:sy, hp:hp*(el ? 3.2 : 1), hpMax:hp*(el ? 3.2 : 1), dmg:(el ? 1.3 : 1) * 4.5 * Math.pow(1.22, d-1) * T.dmg * dmgK * (1.3+Math.min(1.1,Math.max(0,d-2)*.09)) * (t==='boss'?1.35:1) * (t !== 'boss' ? HORDE.dmg : 1) * (1 + earlyK()*.12), atkInt:T.atk/fastK, spdK:fastK, atkCd:tRand(.3, T.atk),
-      skillCd:2.5+(i%3)*.7,bossForm:t==='boss'?terrainNow().profile%3:null,slot, fall:t === 'boss' ? .9 : 0, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
+      skillCd:2.5+(i%3)*.7,bossForm:t==='boss'?terrainNow().profile%3:null,chap:t==='boss'&&!R&&storyBossName(d)?storyChapter():null,slot, fall:t === 'boss' ? .9 : 0, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
   });
   if(R?.tower)for(const m of G.mons)if(!m.dead&&!m.towerTagged){towerMonster(m);m.towerTagged=true;}
   if(R?.city)for(const m of G.mons)if(!m.dead&&!m.cityRoute)cityMonster(m);
