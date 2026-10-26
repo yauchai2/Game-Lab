@@ -41,7 +41,7 @@ function uiCharacterIdentity(){
 }
 function uiCharacterStage(dress=false){
   const c=CHARS[G.char],visit=modalTab+':'+G.char,arrive=UI_CHARACTER_STAGE_VISIT!==visit;UI_CHARACTER_STAGE_VISIT=visit;
-  return `<div class="cv-stage${arrive?' cv-arrive':''}" aria-label="${uxEsc(c.n)}角色展示"><span class="cv-code" aria-hidden="true">${uxEsc(uiCharacterCode())}</span><span class="cv-stage-label" aria-hidden="true">${dress?'STYLE / 外觀':'CHARACTER / 角色'}</span><div id="pvhost" class="cv-preview" aria-label="${dress?'外觀試穿':'目前角色'}3D 預覽"><div class="cv-fallback"><span>${uxEsc(c.n)}</span><small id="cv-preview-status">正在準備角色…</small><button class="mb" hidden id="cv-preview-retry" onclick="dressRetry()">重試預覽</button></div></div><div class="cv-phone">${phoneButtonHtml()}<span>個人手機</span></div><blockquote class="cv-quote">「${uxEsc(c.quote||c.title||c.d)}」</blockquote><div class="cv-stage-footer"><span>${uxEsc(c.role||c.title||'')}</span>${dressPreviewControls()}</div></div>`;
+  return `<div class="cv-stage${arrive?' cv-arrive':''}" aria-label="${uxEsc(c.n)}角色展示"><span class="cv-code" aria-hidden="true">${uxEsc(uiCharacterCode())}</span><span class="cv-stage-label" aria-hidden="true">${dress?'STYLE / 外觀':'CHARACTER / 角色'}</span><div id="pvhost" class="cv-preview" aria-label="${dress?'外觀試穿':'目前角色'}3D 預覽"><div class="cv-fallback"><span>${uxEsc(c.n)}</span><small id="cv-preview-status">正在準備角色…</small><button class="mb" hidden id="cv-preview-retry" onclick="dressRetry()">重試預覽</button></div></div><div class="cv-phone">${phoneButtonHtml()}<span>個人手機</span></div><blockquote class="cv-quote">「${uxEsc(c.quote||c.title||c.d)}」</blockquote><div class="cv-stage-footer"><span>${uxEsc(c.role||c.title||'')}${c.quote?`<small class="cv-q">「${uxEsc(c.quote)}」</small>`:''}</span>${dressPreviewControls()}</div></div>`;
 }
 function uiCharacterProfile(){
   const [bm,bd]=G.born;
@@ -127,6 +127,7 @@ body.ui-material #mbody .cv-phone{position:absolute;right:10px;top:56px;z-index:
 body.ui-material #mbody .cv-phone .ph-open{position:relative;inset:auto;width:76px;height:108px;min-height:108px!important;border:1px solid #fff!important;outline:1px solid var(--cv-ink);border-radius:0!important;background:#eef0ff8c!important;box-shadow:2px 2px 0 #241d5933!important}
 .cv-phone .ph-mini2{transform:scale(.7)}
 .cv-phone>span{font:11px/1.3 var(--ux-body);background:var(--cv-paper);padding:3px 5px}
+.cv-stage-footer .cv-q{display:block;font-size:10px;line-height:1.4;opacity:.85}body.ui-material #mbody .cv-quote{display:none!important}
 body.ui-material #mbody .cv-quote{position:absolute;right:10px;top:189px;width:90px;margin:0;z-index:3;padding:7px 5px;background:var(--cv-accent);font:12px/1.55 var(--ux-body);color:var(--cv-ink);border:1px solid var(--cv-ink);box-shadow:2px 2px 0 #241d5926;transform:rotate(-3deg)}
 body.ui-material #mbody .cv-stage-footer{position:absolute;inset:auto 0 0;min-height:44px;padding:0 8px;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:5px;background:var(--cv-blue);color:#fff}
 .cv-stage-footer>span{font:11px/1.5 var(--ux-body);min-width:0;max-width:58%;overflow-wrap:anywhere}

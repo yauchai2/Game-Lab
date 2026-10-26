@@ -740,7 +740,7 @@ function heroLook(g){
 
 function updateFx(){
   const fx=R3.fx,pool=R3.fxPool||(R3.fxPool=[]);for(const o of pool)o.visible=false;let used=0;
-  const dummy=R3.fxDummy||(R3.fxDummy=new T3.Object3D()),budget=160;
+  const dummy=R3.fxDummy||(R3.fxDummy=new T3.Object3D()),budget=360;
   const add=(geom,col,opacity,x,y,z,s=1)=>{
     if(used>=budget)return dummy;
     let o=pool[used++];if(!o){o=new T3.Mesh(geom,new T3.MeshBasicMaterial({transparent:true,depthWrite:false,side:T3.DoubleSide}));pool.push(o);fx.add(o);}
@@ -752,10 +752,10 @@ function updateFx(){
   for(const stain of G.stains||[]){if(signalFx){const sp=Math.min(1,stain.t/.5),ease=1-(1-sp)*(1-sp),fade=Math.min(1,(7-stain.t)/2.5);if(fade<=0)continue;let zi=0;
     for(const b of stain.blobs||[{dx:0,dy:0,r:stain.r}]){add(box,['#5cd0f0','#ff7fa8','#f5d24a','#e8f4ff'][zi%4],.95*fade,stain.x+b.dx*ease*1.3,stain.y+b.dy*ease*1.3,stainGround+.05+(zi++)*.01+Math.sin(sp*Math.PI)*b.r*.8,Math.max(.5,b.r*.55));}
     continue;}
-    const sp=Math.min(1,stain.t/.7),ease=1-(1-sp)*(1-sp),dry=Math.min(1,stain.t/10),fade=Math.min(1,(12-stain.t)/4),col=dry<.5?'#e0131e':dry<.8?'#c20f1a':'#9a0c16',wet=stain.t<6?(1-stain.t/6)*.4:0;let zi=0;
+    const sp=Math.min(1,stain.t/.7),ease=1-(1-sp)*(1-sp),dry=Math.min(1,stain.t/10),fade=Math.min(1,(STAIN_LIFE-stain.t)/12),old=stain.t>14,col=dry<.5?'#e0131e':dry<.8?'#c20f1a':'#9a0c16',wet=stain.t<6?(1-stain.t/6)*.4:0;let zi=0;
   if(stain.blobs){const m0=stain.blobs[0];add(disc,'#7a0710',.85*fade,stain.x,stain.y,stainGround-.01,m0.r*1.12*ease);}
-  for(const b of stain.blobs||[{dx:0,dy:0,r:stain.r}]){const k=b.drop?Math.min(1,Math.max(0,(stain.t-.12)/.2)):ease;if(k<=0)continue;add(disc,col,.9*fade,stain.x+b.dx*ease,stain.y+b.dy*ease,stainGround+(zi++)*.006,b.r*k);}
-  if(wet>0&&stain.blobs)for(const b of stain.blobs.slice(0,2)){if(b.drop)continue;add(disc,'#ff5560',wet*fade,stain.x+b.dx*ease-b.r*.18,stain.y+b.dy*ease-b.r*.18,stainGround+(zi++)*.006,b.r*.45*ease);}}
+  for(const b of (stain.blobs||[{dx:0,dy:0,r:stain.r}]).slice(0,old?3:99)){const k=b.drop?Math.min(1,Math.max(0,(stain.t-.12)/.2)):ease;if(k<=0)continue;add(disc,col,.9*fade,stain.x+b.dx*ease,stain.y+b.dy*ease,stainGround+(zi++)*.006,b.r*k);}
+  if(wet>0&&!old&&stain.blobs)for(const b of stain.blobs.slice(0,2)){if(b.drop)continue;add(disc,'#ff5560',wet*fade,stain.x+b.dx*ease-b.r*.18,stain.y+b.dy*ease-b.r*.18,stainGround+(zi++)*.006,b.r*.45*ease);}}
   for(const e of warnings.concat(G.fx.filter(e=>e.sustained),G.fx.filter(e=>!e.sustained))){const fade=1-e.t;
     if(renderSpectacleFx(e,add,geo))continue;
     if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}

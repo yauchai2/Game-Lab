@@ -17,10 +17,11 @@ function deathStainRadius(m){
  const fallback=(m.boss||m.towerBoss?42:trait?.size==='大型'?24:trait?.size==='中型'?15:10)*(trait?.scale||1)*(m.elite?1.3:1);
  return Math.max(.75,(actual>0&&Number.isFinite(actual)?actual:fallback)*.26);
 }
+const STAIN_LIFE=90,STAIN_MAX=40;
 function deathStain(m){if(G.offline||m.training)return;G.stains=G.stains||[];const r=deathStainRadius(m),blobs=[],n=m.boss?7:5;for(let i=0;i<n;i++){const a=Math.random()*6.283,d=i?r*(.25+Math.random()*.55):0;blobs.push({dx:Math.cos(a)*d,dy:Math.sin(a)*d,r:r*(i?.32+Math.random()*.38:.62+Math.random()*.15)});}
  const drops=m.boss?5:3;for(let i=0;i<drops;i++){const a=Math.random()*6.283,d=r*(1.15+Math.random()*.7);blobs.push({dx:Math.cos(a)*d,dy:Math.sin(a)*d,r:r*(.09+Math.random()*.1),drop:1});}
- G.stains.push({x:m.x,y:m.y,t:0,r,blobs,key:terrainKey()});if(G.stains.length>10)G.stains.shift()}
-function deathVisualTick(dt){for(const e of G.fx)e.t+=dt/e.dur;G.fx=G.fx.filter(e=>e.t<1);for(const f of G.floats)f.t+=dt/1.1;G.floats=G.floats.filter(f=>f.t<1);for(const m of G.mons)if(m.dead)m.deadT=(Number.isFinite(m.deadT)?m.deadT:0)+dt;G.mons=G.mons.filter(m=>!m.dead||m.deadT<.6);G.stains=(G.stains||[]).filter(s=>{s.t+=dt;return s.t<12&&s.key===terrainKey()})}
+ G.stains.push({x:m.x,y:m.y,t:0,r,blobs,key:terrainKey()});if(G.stains.length>STAIN_MAX)G.stains.shift()}
+function deathVisualTick(dt){for(const e of G.fx)e.t+=dt/e.dur;G.fx=G.fx.filter(e=>e.t<1);for(const f of G.floats)f.t+=dt/1.1;G.floats=G.floats.filter(f=>f.t<1);for(const m of G.mons)if(m.dead)m.deadT=(Number.isFinite(m.deadT)?m.deadT:0)+dt;G.mons=G.mons.filter(m=>!m.dead||m.deadT<.6);G.stains=(G.stains||[]).filter(s=>{s.t+=dt;return s.t<STAIN_LIFE&&s.key===terrainKey()})}
 
 function spawnRiftMonster(e,type,x,y){const T=MTYPES[type],d=lvlNow(),hp=24*Math.pow(1.32,d-1)*T.hp*HORDE.hp;let slot=0;const used=new Set(G.mons.filter(m=>!m.dead).map(m=>m.slot));while(used.has(slot)&&slot<SLOTS.length-1)slot++;G.mons.push({type,x,y,hp,hpMax:hp,dmg:4.5*Math.pow(1.22,d-1)*T.dmg*HORDE.dmg,atkInt:T.atk,spdK:1,atkCd:1,skillCd:3,slot,fall:0,fight:false,dead:false,deadT:0,hurtT:0,frozen:0,lunge:-1,lungeHit:true,ph:Math.random()*6,boss:false,elite:false});}
 

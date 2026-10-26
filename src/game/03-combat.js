@@ -439,7 +439,7 @@ function update(dt){
   if (G.train){ G.train.t -= dt; for (const m of G.mons) if (!m.dead){ m.hp = m.hpMax; } if (G.train.t <= 0) trainEnd(); }
   G.time += dt;supportWorldTick(dt);if(typeof heroAilmentTick==='function'){heroAilmentTick(dt);if(G.h.hp<=0&&G.h.dead<=0)heroDie();} if ((G.time*2 | 0) !== G._ac){ G._ac = G.time*2 | 0; checkAch(); } const h = G.h, s = G.st;
   for (const f of G.floats) f.t += dt/1.1; if (G.floats.length) G.floats = G.floats.filter(f => f.t < 1);
-  for(const stain of G.stains||[])stain.t+=dt;G.stains=(G.stains||[]).filter(s=>s.t<12&&s.key===terrainKey());
+  for(const stain of G.stains||[])stain.t+=dt;G.stains=(G.stains||[]).filter(s=>s.t<STAIN_LIFE&&s.key===terrainKey());
   for (const e of G.fx) e.t += dt/e.dur; if (G.fx.length) G.fx = G.fx.filter(e => e.t < 1);
   if (h.hurtT > 0) h.hurtT -= dt;
   if(!G.train)collectNearby(dt);
