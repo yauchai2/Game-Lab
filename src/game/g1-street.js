@@ -10,7 +10,7 @@ const G1Materials=(()=>{
   aki_baton:{blue:'#38d7c6',green:'#65846b',white:'#d6dfdc',dark:'#293e4a',blueGain:1.28,cloth:false}
  };
  function apply(material,id){
-  const recipe=recipes[id];if(!recipe)return material;
+  const recipe=recipes[id];if(material.userData.streetFlat||!recipe)return material;
   const out=material.clone();out.name='g1_summer_'+id;
   if(material.map){out.map=material.map.clone();out.map.magFilter=THREE.NearestFilter;out.map.minFilter=THREE.LinearMipmapLinearFilter;out.map.needsUpdate=true;}
   out.userData={...out.userData,g1Material:id,g1OwnedTexture:!!material.map};
@@ -35,7 +35,7 @@ const G1Materials=(()=>{
  // A restrained woven cadence only on classified fabric, never skin/face regions.
  vec2 pixel=floor(vMapUv*256.0);
  float weave=mod(pixel.x+pixel.y,2.0)*0.025;
- surface*=1.0-weave*g1Cloth*max(green,white);
+ // Surface weave removed: latest direction uses clean flat colors.
  diffuseColor.rgb*=surface/max(source,vec3(0.001));
 #endif`);
   };

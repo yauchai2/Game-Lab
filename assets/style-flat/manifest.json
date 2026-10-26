@@ -1,0 +1,405 @@
+{
+  "pipeline": "tools/style/flatten_assets.py; flat triangle colors, original geometry/skin/animation unchanged",
+  "assets": [
+    {
+      "id": "aki",
+      "sourceSha256": "969f738536a3e6a1a8de916477eaba97b9b684f3de8243a427afb043f32752d1",
+      "sha256": "68153685cd7cec6817228d0c20b8e5f4a146a71d78fc9cf81219fe83b1f59c74",
+      "bytes": 559832,
+      "triangles": 14000,
+      "textures": 0,
+      "animations": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ],
+      "primitives": [
+        {
+          "triangles": 14000,
+          "vertices": 9325,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "characters"
+    },
+    {
+      "id": "milo",
+      "sourceSha256": "8a9260c6c1cc2ae13935d7792af03dfc041765b849e0c7ddbeef0c4ac6481d24",
+      "sha256": "fb466f8009c204a2a55d9a0c302a196956a69794f2a7ad7b7be81399b1fdd625",
+      "bytes": 563808,
+      "triangles": 14000,
+      "textures": 0,
+      "animations": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ],
+      "primitives": [
+        {
+          "triangles": 14000,
+          "vertices": 9412,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "characters"
+    },
+    {
+      "id": "null",
+      "sourceSha256": "e8597f5f9784617cc5d6e35af34b0e0581e491039fd7697873d8adc16e8b910f",
+      "sha256": "66887df98d40e14629191e18e0e274b9b9e526ad76cfa8e2617d4dde697c43a4",
+      "bytes": 559544,
+      "triangles": 13998,
+      "textures": 0,
+      "animations": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ],
+      "primitives": [
+        {
+          "triangles": 13998,
+          "vertices": 9310,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "characters"
+    },
+    {
+      "id": "ping",
+      "sourceSha256": "0d85e40be44591afeeace2d8b9946d0a5775abaed7eaaf6fad23260b6eb9b52d",
+      "sha256": "e5d61509992ab539f03ed54403baec5ec82d40591cc03d68d04247a45f148b23",
+      "bytes": 574920,
+      "triangles": 13998,
+      "textures": 0,
+      "animations": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ],
+      "primitives": [
+        {
+          "triangles": 13998,
+          "vertices": 9753,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "characters"
+    },
+    {
+      "id": "aki_baton",
+      "sourceSha256": "0581444f378a11dd44b243f038fa6d8bb7a51a69db5b44f5693c77b93e6a5133",
+      "sha256": "a0bd3dd75d6097556445c1f97d2482f3e9eddc70d5e4683ace5b7f14361f3ae2",
+      "bytes": 57444,
+      "triangles": 2998,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 2998,
+          "vertices": 2554,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "aki_chain",
+      "sourceSha256": "d6095f7308d29741a83a8a60bbdb4d8588a04ac931cdf9aa6f0a94c14f0b8afb",
+      "sha256": "873b9dac3cd8ec34f7daadf5c711a191acd7aadce0e01bdad878ee496360d2cf",
+      "bytes": 57260,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2541,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "aki_charm",
+      "sourceSha256": "c2164d5ac12e3028444bb5dc0eef24f706e0fe58e81dbf014fc71aa24d34f00a",
+      "sha256": "a2e6b1f0a464b37c93ffb03a3279d567796e67e19b784fb168a1caf668bfdfe3",
+      "bytes": 43360,
+      "triangles": 2998,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 2998,
+          "vertices": 1615,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "aki_headphones",
+      "sourceSha256": "59798344af1f27702b3e2e2f37357971bf66fb36f3803ad86b44bf14427d0a70",
+      "sha256": "7e984a5be8832a7bd06c9a12b338d99b2d3faf61bafcdabf21c9fd159dfd5a85",
+      "bytes": 53976,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2322,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "milo_belt",
+      "sourceSha256": "fd8e2365d76adb415dbaf43efdd5391531ad192d5fefd1270d2d301423a7f1bb",
+      "sha256": "5b804938f8c134568afa30927f13c9ab56f68ab8def42775cdc267b03b0fc97a",
+      "bytes": 59080,
+      "triangles": 2998,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 2998,
+          "vertices": 2663,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "milo_disc",
+      "sourceSha256": "7edc058f4395f4b1253ea5b65b2ac7bb7aca258e393617f1fa2354bf9d2f3629",
+      "sha256": "4ff370d21ab592b6c789fa176fca1c0b93e2919e12dfd0ea2fc8288f55a3cd7d",
+      "bytes": 61564,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2828,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "milo_headphones",
+      "sourceSha256": "09cedc8cef7fbfbb94febae308f0c39bad883146c5d05edb3e940ad5ecf99f7b",
+      "sha256": "e1e2c063ecc2b7f5f39af7e1573bf8290b91465167526e1b951ecca958652793",
+      "bytes": 63424,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2952,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "milo_md",
+      "sourceSha256": "d71484a807bfb4232dc789fd5c036d81bdc174d25f69cfea3d3583994a12fece",
+      "sha256": "2f3f1433274dc5a9a179afaf060012041c3300f5fd5fef78f124621abb44d3e1",
+      "bytes": 54096,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2330,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "null_box",
+      "sourceSha256": "a917d5a71c06c47dd703747f8fcaa95431dc56ef88004b15896dad6f945e8c8f",
+      "sha256": "47af0ad5ab683559e978d6a7b5d96b1367cc22bd70f1ab13dfef3c4207a297bb",
+      "bytes": 57920,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2585,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "null_controller",
+      "sourceSha256": "6b2532b57be08bfb163c9fe8b0f0884439047d88bedbb665c9a7a10b87243033",
+      "sha256": "df7e9f5d8278cf36c9b2ae5fc1dddee605957d017d4feaba46288a3003768cd9",
+      "bytes": 54948,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2387,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "null_goggles",
+      "sourceSha256": "6b8caf6b07c51f4d817835f4bb41b3fa6d14115a169c24a6a28b004e1fcf0d02",
+      "sha256": "a818a1a07dd5cdef73d9a1a594c285f42b434f9460278b132e164b109cd76556",
+      "bytes": 56436,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2486,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "null_pet",
+      "sourceSha256": "8d06861ce8c822c3acbaa2814e092cb3fb5e4fa327690ea7143428061178d5ec",
+      "sha256": "b32dcb635a0ef7f09d34b054931c0df746cf8416dd8d337741dd44ed06a41fdc",
+      "bytes": 50408,
+      "triangles": 2998,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 2998,
+          "vertices": 2085,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "ping_bag",
+      "sourceSha256": "6b8f00bc1aa8346cf439b94719d96b09b225001c74a8d566d46e81390b276984",
+      "sha256": "1b79c3ab197d7c4a88e68f3662cf597bec94ca35c615a6297011525238fd443e",
+      "bytes": 58192,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2603,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "ping_comm",
+      "sourceSha256": "9d9ccac015ea9d064128715f69818281fac23fd1f16c1475ba587d087d9d5d28",
+      "sha256": "feda3bf58c9c5a399514565eae067ec7ef9b69f1641ef2ef1bf0ef468b6736c5",
+      "bytes": 47944,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 1920,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "ping_launcher",
+      "sourceSha256": "c8b7aa81d72345cfc08e76eea92f4c2713e39905bde1b08ce8a65b7c54439f07",
+      "sha256": "1566bdfbdb8cf1c3f21e14e3a36a2d8808a042cc0167f43b02d42ff3988d752a",
+      "bytes": 58040,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2593,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    },
+    {
+      "id": "ping_phone",
+      "sourceSha256": "7a6828db2e79b65f99fb232d4c392eeb12a607927db4b95ad03ad931cd469f2c",
+      "sha256": "6111fc2a2b91a1eebb8e8ec8989e74e32b2f597f51130985f1a476f6473f9549",
+      "bytes": 62212,
+      "triangles": 3000,
+      "textures": 0,
+      "animations": [],
+      "primitives": [
+        {
+          "triangles": 3000,
+          "vertices": 2871,
+          "positionAndSkinPreserved": true,
+          "triangleOrderPreserved": true
+        }
+      ],
+      "kind": "equipment"
+    }
+  ]
+}

@@ -19,7 +19,14 @@ const aRnd = i => { const s = Math.sin(i*127.1 + 311.7)*43758.5453; return s - M
 const D2R = Math.PI/180;
 
 /* ---------- 基礎工具 ---------- */
-const m3 = (hex, o={}) => { if (o.own){ const { own, ...rest } = o; return new T3.MeshLambertMaterial({ color:hex, flatShading:true, ...rest }); } const k = hex + JSON.stringify(o); return (R3.cache[k] ||= new T3.MeshLambertMaterial({ color:hex, flatShading:true, ...o })); };
+const m3 = (hex, o={}) => {
+ const clean=typeof g1On==='function'&&g1On(),{own,emissive,emissiveIntensity,flatShading,...rest}=o;
+ const make=()=>{if(!clean)return new T3.MeshLambertMaterial({color:hex,flatShading:true,...rest,...(emissive?{emissive,emissiveIntensity}:{} )});
+  const mat=new T3.MeshBasicMaterial({color:hex,...rest});mat.userData.streetFlat=true;
+  // Fixed geometric face tones: no light, atlas, surface noise or AO.
+  mat.onBeforeCompile=shader=>{shader.vertexShader='varying vec3 streetFacePosition;\n'+shader.vertexShader;shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nstreetFacePosition=position;');shader.fragmentShader='varying vec3 streetFacePosition;\n'+shader.fragmentShader;shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\nvec3 faceNormal=normalize(cross(dFdx(streetFacePosition),dFdy(streetFacePosition)));\ndiffuseColor.rgb*=0.90+0.10*step(0.9,abs(faceNormal.y));');};mat.customProgramCacheKey=()=> 'street-flat-faces-v1';return mat;};
+ if(own)return make();const k=(clean?'street:':'legacy:')+hex+JSON.stringify(o);return(R3.cache[k]||=make());
+};
 const basic = (hex, op=1) => new T3.MeshBasicMaterial({ color:hex, transparent:op < 1, opacity:op, depthWrite:op >= 1 });
 const G_ = {};   // 共用幾何
 const geo = (key, fn) => G_[key] ||= fn();
@@ -203,13 +210,26 @@ function buildSkel(){
   head.scale.setScalar(2.05); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
   addShadow(g, 4.6); return g;
 }
-function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));if(parent.userData.mats)parent.userData.mats.push(f.material);else parent.userData.mats=[f.material];f.position.set(x,y,z);parent.add(f);return f;}
-function buildMascot(){   // 電台吉祥物：圓滾滾的小收音機精靈，頭頂一根小天線，跟在角色身後
+function faceMesh(w,x,y,z,parent,kind='enemy'){
+ const group=new T3.Group();group.position.set(x,y,z);parent.add(group);
+ const add=(geometry,color,px=0,py=0,pz=0)=>{const material=new T3.MeshBasicMaterial({color});material.userData.deviceIndicator=true;const mesh=new T3.Mesh(geometry,material);mesh.position.set(px,py,pz);group.add(mesh);(parent.userData.mats||=[]).push(material);return mesh;};
+ // Actual solid parts, not a face decal: no image map, plane, mouth or cheeks.
+ add(new T3.BoxGeometry(w*.78,w*.22,w*.035),'#202D3B',0,w*.04,0);
+ const slit=add(new T3.BoxGeometry(w*.40,w*.045,w*.018),'#70C4CD',-w*.12,w*.04,w*.027);slit.rotation.z=kind==='enemy'?-.12:0;
+ add(new T3.BoxGeometry(w*.075,w*.045,w*.018),'#EBA548',w*.25,w*.04,w*.027);
+ group.userData.deviceIndicator=true;return group;
+}
+function buildMascot(){   // 隨行收音機：切面外殼、偏置調諧器、側面喇叭，沒有擬人笑臉
   const g = new T3.Group();
-  mk(ico(1, 1), ownMat(g, '#ffe58a'), 0, 3.2, 0, g).scale.set(2.6, 2.3, 2.3);
-  for (const sx of [-1, 1]) mk(ico(.6, 0), ownMat(g, '#ffd05a'), sx*2, 5.2, 0, g).scale.set(.8, 1.2, .5);
-  mk(new T3.CylinderGeometry(.14, .14, 2.6, 5), ownMat(g, '#8a7fd8'), 0, 6.4, 0, g); g.userData.tip = mk(ico(.45, 0), ownMat(g, '#ff7a6e'), 0, 7.8, 0, g);
-  faceMesh(3.4, 0, 3.4, 2.4, g);
+  mk(ico(1, 1), ownMat(g, '#D4BC60'), 0, 3.2, 0, g).scale.set(2.7, 2.1, 2.2);
+  const dark=ownMat(g,'#283D49'),trim=ownMat(g,'#91AAA6');
+  mk(new T3.BoxGeometry(3.6,.55,2.7),dark,0,1.65,0,g);
+  mk(new T3.BoxGeometry(2.8,.35,2),trim,-.25,5.05,-.15,g);
+  // One offset tuner, not paired eyes; a side grille reads as actual radio hardware.
+  faceMesh(2.9,-.45,3.6,2.05,g,'companion');
+  mk(new T3.CylinderGeometry(.48,.48,.35,6),dark,2.45,4.2,-.65,g).rotation.z=Math.PI/2;
+  for(let i=0;i<3;i++)mk(new T3.BoxGeometry(.12,.18,1.5),dark,2.48,2.8+i*.4,0,g);
+  mk(new T3.CylinderGeometry(.14,.14,2.6,5),trim,-.8,6.1,-.3,g);g.userData.tip=mk(ico(.36,0),ownMat(g,'#EA7950'),-.8,7.5,-.3,g);
   g.userData.s = 1; g.scale.setScalar(1.5); addShadow(g, 2.4); return g;
 }
 function mascotUpdate(){
@@ -324,7 +344,7 @@ function buildGround(bi){
   }
   const mesh=(values,color)=>{const q=new T3.BufferGeometry();q.setAttribute('position',new T3.Float32BufferAttribute(values,3));q.computeVertexNormals();g.add(new T3.Mesh(q,m3(color,{side:T3.DoubleSide})));};
   mesh(top,B.board.m);mesh(sides,B.board.d);
-  {const q=new T3.BufferGeometry(),uv=new Float32Array(top.length/3*2);for(let i=0;i<top.length/3;i++){uv[i*2]=top[i*3]/56;uv[i*2+1]=top[i*3+2]/56;}q.setAttribute('position',new T3.Float32BufferAttribute(top,3));q.setAttribute('uv',new T3.BufferAttribute(uv,2));const o=new T3.Mesh(q,new T3.MeshBasicMaterial({map:dappleTexture(),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));o.renderOrder=1;g.add(o);}
+  if(!(typeof g1On==='function'&&g1On())){const q=new T3.BufferGeometry(),uv=new Float32Array(top.length/3*2);for(let i=0;i<top.length/3;i++){uv[i*2]=top[i*3]/56;uv[i*2+1]=top[i*3+2]/56;}q.setAttribute('position',new T3.Float32BufferAttribute(top,3));q.setAttribute('uv',new T3.BufferAttribute(uv,2));const o=new T3.Mesh(q,new T3.MeshBasicMaterial({map:dappleTexture(),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));o.renderOrder=1;g.add(o);}
   if(p.street){
     const hw=STREET_HW,paint=(w,h,d,c,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m3(c),x,y,z,g);
     for(const c of p.groundCells){
@@ -506,9 +526,9 @@ function buildShop(variant=0){
   const segs=v%3===1?1:6,sw=(W-2)/segs;for(let k=0;k<segs;k++){const a=box(sw,.4,4.2,k%2?'#fbfaf2':acc,-(W-2)/2+sw*(k+.5),7.8,D/2+2);a.rotation.x=.28;}
   // 招牌：底板加像素圖示（雜貨籃、衣服、藥十字、電器、咖啡杯、洗衣）
   box(W-9,3.4,.5,acc,0,H-2.2,D/2+.25);const ic=SHOP_ICONS[v],px=.8,tex=v===3?'radio':v===4?'records':v===5?'repair':null;
-  if(tex){const sg=mk(new T3.PlaneGeometry(11.6,2.9),new T3.MeshBasicMaterial({map:g1SignTexture(tex)}),0,H-2.2,D/2+.55,g);}
-  if(!tex)for(let r=0;r<5;r++)for(let c=0;c<5;c++)if(ic[r][c]==='#')box(px,px,.3,'#ffffff',(c-2)*px*1.1-5.4,H-2.2+(2-r)*px*.6,D/2+.62);
-  if(!tex)for(let i=0;i<3;i++)box(2.6,.7,.3,i%2?'#4a5878':'#ffffff',-1.4+i*3.2,H-2.2+(i%2?-.5:.5),D/2+.62);
+  if(tex&&!g1On()){const sg=mk(new T3.PlaneGeometry(11.6,2.9),new T3.MeshBasicMaterial({map:g1SignTexture(tex)}),0,H-2.2,D/2+.55,g);}
+  if(!tex||g1On())for(let r=0;r<5;r++)for(let c=0;c<5;c++)if(ic[r][c]==='#')box(px,px,.3,'#ffffff',(c-2)*px*1.1-5.4,H-2.2+(2-r)*px*.6,D/2+.62);
+  if(!tex||g1On())for(let i=0;i<3;i++)box(2.6,.7,.3,i%2?'#4a5878':'#ffffff',-1.4+i*3.2,H-2.2+(i%2?-.5:.5),D/2+.62);
   for(let i=0;i<3;i++)box(3,3,.25,'#9ecfe8',-6+i*6,H-8,D/2+.1,glass);
   if(v===0||v===3){for(let i=0;i<3;i++)box(2.2,.35,.3,i%2?'#5cd04a':'#e4503c',-7+i*2.6,2.4,D/2+.35);}                       // 窗邊貼紙條
   if(v===1){for(const x of [-8,-3,2])mk(ico(.9,1),m3('#e4503c'),x,6.4,D/2+3.4,g);}                                          // 紅燈籠
@@ -646,6 +666,7 @@ function monLook(m, g){
   if (m.born === undefined) m.born = G.time; const age = G.time - m.born, pop = age < .4 ? 1 + .35*Math.sin(Math.min(1, age/.4)*Math.PI) - (1 - Math.min(1, age/.4))*.65 : 1,
     wu = !m.dead && m.fight && !m.warning && m.lunge < 0 && m.atkCd > 0 && m.atkCd < .4 ? 1 - m.atkCd/.4 : 0, kb = m.hurtT > 0 && !m.dead ? Math.min(1, m.hurtT/.12)*2.2 : 0;
   at3(g, lx - kb*(G.h.x - m.x)/dl, y - kb*(G.h.y - m.y)/dl, BZ + terrainHeight(m.x,m.y) + (m.fall > 0 ? 70*Math.pow(m.fall/.9, 2) : 0)); g.rotation.y = Math.atan2(G.h.x - m.x, G.h.y - m.y);   // 面向主角
+  if(ps.streetCreature){streetCreatureLook(m,g,base,pop,lg);return;}
   if(ps.simple){g.scale.setScalar(base*(m.type==='crab'?1.15:1));g.position.y+=(m.type==='wisp'?7+Math.sin(t*3)*2:Math.abs(Math.sin(t*7))*.8)+lg*3;g.rotation.x=lg*.3;}
   if (ps.simple){ const mv = m.fight || m.dead ? 0 : 1, q = m.boss ? 'golem' : m.type;
     if (q === 'crab'){ g.rotation.z = Math.sin(t*8)*.12*mv; g.rotation.y += Math.sin(t*4)*.15*mv; }
@@ -727,14 +748,14 @@ function updateFx(){
   };
   const sph=geo('fxs',()=>ico(1,1)),disc=geo('fxd',()=>new T3.CircleGeometry(1,20).rotateX(-Math.PI/2)),ring=geo('fxr',()=>new T3.RingGeometry(.83,1,24).rotateX(-Math.PI/2)),box=geo('fxf',()=>new T3.BoxGeometry(1,.25,1));
   const warnings=G.mons.filter(m=>!m.dead&&m.warning&&!(m.frozen>0)).map(m=>({k:'danger',...m.warning,t:1-m.warning.t/m.warning.duration,col:m.boss?'#c45b64':'#c87e48'}));
-  const signalFx=deathFxStyle()==='signal';
+  const signalFx=deathFxStyle()==='signal',stainGround=BZ+(terrainNow().street ? .5 : .15);
   for(const stain of G.stains||[]){if(signalFx){const sp=Math.min(1,stain.t/.5),ease=1-(1-sp)*(1-sp),fade=Math.min(1,(7-stain.t)/2.5);if(fade<=0)continue;let zi=0;
-    for(const b of stain.blobs||[{dx:0,dy:0,r:stain.r}]){add(box,['#5cd0f0','#ff7fa8','#f5d24a','#e8f4ff'][zi%4],.95*fade,stain.x+b.dx*ease*1.3,stain.y+b.dy*ease*1.3,BZ+.2+(zi++)*.01+Math.sin(sp*Math.PI)*b.r*.8,Math.max(.5,b.r*.55));}
+    for(const b of stain.blobs||[{dx:0,dy:0,r:stain.r}]){add(box,['#5cd0f0','#ff7fa8','#f5d24a','#e8f4ff'][zi%4],.95*fade,stain.x+b.dx*ease*1.3,stain.y+b.dy*ease*1.3,stainGround+.05+(zi++)*.01+Math.sin(sp*Math.PI)*b.r*.8,Math.max(.5,b.r*.55));}
     continue;}
     const sp=Math.min(1,stain.t/.7),ease=1-(1-sp)*(1-sp),dry=Math.min(1,stain.t/10),fade=Math.min(1,(12-stain.t)/4),col=dry<.5?'#e0131e':dry<.8?'#c20f1a':'#9a0c16',wet=stain.t<6?(1-stain.t/6)*.4:0;let zi=0;
-  if(stain.blobs){const m0=stain.blobs[0];add(disc,'#7a0710',.85*fade,stain.x,stain.y,BZ+.14,m0.r*1.12*ease);}
-  for(const b of stain.blobs||[{dx:0,dy:0,r:stain.r}]){const k=b.drop?Math.min(1,Math.max(0,(stain.t-.12)/.2)):ease;if(k<=0)continue;add(disc,col,.9*fade,stain.x+b.dx*ease,stain.y+b.dy*ease,BZ+.15+(zi++)*.006,b.r*k);}
-  if(wet>0&&stain.blobs)for(const b of stain.blobs.slice(0,2)){if(b.drop)continue;add(disc,'#ff5560',wet*fade,stain.x+b.dx*ease-b.r*.18,stain.y+b.dy*ease-b.r*.18,BZ+.15+(zi++)*.006,b.r*.45*ease);}}
+  if(stain.blobs){const m0=stain.blobs[0];add(disc,'#7a0710',.85*fade,stain.x,stain.y,stainGround-.01,m0.r*1.12*ease);}
+  for(const b of stain.blobs||[{dx:0,dy:0,r:stain.r}]){const k=b.drop?Math.min(1,Math.max(0,(stain.t-.12)/.2)):ease;if(k<=0)continue;add(disc,col,.9*fade,stain.x+b.dx*ease,stain.y+b.dy*ease,stainGround+(zi++)*.006,b.r*k);}
+  if(wet>0&&stain.blobs)for(const b of stain.blobs.slice(0,2)){if(b.drop)continue;add(disc,'#ff5560',wet*fade,stain.x+b.dx*ease-b.r*.18,stain.y+b.dy*ease-b.r*.18,stainGround+(zi++)*.006,b.r*.45*ease);}}
   for(const e of warnings.concat(G.fx.filter(e=>e.sustained),G.fx.filter(e=>!e.sustained))){const fade=1-e.t;
     if(renderSpectacleFx(e,add,geo))continue;
     if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}
@@ -779,9 +800,9 @@ function overlay(){
   const k = pxu(); let s = '';
   const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = Math.max(14,w*k*.8), H2 = Math.max(2.1,Math.min(2.5,.34*k)); return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
   if (G.h.dead <= 0) s += bar(G.h.x, G.h.y, BZ + 36*CK, 9, G.h.hp/G.st.life, '#4fe38a');
-  for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)) s += bar(m.x, m.y, BZ + (m.boss?140:m.type==='golem'?48:m.type==='lantern'?38:(m.type==='slime'?11:m.type==='brute'?32:m.type==='drone'?24:m.type==='bomb'?20:28)*(MONSTER_TRAITS[m.type]?.scale||1))*CK, m.boss?26:8, m.hp/m.hpMax, m.boss?'#ff3b3b':'#ff6a4a');
+  for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)){const anchor=typeof streetCreatureBarAnchor==='function'&&streetCreatureBarAnchor(m)||{x:m.x,y:m.y,z:BZ + (m.boss?140:m.type==='golem'?48:m.type==='lantern'?38:(m.type==='slime'?11:m.type==='brute'?32:m.type==='drone'?24:m.type==='bomb'?20:28)*(MONSTER_TRAITS[m.type]?.scale||1))*CK};s+=bar(anchor.x,anchor.y,anchor.z,m.boss?26:8,m.hp/m.hpMax,m.boss?'#ff3b3b':'#ff6a4a');}
   if(G.h.dead<=0&&G.time<(G.h.bufferUntil||0)&&G.h.buffer>0)s+=bar(G.h.x,G.h.y,BZ+40*CK,9,G.h.buffer/(G.st.life*.12),'#57dce8');
-  for(const m of G.mons)if(!m.dead&&m.shield>0)s+=bar(m.x,m.y,BZ+(m.boss?44:32)*CK,8,m.shield/m.shieldMax,'#57dce8');
+  for(const m of G.mons)if(!m.dead&&m.shield>0){const anchor=typeof streetCreatureBarAnchor==='function'&&streetCreatureBarAnchor(m);s+=anchor?bar(anchor.x,anchor.y,anchor.z+2.2,8,m.shield/m.shieldMax,'#57dce8'):bar(m.x,m.y,BZ+(m.boss?44:32)*CK,8,m.shield/m.shieldMax,'#57dce8');}
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + terrainHeight(fl.x,fl.y) + fl.t*9);
     const unit=R3.vbW/Math.max(1,R3.W),size=battleTextSize(fl.kind,fl.size,innerWidth)*unit;
     s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" fill="${fl.col}" style="font-size:${size.toFixed(2)}px!important;font-family:var(--ux-body)!important;stroke:#f7faff;stroke-width:${(2.5*unit).toFixed(2)}px;stroke-linejoin:round;paint-order:stroke" font-weight="400" opacity="${(1-fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
@@ -823,7 +844,8 @@ function scene(){
   mascotUpdate();
   // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
-  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm,m.chap??null):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
+  streetCreatureMode();
+  for (const m of G.mons){ const g = entFor(m, () => streetCreatureBuild(m)||(m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm,m.chap??null):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss))); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
@@ -864,14 +886,18 @@ function buildRegionLandmark(bi){
 }
 /* 可獨立擺動的肢體：以關節為原點合批，再掛到魔物身上旋轉 */
 function monLimb(root,px,py,pz,fn){const lg=new T3.Group();fn(lg);const b=bake(lg);b.position.set(px,py,pz);root.add(b);return b;}
-function cardboardFace(){const k='cbface';if(R3.cache[k])return R3.cache[k];const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.fillStyle='#2b2552';x.beginPath();x.arc(20,28,5,0,7);x.arc(44,28,5,0,7);x.fill();x.strokeStyle='#2b2552';x.lineWidth=4;x.lineCap='round';x.beginPath();x.arc(32,40,7,.15*Math.PI,.85*Math.PI);x.stroke();x.fillStyle='rgba(255,140,120,.55)';x.fillRect(8,38,8,5);x.fillRect(48,38,8,5);const t=new T3.CanvasTexture(c);t.colorSpace=T3.SRGBColorSpace;t.magFilter=T3.NearestFilter;t.minFilter=T3.NearestFilter;return R3.cache[k]=t;}
+
 function buildFieldMonster(type,variant=0){
  let limbs=null;const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
  const box=(w,h,d,mat,x,y,z)=>mk(roundedG(w,h,d),mat,x,y,z,g);
- if(type==='skel'){   // 紙箱人：方箱身、膠帶、簡化臉
+ if(type==='skel'){   // 訊號搬運箱：偏置掃描模組、封箱帶、折蓋；不畫五官
   const cb=m3(variant===1?'#d3b07c':'#c9a06a'),tape=m3('#eadfbf'),sh=m3('#8d6e4a');
   box(12,13,9,cb,0,13,0);box(13,2,10,sh,0,20,0);box(2.4,13.5,9.4,tape,2,13,0);box(12.6,1.6,2,tape,0,20.8,3.2);
-  const face=new T3.Mesh(new T3.PlaneGeometry(9,9),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));face.position.set(-1.2,14,4.6);g.add(face);
+  box(4.5,3.2,.6,dark,-2.9,15.3,4.8);
+  faceMesh(4.7,-2.9,15.4,5.2,g);
+  for(let i=0;i<3;i++)box(2.8,.28,.25,sh,-2.9,12.3-i*.65,4.7);
+  box(.5,9,.25,sh,5.3,13.2,4.7);
+  const flap=box(5,.65,4,cb,-4,21,0);flap.rotation.z=-.16;
   limbs={legL:[-3,7,0,l=>{mk(roundedG(3.6,7,4),dark,0,-3.5,0,l);mk(roundedG(4.6,2,6),sh,0,-6.5,1,l);}],legR:[3,7,0,l=>{mk(roundedG(3.6,7,4),dark,0,-3.5,0,l);mk(roundedG(4.6,2,6),sh,0,-6.5,1,l);}],
     armL:[-7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}],armR:[7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}]};
  }else if(type==='golem'){
@@ -990,3 +1016,11 @@ function towerDiorama(floor=1){return deviceThumb('tower-diorama:'+towerTheme(fl
 
 function buildRiftHand(){const g=new T3.Group(),body=m3('#455478'),dark=m3('#28374f'),glow=m3('#ad9ae2',{emissive:'#ad9ae2',emissiveIntensity:.5});mk(roundedG(7,4,5),dark,0,3,0,g);for(let i=0;i<5;i++){const x=(i-2)*1.5,h=i===0?6:i===4?8:10+Math.sin(i)*2;mk(curvedPipe([[x,4,0],[x,7,-1],[x*.8,h,-2],[x*.7,h+1,-.5]],.65),body,0,0,0,g);mk(new T3.SphereGeometry(.8,6,4),glow,x*.7,h+1,-.5,g);}for(const o of g.children){o.position.multiplyScalar(1.6);o.scale.multiplyScalar(1.6);}mk(new T3.TorusGeometry(10,.3,4,32),glow,0,10,0,g).rotation.z=.45;const band=mk(new T3.TorusGeometry(1,.025,4,64),glow,0,.4,0,g);band.rotation.x=Math.PI/2;band.material=glow.clone();band.material.depthTest=false;band.material.depthWrite=false;band.material.transparent=true;band.material.opacity=.75;band.renderOrder=4;g.userData.band=band;return g;}
 function renderRiftWorld(){const e=riftState().encounter;if(!e||e.key!==terrainKey())return;const g=entFor(e,buildRiftHand);at3(g,e.x,e.y,BZ+terrainHeight(e.x,e.y));g.userData.band.scale.setScalar(e.phase==='dormant'?7:e.radius);g.userData.band.material.emissiveIntensity=.4+Math.sin(G.time*3)*.1;if(['complete','failed'].includes(e.phase))g.scale.setScalar(Math.max(.05,1-e.age/5));}
+
+function monsterVisualSpan(m){
+ const g=R3.ent?.get(m);if(!g)return 0;
+ const cache=monsterVisualSpan.cache||(monsterVisualSpan.cache={bounds:new T3.Box3(),part:new T3.Box3(),size:new T3.Vector3()});
+ cache.bounds.makeEmpty();g.updateWorldMatrix(true,true);
+ g.traverse(o=>{if(!o.isMesh||!o.visible||o===g.userData.sh||o===g.userData.eliteRing)return;const geo=o.geometry;if(!geo.boundingBox)geo.computeBoundingBox();cache.part.copy(geo.boundingBox).applyMatrix4(o.matrixWorld);cache.bounds.union(cache.part);});
+ if(cache.bounds.isEmpty())return 0;cache.bounds.getSize(cache.size);return Math.max(cache.size.x,cache.size.y,cache.size.z);
+}

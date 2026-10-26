@@ -1,0 +1,34 @@
+{
+  "browser": "Chromium software WebGL, Three.js r160",
+  "self_contained_HTML_via_local_HTTP": true,
+  "geometry": {
+    "calls": 3,
+    "triangles": 684,
+    "clips": [
+      {
+        "name": "Hop",
+        "duration": 1
+      },
+      {
+        "name": "Idle",
+        "duration": 2
+      },
+      {
+        "name": "Hurt",
+        "duration": 0.5
+      }
+    ],
+    "unlit": true,
+    "textures": 0
+  },
+  "animated_clips_checked": [
+    "Idle",
+    "Hop",
+    "Hurt"
+  ],
+  "errors": [],
+  "limitations": [
+    "Not a hardware FPS benchmark",
+    "Not yet wired into production combat"
+  ]
+}

@@ -29,7 +29,7 @@ function directPortraitsRefresh(attempt=0){
 const INTRO_KEY='idle-hero-intro-v1',INTRO={active:false,step:0,selected:'street',name:''};
 const INTRO_STORY=[
  ['下午三點的錯頻','夏日街區還在過它平常的一天。小禾忙著修風扇，阿澄的渡船剛靠岸。街角電台卻突然播出一段沒有人點過的旋律。'],
- ['會跟著節拍跑的雜物','販賣機開始找錯零，路邊的雜物也跟著旋律亂跑。小禾發現，異常訊號正沿著舊電纜往高架橋的另一頭傳。先把前街清出一條路，再找出那段聲音從哪裡來。'],
+ ['走錯頻道的街頭器材','販賣機開始找錯零，音箱、拖板和速遞車也跟著旋律亂跑。小禾發現，異常訊號正沿著舊電纜往高架橋的另一頭傳。先把前街清出一條路，再找出那段聲音從哪裡來。'],
  ['把街區接回來','阿澄在港口等你的消息，小禾留在電台接應。帶上熟悉的裝置，從前街開始追查。選擇你的職業，以自己的名字，把街區的聲音一段段接回來。']
 ];
 function introPersist(){try{localStorage.setItem(INTRO_KEY,JSON.stringify({step:INTRO.step,cover:INTRO.cover===true,selected:INTRO.selected,name:INTRO.name}));}catch(e){}}

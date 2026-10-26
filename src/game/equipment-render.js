@@ -3,17 +3,19 @@ const EQUIPMENT_RENDER={cache:new Map()};
 function equipmentModel(id){
  if(typeof EQUIPMENT_GLB==='undefined'||!EQUIPMENT_GLB[id])return typeof equipmentProxyModel==='function'?equipmentProxyModel(id):null;
  const ck=id+(typeof g1On==='function'&&g1On()?'+g1':'');if(EQUIPMENT_RENDER.cache.has(ck))return EQUIPMENT_RENDER.cache.get(ck).clone(true);
- const bin=Uint8Array.from(atob(EQUIPMENT_GLB[id]),c=>c.charCodeAt(0)),view=new DataView(bin.buffer),n=view.getUint32(12,true),doc=JSON.parse(new TextDecoder().decode(bin.subarray(20,20+n))),start=28+n;
+ const flat=typeof STREET_EQUIPMENT_GLB!=='undefined'&&g1On();
+ const bin=Uint8Array.from(atob(flat?STREET_EQUIPMENT_GLB[id]:EQUIPMENT_GLB[id]),c=>c.charCodeAt(0)),view=new DataView(bin.buffer),n=view.getUint32(12,true),doc=JSON.parse(new TextDecoder().decode(bin.subarray(20,20+n))),start=28+n;
  const types={5121:Uint8Array,5123:Uint16Array,5125:Uint32Array,5126:Float32Array},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4};
  const access=i=>{const a=doc.accessors[i],v=doc.bufferViews[a.bufferView],C=types[a.componentType],w=widths[a.type];if(!C||!w||v.byteStride||a.sparse)throw Error('Unsupported equipment accessor');const off=start+(v.byteOffset||0)+(a.byteOffset||0);return new T3.BufferAttribute(new C(bin.buffer.slice(off,off+a.count*w*C.BYTES_PER_ELEMENT)),w,!!a.normalized);};
  const materials=(doc.materials||[]).map(m=>{
-  const p=m.pbrMetallicRoughness||{},c=p.baseColorFactor||[1,1,1,1],mat=new T3.MeshLambertMaterial({color:new T3.Color().fromArray(c),side:T3.DoubleSide});
+  const p=m.pbrMetallicRoughness||{},c=p.baseColorFactor||[1,1,1,1],mat=flat?new T3.MeshBasicMaterial({vertexColors:true,side:T3.DoubleSide}):new T3.MeshLambertMaterial({color:new T3.Color().fromArray(c),side:T3.DoubleSide});
+  if(flat)mat.userData.streetFlat=true;
   mat.userData.equipmentShared=true;
   if(p.baseColorTexture){const image=doc.images[doc.textures[p.baseColorTexture.index].source],v=doc.bufferViews[image.bufferView],bytes=bin.subarray(start+(v.byteOffset||0),start+(v.byteOffset||0)+v.byteLength);let s='';for(let i=0;i<bytes.length;i+=8192)s+=String.fromCharCode(...bytes.subarray(i,i+8192));const tex=new T3.Texture();tex.colorSpace=T3.SRGBColorSpace;tex.flipY=false;mat.map=tex;const img=document.createElement('img');img.onload=()=>{tex.image=img;tex.needsUpdate=true;};img.onerror=()=>{mat.map=null;mat.needsUpdate=true;};img.src='data:'+image.mimeType+';base64,'+btoa(s);}
   return mat;
  });
  const nodes=doc.nodes.map(node=>{const g=new T3.Group();g.name=id;if(node.matrix)new T3.Matrix4().fromArray(node.matrix).decompose(g.position,g.quaternion,g.scale);else{if(node.translation)g.position.fromArray(node.translation);if(node.rotation)g.quaternion.fromArray(node.rotation);if(node.scale)g.scale.fromArray(node.scale);}
-  if(node.mesh!=null)for(const p of doc.meshes[node.mesh].primitives){const geo=new T3.BufferGeometry();geo.userData.equipmentShared=true;for(const [key,name]of [['POSITION','position'],['NORMAL','normal'],['TEXCOORD_0','uv']])if(p.attributes[key]!=null)geo.setAttribute(name,access(p.attributes[key]));if(p.indices!=null)geo.setIndex(access(p.indices));if(!geo.attributes.normal)geo.computeVertexNormals();g.add(new T3.Mesh(geo,g1EquipMaterial(id,materials[p.material]||m3('#bbc8d2'))));}return g;});
+  if(node.mesh!=null)for(const p of doc.meshes[node.mesh].primitives){const geo=new T3.BufferGeometry();geo.userData.equipmentShared=true;for(const [key,name]of [['POSITION','position'],['NORMAL','normal'],['TEXCOORD_0','uv'],['COLOR_0','color']])if(p.attributes[key]!=null)geo.setAttribute(name,access(p.attributes[key]));if(p.indices!=null)geo.setIndex(access(p.indices));if(!flat&&!geo.attributes.normal)geo.computeVertexNormals();g.add(new T3.Mesh(geo,g1EquipMaterial(id,materials[p.material]||m3('#bbc8d2'))));}return g;});
  doc.nodes.forEach((node,i)=>(node.children||[]).forEach(j=>nodes[i].add(nodes[j])));const root=new T3.Group();for(const i of doc.scenes[doc.scene||0].nodes)root.add(nodes[i]);if(id==='aki_baton')root.rotation.x=-Math.PI/2;root.userData.equipmentModel=id;EQUIPMENT_RENDER.cache.set(ck,root);return root.clone(true);
 }
 // Socket dimensions use the existing character rig's units; assets are centered with max span 1.
@@ -68,7 +70,7 @@ function characterEquipmentGeometry(asset,id){
  if(id!=='aki'||typeof CHARACTER_EQUIPMENT_MASKS==='undefined')return asset.geometry;
  const gear=G.equip.head,mask=CHARACTER_EQUIPMENT_MASKS.aki_headphones;
  if(signatureOf(gear)?.model!=='aki_headphones'||!canUseGear(gear)||!mask)return asset.geometry;
- if(asset.geometry.attributes.position.count!==mask.vertices||asset.geometry.index.count!==mask.triangles*3)throw Error('Character equipment mask is stale');
+ if((asset.flat?asset.sourceVertices:asset.geometry.attributes.position.count)!==mask.vertices||asset.geometry.index.count!==mask.triangles*3)throw Error('Character equipment mask is stale');
  if(!asset.headsetVariant){const removed=new Set(mask.remove),indices=asset.geometry.index.array,kept=[];for(let i=0;i<indices.length;i+=3)if(!removed.has(i/3))kept.push(indices[i],indices[i+1],indices[i+2]);asset.headsetVariant=asset.geometry.clone();asset.headsetVariant.setIndex(kept);}
  return asset.headsetVariant;
 }

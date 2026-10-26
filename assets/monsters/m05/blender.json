@@ -1,0 +1,50 @@
+{
+  "id": "M05",
+  "name": "摺訊飛蛾",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "M05_Body",
+      "triangles": 144,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M05_Keypad",
+      "triangles": 572,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M05_Wing-1",
+      "triangles": 20,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M05_Wing1",
+      "triangles": 20,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 756,
+  "bounds": {
+    "min": [
+      -1.1799999475479126,
+      -0.2120000123977661,
+      0.0
+    ],
+    "max": [
+      1.1799999475479126,
+      0.125,
+      1.9650001525878906
+    ]
+  },
+  "height": 1.9650001525878906,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "validationStage": "Blender authoring; see docs/style-complete/runtime-validation.json for later runtime evidence"
+}

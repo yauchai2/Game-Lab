@@ -1,0 +1,770 @@
+{
+  "heroes": [
+    {
+      "key": "street",
+      "model": "aki",
+      "flat": true,
+      "material": "MeshBasicMaterial",
+      "map": false,
+      "vertices": 9325,
+      "triangles": 11836,
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ],
+      "portrait": true
+    },
+    {
+      "key": "frost",
+      "model": "milo",
+      "flat": true,
+      "material": "MeshBasicMaterial",
+      "map": false,
+      "vertices": 9412,
+      "triangles": 14000,
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ],
+      "portrait": true
+    },
+    {
+      "key": "beep",
+      "model": "ping",
+      "flat": true,
+      "material": "MeshBasicMaterial",
+      "map": false,
+      "vertices": 9753,
+      "triangles": 13998,
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ],
+      "portrait": true
+    },
+    {
+      "key": "volt",
+      "model": "null",
+      "flat": true,
+      "material": "MeshBasicMaterial",
+      "map": false,
+      "vertices": 9310,
+      "triangles": 13998,
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ],
+      "portrait": true
+    }
+  ],
+  "equipment": [
+    {
+      "id": "aki_baton",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "aki_chain",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "aki_charm",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "aki_headphones",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "milo_belt",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "milo_disc",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "milo_headphones",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "milo_md",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "null_box",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "null_controller",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "null_goggles",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "null_pet",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "ping_bag",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "ping_comm",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "ping_launcher",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    },
+    {
+      "id": "ping_phone",
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "map": false,
+          "color": true
+        }
+      ]
+    }
+  ],
+  "actors": [
+    {
+      "type": "slime",
+      "asset": "M01",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "skel",
+      "asset": "M05",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "drone",
+      "asset": "M03",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "bomb",
+      "asset": "M07",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "brute",
+      "asset": "M06",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "mole",
+      "asset": "M02",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "spider",
+      "asset": "M02",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "crab",
+      "asset": "M07",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "ranger",
+      "asset": "M05",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "lantern",
+      "asset": "M08",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "speaker",
+      "asset": "M04",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "wisp",
+      "asset": "M03",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "golem",
+      "asset": "B01",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "scanner",
+      "asset": "B03",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "roller",
+      "asset": "M02",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "antenna",
+      "asset": "M08",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "cable",
+      "asset": "M02",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "furnace",
+      "asset": "B01",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "shard",
+      "asset": "B04",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "jailer",
+      "asset": "B01",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "specimen",
+      "asset": "B02",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    },
+    {
+      "type": "sentinel",
+      "asset": "B03",
+      "move": "Move",
+      "hurt": "Hurt",
+      "idle": "Idle",
+      "fade": [
+        0.2500000000000001
+      ],
+      "unaffected": [
+        1
+      ]
+    }
+  ],
+  "bosses": [
+    "B01",
+    "B02",
+    "B03",
+    "B04"
+  ],
+  "status": {
+    "frozen": "a7deff",
+    "ring": true,
+    "restored": "ffffff",
+    "deadRing": false
+  },
+  "ab": {
+    "off": {
+      "actor": false,
+      "flat": false
+    },
+    "on": {
+      "actor": true,
+      "flat": true
+    },
+    "same": true
+  },
+  "views": [
+    "day",
+    "night",
+    "industrial"
+  ],
+  "mobile": [
+    {
+      "width": 320,
+      "overflow": false,
+      "actorCount": 5
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "actorCount": 5
+    }
+  ],
+  "content": {
+    "stories": 12,
+    "chapters": 6,
+    "biomes": [
+      {
+        "name": "綠蔭公園",
+        "board": {
+          "l": "#B9D3A8",
+          "m": "#93B481",
+          "d": "#4C7965"
+        }
+      },
+      {
+        "name": "午後空地",
+        "board": {
+          "l": "#F2DBAB",
+          "m": "#D2B279",
+          "d": "#8D7659"
+        }
+      },
+      {
+        "name": "白雪山路",
+        "board": {
+          "l": "#E9F1F6",
+          "m": "#BDCFDD",
+          "d": "#718BA8"
+        }
+      },
+      {
+        "name": "夜市燒烤攤",
+        "board": {
+          "l": "#BCB3B1",
+          "m": "#897A7C",
+          "d": "#4D4758"
+        }
+      },
+      {
+        "name": "霓虹商圈",
+        "board": {
+          "l": "#8E9DBC",
+          "m": "#657993",
+          "d": "#364A64"
+        }
+      },
+      {
+        "name": "車站貨運場",
+        "board": {
+          "l": "#C9D3D3",
+          "m": "#99ACAD",
+          "d": "#506B75"
+        }
+      },
+      {
+        "name": "電台頂樓",
+        "board": {
+          "l": "#A8C6C9",
+          "m": "#759CA8",
+          "d": "#385C77"
+        }
+      },
+      {
+        "name": "海邊堤防",
+        "board": {
+          "l": "#D1C5B2",
+          "m": "#A89986",
+          "d": "#5D6272"
+        }
+      },
+      {
+        "name": "山路電塔",
+        "board": {
+          "l": "#BFCCA8",
+          "m": "#8DA77B",
+          "d": "#4F6F62"
+        }
+      },
+      {
+        "name": "商場地下街",
+        "board": {
+          "l": "#C5CDDA",
+          "m": "#97A6BC",
+          "d": "#4C637E"
+        }
+      },
+      {
+        "name": "夜晚天橋",
+        "board": {
+          "l": "#C3C5BA",
+          "m": "#949F91",
+          "d": "#506660"
+        }
+      },
+      {
+        "name": "停業商場",
+        "board": {
+          "l": "#CABDA6",
+          "m": "#9C9382",
+          "d": "#555B62"
+        }
+      },
+      {
+        "name": "河邊鐵工廠",
+        "board": {
+          "l": "#B9D3A8",
+          "m": "#93B481",
+          "d": "#4C7965"
+        }
+      },
+      {
+        "name": "港口碼頭",
+        "board": {
+          "l": "#F2DBAB",
+          "m": "#D2B279",
+          "d": "#8D7659"
+        }
+      },
+      {
+        "name": "屋頂天線群",
+        "board": {
+          "l": "#E9F1F6",
+          "m": "#BDCFDD",
+          "d": "#718BA8"
+        }
+      },
+      {
+        "name": "郊外採石場",
+        "board": {
+          "l": "#BCB3B1",
+          "m": "#897A7C",
+          "d": "#4D4758"
+        }
+      },
+      {
+        "name": "頂樓冷氣區",
+        "board": {
+          "l": "#8E9DBC",
+          "m": "#657993",
+          "d": "#364A64"
+        }
+      },
+      {
+        "name": "雨天地下道",
+        "board": {
+          "l": "#C9D3D3",
+          "m": "#99ACAD",
+          "d": "#506B75"
+        }
+      },
+      {
+        "name": "停業遊樂場",
+        "board": {
+          "l": "#A8C6C9",
+          "m": "#759CA8",
+          "d": "#385C77"
+        }
+      },
+      {
+        "name": "冷藏倉庫",
+        "board": {
+          "l": "#D1C5B2",
+          "m": "#A89986",
+          "d": "#5D6272"
+        }
+      },
+      {
+        "name": "地下配電室",
+        "board": {
+          "l": "#BFCCA8",
+          "m": "#8DA77B",
+          "d": "#4F6F62"
+        }
+      }
+    ],
+    "text": "<details class=\"ui-rules\"><summary>電台手記 · 已收錄 3／12</summary><p>街區照常生活，錯頻的設備卻送出了同一道指令。沿各處回覆追查，讓電台重新聽見大家。</p><div class=\"street-chapter\"><b>第1章・電台前街</b><span>追查下一段訊號，找回電台天線零件。</span></div><details class=\"field-entry\"><summary>前街還沒收工</summary><p class=\"uxmeta\">鄰居廣播</p><p>唱片店在試新喇叭，藥房、洗衣店和修理攤都還有人。怪異節拍沿店面傳開，大家請你把器材引到空路面，留出回家的路。</p></details><details class=\"field-entry\"><summary>營地的接線桌</summary><p class=\"uxmeta\">巡線員 阿嶺</p><p>營地不是避難所，而是大家週末搭帳篷的地方。阿嶺把巡線圖攤在桌上：高處幾盞修理燈正在替錯誤頻道接力。</p></details><details class=\"field-entry\"><summary>廣場的換帶時間</summary><p class=\"uxmeta\">唱片店 阿夏</p><p>廣場每週都有交換唱片的小攤。今天攤主們收到同一份空白播放表，連分揀塔也把每個包裹掃成同一地址。</p></details></details>",
+    "storage": [
+      0,
+      0
+    ],
+    "audio": {
+      "day": "drift",
+      "boss": "rush"
+    }
+  },
+  "errors": [],
+  "limits": [
+    "Local Chromium software WebGL, not true-device FPS/Safari certification.",
+    "Visual layer preserves combat stats; includes Claude’s six-chapter progression."
+  ]
+}

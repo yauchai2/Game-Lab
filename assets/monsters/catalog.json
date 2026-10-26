@@ -1,0 +1,122 @@
+{
+  "M01": {
+    "height": 3.0,
+    "sha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+    "bytes": 66608,
+    "clips": [
+      "Hop",
+      "Idle",
+      "Hurt"
+    ]
+  },
+  "M04": {
+    "height": 2.96,
+    "sha256": "fcaa6a8f1e37f60cc69efa9c2d2c77d686980f722960d23cd8ad1b08857d1e45",
+    "bytes": 179140,
+    "clips": [
+      "Move",
+      "Idle",
+      "Hurt"
+    ]
+  },
+  "M02": {
+    "height": 1.1475000313332235,
+    "sha256": "34a16bfe2e8172749e4310cef22ae00de5bc64c1e80a0558be9234beec716033",
+    "bytes": 83396,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ]
+  },
+  "M03": {
+    "height": 1.815495103597641,
+    "sha256": "84bad6e9766e3c83172e119801086d34e01df746a35c8daf78333dc6fa02aca5",
+    "bytes": 35452,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ]
+  },
+  "M05": {
+    "height": 1.9650001525878906,
+    "sha256": "b41ea7ecd3d17dc1ef9ac7224ed3d0000afaebdce89233d9d928cb60f30a2c47",
+    "bytes": 87880,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ]
+  },
+  "M06": {
+    "height": 2.1449999809265137,
+    "sha256": "c56a4134b0a2562132dc64485cc506faf96ef44756bc40a31262d3b6144a2054",
+    "bytes": 49740,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ]
+  },
+  "M07": {
+    "height": 2.22000003606081,
+    "sha256": "30a3af76048e11e53d49271aabc24da4397facaf65efb865603a29a4a062dea2",
+    "bytes": 55192,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ]
+  },
+  "M08": {
+    "height": 1.910000093281269,
+    "sha256": "65a1c66eb29e908f218fdd5e75fcffb8a7fda29625c9fbe4715b809f5f0791d7",
+    "bytes": 32496,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ]
+  },
+  "B01": {
+    "height": 2.83999972417951,
+    "sha256": "a72eae407be58cd80b70c2c13572adfbabb4cac86b770285d003263acdda6538",
+    "bytes": 114480,
+    "clips": [
+      "Move",
+      "Idle",
+      "Hurt"
+    ]
+  },
+  "B02": {
+    "height": 2.500000040889219,
+    "sha256": "8afc475b1115830b0330c7d65f6915dfd49a38aa67a69fdfa62d14a1ee2e09db",
+    "bytes": 72004,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ]
+  },
+  "B03": {
+    "height": 3.1900000745022545,
+    "sha256": "3c4f84116eb73c4fd7497237b1d9d197074112f5e9760ffa729ca141133c26d5",
+    "bytes": 90364,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ]
+  },
+  "B04": {
+    "height": 2.4010677219350285,
+    "sha256": "a087580776f37a455f1929f915449c4b4e42e62ce9165121f17b22418ee0e3e4",
+    "bytes": 45168,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ]
+  }
+}

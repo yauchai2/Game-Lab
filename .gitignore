@@ -1,1 +1,5 @@
 tools/font/*.ttf
+/dist/street-style-preview.html
+/assets/monsters/**/__pycache__/
+/assets/monsters/**/*.blend1
+/tools/style/__pycache__/

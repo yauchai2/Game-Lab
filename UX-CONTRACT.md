@@ -479,3 +479,5 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - riftThemeUpdate快照並還原clearColor／alpha與燈光，scene重建後沿用當前階段。舞台背景保持透明，因cv3使用負z-index；不能用不透明.stage蓋住世界。body直接子header與內頁header必須分開隱藏。
 
 - 05ab-intro-logo擁有INTRO_LOGO短暫展示生命週期，INTRO.cover獨立於既有故事step0至3並保存續接。標題不改角色／獎勵；進入故事introStep即dispose。減少動態及暫停時貼圖載妥後不重繪，隱藏分頁不推進角度。原始GLB不隨遊戲分發，logo-3d-asset嵌入已驗證單網格衍生版與同模型PNG，啟動／無GPU皆無外部請求；boot及標題不使用舊2D Logo。
+
+全遊戲視覺變體由streetCreatureBuild／characterAsset／equipmentModel擁有，沿用ih-street單一偏好。原生type、數值、碰撞、SAVE_KEY與六章storyFlags.ch維持原owner；原／新切換重建實體與圖片快取，不寫入物品或戰鬥狀態。驗證見docs/style-complete。

@@ -1,0 +1,473 @@
+{
+  "cases": [
+    {
+      "spec": {
+        "type": "slime"
+      },
+      "asset": "M01",
+      "top": 12.800000190734863,
+      "worldTop": 14.200000190734864,
+      "headGap": 1.4000000000000004,
+      "hpY": 65,
+      "hpExpected": 64.95425097858043,
+      "shieldY": 64.1,
+      "shieldExpected": 64.05832771459782
+    },
+    {
+      "spec": {
+        "type": "skel"
+      },
+      "asset": "M05",
+      "top": 15.999999605669048,
+      "worldTop": 17.39999960566905,
+      "headGap": 1.4000000000000004,
+      "hpY": 63.7,
+      "hpExpected": 63.65109010559396,
+      "shieldY": 62.8,
+      "shieldExpected": 62.75516684161136
+    },
+    {
+      "spec": {
+        "type": "drone"
+      },
+      "asset": "M03",
+      "top": 18.237795762263417,
+      "worldTop": 19.85201214031787,
+      "headGap": 1.6142163780544543,
+      "hpY": 62.7,
+      "hpExpected": 62.652537799517226,
+      "shieldY": 61.8,
+      "shieldExpected": 61.756614535534624
+    },
+    {
+      "spec": {
+        "type": "bomb"
+      },
+      "asset": "M07",
+      "top": 13.999999963082711,
+      "worldTop": 15.399999963082712,
+      "headGap": 1.4000000000000004,
+      "hpY": 64.5,
+      "hpExpected": 64.46556565457122,
+      "shieldY": 63.6,
+      "shieldExpected": 63.569642390588626
+    },
+    {
+      "spec": {
+        "type": "brute"
+      },
+      "asset": "M06",
+      "top": 20.00000035429334,
+      "worldTop": 21.40000035429334,
+      "headGap": 1.3999999999999986,
+      "hpY": 62,
+      "hpExpected": 62.022138411666546,
+      "shieldY": 61.1,
+      "shieldExpected": 61.12621514768394
+    },
+    {
+      "spec": {
+        "type": "mole"
+      },
+      "asset": "M02",
+      "top": 9.999999729095476,
+      "worldTop": 11.399999729095477,
+      "headGap": 1.4000000000000004,
+      "hpY": 66.1,
+      "hpExpected": 66.09451713891896,
+      "shieldY": 65.2,
+      "shieldExpected": 65.19859387493636
+    },
+    {
+      "spec": {
+        "type": "spider"
+      },
+      "asset": "M02",
+      "top": 9.99999972909548,
+      "worldTop": 11.39999972909548,
+      "headGap": 1.4000000000000004,
+      "hpY": 66.1,
+      "hpExpected": 66.09451713891896,
+      "shieldY": 65.2,
+      "shieldExpected": 65.19859387493635
+    },
+    {
+      "spec": {
+        "type": "crab"
+      },
+      "asset": "M07",
+      "top": 13.99999996308271,
+      "worldTop": 15.39999996308271,
+      "headGap": 1.4000000000000004,
+      "hpY": 64.5,
+      "hpExpected": 64.46556565457122,
+      "shieldY": 63.6,
+      "shieldExpected": 63.569642390588626
+    },
+    {
+      "spec": {
+        "type": "ranger"
+      },
+      "asset": "M05",
+      "top": 15.999999605669048,
+      "worldTop": 17.39999960566905,
+      "headGap": 1.4000000000000004,
+      "hpY": 63.7,
+      "hpExpected": 63.65109010559396,
+      "shieldY": 62.8,
+      "shieldExpected": 62.75516684161136
+    },
+    {
+      "spec": {
+        "type": "lantern"
+      },
+      "asset": "M08",
+      "top": 19.237795024970517,
+      "worldTop": 20.637795024970515,
+      "headGap": 1.3999999999999986,
+      "hpY": 62.3,
+      "hpExpected": 62.33253726915374,
+      "shieldY": 61.4,
+      "shieldExpected": 61.436614005171144
+    },
+    {
+      "spec": {
+        "type": "speaker"
+      },
+      "asset": "M04",
+      "top": 17.50000077083304,
+      "worldTop": 18.90000077083304,
+      "headGap": 1.3999999999999986,
+      "hpY": 63,
+      "hpExpected": 63.04023286019786,
+      "shieldY": 62.1,
+      "shieldExpected": 62.14430959621526
+    },
+    {
+      "spec": {
+        "type": "wisp"
+      },
+      "asset": "M03",
+      "top": 19.237795762263417,
+      "worldTop": 20.85201214031787,
+      "headGap": 1.6142163780544543,
+      "hpY": 62.2,
+      "hpExpected": 62.2452999522524,
+      "shieldY": 61.3,
+      "shieldExpected": 61.34937668826981
+    },
+    {
+      "spec": {
+        "type": "golem"
+      },
+      "asset": "B01",
+      "top": 23.000000839502096,
+      "worldTop": 24.400000839502095,
+      "headGap": 1.3999999999999986,
+      "hpY": 60.8,
+      "hpExpected": 60.800424672276726,
+      "shieldY": 59.9,
+      "shieldExpected": 59.90450140829412
+    },
+    {
+      "spec": {
+        "type": "scanner"
+      },
+      "asset": "B03",
+      "top": 17.000000001814,
+      "worldTop": 18.400000001814,
+      "headGap": 1.3999999999999986,
+      "hpY": 63.2,
+      "hpExpected": 63.243852097003916,
+      "shieldY": 62.3,
+      "shieldExpected": 62.34792883302132
+    },
+    {
+      "spec": {
+        "type": "roller"
+      },
+      "asset": "M02",
+      "top": 11.999999651694184,
+      "worldTop": 13.399999651694184,
+      "headGap": 1.4000000000000004,
+      "hpY": 65.3,
+      "hpExpected": 65.28004147591005,
+      "shieldY": 64.4,
+      "shieldExpected": 64.38411821192744
+    },
+    {
+      "spec": {
+        "type": "antenna"
+      },
+      "asset": "M08",
+      "top": 19.237794962557278,
+      "worldTop": 20.637794962557276,
+      "headGap": 1.3999999999999986,
+      "hpY": 62.3,
+      "hpExpected": 62.33253729457078,
+      "shieldY": 61.4,
+      "shieldExpected": 61.436614030588174
+    },
+    {
+      "spec": {
+        "type": "cable"
+      },
+      "asset": "M02",
+      "top": 10.999999690394832,
+      "worldTop": 12.399999690394832,
+      "headGap": 1.4000000000000004,
+      "hpY": 65.7,
+      "hpExpected": 65.6872793074145,
+      "shieldY": 64.8,
+      "shieldExpected": 64.7913560434319
+    },
+    {
+      "spec": {
+        "type": "furnace"
+      },
+      "asset": "B01",
+      "top": 23.000000839502096,
+      "worldTop": 24.400000839502095,
+      "headGap": 1.3999999999999986,
+      "hpY": 60.8,
+      "hpExpected": 60.800424672276726,
+      "shieldY": 59.9,
+      "shieldExpected": 59.90450140829412
+    },
+    {
+      "spec": {
+        "type": "shard"
+      },
+      "asset": "B04",
+      "top": 18.23779523785023,
+      "worldTop": 19.637795237850227,
+      "headGap": 1.3999999999999986,
+      "hpY": 62.7,
+      "hpExpected": 62.73977502972588,
+      "shieldY": 61.8,
+      "shieldExpected": 61.84385176574328
+    },
+    {
+      "spec": {
+        "type": "jailer"
+      },
+      "asset": "B01",
+      "top": 24.000000881477202,
+      "worldTop": 25.4000008814772,
+      "headGap": 1.3999999999999986,
+      "hpY": 60.4,
+      "hpExpected": 60.393186807918056,
+      "shieldY": 59.5,
+      "shieldExpected": 59.49726354393545
+    },
+    {
+      "spec": {
+        "type": "specimen"
+      },
+      "asset": "B02",
+      "top": 25.000000000782975,
+      "worldTop": 26.400000000782974,
+      "headGap": 1.3999999999999986,
+      "hpY": 60,
+      "hpExpected": 59.985949319305256,
+      "shieldY": 59.1,
+      "shieldExpected": 59.09002605532266
+    },
+    {
+      "spec": {
+        "type": "sentinel"
+      },
+      "asset": "B03",
+      "top": 26.000000002980144,
+      "worldTop": 27.400000002980143,
+      "headGap": 1.3999999999999986,
+      "hpY": 59.6,
+      "hpExpected": 59.57871147114567,
+      "shieldY": 58.7,
+      "shieldExpected": 58.682788207163064
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "bossForm": 0
+      },
+      "asset": "B01",
+      "top": 30.000001133327828,
+      "worldTop": 31.400001133327827,
+      "headGap": 1.3999999999999986,
+      "hpY": 57.9,
+      "hpExpected": 57.94975962176604,
+      "shieldY": 57.1,
+      "shieldExpected": 57.05383635778344
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "bossForm": 1
+      },
+      "asset": "B02",
+      "top": 30.000000000960924,
+      "worldTop": 31.400000000960922,
+      "headGap": 1.3999999999999986,
+      "hpY": 57.9,
+      "hpExpected": 57.949760082908696,
+      "shieldY": 57.1,
+      "shieldExpected": 57.0538368189261
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "bossForm": 2
+      },
+      "asset": "B03",
+      "top": 30.000000003498435,
+      "worldTop": 31.400000003498434,
+      "headGap": 1.3999999999999986,
+      "hpY": 57.9,
+      "hpExpected": 57.94976008187533,
+      "shieldY": 57.1,
+      "shieldExpected": 57.05383681789273
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "bossForm": 3
+      },
+      "asset": "B04",
+      "top": 29.999999664369835,
+      "worldTop": 31.399999664369833,
+      "headGap": 1.3999999999999986,
+      "hpY": 57.9,
+      "hpExpected": 57.94976021998133,
+      "shieldY": 57.1,
+      "shieldExpected": 57.05383695599873
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "chap": 0
+      },
+      "asset": "M04",
+      "top": 35.01428571428572,
+      "worldTop": 36.41428571428572,
+      "headGap": 1.3999999999999986,
+      "hpY": 55.9,
+      "hpExpected": 55.90775316344358,
+      "shieldY": 55,
+      "shieldExpected": 55.01182989946098
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "chap": 1
+      },
+      "asset": "B01",
+      "top": 34.97571487426758,
+      "worldTop": 36.37571487426758,
+      "headGap": 1.3999999999999986,
+      "hpY": 55.9,
+      "hpExpected": 55.92346066929976,
+      "shieldY": 55,
+      "shieldExpected": 55.02753740531716
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "chap": 2
+      },
+      "asset": "B03",
+      "top": 35.400000000000006,
+      "worldTop": 36.800000000000004,
+      "headGap": 1.3999999999999986,
+      "hpY": 55.8,
+      "hpExpected": 55.750675708070005,
+      "shieldY": 54.9,
+      "shieldExpected": 54.8547524440874
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "chap": 3
+      },
+      "asset": "M04",
+      "top": 32.89285714285714,
+      "worldTop": 34.29285714285714,
+      "headGap": 1.3999999999999986,
+      "hpY": 56.8,
+      "hpExpected": 56.771679167998236,
+      "shieldY": 55.9,
+      "shieldExpected": 55.875755904015634
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "chap": 4
+      },
+      "asset": "B02",
+      "top": 34.47428512573242,
+      "worldTop": 35.87428512573242,
+      "headGap": 1.3999999999999986,
+      "hpY": 56.1,
+      "hpExpected": 56.12766184064776,
+      "shieldY": 55.2,
+      "shieldExpected": 55.23173857666516
+    },
+    {
+      "spec": {
+        "type": "brute",
+        "boss": true,
+        "chap": 5
+      },
+      "asset": "B04",
+      "top": 38.871428571428574,
+      "worldTop": 40.27142857142857,
+      "headGap": 1.3999999999999986,
+      "hpY": 54.3,
+      "hpExpected": 54.336978609707856,
+      "shieldY": 53.4,
+      "shieldExpected": 53.44105534572526
+    },
+    {
+      "spec": {
+        "type": "slime",
+        "elite": true
+      },
+      "asset": "M01",
+      "top": 15.740000247955322,
+      "worldTop": 17.14000024795532,
+      "headGap": 1.3999999999999986,
+      "hpY": 63.8,
+      "hpExpected": 63.75697168431953,
+      "shieldY": 62.9,
+      "shieldExpected": 62.861048420336935
+    },
+    {
+      "spec": {
+        "type": "lantern",
+        "elite": true,
+        "lunge": 0.15,
+        "fall": 0.4
+      },
+      "asset": "M08",
+      "top": 36.72967822119776,
+      "worldTop": 38.18985696611217,
+      "headGap": 1.4601787449144084,
+      "hpY": 55.9,
+      "hpExpected": 55.862559282560326,
+      "shieldY": 55,
+      "shieldExpected": 54.96663601857773
+    }
+  ],
+  "legacyFallback": true,
+  "errors": [],
+  "scope": "Actual overlay rect positions against transformed model bounds; includes all chapter ornaments, elites, hover and lunge/fall."
+}

@@ -1,0 +1,45 @@
+{
+  "id": "M03",
+  "name": "MD滑翔盤",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "M03_Body",
+      "triangles": 200,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M03_Fan-1",
+      "triangles": 48,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M03_Fan1",
+      "triangles": 48,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 296,
+  "bounds": {
+    "min": [
+      -1.3200000524520874,
+      -0.19750000536441803,
+      2.9802322387695312e-08
+    ],
+    "max": [
+      1.3200000524520874,
+      0.14249999821186066,
+      1.8154951333999634
+    ]
+  },
+  "height": 1.815495103597641,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "validationStage": "Blender authoring; see docs/style-complete/runtime-validation.json for later runtime evidence"
+}

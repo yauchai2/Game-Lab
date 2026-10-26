@@ -1,0 +1,26 @@
+{
+  "report": [
+    {
+      "id": "radio",
+      "maps": 0,
+      "triangles": 254,
+      "size": [
+        6.821600955390659,
+        7.7462343001365666,
+        6.396385208152859
+      ]
+    },
+    {
+      "id": "crate",
+      "maps": 0,
+      "triangles": 700,
+      "size": [
+        18.252866324142545,
+        22.20257568359375,
+        14.87307850983212
+      ]
+    }
+  ],
+  "errors": [],
+  "scope": "Native Three.js procedural builders, real geometry, white presentation background."
+}

@@ -2,24 +2,29 @@
    no runtime URL, provider, loader dependency or player save is involved. */
 const CHARACTER_RENDER = {cache:new Map()};
 function characterAsset(id){
- if(CHARACTER_RENDER.cache.has(id))return CHARACTER_RENDER.cache.get(id);
- const encoded=CHARACTER_GLB[id];if(!encoded)throw new Error('Unknown character asset: '+id);
+ const flat=typeof STREET_CHARACTER_GLB!=='undefined'&&g1On(),cacheKey=id+(flat?'+flat':'');
+ if(CHARACTER_RENDER.cache.has(cacheKey))return CHARACTER_RENDER.cache.get(cacheKey);
+ const encoded=flat?STREET_CHARACTER_GLB[id]:CHARACTER_GLB[id];if(!encoded)throw new Error('Unknown character asset: '+id);
  const bin=Uint8Array.from(atob(encoded),c=>c.charCodeAt(0)),view=new DataView(bin.buffer);
  if(view.getUint32(0,true)!==0x46546c67)throw new Error('Invalid character GLB');
  const size=view.getUint32(12,true),doc=JSON.parse(new TextDecoder().decode(bin.subarray(20,20+size))),start=28+size;
  const types={5121:Uint8Array,5123:Uint16Array,5125:Uint32Array,5126:Float32Array},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
  const access=i=>{const a=doc.accessors[i],v=doc.bufferViews[a.bufferView],C=types[a.componentType],n=widths[a.type];if(v.byteStride||a.sparse||!C||!n)throw new Error('Unsupported packed character attribute');const off=start+(v.byteOffset||0)+(a.byteOffset||0);return new T3.BufferAttribute(new C(bin.buffer.slice(off,off+a.count*n*C.BYTES_PER_ELEMENT)),n,!!a.normalized);};
  const primitive=doc.meshes[0].primitives[0],geometry=new T3.BufferGeometry();
- for(const [from,to] of [['POSITION','position'],['NORMAL','normal'],['TEXCOORD_0','uv'],['JOINTS_0','skinIndex'],['WEIGHTS_0','skinWeight']])geometry.setAttribute(to,access(primitive.attributes[from]));
+ for(const [from,to] of [['POSITION','position'],['NORMAL','normal'],['TEXCOORD_0','uv'],['JOINTS_0','skinIndex'],['WEIGHTS_0','skinWeight']])if(primitive.attributes[from]!=null)geometry.setAttribute(to,access(primitive.attributes[from]));
  geometry.setIndex(access(primitive.indices));
+ if(primitive.attributes.COLOR_0!=null)geometry.setAttribute('color',access(primitive.attributes.COLOR_0));
+ let material;
+ if(flat){material=new T3.MeshBasicMaterial({vertexColors:true,side:T3.DoubleSide});material.userData.streetFlat=true;}else{
  const materialDef=doc.materials[primitive.material],imageDef=doc.images[doc.textures[materialDef.pbrMetallicRoughness.baseColorTexture.index].source],imageView=doc.bufferViews[imageDef.bufferView];
  const bytes=bin.subarray(start+(imageView.byteOffset||0),start+(imageView.byteOffset||0)+imageView.byteLength);
  let text='';for(let i=0;i<bytes.length;i+=8192)text+=String.fromCharCode(...bytes.subarray(i,i+8192));
  const texture=new T3.Texture();texture.colorSpace=T3.SRGBColorSpace;texture.flipY=false;texture.minFilter=T3.LinearMipmapLinearFilter;texture.magFilter=T3.LinearFilter;
- const material=new T3.MeshLambertMaterial({map:texture,color:0xffffff,side:T3.DoubleSide});
+ material=new T3.MeshLambertMaterial({map:texture,color:0xffffff,side:T3.DoubleSide});
  const image=document.createElement('img');image.onload=()=>{texture.image=image;texture.needsUpdate=true;};image.onerror=()=>{material.map=null;material.color.set('#8092a0');material.needsUpdate=true;};image.src='data:'+imageDef.mimeType+';base64,'+btoa(text);
+ }
  const clips=doc.animations.map(a=>new T3.AnimationClip(a.name,-1,a.channels.map(ch=>{const sa=a.samplers[ch.sampler],node=doc.nodes[ch.target.node],prop={rotation:'quaternion',translation:'position',scale:'scale'}[ch.target.path],C=prop==='quaternion'?T3.QuaternionKeyframeTrack:T3.VectorKeyframeTrack;return new C(node.name+'.'+prop,access(sa.input).array,access(sa.output).array,sa.interpolation==='STEP'?T3.InterpolateDiscrete:T3.InterpolateLinear);})));
- const asset={doc,geometry,material,access,clips};CHARACTER_RENDER.cache.set(id,asset);return asset;
+ const asset={doc,geometry,material,access,clips,flat,sourceVertices:doc.extras?.streetSourceVertices};CHARACTER_RENDER.cache.set(cacheKey,asset);return asset;
 }
 function buildY2KHero(at,ar,wt,wr,cos){
  const profile=CHARS[G.char],id=profile.model||'aki',asset=characterAsset(id),doc=asset.doc,g=new T3.Group(),joints=new Set(doc.skins[0].joints),B={};
