@@ -3926,9 +3926,9 @@ function overlay(){
   const k = pxu(); let s = '';
   const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = Math.max(14,w*k*.8), H2 = Math.max(2.1,Math.min(2.5,.34*k)); return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
   if (G.h.dead <= 0) s += bar(G.h.x, G.h.y, BZ + 36*CK, 9, G.h.hp/G.st.life, '#4fe38a');
-  for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)) s += bar(m.x, m.y, BZ + (m.boss?140:m.type==='golem'?48:m.type==='lantern'?38:(m.type==='slime'?11:m.type==='brute'?32:m.type==='drone'?24:m.type==='bomb'?20:28)*(MONSTER_TRAITS[m.type]?.scale||1))*CK, m.boss?26:8, m.hp/m.hpMax, m.boss?'#ff3b3b':'#ff6a4a');
+  for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)){const anchor=typeof streetCreatureBarAnchor==='function'&&streetCreatureBarAnchor(m)||{x:m.x,y:m.y,z:BZ + (m.boss?140:m.type==='golem'?48:m.type==='lantern'?38:(m.type==='slime'?11:m.type==='brute'?32:m.type==='drone'?24:m.type==='bomb'?20:28)*(MONSTER_TRAITS[m.type]?.scale||1))*CK};s+=bar(anchor.x,anchor.y,anchor.z,m.boss?26:8,m.hp/m.hpMax,m.boss?'#ff3b3b':'#ff6a4a');}
   if(G.h.dead<=0&&G.time<(G.h.bufferUntil||0)&&G.h.buffer>0)s+=bar(G.h.x,G.h.y,BZ+40*CK,9,G.h.buffer/(G.st.life*.12),'#57dce8');
-  for(const m of G.mons)if(!m.dead&&m.shield>0)s+=bar(m.x,m.y,BZ+(m.boss?44:32)*CK,8,m.shield/m.shieldMax,'#57dce8');
+  for(const m of G.mons)if(!m.dead&&m.shield>0){const anchor=typeof streetCreatureBarAnchor==='function'&&streetCreatureBarAnchor(m);s+=anchor?bar(anchor.x,anchor.y,anchor.z+2.2,8,m.shield/m.shieldMax,'#57dce8'):bar(m.x,m.y,BZ+(m.boss?44:32)*CK,8,m.shield/m.shieldMax,'#57dce8');}
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + terrainHeight(fl.x,fl.y) + fl.t*9);
     const unit=R3.vbW/Math.max(1,R3.W),size=battleTextSize(fl.kind,fl.size,innerWidth)*unit;
     s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" fill="${fl.col}" style="font-size:${size.toFixed(2)}px!important;font-family:var(--ux-body)!important;stroke:#f7faff;stroke-width:${(2.5*unit).toFixed(2)}px;stroke-linejoin:round;paint-order:stroke" font-weight="400" opacity="${(1-fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
@@ -4326,6 +4326,16 @@ function streetChapterMark(chap){const ex=new T3.Group(),dark=m3('#394d61'),silv
   if(chap===5){for(let i=0;i<5;i++){const a=(i-2)*.5;mk(new T3.ConeGeometry(1.6,18,5),i%2?hot:signal,Math.sin(a)*8,44+Math.cos(a)*4,0,ex).rotation.z=-a;}mk(new T3.IcosahedronGeometry(3.2,0),warm,0,38,0,ex);}
  }
  return bake(ex);}
+/* Fast transformed mesh bounds, not legacy type heights. Include chapter marks,
+   hover, elite scale and pose offsets; exclude the floor shadow / elite ring. */
+function streetCreatureBarAnchor(m){
+ const g=R3.ent.get(m);if(!g?.userData.streetCreature)return null;
+ const cache=streetCreatureBarAnchor.cache||(streetCreatureBarAnchor.cache={box:new T3.Box3(),position:new T3.Vector3()});
+ g.updateWorldMatrix(true,true);let top=-Infinity;
+ g.traverse(o=>{if(!o.isMesh||!o.visible||o===g.userData.sh||o===g.userData.eliteRing)return;const geo=o.geometry;if(!geo.boundingBox)geo.computeBoundingBox();cache.box.copy(geo.boundingBox).applyMatrix4(o.matrixWorld);top=Math.max(top,cache.box.max.y);});
+ g.getWorldPosition(cache.position);const x=cache.position.x,y=cache.position.z;
+ return Number.isFinite(top)?{x,y,z:top+1.4-terrainHeight(x,y)}:null;
+}
 
 </script>
 <script>

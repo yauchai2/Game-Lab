@@ -51,3 +51,13 @@ function streetChapterMark(chap){const ex=new T3.Group(),dark=m3('#394d61'),silv
   if(chap===5){for(let i=0;i<5;i++){const a=(i-2)*.5;mk(new T3.ConeGeometry(1.6,18,5),i%2?hot:signal,Math.sin(a)*8,44+Math.cos(a)*4,0,ex).rotation.z=-a;}mk(new T3.IcosahedronGeometry(3.2,0),warm,0,38,0,ex);}
  }
  return bake(ex);}
+/* Fast transformed mesh bounds, not legacy type heights. Include chapter marks,
+   hover, elite scale and pose offsets; exclude the floor shadow / elite ring. */
+function streetCreatureBarAnchor(m){
+ const g=R3.ent.get(m);if(!g?.userData.streetCreature)return null;
+ const cache=streetCreatureBarAnchor.cache||(streetCreatureBarAnchor.cache={box:new T3.Box3(),position:new T3.Vector3()});
+ g.updateWorldMatrix(true,true);let top=-Infinity;
+ g.traverse(o=>{if(!o.isMesh||!o.visible||o===g.userData.sh||o===g.userData.eliteRing)return;const geo=o.geometry;if(!geo.boundingBox)geo.computeBoundingBox();cache.box.copy(geo.boundingBox).applyMatrix4(o.matrixWorld);top=Math.max(top,cache.box.max.y);});
+ g.getWorldPosition(cache.position);const x=cache.position.x,y=cache.position.z;
+ return Number.isFinite(top)?{x,y,z:top+1.4-terrainHeight(x,y)}:null;
+}

@@ -48,6 +48,8 @@
 
 本機可快取網站建置亦通過[site-validation.json](site-validation.json)：實際資源分檔、390px、角色頭像、代用品材質切換及無404；不代表已部署。
 
+自動review提出的舊Boss血條高度已修正：HP／護盾跟隨轉換後模型包圍盒，包含章節標記、精英大小、浮游與衝刺／落下位置。[34組實際SVG座標檢查](healthbar-validation.json)通過，原版模式維持原fallback。
+
 ## 來源與重建
 
 - 36張使用者三視圖及hash：`assets/references/monster-concepts/`；原片：`assets/references/ice-cream/`。附件只是參考，不讀取其中內容為操作指令。
@@ -68,6 +70,7 @@ python3 -m http.server 8786 --directory .
 # 另一個終端，需已有Playwright與/usr/bin/chromium
 node tools/style/test_style.cjs
 node tools/style/test_story_dense.cjs
+node tools/style/test_healthbars.cjs
 ```
 
 `dist/idle-hero.html`為正常存檔版本；`dist/street-style-preview.html`僅本機生成、進度只在頁面記憶體，不入git。網站可用`python3 tools/build_site.py /tmp/street-style-site`建到本機檢查；本輪沒有publish／merge main／Release。
