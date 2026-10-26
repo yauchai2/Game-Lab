@@ -1,0 +1,331 @@
+{
+  "source": {
+    "sourceCommit": "2e3da0ad48bc6ef50f1d8734393046a205ed48fc",
+    "materialSha256": "ea9114d9faf5765849224c0b22b760182f2ef725b9dfa820f7d2bb0af154c43c",
+    "storage": "page-lifetime memory",
+    "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險",
+    "monsterSha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+    "integration": "native Claude G1 materials, M01, signs and death effects; adapter only adds review controls and isolated storage"
+  },
+  "mode": "baseline",
+  "toggle": [
+    {
+      "step": "on-to-off",
+      "hero": "g1_summer_aki",
+      "g1": false,
+      "materials": [
+        "aki",
+        "aki_headphones",
+        "aki_baton"
+      ]
+    },
+    {
+      "step": "off-to-on",
+      "hero": "",
+      "g1": true,
+      "materials": []
+    },
+    {
+      "step": "off-again",
+      "hero": "",
+      "g1": false,
+      "materials": []
+    },
+    {
+      "step": "restore",
+      "hero": "",
+      "g1": true,
+      "materials": []
+    }
+  ],
+  "fades": [
+    {
+      "type": "skel",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    },
+    {
+      "type": "drone",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    },
+    {
+      "type": "bomb",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    },
+    {
+      "type": "mole",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    },
+    {
+      "type": "spider",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    },
+    {
+      "type": "crab",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    },
+    {
+      "type": "ranger",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    },
+    {
+      "type": "lantern",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    },
+    {
+      "type": "speaker",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    },
+    {
+      "type": "wisp",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            1
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            1
+          ]
+        }
+      ],
+      "flashListHasBasic": false
+    }
+  ],
+  "shared": {
+    "m01": true,
+    "aliveOpacity": [
+      1,
+      1,
+      1
+    ]
+  },
+  "errors": [],
+  "failures": [
+    "toggle:on-to-off",
+    "gear:on-to-off",
+    "toggle:off-to-on",
+    "toggle:restore",
+    "face-fade:skel:0.1",
+    "face-fade:skel:0.3",
+    "face-fade:skel:0.4",
+    "face-fade:drone:0.1",
+    "face-fade:drone:0.3",
+    "face-fade:drone:0.4",
+    "face-fade:bomb:0.1",
+    "face-fade:bomb:0.3",
+    "face-fade:bomb:0.4",
+    "face-fade:mole:0.1",
+    "face-fade:mole:0.3",
+    "face-fade:mole:0.4",
+    "face-fade:spider:0.1",
+    "face-fade:spider:0.3",
+    "face-fade:spider:0.4",
+    "face-fade:crab:0.1",
+    "face-fade:crab:0.3",
+    "face-fade:crab:0.4",
+    "face-fade:ranger:0.1",
+    "face-fade:ranger:0.3",
+    "face-fade:ranger:0.4",
+    "face-fade:lantern:0.1",
+    "face-fade:lantern:0.3",
+    "face-fade:lantern:0.4",
+    "face-fade:speaker:0.1",
+    "face-fade:speaker:0.3",
+    "face-fade:speaker:0.4",
+    "face-fade:wisp:0.1",
+    "face-fade:wisp:0.3",
+    "face-fade:wisp:0.4"
+  ],
+  "limits": [
+    "Local Chromium software WebGL; two targeted regression groups, not full device certification."
+  ]
+}
