@@ -130,7 +130,8 @@ function saveHtml(){
 /* modal actions */
 function cartsHtml(){const sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active'),ids=Object.keys(MODES).filter(id=>(G.carts[id]||0)>0);let h=`<ol class="cart-guide"><li class="now">點下面的卡匣</li><li>在彈出的視窗選要裝到哪個技能</li><li>裝上後才鑑定效果；再點同一個技能可以卸下</li></ol>`;
  if(!ids.length)return h+'<p>還沒有卡匣。冒險或電路合成都能取得。</p>';
- return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],has=G.board.pieces.some(p=>p.kind==='active'&&p.key===M.sk),ok=has&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${noticeHas('carts',id)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>${has?`可用 ${f}／${n}・點選裝上`:`需先裝上${SKILLS[M.sk].n}`}</small></button>`;}).join('')+'</div>';
+ const eq=id=>G.board.pieces.some(p=>p.kind==='active'&&p.key===MODES[id].sk)&&cartFree(id)>0;ids.sort((x,y)=>eq(y)-eq(x));const nOk=ids.filter(eq).length;h+=`<p class="cart-sum">${nOk?`有 ${nOk} 張可以裝到已裝備的技能，排在最前面；其餘變暗，要先裝上對應技能。`:'目前沒有可裝的卡匣：先把對應的主動技能裝上。'}</p>`;
+ return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],has=G.board.pieces.some(p=>p.kind==='active'&&p.key===M.sk),ok=has&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${noticeHas('carts',id)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>${has?(f>0?`${SKILLS[M.sk].n}已裝備・可用 ${f}／${n}・點選裝上`:`全部已裝在別處（${n}／${n}）・點選可移過來`):`需先裝上${SKILLS[M.sk].n}`}</small></button>`;}).join('')+'</div>';
 }
 function uiCartPick(id){
   noticeRead('carts',id);const M=MODES[id];if(!M||!G.carts[id])return;
@@ -214,7 +215,8 @@ const uiBattleSize=()=>AUTO_FOLD.on&&!G.userCz?3:CUSTOM_H.v!=null&&typeof MOB===
 const CZN = ['大', '大', '小', '收'];
 function mobTitle(){ uiTitle(); }
 function cycleCz(){ const current = uiBattleSize(); G.cz = current >= 3 ? 1 : current + 1; G.userCz = true; G.dirty = true; mobTitle(); }
-function battleFrameRatio(fig){return document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig.getBoundingClientRect().width):MOB()?mobRatio():Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig.getBoundingClientRect().width)));}
+const uiHudPad=()=>MOB()&&document.body.classList.contains('ui-material')&&!document.body.classList.contains('battle-fold')&&!document.body.classList.contains('watch-mode')?72:0;
+function battleFrameRatio(fig){return document.body.classList.contains('watch-mode')?(visualViewport?.height||innerHeight)/Math.max(1,fig.getBoundingClientRect().width):MOB()?mobRatio()+uiHudPad()/Math.max(1,innerWidth):Math.max(.45,Math.min(1.1,(innerHeight-150)/Math.max(1,fig.getBoundingClientRect().width)));}
 function uiSyncBattleFrame(){const fig=$('fig'),vb=fig?.viewBox?.baseVal;if(!vb?.width)return;const ratio=battleFrameRatio(fig);if(Math.abs(vb.height/vb.width-ratio)>.01)fig.setAttribute('viewBox',`0 0 ${vb.width} ${vb.width*ratio}`);}
 const mobRatio = () => { const i=uiBattleSize(),h=visualViewport?.height||innerHeight; if(CUSTOM_H.v!=null&&!AUTO_FOLD.on)return Math.max(30,Math.min(CUSTOM_H.v,h*.62))/Math.max(1,innerWidth); return Math.min([340,260,168,40][i],h*[.5,.36,.25,.05][i])/Math.max(1,innerWidth); };
 const RISKM = Object.keys(MODS).filter(k => ['challenge','mixed'].includes(MODS[k].kind));
