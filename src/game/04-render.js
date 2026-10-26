@@ -636,9 +636,11 @@ function monLook(m, g){
     else if (q === 'speaker'){ const bs = 1 + .09*Math.abs(Math.sin(t*6)) + lg*.12; g.scale.set(base/Math.sqrt(bs), base*bs, base/Math.sqrt(bs)); g.rotation.z = Math.sin(t*3)*.05; }
     else if (q === 'wisp'){ g.rotation.y += t*2.2; g.rotation.z = Math.sin(t*2.4)*.25; }
     else if (q === 'mole'){ g.position.y -= (.5 + .5*Math.sin(t*4))*1.2*mv; g.rotation.x += Math.sin(t*4 + 1)*.12*mv; }
+    else if (q === 'skel'){ g.rotation.z = Math.sin(t*8)*.08*mv; g.position.y += Math.abs(Math.sin(t*8))*.9*mv; }
     else if (q === 'golem'){ const st = Math.abs(Math.sin(t*3)); g.scale.y *= 1 - .08*st*mv; g.position.y += (1 - st)*.6*mv; g.rotation.z = Math.sin(t*3)*.06*mv; }
     const L = ps.limbs; if (L && !m.dead){ const w = Math.sin(t*(q === 'golem' ? 3.2 : q === 'spider' ? 14 : q === 'crab' ? 9 : 8));
       if (q === 'golem'){ const sw = mv ? w*.65 : 0, up = m.lunge >= 0 ? -2.3*lg : m.fight ? -.35 + Math.sin(t*2)*.12 : 0; L.legL.rotation.x = -sw; L.legR.rotation.x = sw; L.armL.rotation.x = sw*.8 + up; L.armR.rotation.x = -sw*.8 + up; L.armL.rotation.z = .08 + lg*.2; L.armR.rotation.z = -.08 - lg*.2; }
+      else if (q === 'skel'){ const sw = mv ? w*.7 : 0, up = m.lunge >= 0 ? -2.2*lg : m.fight ? -.4 + Math.sin(t*2)*.1 : 0; L.legL.rotation.x = -sw; L.legR.rotation.x = sw; L.armL.rotation.x = sw*.8 + up; L.armR.rotation.x = -sw*.8 + up; }
       else if (q === 'spider'){ for (const k in L){ const lb = L[k], i = +k.slice(-1), a = i*1.7 + (k[3] === 'R' ? 0 : 3.1); lb.rotation.y = lb.userData.ry + Math.sin(t*14 + a)*(mv ? .5 : .08) - (m.lunge >= 0 ? lg*.5 : 0); lb.rotation.z = Math.max(0, Math.sin(t*14 + a))*(mv ? .35 : 0)*(k[3] === 'R' ? 1 : -1); } }
       else if (q === 'crab'){ const sn = Math.sin(t*(m.fight ? 7 : 3)); L.clawL.rotation.z = (.1 + (m.fight ? .35 : .12)*sn)*-1 + lg*.8; L.clawR.rotation.z = (.1 + (m.fight ? .35 : .12)*sn) - lg*.8; L.clawL.rotation.y = L.clawR.rotation.y = Math.sin(t*2)*.1; for (const k in L){ if (k.startsWith('leg')){ const i = +k.slice(-1); L[k].rotation.y = Math.sin(t*12 + i*2.1 + (k[3] === 'R' ? 0 : 1.6))*(mv ? .45 : .05); } } }
       else if (q === 'mole'){ const dg = Math.sin(t*(m.fight ? 10 : 6)); L.pawL.rotation.x = dg*.8 - lg; L.pawR.rotation.x = -dg*.8 - lg; } } }
@@ -803,7 +805,7 @@ function scene(){
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
-  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
+  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
@@ -843,10 +845,17 @@ function buildRegionLandmark(bi){
 }
 /* 可獨立擺動的肢體：以關節為原點合批，再掛到魔物身上旋轉 */
 function monLimb(root,px,py,pz,fn){const lg=new T3.Group();fn(lg);const b=bake(lg);b.position.set(px,py,pz);root.add(b);return b;}
+function cardboardFace(){const k='cbface';if(R3.cache[k])return R3.cache[k];const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.fillStyle='#2b2552';x.beginPath();x.arc(20,28,5,0,7);x.arc(44,28,5,0,7);x.fill();x.strokeStyle='#2b2552';x.lineWidth=4;x.lineCap='round';x.beginPath();x.arc(32,40,7,.15*Math.PI,.85*Math.PI);x.stroke();x.fillStyle='rgba(255,140,120,.55)';x.fillRect(8,38,8,5);x.fillRect(48,38,8,5);const t=new T3.CanvasTexture(c);t.colorSpace=T3.SRGBColorSpace;t.magFilter=T3.NearestFilter;t.minFilter=T3.NearestFilter;return R3.cache[k]=t;}
 function buildFieldMonster(type,variant=0){
  let limbs=null;const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
  const box=(w,h,d,mat,x,y,z)=>mk(roundedG(w,h,d),mat,x,y,z,g);
- if(type==='golem'){
+ if(type==='skel'){   // 紙箱人：方箱身、膠帶、簡化臉
+  const cb=m3(variant===1?'#d3b07c':'#c9a06a'),tape=m3('#eadfbf'),sh=m3('#8d6e4a');
+  box(12,13,9,cb,0,13,0);box(13,2,10,sh,0,20,0);box(2.4,13.5,9.4,tape,2,13,0);box(12.6,1.6,2,tape,0,20.8,3.2);
+  const face=new T3.Mesh(new T3.PlaneGeometry(9,9),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));face.position.set(-1.2,14,4.6);g.add(face);
+  limbs={legL:[-3,7,0,l=>{mk(roundedG(3.6,7,4),dark,0,-3.5,0,l);mk(roundedG(4.6,2,6),sh,0,-6.5,1,l);}],legR:[3,7,0,l=>{mk(roundedG(3.6,7,4),dark,0,-3.5,0,l);mk(roundedG(4.6,2,6),sh,0,-6.5,1,l);}],
+    armL:[-7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}],armR:[7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}]};
+ }else if(type==='golem'){
   box(15,17,10,stone,0,17,0);box(11,7,9,silver,0,28,0);box(7,2,1,signal,0,29,4.7);mk(new T3.OctahedronGeometry(3,0),signal,0,19,5.5,g);
   limbs={legL:[-5,9,0,l=>{mk(roundedG(6,9,7),dark,0,-4.5,0,l);mk(roundedG(8,5,10),stone,0,-7,2,l);}],legR:[5,9,0,l=>{mk(roundedG(6,9,7),dark,0,-4.5,0,l);mk(roundedG(8,5,10),stone,0,-7,2,l);}],
     armL:[-10,25,0,l=>{mk(roundedG(8,16,9),stone,0,-8,0,l);mk(roundedG(9,7,10),silver,0,-14,1,l);}],armR:[10,25,0,l=>{mk(roundedG(8,16,9),stone,0,-8,0,l);mk(roundedG(9,7,10),silver,0,-14,1,l);}]};
@@ -859,7 +868,7 @@ function buildFieldMonster(type,variant=0){
   mk(new T3.IcosahedronGeometry(6,0),wood,0,5,0,g).scale.set(1,.8,1.4);mk(new T3.ConeGeometry(3,7,6),silver,0,5,8,g).rotation.x=Math.PI/2;
   box(7,1.5,1,signal,0,7,5);limbs={pawL:[-5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}],pawR:[5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}]};
  }
- const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();if(o.material.emissive)out.userData.mats.push(o.material);}});return out;
 }
 function buildCircuitBoss(bi,form=bi%3){
  const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);
