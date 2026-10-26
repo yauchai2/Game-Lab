@@ -2,7 +2,7 @@
 
 > **怪物／同伴最新設定：** 請先讀 [現行名單](docs/monster-catalog.md)。街頭風格為 M01–M08、B01–B04 共十二模型；本對話新生成十六款為錯誤設定試稿，不能代替正式素材。美術以 [Ice Cream 創作基準](docs/creative-direction.md) 為準。
 
-一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。目前已發佈版本：**v0.47.0**（手動接線、昇華分支與新品牌介面）。驗證及來源見 [部署紀錄](docs/deployment.md)。
+一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。目前已發佈版本：**v0.64.0**（2026-10-26；完整街頭風格、十二款模型及最新同伴精修）。驗證及來源見 [發佈整合紀錄](docs/release-0.64.0/integration.md)。
 
 
 **[直接試玩](https://yauchai2.github.io/Game-Lab/) · [版本紀錄與下載](https://github.com/yauchai2/Game-Lab/releases) · [開發分支](https://github.com/yauchai2/Game-Lab/tree/main)**
@@ -80,11 +80,11 @@ Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機�
 
 0.32 視覺修正版：`node tools/test_world_review.cjs`；完整來源檢查：`python tools/run_review_checks.py`。開發分支可推送，Release／gh-pages 必須先取得版本確認。
 
-### 四主角候選（未 release）
+### 四主角候選（歷史交付紀錄）
 
-`codex/y2k-characters` 以 Alan 上傳模型製作 AKI、MILO、PING、NULL 的 16 骨架／9 動作版本。獨立動作審核：`dist/character-review.html`；含四角色切換的遊戲試玩：`dist/idle-hero-review.html`。來源、驗證界線及與 Claude 分支的整合 hooks 見 [整合指引](docs/y2k-characters-handoff.md)。正式公開版仍為 v0.32.0。
+`codex/y2k-characters` 以 Alan 上傳模型製作 AKI、MILO、PING、NULL 的 16 骨架／9 動作版本。獨立動作審核：`dist/character-review.html`；含四角色切換的遊戲試玩：`dist/idle-hero-review.html`。來源、驗證界線及與 Claude 分支的整合 hooks 見 [整合指引](docs/y2k-characters-handoff.md)。這是當時的 v0.32.0 公開狀態；現行 v0.64.0 已含四角色衍生素材，見上方發佈證據。
 
-### Y2K 專屬裝備候選（未發佈）
+### Y2K 專屬裝備候選（歷史交付紀錄）
 
 已接入本次 ZIP 的 16 件 3D 模型；素材清單另外 4 件尚只有參考圖，先以簡模代替。專裝只有對應角色可穿戴，獨立低機率掉落；其餘裝備暫用簡單幾何模型。
 
