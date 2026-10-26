@@ -1037,6 +1037,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.57.0',d:'2026-10-26',t:['地面加上緩慢移動的樹影與雲影，陰影帶藍灰色。','街區地圖新增販賣機、電線桿、護欄、貨箱、盆栽、冷氣室外機、購物袋與斑馬線，數量與大小都加大。']},
   {v:'0.56.0',d:'2026-10-26',t:['戰鬥畫面天空更明亮飽和，並加上白色雲線；森林、沙漠、雪原與霓虹夜城各有自己的天空色。','戰鬥場景改為暖白陽光加天光補色，地面色降低飽和，植物與怪物更醒目。','背包篩選「核心」改名為「傳奇」。']},
   {v:'0.55.0',d:'2026-10-26',t:['裝備詞綴分成「主機位」與「副機位」，每件最多各 3 條；詞綴由 13 種增加到 23 種，新增最大生命%、護甲%、全元素傷害、對精英與首領增傷、閃避、受傷降低、擊殺回復、金幣、經驗、掉落稀有度、移動速度','每個裝備欄位有三條系列，隱性詞綴與名稱各不相同，共 21 條系列、約 80 個新裝備名稱','改裝與追加詞綴會遵守主副機位的上限，改裝時優先換成同組詞綴','改機頁顯示每條詞綴屬於主機位或副機位及標籤，並標示裝備系列'],},
   {v:'0.54.0',d:'2026-10-26',t:['裝扮新增「身體特效」：電路光環、靜電火花、訊號波紋、像素星屑，純外觀不影響能力','血跡改為鮮紅色液體：落地後向外擴散，邊緣略深，慢慢變暗淡去','稀有裝備新增「追加詞綴」改機：打造出來的裝備多為 4 條詞綴，可以逐條追加，最多 6 條','手機面板的把手拖到最下方，放開後進入觀戰；點一下畫面回到操作台','移除標題列的「展」按鈕，改由把手控制；返回按鈕改放在標題列左側','離線結算頁加入 3D 低解像自轉標誌'],},
@@ -2133,10 +2134,10 @@ function terrainScenery(p=terrainNow()){
   for(let i=0;i<count;i++){const c=p.cells[terrainHash(p.key+':detail:'+i)%p.cells.length];if(Math.hypot(c.x-HX,c.y-HY)<p.clearRadius+5||occupied(c.x,c.y,3))continue;
     const feather=Math.max(0,Math.min(1,(Math.hypot(c.x-HX,c.y-HY)-p.clearRadius)/32));if(terrainHash(p.key+':density:'+i)%1000/1000>feather*feather*(3-2*feather))continue;
     const n=terrainHash(p.key+':kind:'+i),urban=[5,7,11].includes(p.profile);
-    const THEME={0:['reed','dock','boatwreck','lighthouse','cairn','umbrella','pond'],1:['cairn','radiotower','stump','fern','flagpole','mailbox','hotspring'],2:['reed','pond','dock','fern','kiosk','lantern','boatwreck'],3:['pipes','barrel','solar','satellite','tire','lantern','container'],4:['dock','boatwreck','lighthouse','umbrella','reed','cairn','barrel'],5:['phonebooth','busstop','hydrant','trashcan','billboard','streetclock','kiosk','mailbox','tire'],6:['campfire','totem','stump','fern','lantern','flagpole','tent'],7:['well','statue','streetclock','lantern','mailbox','kiosk','busstop'],8:['haystack','fence','scarecrow','well','swing','mailbox','fern'],9:['icespire','hotspring','cairn','stump','lantern','radiotower'],10:['obelisk','arch','statue','brokenwall','cairn','totem','lantern'],11:['container','pallets','barrel','pipes','solar','satellite','billboard','tire']};
+    const THEME={0:['reed','dock','boatwreck','lighthouse','cairn','umbrella','pond'],1:['cairn','radiotower','stump','fern','flagpole','mailbox','hotspring'],2:['reed','pond','dock','fern','kiosk','lantern','boatwreck'],3:['pipes','barrel','solar','satellite','tire','lantern','container'],4:['dock','boatwreck','lighthouse','umbrella','reed','cairn','barrel'],5:['phonebooth','busstop','hydrant','trashcan','billboard','streetclock','kiosk','mailbox','vending','pole','guardrail','crates','plantpot','acunit','shopbag','zebra'],6:['campfire','totem','stump','fern','lantern','flagpole','tent'],7:['well','statue','streetclock','lantern','mailbox','kiosk','busstop','vending','plantpot','shopbag','crates'],8:['haystack','fence','scarecrow','well','swing','mailbox','fern'],9:['icespire','hotspring','cairn','stump','lantern','radiotower'],10:['obelisk','arch','statue','brokenwall','cairn','totem','lantern'],11:['container','pallets','barrel','pipes','solar','satellite','billboard','pole','guardrail','crates','acunit']};
     const palette=[...(THEME[p.profile]||[]),...(urban?['bike','lamp','bench','planter','crate','grass']:p.profile===6?['tent','log','rock','bush','grass']:p.profile===10?['column','rock','bush','grass']:['rock','log','flowers','bush','grass','grass'])];
     const kind=palette[n%palette.length];
-    out.push({x:c.x,y:c.y,kind,variant:n%9,scale:kind==='grass'?.5:kind==='bike'?1:kind==='rock'?1+(n%9)/5:.8+(n%4)/10,rotation:n%628/100});
+    out.push({x:c.x,y:c.y,kind,variant:n%9,scale:kind==='grass'?.5:kind==='bike'?1:kind==='rock'?1+(n%9)/5:['vending','pole','guardrail','crates','plantpot','acunit','shopbag','zebra'].includes(kind)?1.5+(n%4)/10:.8+(n%4)/10,rotation:n%628/100});
   }
   // Small, related satellites compose each landmark instead of scattering unrelated props.
   for(const o of p.landmarks){const urban=['building','warehouse','pavilion'].includes(o.kind),items=urban?['bike','planter','bench']:o.kind==='cabin'?['log','tent','flowers']:o.kind==='ruin'?['column','rock','bush']:['bush','flowers','rock'];
@@ -3386,6 +3387,14 @@ function treeAt(g, bi, x, y, z, k){   // 依生態放一棵低面數樹：森林
   else { for (const [cx, cz, h, c] of [[0, 0, 9, '#ff9ac0'], [-1.8, 1, 5, '#c8a0ff'], [1.8, .4, 6, '#ffd0e8']]) mk(new T3.OctahedronGeometry(1.2, 0), m3(c, { emissive:c, emissiveIntensity:.25 }), cx, h/2, cz, t).scale.set(.9, h/2.4, .9); }
   return t;
 }
+/* 樹影與雲影：一張小貼圖（最近點取樣）疊在地面，慢慢移動，陰影用藍灰色而非黑色。 */
+function dappleTexture(){
+  if(R3.dapple)return R3.dapple;
+  const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+  x.fillStyle='rgba(60,80,120,.22)';
+  for(let i=0;i<9;i++){const cx=rnd()*64,cy=rnd()*64,n=3+Math.floor(rnd()*4);for(let k=0;k<n;k++){const px=Math.round(cx+(rnd()-.5)*12),py=Math.round(cy+(rnd()-.5)*12),w=4+Math.floor(rnd()*7),h=3+Math.floor(rnd()*6);for(const ox of[-64,0,64])for(const oy of[-64,0,64])x.fillRect(px+ox,py+oy,w,h);}}
+  const t=new T3.CanvasTexture(c);t.wrapS=t.wrapT=T3.RepeatWrapping;t.magFilter=t.minFilter=T3.NearestFilter;t.generateMipmaps=false;t.colorSpace=T3.SRGBColorSpace;return R3.dapple=t;
+}
 function buildGround(bi){
   const p=terrainNow(),B=BIOMES[bi],g=new T3.Group(),top=[],sides=[];
   const tri=(dst,a,b,c)=>dst.push(...a,...b,...c);
@@ -3397,6 +3406,7 @@ function buildGround(bi){
   }
   const mesh=(values,color)=>{const q=new T3.BufferGeometry();q.setAttribute('position',new T3.Float32BufferAttribute(values,3));q.computeVertexNormals();g.add(new T3.Mesh(q,m3(color,{side:T3.DoubleSide})));};
   mesh(top,B.board.m);mesh(sides,B.board.d);
+  {const q=new T3.BufferGeometry(),uv=new Float32Array(top.length/3*2);for(let i=0;i<top.length/3;i++){uv[i*2]=top[i*3]/56;uv[i*2+1]=top[i*3+2]/56;}q.setAttribute('position',new T3.Float32BufferAttribute(top,3));q.setAttribute('uv',new T3.BufferAttribute(uv,2));const o=new T3.Mesh(q,new T3.MeshBasicMaterial({map:dappleTexture(),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));o.renderOrder=1;g.add(o);}
   // Narrow inlaid tiles mark the continuous slopes without obscuring the silhouette.
   for(const c of p.groundCells)if(Math.abs(c.y-HY-Math.sin((c.x-HX)/34)*8)<3){const o=mk(new T3.BoxGeometry(5.8,.1,4.8),m3(B.board.l),c.x,BZ+terrainHeight(c.x,c.y,p)+.12,c.y,g);o.rotation.y=p.profile*.4;}
   const batch=bake(g);g.traverse(o=>{if(o.isMesh)o.geometry.dispose();});return batch;
@@ -3428,7 +3438,7 @@ function buildWorldScenery(bi){
   const p=terrainNow(),root=new T3.Group(),small=new T3.Group(),occluders=[],shared=new Set(Object.values(G_));
   function merge(g){const out=bake(g);g.traverse(o=>{if(o.isMesh&&!shared.has(o.geometry))o.geometry.dispose();});return out;}
   for(const prop of terrainScenery(p)){
-    const z=BZ+terrainHeight(prop.x,prop.y,p),large=prop.radius!=null||['rock','lamp','tent','column','lighthouse','arch','obelisk','radiotower','billboard','container','statue','satellite','totem','phonebooth'].includes(prop.kind),holder=large?new T3.Group():small;
+    const z=BZ+terrainHeight(prop.x,prop.y,p),large=prop.radius!=null||['rock','lamp','tent','column','lighthouse','arch','obelisk','radiotower','billboard','container','statue','satellite','totem','phonebooth','vending','pole'].includes(prop.kind),holder=large?new T3.Group():small;
     if(bi>=12&&bi<18&&prop.radius!=null){const o=buildIndustrialLandmark(bi-12,prop.variant||0);o.updateMatrixWorld(true);const size=new T3.Box3().setFromObject(o).getSize(new T3.Vector3());o.scale.setScalar(Math.max(2,prop.radius)*1.65/Math.max(size.x,size.z,1));o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);}
     else if(prop.kind==='tree')treeAt(holder,bi===3||bi===5?4:bi%6,prop.x,z,prop.y,prop.scale);
     else{
@@ -3459,7 +3469,7 @@ function updateSceneryOcclusion(root,camera,hero,dt){
   }
 }
 /* 地圖擺設：圓柱、球體、圓環與斜面組合的輪廓，避免全是方塊；顏色隨生態與變體輪替。 */
-const EXTRA_PROPS=['reed','stump','fern','pond','haystack','fence','well','scarecrow','lighthouse','campfire','totem','arch','obelisk','statue','brokenwall','lantern','flagpole','radiotower','phonebooth','busstop','hydrant','trashcan','billboard','streetclock','satellite','container','pallets','barrel','pipes','solar','swing','umbrella','dock','kiosk','boatwreck','cairn','icespire','hotspring','mailbox','tire'];
+const EXTRA_PROPS=['reed','stump','fern','pond','haystack','fence','well','scarecrow','lighthouse','campfire','totem','arch','obelisk','statue','brokenwall','lantern','flagpole','radiotower','phonebooth','busstop','hydrant','trashcan','billboard','streetclock','satellite','container','pallets','barrel','pipes','solar','swing','umbrella','dock','kiosk','boatwreck','cairn','icespire','hotspring','mailbox','tire','vending','pole','guardrail','crates','plantpot','acunit','shopbag','zebra'];
 function buildExtraProp(kind,bi,variant=0){
   const g=new T3.Group(),v=variant%5,pal=[['#e8a5b5','#9fc6e8','#f2d98a','#a8d8b9','#c3a8e6'],['#f2c0a0','#8fb8d8','#e8d88a','#b8d8a8','#d8a8d0']][bi%2],tone=m3(pal[v]),stone=m3('#84939b'),light=m3('#d6d8cc'),wood=m3('#846b57'),darkWood=m3('#5c4a3e'),dark=m3('#384d5b'),metal=m3('#a9b8c4'),leaf=m3(BIOMES[bi].t1),glass=m3('#6fb0d0'),warm=basic('#ffe8a8'),red=m3('#d46a6a'),yellow=m3('#e8c45a');
   const cyl=(rt,rb,h,mat,x=0,y=h/2,z=0,n=10)=>mk(cylG(rt,rb,h,n),mat,x,y,z,g),ball=(r,mat,x,y,z,sy=1)=>{const o=mk(ico(r,1),mat,x,y,z,g);o.scale.y=sy;return o;},box=(w,h,d,mat,x=0,y=h/2,z=0)=>mk(roundedG(w,h,d),mat,x,y,z,g);
@@ -3503,6 +3513,14 @@ function buildExtraProp(kind,bi,variant=0){
     case 'icespire':for(const [x,z,h] of [[0,0,10],[-2,1.4,6],[2,1,7.5],[.6,-2,5]]){const o=mk(new T3.ConeGeometry(1.4,h,5),m3('#bfe8ff',{transparent:true,opacity:.9,emissive:'#7fd3ff',emissiveIntensity:.15}),x,h/2,z,g);o.rotation.z=x*.05;}break;
     case 'hotspring':cyl(5,5.4,.6,stone,0,.3,0,14);cyl(4.3,4.3,.3,m3('#7fc8d8',{transparent:true,opacity:.8}),0,.7,0,14);for(const [x,z,r] of [[-1,.6,.9],[1.2,-.4,.7],[.2,1.4,.6]])ball(r,m3('#ffffff',{transparent:true,opacity:.55}),x,2.6+r,z);break;
     case 'mailbox':cyl(.2,.25,3.4,wood,0,1.7,0,6);box(1.8,1.4,2.8,tone,0,3.8);mk(new T3.CylinderGeometry(.9,.9,2.8,10,1,false,0,Math.PI),tone,0,4.5,0,g).rotation.x=Math.PI/2;box(.2,1,.2,red,1.1,4.4);break;
+    case 'vending':{const bodyC=[m3('#e4503c'),m3('#5cb8e8'),m3('#f5b335'),m3('#5cd04a')][v%4];box(3.2,7,2.6,bodyC,0,3.5);box(2.4,3.6,.15,m3('#e8f4ff',{emissive:'#cfe8ff',emissiveIntensity:.25}),-.1,4.6,1.35);for(let r=0;r<3;r++)for(let c=0;c<3;c++)box(.55,.9,.1,[red,yellow,m3('#7fd4ff'),m3('#ffffff')][(r+c)%4],-.9+c*.8,5.6-r*1.1,1.45);box(2.2,.5,.1,dark,-.1,1.3,1.35);box(3.4,.4,2.8,m3('#ffffff'),0,7.2);}break;
+    case 'pole':cyl(.35,.45,16,wood,0,8,0,6);box(7,.4,.4,wood,0,14.6);box(5,.4,.4,wood,0,12.6);for(const x of [-3.2,-1.6,1.6,3.2])cyl(.18,.18,.7,light,x,15.2,0,5);box(1.6,1.8,1.4,m3('#8a9a8a'),1.2,9.4,.8);for(const [z,y] of [[0,15.3]])box(8,.08,.08,dark,0,y,0);break;
+    case 'guardrail':for(let i=-2;i<=2;i++)cyl(.22,.26,2.6,i%2?light:m3('#e8eef0'),i*2.6,1.3,0,6);box(13,.3,.3,m3('#f4f6f2'),0,2.4);box(13,.3,.3,m3('#cfd8dc'),0,1.5);box(2.2,.5,.3,red,-3,2.2,.18);break;
+    case 'crates':{const cc=[m3('#4a90d9'),m3('#e4503c'),m3('#f5b335')][v%3];box(2.8,1.8,2,cc,0,.9);box(2.8,1.8,2,cc,0,2.7);box(2.8,1.8,2,m3('#d6a85a'),3.2,.9,.4);ball(.35,m3('#5cd04a'),-.8,3.8,0,1.4);ball(.35,m3('#5cd04a'),0,3.8,.3,1.4);ball(.35,m3('#5cd04a'),.8,3.8,0,1.4);}break;
+    case 'plantpot':cyl(1.5,1.1,1.8,m3(['#e8a07a','#d8c8b0','#7ab8d8'][v%3]),0,.9,0,10);for(let i=0;i<6;i++){const a=i*1.05;ball(1.1,m3('#3fa535'),Math.cos(a)*.9,2.5+(i%2)*.5,Math.sin(a)*.9);}ball(1.4,m3('#5cd04a'),0,3,0);break;
+    case 'acunit':box(3,2.4,1.6,m3('#e6e8e0'),0,1.2);cyl(.9,.9,.2,dark,0,1.3,.9,12).rotation.x=Math.PI/2;box(3.2,.3,1.8,m3('#b8c0b8'),0,2.5);box(.2,3,.2,metal,-1.4,1.5,-.7);break;
+    case 'shopbag':{const b=mk(new T3.SphereGeometry(1.3,8,6),m3('#f6f4ea'),0,1.3,0,g);b.scale.set(1,1.15,.8);box(.9,.9,.1,m3('#e4503c'),0,1.4,.85);cyl(.12,.12,1.2,m3('#f6f4ea'),-.4,3,0,4);cyl(.12,.12,1.2,m3('#f6f4ea'),.4,3,0,4);}break;
+    case 'zebra':for(let i=-3;i<=3;i++)box(.9,.12,5,m3('#f4f6f2'),i*1.7,.06);break;
     case 'tire':for(let i=0;i<3;i++){const o=mk(new T3.TorusGeometry(1.3,.55,6,12),dark,0,.6+i*1.1,0,g);o.rotation.x=Math.PI/2;}break;
   }
   return g;
@@ -3826,6 +3844,7 @@ function scene(){
     for (const [k, e] of R3.ent){ R3.world.remove(e);disposeWorldObject(e); R3.ent.delete(k); }   // 換生態時魔物與掉落物重建（顏色隨生態）
   }
   const t = G.time;
+  if(R3.dapple)R3.dapple.offset.set(t*.014,t*.007);
   for (const o of R3.decor){ const u = o.userData; if (u.fl){ const f2 = 1 + Math.sin(t*14 + o.position.x)*.08; u.fl[0].scale.set(f2, 1 + Math.sin(t*11)*.1, f2); u.fl[2].scale.setScalar(1 + Math.sin(t*7)*.1); } if (u.glow) u.glow.material.color.set(Math.sin(t*3) > 0 ? '#ff9ab0' : '#ffc2d2'); }
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
   pu.glows.forEach(gl => gl.scale.setScalar(1 + (pulse ? .35*Math.sin(pulse.t*3.14) : 0))); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
