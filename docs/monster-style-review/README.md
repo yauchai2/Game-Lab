@@ -2,6 +2,10 @@
 
 2026-10-26，Asia/Taipei。來源為Alan本輪上傳`Idle-Hero-12隻怪物-36張獨立視圖.zip`；已查看全部十二隻正／右／背共36圖。原始PNG原樣保存於[素材目錄](../../assets/references/monster-concepts/)，[manifest](../../assets/references/monster-concepts/manifest.json)記錄ZIP及各圖SHA-256。只審圖，沒有重畫、建模、替換正式遊戲或改AI。
 
+## 後續規格更新
+
+Alan已要求unlit／matte／no texture detail，故下文增加貼標、網罩圖案、刮痕等表面細節的建議已被取代；以幾何、純色面和動作表達物件特徵。M04新版候選見[交付](../../assets/concepts/m04-revision/README.md)。保留以下內容作原圖審查歷史，不再依舊貼圖建議建模。
+
 ## 判斷
 
 **整套具備相容的題材與低面數結構，但未達原樣整套採用的程度。** 參考影片的關鍵不只低面數，而是可生活的城市、明亮有層次的色彩、鮮明局部色、青年街頭個性，以及具體物件／圖案構成的生活細節。影片未展示這些敵人；怪物題材是我們對「訊號失常引發冒險」的原創延伸，不能說是影片已確定設定。

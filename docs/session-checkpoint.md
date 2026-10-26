@@ -1,5 +1,7 @@
 # Game Lab 精簡接續紀錄
 
+- **M04新規格候選已交付：** Alan要求直接做並指定semi-lowpoly／Y2K PS1 Dreamcast／chunky／flat／unlit matte／無貼圖細節／素材純白完整置中，後說繼續。已生成修正版三視圖，保存assets/concepts/m04-revision，creative-direction同步硬規格，取代此前貼標／網罩紋理建議。圖片仍有少量明暗，不宣稱實際unlit模型已驗證；沒有新GLB／src改動，其他三隻未重做。
+
 - **36圖已收／映射更正：** Alan上傳ZIP，36PNG與hash保存assets/references/monster-concepts；逐隻審查docs/monster-style-review。這套是M01–08硬件精怪＋B01–04機械Boss，不含先前四題材（箱牛／井蓋／電線蜘蛛／便當蟹）；舊映射未核實，已撤為建模依據。G2-A四隻先一隻驗收仍批准，但具體M編號／type需對齊。建議M02／04／05／06，首隻M04只是提案，不直接重做。M01結構可留、表面需精修；B03／04需較大風格修訂。沒有新GLB。
 
 - **G2風格閘門補充：** Alan追問舊怪物是否適合新風格；既有12圖只是候選來源，不等於新美術定稿。已比對M01／原片：題材與結構可留，灰橄欖米色低對比、圖案少需精修。先審其餘原圖→第一隻修訂方向給Alan看→再建模。細節見docs/g2-monsters/README.md，勿收到36圖就直接批量照造。
