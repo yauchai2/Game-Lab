@@ -20,10 +20,34 @@
   prism:{n:'稜鏡矩陣板',size:8,seed:13,lvl:40,depth:24,power:12,shape:'prism',note:'斜向隔離，鏡像洞色'},
   legacy:{n:'舊式保留板',size:8,seed:0,lvl:1,depth:0,power:12,legacy:true}
  };
+ /* 進階電路板的必經點：每條線一組格子，線要全部經過才算接通。每組都已驗證有解。 */
+ const MUST={
+  matrix:[[[4,2]],[[5,2]],[[2,5]],[[5,5]]],
+  matrix_v:[[],[[4,6]],[[3,2]],[]],
+  extreme:[[],[[4,3],[1,3]],[],[[6,6],[2,6]],[],[]],
+  extreme_v:[[[2,7],[2,1]],[],[],[],[],[[7,3],[7,6]]],
+  annulus:[[],[[4,2]],[[3,5]],[]],
+  spindle:[[],[[3,2]],[],[[3,5]]],
+  cassette:[[],[[3,4]],[[4,3]],[]],
+  dualbridge:[[[2,1],[7,1]],[[7,4],[1,4]],[[2,5],[7,5]],[[6,8],[2,8]]],
+  prism:[[[2,7],[2,3]],[[4,4],[4,8]],[[5,6],[5,1]],[[7,2],[7,6]]]
+ };
+ /* 已驗證的一組解（自動接線與測試用，玩家不會看到）。 */
+ const SOL={
+  matrix:[[[1,1],[2,1],[3,1],[3,2],[4,2],[4,1],[5,1],[6,1]],[[6,3],[6,2],[5,2],[5,3],[4,3],[3,3],[2,3],[1,3]],[[1,4],[1,5],[2,5],[2,4],[3,4],[4,4],[5,4],[6,4]],[[6,6],[6,5],[5,5],[4,5],[4,6],[3,6],[2,6],[1,6]]],
+  matrix_v:[[[1,6],[1,5],[1,4],[1,3],[1,2],[1,1]],[[2,1],[2,2],[2,3],[2,4],[2,5],[3,5],[4,5],[4,6],[3,6],[2,6]],[[5,6],[5,5],[5,4],[5,3],[4,3],[3,3],[3,2],[3,1],[4,1],[5,1]],[[6,1],[6,2],[6,3],[6,4],[6,5],[6,6]]],
+  extreme:[[[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1]],[[8,2],[7,2],[6,2],[5,2],[5,3],[4,3],[4,2],[3,2],[2,2],[2,3],[1,3],[1,2]],[[1,4],[2,4],[3,4],[4,4],[5,4],[6,4],[7,4],[8,4]],[[8,5],[7,5],[7,6],[6,6],[5,6],[5,5],[4,5],[3,5],[3,6],[2,6],[2,5],[1,5]],[[1,7],[2,7],[3,7],[4,7],[5,7],[6,7],[7,7],[8,7]],[[8,8],[7,8],[6,8],[5,8],[4,8],[3,8],[2,8],[1,8]]],
+  extreme_v:[[[1,8],[2,8],[2,7],[2,6],[1,6],[1,5],[1,4],[1,3],[1,2],[2,2],[2,1],[1,1]],[[3,1],[3,2],[3,3],[3,4],[3,5],[3,6],[3,7],[3,8]],[[4,8],[4,7],[4,6],[4,5],[4,4],[4,3],[4,2],[4,1]],[[5,1],[5,2],[5,3],[5,4],[5,5],[5,6],[5,7],[5,8]],[[6,8],[6,7],[6,6],[6,5],[6,4],[6,3],[6,2],[6,1]],[[8,1],[8,2],[7,2],[7,3],[8,3],[8,4],[8,5],[7,5],[7,6],[7,7],[8,7],[8,8]]],
+  annulus:[[[1,6],[1,5],[1,4],[1,3],[1,2],[1,1]],[[2,1],[3,1],[4,1],[4,2],[3,2],[2,2],[2,3],[2,4],[2,5],[2,6]],[[5,6],[4,6],[3,6],[3,5],[4,5],[5,5],[5,4],[5,3],[5,2],[5,1]],[[6,1],[6,2],[6,3],[6,4],[6,5],[6,6]]],
+  spindle:[[[1,1],[2,1],[3,1],[4,1],[5,1],[6,1]],[[6,3],[5,3],[4,3],[4,2],[3,2],[3,3],[2,3],[1,3]],[[1,4],[2,4],[3,4],[4,4],[5,4],[6,4]],[[6,6],[5,6],[4,6],[4,5],[3,5],[3,6],[2,6],[1,6]]],
+  cassette:[[[1,6],[1,5],[1,4],[1,3],[1,2],[1,1]],[[2,1],[2,2],[2,3],[3,3],[3,4],[2,4],[2,5],[2,6]],[[5,6],[5,5],[5,4],[4,4],[4,3],[5,3],[5,2],[5,1]],[[6,1],[6,2],[6,3],[6,4],[6,5],[6,6]]],
+  dualbridge:[[[1,2],[1,1],[2,1],[2,2],[3,2],[4,2],[5,2],[5,1],[6,1],[7,1],[8,1],[8,2]],[[8,3],[8,4],[7,4],[6,4],[6,3],[5,3],[4,3],[3,3],[2,3],[2,4],[1,4],[1,3]],[[1,6],[1,5],[2,5],[2,6],[3,6],[4,6],[5,6],[6,6],[6,5],[7,5],[7,6],[8,6]],[[8,7],[7,7],[7,8],[6,8],[6,7],[5,7],[4,7],[3,7],[3,8],[2,8],[1,8],[1,7]]],
+  prism:[[[1,8],[2,8],[2,7],[2,6],[1,6],[1,5],[1,4],[2,4],[2,3],[1,3],[1,2],[1,1]],[[3,1],[3,2],[4,2],[4,3],[4,4],[4,5],[3,5],[3,6],[3,7],[4,7],[4,8],[3,8]],[[6,8],[5,8],[5,7],[5,6],[5,5],[6,5],[6,4],[6,3],[6,2],[5,2],[5,1],[6,1]],[[8,1],[7,1],[7,2],[7,3],[8,3],[8,4],[8,5],[7,5],[7,6],[8,6],[8,7],[8,8]]]
+ };
  const CACHE={};
  function layout(b){
   const id=b&&Object.hasOwn(TEMPLATES,b.template)?b.template:'pocket';if(CACHE[id])return CACHE[id];const t=TEMPLATES[id];
-  if(t.legacy)return CACHE[id]={...t,id,w:10,h:10,socks:old.SOCKS,srcs:old.SRCS,colors:['r','b','g','y','v','c'],levels:old.SOCK_LV,rocks:old.ROCKS,pads:old.PADS};
+  if(t.legacy)return CACHE[id]={...t,id,w:10,h:10,socks:old.SOCKS,srcs:old.SRCS,colors:['r','b','g','y','v','c'],levels:old.SOCK_LV,rocks:old.ROCKS,pads:old.PADS,must:[]};
   const n=t.size,vertical=t.seed%2===1,rows=t.shape==='triad'?[1,2,4]:t.shape==='bridge'?[2,3,6,7]:t.shape==='prism'?[1,3,6,8]:n===3?[2]:n===4?(vertical?[2,3]:[1,4]):n===6?(vertical?[1,2,5,6]:[1,3,4,6]):(vertical?[1,3,4,5,6,8]:[1,2,4,5,7,8]);
   const srcs=rows.map((r,i)=>vertical?[r,i%2?0:n+1]:[i%2?n+1:0,r]);
   const socks=rows.map((r,i)=>vertical?[r,i%2?n+1:0]:[i%2?0:n+1,r]);
@@ -31,7 +55,7 @@
   const rocks=[];for(let y=2;y<n;y++)for(let x=2;x<n;x++)if(!(vertical?rows.includes(x):rows.includes(y))&&(x*7+y*11+t.seed)%5===0&&rocks.length<Math.floor(n/2))rocks.push([x,y]);
   if(t.shape){rocks.length=0;const patterns={ring:[[3,3],[4,3],[3,4],[4,4]],cross:[[2,2],[5,2],[2,5],[5,5]],cassette:[[3,2],[4,2],[3,5],[4,5]],bridge:[[4,1],[4,4],[4,5],[4,8]],prism:[[2,2],[3,3],[6,6],[7,7]]};for(const point of patterns[t.shape]||[])rocks.push(point);}
   const pads=[];for(let y=1;y<=n;y++)for(let x=1;x<=n;x++)if(!rocks.some(p=>p[0]===x&&p[1]===y))pads.push([x,y,['r','b','g'][(t.shape==='prism'?Math.abs(x-y)+t.seed:t.shape==='cassette'?x+2*y+t.seed:x+y+t.seed)%3]]);
-  return CACHE[id]={...t,id,w:n+2,h:n+2,socks,srcs,colors,levels:rows.map(()=>1),rocks,pads};
+  return CACHE[id]={...t,id,w:n+2,h:n+2,socks,srcs,colors,levels:rows.map(()=>1),rocks,pads,must:rows.map((_,i)=>(MUST[id]?.[i]||[]))};
  }
  const same=(a,b)=>!!a&&!!b&&a[0]===b[0]&&a[1]===b[1];
  const isInner=(x,y,b)=>Number.isInteger(x)&&Number.isInteger(y)&&x>=1&&y>=1&&x<layout(b).w-1&&y<layout(b).h-1;
@@ -56,8 +80,11 @@
    if(last?Math.abs(c[0]-last[0])+Math.abs(c[1]-last[1])!==1:!same(c,startOf(w.sock,b)))return false;seen.add(c.join(','));last=c;
   }return true;
  }
- const connected=(b,i)=>{const w=getWire(b,i);return validPath(b,w)&&same(w.cells.at(-1),endOf(i,b));};
- function createBoard(template='pocket'){const b={v:6,template:Object.hasOwn(TEMPLATES,template)?template:'pocket',pieces:[],wires:[],nextId:1,extra:0};const L=layout(b);b.w=L.w;b.h=L.h;return b;}
+ const mustOf=(i,b)=>layout(b).must?.[i]||[];
+ const mustMet=(b,i)=>{const w=getWire(b,i);return !!w&&(w.free===true||mustOf(i,b).every(m=>w.cells.some(c=>same(c,m))));};
+ const mustAt=(x,y,b)=>layout(b).must?.findIndex(l=>l.some(m=>same(m,[x,y])))??-1;
+ const connected=(b,i)=>{const w=getWire(b,i);return validPath(b,w)&&same(w.cells.at(-1),endOf(i,b))&&mustMet(b,i);};
+ function createBoard(template='pocket'){const b={v:6,rules:1,template:Object.hasOwn(TEMPLATES,template)?template:'pocket',pieces:[],wires:[],nextId:1,extra:0};const L=layout(b);b.w=L.w;b.h=L.h;return b;}
  function canPlace(b,kind,key,x,y,rot=0,ignoreId=null,t=1){
   if(!Object.hasOwn(kind==='active'?old.ACTIVES:old.SUPPORTS,key))return false;
   if(pieceAt(b,x,y)?.id!==ignoreId&&pieceAt(b,x,y))return false;
@@ -72,15 +99,20 @@
   if(i<0||i>=unlockedCount(b,lvl))return {ok:false,reason:'此終點尚未開放'};
   if(!isInner(x,y,b)||isRock(x,y,b))return {ok:false,reason:'這格不能走線'};
   let w=getWire(b,i);if(connected(b,i))return {ok:false,reason:'此線已接通，可從線尾收回'};
-  const last=w?.cells.at(-1);if(last?Math.abs(last[0]-x)+Math.abs(last[1]-y)!==1:!same([x,y],startOf(i,b)))return {ok:false,reason:'請從電源旁開始，逐格相連'};
+  const last=w?.cells.at(-1);if(last&&same(last,endOf(i,b)))return {ok:false,reason:'還沒經過必經點：從線尾收回，繞去有◇的格子再回來'};if(last?Math.abs(last[0]-x)+Math.abs(last[1]-y)!==1:!same([x,y],startOf(i,b)))return {ok:false,reason:'請從電源旁開始，逐格相連'};
   if(wireCellSet(b).has([x,y].join(',')))return {ok:false,reason:'這格已有電線'};
-  if(!w){w={sock:i,cells:[]};b.wires.push(w);}w.cells.push([x,y]);return {ok:true,connected:connected(b,i)};
+  if(!w){w={sock:i,cells:[]};b.wires.push(w);}w.cells.push([x,y]);return {ok:true,connected:connected(b,i),needMust:same([x,y],endOf(i,b))&&!mustMet(b,i)};
  }
- function shrink(b,i){const w=getWire(b,i);if(!w?.cells.length)return false;w.cells.pop();if(!w.cells.length)b.wires=b.wires.filter(q=>q!==w);return true;}
+ function shrink(b,i){const w=getWire(b,i);if(!w?.cells.length)return false;w.cells.pop();delete w.free;if(!w.cells.length)b.wires=b.wires.filter(q=>q!==w);return true;}
  function clearWire(b,i){b.wires=b.wires.filter(w=>w.sock!==i);}
  function route(b,i){
-  const from=startOf(i,b),to=endOf(i,b),used=wireCellSet(b,i),q=[[from]],seen=new Set([from.join(',')]);
-  while(q.length){const path=q.shift(),p=path.at(-1);if(same(p,to))return path;for(const[dX,dY]of[[1,0],[-1,0],[0,1],[0,-1]]){const n=[p[0]+dX,p[1]+dY],k=n.join(',');if(isInner(...n,b)&&!isRock(...n,b)&&!used.has(k)&&!seen.has(k)){seen.add(k);q.push([...path,n]);}}}return null;
+  const from=startOf(i,b),to=endOf(i,b),used=wireCellSet(b,i),stops=[...mustOf(i,b),to];let path=[from];
+  const known=SOL[b.template]?.[i];if(known&&!known.some(c=>used.has(c.join(','))))return known.map(c=>c.slice());
+  for(const stop of stops){
+   const seen=new Set(path.map(c=>c.join(','))),q=[[path.at(-1)]];let found=null;
+   while(q.length&&!found){const seg=q.shift(),p=seg.at(-1);if(same(p,stop)){found=seg;break;}for(const[dX,dY]of[[1,0],[-1,0],[0,1],[0,-1]]){const n=[p[0]+dX,p[1]+dY],k=n.join(',');if(isInner(...n,b)&&!isRock(...n,b)&&!used.has(k)&&!seen.has(k)){seen.add(k);q.push([...seg,n]);}}}
+   if(!found)return null;path=path.concat(found.slice(1));
+  }return path;
  }
  function strength(b,p){return TIER_MUL[(p.t||1)-1];}
  function resolve(b,lvl=999){
@@ -92,7 +124,7 @@
  }
  function normalize(raw){
   const b=createBoard(raw?.template);for(const kind of['active','support'])for(const p of(Array.isArray(raw?.pieces)?raw.pieces:[]).slice(0,80)){if(!p||p.kind!==kind)continue;const q=place(b,kind,p.key,p.x,p.y,0,{t:p.t});if(q&&typeof p.mode==='string'&&p.mode.length<60)q.mode=p.mode;}
-  for(const w of(Array.isArray(raw?.wires)?raw.wires:[]).slice(0,6)){if(!Number.isInteger(w?.sock)||getWire(b,w.sock)||!Array.isArray(w.cells)||w.cells.length>64)continue;const q={sock:w.sock,cells:w.cells.map(c=>Array.isArray(c)?c.slice(0,2):[])};if(validPath(b,q))b.wires.push(q);}return b;
+  for(const w of(Array.isArray(raw?.wires)?raw.wires:[]).slice(0,6)){if(!Number.isInteger(w?.sock)||getWire(b,w.sock)||!Array.isArray(w.cells)||w.cells.length>64)continue;const q={sock:w.sock,cells:w.cells.map(c=>Array.isArray(c)?c.slice(0,2):[])};if(validPath(b,q)){if(w.free===true||(raw.rules!==1&&same(q.cells.at(-1),endOf(q.sock,b))))q.free=true;b.wires.push(q);}}return b;
  }
  function adopt(raw,lvl=1){
   if(raw?.v===6)return normalize(raw);
@@ -100,7 +132,7 @@
  }
  const findSpot=(b,kind,key,id)=>kind==='active'?layout(b).socks.map(([x,y])=>({x,y,rot:0})).find(p=>canPlace(b,kind,key,p.x,p.y)):null;
  const manual=()=>({ok:false,reason:'請手動裝上機件及逐格接線'});
- const api={...old,version:6,TEMPLATES,GEM_COLOR,TIER_MUL,TIER_COST,layout,createBoard,adopt,normalize,isInner,isRock,isPad,padAt,padColor,sockAt,sockIndex,startOf,endOf,unlockedCount,
+ const api={...old,version:6,TEMPLATES,MUST,mustOf,mustMet,mustAt,GEM_COLOR,TIER_MUL,TIER_COST,layout,createBoard,adopt,normalize,isInner,isRock,isPad,padAt,padColor,sockAt,sockIndex,startOf,endOf,unlockedCount,
   pieceAt,getWire,wireOf,wireLen,wireCellSet,powerUsed,validPath,connected,canPlace,place,remove,strength,resolve,extend,extendTo:extend,shrink,clearWire,cut:clearWire,route,findSpot,
   dps:(b,hero,lvl)=>resolve(b,lvl).filter(r=>r.wired).map(r=>{const d=old.ACTIVES[r.key],keys=r.linked.map(id=>b.pieces.find(p=>p.id===id).key),mod=old.skillMods(keys,r.key,r.weights),crit=Math.min(1,Math.max(0,(hero.crit+mod.crit)/100)),hit=hero.hit*d.mult*mod.hit*(1+crit*(hero.cm/100-1)),interval=old.cooldown(d.cd,keys,hero.haste||0,1,r.weights);return {id:r.id,key:r.key,hit,interval,dps:hit*(1+mod.twin*old.LIMITS.repeatDamage+(mod.repeat?.45:0))/interval};}),
   PAD_MATCH:1,gemCap:()=>3,wireMax:b=>layout(b).size**2,autoWire:manual,autoWireAll:manual,dress:()=>0,
