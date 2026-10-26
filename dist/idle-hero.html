@@ -1037,6 +1037,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.63.0',d:'2026-10-26',t:['新增「精華」：烈焰、寒霜、雷霆、鋼鐵、生命、疾速、致命、豐收八種，擊敗首領與精英時有機會掉落。','在改機頁的「精華」區使用一枚，就能指定加入一條主題詞綴；詞綴位已滿時，會替換一條沒鎖定的詞綴。只能用在魔法與稀有裝備，部位出不了的詞綴會顯示原因。']},
   {v:'0.62.0',d:'2026-10-26',t:['新增夏日街區主線，共六章：電台前街、高架橋下、商店街與夜市、車站與河邊、山路電塔與商場地下、屋頂天線。每章有一個首領和一件失物，擊敗首領後找回。','電台手記新增「夏日主線」，記錄已找回的失物與每章的結尾。劇情只寫進日誌和手記，掛機時不會彈窗。','六章首領各有專屬頭飾與名稱：喇叭、回音環、招牌、月台擴音器、捲盤、天線冠。','電台吉祥物會在找回失物時跳起來慶祝；通關第六章後，身上會多一張貼紙。']},
   {v:'0.61.1',d:'2026-10-26',t:['修正：0.61.0 的設定面板在正式網頁載入時出錯，導致整個介面排版跑掉；已還原為原本的藍紫窗口介面。']},
   {v:'0.61.0',d:'2026-10-26',t:['切到其他分頁或視窗時，遊戲會在背後繼續運行，不再停住，回來也不會跳出離線結算（除非瀏覽器已長時間凍結分頁）。','設定新增「小視窗」：在 Chrome、Edge 等支援的瀏覽器開啟置頂縮圖視窗，顯示戰鬥畫面與等級、生命、深度、金幣，可放在螢幕角落一邊工作一邊看。','離線結算頁取消 3D 自轉標誌，回到原本的樣式。']},
@@ -1546,7 +1547,7 @@ const TREE = (() => {
 /* ---------- game state ---------- */
 const G = {
   unread:{skills:[],gear:[],cores:[],gems:[],carts:[],maps:[],boards:[]},summons:[],airSupply:null,airBuffs:[],damageLog:[],deathReport:null,
-  ascension:null,ascensionNodes:[],circuits:['pocket'],circuitLayouts:{},circuitPity:0,storyFlags:{},city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
+  ascension:null,ascensionNodes:[],circuits:['pocket'],circuitLayouts:{},circuitPity:0,storyFlags:{},ess:{},city:null,legacyMode:false,legacyTalent:null,castPolicy:'balanced', signalCharge:0, readySince:{}, castSerial:0, time:0, lvl:1, xp:0, gold:0, depth:1, maxDepth:1, kills:0, need:60, bossOut:false, push:true, speed:1, filter:0, deaths:0, spawnCd:.5, totalKills:0,
   tutorial:null,skillCollectionVersion:1,skillBooks:{},skillPity:0,coreDust:0, inventory:[], nextGearId:1, inventoryRevision:0, autoEquip:false, storageRecycled:0, whUp:0, offUp:0, chips:0, equip:Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null])), armory:{}, equipBackup:{}, deferChoices:false, gemTier:{}, gems:{ HEAVY:1, AREA:1 }, carts:{}, seen:{}, goals:{}, mapsDone:0, modeOf:{}, board:null, slots:['FIRE'], supp:{ FIRE:['HEAVY'], FROST:[], CHAIN:[], METEOR:[], PULSE:[], MAGNET:[], SPAM:[], BEAM:[] },
   pass:[], autoCard:false, ach:{}, legSeen:{}, pity:0, towerBest:0, quest:0, craftN:0, mk:{}, seenG:{}, seenC:{}, cz:1, userCz:false, dmgNum:1, seenInv:0, seenParts:0, seenGoals:0, builds:[null, null, null], bi:0, bossHp:0, parts:0, cos:{ auraStyle:'0', tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }, own:{}, heroName:'', born:[new Date().getMonth() + 1, new Date().getDate()], relics:{}, relicPicks:0, offerR:null, sunT:0, bossKills:0, char:'street', cards:{}, picks:0, offer:null, maps:[], run:null, cds:{ FIRE:1.2, FROST:1, CHAIN:1, METEOR:2, PULSE:1, MAGNET:1, SPAM:1, BEAM:1 },
   h:{ x:HX, y:HY, vx:0, vy:0, gx:HX, gy:HY, aiT:0, mv:0, hp:100, swingT:-1, swingHit:true, atkCd:0, castT:-1, castFired:true, castSk:'FIRE', hurtT:0, dead:0, potCd:0 },
@@ -1640,6 +1641,14 @@ function rarityRoll(boss){
 const itemValue = it => Math.round((1 + it.r*2.2) * (4 + it.il*2.4));
 const itemLines = it => [it.imp, ...it.aff].map((a, i) => ({ t:(i?`T${affTier(a,it.il)} · `:'')+AFF[a.k].t(a.v), imp:i === 0 })).concat(it.cr ? [{ t:'已腐化', lg:true }] : []).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
 const offPen = () => G.offline && G.offPen;   // 離開超過 60 秒才算離線：經驗 75%、掉落 25%；暗金資格與保底和線上相同；短暫切走只是快轉補上
+/* 精華：保證加入一條指定主題詞綴；從怪物掉落，一種主題一種精華。 */
+const ESSENCES={
+ flame:{n:'烈焰精華',k:'fire',d:'火焰傷害'},frost:{n:'寒霜精華',k:'cold',d:'冰霜傷害'},storm:{n:'雷霆精華',k:'light',d:'閃電傷害'},steel:{n:'鋼鐵精華',k:'armorP',d:'護甲%'},
+ vital:{n:'生命精華',k:'lifeP',d:'最大生命%'},swift:{n:'疾速精華',k:'aps',d:'攻擊速度'},lethal:{n:'致命精華',k:'crit',d:'會心率'},harvest:{n:'豐收精華',k:'rarity',d:'掉落稀有度'}
+};
+const cleanEss=raw=>Object.fromEntries(Object.keys(ESSENCES).map(k=>[k,Math.max(0,Math.min(999,Math.floor(+raw?.[k]||0)))]).filter(([,v])=>v>0));
+function essGain(id,n=1){G.ess=G.ess||{};G.ess[id]=Math.min(999,(G.ess[id]||0)+n);G.dirty=true;logLine(`獲得${ESSENCES[id].n}${n>1?' ×'+n:''}`,'#1f9bbf');}
+function essDrop(m){const p=(m.boss?1:m.elite?.12:.006)*(offPen()?.25:1),ids=Object.keys(ESSENCES);if(Math.random()<p)essGain(ids[Math.floor(Math.random()*ids.length)]);if(m.boss&&Math.random()<.25)essGain(ids[Math.floor(Math.random()*ids.length)]);}
 const salvage = it => { G.parts = (G.parts || 0) + [1, 2, 5, 12][it.r]; };   // 拆下的裝備變成零件，拿去改機
 const lgOn = id => Object.values(G.equip).some(it => it && it.lg === id);
 const coreSlot = id => Object.keys(LEGENDS).find(slot => LEGENDS[slot].some(it => it.id === id));
@@ -1779,7 +1788,7 @@ function addFx(e){if(G.offline)return;const cap=viewEffectsReduced()?14:64;if(G.
 /* ---------- save / load ---------- */
 const SAVE_KEY = 'idle-hero-save-v2';
 function serialize(){ return { v:2,tutorial:G.tutorial,activityLoot:G.activityLoot,rift:G.rift,towerRoomVersion:1,skillCollectionVersion:1,skillBooks:G.skillBooks||{},skillPity:G.skillPity||0,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
-  coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
+  coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts,ess:G.ess, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
 function migrateEquipmentSlots(input){
  if(input.equipmentVersion===2)return input;
@@ -1811,7 +1820,7 @@ function applySave(o){
   G.deferChoices = o.deferChoices === true;
   G.inventory=(Array.isArray(o.inventory)?o.inventory:[]).filter(validGear).slice(0,200+100*Math.min(WH_UP_MAX,Math.max(0,Math.floor(+o.whUp||0))));
   {const used=new Set();let next=1;for(const it of G.inventory){if(!Number.isSafeInteger(it.uid)||it.uid<1||it.uid>1e8||used.has(it.uid)){while(used.has(next))next++;it.uid=next++;}used.add(it.uid);}G.nextGearId=Math.max(1,...used)+1;}G.autoEquip=false;
-  G.coreDust=Number.isSafeInteger(o.coreDust)?Math.max(0,o.coreDust):0;G.storageRecycled=Math.max(0,+o.storageRecycled||0);G.whUp=Math.min(WH_UP_MAX,Math.max(0,Math.floor(+o.whUp||0)));G.offUp=Math.min(OFF_UP_MAX,Math.max(0,Math.floor(+o.offUp||0)));G.chips=Math.max(0,+o.chips||0);G.inventoryRevision++;
+  G.ess=cleanEss(o.ess);G.coreDust=Number.isSafeInteger(o.coreDust)?Math.max(0,o.coreDust):0;G.storageRecycled=Math.max(0,+o.storageRecycled||0);G.whUp=Math.min(WH_UP_MAX,Math.max(0,Math.floor(+o.whUp||0)));G.offUp=Math.min(OFF_UP_MAX,Math.max(0,Math.floor(+o.offUp||0)));G.chips=Math.max(0,+o.chips||0);G.inventoryRevision++;
   for(const group of [G.equip,G.equipBackup])for(const slot of Object.keys(group)){const it=group[slot];if(validGear(it)&&!it.lg){storeGear(it);group[slot]=G.inventory.find(x=>x.uid===it.uid)||it;}}
 
   G.pass = G.pass.filter(id => TREE[id]); for (const id of Object.keys(G.cards)) if (!CARDS[id]) delete G.cards[id]; G.offer = null; if (!Object.hasOwn(CHARS,G.char)) G.char = 'street'; if (!G.ach) G.ach = {}; G.mons = []; G.drops = (Array.isArray(o.groundDrops)?o.groundDrops:[]).filter(validDrop).map(d=>({...d,t:Number.isFinite(d.t)?d.t:0,done:false,pull:d.pull&&Number.isFinite(d.pull.age)&&Number.isFinite(d.pull.duration)&&d.pull.duration>0?{age:Math.max(0,Math.min(d.pull.age,1.65)),duration:Math.max(.85,Math.min(d.pull.duration,1.65))}:null})); G.proj = []; G.timers = []; G.bossOut = false; if (G.run) G.run.bossOut = false;
@@ -2547,6 +2556,7 @@ function killMon(m){
   const signature=rollSignatureGear(m.boss?'boss':m.elite?'elite':'normal',d);if(signature)dropItem(m,signature);
   const nItems = m.boss ? 2 + (Math.random() < .5 ? 1 : 0) : m.elite ? 1 + (Math.random() < .5 ? 1 : 0) : Math.random() < HORDE.drop*(1 + q)*(offPen() ? .25 : 1) ? 1 : 0;   // 離線：掉落 25%
   for (let i = 0; i < nItems; i++) dropItem(m, makeItem(tPick(Object.keys(SLOTN)), rarityRoll(m.boss), d));
+  essDrop(m);
   if (Math.random() < (m.boss ? .3 : .012)) dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'cart', id:tPick(Object.keys(MODES)), t:0 });
   if (Math.random() < (m.boss ? .35 : .025)) dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'gem', id:tPick(Object.keys(SUPPS)), t:0 });
   if (Math.random() < (m.boss && !R ? 1 : .03)) dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'map', map:makeMap(d + (Math.random() < .3 ? 1 : 0)), t:0 });
@@ -5130,6 +5140,33 @@ function craftState(slot, act){
   else if (!op.ok(it)) reason = '這件裝備無法進行此操作';
   else if ((G.parts || 0) < cost) reason = `需要 ${cost} 零件，還差 ${cost - (G.parts || 0)}`;
   return { ok:!reason, cost, reason };
+}
+/* 精華：消耗一枚，指定加入某條主題詞綴；詞綴位已滿時，替換一條沒鎖定的詞綴。 */
+function essenceState(slot,id){
+ const it=G.equip[slot],e=ESSENCES[id];
+ if(!it||!e)return {ok:false,reason:'尚未裝備道具'};
+ if((G.ess?.[id]||0)<1)return {ok:false,reason:'沒有這種精華'};
+ if(it.cr)return {ok:false,reason:'已腐化，不能再改機'};
+ if(it.lg||it.r<1||it.r>2)return {ok:false,reason:'只能用在魔法與稀有裝備'};
+ if(it.aff.some(a=>a.k===e.k))return {ok:false,reason:'已經有這條詞綴'};
+ if(!POOL[slot].includes(e.k))return {ok:false,reason:'這個部位出不了這條詞綴'};
+ const cap=it.r===1?2:6,room=it.aff.length<cap&&affGroupCount(it,AFF[e.k].g)<3;
+ if(!room&&!it.aff.some((a,i)=>i!==it.lk))return {ok:false,reason:'沒有可替換的未鎖定詞綴'};
+ return {ok:true,replace:!room};
+}
+function essenceDo(slot,id){
+ const s=essenceState(slot,id);if(!s.ok){uxAnnounce(s.reason);return;}
+ const it=G.equip[slot],e=ESSENCES[id],beforeRows=copyState(it.aff),before=it.aff.map(a=>AFF[a.k].t(a.v)).join('、')||'無額外詞綴';
+ G.ess[id]--;if(!G.ess[id])delete G.ess[id];
+ const row=rollAff(e.k,it.il,1.1);
+ if(s.replace){const idx=it.aff.map((a,i)=>i).filter(i=>i!==it.lk);it.aff[tPick(idx)]=row;}else it.aff.push(row);
+ const msg=`${e.n}：${AFF[e.k].t(row.v)}`,after=it.aff.map(a=>AFF[a.k].t(a.v)).join('、');
+ G.craftN=(G.craftN||0)+1;checkQuest();CRAFT_RESULTS[slot]={it,msg,cost:0,before,after,beforeRows,afterRows:copyState(it.aff)};
+ recalc();logLine(`改機（${SLOTN[slot]}）：${msg}`,'#1f9bbf');addFloat(G.h.x+3,G.h.y,BZ+22,e.n,'#1f9bbf',3.8);SFX('card');G.dirty=true;renderModal();uxAnnounce(`${msg}。`);
+}
+function essenceHtml(slot,it){
+ const owned=Object.keys(ESSENCES).filter(id=>(G.ess?.[id]||0)>0);
+ return `<details class="device-details" ${owned.length?'open':''}><summary>精華 ${owned.reduce((n,id)=>n+G.ess[id],0)}</summary>${owned.length?`<div class="device-process-grid">${owned.map(id=>{const s=essenceState(slot,id);return `<button class="mb device-process" ${s.ok?'':'disabled'} onclick="essenceDo('${slot}','${id}')"><b>${ESSENCES[id].n} ×${G.ess[id]}</b><span>${s.ok?(s.replace?'替換一條詞綴':'加入一條詞綴'):s.reason}</span><small>${ESSENCES[id].d}</small></button>`;}).join('')}</div>`:'<p>擊敗首領與精英有機會掉落精華，可以指定加入一條主題詞綴。</p>'}</details>`;
 }
 function craftLock(slot, i){ const it = G.equip[slot]; if (!it || it.cr) return; it.lk = it.lk === i ? null : i; renderModal(); }
 function craftConfirm(){
@@ -8088,7 +8125,7 @@ function deviceCraftHtml(){
   const rows=`<div class="device-affixes">${it.lg&&LEGEND_BY[it.lg]?`<div class="device-affix legend"><span>★</span><p>${uxEsc(LEGEND_BY[it.lg].d)}</p><span>專屬能力</span></div>`:''}<div class="device-affix implicit"><span>固定</span><p>${uxEsc(AFF[it.imp.k].t(it.imp.v))}</p><span>底材屬性</span></div>${it.aff.map((a,i)=>`<div class="device-affix ${it.lk===i?'locked':''}"><span>T${affTier(a,it.il)}</span><p>${uxEsc(AFF[a.k].t(a.v))}<small>${AFF[a.k].g==='s'?'副機位':'主機位'} · ${AFF[a.k].tags[0]} · 同階範圍 ${affRange(a,it).min}–${affRange(a,it).max}${a.v>affRange(a,it).max?' · 校準可能降低':''}</small></p><button class="mb" ${it.cr?'disabled':''} data-focus="craft-lock-${i}" aria-label="${it.lk===i?'解除鎖定':'鎖定'}${uxEsc(AFF[a.k].t(a.v))}" aria-pressed="${it.lk===i}" onclick="craftLock('${slot}',${i})">${it.lk===i?'已鎖':'鎖定'}</button></div>`).join('')||'<p class="device-caption">目前沒有額外詞綴，可先升級稀有度。</p>'}</div>`;
   const hero=`<div class="device-item-stage">${it.lg?xico('legend',it.lg,112):eqico(slot,it.r,112,it)}<div><span>${SLOTN[slot]} · ${rarityBadge(it.r)}</span><h3>${uxEsc(it.name)}</h3><span>物品等級 ${it.il} · ${it.lg?'傳奇':(SERIES[slot]?.[it.bs||0]?.n||'標準系')} · 詞綴 ${it.aff.length}／6${it.cr?' · 已腐化':''}</span></div></div>`;
   const execute=act==='upgrade'&&it.lg?coreRefineHtml(slot,it):`<div class="device-execute"><p>${operation.d}</p>${!state.ok?`<p id="craft-reason" class="uxwarning">${state.reason}</p>`:'<span id="craft-reason" hidden></span>'}<button class="mb pri" data-focus="craft-${slot}-${act}" aria-describedby="craft-reason" ${state.ok?'':'disabled'} onclick="craftDo('${slot}','${act}')">${act==='corrupt'?'查看腐化風險':operation.n} · ${state.cost} 零件</button>${act==='recal'?`<details class="device-details"><summary>指定詞綴升階</summary>${affTierHtml(slot,it)}</details>`:''}</div>`;
-  selected=`<section class="device-craft-item" aria-label="選中裝備">${hero}${rows}</section><section class="device-craft-process"><h3>選擇工序</h3>${operations}${execute}${result&&result.it===it?`<div class="device-result" role="status"><strong>${uxEsc(result.msg)}</strong><span>消耗 ${result.cost} 零件</span><details><summary>查看變化</summary><p>之前：${uxEsc(result.before)}</p><p>之後：${uxEsc(result.after)}</p></details></div>`:''}</section>`;
+  selected=`<section class="device-craft-item" aria-label="選中裝備">${hero}${rows}</section><section class="device-craft-process"><h3>選擇工序</h3>${operations}${execute}${essenceHtml(slot,it)}${result&&result.it===it?`<div class="device-result" role="status"><strong>${uxEsc(result.msg)}</strong><span>消耗 ${result.cost} 零件</span><details><summary>查看變化</summary><p>之前：${uxEsc(result.before)}</p><p>之後：${uxEsc(result.after)}</p></details></div>`:''}</section>`;
  }
  return `<div class="device-workspace device-craft"><div class="device-heading"><div><span class="device-eyebrow">裝備改機</span><h3>街頭整備台</h3></div><button class="mb" onclick="openModal('warehouse')">背包 ↗</button></div><div class="device-wallet">${[['parts','零件',G.parts],['dust','核心殘晶',G.coreDust],['chips','電路點數',G.chips]].map(([key,n,v])=>`<div>${deviceResource(key)}<span>${n}<b>${tFmt(v||0)}</b></span></div>`).join('')}</div>${slots}${selected}${studioUtilitiesHtml()}</div>`;
 }
