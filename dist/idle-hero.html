@@ -1037,6 +1037,8 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.61.0',d:'2026-10-26',t:['切到其他分頁或視窗時，遊戲會在背後繼續運行，不再停住，回來也不會跳出離線結算（除非瀏覽器已長時間凍結分頁）。','設定新增「小視窗」：在 Chrome、Edge 等支援的瀏覽器開啟置頂縮圖視窗，顯示戰鬥畫面與等級、生命、深度、金幣，可放在螢幕角落一邊工作一邊看。','離線結算頁取消 3D 自轉標誌，回到原本的樣式。']},
+  {v:'0.60.1',d:'2026-10-26',t:['修正：關閉「街區地圖」後，角色與裝備的配色會一起還原。','修正：魔物倒下時，臉部會跟著身體一起淡出。']},
   {v:'0.60.0',d:'2026-10-26',t:['魔物改成街頭雜物精怪：插頭跳豆、紙箱人、啤酒箱牛、塑膠袋飛靈、氣球炸彈、井蓋地鼠、手推車獸、延長線水母等，圖鑑與戰鬥記錄同步改名。','數值、行為與預警都不變；紙箱人、塑膠袋飛靈與氣球炸彈已換成簡化臉的新造型，電線團蛛、音箱、小靈、便當盒蟹、地鼠、路燈與射手都加上簡化臉，其餘造型會陸續更換。']},
   {v:'0.59.0',d:'2026-10-26',t:['地區改名成街區的各個角落：綠蔭公園、午後空地、白雪山路、夜市燒烤攤、霓虹商圈、車站貨運場、電台頂樓、海邊堤防、山路電塔、商場地下街、夜晚天橋、停業商場、河邊鐵工廠、港口碼頭、屋頂天線群、郊外採石場、頂樓冷氣區、雨天地下道。','無限之塔的三個主題改為停業遊樂場、冷藏倉庫與地下配電室；地圖、存檔與掉落不受影響。','水邊、山路、雪地、工業區等地形也會零星出現護欄、電線桿、盆栽、貨箱、冷氣機與販賣機，不再只有街區地圖才有生活感。','戰鬥飄字還原為原本的描邊字，取消貼紙氣泡。']},
   {v:'0.58.1',d:'2026-10-26',t:['序章與十二則地方故事換成新主線：夏日街區的街角電台突然播出一段沒人點過的旋律，雜物跟著節拍亂跑，要從電台前街一路追查回來。','小禾、阿澄等鄰居仍在，語氣改成午後街區的日常。冒險日誌開頭同步更新。','其餘群系的天空換成午後色彩層次（黃昏、薄霧、海邊、雨天），不再是一片暗。','戰鬥畫面的飄字改成貼紙氣泡：深藍底、白邊、微微歪斜，出現時有一下彈跳；只出現在戰鬥畫面內。']},
@@ -3299,7 +3301,7 @@ function buildGrave(){
 
 /* ---------- 魔物 ---------- */
 const SLIME_HEX = ['#9be07d', '#ffd36a', '#8fd8ff', '#ff9a8a', '#5fe8ff', '#ff9ad0'];
-function flash(g, c, k){ for (const m of g.userData.mats || []){ m.emissive.set(c); m.emissiveIntensity = k; } }
+function flash(g, c, k){ for (const m of g.userData.mats || []){ if (!m.emissive) continue; m.emissive.set(c); m.emissiveIntensity = k; } }
 function ownMat(g, hex, o={}){ const m = m3(hex, { own:true, ...o }); (g.userData.mats ||= []).push(m); return m; }
 function buildSlime(){   // 稜角分明的霓虹凝膠：低面數外殼、發光核心、細長護目鏡眼
   const g = new T3.Group(), hex = SLIME_HEX[biomeNow()%6], jelly = new T3.Group(); g.add(jelly); g.userData.jelly = jelly;
@@ -3322,7 +3324,7 @@ function buildSkel(){
   head.scale.setScalar(2.05); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
   addShadow(g, 4.6); return g;
 }
-function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));f.position.set(x,y,z);parent.add(f);return f;}
+function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));if(parent.userData.mats)parent.userData.mats.push(f.material);else parent.userData.mats=[f.material];f.position.set(x,y,z);parent.add(f);return f;}
 function buildDrone(){   // 塑膠袋飛靈：半透明白袋身、兩條提手、簡化臉，貼著半空飄
   const g = new T3.Group(), hex = ['#f4f8ff', '#fff3d8', '#e6f6ff', '#ffe6e2', '#e8ecff', '#ffeaf4'][biomeNow()%6];
   mk(ico(1, 1), ownMat(g, hex, { transparent:true, opacity:.92 }), 0, 8, 0, g).scale.set(4.2, 3.4, 3.2); mk(ico(.9, 0), ownMat(g, '#ffffff'), 0, 11, -.2, g).scale.set(2.4, 1.2, 1.6);
@@ -3920,7 +3922,7 @@ function scene(){
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
   pu.glows.forEach(gl => gl.scale.setScalar(1 + (pulse ? .35*Math.sin(pulse.t*3.14) : 0))); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
   // 主角
-  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, ...Object.values(G.equip).map(it=>it?[it.lg||'',it.r,aTier(it)].join(':'):''), G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos)].join();
+  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, ...Object.values(G.equip).map(it=>it?[it.lg||'',it.r,aTier(it)].join(':'):''), G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos), typeof g1On==='function'&&g1On()?'g1':''].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero){if(typeof characterDispose==='function')characterDispose(R3.hero);R3.world.remove(R3.hero);} R3.hero = G.h.dead>0&&G.h.dead<=2.15 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 魔物與掉落物
@@ -3951,7 +3953,7 @@ function buildCircuitMon(type){
  if(type==='wisp'){mk(new T3.OctahedronGeometry(4,0),glow,0,5,0,g).scale.set(.7,1.8,.7);mk(new T3.TorusGeometry(4.8,.5,4,12),silver,0,5,0,g).rotation.x=.7;for(const sx of[-1,1])mk(ico(.8,0),dark,sx*1.3,6,2,g);}
  if(type==='crab'){mk(cylG(5,6,4,6),silver,0,3,0,g);mk(roundedG(6,1,1),dark,0,5,4,g);limbs={};for(const sx of[-1,1]){limbs['claw'+(sx>0?'R':'L')]=[sx*5,3,1,l=>{mk(roundedG(6,2,2),dark,sx*3,0,0,l);mk(new T3.ConeGeometry(2,5,4),glow,sx*5,1,1.5,l).rotation.z=-sx*.7;}];for(let i=0;i<3;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4.5,2,(i-1)*2.4,l=>{mk(roundedG(4,.8,.8),silver,sx*2,-.5,0,l).rotation.z=sx*.5;}];}}
  {const F={spider:[3.4,0,4.6,5.7],speaker:[4.2,0,8,2.9],wisp:[3.6,0,5.4,2.2],crab:[4.6,0,3.4,5.6]}[type];if(F)faceMesh(F[0],F[1],F[2],F[3],g);}
- const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn,ry]=limbs[k];const lb=monLimb(out,px,py,pz,fn);lb.userData.ry=ry||0;out.userData.limbs[k]=lb;}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh&&o.material.emissive){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn,ry]=limbs[k];const lb=monLimb(out,px,py,pz,fn);lb.userData.ry=ry||0;out.userData.limbs[k]=lb;}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildRegionLandmark(bi){
  const g=new T3.Group(),B=BIOMES[bi],steel=m3('#43516a'),silver=m3('#a5b8c9'),light=m3(B.glow,{emissive:B.glow,emissiveIntensity:.25});
@@ -3990,7 +3992,7 @@ function buildFieldMonster(type,variant=0){
   box(7,1.5,1,signal,0,7,5);limbs={pawL:[-5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}],pawR:[5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}]};
  }
  {const F={mole:[4.2,0,6.2,5.9],lantern:[4,0,13,4.1],ranger:[3.6,0,10.5,2.7]}[type];if(F)faceMesh(F[0],F[1],F[2],F[3],g);}
- const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();if(o.material.emissive)out.userData.mats.push(o.material);}});return out;
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildCircuitBoss(bi,form=bi%3){
  const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);
@@ -4711,7 +4713,7 @@ function catchUp(sec, report){
   G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };
   let left = simSec; const total = simSec;
-  if (report) showOverlay(typeof returnLoadingHtml==='function'?returnLoadingHtml():`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`); if (report && typeof returnLogoMount==='function') returnLogoMount();
+  if (report) showOverlay(typeof returnLoadingHtml==='function'?returnLoadingHtml():`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
     const t0 = performance.now();
     while (left > 0 && performance.now() - t0 < 30){
@@ -4726,7 +4728,7 @@ function catchUp(sec, report){
     resolveOfflineChoices(G.off);
     if (G.h.hp <= 0) G.h.hp = G.st.life;
     G.offline = false; G.paused = false; G.lastWall = Date.now(); const o = G.off; G.off = null; G.dirty = true; const saved = saveGame();
-    if (report){ showOverlay(uxOfflineReport(o,b,away,sec,saved)); if (typeof returnLogoMount==='function') returnLogoMount(); }
+    if (report){ showOverlay(uxOfflineReport(o,b,away,sec,saved)); }
   })();
 }
 function setupPanel(){
@@ -5486,7 +5488,7 @@ function uxOfflineReport(o,b,away,sec,saved){
   UX_RETURN_NEW=o.gems||o.carts?{kind:o.gems?'support':'cart',g:b.gems||{},c:b.carts||{}}:null;
   const newPieces=(o.gems||0)+(o.carts || 0), cores=o.cores||0, pending=GAME_FEATURES.cardChoices?G.picks+G.relicPicks:0;
   const action = cores ? `<button class="mb pri" onclick="uxOfflineGo('warehouse')">查看新核心</button>` : o.skillBooks ? `<button class="mb pri" onclick="UX_RETURN_NEW=null;UI_WORK.inventory='active';uxOfflineGo('skills')">查看新技能</button>` : newPieces ? `<button class="mb pri" onclick="uxOfflineGo('skills')">查看新配件</button>` : o.maps && tabOpen('maps') ? `<button class="mb pri" onclick="uxOfflineGo('maps')">查看新地圖</button>` : '';
-  return `${typeof returnLogoHtml==='function'?returnLogoHtml():''}<h2 class="uxdialog-title">歡迎回家！</h2><p class="uxmeta">離開 ${fmtDur(away)}${away > sec ? `，最多結算 ${fmtDur(sec)}` : ''}</p><div class="uxreturn-summary"><div><span>成長</span><b>等級 ${b.lvl} → ${G.lvl}</b><small>金幣 +${tFmt(G.gold-b.gold)}</small></div><div><span>裝備</span><b>收進 ${o.stored||0} 件</b><small>${cores?`新收藏 ${cores} 種傳奇核心`:`倉庫收進 ${o.stored||0} 件；回來可比較換裝`}</small></div><div><span>新資源</span><b>${newPieces} 件配件／卡匣</b><small>${o.maps} 張地圖${o.skillBooks?` · 新技能圖紙 ${o.skillBooks}`:''}${o.coreDust?` · 核心殘晶 +${o.coreDust}`:''}</small></div>${pending?`<div><span>待選</span><b>${G.picks} 次改裝 · ${G.relicPicks} 次遺物</b><small>選擇已保留，可以稍後處理。</small></div>`:''}</div>${G.deaths>b.deaths ? `<p class="uxwarning">這段時間倒下 ${G.deaths-b.deaths} 次，可先檢查防禦與構築。</p>` : ''}${saved ? '' : '<p class="uxwarning">本機存檔未成功，請至存檔頁匯出存檔碼保存。</p>'}<details class="uxreturn-log"><summary>完整紀錄</summary><ul><li>討伐 ${tFmt(G.totalKills-b.kills)} 隻魔物</li><li>深度 ${b.depth} → ${G.depth}</li><li>倒下 ${G.deaths-b.deaths} 次</li>${o.cards.length ? `<li>依自動隨機設定完成：${o.cards.map(uxEsc).join('、')}</li>` : ''}</ul></details><div class="uxactions">${pending?'<button class="mb pri" onclick="openPendingChoices()">查看待選內容</button>':''}${action}<button class="mb" onclick="hideOverlay()">繼續掛機</button>${saved ? '' : '<button class="mb" onclick="uxOfflineGo(\'save\')">備份存檔</button>'}</div>`;
+  return `<h2 class="uxdialog-title">歡迎回家！</h2><p class="uxmeta">離開 ${fmtDur(away)}${away > sec ? `，最多結算 ${fmtDur(sec)}` : ''}</p><div class="uxreturn-summary"><div><span>成長</span><b>等級 ${b.lvl} → ${G.lvl}</b><small>金幣 +${tFmt(G.gold-b.gold)}</small></div><div><span>裝備</span><b>收進 ${o.stored||0} 件</b><small>${cores?`新收藏 ${cores} 種傳奇核心`:`倉庫收進 ${o.stored||0} 件；回來可比較換裝`}</small></div><div><span>新資源</span><b>${newPieces} 件配件／卡匣</b><small>${o.maps} 張地圖${o.skillBooks?` · 新技能圖紙 ${o.skillBooks}`:''}${o.coreDust?` · 核心殘晶 +${o.coreDust}`:''}</small></div>${pending?`<div><span>待選</span><b>${G.picks} 次改裝 · ${G.relicPicks} 次遺物</b><small>選擇已保留，可以稍後處理。</small></div>`:''}</div>${G.deaths>b.deaths ? `<p class="uxwarning">這段時間倒下 ${G.deaths-b.deaths} 次，可先檢查防禦與構築。</p>` : ''}${saved ? '' : '<p class="uxwarning">本機存檔未成功，請至存檔頁匯出存檔碼保存。</p>'}<details class="uxreturn-log"><summary>完整紀錄</summary><ul><li>討伐 ${tFmt(G.totalKills-b.kills)} 隻魔物</li><li>深度 ${b.depth} → ${G.depth}</li><li>倒下 ${G.deaths-b.deaths} 次</li>${o.cards.length ? `<li>依自動隨機設定完成：${o.cards.map(uxEsc).join('、')}</li>` : ''}</ul></details><div class="uxactions">${pending?'<button class="mb pri" onclick="openPendingChoices()">查看待選內容</button>':''}${action}<button class="mb" onclick="hideOverlay()">繼續掛機</button>${saved ? '' : '<button class="mb" onclick="uxOfflineGo(\'save\')">備份存檔</button>'}</div>`;
 }
 const UX_CSS = `
 ${UX_THEME}
@@ -6024,9 +6026,9 @@ function uiCityHtml(){const C=G.city||(G.city=newCity());CITY_UI.tier=Math.min(C
 let CITY_CHECKPOINT_REVEALED=null;
 function uiCityRevealCheckpoint(){const c=G.run?.city;if(modalTab!=='maps'||!c?.awaitChoice||UX_LAYERS.length)return;const key=G.run.map.id+':'+c.stage;if(CITY_CHECKPOINT_REVEALED===key)return;CITY_CHECKPOINT_REVEALED=key;requestAnimationFrame(()=>{if(modalTab!=='maps'||!G.run?.city?.awaitChoice)return;$('mbody').scrollTop=0;document.querySelector('[data-focus="city-branch-safe"]')?.focus({preventScroll:true});});}
 
-const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰BOSS':['BOSS條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'倒下表現':['倒下表現',()=>deathFxStyle()==='signal'?'訊號碎片':'紅色液體'],'街區地圖':['街區地圖',()=>streetSampleOn()?'街區樣板':'原版地形'],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'戰鬥畫面':['戰鬥畫面（手機）',()=>G.userCz?['大','大','小','收起'][Math.max(1,G.cz==null?1:G.cz)]:'自動'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
+const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰BOSS':['BOSS條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'倒下表現':['倒下表現',()=>deathFxStyle()==='signal'?'訊號碎片':'紅色液體'],'小視窗':['小視窗',()=>typeof BG!=='undefined'&&BG.pip?'已開啟':'關閉'],'街區地圖':['街區地圖',()=>streetSampleOn()?'街區樣板':'原版地形'],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'戰鬥畫面':['戰鬥畫面（手機）',()=>G.userCz?['大','大','小','收起'][Math.max(1,G.cz==null?1:G.cz)]:'自動'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
 function uiInstallSettings(){const root=$('uisettings');if(!root||root.dataset.gridReady)return;root.dataset.gridReady='true';for(const wrap of root.querySelectorAll('#btns .stepwrap')){const button=wrap.querySelector('.act'),label=button.textContent.replace('▾','').trim();if(UI_SETTING_LABELS[label]){wrap.dataset.setting=label;button.dataset.focus='setting-'+label;}}
- const order=['模式','挑戰BOSS','戰利品過濾','戰鬥畫面','街區地圖','倒下表現','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
+ const order=['模式','挑戰BOSS','戰利品過濾','戰鬥畫面','街區地圖','倒下表現','小視窗','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
  uiSyncSettings();}
 function uiSyncSettings(){for(const wrap of document.querySelectorAll('#uisettings [data-setting]')){const [label,value]=UI_SETTING_LABELS[wrap.dataset.setting],button=wrap.querySelector('.act'),text=value(),html=`<span class="ui-setting-copy"><b>${label}</b><small>${uxEsc(text)}</small></span>${wrap.querySelector('.chips')?'<span aria-hidden="true">▾</span>':'<span aria-hidden="true">↗</span>'}`;if(button.innerHTML!==html)button.innerHTML=html;}}
 
@@ -8225,7 +8227,7 @@ body.ui-material #mbody .wb .pc.mt::before{display:none}.wb .pc.pd::after{opacit
 function brandMarkup(mode='header'){const source=typeof ASSET!=='undefined'&&(ASSET.logo||ASSET.wordmark);return `<span class="brand-dock brand-${mode}">${source?`<img src="${source}" alt="Idle Hero" draggable="false">`:'<span>Idle Hero</span>'}<i aria-hidden="true"></i></span>`;}
 function professionVisualHtml(){const c=CHARS[G.char],steps={street:['普攻命中','短暫護盾','近身續戰'],frost:['連續普攻','累積節拍','加快音波'],beep:['普攻討伐','取得回執','增幅連射'],volt:['寵機攻擊','累積電池','觸發修復']}[G.char];return `<section class="profession-console"><div class="profession-heading"><span>職業專技</span><h3>${c.sig.n}</h3><b>${G.st.signatureCd.toFixed(1)}<small>秒</small></b></div><div class="profession-flow" role="img" aria-label="${steps.join('，然後')}">${steps.map((n,i)=>`<div><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 5H26V27H6Z M10 10H22 M10 16H22 M10 22H17"/><circle cx="${11+i*5}" cy="16" r="4"/></svg><span>${n}</span></div>`).join('')}</div><p>${c.sig.d}</p><details><summary>基礎被動與昇華配搭</summary><p>${c.passive}</p><button class="mb" onclick="${G.ascension?'careerAscensionTalents()':'careerAscensions()'}">查看昇華</button></details></section>`;}
 function gearRollProfile(it){if(!it.aff.length)return '';return `<div class="gear-roll-profile">${it.aff.map(a=>{const r=affRange(a,it),value=Math.max(0,Math.min(100,r.max===r.min?100:(a.v-r.min)/(r.max-r.min)*100)),outside=a.v<r.min||a.v>r.max;return `<div class="gear-roll"><div><b>T${r.tier}</b><span>${uxEsc(AFF[a.k].t(a.v))}</span></div><meter min="0" max="100" value="${value}" aria-label="${uxEsc(AFF[a.k].t(a.v))}，本階區間${r.min}至${r.max}"></meter><small>${outside?'超出同階區間 · ':''}本階 ${r.min}–${r.max}</small></div>`;}).join('')}</div>`;}
-function returnLoadingHtml(){return `<section class="return-loading">${typeof returnLogoHtml==='function'?returnLogoHtml():brandMarkup('waiting')}<h2>正在整理離線收穫</h2><div class="return-transfer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><progress id="oprogbar" max="100" value="0" aria-label="離線結算進度"></progress><strong id="oprog">0%</strong><p>經驗、裝備與電路板將一併整理。</p></section>`;}
+function returnLoadingHtml(){return `<section class="return-loading">${brandMarkup('waiting')}<h2>正在整理離線收穫</h2><div class="return-transfer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><progress id="oprogbar" max="100" value="0" aria-label="離線結算進度"></progress><strong id="oprog">0%</strong><p>經驗、裝備與電路板將一併整理。</p></section>`;}
 const READABILITY_CSS=`
 body.ui-material #mbody .talent-viewport.overview .talent-node{width:var(--overview-size)!important;height:var(--overview-size)!important;min-width:0!important;min-height:0!important;padding:0!important;border-width:1px!important;outline-offset:1px}.talent-viewport.overview .talent-node>span{display:none!important}body.ui-material #mbody .talent-viewport.overview .talent-node>i{width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;box-sizing:border-box;border:1px solid var(--node-color)!important;border-radius:0!important;font-size:5px!important;line-height:1!important;opacity:.85;box-shadow:none!important}.talent-viewport.overview .talent-plane svg line{stroke-width:7px}.talent-viewport.overview .talent-node.major{width:calc(var(--overview-size)*1.3)!important;height:calc(var(--overview-size)*1.3)!important}.talent-viewport.overview .talent-plane{margin:auto}.talent-viewport.overview{min-height:300px!important}.talent-viewport.overview .talent-plane svg{stroke-width:5px}
 body.ui-material #mbody .wire-board-scroll .pz.wb{min-width:var(--board-min,520px)!important}.wire-board-scroll{touch-action:pan-x pan-y}.port-shape{position:absolute;right:2px;bottom:2px;font:10px/1 var(--ux-body);font-style:normal;color:var(--padc);pointer-events:none}.pz.wb .pc.src>span{inset:0!important;font-size:18px!important}body.ui-material #mbody .pz.wb .pc.sk .port-word,body.ui-material #mbody .pz.wb .pc.sk.empty>span{position:absolute;inset:0;width:auto;height:auto;overflow:visible;clip-path:none;display:grid;place-items:center;font-size:18px!important;line-height:1!important}.pz.wb .pc.chip.open .port-word{opacity:.6}.pz.wb .pc.chip.lnk .port-word{text-shadow:0 0 8px var(--padc)}
@@ -8552,8 +8554,6 @@ body.intro-active #ovl>.intro-title{background:#c8d5e6!important;border:2px soli
 `;
 {const s=document.createElement('style');s.textContent=INTRO_LOGO_CSS;document.head.appendChild(s);}
 
-function returnLogoHtml(){return `<div id="return-logo-stage" class="intro-logo-stage return-logo" data-always="1" role="img" aria-label="Idle Hero立體標誌"><img src="${LOGO_3D.poster||''}" alt="" class="intro-logo-poster"></div>`;}
-function returnLogoMount(){const el=document.getElementById('return-logo-stage');if(el)introLogoMount(el);}
 
 </script>
 <script>
@@ -8589,6 +8589,7 @@ ui = mountFigure({
     { label:'戰鬥畫面', choices: () => [['auto','自動（按頁面調整）'],[1,'大'],[2,'小'],[3,'收起']].map(([v, n]) => ({ label:n, current:v === 'auto' ? !G.userCz : G.userCz && Math.max(1, G.cz) === v, onClick:() => { if (v === 'auto'){ G.userCz = false; G.autoFold = true; } else { G.cz = v; G.userCz = true; } G.dirty = true; uiTitle(); } })) },
     { label:'混沌重鑄', choices: () => Object.keys(SLOTN).map(k => { const it = G.equip[k], cost = it ? 30*it.il + 20 : 0; return { label:`${SLOTN[k]}${it ? ` ${cost}g` : ''}`, disabled:!it || it.r === 3 || G.gold < cost, why:!it ? '這個欄位是空的' : it.r === 3 ? '暗金裝備不能重鑄' : `金幣不夠（要 ${cost}g）`, onClick:() => reroll(k) }; }) },
     { label:'街區地圖', choices: () => [[true, '街區樣板'], [false, '原版地形']].map(([v, n]) => ({ label:n, current:streetSampleOn() === v, onClick:() => { try{localStorage.setItem('ih-street', v ? '1' : '0');}catch(e){} TERRAIN_CACHE = null; R3.terrainKey = null; G.dirty = true; } })) },
+    { label:'小視窗', choices: () => [[true, '開啟（置頂縮圖）'], [false, '關閉']].map(([v, n]) => ({ label:n, current:!!BG.pip === v, onClick:() => { if (!!BG.pip !== v) bgPipToggle(); } })) },
     { label:'倒下表現', choices: () => [['blood', '紅色液體'], ['signal', '訊號碎片']].map(([v, n]) => ({ label:n, current:deathFxStyle() === v, onClick:() => { try{localStorage.setItem('ih-deathfx', v);}catch(e){} } })) },
     { label:'音效', choices: () => [['all', '音樂＋音效'], ['sfx', '只有音效'], ['off', '靜音']].map(([m, n]) => ({ label:n, current:AUD.mode === m, onClick:() => { audInit(); audMode(m); } })) },
     { label:'存檔', onClick:() => openModal('save') },
@@ -8642,6 +8643,40 @@ addEventListener('pagehide', () => { if (!G.paused) saveGame(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && !G.paused) saveGame(); });
 document.getElementById('boot')?.remove();
 
+
+</script>
+<script>
+/* 背景運行與小視窗：分頁被切到背景時，由 Worker 計時續跑模擬；支援的瀏覽器可開啟置頂小視窗，顯示戰鬥縮圖與狀態。 */
+const BG={worker:null,pip:null,ctx:null,stats:null,last:0,fail:false};
+function bgSupported(){return typeof documentPictureInPicture!=='undefined'&&!!documentPictureInPicture.requestWindow;}
+function bgTick(){
+  if(G.paused||G.offline)return;
+  if(document.hidden){const now=Date.now(),gap=(now-G.lastWall)/1000;if(gap>=.25&&gap<=60){G.lastWall=now;stepSim(gap);}}
+  if(BG.pip)bgPipDraw(performance.now());
+}
+function bgStart(){
+  try{BG.worker=new Worker(URL.createObjectURL(new Blob(['setInterval(()=>postMessage(0),500)'],{type:'text/javascript'})));BG.worker.onmessage=bgTick;}
+  catch(e){BG.worker=null;setInterval(bgTick,1000);}
+  try{navigator.locks?.request('idle-hero-background',()=>new Promise(()=>{}));}catch(e){}
+}
+function bgPipDraw(now){
+  if(!BG.pip||!BG.ctx||now-BG.last<120)return;BG.last=now;
+  try{if(typeof scene==='function')scene();const cv=R3.rd&&R3.rd.domElement;if(cv&&cv.width>0){const w=BG.ctx.canvas.width,h=BG.ctx.canvas.height,k=Math.max(w/cv.width,h/cv.height),dw=cv.width*k,dh=cv.height*k;BG.ctx.imageSmoothingEnabled=false;BG.ctx.fillStyle='#9fd4f6';BG.ctx.fillRect(0,0,w,h);BG.ctx.drawImage(cv,(w-dw)/2,(h-dh)/2,dw,dh);}}catch(e){}
+  if(BG.stats){const hp=Math.max(0,Math.ceil(G.h.hp)),life=Math.max(1,Math.ceil(G.st?.life||1));BG.stats.textContent=`LV ${G.lvl}　HP ${hp}/${life}　深度 ${G.depth}　金幣 ${G.gold}`;}
+}
+async function bgPipToggle(){
+  if(BG.pip){try{BG.pip.close();}catch(e){}BG.pip=null;return;}
+  if(!bgSupported()){ui.flash('此瀏覽器不支援小視窗，請改用 Chrome 或 Edge。',2600);return;}
+  try{
+    const w=await documentPictureInPicture.requestWindow({width:320,height:220});BG.pip=w;
+    w.document.head.innerHTML='<style>html,body{margin:0;background:#2b2552;color:#f7faff;font:12px/1.4 "Cubic 11",system-ui,sans-serif}canvas{display:block;width:100%;image-rendering:pixelated}#s{padding:6px 8px;text-align:center}</style>';
+    const cv=w.document.createElement('canvas');cv.width=320;cv.height=180;const s=w.document.createElement('div');s.id='s';w.document.body.append(cv,s);
+    BG.ctx=cv.getContext('2d');BG.stats=s;
+    const loop=t=>{if(BG.pip!==w)return;bgPipDraw(t);w.requestAnimationFrame(loop);};w.requestAnimationFrame(loop);
+    w.addEventListener('pagehide',()=>{if(BG.pip===w){BG.pip=null;BG.ctx=null;BG.stats=null;}});
+  }catch(e){BG.pip=null;ui.flash('小視窗開啟失敗。',2000);}
+}
+bgStart();
 
 </script>
 </body>

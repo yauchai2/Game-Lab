@@ -271,7 +271,7 @@ function catchUp(sec, report){
   G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };
   let left = simSec; const total = simSec;
-  if (report) showOverlay(typeof returnLoadingHtml==='function'?returnLoadingHtml():`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`); if (report && typeof returnLogoMount==='function') returnLogoMount();
+  if (report) showOverlay(typeof returnLoadingHtml==='function'?returnLoadingHtml():`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
   (function chunk(){
     const t0 = performance.now();
     while (left > 0 && performance.now() - t0 < 30){
@@ -286,7 +286,7 @@ function catchUp(sec, report){
     resolveOfflineChoices(G.off);
     if (G.h.hp <= 0) G.h.hp = G.st.life;
     G.offline = false; G.paused = false; G.lastWall = Date.now(); const o = G.off; G.off = null; G.dirty = true; const saved = saveGame();
-    if (report){ showOverlay(uxOfflineReport(o,b,away,sec,saved)); if (typeof returnLogoMount==='function') returnLogoMount(); }
+    if (report){ showOverlay(uxOfflineReport(o,b,away,sec,saved)); }
   })();
 }
 function setupPanel(){
