@@ -29,33 +29,6 @@ function craftState(slot, act){
   else if ((G.parts || 0) < cost) reason = `需要 ${cost} 零件，還差 ${cost - (G.parts || 0)}`;
   return { ok:!reason, cost, reason };
 }
-/* 精華：消耗一枚，指定加入某條主題詞綴；詞綴位已滿時，替換一條沒鎖定的詞綴。 */
-function essenceState(slot,id){
- const it=G.equip[slot],e=ESSENCES[id];
- if(!it||!e)return {ok:false,reason:'尚未裝備道具'};
- if((G.ess?.[id]||0)<1)return {ok:false,reason:'沒有這種精華'};
- if(it.cr)return {ok:false,reason:'已腐化，不能再改機'};
- if(it.lg||it.r<1||it.r>2)return {ok:false,reason:'只能用在魔法與稀有裝備'};
- if(it.aff.some(a=>a.k===e.k))return {ok:false,reason:'已經有這條詞綴'};
- if(!POOL[slot].includes(e.k))return {ok:false,reason:'這個部位出不了這條詞綴'};
- const cap=it.r===1?2:6,room=it.aff.length<cap&&affGroupCount(it,AFF[e.k].g)<3;
- if(!room&&!it.aff.some((a,i)=>i!==it.lk))return {ok:false,reason:'沒有可替換的未鎖定詞綴'};
- return {ok:true,replace:!room};
-}
-function essenceDo(slot,id){
- const s=essenceState(slot,id);if(!s.ok){uxAnnounce(s.reason);return;}
- const it=G.equip[slot],e=ESSENCES[id],beforeRows=copyState(it.aff),before=it.aff.map(a=>AFF[a.k].t(a.v)).join('、')||'無額外詞綴';
- G.ess[id]--;if(!G.ess[id])delete G.ess[id];
- const row=rollAff(e.k,it.il,1.1);
- if(s.replace){const idx=it.aff.map((a,i)=>i).filter(i=>i!==it.lk);it.aff[tPick(idx)]=row;}else it.aff.push(row);
- const msg=`${e.n}：${AFF[e.k].t(row.v)}`,after=it.aff.map(a=>AFF[a.k].t(a.v)).join('、');
- G.craftN=(G.craftN||0)+1;checkQuest();CRAFT_RESULTS[slot]={it,msg,cost:0,before,after,beforeRows,afterRows:copyState(it.aff)};
- recalc();logLine(`改機（${SLOTN[slot]}）：${msg}`,'#1f9bbf');addFloat(G.h.x+3,G.h.y,BZ+22,e.n,'#1f9bbf',3.8);SFX('card');G.dirty=true;renderModal();uxAnnounce(`${msg}。`);
-}
-function essenceHtml(slot,it){
- const owned=Object.keys(ESSENCES).filter(id=>(G.ess?.[id]||0)>0);
- return `<details class="device-details" ${owned.length?'open':''}><summary>精華 ${owned.reduce((n,id)=>n+G.ess[id],0)}</summary>${owned.length?`<div class="device-process-grid">${owned.map(id=>{const s=essenceState(slot,id);return `<button class="mb device-process" ${s.ok?'':'disabled'} onclick="essenceDo('${slot}','${id}')"><b>${ESSENCES[id].n} ×${G.ess[id]}</b><span>${s.ok?(s.replace?'替換一條詞綴':'加入一條詞綴'):s.reason}</span><small>${ESSENCES[id].d}</small></button>`;}).join('')}</div>`:'<p>擊敗首領與精英有機會掉落精華，可以指定加入一條主題詞綴。</p>'}</details>`;
-}
 function craftLock(slot, i){ const it = G.equip[slot]; if (!it || it.cr) return; it.lk = it.lk === i ? null : i; renderModal(); }
 function craftConfirm(){
   const p = craftPending; craftPending = null;
