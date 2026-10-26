@@ -180,7 +180,7 @@ function buildGrave(){
 
 /* ---------- 魔物 ---------- */
 const SLIME_HEX = ['#9be07d', '#ffd36a', '#8fd8ff', '#ff9a8a', '#5fe8ff', '#ff9ad0'];
-function flash(g, c, k){ for (const m of g.userData.mats || []){ m.emissive.set(c); m.emissiveIntensity = k; } }
+function flash(g, c, k){ for (const m of g.userData.mats || []){ if (!m.emissive) continue; m.emissive.set(c); m.emissiveIntensity = k; } }
 function ownMat(g, hex, o={}){ const m = m3(hex, { own:true, ...o }); (g.userData.mats ||= []).push(m); return m; }
 function buildSlime(){   // 稜角分明的霓虹凝膠：低面數外殼、發光核心、細長護目鏡眼
   const g = new T3.Group(), hex = SLIME_HEX[biomeNow()%6], jelly = new T3.Group(); g.add(jelly); g.userData.jelly = jelly;
@@ -203,7 +203,7 @@ function buildSkel(){
   head.scale.setScalar(2.05); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
   addShadow(g, 4.6); return g;
 }
-function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));f.position.set(x,y,z);parent.add(f);return f;}
+function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));if(parent.userData.mats)parent.userData.mats.push(f.material);else parent.userData.mats=[f.material];f.position.set(x,y,z);parent.add(f);return f;}
 function buildDrone(){   // 塑膠袋飛靈：半透明白袋身、兩條提手、簡化臉，貼著半空飄
   const g = new T3.Group(), hex = ['#f4f8ff', '#fff3d8', '#e6f6ff', '#ffe6e2', '#e8ecff', '#ffeaf4'][biomeNow()%6];
   mk(ico(1, 1), ownMat(g, hex, { transparent:true, opacity:.92 }), 0, 8, 0, g).scale.set(4.2, 3.4, 3.2); mk(ico(.9, 0), ownMat(g, '#ffffff'), 0, 11, -.2, g).scale.set(2.4, 1.2, 1.6);
@@ -801,7 +801,7 @@ function scene(){
   const pu = R3.portal.userData, pulse = G.fx.find(e => e.k === 'portal');
   pu.glows.forEach(gl => gl.scale.setScalar(1 + (pulse ? .35*Math.sin(pulse.t*3.14) : 0))); pu.rings.forEach((r, i) => r.rotation.z = -(t*1.2 + i*2.1));
   // 主角
-  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, ...Object.values(G.equip).map(it=>it?[it.lg||'',it.r,aTier(it)].join(':'):''), G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos)].join();
+  const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, ...Object.values(G.equip).map(it=>it?[it.lg||'',it.r,aTier(it)].join(':'):''), G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos), typeof g1On==='function'&&g1On()?'g1':''].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero){if(typeof characterDispose==='function')characterDispose(R3.hero);R3.world.remove(R3.hero);} R3.hero = G.h.dead>0&&G.h.dead<=2.15 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 魔物與掉落物
@@ -832,7 +832,7 @@ function buildCircuitMon(type){
  if(type==='wisp'){mk(new T3.OctahedronGeometry(4,0),glow,0,5,0,g).scale.set(.7,1.8,.7);mk(new T3.TorusGeometry(4.8,.5,4,12),silver,0,5,0,g).rotation.x=.7;for(const sx of[-1,1])mk(ico(.8,0),dark,sx*1.3,6,2,g);}
  if(type==='crab'){mk(cylG(5,6,4,6),silver,0,3,0,g);mk(roundedG(6,1,1),dark,0,5,4,g);limbs={};for(const sx of[-1,1]){limbs['claw'+(sx>0?'R':'L')]=[sx*5,3,1,l=>{mk(roundedG(6,2,2),dark,sx*3,0,0,l);mk(new T3.ConeGeometry(2,5,4),glow,sx*5,1,1.5,l).rotation.z=-sx*.7;}];for(let i=0;i<3;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4.5,2,(i-1)*2.4,l=>{mk(roundedG(4,.8,.8),silver,sx*2,-.5,0,l).rotation.z=sx*.5;}];}}
  {const F={spider:[3.4,0,4.6,5.7],speaker:[4.2,0,8,2.9],wisp:[3.6,0,5.4,2.2],crab:[4.6,0,3.4,5.6]}[type];if(F)faceMesh(F[0],F[1],F[2],F[3],g);}
- const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn,ry]=limbs[k];const lb=monLimb(out,px,py,pz,fn);lb.userData.ry=ry||0;out.userData.limbs[k]=lb;}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh&&o.material.emissive){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn,ry]=limbs[k];const lb=monLimb(out,px,py,pz,fn);lb.userData.ry=ry||0;out.userData.limbs[k]=lb;}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildRegionLandmark(bi){
  const g=new T3.Group(),B=BIOMES[bi],steel=m3('#43516a'),silver=m3('#a5b8c9'),light=m3(B.glow,{emissive:B.glow,emissiveIntensity:.25});
@@ -871,7 +871,7 @@ function buildFieldMonster(type,variant=0){
   box(7,1.5,1,signal,0,7,5);limbs={pawL:[-5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}],pawR:[5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}]};
  }
  {const F={mole:[4.2,0,6.2,5.9],lantern:[4,0,13,4.1],ranger:[3.6,0,10.5,2.7]}[type];if(F)faceMesh(F[0],F[1],F[2],F[3],g);}
- const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();if(o.material.emissive)out.userData.mats.push(o.material);}});return out;
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildCircuitBoss(bi,form=bi%3){
  const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);
