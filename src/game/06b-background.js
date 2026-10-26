@@ -1,5 +1,4 @@
 /* 背景運行與小視窗：分頁被切到背景時，由 Worker 計時續跑模擬；支援的瀏覽器可開啟置頂小視窗，顯示戰鬥縮圖與狀態。 */
-const BG={worker:null,pip:null,ctx:null,stats:null,last:0,fail:false};
 function bgSupported(){return typeof documentPictureInPicture!=='undefined'&&!!documentPictureInPicture.requestWindow;}
 function bgTick(){
   if(G.paused||G.offline)return;
