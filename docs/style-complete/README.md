@@ -10,7 +10,7 @@
 
 | 範圍 | 實作 | 證據／邊界 |
 | --- | --- | --- |
-| 精怪素材 | 原M01保留；M04沿已完成模型；新製M02/M03/M05/M06/M07/M08與B01–04，十二款全數有GLB、Blend及實際三視圖 | [素材總覽](monster-lineup.png)、[catalog](../../assets/monsters/catalog.json)。十二款合計8,124面。不是22款獨立新設計。 |
+| 精怪素材 | 原M01保留；M04沿已完成模型；新製M02/M03/M05/M06/M07/M08與B01–04，十二款全數有GLB、Blend及實際三視圖 | [素材總覽](monster-lineup.png)、[catalog](../../assets/monsters/catalog.json)。十二款合計8,128面。不是22款獨立新設計。 |
 | 精怪接入 | 十二款映射到22個現有type，包含塔樓單位與四款Boss；六章首領另有符合章節的標記 | `street-creatures.js`。共用模型的type是明確變體，不冒稱各有全新造型。AI、碰撞、傷害、掉落不改。 |
 | 動作與狀態 | Idle／Move（M01兼容Hop）／Hurt、首領標記、精英金環、異常色提示、單隻死亡淡出 | per-actor材質，geometry共享；不污染其他實體。世界位移仍由原monLook擁有。 |
 | 四角色 | 產生無貼圖純色面的衍生GLB，清理頭髮／膚色色面；角色頭像改用同一模型 | 原始GLB保留；位置、skin weights、關節與九段動作數值逐項精確對照。沒有改四肢或職業名稱。 |
@@ -21,6 +21,20 @@
 | 同伴 | 保留Claude電台同伴、慶祝與章末標記，套同一材質語言 | 不添加新召喚傷害、獎勵或存檔分支。 |
 | 音訊 | 沿用17項有來源授權的音源，日間／開場drift、夜間／塔樓haze、首領rush | 保留手勢解鎖、靜音、混音、隱藏戰場與暫停行為。沒有擷取影片配樂，也沒有新作曲／主觀聽感一致性認證。 |
 | 封裝 | 原生index、離線單檔、隔離進度預覽及可快取網站建置 | 新大型資源分成獨立雜湊檔，無runtime外部模型請求。 |
+
+## 血跡與怪物表面後續修訂
+
+2026-10-26，Asia/Hong_Kong。依Alan最新指示：
+
+- 血跡按`monsterVisualSpan`實際尺寸縮放，不再固定普通2.5／Boss8；巨大模型的血泊與飛濺同步巨大。無renderer時才用體型資料fallback，保留離線／訓練不留血跡、10處上限與12秒退場。
+- 調高街區的血跡渲染層，確保高於道路與斑馬線；否則小血泊會被路面遮掉，巨大血泊只露出外圍。
+- **移除卡通笑臉貼圖與面片，不用另一張臉貼圖替代。** 11類舊模型／同伴的共用臉改為三個實際幾何燈槽部件，沒有嘴巴與腮紅。M06／M07／B04的GLB／Blend／三視圖亦同步改為單一斜切狀態槽與非對稱指示燈。
+
+[新設備狀態窗](cold-device-indicators.png) · [血跡大小比較](blood-size-comparison.png) · [完整定向檢查](blood-face-validation.json)
+
+驗證體型1×／2×／4×時，血跡半徑與所有blob的dx／dy／r均同比縮放；實際路面射線高度低於血跡；11類legacy／companion builder沒有圖像map，臉部部件僅BoxGeometry，死亡淡出仍正確。十二GLB重匯入、零退化、原有10項gameplay及34項HUD檢查繼續通過。
+
+另交付[現行版本獨立patch](../../tools/style/blood-face-main.patch)，對main fd4ed11可套用，並在Claude6fcaef6隔離checkout實際套用後執行Three.js驗證（[結果](legacy-blood-face-patch.json)）。此patch只含renderer／rift修正，不要求先合入整套0.64模型。
 
 ## 畫面
 

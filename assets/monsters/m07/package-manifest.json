@@ -3,38 +3,38 @@
   "files": [
     {
       "path": "M07.blend",
-      "bytes": 563864,
-      "sha256": "87fdba99deeb6b2b146686d5283315ed3c7eba8f61b63e7e148db6018d764f91"
+      "bytes": 565840,
+      "sha256": "a76785fcf5f086ea9ada7d62bb8912febf47ed4a23678988ed8130df8a240048"
     },
     {
       "path": "M07.glb",
-      "bytes": 53056,
-      "sha256": "7860ed94f935d5a44683bae4790e1b8e50cb0d6af7fefaccb388c5b69573fb6c"
+      "bytes": 55192,
+      "sha256": "30a3af76048e11e53d49271aabc24da4397facaf65efb865603a29a4a062dea2"
     },
     {
       "path": "back.png",
       "bytes": 115594,
-      "sha256": "ef66f419c12828be2493121e7fe3143d012274ad9c08990cafd298c2cab350b2"
+      "sha256": "34bfecc68b585e758066f656cfd8ff0a432eceb5bd06602c561a813f054b118c"
     },
     {
       "path": "blender.json",
-      "bytes": 999,
-      "sha256": "b83c37ec82abd187dd8f9c3ba62af4c932fbea177335ef0773a79f1ad9d38615"
+      "bytes": 998,
+      "sha256": "13447b0f79901e441a8092b92634b1876772da8885d7765a3b36e3675f41f355"
     },
     {
       "path": "front.png",
-      "bytes": 114840,
-      "sha256": "c1e566d1abb8c9458dd4e59c6196ee02426bb9780726548a18aa98512005168b"
+      "bytes": 114993,
+      "sha256": "ec2bca5602d2837988c91e0e820d904a46ae59649be0249206a61f45aa3d7cbe"
     },
     {
       "path": "native.glb",
-      "bytes": 53044,
-      "sha256": "6a8bb5c02aa9443c95279bfbb4ba0e01d9df9f11f4028e50657e322cd4909e13"
+      "bytes": 55180,
+      "sha256": "b4c317f9268d0ba6b8bfd6d64e0f9627c2d41a2042e4f45c249f6fc074f5195c"
     },
     {
       "path": "right.png",
-      "bytes": 81518,
-      "sha256": "7834432c871d3ce099aa2ce2b2302dfda2a3009aa7317b59e12197d15950859a"
+      "bytes": 81014,
+      "sha256": "1075a3b1237353a4aa9e56cd4d1e829b35ebf63143ca059a2b70b0774d98bb90"
     }
   ]
 }

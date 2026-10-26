@@ -10,7 +10,7 @@
     },
     {
       "name": "M06_Head",
-      "triangles": 112,
+      "triangles": 100,
       "nonManifoldEdges": 0
     },
     {
@@ -24,7 +24,7 @@
       "nonManifoldEdges": 0
     }
   ],
-  "triangles": 456,
+  "triangles": 444,
   "bounds": {
     "min": [
       -0.8825000524520874,

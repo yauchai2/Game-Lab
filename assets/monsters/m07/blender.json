@@ -5,7 +5,7 @@
   "meshes": [
     {
       "name": "M07_Body",
-      "triangles": 308,
+      "triangles": 312,
       "nonManifoldEdges": 0
     },
     {
@@ -19,11 +19,11 @@
       "nonManifoldEdges": 0
     }
   ],
-  "triangles": 484,
+  "triangles": 488,
   "bounds": {
     "min": [
       -0.7200000286102295,
-      -0.48399999737739563,
+      -0.4860000014305115,
       -7.450580596923828e-09
     ],
     "max": [

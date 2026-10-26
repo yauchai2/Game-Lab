@@ -10,7 +10,14 @@ function riftBoss(e){const before=G.mons.length;spawnRiftMonster(e,'boss',...ter
 function riftOnKill(m){const e=riftState().encounter;if(e&&m.riftId===e.id&&!['complete','failed','dormant'].includes(e.phase)){e.kills++;G.dirty=true;}if(lgOn('R_RIFT')&&(G.riftPulseAt||0)<=G.time){G.riftPulseAt=G.time+1;for(const id of G.slots)G.cds[id]=Math.max(0,(G.cds[id]||0)-.6);}}
 function riftFinish(success){const s=riftState(),e=s.encounter;if(!e||e.paid||!['expand','contain'].includes(e.phase))return false;e.paid=true;e.phase=success?'complete':'failed';e.age=0;const amount=success?(e.boss?25:10)+Math.min(10,Math.floor(e.kills/4)):Math.min(5,Math.floor(e.kills/4));if(success)s.clears++;if(amount)dropGround({kind:'rift',amount,x:e.x,y:e.y,t:0});for(const m of G.mons)if(m.riftId===e.id&&!m.dead){m.dead=true;m.deadT=0;deathStain(m);}G.dirty=true;return true}
 function riftForge(id){if(!['W_RIFT','R_RIFT'].includes(id)||riftState().shards<40||G.armory[id])return false;const it=makeItem(coreSlot(id),3,Math.max(8,G.maxDepth),id);pickupInternal({kind:'item',it});if(G.armory[id]!==it)return false;riftState().shards-=40;G.dirty=true;saveGame();return true}
-function deathStain(m){if(G.offline||m.training)return;G.stains=G.stains||[];const r=m.boss?8:2.5,blobs=[],n=m.boss?7:5;for(let i=0;i<n;i++){const a=Math.random()*6.283,d=i?r*(.25+Math.random()*.55):0;blobs.push({dx:Math.cos(a)*d,dy:Math.sin(a)*d,r:r*(i?.32+Math.random()*.38:.62+Math.random()*.15)});}
+/* Radius follows rendered body size, never a fixed boss-only bucket. No RNG here. */
+function deathStainRadius(m){
+ const actual=typeof monsterVisualSpan==='function'?monsterVisualSpan(m):0;
+ const trait=typeof MONSTER_TRAITS!=='undefined'?MONSTER_TRAITS[m.type]:null;
+ const fallback=(m.boss||m.towerBoss?42:trait?.size==='大型'?24:trait?.size==='中型'?15:10)*(trait?.scale||1)*(m.elite?1.3:1);
+ return Math.max(.75,(actual>0&&Number.isFinite(actual)?actual:fallback)*.26);
+}
+function deathStain(m){if(G.offline||m.training)return;G.stains=G.stains||[];const r=deathStainRadius(m),blobs=[],n=m.boss?7:5;for(let i=0;i<n;i++){const a=Math.random()*6.283,d=i?r*(.25+Math.random()*.55):0;blobs.push({dx:Math.cos(a)*d,dy:Math.sin(a)*d,r:r*(i?.32+Math.random()*.38:.62+Math.random()*.15)});}
  const drops=m.boss?5:3;for(let i=0;i<drops;i++){const a=Math.random()*6.283,d=r*(1.15+Math.random()*.7);blobs.push({dx:Math.cos(a)*d,dy:Math.sin(a)*d,r:r*(.09+Math.random()*.1),drop:1});}
  G.stains.push({x:m.x,y:m.y,t:0,r,blobs,key:terrainKey()});if(G.stains.length>10)G.stains.shift()}
 function deathVisualTick(dt){for(const e of G.fx)e.t+=dt/e.dur;G.fx=G.fx.filter(e=>e.t<1);for(const f of G.floats)f.t+=dt/1.1;G.floats=G.floats.filter(f=>f.t<1);for(const m of G.mons)if(m.dead)m.deadT=(Number.isFinite(m.deadT)?m.deadT:0)+dt;G.mons=G.mons.filter(m=>!m.dead||m.deadT<.6);G.stains=(G.stains||[]).filter(s=>{s.t+=dt;return s.t<12&&s.key===terrainKey()})}

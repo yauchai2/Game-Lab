@@ -1,7 +1,7 @@
 # Game Lab 最新接續紀錄
 
 - **2026-10-26，Asia/Taipei，全遊戲0.64候選：** Alan明確要求依Ice Cream後風格做完全部需要更新，已在獨立codex/ice-cream-style-complete實作。main最新fd4ed11／0.62，已納入Claude六章／同伴／章節Boss標記，沿唯一storyFlags.ch，不建四章平行狀態。
-- **實作：** 十二款精怪（新製十款＋M01／M04）共8124面，22type＋Boss原生映射；四角色與16裝備無貼圖unlit純色面，原件、位置／skin／九clips／triangle order精確保留；21地區色階、場景unlit、幾何招牌、移除點紋／地面斑紋、UI頭像縮圖、十二地方留言／職業日常、音樂情境選曲。職業／四肢／玩法數值／SAVE_KEY不改。新資源packed由初版25MB降至約4.5MB（二十衍生GLB約3.15MB）。
+- **實作：** 十二款精怪（新製十款＋M01／M04）共8128面，22type＋Boss原生映射；四角色與16裝備無貼圖unlit純色面，原件、位置／skin／九clips／triangle order精確保留；21地區色階、場景unlit、幾何招牌、移除點紋／地面斑紋、UI頭像縮圖、十二地方留言／職業日常、音樂情境選曲。職業／四肢／玩法數值／SAVE_KEY不改。新資源packed由初版25MB降至約4.5MB（二十衍生GLB約3.15MB）。
 - **驗證：** docs/style-complete/README.md為入口；十二GLB Blender重匯入、20衍生精確資料比對、4×9clips／16裝備／22types／4Boss／A-B／單隻fade／elite/status／320390通過；24實體街區及六次原生主線kill／save／offline-map邊界通過。10既有gameplay與17音源驗證通過。兩個既有stale VM測試於乾淨68934eb相同失敗，已記錄。
 - **產物：** dist/idle-hero.html已建；dist/street-style-preview.html僅本機生成、page-lifetime隔離存檔、不入git。未publish／未merge main／未Release；下一步完整PR供Claude review、吸收新重疊提交。
 
@@ -16,3 +16,5 @@
 - **已交付PR84：** https://github.com/yauchai2/Game-Lab/pull/84，已推送並附到本聊天；Claude同步見PR80留言6411642131／PR84留言6411642696。本機site分檔boot亦通過。最新main仍fd4ed11；未合併0.63精華分支、未發佈。
 
 - **PR84自動review修正：** 新Boss高27但舊HUD偏移140*CK，已改用轉換後mesh bounds定位HP／護盾，包含chapter ornaments／elite／hover／lunge／fall。34組真實overlay rect位置對照通過，舊模式fallback保留；證據docs/style-complete/healthbar-validation.json。
+
+- **2026-10-26，Asia/Hong_Kong，血跡／臉最新修訂：** Alan要求巨型血跡隨體型，並特別澄清不要貼上去的卡通笑臉。已真正移除cardboardFace Canvas與Plane，不換新臉貼圖；legacy10類＋同伴用BoxGeometry燈槽，M06/M07/B04重匯出冷峻指示窗。deathStain按實際body span縮放全blobs，街區血跡提高至道路／斑馬線之上（修掉被路面蓋住）。1x2x4x比例、飛濺、11builder無map／fade、34HUD、12GLB重匯入、10gameplay過。tools/style/blood-face-main.patch可獨立套main，亦已在Claude6fcaef6套用／Three.js執行驗證。尚未發佈。

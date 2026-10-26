@@ -5,7 +5,7 @@
   "meshes": [
     {
       "name": "B04_Body",
-      "triangles": 132,
+      "triangles": 144,
       "nonManifoldEdges": 0
     },
     {
@@ -39,11 +39,11 @@
       "nonManifoldEdges": 0
     }
   ],
-  "triangles": 268,
+  "triangles": 280,
   "bounds": {
     "min": [
       -1.059999942779541,
-      -0.5309999585151672,
+      -0.5329999923706055,
       1.1829619950276538e-08
     ],
     "max": [

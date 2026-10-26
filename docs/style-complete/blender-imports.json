@@ -38,7 +38,7 @@
   {
     "asset": "b04",
     "meshes": 7,
-    "triangles": 268,
+    "triangles": 280,
     "textures": 0,
     "clips": [
       "Idle",
@@ -110,7 +110,7 @@
   {
     "asset": "m06",
     "meshes": 4,
-    "triangles": 456,
+    "triangles": 444,
     "textures": 0,
     "clips": [
       "Idle",
@@ -122,7 +122,7 @@
   {
     "asset": "m07",
     "meshes": 3,
-    "triangles": 484,
+    "triangles": 488,
     "textures": 0,
     "clips": [
       "Idle",

@@ -22,6 +22,11 @@ def build(id):
  def group(name,parts,pivot,kind='step'):groups.append((name,parts,pivot,kind))
  def poly(name,outline,y,depth,key):
   n=len(outline);verts=[(x,yy,z) for yy in [y-depth/2,y+depth/2] for x,z in outline];faces=[tuple(reversed(range(n))),tuple(range(n,n*2))]+[(i,(i+1)%n,(i+1)%n+n,i+n) for i in range(n)];return paint(mesh(name,verts,faces),key)
+ def visor(loc,width=.7,height=.28):
+  x,y,z=loc
+  body.append(box('Visor_Housing',loc,(width,.035,height),'joint',.025))
+  body.append(poly('Angular_Signal',[(x-width*.38,z+height*.16),(x+width*.12,z-height*.02),(x+width*.06,z-height*.17),(x-width*.34,z-height*.05)],y-.032,.018,'cyan'))
+  body.append(box('Asymmetric_Indicator',(x+width*.32,y-.033,z+height*.02),(width*.10,.02,height*.12),'amber'))
  def wheel(name,loc,r=.4,w=.25):
   o=cyl(name,loc,r,w,'joint',12);o.rotation_euler.z=math.pi/2;return o
  def foot(x,z=.15):return [box('Sole',(x,-.10,z-.08),(.43,.6,.14),'sole',.035),box('Toe',(x,-.13,z+.05),(.42,.57,.24),'ivory',.065)]
@@ -60,7 +65,7 @@ def build(id):
  elif id=='M06':
   body += [box('Parcel_Cart',(0,0,.80),(1.2,.90,1.05),'ivory',.13),box('Cargo_Hatch',(0,.46,.86),(.77,.035,.67),'silver',.035),box('Neck',(0,0,1.62),(.18,.22,.62),'joint',.03)]
   head=[box('Scanner_Head',(0,-.01,1.98),(.83,.43,.35),'ivory',.065),box('Scanner',(0,-.24,1.98),(.64,.025,.18),'joint',.015)]
-  for x in [-.16,.16]:head.append(box('Signal',(x,-.259,1.98),(.16,.02,.055),'orange'))
+  head.append(poly('Scanner_Slit',[(-.25,2.035),(.12,1.995),(.07,1.945),(-.24,1.975)],-.264,.015,'orange'))
   group('Head',head,(0,0,1.83),'head')
   body.append(box('Status',(0,-.46,.82),(.075,.025,.32),'cyan'))
   for s in [-1,1]:
@@ -71,8 +76,8 @@ def build(id):
  elif id=='M07':
   outline=[(math.cos(i*math.tau/8),math.sin(i*math.tau/8)) for i in range(8)]
   body.append(loft('Pocket_Device',[(.28,.43,.28,0,0),(.52,.68,.40,0,0),(1.16,.72,.43,0,0),(1.72,.49,.31,0,0),(1.93,.18,.14,0,0)],outline,'green'))
-  face_screen((0,-.443,1.05),(.60,.035,.46),2)
-  for x in [-.25,0,.25]:body.append(cyl('Button',(x,-.39,.65),.065,.06,'joint',8))
+  visor((0,-.443,1.05),.75,.29)
+  for x in [-.18,.18]:body.append(box('Service_Key',(x,-.39,.65),(.10,.04,.075),'joint',.008))
   body += [cyl('Memory_Back',(0,.39,1.02),.49,.12,'cyan',10),box('Antenna',(0,0,2.07),(.12,.12,.30),'green',.025)]
   for s in [-1,1]:group('Foot'+str(s),foot(s*.4), (s*.4,0,.32))
  elif id=='M08':
@@ -111,7 +116,7 @@ def build(id):
  elif id=='B04':
   outline=[(math.cos(i*math.tau/8),math.sin(i*math.tau/8)) for i in range(8)]
   body += [loft('Public_Terminal',[(.25,.37,.29,0,0),(.55,.67,.43,0,0),(1.30,.75,.48,0,0),(1.99,.53,.35,0,0),(2.25,.19,.17,0,0)],outline,'ivory')]
-  face_screen((0,-.49,1.34),(.83,.035,.29),1)
+  visor((0,-.49,1.34),.83,.27)
   for s in [-1,1]:
    group('Shell_Upper'+str(s),[poly('Outer_Shell',[(s*.55,2.13),(s*.96,1.86),(s*1.06,2.04),(s*.72,2.40)],0,.24,'cyan')],(s*.55,0,2.13),'wing')
    group('Shell_Lower'+str(s),[poly('Outer_Shell',[(s*.73,.51),(s*1.02,.72),(s*1.06,1.02),(s*.85,.91)],0,.24,'cyan')],(s*.73,0,.51),'hover')
@@ -185,4 +190,6 @@ def build(id):
  bpy.ops.wm.save_as_mainfile(filepath=str(out/(id+'.blend')))
  report={'id':id,'name':NAMES[id],'source':'Original Blender-authored geometry derived from user-provided three views; clean unlit style revision','meshes':stats,'triangles':sum(x['triangles'] for x in stats),'bounds':{'min':list(low),'max':list(high)},'height':high.z-low.z,'clips':['Idle','Move','Hurt'],'textures':0,'material':'flat vertex colors, unlit','styleRevision':'2026-10-26 textureless','validationStage':'Blender authoring; see docs/style-complete/runtime-validation.json for later runtime evidence'}
  (out/'blender.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n');print('ASSET_DONE',id,report['triangles'],flush=True)
-for id in IDS:build(id)
+requested=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else IDS
+assert all(id in IDS for id in requested)
+for id in requested:build(id)
