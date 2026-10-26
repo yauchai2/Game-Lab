@@ -49,7 +49,7 @@ function syncBoard(){
   G.slots = res.filter(r=>r.wired).map(r => r.key);
   G.modeOf = {}; for (const r of res){ const p = G.board.pieces.find(q => q.id === r.id); if (p.mode && MODES[p.mode] && MODES[p.mode].sk === p.key) G.modeOf[p.key] = p.mode; }
   G.supp = {}; G.suppW = {}; for (const id of Object.keys(SKILLS)){ G.supp[id] = []; G.suppW[id] = []; }
-  for (const r of res){ G.supp[r.key] = r.linked.map(keyOf); G.suppW[r.key] = r.weights; }
+  G.wireMul = {}; for (const r of res){ G.supp[r.key] = r.linked.map(keyOf); G.suppW[r.key] = r.weights; G.wireMul[r.key] = r.lenMul; }
   for (const id of G.slots) if (G.cds[id] == null) G.cds[id] = 1;
 }
 // 任何舊版面板（方塊拼圖）的存檔：解出原本的連接，搬到接線板；放不下的配件留在庫存
@@ -201,7 +201,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, fo
     if(sp.includes('SPREAD')){if(pattern.range)pattern.range*=1.4;if(pattern.width)pattern.width*=1.4;}
     const hit=s.dmg*K.mult*(1+(s.inc+s[K.el]+s.sinc)/100)*
       (Object.values(equip).some(it=>it&&it.lg==='W_MULTI')?1+.15*slots.filter(Boolean).length:1)*
-      mod.hit*(modern&&pass.includes('AK')?.85:1)*(modern&&pass.includes('EK')?.85:1)*(modern&&pass.includes('CK')&&slots.length<=3?1.35:1)*(modern&&pass.includes('BK')&&new Set(slots.map(id=>SKILLS[id]?.el)).size===3?1.3:1)*(1+.12*bb.rows)*(bb.pair[id]?1.15:1);
+      mod.hit*(supp===G.supp?(G.wireMul?.[id]||1):1)*(modern&&pass.includes('AK')?.85:1)*(modern&&pass.includes('EK')?.85:1)*(modern&&pass.includes('CK')&&slots.length<=3?1.35:1)*(modern&&pass.includes('BK')&&new Set(slots.map(id=>SKILLS[id]?.el)).size===3?1.3:1)*(1+.12*bb.rows)*(bb.pair[id]?1.15:1);
     const rawCd=GridLab.cooldown(K.cd,sp,s.haste,pattern.cd||1,sw),crit=Math.min(100,s.crit+mod.crit);
     const extra=mod.twin*GridLab.LIMITS.repeatDamage+(mod.repeat?.45:0)+(pass.includes('EK')?(modern?.6:.35):0);
     const cd=id==='FLICKER'?Math.max(rawCd,extra>0?2.6:2.1):rawCd;

@@ -20,7 +20,7 @@ run('all six sockets cast after reversing skill order on the same high-haste boa
  function sample(reverse){G.time=0;G.proj=[];G.timers=[];G.h.x=HX;G.h.y=HY;board(reverse?Object.keys(SKILLS).slice(0,6).reverse():Object.keys(SKILLS).slice(0,6));G.equip.ring={slot:'ring',imp:{k:'crit',v:2},aff:[{k:'haste',v:60}]};
 
  recalc();const preview=G.st.dps;target();for(const id of G.slots)G.cds[id]=0;tick(60);return {preview,counts:Object.fromEntries(Object.entries(G.train.stats).map(([id,r])=>[id,r.casts]))};}
- const a=sample(false),b=sample(true);assert(Object.values(G.train.stats).some(r=>r.maxWait>.4));assert.equal(Object.keys(a.counts).length,6);assert(Object.values(a.counts).every(n=>n>0));assert.deepEqual(a.counts,b.counts);assert.equal(a.preview,b.preview);
+ const a=sample(false),b=sample(true);assert(Object.values(G.train.stats).some(r=>r.maxWait>.4));assert.equal(Object.keys(a.counts).length,6);assert(Object.values(a.counts).every(n=>n>0));assert.deepEqual(a.counts,b.counts);assert(Math.abs(a.preview-b.preview)<=a.preview*1e-9);
 `);
 run('every standard and mode preview matches direct single-target hits, excluding conditional reactions',`
  Math.random=()=>.5;for(const id of Object.keys(SKILLS))for(const mode of [null,...Object.keys(MODES).filter(m=>MODES[m].sk===id)]){
