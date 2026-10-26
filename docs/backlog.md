@@ -93,7 +93,7 @@ Alan 提出的想法與要求都記在這裡，做完就勾選。新點子直接
 - [x] 完整研讀 HANDOFF.md、memory.md、backlog.md、idle-hero-docs.md，原件保存於 docs/handoff-2026-10-21/。
 - [x] 確認附件 HANDOFF 已為 0.18.0／第 56 版／1f1049a，保留 repo 最新待辦，不以舊備份覆蓋。
 - [x] 找回 repo 尚未收錄的模式機件與變體卡匣草案，另存 docs/mod-parts-and-variant-cartridges.md。
-- [ ] 指定原型討論串盤點並整理 README 等公開文案，遵守不寫競品、內部研究與工具生成來源的規則，保留授權義務。
+- [x] 指定原型討論串盤點並整理 README 等公開文案，遵守不寫競品、內部研究與工具生成來源的規則，保留授權義務。
 
 ### 卡匣草案提案盤點，尚未確認實作範圍
 
