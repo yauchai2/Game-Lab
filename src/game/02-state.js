@@ -97,7 +97,7 @@ function makeItem(slot, rar, il, forcedCore=null){
   let name = baseName(slot,il,bs);
   if (rar === 1) name = PREF[aff[0].k] + name; else if (rar === 2) name = tPick(RARE_NAMES[slot]); else if (rar === 3) name = LG.name;
   if (LG) G.legSeen[LG.id] = 1;
-  return LG ? { slot, r:rar, il, name, imp, aff, lg:LG.id } : { slot, r:rar, il, name, imp, aff, bs };
+  return LG ? { slot, r:rar, il, name, imp, aff, lg:LG.id, lgv:2 } : { slot, r:rar, il, name, imp, aff, bs };
 }
 function refinedImplicitValue(it,il){
  const expected=gearImplicit(it.slot,il,it.bs||0);if(expected.k===it.imp.k)return expected.v;
@@ -172,9 +172,9 @@ function checkGoals(){
 
 /* ---------- stats ---------- */
 function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, forceModern=false){
-  const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:10, armorPct:0, ele:0, vsElite:0, takenRed:0, killHeal:0, goldPct:0, xpPct:0, rarity:0, moveSpd:0 };
+  const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:10, armorPct:0, ele:0, vsElite:0, takenRed:0, killHeal:0, goldPct:0, xpPct:0, rarity:0, moveSpd:0, rulePool:0, rules:{} };
   const baseLife = 90 + 14*G.lvl;
-  for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; for (const a of [it.imp, ...it.aff]) { s[STAT_KEY[a.k]] += a.v; const al = AFF[a.k].also, ng = AFF[a.k].neg; if (al) s[al[0]] += a.v*al[1]; if (ng) s[ng[0]] -= a.v*ng[1]; } }
+  for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; for (const a of [it.imp, ...it.aff]) { s[STAT_KEY[a.k]] += a.v; const al = AFF[a.k].also, ng = AFF[a.k].neg; if (al) s[al[0]] += a.v*al[1]; if (ng) s[ng[0]] -= a.v*ng[1]; const ru = AFF[a.k].rule; if (ru) s.rules[ru] = (s.rules[ru]||0) + a.v*AFF[a.k].rf; } }
   for (const [k, v] of Object.entries(CHARS[G.char].eff)) s[k] += v;
   const asc=typeof ascendInfo==='function'?ascendInfo():null;if(asc)for(const[k,v]of Object.entries(asc.eff))s[k]+=v;
   if(typeof ascensionNodeEffects==='function')for(const[k,v]of Object.entries(ascensionNodeEffects()))s[k]+=v;
@@ -262,7 +262,7 @@ function serialize(){ return { v:2,tutorial:G.tutorial,activityLoot:G.activityLo
 function migrateEquipmentSlots(input){
  if(input.equipmentVersion===2)return input;
  const o=copyState(input),empty=()=>Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null]));
- const fix=it=>{if(it&&SIGNATURE_GEAR[it.lg])it.slot=SIGNATURE_GEAR[it.lg].slot;if(it?.lg&&Array.isArray(it.aff))it.aff.forEach((a,i)=>{const key=lgModKey(it.lg,i);if(a&&AFF[key]&&a.k!==key){a.k=key;a.v=rollAff(key,it.il||1,1.35).v;delete a.tier;}});return it;};   /* 舊傳奇裝備的詞綴轉成傳奇專屬詞 */
+ const fix=it=>{if(it&&SIGNATURE_GEAR[it.lg])it.slot=SIGNATURE_GEAR[it.lg].slot;if(it?.lg&&Array.isArray(it.aff))it.aff.forEach((a,i)=>{const key=lgModKey(it.lg,i);if(a&&AFF[key]&&(a.k!==key||it.lgv!==2)){a.k=key;a.v=rollAff(key,it.il||1,1.35).v;delete a.tier;}});if(it?.lg)it.lgv=2;return it;};   /* 舊傳奇裝備的詞綴轉成傳奇專屬詞 */
  o.armory=o.armory||{};for(const it of Object.values(o.armory))fix(it);
  for(const it of o.inventory||[])fix(it);for(const d of o.groundDrops||[])if(d.it)fix(d.it);
  for(const key of ['equip','equipBackup']){const group=empty();for(const it of Object.values(o[key]||{})){fix(it);if(!it||!SLOTN[it.slot])continue;if(it.lg&&!o.armory[it.lg])o.armory[it.lg]=it;if(!group[it.slot])group[it.slot]=it;}o[key]=group;}
@@ -451,8 +451,8 @@ function forgeTargetCore(id){const C=G.city||(G.city=newCity()),route=cityRouteF
 }
 function validCityRun(R){const c=R?.city;return !!(c&&CITY_ROUTES[c.route]&&Number.isInteger(c.tier)&&c.tier>=1&&c.tier<=8&&Number.isInteger(c.stage)&&c.stage>=1&&c.stage<=3&&Number.isFinite(c.bank)&&c.bank>=0&&Array.isArray(c.branches)&&c.branches.length===c.stage-1&&c.branches.every(id=>CITY_BRANCHES[id])&&LEGEND_BY[c.target]&&c.settled===false&&Number.isFinite(R.kills)&&Number.isFinite(R.need)&&BIOMES[R.map?.biome]&&Number.isFinite(R.map?.lvl));}
 function heroDamage(damage,source='未分類傷害',kind='直接命中'){
- if(!Number.isFinite(damage)||damage<=0)return 0;if(G.st&&G.st.takenRed)damage*=1-G.st.takenRed/100;if(lgOn('O_TOWER')&&G.h.hp>G.st.life*.8)damage*=.85;const h=G.h,before=h.hp,base=G.time<(h.bufferUntil||0)?h.buffer||0:0,supply=G.time<(h.airShieldUntil||0)?h.airShield||0:0,airUsed=Math.min(supply,damage),classUsed=Math.min(base,damage-airUsed),absorbed=airUsed+classUsed;
- h.airShield=supply-airUsed;h.buffer=base-classUsed;h.hp-=damage-absorbed;if(typeof recordIncoming==='function')recordIncoming(damage-absorbed,absorbed,source,kind,before>0&&h.hp<=0);if(damage>absorbed){h.lastDamageAt=G.time;if(before>0&&typeof SFX==='function')SFX('hurt');}return damage-absorbed;
+ if(!Number.isFinite(damage)||damage<=0)return 0;if(G.st&&G.st.takenRed)damage*=1-G.st.takenRed/100;{const rl=G.st&&G.st.rules;if(rl&&rl.shell&&G.time-(G.h.lastDamageAt??-99)<3)damage*=1-Math.min(50,rl.shell)/100;}if(lgOn('O_TOWER')&&G.h.hp>G.st.life*.8)damage*=.85;const h=G.h,before=h.hp,base=G.time<(h.bufferUntil||0)?h.buffer||0:0,supply=G.time<(h.airShieldUntil||0)?h.airShield||0:0,airUsed=Math.min(supply,damage),classUsed=Math.min(base,damage-airUsed),absorbed=airUsed+classUsed;
+ h.airShield=supply-airUsed;h.buffer=base-classUsed;h.hp-=damage-absorbed;if(typeof recordIncoming==='function')recordIncoming(damage-absorbed,absorbed,source,kind,before>0&&h.hp<=0);if(damage>absorbed){h.lastDamageAt=G.time;G.rage=0;if(before>0&&typeof SFX==='function')SFX('hurt');}return damage-absorbed;
 }
 
 function cityMonster(m){const c=G.run?.city;if(!c)return;const branch=c.branches,route=c.nexus?['signal','memory','power'][Math.min(2,c.stage-1)]:c.route;

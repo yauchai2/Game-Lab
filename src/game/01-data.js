@@ -153,34 +153,44 @@ const LG_TPL = {
   bulwark:{p:'armorP',t:'{v}% 護甲，{w}% 受到傷害降低',also:['takenRed',.25]},
   fort:{p:'lifeP',t:'{v}% 最大生命，技能急速 -{w}%',neg:['haste',.5]},
   burst:{p:'cm',t:'+{v}% 會心傷害，攻擊速度 -{w}%',neg:['apsInc',.2]},
-  tempo:{p:'aps',t:'{v}% 攻擊速度，增加傷害 -{w}%',neg:['inc',.4]}};
+  tempo:{p:'aps',t:'{v}% 攻擊速度，增加傷害 -{w}%',neg:['inc',.4]},
+  full:{p:'inc',rule:'fullHp',f:0.6,t:'生命全滿時，增加 {w}% 傷害'},
+  low:{p:'inc',rule:'lowHp',f:0.9,t:'生命低於 40% 時，增加 {w}% 傷害'},
+  calm:{p:'inc',rule:'unhit',f:0.5,t:'4 秒內沒有被擊中時，增加 {w}% 傷害'},
+  crowd:{p:'inc',rule:'crowd',f:0.5,t:'身邊有 4 隻以上敵人時，增加 {w}% 傷害'},
+  solo:{p:'inc',rule:'solo',f:0.5,t:'身邊敵人少於 3 隻時，增加 {w}% 傷害'},
+  rage:{p:'inc',rule:'rage',f:0.07,t:'每擊殺一隻敵人獲得 1 層疊加（最多 10 層），每層增加 {w}% 傷害；被擊中失去全部層數'},
+  shell:{p:'takenRed',rule:'shell',f:1.2,t:'被擊中後 3 秒內，受到的傷害降低 {w}%'},
+  dodgeHeal:{p:'killHeal',rule:'dodgeHeal',f:1.5,t:'閃避成功時，回復 {w}% 最大生命'},
+  eliteHeal:{p:'killHeal',rule:'eliteHeal',f:5,t:'擊殺精英或首領時，回復 {w}% 最大生命'}};
 const LG_MODS = {
-  W_ECHO:[['rush','殘響'],['burst','迴音爆裂'],['tempo','回放'],['prism','共鳴']],
-  W_FORK:[['hunter','追星'],['burst','碎裂'],['glass','流星'],['reap','星屑回收']],
-  W_MULTI:[['tempo','多工'],['prism','全頻'],['scholar','說明書'],['rush','快轉']],
-  A_PHOENIX:[['fort','羽翼'],['reap','餘燼'],['bulwark','凝羽'],['ghost','輕盈']],
-  A_RIPOSTE:[['ghost','反光'],['bulwark','折射'],['tempo','反擊'],['reap','回流']],
-  A_RESET:[['rush','重置'],['fort','靜電'],['reap','迴路回收'],['bulwark','屏蔽']],
-  R_LAST:[['glass','來電'],['burst','最後通牒'],['rush','忙線'],['hunter','追蹤']],
-  R_LINK:[['prism','滿格'],['hunter','連線'],['reap','傳輸'],['scholar','訊號']],
-  R_DIAL:[['tempo','撥號'],['rush','快速撥號'],['greed','話費'],['burst','接通']],
-  H_BROADBAND:[['fort','寬頻'],['rush','低延遲'],['bulwark','隔音'],['reap','回授']],
-  G_CONTACT:[['tempo','超頻'],['burst','觸發'],['glass','過載'],['hunter','接觸']],
-  B_LASTTRAIN:[['ghost','末班'],['rush','快線'],['reap','終點'],['fort','月台']],
-  O_REFLECTOR:[['bulwark','反射'],['fort','板面'],['prism','折光'],['rush','中繼']],
-  W_RIFT:[['hunter','遠域'],['burst','斷訊'],['prism','寒域'],['glass','訊號衰減']],
-  R_RIFT:[['reap','閉環'],['rush','殘響'],['scholar','記錄'],['prism','寒流']],
-  O_TOWER:[['bulwark','階層'],['fort','屏障'],['prism','結冰'],['rush','層疊']],
-  R_SEASON:[['scholar','午夜'],['burst','廣播'],['rush','電波'],['greed','節目']]};
+  W_ECHO:[['rush','殘響'],['rage','迴音疊加'],['tempo','回放'],['calm','靜音']],
+  W_FORK:[['hunter','追星'],['crowd','星群'],['glass','流星'],['eliteHeal','星屑回收']],
+  W_MULTI:[['tempo','多工'],['crowd','多線程'],['scholar','說明書'],['rage','快轉']],
+  A_PHOENIX:[['fort','羽翼'],['low','涅槃'],['bulwark','凝羽'],['dodgeHeal','輕盈']],
+  A_RIPOSTE:[['ghost','反光'],['shell','折射'],['tempo','反擊'],['dodgeHeal','回流']],
+  A_RESET:[['rush','重置'],['full','待機'],['reap','迴路回收'],['shell','屏蔽']],
+  R_LAST:[['glass','來電'],['low','最後通牒'],['rush','忙線'],['solo','專線']],
+  R_LINK:[['prism','滿格'],['crowd','滿格'],['reap','傳輸'],['eliteHeal','傳輸']],
+  R_DIAL:[['tempo','撥號'],['rage','快速撥號'],['greed','話費'],['calm','接通']],
+  H_BROADBAND:[['fort','寬頻'],['calm','低延遲'],['bulwark','隔音'],['shell','隔音']],
+  G_CONTACT:[['tempo','超頻'],['rage','觸發'],['glass','過載'],['solo','接觸']],
+  B_LASTTRAIN:[['ghost','末班'],['full','快線'],['reap','終點'],['dodgeHeal','月台']],
+  O_REFLECTOR:[['bulwark','反射'],['shell','板面'],['prism','折光'],['full','折光']],
+  W_RIFT:[['hunter','遠域'],['solo','斷訊'],['prism','寒域'],['eliteHeal','訊號衰減']],
+  R_RIFT:[['reap','閉環'],['low','殘響'],['scholar','記錄'],['rage','寒流']],
+  O_TOWER:[['bulwark','階層'],['full','穩定'],['prism','結冰'],['shell','層疊']],
+  R_SEASON:[['scholar','午夜'],['crowd','廣播'],['rush','電波'],['rage','節目']]};
 const LG_SIG = { weapon:['tempo','burst','hunter','glass'], armor:['fort','bulwark','reap','ghost'], head:['fort','rush','bulwark','scholar'], gloves:['tempo','burst','hunter','glass'], boots:['ghost','rush','reap','fort'], offhand:['bulwark','prism','fort','rush'], ring:['burst','scholar','rush','tempo'] };
 const LG_SIG_NAME = ['專屬・增幅','專屬・協奏','專屬・同調','專屬・共振'];
 const lgModKey = (id, i) => 'lg_' + id + '_' + i;
 for (const slot in LEGENDS) for (const L of LEGENDS[slot]) {
   const mods = LG_MODS[L.id] || (LG_SIG[slot] || LG_SIG.ring).map((t, i) => [t, LG_SIG_NAME[i]]);
   mods.forEach(([tpl, name], i) => {
-    const T = LG_TPL[tpl], base = AFF[T.p], rel = T.also || T.neg, w = v => Math.round(v*rel[1]*10)/10, key = lgModKey(L.id, i);
-    AFF[key] = { g:base.g, tags:base.tags, lg:true, dec:!!base.dec, also:T.also, neg:T.neg, t:v => name + '：' + T.t.replace('{v}', v).replace('{w}', w(v)), b:base.b };
-    STAT_KEY[key] = STAT_KEY[T.p];
+    const T = LG_TPL[tpl], base = AFF[T.p], rel = T.also || T.neg || [0,1], w = v => Math.round(v*rel[1]*10)/10, key = lgModKey(L.id, i);
+    const wr = v => Math.round(v*(T.f||1)*10)/10;
+    AFF[key] = { g:base.g, tags:base.tags, lg:true, dec:!!base.dec, also:T.also, neg:T.neg, rule:T.rule, rf:T.f, t:v => name + '：' + T.t.replace('{v}', v).replace('{w}', T.rule ? wr(v) : w(v)), b:base.b };
+    STAT_KEY[key] = T.rule ? 'rulePool' : STAT_KEY[T.p];
   });
 }
 
@@ -198,6 +208,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.72.0',d:'2026-10-26',t:['傳奇裝備：每件有兩條專屬規則詞，例如生命全滿時增傷、低血量爆發、擊殺疊層、被擊中後短暫減傷、閃避回血、擊殺精英回血，其餘兩條為取捨型數值；舊傳奇裝備自動轉換。','血條：調回清楚可見的厚度。']},
   {v:'0.71.0',d:'2026-10-26',t:['傳奇裝備：四條詞綴改為各傳奇獨有的取捨型效果（強化一項、同時附帶另一項增益或代價），舊傳奇裝備自動轉換。','視野：可見範圍加大，近／標準／遠三檔皆放寬。','畫質：自動降低解析度的條件放寬，只在真正卡頓時才降，並保持更高清晰度。','血條：改為固定細幼厚度，畫面放大時不再變粗。']},
   {v:'0.70.0',d:'2026-10-26',t:['傳奇裝備：詞綴全部改為傳奇專屬詞，每條帶有附加效果，不會出現在一般裝備上；舊傳奇裝備自動轉換。','電腦版：戰鬥畫面鋪滿整個視窗，操作面板疊在右邊。','視野：改為以角色為中心，圈內清楚、走過的地方留有記憶、未到過的遠處較暗；設定可調視野範圍。','零件：裝備自動分解得到的零件大幅減少（普通與魔法裝備只有機率得到 1 個）。','背包「構築保管」按鈕現在會打開構築裝備記憶管理。','斷訊電台與巡迴頁的標題文字顏色修正，不再是淺色字壓在淺色底上。','斷訊裂隙進行中只在紫圈邊緣出怪；移除原版地形設定，只保留新版街區。']},
   {v:'0.69.0',d:'2026-10-26',t:['技能盤：連線加成改為按線長計算，線超過 6 格後每多一格技能傷害 +3%，上限 2.5 倍；配件上限維持 3 個，與配件無關。接線頁顯示傷害倍率。','視野：設定新增「視野範圍」（近／標準／遠），標準視野比舊版寬約 25%；大地圖跟隨鏡頭時，畫面邊緣會稍微變暗。','觀戰：新增快捷鍵 W 開始觀戰。','音樂：戰鬥畫面收起時，音效停止、音樂變細聲。','Logo、角色與裝扮預覽的自轉加快。','斷訊裂隙：怪物改為沿圈邊緣持續湧出，數量與同時在場上限提高。','效能：畫面渲染會依實測幀率自動降低或回升解析度，並限制清晰模式的總像素，減少卡頓。']},

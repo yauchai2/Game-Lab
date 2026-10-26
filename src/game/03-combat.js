@@ -43,6 +43,18 @@ function spawnPack(){
   // Ordinary monsters approach over land; bosses retain their sky-drop entrance.
 }
 function dropItem(m, it){ dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'item', it, t:0 }); if (it.r >= 2 && !G.offline){ SFX('rare');  } }
+/* 傳奇規則詞：條件成立時的額外傷害 */
+function lgRuleMul(){
+  const R=G.st&&G.st.rules;if(!R)return 1;const h=G.h;let p=0;
+  if(R.fullHp&&h.hp>=G.st.life*.98)p+=R.fullHp;
+  if(R.lowHp&&h.hp<G.st.life*.4)p+=R.lowHp;
+  if(R.unhit&&G.time-(h.lastDamageAt??-99)>4)p+=R.unhit;
+  if(R.rage&&G.rage)p+=R.rage*G.rage;
+  if(R.crowd||R.solo){if(G.time-(G.crowdAt??-9)>.4){G.crowdAt=G.time;let n=0;for(const q of G.mons)if(!q.dead&&Math.hypot(q.x-h.x,q.y-h.y)<60)n++;G.crowdN=n;}
+    if(R.crowd&&G.crowdN>=4)p+=R.crowd;if(R.solo&&G.crowdN<3)p+=R.solo;}
+  return 1+p/100;
+}
+function lgRuleHeal(pct){if(pct>0&&G.h.hp>0)G.h.hp=Math.min(G.st.life,G.h.hp+G.st.life*Math.min(30,pct)/100);}
 function killMon(m){
   if(m.dead)return;
   if(!m.training){const board=circuitDrop(m.boss?'boss':m.elite?'elite':'normal');if(board)dropGround({kind:'circuit',id:board,x:m.x,y:m.y,t:0});}
@@ -53,6 +65,7 @@ function killMon(m){
   if (m.elite){ gold *= 4; xp *= 4; } if (mods.includes('wise')) xp = Math.round(xp*1.5);
   if (G.relics.PIG) gold = Math.round(gold*1.3);
   if (G.st.goldPct) gold = Math.max(1, Math.round(gold*(1+G.st.goldPct/100))); if (G.st.xpPct) xp = Math.max(1, Math.round(xp*(1+G.st.xpPct/100)));
+  {const R=G.st.rules;if(R){if(R.rage)G.rage=Math.min(10,(G.rage||0)+1);if(R.eliteHeal&&(m.elite||m.boss))lgRuleHeal(R.eliteHeal);}}
   if (G.st.killHeal && G.h.hp > 0 && G.time - (G.killHealAt||-1) > .25){ G.killHealAt = G.time; G.h.hp = Math.min(G.st.life, G.h.hp + G.st.life*G.st.killHeal/100); }
   dropGround({kind:'gold',amount:gold,x:m.x,y:m.y,t:0});if(m.boss||m.elite||Math.random()<.08)dropGround({kind:'chip',amount:m.boss?5:m.elite?2:1,x:m.x+2,y:m.y,t:0});G.totalKills++; if (m.boss){ G.bossKills = (G.bossKills || 0) + 1; if (GAME_FEATURES.cardChoices && Object.keys(G.relics).length < Object.keys(RELICS).length) G.relicPicks++; kick(2.4, .5, '#fff6c0', 1); hitStop(.14); if (G.fx.length < 40) addFx({ k:'ring', x:m.x, y:m.y, col:'#fff6c0', t:0, dur:.7 }); if (Math.random() < .25 && typeof COS !== 'undefined'){ const pool = []; for (const [c] of COS_CATS) for (const e of COS[c]) if (e[3] > 0 && !G.own[c + ':' + e[0]]) pool.push([c, e]); if (pool.length){ const [c, e] = tPick(pool); G.own[c + ':' + e[0]] = 1; logLine(`BOSS掉落裝扮：${e[1]}`, '#c28a00'); } } }
   gainXp(xp); if (R) R.kills++; else G.kills++; checkGoals();
@@ -199,7 +212,7 @@ function chooseReadySkill(){
 function hitMon(m, dmg, crit, source=G.src||'其他'){
   if (m.dead || m.fall > 0) return;
   if(!Number.isFinite(dmg)||dmg<=0)return;
-  dmg=cityIncoming(m,dmg)*(m.guardUntil>G.time?.55:1)*((m.boss||m.elite)&&G.st.vsElite?1+G.st.vsElite/100:1);if(dmg<=0)return;
+  dmg=cityIncoming(m,dmg)*lgRuleMul()*(m.guardUntil>G.time?.55:1)*((m.boss||m.elite)&&G.st.vsElite?1+G.st.vsElite/100:1);if(dmg<=0)return;
   combatDamage(source,Math.min(Math.max(0,m.hp),dmg));
   if(!m.training&&!G.offline&&G.time-(G.impactAt??-10)>.16){G.impactAt=G.time;const skill=source!=='普通攻擊',heavy=crit||skill;const col=skill?'#b5dfff':'#ffffff';kick(heavy?2.2:1.05,heavy?.32:.12,col,heavy?.65:.25);}
   m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit');
@@ -465,7 +478,7 @@ function update(dt){
     if (m.fight&&!m.warning&&!ranged){ m.atkCd -= dt; if (m.atkCd <= 0 && m.lunge < 0){ m.lunge = 0; m.lungeHit = false; m.atkCd = m.atkInt; } }
     if (m.lunge >= 0){
       m.lunge += dt;
-      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ { const a = Math.random()*6.28; h.dash = { a, t:0 }; h.vx += Math.cos(a)*70; h.vy += Math.sin(a)*70; } addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); if (lgOn('A_RIPOSTE')){ const sid = tPick(G.slots.filter(Boolean)); if (sid) castSkill(sid, .8); } continue; } const dmg = Math.max(1, m.dmg * (1 - s.red) * tRand(.9, 1.1)); const received=heroDamage(dmg,monsterLabel(m.type)+'・普通攻擊');if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,false); h.hurtT = .15; kick(Math.min(1.6, .6 + dmg/G.st.life*4), .35, '#ff3050'); if (dmg >= G.st.life*.08) hitStop(.07); addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#b32628', damageFloatSize(dmg), 'damage'); }
+      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ { const a = Math.random()*6.28; h.dash = { a, t:0 }; h.vx += Math.cos(a)*70; h.vy += Math.sin(a)*70; } addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); if(s.rules&&s.rules.dodgeHeal)lgRuleHeal(s.rules.dodgeHeal); if (lgOn('A_RIPOSTE')){ const sid = tPick(G.slots.filter(Boolean)); if (sid) castSkill(sid, .8); } continue; } const dmg = Math.max(1, m.dmg * (1 - s.red) * tRand(.9, 1.1)); const received=heroDamage(dmg,monsterLabel(m.type)+'・普通攻擊');if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,false); h.hurtT = .15; kick(Math.min(1.6, .6 + dmg/G.st.life*4), .35, '#ff3050'); if (dmg >= G.st.life*.08) hitStop(.07); addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#b32628', damageFloatSize(dmg), 'damage'); }
       if (m.lunge >= .3) m.lunge = -1;
     }
   }
