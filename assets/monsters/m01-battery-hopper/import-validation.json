@@ -1,0 +1,26 @@
+{
+  "stock_blender_glTF_import": "passed",
+  "mesh_objects": 3,
+  "triangles": 684,
+  "image_textures": 0,
+  "bounds_blender_z_up": {
+    "min": [
+      -1.3219597339630127,
+      -0.7829685807228088,
+      0.019999999552965164
+    ],
+    "max": [
+      1.3219597339630127,
+      0.6629999876022339,
+      2.940000057220459
+    ]
+  },
+  "imported_actions": [
+    "Hop_Body_CTRL",
+    "Hop_Foot_L_CTRL",
+    "Hop_Foot_R_CTRL",
+    "Hop_M01_BatteryHopper_Root",
+    "Hurt_Body_CTRL",
+    "Idle_Body_CTRL"
+  ]
+}

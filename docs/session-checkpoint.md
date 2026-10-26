@@ -1,5 +1,7 @@
 # Game Lab 精簡接續紀錄
 
+- 2026-10-26 UTC，獨立素材交接分支 `codex/m01-battery-hopper-asset`（base main `0992adc`／0.57）：M01插頭跳豆的正式GLB、Blender原件、manifest與驗證證據在 `assets/monsters/m01-battery-hopper/`；見 [M01交接](m01-monster-asset-handoff.md)。684面／3網格／1 unlit頂點色材質／0貼圖，Idle/Hop/Hurt；Hop有垂直根位移。只交付素材，未接入遊戲／合併／發佈；其餘11隻未製成3D。舊0.36本地技能改動未帶入。下列歷史紀錄未在本次重新驗證。
+
 2026-10-25，香港時間。先讀本頁，再查相關差異，避免重複研究。
 
 - 最新候選codex/onboarding-season-focus（base e67f73b，含後續3D Logo補完），已推送並建立PR #60：https://github.com/yauchai2/Game-Lab/pull/60：INTRO-01至08已實作／驗證，三步實作教學、手機按頁自動尺寸、紫色裂隙、紅點、單一季頁與紅框減法。需求／證據docs/onboarding-focus-2026-10-25/review.md。Logo已從Alan新Drive連結取得並導入：原件52.7MB／499960面→衍生814732bytes／15000面，320×180／40秒轉台，見assets/brand/logo-3d.json與logo-browser-results.json。候選仍未合併／發佈。
