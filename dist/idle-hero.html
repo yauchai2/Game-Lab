@@ -1037,7 +1037,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  {v:'0.58.0',d:'2026-10-26',t:['城市綠洲地圖改成一條橫貫的街道：柏油路面、中線、斑馬線、人行道與路緣，兩側是連續的店面，有遮陽棚、招牌、玻璃櫥窗與冷氣機。','街道兩側擺放販賣機、盆栽與貨箱；戰鬥範圍與路線不變。島後方多了一道高架橋，人行道變寬。設定裡新增「街區地圖」，可切換街區樣板與原版地形。','店面分成六種：雜貨、小吃、服飾、電器、咖啡麵包與藥局洗衣，各有遮陽棚樣式、像素招牌圖案與櫥窗擺設。','設定新增「倒下表現」：紅色液體或訊號碎片（彩色方塊飛散後淡去），可自行選擇。']},
+  {v:'0.58.0',d:'2026-10-26',t:['城市綠洲地圖改成一條橫貫的街道：柏油路面、中線、斑馬線、人行道與路緣，兩側是連續的店面，有遮陽棚、招牌、玻璃櫥窗與冷氣機。','街道兩側擺放販賣機、盆栽與貨箱；戰鬥範圍與路線不變。島後方多了一道高架橋，人行道變寬。設定裡新增「街區地圖」，可切換街區樣板與原版地形。','店面分成六種：雜貨、小吃、服飾、電器、咖啡麵包與藥局洗衣，各有遮陽棚樣式、像素招牌圖案與櫥窗擺設。','設定新增「倒下表現」：紅色液體或訊號碎片（彩色方塊飛散後淡去），可自行選擇。','阿街的角色與兩件裝備（修補耳機、改裝電棍）換上新的配色層次；電器、咖啡麵包與藥局洗衣店面掛上原創像素招牌。這些隨「街區地圖」一起開關。']},
   {v:'0.57.0',d:'2026-10-26',t:['地面加上緩慢移動的樹影與雲影，陰影帶藍灰色。','街區地圖新增販賣機、電線桿、護欄、貨箱、盆栽、冷氣室外機、購物袋與斑馬線，數量與大小都加大。']},
   {v:'0.56.0',d:'2026-10-26',t:['戰鬥畫面天空更明亮飽和，並加上白色雲線；森林、沙漠、雪原與霓虹夜城各有自己的天空色。','戰鬥場景改為暖白陽光加天光補色，地面色降低飽和，植物與怪物更醒目。','背包篩選「核心」改名為「傳奇」。']},
   {v:'0.55.0',d:'2026-10-26',t:['裝備詞綴分成「主機位」與「副機位」，每件最多各 3 條；詞綴由 13 種增加到 23 種，新增最大生命%、護甲%、全元素傷害、對精英與首領增傷、閃避、受傷降低、擊殺回復、金幣、經驗、掉落稀有度、移動速度','每個裝備欄位有三條系列，隱性詞綴與名稱各不相同，共 21 條系列、約 80 個新裝備名稱','改裝與追加詞綴會遵守主副機位的上限，改裝時優先換成同組詞綴','改機頁顯示每條詞綴屬於主機位或副機位及標籤，並標示裝備系列'],},
@@ -3447,12 +3447,12 @@ function buildGround(bi){
 function bake(g){   // 把靜態場景依材質合併成少數幾個網格，上千個方塊與樹也只要十幾次繪製
   g.updateMatrixWorld(true); const groups = new Map(), keep = [];
   g.traverse(o => {
-    if (!o.isMesh) return; const m = o.material; if (m.map){ keep.push(o); return; }
+    if (!o.isMesh) return; const m = o.material; if (m.map){ keep.push([o, o.matrixWorld.clone()]); return; }
     const k = m.type + m.color.getHexString() + m.opacity + (m.emissive ? m.emissive.getHexString() + m.emissiveIntensity : '');
     const geom = (o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone()).applyMatrix4(o.matrixWorld);
     if (!groups.has(k)) groups.set(k, { m, list:[] }); groups.get(k).list.push(geom);
   });
-  const out = new T3.Group(); keep.forEach(o => out.add(o));
+  const out = new T3.Group(); keep.forEach(([o, mw]) => { o.removeFromParent(); o.matrix.copy(mw); o.matrix.decompose(o.position, o.quaternion, o.scale); out.add(o); });
   for (const { m, list } of groups.values()){
     const n = list.reduce((a, q) => a + q.attributes.position.count, 0), P = new Float32Array(n*3), Nn = new Float32Array(n*3); let off = 0;
     for (const q of list){ P.set(q.attributes.position.array, off*3); Nn.set(q.attributes.normal.array, off*3); off += q.attributes.position.count; q.dispose(); }
@@ -3602,9 +3602,10 @@ function buildShop(variant=0){
   // 遮陽棚：條紋（食物與雜貨）、整片（服飾）、圓角（咖啡麵包）
   const segs=v%3===1?1:6,sw=(W-2)/segs;for(let k=0;k<segs;k++){const a=box(sw,.4,4.2,k%2?'#fbfaf2':acc,-(W-2)/2+sw*(k+.5),7.8,D/2+2);a.rotation.x=.28;}
   // 招牌：底板加像素圖示（雜貨籃、衣服、藥十字、電器、咖啡杯、洗衣）
-  box(W-9,3.4,.5,acc,0,H-2.2,D/2+.25);const ic=SHOP_ICONS[v],px=.8;
-  for(let r=0;r<5;r++)for(let c=0;c<5;c++)if(ic[r][c]==='#')box(px,px,.3,'#ffffff',(c-2)*px*1.1-5.4,H-2.2+(2-r)*px*.6,D/2+.62);
-  for(let i=0;i<3;i++)box(2.6,.7,.3,i%2?'#4a5878':'#ffffff',-1.4+i*3.2,H-2.2+(i%2?-.5:.5),D/2+.62);
+  box(W-9,3.4,.5,acc,0,H-2.2,D/2+.25);const ic=SHOP_ICONS[v],px=.8,tex=v===3?'radio':v===4?'records':v===5?'repair':null;
+  if(tex){const sg=mk(new T3.PlaneGeometry(11.6,2.9),new T3.MeshBasicMaterial({map:g1SignTexture(tex)}),0,H-2.2,D/2+.55,g);}
+  if(!tex)for(let r=0;r<5;r++)for(let c=0;c<5;c++)if(ic[r][c]==='#')box(px,px,.3,'#ffffff',(c-2)*px*1.1-5.4,H-2.2+(2-r)*px*.6,D/2+.62);
+  if(!tex)for(let i=0;i<3;i++)box(2.6,.7,.3,i%2?'#4a5878':'#ffffff',-1.4+i*3.2,H-2.2+(i%2?-.5:.5),D/2+.62);
   for(let i=0;i<3;i++)box(3,3,.25,'#9ecfe8',-6+i*6,H-8,D/2+.1,glass);
   if(v===0||v===3){for(let i=0;i<3;i++)box(2.2,.35,.3,i%2?'#5cd04a':'#e4503c',-7+i*2.6,2.4,D/2+.35);}                       // 窗邊貼紙條
   if(v===1){for(const x of [-8,-3,2])mk(ico(.9,1),m3('#e4503c'),x,6.4,D/2+3.4,g);}                                          // 紅燈籠
@@ -4083,11 +4084,75 @@ const CHARACTER_EQUIPMENT_MASKS = {"aki_headphones":{"source_sha256":"969f738536
 
 </script>
 <script>
+/* G1 街區樣板素材：材質配方與招牌圖由 Codex 交付（來源 codex/ice-cream-visual-preview，commit f912756）。
+   只在「街區地圖」開啟時套用；原貼圖、幾何、UV、骨架與動作都不修改。 */
+/* G1 material-only candidate. Does not alter source images, UVs, vertices or bones.
+   Integration: G1Materials.hero(characterAsset('aki').material),
+                G1Materials.equipment(material, 'aki_headphones'|'aki_baton'). */
+const G1Materials=(()=>{
+ const recipes={
+  aki:{blue:'#314b84',green:'#65846b',white:'#f1eedc',dark:'#26374b',blueGain:1.12,cloth:true},
+  aki_headphones:{blue:'#28b7c3',green:'#65846b',white:'#eee9d5',dark:'#263444',blueGain:1.15,cloth:false},
+  aki_baton:{blue:'#38d7c6',green:'#65846b',white:'#d6dfdc',dark:'#293e4a',blueGain:1.28,cloth:false}
+ };
+ function apply(material,id){
+  const recipe=recipes[id];if(!recipe)return material;
+  const out=material.clone();out.name='g1_summer_'+id;
+  if(material.map){out.map=material.map.clone();out.map.magFilter=THREE.NearestFilter;out.map.minFilter=THREE.LinearMipmapLinearFilter;out.map.needsUpdate=true;}
+  out.userData={...out.userData,g1Material:id,g1OwnedTexture:!!material.map};
+  const linear=hex=>new THREE.Color(hex);
+  out.onBeforeCompile=shader=>{
+   Object.assign(shader.uniforms,{g1Blue:{value:linear(recipe.blue)},g1Green:{value:linear(recipe.green)},g1White:{value:linear(recipe.white)},g1Dark:{value:linear(recipe.dark)},g1BlueGain:{value:recipe.blueGain},g1Cloth:{value:recipe.cloth?1:0}});
+   shader.fragmentShader='uniform vec3 g1Blue;\nuniform vec3 g1Green;\nuniform vec3 g1White;\nuniform vec3 g1Dark;\nuniform float g1BlueGain;\nuniform float g1Cloth;\n'+shader.fragmentShader;
+   shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
+#ifdef USE_MAP
+ vec3 source=sampledDiffuseColor.rgb;
+ float blue=step(source.r*1.65+0.018,source.b)*step(source.g*1.35+0.012,source.b);
+ float green=step(source.r*0.94,source.g)*step(source.b*1.6+0.01,source.g)*(1.0-blue);
+ float high=max(source.r,max(source.g,source.b));
+ float low=min(source.r,min(source.g,source.b));
+ float white=step(0.28,low)*(1.0-smoothstep(0.04,0.18,high-low));
+ float neutral=(1.0-smoothstep(0.035,0.13,high-low))*(1.0-step(0.14,high));
+ vec3 surface=source;
+ surface=mix(surface,g1Blue*clamp(high*2.8,0.45,1.25)*g1BlueGain,blue);
+ surface=mix(surface,g1Green*clamp(high*2.2,0.6,1.2),green);
+ surface=mix(surface,g1White*clamp(high,0.55,1.05),white);
+ surface=mix(surface,g1Dark*clamp(high*7.0,0.35,1.0),neutral);
+ // A restrained woven cadence only on classified fabric, never skin/face regions.
+ vec2 pixel=floor(vMapUv*256.0);
+ float weave=mod(pixel.x+pixel.y,2.0)*0.025;
+ surface*=1.0-weave*g1Cloth*max(green,white);
+ diffuseColor.rgb*=surface/max(source,vec3(0.001));
+#endif`);
+  };
+  out.customProgramCacheKey=()=> 'g1-summer-v1-'+id;
+  return out;
+ }
+ function dispose(material){if(!material?.userData?.g1Material)return;if(material.userData.g1OwnedTexture)material.map?.dispose();material.dispose();}
+ return {version:1,recipes,hero:mat=>apply(mat,'aki'),equipment:(mat,id)=>apply(mat,id),dispose};
+})();
+const G1_SIGNS={"radio": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"256\" height=\"64\" viewBox=\"0 0 256 64\"><path fill=\"#f3edda\" d=\"M0 0h256v64H0z\"/><path fill=\"#20556b\" d=\"M0 0h256v5H0zM0 59h256v5H0zM8 12h40v40H8z\"/><path fill=\"#42c5c8\" d=\"M13 36h5V24h5v18h5V18h5v26h5V29h5v7z\"/><text x=\"59\" y=\"33\" fill=\"#20556b\" font-family=\"monospace\" font-size=\"25\" font-weight=\"bold\">WAVE 03</text><text x=\"60\" y=\"49\" fill=\"#bd505e\" font-family=\"monospace\" font-size=\"10\" letter-spacing=\"3\">NEIGHBOR RADIO</text><path fill=\"#eeae45\" d=\"M228 17h16v16h-16z\"/></svg>", "records": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"256\" height=\"64\" viewBox=\"0 0 256 64\"><path fill=\"#dc7183\" d=\"M0 0h256v64H0z\"/><path fill=\"#f3edda\" d=\"M0 0h256v5H0zM0 59h256v5H0z\"/><circle cx=\"29\" cy=\"32\" r=\"21\" fill=\"#26394f\"/><circle cx=\"29\" cy=\"32\" r=\"13\" fill=\"none\" stroke=\"#7a91a0\" stroke-width=\"2\"/><circle cx=\"29\" cy=\"32\" r=\"6\" fill=\"#f2be63\"/><text x=\"61\" y=\"33\" fill=\"#fff6dc\" font-family=\"monospace\" font-size=\"25\" font-weight=\"bold\">SIDE B</text><text x=\"62\" y=\"49\" fill=\"#fff6dc\" font-family=\"monospace\" font-size=\"10\" letter-spacing=\"4\">TAPES / RECORDS</text><path fill=\"#f5c75e\" d=\"M226 17h7v30h-7zM238 25h7v22h-7z\"/></svg>", "repair": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"256\" height=\"64\" viewBox=\"0 0 256 64\"><path fill=\"#46887d\" d=\"M0 0h256v64H0z\"/><path fill=\"#d5ddd1\" d=\"M0 0h256v5H0zM0 59h256v5H0z\"/><path fill=\"#f3edda\" d=\"M17 15h8v12h12V15h8v20H33v14H21V35h-4z\"/><text x=\"58\" y=\"33\" fill=\"#f3edda\" font-family=\"monospace\" font-size=\"24\" font-weight=\"bold\">FIX SHOP</text><text x=\"60\" y=\"49\" fill=\"#dbefb8\" font-family=\"monospace\" font-size=\"10\" letter-spacing=\"3\">REPAIR AND REPLAY</text><path fill=\"#f5b74c\" d=\"M228 20h16v24h-16z\"/><path fill=\"#46887d\" d=\"m237 23-6 11h6l-4 8 9-13h-7z\"/></svg>"};
+const G1_CACHE={mat:new Map(),sign:new Map()};
+function g1On(){return typeof streetSampleOn==='function'&&streetSampleOn();}
+/* 同一個來源材質只複製一次，避免每次重建角色都多一份貼圖。 */
+function g1HeroMaterial(id,material){if(!g1On()||!G1Materials.recipes[id])return material;const k='h:'+id;if(!G1_CACHE.mat.has(k))G1_CACHE.mat.set(k,G1Materials.hero(material));return G1_CACHE.mat.get(k);}
+function g1EquipMaterial(id,material){if(!g1On()||!G1Materials.recipes[id])return material;const k='e:'+id+':'+material.uuid;if(!G1_CACHE.mat.has(k)){const m=G1Materials.equipment(material,id);m.userData.equipmentShared=true;G1_CACHE.mat.set(k,m);}return G1_CACHE.mat.get(k);}
+/* 店面招牌：先畫底色，圖片載入後再畫上去；最近點取樣保持像素感。 */
+function g1SignTexture(kind){
+ if(G1_CACHE.sign.has(kind))return G1_CACHE.sign.get(kind);
+ const c=document.createElement('canvas');c.width=128;c.height=32;const x=c.getContext('2d');x.fillStyle='#f3edda';x.fillRect(0,0,128,32);
+ const t=new T3.CanvasTexture(c);t.magFilter=T3.NearestFilter;t.minFilter=T3.NearestFilter;t.generateMipmaps=false;t.colorSpace=T3.SRGBColorSpace;
+ const img=new Image();img.onload=()=>{x.imageSmoothingEnabled=false;x.drawImage(img,0,0,128,32);t.needsUpdate=true;};img.src='data:image/svg+xml;utf8,'+encodeURIComponent(G1_SIGNS[kind]);
+ G1_CACHE.sign.set(kind,t);return t;
+}
+
+</script>
+<script>
 /* Static reader for build-time normalized user meshes. No runtime network requests. */
 const EQUIPMENT_RENDER={cache:new Map()};
 function equipmentModel(id){
  if(typeof EQUIPMENT_GLB==='undefined'||!EQUIPMENT_GLB[id])return typeof equipmentProxyModel==='function'?equipmentProxyModel(id):null;
- if(EQUIPMENT_RENDER.cache.has(id))return EQUIPMENT_RENDER.cache.get(id).clone(true);
+ const ck=id+(typeof g1On==='function'&&g1On()?'+g1':'');if(EQUIPMENT_RENDER.cache.has(ck))return EQUIPMENT_RENDER.cache.get(ck).clone(true);
  const bin=Uint8Array.from(atob(EQUIPMENT_GLB[id]),c=>c.charCodeAt(0)),view=new DataView(bin.buffer),n=view.getUint32(12,true),doc=JSON.parse(new TextDecoder().decode(bin.subarray(20,20+n))),start=28+n;
  const types={5121:Uint8Array,5123:Uint16Array,5125:Uint32Array,5126:Float32Array},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4};
  const access=i=>{const a=doc.accessors[i],v=doc.bufferViews[a.bufferView],C=types[a.componentType],w=widths[a.type];if(!C||!w||v.byteStride||a.sparse)throw Error('Unsupported equipment accessor');const off=start+(v.byteOffset||0)+(a.byteOffset||0);return new T3.BufferAttribute(new C(bin.buffer.slice(off,off+a.count*w*C.BYTES_PER_ELEMENT)),w,!!a.normalized);};
@@ -4098,8 +4163,8 @@ function equipmentModel(id){
   return mat;
  });
  const nodes=doc.nodes.map(node=>{const g=new T3.Group();g.name=id;if(node.matrix)new T3.Matrix4().fromArray(node.matrix).decompose(g.position,g.quaternion,g.scale);else{if(node.translation)g.position.fromArray(node.translation);if(node.rotation)g.quaternion.fromArray(node.rotation);if(node.scale)g.scale.fromArray(node.scale);}
-  if(node.mesh!=null)for(const p of doc.meshes[node.mesh].primitives){const geo=new T3.BufferGeometry();geo.userData.equipmentShared=true;for(const [key,name]of [['POSITION','position'],['NORMAL','normal'],['TEXCOORD_0','uv']])if(p.attributes[key]!=null)geo.setAttribute(name,access(p.attributes[key]));if(p.indices!=null)geo.setIndex(access(p.indices));if(!geo.attributes.normal)geo.computeVertexNormals();g.add(new T3.Mesh(geo,materials[p.material]||m3('#bbc8d2')));}return g;});
- doc.nodes.forEach((node,i)=>(node.children||[]).forEach(j=>nodes[i].add(nodes[j])));const root=new T3.Group();for(const i of doc.scenes[doc.scene||0].nodes)root.add(nodes[i]);if(id==='aki_baton')root.rotation.x=-Math.PI/2;root.userData.equipmentModel=id;EQUIPMENT_RENDER.cache.set(id,root);return root.clone(true);
+  if(node.mesh!=null)for(const p of doc.meshes[node.mesh].primitives){const geo=new T3.BufferGeometry();geo.userData.equipmentShared=true;for(const [key,name]of [['POSITION','position'],['NORMAL','normal'],['TEXCOORD_0','uv']])if(p.attributes[key]!=null)geo.setAttribute(name,access(p.attributes[key]));if(p.indices!=null)geo.setIndex(access(p.indices));if(!geo.attributes.normal)geo.computeVertexNormals();g.add(new T3.Mesh(geo,g1EquipMaterial(id,materials[p.material]||m3('#bbc8d2'))));}return g;});
+ doc.nodes.forEach((node,i)=>(node.children||[]).forEach(j=>nodes[i].add(nodes[j])));const root=new T3.Group();for(const i of doc.scenes[doc.scene||0].nodes)root.add(nodes[i]);if(id==='aki_baton')root.rotation.x=-Math.PI/2;root.userData.equipmentModel=id;EQUIPMENT_RENDER.cache.set(ck,root);return root.clone(true);
 }
 // Socket dimensions use the existing character rig's units; assets are centered with max span 1.
 const EQUIPMENT_SOCKETS={
@@ -4188,7 +4253,7 @@ function buildY2KHero(at,ar,wt,wr,cos){
  const nodes=doc.nodes.map((n,i)=>{const o=joints.has(i)?new T3.Bone():new T3.Group();o.name=n.name||'node_'+i;if(n.translation)o.position.fromArray(n.translation);if(n.rotation)o.quaternion.fromArray(n.rotation);if(n.scale)o.scale.fromArray(n.scale);if(n.matrix)new T3.Matrix4().fromArray(n.matrix).decompose(o.position,o.quaternion,o.scale);if(joints.has(i))B[o.name]=o;return o;});
  doc.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>nodes[i].add(nodes[c])));for(const i of doc.scenes[doc.scene||0].nodes)g.add(nodes[i]);
  const s=doc.skins[0],inv=asset.access(s.inverseBindMatrices).array,skeleton=new T3.Skeleton(s.joints.map(i=>nodes[i]),s.joints.map((_,i)=>new T3.Matrix4().fromArray(inv,i*16)));
- const mesh=new T3.SkinnedMesh(characterEquipmentGeometry(asset,id),asset.material);mesh.name=id+'_skin';mesh.frustumCulled=false;
+ const mesh=new T3.SkinnedMesh(characterEquipmentGeometry(asset,id),g1HeroMaterial(id,asset.material));mesh.name=id+'_skin';mesh.frustumCulled=false;
  const meshNode=doc.nodes.findIndex(n=>n.mesh===0);nodes[meshNode].add(mesh);g.updateMatrixWorld(true);mesh.bind(skeleton,mesh.matrixWorld);mesh.normalizeSkinWeights();
  const mixer=new T3.AnimationMixer(g),actions=Object.fromEntries(asset.clips.map(clip=>[clip.name,mixer.clipAction(clip)]));
  for(const [name,action]of Object.entries(actions)){if(!['idle','walk','run'].includes(name)){action.setLoop(T3.LoopOnce,1);action.clampWhenFinished=true;}}

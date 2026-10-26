@@ -333,12 +333,12 @@ function buildGround(bi){
 function bake(g){   // 把靜態場景依材質合併成少數幾個網格，上千個方塊與樹也只要十幾次繪製
   g.updateMatrixWorld(true); const groups = new Map(), keep = [];
   g.traverse(o => {
-    if (!o.isMesh) return; const m = o.material; if (m.map){ keep.push(o); return; }
+    if (!o.isMesh) return; const m = o.material; if (m.map){ keep.push([o, o.matrixWorld.clone()]); return; }
     const k = m.type + m.color.getHexString() + m.opacity + (m.emissive ? m.emissive.getHexString() + m.emissiveIntensity : '');
     const geom = (o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone()).applyMatrix4(o.matrixWorld);
     if (!groups.has(k)) groups.set(k, { m, list:[] }); groups.get(k).list.push(geom);
   });
-  const out = new T3.Group(); keep.forEach(o => out.add(o));
+  const out = new T3.Group(); keep.forEach(([o, mw]) => { o.removeFromParent(); o.matrix.copy(mw); o.matrix.decompose(o.position, o.quaternion, o.scale); out.add(o); });
   for (const { m, list } of groups.values()){
     const n = list.reduce((a, q) => a + q.attributes.position.count, 0), P = new Float32Array(n*3), Nn = new Float32Array(n*3); let off = 0;
     for (const q of list){ P.set(q.attributes.position.array, off*3); Nn.set(q.attributes.normal.array, off*3); off += q.attributes.position.count; q.dispose(); }
@@ -488,9 +488,10 @@ function buildShop(variant=0){
   // 遮陽棚：條紋（食物與雜貨）、整片（服飾）、圓角（咖啡麵包）
   const segs=v%3===1?1:6,sw=(W-2)/segs;for(let k=0;k<segs;k++){const a=box(sw,.4,4.2,k%2?'#fbfaf2':acc,-(W-2)/2+sw*(k+.5),7.8,D/2+2);a.rotation.x=.28;}
   // 招牌：底板加像素圖示（雜貨籃、衣服、藥十字、電器、咖啡杯、洗衣）
-  box(W-9,3.4,.5,acc,0,H-2.2,D/2+.25);const ic=SHOP_ICONS[v],px=.8;
-  for(let r=0;r<5;r++)for(let c=0;c<5;c++)if(ic[r][c]==='#')box(px,px,.3,'#ffffff',(c-2)*px*1.1-5.4,H-2.2+(2-r)*px*.6,D/2+.62);
-  for(let i=0;i<3;i++)box(2.6,.7,.3,i%2?'#4a5878':'#ffffff',-1.4+i*3.2,H-2.2+(i%2?-.5:.5),D/2+.62);
+  box(W-9,3.4,.5,acc,0,H-2.2,D/2+.25);const ic=SHOP_ICONS[v],px=.8,tex=v===3?'radio':v===4?'records':v===5?'repair':null;
+  if(tex){const sg=mk(new T3.PlaneGeometry(11.6,2.9),new T3.MeshBasicMaterial({map:g1SignTexture(tex)}),0,H-2.2,D/2+.55,g);}
+  if(!tex)for(let r=0;r<5;r++)for(let c=0;c<5;c++)if(ic[r][c]==='#')box(px,px,.3,'#ffffff',(c-2)*px*1.1-5.4,H-2.2+(2-r)*px*.6,D/2+.62);
+  if(!tex)for(let i=0;i<3;i++)box(2.6,.7,.3,i%2?'#4a5878':'#ffffff',-1.4+i*3.2,H-2.2+(i%2?-.5:.5),D/2+.62);
   for(let i=0;i<3;i++)box(3,3,.25,'#9ecfe8',-6+i*6,H-8,D/2+.1,glass);
   if(v===0||v===3){for(let i=0;i<3;i++)box(2.2,.35,.3,i%2?'#5cd04a':'#e4503c',-7+i*2.6,2.4,D/2+.35);}                       // 窗邊貼紙條
   if(v===1){for(const x of [-8,-3,2])mk(ico(.9,1),m3('#e4503c'),x,6.4,D/2+3.4,g);}                                          // 紅燈籠
