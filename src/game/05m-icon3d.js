@@ -23,10 +23,10 @@ function icon3dGadget(tier, C){
 function icon3dModel(slot, tier, r){
   const C = ICON3D_RAR[Math.max(0, Math.min(r | 0, 3))], t = Math.max(0, Math.min(tier | 0, 3));
   if (slot === 'weapon'){ const g = new T3.Group(); buildWeapon(g, t, r | 0); const b = new T3.Box3().setFromObject(g), s = b.getSize(new T3.Vector3()), ax = s.x >= s.y && s.x >= s.z ? new T3.Vector3(1, 0, 0) : s.z >= s.y ? new T3.Vector3(0, 0, 1) : new T3.Vector3(0, 1, 0); const w = new T3.Group(); w.add(g); w.quaternion.setFromUnitVectors(ax, new T3.Vector3(.72, .72, 0)); return w; }
-  const g = detailedEquipmentModel(slot,t,C), w = new T3.Group(); w.add(g); w.rotation.set(.22, -.5, 0); return w;
+  const g = typeof ordinaryEquipmentModel==='function'?ordinaryEquipmentModel(slot,t,r):detailedEquipmentModel(slot,t,C), w = new T3.Group(); w.add(g); w.rotation.set(.22, -.5, 0); return w;
 }
-function gearFallbackUrl(slot,tier,r){return typeof GEAR_FALLBACKS==='undefined'?'':GEAR_FALLBACKS[slot+':'+Math.max(0,Math.min(tier|0,3))+':'+Math.max(0,Math.min(r|0,3))]||'';}
-function legendFallbackUrl(id){if(typeof GEAR_FALLBACKS==='undefined')return '';if(GEAR_FALLBACKS['signature:'+id])return GEAR_FALLBACKS['signature:'+id];for(const slot in LEGENDS){const idx=LEGENDS[slot].findIndex(it=>it.id===id);if(idx>=0)return gearFallbackUrl(slot,G.armory[id]?aTier(G.armory[id]):idx+1,3);}return '';}
+function gearFallbackUrl(slot,tier,r){const key=slot+'-'+Math.max(0,Math.min(tier|0,3))+'-'+Math.max(0,Math.min(r|0,3));if(typeof ORDINARY_EQUIPMENT_ICONS!=='undefined'&&ORDINARY_EQUIPMENT_ICONS[key])return ORDINARY_EQUIPMENT_ICONS[key];return typeof GEAR_FALLBACKS==='undefined'?'':GEAR_FALLBACKS[slot+':'+Math.max(0,Math.min(tier|0,3))+':'+Math.max(0,Math.min(r|0,3))]||'';}
+function legendFallbackUrl(id){const spec=typeof SIGNATURE_GEAR!=='undefined'&&SIGNATURE_GEAR[id];if(spec&&typeof EQUIPMENT_COMPLETION_ICONS!=='undefined'&&EQUIPMENT_COMPLETION_ICONS[spec.model])return EQUIPMENT_COMPLETION_ICONS[spec.model];if(typeof GEAR_FALLBACKS==='undefined')return '';if(GEAR_FALLBACKS['signature:'+id])return GEAR_FALLBACKS['signature:'+id];for(const slot in LEGENDS){const idx=LEGENDS[slot].findIndex(it=>it.id===id);if(idx>=0)return gearFallbackUrl(slot,G.armory[id]?aTier(G.armory[id]):idx+1,3);}return '';}
 function icon3dUrl(slot, tier, r){
   const key = slot + tier + '_' + r; if (ICON3D.cache[key]) return ICON3D.cache[key]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof T3.WebGLRenderer !== 'function') return gearFallbackUrl(slot,tier,r);
   try {

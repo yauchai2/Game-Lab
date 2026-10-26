@@ -863,8 +863,8 @@ Worker 已部署，真實回饋單 #59、防重複、CORS 及候選打包通過�
 v0.64.0／PR84已發佈，舊候選／未發佈文字以[正式紀錄](release-0.64.0/integration.md)為準。Alan再次要求繼續，不把首輪release當全專案完成。
 
 - [x] FINISH-01：四件專屬裝備代用品改為本地原創GLB／Blend：ping_clip、milo_md_strap、ping_bag_strap、null_lanyard，補齊穿戴／收藏縮圖／GPU失敗圖；候選已驗證，未合併或發佈，見[equipment-completion](equipment-completion/README.md)。較早「等待原始GLB」保留為歷史來源需求，本批以新製正式模型解決遊戲缺件，不冒充原始附件。
-- [ ] FINISH-02：盤點一般裝備模型與七部位佩戴差異，按實際辨識問題精修簡模。
-- [ ] FINISH-03：逐類檢查22敵人的原生遊戲尺寸、攻勢與輪廓辨識；12模型已完成，僅對辨識不足者補模型／變體，不把22獨立新模型列成已交付。
+- [x] FINISH-02：一般裝備七部位／四階統一穿戴、收藏及掉落幾何，112配色備用圖同步；候選已驗證，局部佩戴相交仍需最終美術驗收，見[精修](street-refinement/README.md)。
+- [x] FINISH-03：22type逐類檢視，為12種共用基底加入鑽頭／支腳／車輪／垂纜等輪廓模組；共享幾何、per-actor淡出，34HUD與尺寸血跡複驗通過。候選未發佈，不宣稱22獨立GLB或真人可辨識率實驗已完成。
 - [ ] FINISH-04：逐地區對照影片的構圖／日常生活線索，補齊場景與六章敘事演出的不足；保留唯一storyFlags.ch。
 - [ ] FINISH-05：實際配樂／音效聽感與事件對齊，不以選曲表等同聲音最終驗收。
 - [ ] FINISH-06：手機／Safari真機、長時間效能與完整佩戴視覺驗收；本機software WebGL不當作真機證據。
