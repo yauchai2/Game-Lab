@@ -203,19 +203,20 @@ function buildSkel(){
   head.scale.setScalar(2.05); g.userData.s = .82; g.scale.setScalar(.82); g.rotation.order = 'YXZ';
   addShadow(g, 4.6); return g;
 }
-function buildDrone(){   // 無人機：圓身、兩具旋翼、紅色獨眼，貼著半空飛
-  const g = new T3.Group(), hex = ['#9fb8e8', '#e8c27a', '#bfe6ff', '#e89a8a', '#7a8fe8', '#ffb0d8'][biomeNow()%6];
-  mk(ico(1, 1), ownMat(g, hex), 0, 8, 0, g).scale.set(4.2, 2.6, 4.2); mk(ico(.9, 0), ownMat(g, '#ffffff'), 0, 9.6, -.4, g).scale.set(2, 1, 2);
-  mk(ico(1, 0), basic('#ff3a5a'), 0, 8, 3.9, g).scale.set(1.1, 1.1, .6); mk(cylG(.12, .12, 2.4, 4), ownMat(g, '#2b2552'), 0, 11.2, -1, g);
-  const ro = []; for (const sx of [-1, 1]){ mk(new T3.BoxGeometry(.5, 1.6, .5), ownMat(g, '#2b2552'), sx*4.2, 8.6, 0, g); const r = mk(cylG(3.4, 3.4, .22, 12), ownMat(g, '#ffffff', { transparent:true, opacity:.55 }), sx*4.2, 9.5, 0, g); ro.push(r); }
+function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));f.position.set(x,y,z);parent.add(f);return f;}
+function buildDrone(){   // 塑膠袋飛靈：半透明白袋身、兩條提手、簡化臉，貼著半空飄
+  const g = new T3.Group(), hex = ['#f4f8ff', '#fff3d8', '#e6f6ff', '#ffe6e2', '#e8ecff', '#ffeaf4'][biomeNow()%6];
+  mk(ico(1, 1), ownMat(g, hex, { transparent:true, opacity:.92 }), 0, 8, 0, g).scale.set(4.2, 3.4, 3.2); mk(ico(.9, 0), ownMat(g, '#ffffff'), 0, 11, -.2, g).scale.set(2.4, 1.2, 1.6);
+  faceMesh(4.6, 0, 8.2, 3.3, g);
+  const ro = []; for (const sx of [-1, 1]){ const r = mk(new T3.TorusGeometry(1.7, .28, 4, 8), ownMat(g, hex), sx*2.4, 12.2, 0, g); r.rotation.x = Math.PI/2; ro.push(r); }
   g.userData.rotors = ro; g.userData.s = .9; g.scale.setScalar(.9); g.rotation.order='YXZ';addShadow(g,3.6);return g;
 }
-function buildBomb(){   // 自爆機器人：深色圓身、引信火花，越接近死亡越閃紅
+function buildBomb(){   // 氣球炸彈：圓氣球、繩結與火花，越接近死亡越閃紅
   const g = new T3.Group();
-  mk(ico(1, 1), ownMat(g, '#3a3560'), 0, 4.6, 0, g).scale.set(4.6, 4.4, 4.6); mk(ico(1, 0), ownMat(g, '#6a62a8'), -1.4, 6.4, -.8, g).scale.set(1.6, 1.2, 1.6);
-  mk(cylG(.35, .45, 2, 5), ownMat(g, '#c9a064'), 0, 9.8, 0, g); const sp = mk(ico(.9, 1), basic('#ff9a3c'), 0, 11.2, 0, g); g.userData.spark = sp;
-  for (const sx of [-1, 1]){ mk(new T3.BoxGeometry(1.6, .5, .3), basic('#7ef0ff'), sx*1.5, 5.4, 4.5, g); mk(new T3.BoxGeometry(1.8, 1, 2.4), ownMat(g, '#2b2552'), sx*2, .5, 1, g); }
-  mk(new T3.BoxGeometry(3.4, .5, .3), basic('#ff3a5a'), 0, 3.4, 4.5, g);
+  mk(ico(1, 1), ownMat(g, '#ff6f8f'), 0, 6, 0, g).scale.set(4.6, 5.2, 4.6); mk(ico(1, 0), ownMat(g, '#ffd0dc'), -1.6, 8.2, -.6, g).scale.set(1.2, 1.5, 1.2);
+  faceMesh(5, 0, 6, 4.6, g);
+  mk(cylG(.3, .5, 1.4, 5), ownMat(g, '#d94a6c'), 0, .8, 0, g); const sp = mk(ico(.9, 1), basic('#ff9a3c'), 0, 11.8, 0, g); g.userData.spark = sp;
+  mk(cylG(.12, .12, 2.2, 4), ownMat(g, '#2b2552'), 0, 10.8, 0, g);
   g.userData.s = .85; g.scale.setScalar(.85); g.rotation.order = 'YXZ'; addShadow(g, 5); return g;
 }
 function buildBrute(boss){
@@ -636,15 +637,17 @@ function monLook(m, g){
     else if (q === 'speaker'){ const bs = 1 + .09*Math.abs(Math.sin(t*6)) + lg*.12; g.scale.set(base/Math.sqrt(bs), base*bs, base/Math.sqrt(bs)); g.rotation.z = Math.sin(t*3)*.05; }
     else if (q === 'wisp'){ g.rotation.y += t*2.2; g.rotation.z = Math.sin(t*2.4)*.25; }
     else if (q === 'mole'){ g.position.y -= (.5 + .5*Math.sin(t*4))*1.2*mv; g.rotation.x += Math.sin(t*4 + 1)*.12*mv; }
+    else if (q === 'skel'){ g.rotation.z = Math.sin(t*8)*.08*mv; g.position.y += Math.abs(Math.sin(t*8))*.9*mv; }
     else if (q === 'golem'){ const st = Math.abs(Math.sin(t*3)); g.scale.y *= 1 - .08*st*mv; g.position.y += (1 - st)*.6*mv; g.rotation.z = Math.sin(t*3)*.06*mv; }
     const L = ps.limbs; if (L && !m.dead){ const w = Math.sin(t*(q === 'golem' ? 3.2 : q === 'spider' ? 14 : q === 'crab' ? 9 : 8));
       if (q === 'golem'){ const sw = mv ? w*.65 : 0, up = m.lunge >= 0 ? -2.3*lg : m.fight ? -.35 + Math.sin(t*2)*.12 : 0; L.legL.rotation.x = -sw; L.legR.rotation.x = sw; L.armL.rotation.x = sw*.8 + up; L.armR.rotation.x = -sw*.8 + up; L.armL.rotation.z = .08 + lg*.2; L.armR.rotation.z = -.08 - lg*.2; }
+      else if (q === 'skel'){ const sw = mv ? w*.7 : 0, up = m.lunge >= 0 ? -2.2*lg : m.fight ? -.4 + Math.sin(t*2)*.1 : 0; L.legL.rotation.x = -sw; L.legR.rotation.x = sw; L.armL.rotation.x = sw*.8 + up; L.armR.rotation.x = -sw*.8 + up; }
       else if (q === 'spider'){ for (const k in L){ const lb = L[k], i = +k.slice(-1), a = i*1.7 + (k[3] === 'R' ? 0 : 3.1); lb.rotation.y = lb.userData.ry + Math.sin(t*14 + a)*(mv ? .5 : .08) - (m.lunge >= 0 ? lg*.5 : 0); lb.rotation.z = Math.max(0, Math.sin(t*14 + a))*(mv ? .35 : 0)*(k[3] === 'R' ? 1 : -1); } }
       else if (q === 'crab'){ const sn = Math.sin(t*(m.fight ? 7 : 3)); L.clawL.rotation.z = (.1 + (m.fight ? .35 : .12)*sn)*-1 + lg*.8; L.clawR.rotation.z = (.1 + (m.fight ? .35 : .12)*sn) - lg*.8; L.clawL.rotation.y = L.clawR.rotation.y = Math.sin(t*2)*.1; for (const k in L){ if (k.startsWith('leg')){ const i = +k.slice(-1); L[k].rotation.y = Math.sin(t*12 + i*2.1 + (k[3] === 'R' ? 0 : 1.6))*(mv ? .45 : .05); } } }
       else if (q === 'mole'){ const dg = Math.sin(t*(m.fight ? 10 : 6)); L.pawL.rotation.x = dg*.8 - lg; L.pawR.rotation.x = -dg*.8 - lg; } } }
   else if (ps.m01){ g.scale.setScalar(base); g.position.y += lg*4; g.rotation.x = -.2*lg; g1MonsterPlay(g, m); }
   else if (m.type === 'slime'){ g.scale.setScalar(base); const sq = 1 + .16*Math.sin(t*5) + (m.lunge >= 0 ? .35*Math.sin(Math.PI*m.lunge/.3) : 0); ps.jelly.scale.set(Math.sqrt(sq), 1/sq, Math.sqrt(sq)); g.position.y += lg*4; g.rotation.x = -.35*lg; }
-  else if (m.type === 'drone'){ g.scale.setScalar(base); g.position.y += 5 + Math.sin(t*4 + m.ph)*1.6 + lg*3; g.rotation.x = .25 + lg*.5; for (const r of ps.rotors) r.rotation.y = t*40; }
+  else if (m.type === 'drone'){ g.scale.setScalar(base); g.position.y += 5 + Math.sin(t*4 + m.ph)*1.6 + lg*3; g.rotation.x = .25 + lg*.5; ps.rotors.forEach((r,i)=>{r.rotation.z = Math.sin(t*9 + i*3)*.5;}); }
   else if (m.type === 'bomb'){ const low = 1 - tClamp(m.hp/m.hpMax), sq = 1 + .06*Math.sin(t*(5 + low*14)); g.scale.set(base*sq, base/sq, base*sq); g.position.y += Math.abs(Math.sin(t*5))*1.2 + lg*3; g.rotation.x = lg*.4; ps.spark.scale.setScalar(.7 + .5*Math.abs(Math.sin(t*12))); ps.spark.material.color.set(Math.sin(t*(8 + low*20)) > 0 ? '#ff3a2a' : '#ffd35a'); }
   else {
     const B = ps.B, w = Math.sin(t*9), f = Math.sin(t*3), big = m.type === 'brute' || m.type === 'boss';
@@ -765,8 +768,7 @@ function overlay(){
   for(const m of G.mons)if(!m.dead&&m.shield>0)s+=bar(m.x,m.y,BZ+(m.boss?44:32)*CK,8,m.shield/m.shieldMax,'#57dce8');
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + terrainHeight(fl.x,fl.y) + fl.t*9);
     const unit=R3.vbW/Math.max(1,R3.W),size=battleTextSize(fl.kind,fl.size,innerWidth)*unit;
-    const txt=String(fl.txt).replace(/<[^>]*>/g,''),cjk=(txt.match(/[^\x00-\x7f]/g)||[]).length,tw=(cjk+(txt.length-cjk)*.62)*size*.95,bw=tw+size*.9,bh=size*1.28,pop=1+Math.max(0,.22-fl.t*1.6),rot=((Math.abs(Math.round(fl.x*7+fl.y*3))%7)-3)*1.4,op=(1-fl.t*fl.t).toFixed(2);
-    s += `<g transform="translate(${X.toFixed(1)} ${Y.toFixed(1)}) rotate(${rot}) scale(${pop.toFixed(2)})" opacity="${op}"><rect x="${(-bw/2).toFixed(1)}" y="${(-size*.98).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${(bh/2).toFixed(1)}" fill="#2b2552" fill-opacity=".78" stroke="#f7faff" stroke-width="${(1.6*unit).toFixed(2)}"/><text x="0" y="0" text-anchor="middle" fill="${fl.col}" style="font-size:${size.toFixed(2)}px!important;font-family:var(--ux-body)!important" font-weight="400">${fl.txt}</text></g>`; }
+    s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" fill="${fl.col}" style="font-size:${size.toFixed(2)}px!important;font-family:var(--ux-body)!important;stroke:#f7faff;stroke-width:${(2.5*unit).toFixed(2)}px;stroke-linejoin:round;paint-order:stroke" font-weight="400" opacity="${(1-fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
 
   return s;
 }
@@ -804,7 +806,7 @@ function scene(){
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
   // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
-  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? buildSkel() : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
+  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
@@ -829,6 +831,7 @@ function buildCircuitMon(type){
  if(type==='speaker'){mk(roundedG(7,11,5),dark,0,5.5,0,g);for(const y of[3,8])mk(cylG(2.3,2.3,.7,10),glow,0,y,2.7,g).rotation.x=Math.PI/2;mk(roundedG(9,1,6),silver,0,11,0,g);}
  if(type==='wisp'){mk(new T3.OctahedronGeometry(4,0),glow,0,5,0,g).scale.set(.7,1.8,.7);mk(new T3.TorusGeometry(4.8,.5,4,12),silver,0,5,0,g).rotation.x=.7;for(const sx of[-1,1])mk(ico(.8,0),dark,sx*1.3,6,2,g);}
  if(type==='crab'){mk(cylG(5,6,4,6),silver,0,3,0,g);mk(roundedG(6,1,1),dark,0,5,4,g);limbs={};for(const sx of[-1,1]){limbs['claw'+(sx>0?'R':'L')]=[sx*5,3,1,l=>{mk(roundedG(6,2,2),dark,sx*3,0,0,l);mk(new T3.ConeGeometry(2,5,4),glow,sx*5,1,1.5,l).rotation.z=-sx*.7;}];for(let i=0;i<3;i++)limbs['leg'+(sx>0?'R':'L')+i]=[sx*4.5,2,(i-1)*2.4,l=>{mk(roundedG(4,.8,.8),silver,sx*2,-.5,0,l).rotation.z=sx*.5;}];}}
+ {const F={spider:[3.4,0,4.6,5.7],speaker:[4.2,0,8,2.9],wisp:[3.6,0,5.4,2.2],crab:[4.6,0,3.4,5.6]}[type];if(F)faceMesh(F[0],F[1],F[2],F[3],g);}
  const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn,ry]=limbs[k];const lb=monLimb(out,px,py,pz,fn);lb.userData.ry=ry||0;out.userData.limbs[k]=lb;}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh&&o.material.emissive){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
 function buildRegionLandmark(bi){
@@ -844,10 +847,17 @@ function buildRegionLandmark(bi){
 }
 /* 可獨立擺動的肢體：以關節為原點合批，再掛到魔物身上旋轉 */
 function monLimb(root,px,py,pz,fn){const lg=new T3.Group();fn(lg);const b=bake(lg);b.position.set(px,py,pz);root.add(b);return b;}
+function cardboardFace(){const k='cbface';if(R3.cache[k])return R3.cache[k];const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.fillStyle='#2b2552';x.beginPath();x.arc(20,28,5,0,7);x.arc(44,28,5,0,7);x.fill();x.strokeStyle='#2b2552';x.lineWidth=4;x.lineCap='round';x.beginPath();x.arc(32,40,7,.15*Math.PI,.85*Math.PI);x.stroke();x.fillStyle='rgba(255,140,120,.55)';x.fillRect(8,38,8,5);x.fillRect(48,38,8,5);const t=new T3.CanvasTexture(c);t.colorSpace=T3.SRGBColorSpace;t.magFilter=T3.NearestFilter;t.minFilter=T3.NearestFilter;return R3.cache[k]=t;}
 function buildFieldMonster(type,variant=0){
  let limbs=null;const g=new T3.Group(),stone=m3('#82969d'),dark=m3('#33485b'),silver=m3('#c3ccca'),wood=m3('#877c6c'),signal=m3(variant===1?'#96bdca':variant===2?'#b2a0c4':'#84b6a4');
  const box=(w,h,d,mat,x,y,z)=>mk(roundedG(w,h,d),mat,x,y,z,g);
- if(type==='golem'){
+ if(type==='skel'){   // 紙箱人：方箱身、膠帶、簡化臉
+  const cb=m3(variant===1?'#d3b07c':'#c9a06a'),tape=m3('#eadfbf'),sh=m3('#8d6e4a');
+  box(12,13,9,cb,0,13,0);box(13,2,10,sh,0,20,0);box(2.4,13.5,9.4,tape,2,13,0);box(12.6,1.6,2,tape,0,20.8,3.2);
+  const face=new T3.Mesh(new T3.PlaneGeometry(9,9),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));face.position.set(-1.2,14,4.6);g.add(face);
+  limbs={legL:[-3,7,0,l=>{mk(roundedG(3.6,7,4),dark,0,-3.5,0,l);mk(roundedG(4.6,2,6),sh,0,-6.5,1,l);}],legR:[3,7,0,l=>{mk(roundedG(3.6,7,4),dark,0,-3.5,0,l);mk(roundedG(4.6,2,6),sh,0,-6.5,1,l);}],
+    armL:[-7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}],armR:[7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}]};
+ }else if(type==='golem'){
   box(15,17,10,stone,0,17,0);box(11,7,9,silver,0,28,0);box(7,2,1,signal,0,29,4.7);mk(new T3.OctahedronGeometry(3,0),signal,0,19,5.5,g);
   limbs={legL:[-5,9,0,l=>{mk(roundedG(6,9,7),dark,0,-4.5,0,l);mk(roundedG(8,5,10),stone,0,-7,2,l);}],legR:[5,9,0,l=>{mk(roundedG(6,9,7),dark,0,-4.5,0,l);mk(roundedG(8,5,10),stone,0,-7,2,l);}],
     armL:[-10,25,0,l=>{mk(roundedG(8,16,9),stone,0,-8,0,l);mk(roundedG(9,7,10),silver,0,-14,1,l);}],armR:[10,25,0,l=>{mk(roundedG(8,16,9),stone,0,-8,0,l);mk(roundedG(9,7,10),silver,0,-14,1,l);}]};
@@ -860,7 +870,8 @@ function buildFieldMonster(type,variant=0){
   mk(new T3.IcosahedronGeometry(6,0),wood,0,5,0,g).scale.set(1,.8,1.4);mk(new T3.ConeGeometry(3,7,6),silver,0,5,8,g).rotation.x=Math.PI/2;
   box(7,1.5,1,signal,0,7,5);limbs={pawL:[-5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}],pawR:[5,3,3,l=>{mk(roundedG(5,3,6),dark,0,-1,0,l);mk(roundedG(3,1,4),silver,0,-1,4,l);}]};
  }
- const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
+ {const F={mole:[4.2,0,6.2,5.9],lantern:[4,0,13,4.1],ranger:[3.6,0,10.5,2.7]}[type];if(F)faceMesh(F[0],F[1],F[2],F[3],g);}
+ const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();if(o.material.emissive)out.userData.mats.push(o.material);}});return out;
 }
 function buildCircuitBoss(bi,form=bi%3){
  const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);

@@ -1,8 +1,8 @@
 /* Tower rooms and collectible skill circuits share the existing run, board and loot owners. */
 const TOWER_THEMES=[
- {id:'prison',n:'收容監獄',col:'#d7ab76',board:{l:'#778590',m:'#404f61',d:'#1b2639'},sky:['#101827','#202b40','#364255'],pool:['jailer','skel','roller','ranger']},
- {id:'lab',n:'零度實驗室',col:'#80d5d3',board:{l:'#83a7ad',m:'#496b7c',d:'#203544'},sky:['#0c1b2a','#173744','#345666'],pool:['specimen','wisp','scanner','cable']},
- {id:'reactor',n:'黑鐵機房',col:'#ed967d',board:{l:'#85818e',m:'#494859',d:'#252737'},sky:['#171521','#302636','#50404d'],pool:['sentinel','furnace','antenna','drone']}
+ {id:'prison',n:'停業遊樂場',col:'#d7ab76',board:{l:'#778590',m:'#404f61',d:'#1b2639'},sky:['#101827','#202b40','#364255'],pool:['jailer','skel','roller','ranger']},
+ {id:'lab',n:'冷藏倉庫',col:'#80d5d3',board:{l:'#83a7ad',m:'#496b7c',d:'#203544'},sky:['#0c1b2a','#173744','#345666'],pool:['specimen','wisp','scanner','cable']},
+ {id:'reactor',n:'地下配電室',col:'#ed967d',board:{l:'#85818e',m:'#494859',d:'#252737'},sky:['#171521','#302636','#50404d'],pool:['sentinel','furnace','antenna','drone']}
 ];
 const TOWER_BIOME_START=BIOMES.length;
 for(const t of TOWER_THEMES)BIOMES.push({n:t.n,board:t.board,t1:t.board.m,t2:t.board.l,portal:t.col,glow:t.col,sky:t.sky,towerOnly:true});
