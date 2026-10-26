@@ -104,10 +104,12 @@
   const from=startOf(i,b),to=endOf(i,b),used=wireCellSet(b,i),q=[[from]],seen=new Set([from.join(',')]);
   while(q.length){const path=q.shift(),p=path.at(-1);if(same(p,to))return path;for(const[dX,dY]of[[1,0],[-1,0],[0,1],[0,-1]]){const n=[p[0]+dX,p[1]+dY],k=n.join(',');if(isInner(...n,b)&&!isRock(...n,b)&&!used.has(k)&&!seen.has(k)){seen.add(k);q.push([...path,n]);}}}return null;
  }
+ const CHAIN_MAX=6,CHAIN_BONUS=.25;
  function strength(b,p){return TIER_MUL[(p.t||1)-1];}
  function resolve(b,lvl=999){
   const out=[];for(const a of b.pieces.filter(p=>p.kind==='active')){const i=sockIndex(a,b),wire=i<unlockedCount(b,lvl)&&connected(b,i)?getWire(b,i):null,linked=[],weights=[],over=[],missed=[];
-   if(wire)for(const[x,y]of wire.cells){const p=pieceAt(b,x,y,'support');if(!p)continue;if(padColor(x,y,b)!==GEM_COLOR[p.key]||!old.fits(p.key,a)){missed.push(p.id);continue;}if(linked.length>=3){over.push(p.id);continue;}linked.push(p.id);weights.push(strength(b,p));}
+   if(wire)for(const[x,y]of wire.cells){const p=pieceAt(b,x,y,'support');if(!p)continue;if(padColor(x,y,b)!==GEM_COLOR[p.key]||!old.fits(p.key,a)){missed.push(p.id);continue;}if(linked.length>=CHAIN_MAX){over.push(p.id);continue;}linked.push(p.id);weights.push(strength(b,p));}
+   if(linked.length>1){const chain=1+CHAIN_BONUS*(linked.length-1);for(let j=0;j<weights.length;j++)weights[j]*=chain;}   /* 連得越多越強：每多一個配件，全部配件效果再 +25% */
    const stat={dmg:0,area:0,cd:0,crit:0,repeat:0,leech:0};linked.forEach((id,j)=>{const p=b.pieces.find(p=>p.id===id);for(const[k,v]of Object.entries(old.SUPPORTS[p.key].mod))stat[k]=(stat[k]||0)+v*weights[j];});
    out.push({id:a.id,key:a.key,sock:i,wired:!!wire,linked,weights,over,missed,stat});
   }return out.sort((a,b)=>a.sock-b.sock);
