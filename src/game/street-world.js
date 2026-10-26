@@ -41,7 +41,7 @@ for(const [id,text]of Object.entries({street:'每天巡街修電，也替小店�
 for(const [id,p]of Object.entries(CHARACTER_PROFILES))CHARS[id].story=p.story;
 const STREET_WORLD_CSS=`body.street-style::before{display:none!important}body.street-style .intro-logo-stage{background:linear-gradient(#40b7e7 0 64%,#d7e9d8 64% 100%)}body.street-style .intro-title-body{background:#e7e9f7}body.street-style .intro-scene-title{color:#172751}body.street-style .field-entry p{line-height:1.75}.street-chapter{padding:10px;border-left:4px solid #259bb5;background:#e7eaf5;color:#172751}.street-chapter b{display:block;margin-bottom:5px}`;
 {const style=document.createElement('style');style.textContent=STREET_WORLD_CSS;document.head.appendChild(style);document.body.classList.toggle('street-style',g1On());}
-function streetChapterHtml(){const i=storyChapter(),chapter=STORY_CHAPTERS[i];return `<div class="street-chapter"><b>${chapter?'第'+(i+1)+'章・'+uxEsc(chapter.title):'六章主線・廣播已恢復'}</b><span>${chapter?'追查下一段訊號，找回'+uxEsc(chapter.item)+'。':'各處的地方留言仍可繼續收錄。'}</span></div>`;}
+function streetChapterHtml(){const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c)return '<div class="street-chapter"><b>六章主線 · 各站已恢復</b><p>各處的地方留言仍可繼續收錄，失物已歸還，電台留著今晚的節目。</p></div>';const route=G.run?'回到街區討伐首領，接續這段主線。':G.depth<c.depth?'沿街探索至深度 '+c.depth+'，再追查首領。':'本段首領：'+c.boss+'。';return `<div class="street-chapter"><b>第${i+1}章 · ${uxEsc(c.title)}</b><p>${uxEsc(c.contact||'街角電台')}：${uxEsc(c.request||c.item)}</p><p>${uxEsc(c.lead||'沿訊號繼續追查。')}</p><span>${uxEsc(route)}</span></div>`;}
 
 function streetMusicTrack(){
  if(typeof INTRO!=='undefined'&&INTRO.active)return 'radio';
