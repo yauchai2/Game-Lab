@@ -4177,7 +4177,7 @@ function g1MonsterBuild(id,encoded){
  const root=new T3.Group();for(const i of doc.scenes[doc.scene||0].nodes)root.add(nodes[i]);
  const holder=new T3.Group();holder.add(root);
  const mixer=new T3.AnimationMixer(root),actions={};for(const c of asset.clips)actions[c.name]=mixer.clipAction(c);
- holder.userData={m01:true,mixer,actions,cur:null,last:null,s:18};addShadow(holder,1.3);
+ holder.userData={m01:true,mixer,actions,cur:null,last:null,s:8.5};addShadow(holder,1.3);
  return holder;
 }
 /* 依怪物狀態選動作：受擊 Hurt、移動 Hop、其餘 Idle。 */
