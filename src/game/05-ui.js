@@ -236,7 +236,7 @@ function showOverlay(html,options={}){
  const o=$('ovl');o.innerHTML=`<div class="mbox small">${html}</div>`;OVERLAY_CLOSE=options.close||hideOverlay;
  const box=o.firstElementChild;if(options.surface)box.classList.add(options.surface);const heading=box.querySelector('h2,.mct'),label=options.title||heading?.textContent||box.querySelector('b')?.textContent||'遊戲提示';
  const bar=document.createElement('div');bar.className='window-titlebar';const title=document.createElement('span');title.className='window-title';title.setAttribute('role','heading');title.setAttribute('aria-level','2');title.textContent=label;bar.append(title);
- if(heading)heading.remove();const close=document.createElement('button'),back=!!options.close&&/返回/.test(options.closeLabel||'');close.type='button';close.className='mb '+(back?'window-back':'window-close');const closeLabel=back?options.closeLabel.slice(options.closeLabel.indexOf('返回')):options.closeLabel||'關閉視窗';close.setAttribute('aria-label',closeLabel);close.title=closeLabel;close.textContent=back?'←':'×';close.addEventListener('click',windowCloseOverlay);bar.append(close);box.prepend(bar);
+ if(heading)heading.remove();const close=document.createElement('button'),back=!!options.close&&/返回/.test(options.closeLabel||'');close.type='button';close.className='mb '+(back?'window-back':'window-close');const closeLabel=back?options.closeLabel.slice(options.closeLabel.indexOf('返回')):options.closeLabel||'關閉視窗';close.setAttribute('aria-label',closeLabel);close.title=closeLabel;close.textContent=back?'←':'×';close.addEventListener('click',windowCloseOverlay);if(back)bar.prepend(close);else bar.append(close);box.prepend(bar);
  for(const button of [...box.querySelectorAll('button')])if(button.getAttribute('onclick')==='hideOverlay()'&&/^(返回|知道了|關閉)/.test(button.textContent.trim())){if(button.hasAttribute('data-initial-focus'))close.setAttribute('data-initial-focus','');button.remove();}
  const cancel=box.querySelector('[data-initial-focus]:not(:disabled)');if(!options.close&&cancel&&/^(取消|保留|繼續)/.test(cancel.textContent.trim()))OVERLAY_CLOSE=()=>cancel.click();
  uxOpenDialog(o,label,windowCloseOverlay);
@@ -271,7 +271,7 @@ function catchUp(sec, report){
   G.off = { lvls:0, eq:0, maps:0, gems:0, carts:0, cores:0, xp:0, cards:[] }; G.offline = true; G.offPen = sec > 60; G.paused = true; G.floats = []; G.fx = [];
   const simSec = Math.min(sec, OFF_WINDOW), w0 = { gold:G.gold, kills:G.totalKills, chips:G.chips, deaths:G.deaths, boss:G.bossKills || 0 };
   let left = simSec; const total = simSec;
-  if (report) showOverlay(typeof returnLoadingHtml==='function'?returnLoadingHtml():`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`);
+  if (report) showOverlay(typeof returnLoadingHtml==='function'?returnLoadingHtml():`<b>離線結算中…</b><div class="mute" id="oprog">0%</div>`); if (report && typeof returnLogoMount==='function') returnLogoMount();
   (function chunk(){
     const t0 = performance.now();
     while (left > 0 && performance.now() - t0 < 30){
@@ -286,7 +286,7 @@ function catchUp(sec, report){
     resolveOfflineChoices(G.off);
     if (G.h.hp <= 0) G.h.hp = G.st.life;
     G.offline = false; G.paused = false; G.lastWall = Date.now(); const o = G.off; G.off = null; G.dirty = true; const saved = saveGame();
-    if (report) showOverlay(uxOfflineReport(o,b,away,sec,saved));
+    if (report){ showOverlay(uxOfflineReport(o,b,away,sec,saved)); if (typeof returnLogoMount==='function') returnLogoMount(); }
   })();
 }
 function setupPanel(){

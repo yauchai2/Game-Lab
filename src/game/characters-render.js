@@ -31,7 +31,7 @@ function buildY2KHero(at,ar,wt,wr,cos){
  const mixer=new T3.AnimationMixer(g),actions=Object.fromEntries(asset.clips.map(clip=>[clip.name,mixer.clipAction(clip)]));
  for(const [name,action]of Object.entries(actions)){if(!['idle','walk','run'].includes(name)){action.setLoop(T3.LoopOnce,1);action.clampWhenFinished=true;}}
  g.userData={y2k:true,id,B,mesh,skeleton,mixer,actions,animation:'',face:Math.PI};
- characterPlay(g,'idle',0);characterEquipment(g,cos||G.cos,wt,wr);
+ characterPlay(g,'idle',0);characterEquipment(g,cos||G.cos,wt,wr);g.userData.aura=buildBodyAura(g,(cos||G.cos).auraStyle);
  mk(new T3.RingGeometry(8,9,28).rotateX(-Math.PI/2),basic('#7ef0ff',.7),0,.2,0,g);
  const orb=mk(ico(1.2,1),basic('#81cbd1',.8),0,0,0,B.handL);orb.position.set(0,0,2);orb.visible=false;g.userData.orb=orb;
  addShadow(g,5.5);g.scale.setScalar(.85*CK);return g;
@@ -63,6 +63,29 @@ function characterPlay(g,name,fade=.1){
  const u=g.userData,next=u.actions[name];if(!next||u.animation===name)return;
  const previous=u.actions[u.animation];u.animation=name;next.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).play();if(previous)previous.crossFadeTo(next,fade,false);else next.fadeIn(fade);
 }
+/* 身體特效：純外觀，掛在角色群組上，跟著移動與旋轉；低面數、不加光源。 */
+function buildBodyAura(parent,kind){
+ if(!kind||kind==='0')return null;
+ const root=new T3.Group(),M=(c,o=1)=>{const m=basic(c,o);m.transparent=true;m.depthWrite=false;return m;},cubes=[],rnd=(a,b)=>a+Math.random()*(b-a);let step=()=>{};
+ parent.add(root);
+ if(kind==='circuit'){
+  const r1=mk(new T3.TorusGeometry(7.2,.55,4,24).rotateX(Math.PI/2),M('#69e0ff',.9),0,5,0,root),r2=mk(new T3.TorusGeometry(6.2,.55,4,24).rotateX(Math.PI/2),M('#b49bff',.9),0,17,0,root);
+  for(let i=0;i<6;i++)cubes.push(mk(new T3.BoxGeometry(1.5,1.5,1.5),M(i%2?'#69e0ff':'#fff0a0',1),0,0,0,root));
+  step=t=>{r1.rotation.y=t*1.4;r2.rotation.y=-t*1.1;r1.position.y=5+Math.sin(t*1.6)*1.2;r2.position.y=17+Math.cos(t*1.6)*1.2;cubes.forEach((c,i)=>{const a=t*1.8+i*Math.PI/3;c.position.set(Math.cos(a)*7.6,3+((i*4+t*5)%20),Math.sin(a)*7.6);c.rotation.set(t*2+i,t*3,0);});};
+ }else if(kind==='spark'){
+  for(let i=0;i<9;i++)cubes.push(mk(new T3.BoxGeometry(.6,3.4,.6),M(i%3?'#fff3a0':'#8fe8ff',.95),0,-99,0,root));
+  let acc=1;step=(t,dt)=>{acc+=dt;if(acc>.11){acc=0;for(const c of cubes){const on=Math.random()<.55;c.visible=on;if(on){const a=Math.random()*6.283,rr=rnd(3.5,7.5);c.position.set(Math.cos(a)*rr,rnd(1,24),Math.sin(a)*rr);c.rotation.set(rnd(-.8,.8),rnd(0,3),rnd(-1.2,1.2));c.scale.y=rnd(.5,1.6);}}}};
+  for(const c of cubes){c.position.set(rnd(-6,6),rnd(2,22),rnd(-6,6));c.rotation.z=rnd(-1,1);}
+ }else if(kind==='wave'){
+  for(let i=0;i<3;i++)cubes.push(mk(new T3.RingGeometry(.72,1,28).rotateX(-Math.PI/2),M('#ff7ad9',.9),0,.35,0,root));
+  step=t=>{cubes.forEach((c,i)=>{const k=((t*.55+i/3)%1);c.scale.setScalar(3+k*10);c.material.opacity=.95*(1-k*k);});};
+ }else if(kind==='pixel'){
+  const cols=['#7ef0ff','#ff9be3','#fff0a0'];
+  for(let i=0;i<22;i++){const c=mk(new T3.BoxGeometry(1.4,1.4,1.4),M(cols[i%3],.95),0,0,0,root);c.userData={a:rnd(0,6.283),rr:rnd(3,7),ph:i/16,sp:rnd(.18,.32)};cubes.push(c);}
+  step=t=>{for(const c of cubes){const d=c.userData,k=(t*d.sp+d.ph)%1;c.position.set(Math.cos(d.a+t*.6)*d.rr,1+k*24,Math.sin(d.a+t*.6)*d.rr);c.material.opacity=Math.min(1,k*6,(1-k)*3);c.rotation.y=t*2;}};
+ }
+ const a={root,t:0,update(dt){a.t+=dt;step(a.t,dt);}};step(.5,.2);return a;
+}
 function characterAnimate(g,dt,state={}){
  const u=g.userData;if(!u.y2k)return;dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));
  // Preview offsets are temporary: remove them before the mixer writes the next pose.
@@ -71,7 +94,7 @@ function characterAnimate(g,dt,state={}){
  if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack')u.actions.attack.reset().play();u.lastSwing=state.swing;
  if(state.cast&&u.lastCast!=null&&state.castTime<u.lastCast&&u.animation==='cast')u.actions.cast.reset().play();u.lastCast=state.castTime;
  characterPlay(g,mode,mode==='hurt'?.045:.1);const action=u.actions[mode];if(action&&mode==='attack')action.timeScale=.6/.3;if(action&&mode==='cast')action.timeScale=.8/.45;
- u.mixer.update(dt);animateEquipment(g,state);
+ u.mixer.update(dt);animateEquipment(g,state);if(u.aura){u.aura.root.visible=!state.dead;u.aura.update(dt);}
  g.updateMatrixWorld(true);u.skeleton.update();
 }
 // Presentation only. No game clocks, combat flags, save data or model assets change.

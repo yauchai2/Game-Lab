@@ -134,6 +134,7 @@ function obj3d(kind, size){ const u = typeof icon3dObjUrl === 'function' ? icon3
 /* Cosmetic thumbnails use the same weapon/accessory builders as the equipped hero. */
 function icon3dCosmeticUrl(cat,id){
   if(!cosAvailable(cat)||!cosGet(cat,id))return '';
+  if(cat==='auraStyle'&&typeof deviceThumb==='function'&&typeof buildBodyAura==='function')return deviceThumb('cos:aura:'+id,()=>{const g=new T3.Group();mk(new T3.CylinderGeometry(11,11,.7,16),m3('#26335e'),0,-.6,0,g);mk(new T3.CylinderGeometry(2.2,2.6,14,6),m3('#8da0d8'),0,7,0,g);mk(ico(2.6,1),m3('#b3c2ec'),0,16,0,g);if(id==='0'){mk(new T3.TorusGeometry(7,.3,4,18).rotateX(Math.PI/2),m3('#8d97ad'),0,6,0,g);}else buildBodyAura(g,id);g.rotation.x=.35;return g;});
   if(id==='0')return typeof icon3dOriginalCosmeticUrl==='function'?icon3dOriginalCosmeticUrl(cat):'';
   if(cat==='weaponStyle')return icon3dUrl('weapon',{umbrella:0,bat:1,tube:2,saber:3}[id],0);
   const key='cos:'+cat+':'+id;if(ICON3D.cache[key])return ICON3D.cache[key];if(ICON3D.fail)return '';
