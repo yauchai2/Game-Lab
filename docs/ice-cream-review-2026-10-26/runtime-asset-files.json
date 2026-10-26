@@ -1,0 +1,282 @@
+[
+  {
+    "path": "src/assets/badges.png",
+    "bytes": 313680,
+    "sha256": "e0e7631b23f2f1ec16992790fb4cf20d12ef49374fe9302bf94dbb1730b863ec"
+  },
+  {
+    "path": "src/assets/badges.svg",
+    "bytes": 5600,
+    "sha256": "8f24614acc7d11236be02fbca738a1f7d4b6d410bf60a2a7d919d257cd4fe43b"
+  },
+  {
+    "path": "src/assets/equips.png",
+    "bytes": 277724,
+    "sha256": "a520f9e7f8550a803c7ba041a90ca27ee694eea84f6de4125d1d0a6a45140715"
+  },
+  {
+    "path": "src/assets/equips.svg",
+    "bytes": 5011,
+    "sha256": "32eb386e7c8147263f558da161bcd972f886d3dbdaca9e046fcce21c0c8887f8"
+  },
+  {
+    "path": "src/assets/favicon.png",
+    "bytes": 380,
+    "sha256": "21032deeea79fb18dbefdb7f87f01aeb049a595134091ff4543722e1855b7098"
+  },
+  {
+    "path": "src/assets/gems.png",
+    "bytes": 188844,
+    "sha256": "858a7c33fcd0236d8b9e45f292da3a518337b3cca61c6bb471f64060465c83c8"
+  },
+  {
+    "path": "src/assets/gems.svg",
+    "bytes": 4235,
+    "sha256": "71b3aff0746a926ea19427b6858f7e908a6460f64a86aae48dafc01720b9b1de"
+  },
+  {
+    "path": "src/assets/icon-manifest.json",
+    "bytes": 2545,
+    "sha256": "b944f177416f19bc0de845853e98e25bc4b12bd9c5f5515d831de4b0dcaeee32"
+  },
+  {
+    "path": "src/assets/icons.png",
+    "bytes": 246569,
+    "sha256": "69c6f5247bcd293abb3c59f536dd6d26af0e70589a0ffd53900a0aabb7b23720"
+  },
+  {
+    "path": "src/assets/icons.svg",
+    "bytes": 7774,
+    "sha256": "02b25bf945772f61adc9e3133a2b678d291b2a65fc77d683859170a9bcb656ca"
+  },
+  {
+    "path": "src/assets/legends.png",
+    "bytes": 237091,
+    "sha256": "f956e3fa91993140f5a4cdc223a18e440e5953812673c6555d93a80075be729d"
+  },
+  {
+    "path": "src/assets/legends.svg",
+    "bytes": 4343,
+    "sha256": "966526f4ba159ca05bed7d831a69de13e6743b2e34bd44a1b6270512cfe4b4ef"
+  },
+  {
+    "path": "src/assets/phone/back.webp",
+    "bytes": 30032,
+    "sha256": "63e6b282f92c79bea66d52a4df9c5ff946fd2861c49e2dd5192e4ca78c0ab9de"
+  },
+  {
+    "path": "src/assets/phone/front.webp",
+    "bytes": 34420,
+    "sha256": "4d4d62ea39aabf753eebbed9e14c34451fc5e905cd29c6e50a399d1026350769"
+  },
+  {
+    "path": "src/assets/phone/meta.json",
+    "bytes": 53,
+    "sha256": "20d511e1f02c117392be43229bdbbb0ae718487e6102797a2253329d5a135209"
+  },
+  {
+    "path": "src/assets/phone/phone.glb",
+    "bytes": 995916,
+    "sha256": "75477ceb326f6371c0598876af2bc1fdef7658eac045d926b6350c014a24618a"
+  },
+  {
+    "path": "src/assets/phone/side.webp",
+    "bytes": 11278,
+    "sha256": "2eb01318a1bd26e712ab5d71cca830389b401abd82f8ca37d7f14c02dcc76250"
+  },
+  {
+    "path": "src/assets/phone/slice.webp",
+    "bytes": 16970,
+    "sha256": "e88ca6c02b74dcbae35f1a778886b105eadd06bad081c62265c3659e8ec9e587"
+  },
+  {
+    "path": "src/assets/relics.png",
+    "bytes": 271582,
+    "sha256": "19739cb93b00e1f29e7844f1f3fcd57b3de1383eca0e99ab85f4e58175b32ad7"
+  },
+  {
+    "path": "src/assets/relics.svg",
+    "bytes": 5008,
+    "sha256": "df34f63c2b26a3dd37a5d974151ae63a7ddfc14924cbe7d7167b5bd271454ab2"
+  },
+  {
+    "path": "src/assets/skills.png",
+    "bytes": 217553,
+    "sha256": "a9f3f8b651856ac0f2090d0200ac7ce98b79ee48a173c3ec0ea23d902529c5b8"
+  },
+  {
+    "path": "src/assets/skills.svg",
+    "bytes": 3573,
+    "sha256": "d99cdb9685f9f1c26cfa1799e8c8393e887e205b2800e71ea5df5026760dc9e8"
+  },
+  {
+    "path": "src/assets/wordmark.png",
+    "bytes": 225848,
+    "sha256": "39b7de24d2d8b092423d58216f0995c1c50cc1b204c26b3c721fa8ce020b6ba2"
+  },
+  {
+    "path": "src/assets/wordmark.svg",
+    "bytes": 3681,
+    "sha256": "e051783e4da200ed47a585f6474600088be6918afacd34f45ae6c0ff26c59df1"
+  },
+  {
+    "path": "src/audio/LICENSES.md",
+    "bytes": 1642,
+    "sha256": "1e164c2eac22506d046a1eeefe612fc417992fdb26f521ec8da8bc02c97dd321"
+  },
+  {
+    "path": "src/audio/click_003.mp3",
+    "bytes": 668,
+    "sha256": "cd8e98fc321aa3b59d45ff45f7532e4ca81196f882099f1a8c60eb71812d8253"
+  },
+  {
+    "path": "src/audio/close_001.mp3",
+    "bytes": 1532,
+    "sha256": "10648bcc12828e8c708e1104e7d3276956369ac0ebf991b858c9cee731dd6a1a"
+  },
+  {
+    "path": "src/audio/confirmation_002.mp3",
+    "bytes": 3836,
+    "sha256": "ade8fba6ccb473bf47003efc9270588fc54363ec94a6ebe70f3750e87436a740"
+  },
+  {
+    "path": "src/audio/drift.mp3",
+    "bytes": 576620,
+    "sha256": "e6683f8358d64c91fed612c88a5a070548be406e9b5c3fda39791e70c9e290c2"
+  },
+  {
+    "path": "src/audio/drop_003.mp3",
+    "bytes": 1676,
+    "sha256": "fcadffdb8cd72f31f382cfd914983ed1726d8c5c556a5457dab8ab9c2a4ed50e"
+  },
+  {
+    "path": "src/audio/error_006.mp3",
+    "bytes": 3548,
+    "sha256": "5bc58382141d58a3be12932c76706605e53fc5d2a3905afb8c44d9f278289a22"
+  },
+  {
+    "path": "src/audio/glass_004.mp3",
+    "bytes": 4700,
+    "sha256": "4474e3f34c0c90544d4d4de8d0f19833ae37ba651ea855963fbe645fb5f08d07"
+  },
+  {
+    "path": "src/audio/glitch_001.mp3",
+    "bytes": 668,
+    "sha256": "0a17d7547bf09d22c28547b7274e435679ec80e51f7f94603ea33f3ec7c16507"
+  },
+  {
+    "path": "src/audio/haze.mp3",
+    "bytes": 576620,
+    "sha256": "864edf60d2b684c621595163448987cd60d559d1052a7b6cb68ebdde11169eee"
+  },
+  {
+    "path": "src/audio/maximize_002.mp3",
+    "bytes": 2108,
+    "sha256": "84a41c2c15ca199ab850498463c3a303e95b425cd7f1bdc0c0f66b94c36fcd84"
+  },
+  {
+    "path": "src/audio/minimize_002.mp3",
+    "bytes": 2108,
+    "sha256": "d4eb43935ded261e201a942460f2c93fee229b571b9669f6f34f3a945a18df3a"
+  },
+  {
+    "path": "src/audio/open_002.mp3",
+    "bytes": 2540,
+    "sha256": "6d91ff0fc1b8dedd35a74dd1ee671da44faac53a4309ffd053f8ec5ffced7549"
+  },
+  {
+    "path": "src/audio/pluck_001.mp3",
+    "bytes": 1244,
+    "sha256": "0412ec0185eb8ebaa1ebfafe9fdbc043fbb640fbf5686f831e613eab8bccaca5"
+  },
+  {
+    "path": "src/audio/provenance.json",
+    "bytes": 7033,
+    "sha256": "9438370a4f40f00a437ed217f2a163ff248ef23833e972fdfd37590509a0e0b2"
+  },
+  {
+    "path": "src/audio/rush.mp3",
+    "bytes": 480716,
+    "sha256": "00b2aa4a910c6105b423ac1901ae5fe4bb269d417141ed78a8ad628ca068e659"
+  },
+  {
+    "path": "src/audio/scratch_003.mp3",
+    "bytes": 1388,
+    "sha256": "64317586bc3294ed0b08a98b79416e4141576290014ebd239f22e2ab28a254fd"
+  },
+  {
+    "path": "src/audio/select_003.mp3",
+    "bytes": 2828,
+    "sha256": "450c29b67b80bc3d0539684d31d0e6cff6480f590046bce2e794f0264b0f85aa"
+  },
+  {
+    "path": "src/audio/switch_004.mp3",
+    "bytes": 3548,
+    "sha256": "0f18c57019a0855e815865402ff306f8eb329f90c6c5fb3c24f73b35761ddf6b"
+  },
+  {
+    "path": "src/game/assets.js",
+    "bytes": 53888,
+    "sha256": "a55b0e55352d1f12f9a07f1ed203d82af4b212f1063fbace5c7f1462d81a6d02"
+  },
+  {
+    "path": "src/game/audio-assets.js",
+    "bytes": 2222919,
+    "sha256": "f970ee25ac7d5c154a69813bdd37f12fc248d490a19482bd9eb0b62799f5a87f"
+  },
+  {
+    "path": "src/game/brand-asset.js",
+    "bytes": 248359,
+    "sha256": "3e2366d4c5b4871833da1f2aa97590abdebdf5c03a417c27af188d9aa178bb9e"
+  },
+  {
+    "path": "src/game/characters-assets.js",
+    "bytes": 5929943,
+    "sha256": "c787dd630daf04c8ddbe37148006ed9690ed0fb3c6afa8af19c5f5da66ba10f5"
+  },
+  {
+    "path": "src/game/equipment-assets.js",
+    "bytes": 4177017,
+    "sha256": "6963de86bb5fd041a8e57ded1a7597e17c3c11ba76894d636447d1262d59ddcb"
+  },
+  {
+    "path": "src/game/font.js",
+    "bytes": 202916,
+    "sha256": "9e17c108306bc91828a738d225a419852295e293faf84d85d21c001c0e0344d9"
+  },
+  {
+    "path": "src/game/gear-fallbacks.js",
+    "bytes": 159075,
+    "sha256": "a3b68fe9beecbc92ef9e47137e4179d773484704c653564c814b9d585a473b26"
+  },
+  {
+    "path": "src/game/logo-3d-asset.js",
+    "bytes": 1140702,
+    "sha256": "7dd600f4886ccaa9aac8a09913bfb051d885e3b388f22977d469a4b1fb9d7db7"
+  },
+  {
+    "path": "src/game/models-mon.js",
+    "bytes": 48443,
+    "sha256": "822f8f521c4ab121337feee0fcc0ccb2ea43ddbc1a1e9c6d1470c9f1a361e6a9"
+  },
+  {
+    "path": "src/game/models-weapon.js",
+    "bytes": 15525,
+    "sha256": "9aa261f3a783ae452bc9e65f5d3bb085a21da11ab7848c43fcabb1dce40a104b"
+  },
+  {
+    "path": "src/game/models.js",
+    "bytes": 55299,
+    "sha256": "28d170961cc0510450897131ec8cd9f08366439039e5c643adefefc950943fa2"
+  },
+  {
+    "path": "src/game/phone-assets.js",
+    "bytes": 1451812,
+    "sha256": "9724598a25de222925f848d94ed7c62e83a55b878d754141bc0ab21b58ab064c"
+  },
+  {
+    "path": "src/game/phone-preview.js",
+    "bytes": 246251,
+    "sha256": "c51e3f15f3be166e4ebdd466a9f70bf368c9ac3dde983585095c265457939d46"
+  }
+]

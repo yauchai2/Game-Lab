@@ -1,0 +1,67 @@
+{
+  "source": "5c8e190",
+  "method": "Fresh isolated headless Chromium using software WebGL; local detached main checkout; developer fixtures do not modify source or real player saves.",
+  "shots": [
+    {
+      "file": "01-title.png",
+      "description": "main 5c8e190 title/intro entry",
+      "url": "http://127.0.0.1:8781/?intro&fresh",
+      "sha256": "3e850a51d4fb80d5a4bc63a19c10f2ae6abe6c75b9d5c199cfac8c8317ec59cf"
+    },
+    {
+      "file": "02-character.png",
+      "description": "current character identity and game frame",
+      "url": "http://127.0.0.1:8781/?fresh&static&lvl=25",
+      "sha256": "77030afe46a2e81e6576414e1045fa8acb9de496aebf672aebef21a734d5870b"
+    },
+    {
+      "file": "03-equipment.png",
+      "description": "current character cosmetic/gear display",
+      "url": "http://127.0.0.1:8781/?fresh&static&lvl=25",
+      "sha256": "08278266e029028f44af6f276ea158c58dfd26ce8a44aea6a6150e207d8fd30f"
+    },
+    {
+      "file": "04-day-battle.png",
+      "description": "actual daytime combat with current terrain, sky and combat effects",
+      "url": "http://127.0.0.1:8781/?fresh&static&lvl=25",
+      "sha256": "e0ad81928448ab5d52313426dccdb5a2a3e5f890fde99095c98b50ba650db96e"
+    },
+    {
+      "file": "05-industrial-battle.png",
+      "description": "actual industrial district and its different lighting",
+      "url": "http://127.0.0.1:8781/?fresh&static&lvl=25",
+      "sha256": "621d532a32af86ba5d445f4908cee7ec3b39aa2a49eb34e64b5acc271577899c"
+    },
+    {
+      "file": "06-inventory.png",
+      "description": "current inventory icons and information hierarchy",
+      "url": "http://127.0.0.1:8781/?fresh&static&lvl=25",
+      "sha256": "d9bc6d7033e2a1f499ee65461a58122ab671249ef6de58e440f1ed410a90706c"
+    },
+    {
+      "file": "07-circuit.png",
+      "description": "current manual wiring and skill interface",
+      "url": "http://127.0.0.1:8781/?fresh&static&lvl=25",
+      "sha256": "526c252f299f141cc256054c5c0b7a74fe05448659c03bfd6bb40f3a43d74987"
+    },
+    {
+      "file": "08-mobile-battle.png",
+      "description": "390px current combat and blue-purple panel",
+      "url": "http://127.0.0.1:8781/?fresh&static&lvl=25",
+      "sha256": "d2809f47b870a6b0b05698cc8b07d7fd9447c02b8271b139fb33dc676f3d27e3"
+    },
+    {
+      "file": "09-mobile-character.png",
+      "description": "390px current character panel",
+      "url": "http://127.0.0.1:8781/?fresh&static&lvl=25",
+      "sha256": "50637b56a9ac983c6feb35da2d5a67316c3c198b7b9e91086292c64402c7d1b1"
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "No in-app/extension browser tool was exposed in this session. These are local game-render captures, not observations of the user browser.",
+    "No real-device FPS, Safari, or manual audio-listening validation.",
+    "Representative scenes/screens captured; not every item, map or animation was visually inspected."
+  ],
+  "inspection": "All nine accepted screens inspected individually/by contact sheet; wrong first inventory capture was rejected and recaptured as warehouse."
+}

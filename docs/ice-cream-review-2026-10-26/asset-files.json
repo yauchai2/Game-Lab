@@ -1,0 +1,346 @@
+[
+  {
+    "path": "assets/brand/README.md",
+    "bytes": 1687,
+    "kind": "md"
+  },
+  {
+    "path": "assets/brand/idle-hero-logo.glb",
+    "bytes": 814732,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 2,
+    "animations": []
+  },
+  {
+    "path": "assets/brand/logo-3d.json",
+    "bytes": 762,
+    "kind": "json"
+  },
+  {
+    "path": "assets/brand/logo-poster.png",
+    "bytes": 40685,
+    "kind": "png"
+  },
+  {
+    "path": "assets/characters/aki.glb",
+    "bytes": 943980,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": [
+      "attack",
+      "cast",
+      "dash",
+      "death",
+      "hurt",
+      "idle",
+      "run",
+      "victory",
+      "walk"
+    ]
+  },
+  {
+    "path": "assets/characters/equipment-masks.json",
+    "bytes": 26193,
+    "kind": "json"
+  },
+  {
+    "path": "assets/characters/manifest.json",
+    "bytes": 2681,
+    "kind": "json"
+  },
+  {
+    "path": "assets/characters/milo.glb",
+    "bytes": 1001776,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": [
+      "attack",
+      "cast",
+      "dash",
+      "death",
+      "hurt",
+      "idle",
+      "run",
+      "victory",
+      "walk"
+    ]
+  },
+  {
+    "path": "assets/characters/null.glb",
+    "bytes": 1259652,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": [
+      "attack",
+      "cast",
+      "dash",
+      "death",
+      "hurt",
+      "idle",
+      "run",
+      "victory",
+      "walk"
+    ]
+  },
+  {
+    "path": "assets/characters/ping.glb",
+    "bytes": 1241932,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": [
+      "attack",
+      "cast",
+      "dash",
+      "death",
+      "hurt",
+      "idle",
+      "run",
+      "victory",
+      "walk"
+    ]
+  },
+  {
+    "path": "assets/equipment/aki_baton.glb",
+    "bytes": 187776,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/aki_baton.jpg",
+    "bytes": 1274,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/aki_chain.glb",
+    "bytes": 211124,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/aki_chain.jpg",
+    "bytes": 1487,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/aki_charm.glb",
+    "bytes": 162428,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/aki_charm.jpg",
+    "bytes": 1595,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/aki_headphones.glb",
+    "bytes": 204816,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/aki_headphones.jpg",
+    "bytes": 2110,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/manifest.json",
+    "bytes": 5949,
+    "kind": "json"
+  },
+  {
+    "path": "assets/equipment/milo_belt.glb",
+    "bytes": 210292,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/milo_belt.jpg",
+    "bytes": 2061,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/milo_disc.glb",
+    "bytes": 173944,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/milo_disc.jpg",
+    "bytes": 2418,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/milo_headphones.glb",
+    "bytes": 205124,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/milo_headphones.jpg",
+    "bytes": 2868,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/milo_md.glb",
+    "bytes": 188504,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/milo_md.jpg",
+    "bytes": 2600,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/null_box.glb",
+    "bytes": 209668,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/null_box.jpg",
+    "bytes": 3182,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/null_controller.glb",
+    "bytes": 172388,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/null_controller.jpg",
+    "bytes": 2234,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/null_goggles.glb",
+    "bytes": 194120,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/null_goggles.jpg",
+    "bytes": 1883,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/null_pet.glb",
+    "bytes": 184348,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/null_pet.jpg",
+    "bytes": 2400,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/ping_bag.glb",
+    "bytes": 175404,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/ping_bag.jpg",
+    "bytes": 2545,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/ping_comm.glb",
+    "bytes": 180572,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/ping_comm.jpg",
+    "bytes": 1291,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/ping_launcher.glb",
+    "bytes": 233644,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/ping_launcher.jpg",
+    "bytes": 1957,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/ping_phone.glb",
+    "bytes": 203708,
+    "kind": "glb",
+    "meshes": 1,
+    "materials": 1,
+    "images": 1,
+    "animations": []
+  },
+  {
+    "path": "assets/equipment/ping_phone.jpg",
+    "bytes": 2204,
+    "kind": "jpg"
+  },
+  {
+    "path": "assets/equipment/source-map.json",
+    "bytes": 839,
+    "kind": "json"
+  }
+]
