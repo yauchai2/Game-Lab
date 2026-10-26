@@ -11,3 +11,9 @@
 來源需先PR合併main再發佈Pages；線上雜湊、source commit、Release附件將於完成後追加驗證。
 
 發佈前本輪重跑：4角色×9clips、16gear、22type＋4Boss、A/B、三地區、320／390、24實體街區、六章boss kill／save／offline-map邊界、分檔網站390px／頭像／proxy全部通過。證據位於docs/style-complete的runtime-validation、story-dense-validation、site-validation等JSON。
+
+PR84已合併，發佈來源為2f7c889f6a272d278d0aa44335dfc58151c0f2e3；Pages部署076180d07bcfaa5d05c8a0f00c29bf2a7a717b78，工作流程40324674500成功。正式HTTPS的version.json、index.html及21個腳本SHA-256逐一吻合，離線單檔SHA-256為30c546fe826cd7bdf534cff5d667409884d5cccba5d291892e3c6fc92e8ce9ea。
+
+正式站Chromium390px直接啟動通過：v0.64.0、街頭模式、十二GLB、六章、同伴零maps、cardboardFace未定義、無水平溢出、無頁面錯誤或HTTP失敗。證據live-browser.json與live-mobile.png。使用新建瀏覽器context，未操作使用者的實際存檔。
+
+Release工作流程40324886785成功；v0.64.0標籤精確指向上述來源，idle-hero.html附件23,492,998bytes，GitHub回傳digest與本機已驗單檔相同。Release：https://github.com/yauchai2/Game-Lab/releases/tag/v0.64.0 。

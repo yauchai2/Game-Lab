@@ -1,0 +1,14 @@
+{
+  "url": "https://yauchai2.github.io/Game-Lab/?release=064",
+  "result": {
+    "version": "0.64.0",
+    "street": true,
+    "actors": 12,
+    "mascotMaps": 0,
+    "cartoonFace": "undefined",
+    "chapters": 6,
+    "overflow": false
+  },
+  "errors": [],
+  "bad": []
+}
