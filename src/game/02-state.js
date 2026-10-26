@@ -278,7 +278,7 @@ function applySave(o){
   G.unread=cleanUnread(o.unread);G.summons=[];G.airSupply=null;G.airBuffs=[];G.damageLog=[];G.h.fatalSource=null;G.h.airShield=0;G.h.airShieldUntil=0;G.deathReport=cleanDeathReport(o.deathReport);
   G.startingChar=Object.hasOwn(CHARS,o.startingChar)?o.startingChar:null;
   const uidSeen=new Set(),uidConflicts=new Set();for(const it of Array.isArray(o.inventory)?o.inventory:[]){if(uidSeen.has(it.uid))uidConflicts.add(it.uid);uidSeen.add(it.uid);}
-  G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>/^p(?:[0-9]|1[01])$/.test(k)&&Number.isInteger(v)&&v>=0&&v<=3));
+  G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>(/^p(?:[0-9]|1[01])$/.test(k)&&v<=3||k==='ch'&&v<=6)&&Number.isInteger(v)&&v>=0));
   G.castPolicy=o.castPolicy==='combo'?'combo':'balanced';G.signalCharge=0;G.readySince={};G.combat=null;G.castSerial=0;G.signalGainRoot=null;G.h.castT=-1;G.h.swingT=-1;
   for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','gemTier','carts','seen','goals','mapsDone','pass','ach','legSeen','pity','parts','bossHp','towerBest','quest','craftN','mk','seenG','seenC','cz','userCz','autoFold','dmgNum','seenInv','seenParts','seenGoals','builds','bi','relics','relicPicks','cos','own','heroName','born','autoCard','bossKills','char','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
   normTier();G.builds=Array.isArray(o.builds)?o.builds.slice(0,3):[null,null,null];G.bi=[0,1,2].includes(o.bi)?o.bi:0;
@@ -661,6 +661,18 @@ const FIELD_STORIES=[
  ['石柱間的雜音','修理工 小禾','這些石柱比電台更古老。卡匣靠近時會發熱，像是這個地方也記得昔日的聲音。','石拱之間傳來短短三聲。那是舊時代表示平安的暗號。'],
  ['最後一批貨物','倉庫值班紀錄','貨倉裡剩下一批沒送出的收音機。搬運機照著排程等著，等一班晚點的貨車。','貨倉門開了。箱子上寫著：送往各個街角，讓大家聽得見彼此。']
 ];
+/* 夏日街區主線：六章，每章一個首領與一件失物。以首領擊敗的深度推進，不彈窗，只寫進日誌與電台手記。 */
+const STORY_CHAPTERS=[
+ {depth:3,boss:'走音喇叭',item:'電台天線零件',title:'電台前街',text:'喇叭倒下後，一截銀色的天線零件掉在柏油路上。阿澄說，訊號是從高架橋下傳來的。',radio:'前街已恢復連線。下一段訊號：高架橋下。'},
+ {depth:7,boss:'回音柱',item:'腳踏車鈴',title:'高架橋下',text:'小禾的腳踏車鈴在橋墩後面叮了一聲。她說，鈴響的時候，電台好像也跟著響了一下。',radio:'橋下有回應了。下一段訊號：商店街。'},
+ {depth:12,boss:'跑出來的招牌',item:'老闆娘的收音機',title:'商店街與夜市',text:'老闆娘接過收音機，笑著說這台從開店就沒關過。燒烤的煙裡，訊號又強了一點。',radio:'夜市的歌回來了。下一段訊號：車站。'},
+ {depth:18,boss:'失控的月台廣播',item:'站務員的麥克風',title:'車站與河邊',text:'麥克風掉在月台邊緣，還有一點餘溫。河邊的風把一句沒說完的廣播吹了回來。',radio:'月台報站聲恢復。下一段訊號：山路電塔。'},
+ {depth:25,boss:'重播機',item:'舊發射機的鑰匙',title:'山路電塔與商場地下',text:'一台沒人關掉的舊發射機，一直重播「暑假最後一天」。你拔掉它，街區的時間才繼續往前走。',radio:'重播結束。最後一段訊號：屋頂。'},
+ {depth:35,boss:'錯頻本體',item:'吉祥物的貼紙',title:'屋頂天線',text:'你把所有失物裝回天線。日落時，整條街的收音機同時響起，街區亮起了燈。吉祥物在天線旁留下一張貼紙。',radio:'廣播已恢復。夏日的最後一個傍晚，請慢慢走回家。'}
+];
+function storyChapter(){return Math.max(0,Math.min(STORY_CHAPTERS.length,G.storyFlags.ch|0));}
+function storyBossName(d){const c=STORY_CHAPTERS[storyChapter()];return c&&d>=c.depth?c.boss:null;}
+function storyAdvance(d){if(G.offline)return;const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c||d<c.depth)return;G.storyFlags.ch=i+1;G.dirty=true;G.mascotCheer=1.2;logLine(`找回失物：${c.item}。${c.radio}`,'#c28a00');if(i+1===STORY_CHAPTERS.length)logLine('夏日街區的廣播全部恢復了。接下來是更深的街區。','#c28a00');}
 const WORLD_TRAVEL={key:null,remaining:0,duration:.7};
 function fieldDiscover(profile,boss=false){if(G.offline||profile<0||profile>=FIELD_STORIES.length)return;const key='p'+profile,bit=boss?2:1,old=G.storyFlags[key]||0;if(old&bit)return;G.storyFlags[key]=old|bit;G.dirty=true;}
 function worldTravelStart(plan){if(G.offline||plan.key==='training')return;const changed=WORLD_TRAVEL.key!==plan.key;if(!changed)return;WORLD_TRAVEL.key=plan.key;WORLD_TRAVEL.remaining=WORLD_TRAVEL.duration;fieldDiscover(plan.profile);}

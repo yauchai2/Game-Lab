@@ -1,0 +1,55 @@
+{
+  "id": "M02",
+  "name": "拖板爬蟲",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "M02_Body",
+      "triangles": 196,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M02_Leg0",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M02_Leg1",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M02_Leg2",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M02_Leg3",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 724,
+  "bounds": {
+    "min": [
+      -1.4500000476837158,
+      -0.4400000274181366,
+      6.813749120482271e-09
+    ],
+    "max": [
+      1.4500000476837158,
+      0.4399999976158142,
+      1.1475000381469727
+    ]
+  },
+  "height": 1.1475000313332235,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "runtimeVerified": false
+}

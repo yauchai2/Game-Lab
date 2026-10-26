@@ -1,0 +1,27 @@
+{
+  "stock_blender_glTF_import": "passed",
+  "mesh_objects": 5,
+  "triangles": 1764,
+  "image_textures": 0,
+  "bounds_blender_z_up": {
+    "min": [
+      -1.6050000190734863,
+      -0.5550000071525574,
+      -8.126039574563038e-08
+    ],
+    "max": [
+      1.6050000190734863,
+      0.5149999856948853,
+      2.9600000381469727
+    ]
+  },
+  "imported_actions": [
+    "Hurt_M04_Body_CTRL",
+    "Idle_M04_Body_CTRL",
+    "Move_M04_Arm_CTRL_0",
+    "Move_M04_Arm_CTRL_1",
+    "Move_M04_Body_CTRL",
+    "Move_M04_Leg_CTRL_0",
+    "Move_M04_Leg_CTRL_1"
+  ]
+}

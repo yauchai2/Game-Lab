@@ -1,0 +1,290 @@
+{
+  "monsters": [
+    {
+      "file": "assets/monsters/b01/B01.glb",
+      "triangles": 1032,
+      "meshes": 5,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Move",
+        "Idle",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/b02/B02.glb",
+      "triangles": 664,
+      "meshes": 5,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/b03/B03.glb",
+      "triangles": 752,
+      "meshes": 6,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/b04/B04.glb",
+      "triangles": 268,
+      "meshes": 7,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/m01-battery-hopper/M01-battery-hopper.glb",
+      "triangles": 684,
+      "meshes": 3,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Hop",
+        "Idle",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/m02/M02.glb",
+      "triangles": 724,
+      "meshes": 5,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/m03/M03.glb",
+      "triangles": 296,
+      "meshes": 3,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/m04-low-frequency/M04-low-frequency.glb",
+      "triangles": 1764,
+      "meshes": 5,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Move",
+        "Idle",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/m05/M05.glb",
+      "triangles": 756,
+      "meshes": 4,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/m06/M06.glb",
+      "triangles": 456,
+      "meshes": 4,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/m07/M07.glb",
+      "triangles": 484,
+      "meshes": 3,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "file": "assets/monsters/m08/M08.glb",
+      "triangles": 244,
+      "meshes": 3,
+      "textures": 0,
+      "degenerateTriangles": 0,
+      "clips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    }
+  ],
+  "flatDerivatives": [
+    {
+      "id": "aki",
+      "kind": "characters",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "milo",
+      "kind": "characters",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "null",
+      "kind": "characters",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "ping",
+      "kind": "characters",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "aki_baton",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "aki_chain",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "aki_charm",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "aki_headphones",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "milo_belt",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "milo_disc",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "milo_headphones",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "milo_md",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "null_box",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "null_controller",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "null_goggles",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "null_pet",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "ping_bag",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "ping_comm",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "ping_launcher",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    },
+    {
+      "id": "ping_phone",
+      "kind": "equipment",
+      "positionsSkinTriangleOrderAndAnimationValues": "exactly preserved",
+      "textureImages": 0,
+      "flatColorPerTriangle": true
+    }
+  ]
+}

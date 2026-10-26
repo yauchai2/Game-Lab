@@ -1,0 +1,57 @@
+{
+  "asset_id": "M01",
+  "name": "插頭跳豆 / Battery Hopper",
+  "blender_version": "4.3.2",
+  "source": "Original Blender-authored mesh based on user-approved semi-lowpoly M01 turnaround",
+  "objects": [
+    {
+      "name": "M01_Body",
+      "vertices": 264,
+      "triangles": 500,
+      "non_manifold_edges": 0,
+      "flat_shading": true
+    },
+    {
+      "name": "Chunky_Foot_L",
+      "vertices": 48,
+      "triangles": 92,
+      "non_manifold_edges": 0,
+      "flat_shading": true
+    },
+    {
+      "name": "Chunky_Foot_R",
+      "vertices": 48,
+      "triangles": 92,
+      "non_manifold_edges": 0,
+      "flat_shading": true
+    }
+  ],
+  "triangles": 684,
+  "materials": 1,
+  "texture_images": 0,
+  "animations": [
+    "Idle",
+    "Hop",
+    "Hurt"
+  ],
+  "scale": "approximately 3 meters/units high; game scale is adjustable",
+  "authoring_axes": {
+    "up": "+Z",
+    "front": "-Y"
+  },
+  "glTF_axes": {
+    "up": "+Y",
+    "front": "+Z"
+  },
+  "validation": [
+    "Closed component topology checked in Blender",
+    "All mesh polygons flat shaded",
+    "Real through-holes in both plug blades",
+    "No textures or external providers"
+  ],
+  "not_validated": [
+    "Production combat integration",
+    "Mobile hardware FPS",
+    "All remaining 11 monsters"
+  ]
+}

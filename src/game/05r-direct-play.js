@@ -9,7 +9,7 @@ function directHelp(key){
 function directCharacterLinks(){return `<div class="direct-character-tools"><button class="mb" onclick="showDeathSummary()">死亡總結</button><button class="mb" onclick="openModal('warehouse')">配裝與核心</button><button class="mb" onclick="openModal('dress')">角色展示與裝扮</button><button class="mb" onclick="directCharacterStory()">職業資料</button><button class="mb" onclick="directEvents()">事件紀錄</button></div>`;}
 function directCharacterStory(){const c=CHARS[G.char];showOverlay(`<h2>${uxEsc(c.n)}</h2><blockquote>「${uxEsc(c.quote)}」</blockquote>${c.story.map(t=>`<p>${uxEsc(t)}</p>`).join('')}<button class="mb" onclick="hideOverlay()">返回角色</button>`);}
 function directEvents(){showOverlay(`<h2>事件紀錄</h2><ol class="log">${G.log.map(l=>`<li>${uxEsc(l.txt)}</li>`).join('')||'<li>尚無事件。</li>'}</ol><button class="mb" onclick="hideOverlay()">關閉</button>`);}
-function directJournal(){showOverlay(`<h2>電台手記</h2>${fieldJournalHtml()}<button class="mb" onclick="hideOverlay()">返回冒險</button>`);const d=$('ovl').querySelector('details');if(d)d.open=true;}
+function directJournal(){showOverlay(`<h2>電台手記</h2>${storyJournalHtml()}${fieldJournalHtml()}<button class="mb" onclick="hideOverlay()">返回冒險</button>`);const d=$('ovl').querySelector('details');if(d)d.open=true;}
 function directBuildTools(){DIRECT_VIEW.builds=!DIRECT_VIEW.builds;renderModal();}
 function directCombatReport(){showOverlay(`<h2>戰鬥分析</h2>${dpsBar()}${uiResolvedHtml()}${uiCombatHtml()}<button class="mb" onclick="hideOverlay()">關閉</button>`);$('ui-combat-report').open=true;uiCombatRefresh();}
 
@@ -29,7 +29,7 @@ function directPortraitsRefresh(attempt=0){
 const INTRO_KEY='idle-hero-intro-v1',INTRO={active:false,step:0,selected:'street',name:''};
 const INTRO_STORY=[
  ['下午三點的錯頻','夏日街區還在過它平常的一天。小禾忙著修風扇，阿澄的渡船剛靠岸。街角電台卻突然播出一段沒有人點過的旋律。'],
- ['會跟著節拍跑的雜物','販賣機開始找錯零，路邊的雜物也跟著旋律亂跑。小禾發現，異常訊號正沿著舊電纜往高架橋的另一頭傳。先把前街清出一條路，再找出那段聲音從哪裡來。'],
+ ['走錯頻道的街頭器材','販賣機開始找錯零，音箱、拖板和速遞車也跟著旋律亂跑。小禾發現，異常訊號正沿著舊電纜往高架橋的另一頭傳。先把前街清出一條路，再找出那段聲音從哪裡來。'],
  ['把街區接回來','阿澄在港口等你的消息，小禾留在電台接應。帶上熟悉的裝置，從前街開始追查。選擇你的職業，以自己的名字，把街區的聲音一段段接回來。']
 ];
 function introPersist(){try{localStorage.setItem(INTRO_KEY,JSON.stringify({step:INTRO.step,cover:INTRO.cover===true,selected:INTRO.selected,name:INTRO.name}));}catch(e){}}

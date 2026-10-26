@@ -1,0 +1,65 @@
+{
+  "id": "B04",
+  "name": "未登出者",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "B04_Body",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B04_Shell_Upper-1",
+      "triangles": 12,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B04_Shell_Lower-1",
+      "triangles": 12,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B04_Foot-1",
+      "triangles": 44,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B04_Shell_Upper1",
+      "triangles": 12,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B04_Shell_Lower1",
+      "triangles": 12,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B04_Foot1",
+      "triangles": 44,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 268,
+  "bounds": {
+    "min": [
+      -1.059999942779541,
+      -0.5309999585151672,
+      1.1829619950276538e-08
+    ],
+    "max": [
+      1.059999942779541,
+      0.47999998927116394,
+      2.4010677337646484
+    ]
+  },
+  "height": 2.4010677219350285,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "runtimeVerified": false
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "local authored visual candidate; originals retained",
+  "files": [
+    {
+      "path": "M06.blend",
+      "bytes": 588596,
+      "sha256": "174c2c8497a3af5b146ce8d4c8770c2aec1617251b8d73d045c2f4a35200af0c"
+    },
+    {
+      "path": "M06.glb",
+      "bytes": 50868,
+      "sha256": "de653eefd27e63714bcf96b00a456cdbd777bed9951a9040cfe032fab8688583"
+    },
+    {
+      "path": "back.png",
+      "bytes": 112578,
+      "sha256": "49efe3d7aa06078ff511fe20347b4cee2f29d3e90f009500d56716229f124964"
+    },
+    {
+      "path": "blender.json",
+      "bytes": 986,
+      "sha256": "0decc2413bbb74d0b703abc13a0af89334304fd10e40decd5b5a104fcbbace04"
+    },
+    {
+      "path": "front.png",
+      "bytes": 112749,
+      "sha256": "327549b1a6aa1a57495851223c1cd5c3c140cb7674d215dad9308f2c6a96e1df"
+    },
+    {
+      "path": "native.glb",
+      "bytes": 50884,
+      "sha256": "59139c24b42e8678aa08eede39f2ad642ec45c817717398e155f1a062b4b5e9a"
+    },
+    {
+      "path": "right.png",
+      "bytes": 78130,
+      "sha256": "17d4d484ff5e5fe4fdf624c374599524d534a72f0ebb08bed73992c85eaf1c50"
+    }
+  ]
+}

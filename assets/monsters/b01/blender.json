@@ -1,0 +1,55 @@
+{
+  "id": "B01",
+  "name": "總掣工頭",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "B01_Body",
+      "triangles": 408,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B01_Arm-1",
+      "triangles": 176,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B01_Leg-1",
+      "triangles": 88,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B01_Arm1",
+      "triangles": 272,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B01_Leg1",
+      "triangles": 88,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 1032,
+  "bounds": {
+    "min": [
+      -1.3471397161483765,
+      -0.375,
+      -4.842877743271856e-08
+    ],
+    "max": [
+      1.4850000143051147,
+      0.32499998807907104,
+      2.8399996757507324
+    ]
+  },
+  "height": 2.83999972417951,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "runtimeVerified": false
+}

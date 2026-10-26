@@ -1,0 +1,17 @@
+{
+  "reference": "fd4ed11",
+  "matched": [
+    "types",
+    "traits",
+    "skills",
+    "supports",
+    "gear",
+    "firmware",
+    "routes",
+    "classes",
+    "save",
+    "biomes",
+    "chapterDepths"
+  ],
+  "result": "identical; only approved presentation text, palette, geometry derivations and model mappings changed"
+}

@@ -1,0 +1,55 @@
+{
+  "id": "B02",
+  "name": "回帶港務機",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "B02_Body",
+      "triangles": 136,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B02_Reel-1",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B02_Leg-1",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B02_Reel1",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B02_Leg1",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 664,
+  "bounds": {
+    "min": [
+      -1.15500009059906,
+      -0.75,
+      -4.0889219121709175e-08
+    ],
+    "max": [
+      1.15500009059906,
+      0.75,
+      2.5
+    ]
+  },
+  "height": 2.500000040889219,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "runtimeVerified": false
+}

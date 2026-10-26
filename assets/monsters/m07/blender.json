@@ -1,0 +1,45 @@
+{
+  "id": "M07",
+  "name": "存檔游魂",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "M07_Body",
+      "triangles": 308,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M07_Foot-1",
+      "triangles": 88,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M07_Foot1",
+      "triangles": 88,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 484,
+  "bounds": {
+    "min": [
+      -0.7200000286102295,
+      -0.48399999737739563,
+      -7.450580596923828e-09
+    ],
+    "max": [
+      0.7200000286102295,
+      0.45000001788139343,
+      2.2200000286102295
+    ]
+  },
+  "height": 2.22000003606081,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "runtimeVerified": false
+}

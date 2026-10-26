@@ -470,3 +470,5 @@ Boss僅一次短暫WARNING，之後名稱＋生命條，取代舊關主對話框
 Alan 本聊天選定 Patreon 並提供 https://www.patreon.com/c/alanycchan，取代先前 Ko-fi 的未接通提案。沿用設定中的贊助入口、05w-signal-studio.js 的 supportHtml／STUDIO_CSS、UX_THEME 及 Cubic 11，不建立第二份頁面或主題。銀灰唱片心形為唯一主視覺，藍紫液晶區承載 Patreon 行動，依 Alan 最新要求，以兩句平實文字說明個人興趣作品及感謝遊玩，移除付款長文與 FAQ。手機至桌機共用內容及正常流捲動，沒有新增動畫或第三方嵌入。
 
 只前往公開創作者頁，不提供站內結帳、帳號綁定、戰力獎勵或付款成功回報。公開頁不列金額、福利或扣款說明；只有低調 Patreon 入口及自願支持短句。
+
+全遊戲美術基準及最新材質規格見[creative-direction](docs/creative-direction.md)；0.63整合交付見[style-complete](docs/style-complete/README.md)。藍紫窗口／Cubic11操作契約維持。

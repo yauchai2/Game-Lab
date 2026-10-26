@@ -1,0 +1,52 @@
+{
+  "dense": {
+    "actors": 24,
+    "drawCalls": 423,
+    "triangles": 69706,
+    "profile": 5,
+    "street": true,
+    "material": "MeshBasicMaterial",
+    "mascot": true
+  },
+  "story": {
+    "events": [
+      {
+        "depth": 3,
+        "chapter": 1,
+        "asset": "M04"
+      },
+      {
+        "depth": 7,
+        "chapter": 2,
+        "asset": "B01"
+      },
+      {
+        "depth": 12,
+        "chapter": 3,
+        "asset": "B03"
+      },
+      {
+        "depth": 18,
+        "chapter": 4,
+        "asset": "M04"
+      },
+      {
+        "depth": 25,
+        "chapter": 5,
+        "asset": "B02"
+      },
+      {
+        "depth": 35,
+        "chapter": 6,
+        "asset": "B04"
+      }
+    ],
+    "roundtrip": 6,
+    "offline": 0,
+    "mapChapter": 0
+  },
+  "errors": [],
+  "limits": [
+    "Draw calls are diagnostic counts, not FPS/hardware certification."
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "id": "B03",
+  "name": "無主分揀塔",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "B03_Body",
+      "triangles": 288,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B03_Leg0",
+      "triangles": 88,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B03_Leg1",
+      "triangles": 88,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B03_Leg2",
+      "triangles": 88,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B03_Scanner-1",
+      "triangles": 100,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "B03_Scanner1",
+      "triangles": 100,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 752,
+  "bounds": {
+    "min": [
+      -1.3250000476837158,
+      -0.3710000216960907,
+      -1.7281795550161405e-08
+    ],
+    "max": [
+      1.3250000476837158,
+      0.7099999189376831,
+      3.190000057220459
+    ]
+  },
+  "height": 3.1900000745022545,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "runtimeVerified": false
+}

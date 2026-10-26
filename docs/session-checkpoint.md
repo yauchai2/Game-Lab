@@ -1,16 +1,12 @@
-# Game Lab 精簡接續紀錄
+# Game Lab 最新接續紀錄
 
-2026-10-25，香港時間。先讀本頁，再查相關差異，避免重複研究。
+- **2026-10-26，Asia/Taipei，全遊戲0.63候選：** Alan明確要求依Ice Cream後風格做完全部需要更新，已在獨立codex/ice-cream-style-complete實作。main最新fd4ed11／0.62，已納入Claude六章／同伴／章節Boss標記，沿唯一storyFlags.ch，不建四章平行狀態。
+- **實作：** 十二款精怪（新製十款＋M01／M04）共8124面，22type＋Boss原生映射；四角色與16裝備無貼圖unlit純色面，原件、位置／skin／九clips／triangle order精確保留；21地區色階、場景unlit、幾何招牌、移除點紋／地面斑紋、UI頭像縮圖、十二地方留言／職業日常、音樂情境選曲。職業／四肢／玩法數值／SAVE_KEY不改。新資源packed由初版25MB降至約4.5MB（二十衍生GLB約3.15MB）。
+- **驗證：** docs/style-complete/README.md為入口；十二GLB Blender重匯入、20衍生精確資料比對、4×9clips／16裝備／22types／4Boss／A-B／單隻fade／elite/status／320390通過；24實體街區及六次原生主線kill／save／offline-map邊界通過。10既有gameplay與17音源驗證通過。兩個既有stale VM測試於乾淨68934eb相同失敗，已記錄。
+- **產物：** dist/idle-hero.html已建；dist/street-style-preview.html僅本機生成、page-lifetime隔離存檔、不入git。未publish／未merge main／未Release；下一步完整PR供Claude review、吸收新重疊提交。
 
-- 最新候選codex/onboarding-season-focus（base e67f73b，含後續3D Logo補完），已推送並建立PR #60：https://github.com/yauchai2/Game-Lab/pull/60：INTRO-01至08已實作／驗證，三步實作教學、手機按頁自動尺寸、紫色裂隙、紅點、單一季頁與紅框減法。需求／證據docs/onboarding-focus-2026-10-25/review.md。Logo已從Alan新Drive連結取得並導入：原件52.7MB／499960面→衍生814732bytes／15000面，320×180／40秒轉台，見assets/brand/logo-3d.json與logo-browser-results.json。候選仍未合併／發佈。
-- 正式最新v0.51.0：來源／tag ba31214，Pages f4fd771；來源PR #57及手機PR #56已合併。Release40163735955／Pages40163729461成功，HTTPS入口、腳本SHA、附件digest與大小及16正式站流程已核對，證據docs/release-0.51.0/integration.md。
-- 來源分支codex/rift-experience-release（749086b），發佈證據codex/release-051。RIFT-01至29、PHONE-01已完成。完整需求對照docs/rift-experience-2026-10-25/review.md，單一全專案待辦docs/backlog.md。
-- 02g-rift擁有斷訊手接觸／18秒擴張／55秒22擊殺／48生成與12存活上限；paid防重複，刷新補敵不重置總額。換區或死亡取消未完成事件；離線不主動開新事件。40碎片換兩款核心，塔樓十層鎖片及賽季中樞結晶各3換獨有核心，均不自動裝備。
-- 05z-experience擁有當前庫存版本40步配置歷史、單一EXHIBIT塔樓／技能預覽、手機gesture。真正庫存入口不隱式playFocusBoard，保留scroll。預覽只讀，不派傷害或收益，關閉釋放；線路／終點／配件顏色同源。
-- 像素三段uiFxVersion2、重要掉落屬於stage右下、展開音樂0.6倍且off不解除。手機去Start與留白、任務五秒退場、watch暫時展開後還原。手機卡片16秒轉台、內頁輕擺／zoom停定，wheel與雙指可用。塔樓邊緣樓梯、屍體退場、24血跡12秒淡出；世界細血條。
-- 33來源套件、新190斷言、16整合＋9精修＋19視窗觸控＋15背包及單檔通過。12固定區域構築樣本全封閉，G.push=false，不代表自動換區完成率或長期平衡。無真機Safari／FPS認證。static audit仍兩個既有phone委派偵測提示，design lint無錯誤。
-- Claude已fresh fetch全heads／open PR，e0b3468已包含；內部備份及歷史研究改名排除。每次release仍重新查Claude，來源先push再發佈，不刪分支／tag。
-- v0.52.0整合進行中：獨立codex/release-052，已納入PR #60（fd7b6ae）、#61（7b415a3）及#62（2a99591），35來源套件、單檔Logo與贊助四流程已通過，來源待推送／合併後發佈。正式仍0.51.0。
-- 回饋Worker已部署，公開端點只存feedback-config，憑證留Secrets；既有真實收單#59及防重複／CORS證據見feedback-service-setup-2026-10-25.md，兩項Token2027-01-23到期需輪替。
-- Patreon頁為Alan確認的公開創作者頁，簡短個人作品介紹、自願支持、不售戰力；不宣稱已測交易。全球排名仍未接通。
-- 繁中全形標點、銀灰藍紫Y2K／Cubic11、低面數像素酷感；公開文字不可提參考遊戲、內部研究、帳號或公司資源。
+## 其他接續入口
+
+- 正式部署與來源／發佈檢查：docs/deployment.md。主線仍以遠端fresh fetch為準，不用歷史版本文字推斷已發佈。
+- G1／M04之前交付：codex/ice-cream-visual-preview／5cb5ec3；本批已把必要原圖／影片／模型帶入新分支。
+- 共用待辦只有docs/backlog.md；其餘較早記錄在git歷史及各交付文件，不複製整段聊天。

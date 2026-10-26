@@ -1,0 +1,45 @@
+{
+  "id": "M08",
+  "name": "補丁燈籠",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "M08_Body",
+      "triangles": 84,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M08_Light",
+      "triangles": 28,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M08_Handle",
+      "triangles": 132,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 244,
+  "bounds": {
+    "min": [
+      -0.6399999856948853,
+      -0.44999998807907104,
+      -7.450580596923828e-09
+    ],
+    "max": [
+      0.6399999856948853,
+      0.44999998807907104,
+      1.9100000858306885
+    ]
+  },
+  "height": 1.910000093281269,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "runtimeVerified": false
+}

@@ -1,0 +1,91 @@
+{
+  "standalone": {
+    "clips": [
+      "Move",
+      "Idle",
+      "Hurt"
+    ],
+    "meshes": 5,
+    "triangles": 1764,
+    "materials": [
+      {
+        "type": "MeshBasicMaterial",
+        "map": false
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "map": false
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "map": false
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "map": false
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "map": false
+      }
+    ],
+    "animated": [
+      {
+        "name": "Move",
+        "changed": true
+      },
+      {
+        "name": "Idle",
+        "changed": true
+      },
+      {
+        "name": "Hurt",
+        "changed": true
+      }
+    ]
+  },
+  "mobile": [
+    {
+      "width": 320,
+      "fullModelVisible": true
+    },
+    {
+      "width": 390,
+      "fullModelVisible": true
+    }
+  ],
+  "fixture": {
+    "source": {
+      "sourceCommit": "0c7d33b17356dfb38ec63af69e41c20e64ac1593",
+      "materialSha256": "ea9114d9faf5765849224c0b22b760182f2ef725b9dfa820f7d2bb0af154c43c",
+      "storage": "page-lifetime memory",
+      "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險",
+      "monsterSha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+      "integration": "native Claude G1 materials, M01, signs and death effects; adapter only adds review controls and isolated storage"
+    },
+    "hash": "fcaa6a8f1e37f60cc69efa9c2d2c77d686980f722960d23cd8ad1b08857d1e45",
+    "type": "brute",
+    "model": true,
+    "height": 14.500001129428844,
+    "move": "Hop",
+    "hurt": "Hurt",
+    "idle": "Idle",
+    "death": [
+      0.2500000000000001
+    ],
+    "other": [
+      1
+    ]
+  },
+  "ab": {
+    "original": true,
+    "restored": true,
+    "sameEntity": true,
+    "unchanged": true
+  },
+  "errors": [],
+  "limits": [
+    "Local Chromium software WebGL; not device FPS certification.",
+    "Temporary brute visual fixture; not a production model/type mapping."
+  ]
+}
