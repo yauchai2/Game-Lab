@@ -1,0 +1,1286 @@
+{
+  "report": {
+    "gear": [
+      {
+        "slot": "head",
+        "t": 0,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 56,
+        "dropSpan": 5
+      },
+      {
+        "slot": "head",
+        "t": 0,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 56,
+        "dropSpan": 5
+      },
+      {
+        "slot": "head",
+        "t": 0,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 56,
+        "dropSpan": 5
+      },
+      {
+        "slot": "head",
+        "t": 0,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 56,
+        "dropSpan": 5
+      },
+      {
+        "slot": "head",
+        "t": 1,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 192,
+        "dropSpan": 5.000000000000001
+      },
+      {
+        "slot": "head",
+        "t": 1,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 192,
+        "dropSpan": 5.000000000000001
+      },
+      {
+        "slot": "head",
+        "t": 1,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 192,
+        "dropSpan": 5.000000000000001
+      },
+      {
+        "slot": "head",
+        "t": 1,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 192,
+        "dropSpan": 5.000000000000001
+      },
+      {
+        "slot": "head",
+        "t": 2,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 144,
+        "dropSpan": 5
+      },
+      {
+        "slot": "head",
+        "t": 2,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 144,
+        "dropSpan": 5
+      },
+      {
+        "slot": "head",
+        "t": 2,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 144,
+        "dropSpan": 5
+      },
+      {
+        "slot": "head",
+        "t": 2,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 144,
+        "dropSpan": 5
+      },
+      {
+        "slot": "head",
+        "t": 3,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 220,
+        "dropSpan": 5.000000000000001
+      },
+      {
+        "slot": "head",
+        "t": 3,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 220,
+        "dropSpan": 5.000000000000001
+      },
+      {
+        "slot": "head",
+        "t": 3,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 220,
+        "dropSpan": 5.000000000000001
+      },
+      {
+        "slot": "head",
+        "t": 3,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 220,
+        "dropSpan": 5.000000000000001
+      },
+      {
+        "slot": "armor",
+        "t": 0,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 232,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 0,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 232,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 0,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 232,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 0,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 232,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 1,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 300,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 1,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 300,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 1,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 300,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 1,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 300,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 2,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 320,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 2,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 320,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 2,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 320,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 2,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 320,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 3,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 332,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 3,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 332,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 3,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 332,
+        "dropSpan": 5
+      },
+      {
+        "slot": "armor",
+        "t": 3,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 332,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 0,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 200,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 0,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 200,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 0,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 200,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 0,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 200,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 1,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 376,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 1,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 376,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 1,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 376,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 1,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 376,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 2,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 312,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 2,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 312,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 2,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 312,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 2,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 312,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 3,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 272,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 3,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 272,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 3,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 272,
+        "dropSpan": 5
+      },
+      {
+        "slot": "gloves",
+        "t": 3,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 272,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 0,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 68,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 0,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 68,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 0,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 68,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 0,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 68,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 1,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 100,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 1,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 100,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 1,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 100,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 1,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 100,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 2,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 80,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 2,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 80,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 2,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 80,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 2,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 80,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 3,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 156,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 3,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 156,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 3,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 156,
+        "dropSpan": 5
+      },
+      {
+        "slot": "ring",
+        "t": 3,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 156,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 0,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 288,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 0,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 288,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 0,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 288,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 0,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 288,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 1,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 400,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 1,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 400,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 1,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 400,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 1,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 400,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 2,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 400,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 2,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 400,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 2,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 400,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 2,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 400,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 3,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 440,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 3,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 440,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 3,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 440,
+        "dropSpan": 5
+      },
+      {
+        "slot": "boots",
+        "t": 3,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 440,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 0,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 432,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 0,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 432,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 0,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 432,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 0,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 432,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 1,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 280,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 1,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 280,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 1,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 280,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 1,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 280,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 2,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 364,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 2,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 364,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 2,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 364,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 2,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 364,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 3,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 284,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 3,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 284,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 3,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 284,
+        "dropSpan": 5
+      },
+      {
+        "slot": "weapon",
+        "t": 3,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 284,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 0,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 92,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 0,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 92,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 0,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 92,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 0,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 92,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 1,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 112,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 1,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 112,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 1,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 112,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 1,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 112,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 2,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 124,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 2,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 124,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 2,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 124,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 2,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 124,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 3,
+        "r": 0,
+        "maps": 0,
+        "flat": true,
+        "triangles": 156,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 3,
+        "r": 1,
+        "maps": 0,
+        "flat": true,
+        "triangles": 156,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 3,
+        "r": 2,
+        "maps": 0,
+        "flat": true,
+        "triangles": 156,
+        "dropSpan": 5
+      },
+      {
+        "slot": "offhand",
+        "t": 3,
+        "r": 3,
+        "maps": 0,
+        "flat": true,
+        "triangles": 156,
+        "dropSpan": 5
+      }
+    ],
+    "monsters": [
+      {
+        "type": "slime",
+        "asset": "M01",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          2.6439194679260254,
+          2.920000057667494,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "skel",
+        "asset": "M05",
+        "role": "carrier",
+        "roleTriangles": 48,
+        "isolated": true,
+        "bounds": [
+          2.6,
+          1.9650000929832458,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "drone",
+        "asset": "M03",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          2.640000104904175,
+          2.2723761169346326,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "bomb",
+        "asset": "M07",
+        "role": "fuse",
+        "roleTriangles": 52,
+        "isolated": true,
+        "bounds": [
+          2.6,
+          2.974800117313862,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "brute",
+        "asset": "M06",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          2.6,
+          2.1450000256299973,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "mole",
+        "asset": "M02",
+        "role": "drill",
+        "roleTriangles": 30,
+        "isolated": true,
+        "bounds": [
+          3.155963797488952,
+          1.2517454515377033,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "spider",
+        "asset": "M02",
+        "role": "outriggers",
+        "roleTriangles": 96,
+        "isolated": true,
+        "bounds": [
+          3.155963797488952,
+          1.2517454515377033,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "crab",
+        "asset": "M07",
+        "role": "claws",
+        "roleTriangles": 72,
+        "isolated": true,
+        "bounds": [
+          3.3937675952911377,
+          2.22000003606081,
+          2.2574121379852294
+        ]
+      },
+      {
+        "type": "ranger",
+        "asset": "M05",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          2.6,
+          1.9650000929832458,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "lantern",
+        "asset": "M08",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          2.6,
+          1.9100000336766243,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "speaker",
+        "asset": "M04",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          3.821021318581474,
+          3.2273604949364696,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "wisp",
+        "asset": "M03",
+        "role": "signal-tail",
+        "roleTriangles": 48,
+        "isolated": true,
+        "bounds": [
+          2.640000104904175,
+          2.469499449262131,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "golem",
+        "asset": "B01",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          3.266364153721852,
+          2.9073075007108438,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "scanner",
+        "asset": "B03",
+        "role": "wings",
+        "roleTriangles": 48,
+        "isolated": true,
+        "bounds": [
+          4.30649995803833,
+          3.3538594285347494,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "roller",
+        "asset": "M02",
+        "role": "cart",
+        "roleTriangles": 164,
+        "isolated": true,
+        "bounds": [
+          3.155963797488952,
+          1.2517454515377033,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "antenna",
+        "asset": "M08",
+        "role": "aerial",
+        "roleTriangles": 84,
+        "isolated": true,
+        "bounds": [
+          2.6,
+          2.540300130844116,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "cable",
+        "asset": "M02",
+        "role": "cables",
+        "roleTriangles": 120,
+        "isolated": true,
+        "bounds": [
+          3.155963797488952,
+          1.2517454515377033,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "furnace",
+        "asset": "B01",
+        "role": "chimney",
+        "roleTriangles": 112,
+        "isolated": true,
+        "bounds": [
+          3.266364153721852,
+          3.617307371219753,
+          2.448124828338623
+        ]
+      },
+      {
+        "type": "shard",
+        "asset": "B04",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          2.6,
+          2.425467044419827,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "jailer",
+        "asset": "B01",
+        "role": "barrier",
+        "roleTriangles": 72,
+        "isolated": true,
+        "bounds": [
+          3.266364153721852,
+          2.9073075007108438,
+          2.6895248317718505
+        ]
+      },
+      {
+        "type": "specimen",
+        "asset": "B02",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          2.6,
+          2.594747193047347,
+          2.0278500366210936
+        ]
+      },
+      {
+        "type": "sentinel",
+        "asset": "B03",
+        "role": null,
+        "roleTriangles": 0,
+        "isolated": true,
+        "bounds": [
+          2.9035507352731202,
+          3.3538594285347494,
+          2.0278500366210936
+        ]
+      }
+    ]
+  },
+  "fallbacks": {
+    "matched": 112,
+    "special": true
+  },
+  "errors": [],
+  "scope": "112 slot/tier/rarity builds, ordinary drops span5; 22 enemy types, twelve rigid role modules and isolated actor fade; real native geometry captures."
+}

@@ -17,6 +17,7 @@ function streetCreatureBuild(m){
  u.streetCreature=true;u.assetId=id;u.hover=hover;u.m01=false;
  u.s=height/(STREET_MONSTER_META[id].height*CK*(MONSTER_TRAITS[m.type]?.scale||1));
  u.actions.Move=u.actions.Move||u.actions.Hop;
+ const variant=streetCreatureVariant(m,STREET_MONSTER_META[id].height);if(variant){g.add(variant);u.variant=variant.userData.streetVariant;}
  // Shared geometry, per-instance material ownership: death never changes another actor.
  if(Number.isInteger(m.chap)){const mark=streetChapterMark(m.chap),k=STREET_MONSTER_META[id].height/70;mark.scale.setScalar(k);mark.position.y=STREET_MONSTER_META[id].height-34*k;g.add(mark);}
  const materials=new Map();g.traverse(o=>{if(o.isMesh&&(o.material.vertexColors||o.material.userData.streetFlat)){const src=o.material;if(!materials.has(src)){const mat=src.clone();mat.userData.equipmentShared=false;materials.set(src,mat);}o.material=materials.get(src);}});

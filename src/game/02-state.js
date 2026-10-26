@@ -352,8 +352,10 @@ function dropGround(d){
   G.drops.push(d);
 }
 function collectNearby(dt){
+  const tp=terrainNow();
   for(const d of G.drops){
-    d.t+=dt;if(d.done||G.h.dead>0)continue;
+    d.t+=dt;if(!d.done&&!d.pull&&!terrainCell(d.x,d.y,tp))[d.x,d.y]=terrainProject(d.x,d.y,tp);
+    if(d.done||G.h.dead>0)continue;
     const distance=Math.hypot(d.x-G.h.x,d.y-G.h.y);
     if(!d.pull&&d.t>=.35&&distance<=PICKUP_RANGE)d.pull={age:0,duration:.85+Math.min(1,distance/PICKUP_RANGE)*.8};
     if(!d.pull)continue;

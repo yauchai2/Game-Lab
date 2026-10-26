@@ -155,6 +155,7 @@ function buildHeroAccessories(B,cos){
 // 普通裝備先用簡模；專裝由 equipment-render.js 掛到角色骨架。
 const WOV = new URLSearchParams(location.search);   // 測試用：?wt=0..3&wr=0..3 直接指定武器外觀
 function buildSimpleEquipment(slot,tier=0,rarity=0){
+ if(typeof ordinaryEquipmentModel==='function')return ordinaryEquipmentModel(slot,tier,rarity,true);
  const g=new T3.Group(),col=['#bbc8d2','#8bbcd5','#d5bf80','#c99174'][rarity]||'#bbc8d2',shell=m3(col),dark=m3('#34435a');g.userData.placeholder=slot;
  if(slot==='weapon'){mk(new T3.CylinderGeometry(.45,.45,2,6),dark,0,0,0,g);mk(roundedG(1.2,5+tier,.8),shell,0,3,0,g);mk(roundedG(.8,.5,.9),m3('#81cbd1'),0,5,0,g);}
  else if(slot==='head'){mk(new T3.CylinderGeometry(2.6,2.9,1.2,8),shell,0,0,0,g);mk(roundedG(3,.3,1.5),dark,0,-.2,2,g);}
@@ -592,6 +593,7 @@ function buildDrop(d){
   else if(d.kind==='gold'){mk(cylG(1.4,1.4,.6,6),m3('#e4ba58'),0,1,0,item).rotation.z=.2;}
   else if(d.kind==='chip'){mk(new T3.BoxGeometry(2.8,.5,2.8),m3('#62c8ce'),0,1,0,item);mk(new T3.BoxGeometry(1.3,.6,1.3),m3('#24364d'),0,1.5,0,item);}
   else if (signatureOf(d.it)&&typeof equipmentModel==='function'){const model=equipmentModel(signatureOf(d.it).model);if(model){model.scale.setScalar(5);model.position.y=3;item.add(model);}}
+  else if(typeof ordinaryEquipmentModel==='function'){const model=ordinaryEquipmentModel(d.it.slot,aTier(d.it),d.it.r),bounds=new T3.Box3().setFromObject(model),size=bounds.getSize(new T3.Vector3()),center=bounds.getCenter(new T3.Vector3()),scale=5/Math.max(size.x,size.y,size.z);model.position.copy(center).multiplyScalar(-scale);model.position.y+=3;model.scale.setScalar(scale);item.add(model);}
   else if (d.it.slot === 'weapon'){ const w = new T3.Group(); item.add(w); mk(new T3.BoxGeometry(.9, 5.6, .35), m3(col, { emissive:col, emissiveIntensity:.15 }), 0, 3.8, 0, w); mk(cylG(.35, .35, 2, 5), m3('#7a5a8a'), 0, 0, 0, w); mk(new T3.BoxGeometry(2.4, .5, .8), m3('#ffd35a'), 0, 1, 0, w); w.rotation.z = Math.PI/3; w.position.y = 1.6; }
   else if (d.it.slot === 'armor'){ mk(cylG(1.5, 2.1, 3.2, 7), m3(col, { emissive:col, emissiveIntensity:.15 }), 0, 2, 0, item); for (const sx of [-1, 1]) mk(ico(1, 0), m3(col), sx*2, 3.3, 0, item); }
   else { mk(new T3.TorusGeometry(1.4, .45, 5, 8), m3('#ffe27a'), 0, 2, 0, item).rotation.x = Math.PI/2.6; mk(ico(.75, 0), m3(col, { emissive:col, emissiveIntensity:.35 }), 0, 3.5, 0, item); }
@@ -644,12 +646,12 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   const cam = R3.cam, tgt = new T3.Vector3(R3.focusX,BZ+terrainHeight(R3.focusX,R3.focusY,plan)+6,R3.focusY); cam.position.copy(tgt).add((innerHeight > innerWidth ? new T3.Vector3(.34, .8, 1) : new T3.Vector3(1, .86, 1)).normalize().applyAxisAngle(new T3.Vector3(0, 1, 0), FXO.yaw).multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
   for (const x of (framing.follow?[R3.focusX-framing.view/2,R3.focusX+framing.view/2]:plan.bounds.slice(0,2))) for (const y of (framing.follow?[R3.focusY-framing.view/2,R3.focusY+framing.view/2]:plan.bounds.slice(2,4))) for (const z of [BZ-20,BZ+plan.amplitude+35]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
-  let bw = x1 - x0, bh = y1 - y0, ar = W/H, cx = (x0 + x1)/2, cy = (y0 + y1)/2 - bh*.03;   // 整座浮島放進畫框，留一點天空
+  const hudPad=Math.min(uiHudPad(),H*.5);let bw = x1 - x0, bh = y1 - y0, ar = W/Math.max(2,H-hudPad), cx = (x0 + x1)/2, cy = (y0 + y1)/2 - bh*.03;   // 整座浮島放進畫框，留一點天空
   let vw = bw*(ptv ? .8 : 1.03), vh = bh*(ptv ? .84 : 1.05); if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;   // 手機直式拉近、裁掉島的左右，裁切處用 CSS 淡出
   if (WOV.has('zoom')){ const z = +WOV.get('zoom'), p = new T3.Vector3(G.h.x, BZ + 10, G.h.y).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; cx = p.x; cy = p.y; }   // 測試用：?zoom=6 把鏡頭拉近到主角
   if (FXO.zoom !== 1){ const z = FXO.zoom, f = tClamp((z - 1)/1.2), p = new T3.Vector3(G.h.x, BZ + 10, G.h.y).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; if (z > 1){ cx = tLerp(cx, p.x, f); cy = tLerp(cy, p.y, f); } }
   vw *= 1 - FXO.punch*.055; vh *= 1 - FXO.punch*.055; cx += (Math.random() - .5)*FXO.shake*vw*.027; cy += (Math.random() - .5)*FXO.shake*vh*.027;
-  cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2; cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
+  cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2 + vh*hudPad/Math.max(2,H-hudPad); cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
   const vb = fig.viewBox.baseVal; R3.vbW = vb.width; R3.vbH = vb.height;
 }
 const pj = (x, y, z) => { const v = new T3.Vector3(x, z, y).project(R3.cam); return [(v.x + 1)/2*R3.vbW, (1 - v.y)/2*R3.vbH]; };
@@ -740,7 +742,7 @@ function heroLook(g){
 
 function updateFx(){
   const fx=R3.fx,pool=R3.fxPool||(R3.fxPool=[]);for(const o of pool)o.visible=false;let used=0;
-  const dummy=R3.fxDummy||(R3.fxDummy=new T3.Object3D()),budget=160;
+  const dummy=R3.fxDummy||(R3.fxDummy=new T3.Object3D()),budget=360;
   const add=(geom,col,opacity,x,y,z,s=1)=>{
     if(used>=budget)return dummy;
     let o=pool[used++];if(!o){o=new T3.Mesh(geom,new T3.MeshBasicMaterial({transparent:true,depthWrite:false,side:T3.DoubleSide}));pool.push(o);fx.add(o);}
@@ -752,10 +754,10 @@ function updateFx(){
   for(const stain of G.stains||[]){if(signalFx){const sp=Math.min(1,stain.t/.5),ease=1-(1-sp)*(1-sp),fade=Math.min(1,(7-stain.t)/2.5);if(fade<=0)continue;let zi=0;
     for(const b of stain.blobs||[{dx:0,dy:0,r:stain.r}]){add(box,['#5cd0f0','#ff7fa8','#f5d24a','#e8f4ff'][zi%4],.95*fade,stain.x+b.dx*ease*1.3,stain.y+b.dy*ease*1.3,stainGround+.05+(zi++)*.01+Math.sin(sp*Math.PI)*b.r*.8,Math.max(.5,b.r*.55));}
     continue;}
-    const sp=Math.min(1,stain.t/.7),ease=1-(1-sp)*(1-sp),dry=Math.min(1,stain.t/10),fade=Math.min(1,(12-stain.t)/4),col=dry<.5?'#e0131e':dry<.8?'#c20f1a':'#9a0c16',wet=stain.t<6?(1-stain.t/6)*.4:0;let zi=0;
+    const sp=Math.min(1,stain.t/.7),ease=1-(1-sp)*(1-sp),dry=Math.min(1,stain.t/10),fade=Math.min(1,(STAIN_LIFE-stain.t)/12),old=stain.t>14,col=dry<.5?'#e0131e':dry<.8?'#c20f1a':'#9a0c16',wet=stain.t<6?(1-stain.t/6)*.4:0;let zi=0;
   if(stain.blobs){const m0=stain.blobs[0];add(disc,'#7a0710',.85*fade,stain.x,stain.y,stainGround-.01,m0.r*1.12*ease);}
-  for(const b of stain.blobs||[{dx:0,dy:0,r:stain.r}]){const k=b.drop?Math.min(1,Math.max(0,(stain.t-.12)/.2)):ease;if(k<=0)continue;add(disc,col,.9*fade,stain.x+b.dx*ease,stain.y+b.dy*ease,stainGround+(zi++)*.006,b.r*k);}
-  if(wet>0&&stain.blobs)for(const b of stain.blobs.slice(0,2)){if(b.drop)continue;add(disc,'#ff5560',wet*fade,stain.x+b.dx*ease-b.r*.18,stain.y+b.dy*ease-b.r*.18,stainGround+(zi++)*.006,b.r*.45*ease);}}
+  for(const b of (stain.blobs||[{dx:0,dy:0,r:stain.r}]).slice(0,old?3:99)){const k=b.drop?Math.min(1,Math.max(0,(stain.t-.12)/.2)):ease;if(k<=0)continue;add(disc,col,.9*fade,stain.x+b.dx*ease,stain.y+b.dy*ease,stainGround+(zi++)*.006,b.r*k);}
+  if(wet>0&&!old&&stain.blobs)for(const b of stain.blobs.slice(0,2)){if(b.drop)continue;add(disc,'#ff5560',wet*fade,stain.x+b.dx*ease-b.r*.18,stain.y+b.dy*ease-b.r*.18,stainGround+(zi++)*.006,b.r*.45*ease);}}
   for(const e of warnings.concat(G.fx.filter(e=>e.sustained),G.fx.filter(e=>!e.sustained))){const fade=1-e.t;
     if(renderSpectacleFx(e,add,geo))continue;
     if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}

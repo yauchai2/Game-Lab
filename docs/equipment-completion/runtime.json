@@ -1,0 +1,135 @@
+{
+  "report": [
+    {
+      "id": "ping_clip",
+      "pending": false,
+      "description": "獵手 專屬裝備；僅對應職業可裝備。雜兵 0.001%、精英 0.01%、BOSS 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。",
+      "attached": "head",
+      "span": 0.9999999403953552,
+      "maps": 0,
+      "flat": true,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "milo_md_strap",
+      "pending": false,
+      "description": "樂師 專屬裝備；僅對應職業可裝備。雜兵 0.001%、精英 0.01%、BOSS 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。",
+      "attached": "torso",
+      "span": 0.9999999403953552,
+      "maps": 0,
+      "flat": true,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "ping_bag_strap",
+      "pending": false,
+      "description": "獵手 專屬裝備；僅對應職業可裝備。雜兵 0.001%、精英 0.01%、BOSS 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。",
+      "attached": "torso",
+      "span": 1,
+      "maps": 0,
+      "flat": true,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "null_lanyard",
+      "pending": false,
+      "description": "寵機師 專屬裝備；僅對應職業可裝備。雜兵 0.001%、精英 0.01%、BOSS 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。",
+      "attached": "torso",
+      "span": 1,
+      "maps": 0,
+      "flat": true,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "id": "ping_clip",
+      "enabled": false,
+      "flat": true,
+      "fallback": true
+    },
+    {
+      "id": "milo_md_strap",
+      "enabled": false,
+      "flat": true,
+      "fallback": true
+    },
+    {
+      "id": "ping_bag_strap",
+      "enabled": false,
+      "flat": true,
+      "fallback": true
+    },
+    {
+      "id": "null_lanyard",
+      "enabled": false,
+      "flat": true,
+      "fallback": true
+    },
+    {
+      "id": "ping_clip",
+      "enabled": true,
+      "flat": true,
+      "fallback": true
+    },
+    {
+      "id": "milo_md_strap",
+      "enabled": true,
+      "flat": true,
+      "fallback": true
+    },
+    {
+      "id": "ping_bag_strap",
+      "enabled": true,
+      "flat": true,
+      "fallback": true
+    },
+    {
+      "id": "null_lanyard",
+      "enabled": true,
+      "flat": true,
+      "fallback": true
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,42 @@
+{
+  "ping_clip": {
+    "file": "assets/equipment-completion/ping_clip/ping_clip.glb",
+    "sha256": "b1391e60edae7dc1695719e44c14672f005e683f555b7d9eff8b9c291cefc36a",
+    "bytes": 9016,
+    "triangles": 232,
+    "importedMeshes": 1,
+    "textures": 0,
+    "unlit": true,
+    "authorship": "Original local Blender geometry, Game-Lab; no external model or paid provider."
+  },
+  "milo_md_strap": {
+    "file": "assets/equipment-completion/milo_md_strap/milo_md_strap.glb",
+    "sha256": "ea9ab13cd9a51758bd5ace0d0a213eff72a2a07863258c48c8767422d7d34c19",
+    "bytes": 11228,
+    "triangles": 260,
+    "importedMeshes": 1,
+    "textures": 0,
+    "unlit": true,
+    "authorship": "Original local Blender geometry, Game-Lab; no external model or paid provider."
+  },
+  "ping_bag_strap": {
+    "file": "assets/equipment-completion/ping_bag_strap/ping_bag_strap.glb",
+    "sha256": "9eefdec36cb42604fe1756f2623b4e72736358b42727703145d443a9412fafd3",
+    "bytes": 11092,
+    "triangles": 260,
+    "importedMeshes": 1,
+    "textures": 0,
+    "unlit": true,
+    "authorship": "Original local Blender geometry, Game-Lab; no external model or paid provider."
+  },
+  "null_lanyard": {
+    "file": "assets/equipment-completion/null_lanyard/null_lanyard.glb",
+    "sha256": "85f5b9ca44c7a7486dc4edfb246b31ad2e53a839d34669662959497ad625554b",
+    "bytes": 8928,
+    "triangles": 220,
+    "importedMeshes": 1,
+    "textures": 0,
+    "unlit": true,
+    "authorship": "Original local Blender geometry, Game-Lab; no external model or paid provider."
+  }
+}
