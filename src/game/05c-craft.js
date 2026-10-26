@@ -3,11 +3,14 @@ const CRAFT = {
   recal:   { n:'重新校準', d:'只重洗同階內數值；保留詞綴種類與階級，已鎖定的詞綴不變', cost:it => 20 + 10*it.r + (it.lk != null ? 15 : 0), ok:it => it.aff.length > 0 },
   swap:    { n:'改裝詞綴', d:'隨機替換一條沒鎖定的詞綴', cost:it => 40 + 20*it.r, ok:it => it.r < 3 && it.aff.length > (it.lk != null ? 1 : 0) },
   upgrade: { n:'升級稀有度', d:'普通→魔法→稀有，各多一到兩條詞綴', cost:it => [100, 250][it.r] || 0, ok:it => it.r < 2 },
+  extend:  { n:'追加詞綴', d:'替稀有裝備再加一條新詞綴，最多 6 條；打造出來的裝備大多只有 4 條', cost:it => 80 + 60*Math.max(0, it.aff.length - 3), ok:it => it.r === 2 && !it.lg && it.aff.length < 6 },
   corrupt: { n:'腐化', d:'賭一把：25% 數值 +20%、25% 多一條詞綴、25% 沒變化、25% 數值 -15%；腐化後不能再改機', cost:it => 60 + 20*it.r, ok:it => !it.cr },
 };
 const craftCost = (act, it) => CRAFT[act].cost(it);
 const CRAFT_RESULTS = {};
 let craftPending = null;
+const affGroupCount=(it,g)=>it.aff.filter(a=>(AFF[a.k]?.g||'m')===g).length;
+function craftSwapChoices(slot,it){const have=it.aff.map(a=>a.k);return it.aff.some((a,i)=>i!==it.lk)?POOL[slot].filter(k=>!have.includes(k)):[];}
 function craftState(slot, act){
   const it = G.equip[slot], op = CRAFT[act];
   if (!it || !op) return { ok:false, cost:0, reason:'尚未裝備道具' };
@@ -16,7 +19,11 @@ function craftState(slot, act){
   else if (act === 'recal' && !it.aff.some((a,i) => i !== it.lk)) reason = '沒有可校準的未鎖定詞綴';
   else if (act === 'swap' && it.r >= 3) reason = '傳奇裝備不能替換詞綴';
   else if (act === 'swap' && !it.aff.some((a,i) => i !== it.lk)) reason = '沒有可改裝的未鎖定詞綴';
-  else if (act === 'swap' && !POOL[slot].some(k => !it.aff.some(a => a.k === k))) reason = '沒有可替換的新詞綴';
+  else if (act === 'swap' && !craftSwapChoices(slot,it).length) reason = '沒有可替換的新詞綴';
+  else if (act === 'extend' && it.r < 2) reason = '要先升級成稀有才能追加詞綴';
+  else if (act === 'extend' && it.lg) reason = '傳奇裝備的詞綴固定';
+  else if (act === 'extend' && it.aff.length >= 6) reason = '詞綴已滿 6 條';
+  else if (act === 'extend' && !affPickKeys(slot,it.aff.map(a=>a.k),1).length) reason = '主機位與副機位都已滿 3 條，無法再追加';
   else if (act === 'upgrade' && it.r >= 2) reason = it.lg?'傳奇裝備可使用下方的核心重構':'已達可升級的稀有度上限';
   else if (!op.ok(it)) reason = '這件裝備無法進行此操作';
   else if ((G.parts || 0) < cost) reason = `需要 ${cost} 零件，還差 ${cost - (G.parts || 0)}`;
@@ -38,11 +45,12 @@ function craftDo(slot, act, confirmed = false){
   }
   const beforeRows=copyState(it.aff);
   const cost = state.cost, before = it.aff.map(a => AFF[a.k].t(a.v)).join('、') || '無額外詞綴';
-  G.parts -= cost; G.craftN = (G.craftN || 0) + 1; checkQuest(); const have = new Set(it.aff.map(a => a.k)), free = () => POOL[slot].filter(k => !have.has(k)), add = () => { const f = free(); if (!f.length) return false; const k = tPick(f); have.add(k); it.aff.push(rollAff(k, it.il)); return true; };
+  G.parts -= cost; G.craftN = (G.craftN || 0) + 1; checkQuest(); const have = new Set(it.aff.map(a => a.k)), free = () => POOL[slot].filter(k => !have.has(k)), add = () => { if (it.aff.length >= 6) return false; const f = affPickKeys(slot,[...have],1); if (!f.length) return false; const k = f[0]; have.add(k); it.aff.push(rollAff(k, it.il)); return true; };
   let msg = '';
   if (act === 'recal'){ it.aff = it.aff.map((a,i)=>i===it.lk?a:recalibrateAff(a,it)); msg = '數值重洗完成'; }
-  else if (act === 'swap'){ const idx = it.aff.map((a, i) => i).filter(i => i !== it.lk); const i = tPick(idx), k = tPick(free()); it.aff[i] = rollAff(k,it.il); msg = `詞綴換成：${AFF[k].t(it.aff[i].v)}`; }
-  else if (act === 'upgrade'){ it.r++; const n = it.r === 1 ? 1 : 2; for (let i = 0; i < n; i++) add(); it.name = it.r === 1 ? PREF[it.aff[0].k] + BASES[slot][Math.min(3, Math.floor(it.il/6))] : tPick(RARE_NAMES[slot]); msg = `升級成${RAR[it.r].n}`; }
+  else if (act === 'swap'){ const idx = it.aff.map((a, i) => i).filter(i => i !== it.lk); const i = tPick(idx), g = AFF[it.aff[i].k]?.g || 'm', rest = it.aff.filter((_, j) => j !== i).map(x => x.k), same = affPickKeys(slot, rest, 1, g), k = same.length ? same[0] : tPick(free()); it.aff[i] = rollAff(k,it.il); msg = `詞綴換成：${AFF[k].t(it.aff[i].v)}`; }
+  else if (act === 'extend'){ add(); const last = it.aff[it.aff.length-1]; msg = `追加詞綴：${AFF[last.k].t(last.v)}（${it.aff.length}／6）`; }
+  else if (act === 'upgrade'){ it.r++; const n = it.r === 1 ? 1 : 2; for (let i = 0; i < n; i++) add(); it.name = it.r === 1 ? PREF[it.aff[0].k] + baseName(slot, it.il, it.bs || 0) : tPick(RARE_NAMES[slot]); msg = `升級成${RAR[it.r].n}`; }
   else if (act === 'corrupt'){ it.cr = 1; const r = Math.random();
     if (r < .25){ for (const a of it.aff) a.v = a.k === 'leech' ? Math.round(a.v*12)/10 : Math.max(1, Math.round(a.v*1.2)); msg = '腐化成功：數值 +20%'; }
     else if (r < .5) msg = add() ? '腐化成功：多了一條詞綴' : '腐化：沒有變化';

@@ -22,25 +22,52 @@ const RAR = [ { n:'普通', c:'#6b665b', g:'#d9d3c2', w:55 }, { n:'魔法', c:'#
               { n:'稀有', c:'#a9780a', g:'#f4c542', w:11 }, { n:'傳奇', c:'#c4501f', g:'#ff7a3d', w:2 } ];
 const SLOTN = { head:'頭部', armor:'身體', gloves:'手部', ring:'飾品', boots:'鞋子', weapon:'武器', offhand:'副手' };
 const GEAR_ROUTE={head:'memory',armor:'memory',gloves:'signal',ring:'power',boots:'power',weapon:'signal',offhand:'memory'};
-function gearImplicit(slot,il){return slot==='weapon'?{k:'dmg',v:Math.round(4+il*1.5)}:slot==='armor'?{k:'armor',v:Math.round(5+il*3)}:slot==='head'?{k:'life',v:Math.round(8+il*2)}:slot==='gloves'?{k:'aps',v:2}:slot==='boots'?{k:'haste',v:2}:slot==='offhand'?{k:'armor',v:Math.round(3+il*1.5)}:{k:'crit',v:2};}
+function gearImplicit(slot,il,bs=0){
+  const base=slot==='weapon'?{k:'dmg',v:Math.round(4+il*1.5)}:slot==='armor'?{k:'armor',v:Math.round(5+il*3)}:slot==='head'?{k:'life',v:Math.round(8+il*2)}:slot==='gloves'?{k:'aps',v:2}:slot==='boots'?{k:'haste',v:2}:slot==='offhand'?{k:'armor',v:Math.round(3+il*1.5)}:{k:'crit',v:2};
+  const key=bs>0&&SERIES[slot]?.[bs]?.imp;if(!key)return base;
+  return {k:key,v:Math.max(1,Math.round(AFF[key].b(il)*.55))};
+}
+/* 裝備系列：同一欄位三條系列，各有不同隱性詞綴與名稱，第 0 系列保持舊物品原樣。 */
+const SERIES = {
+  weapon:[{n:'近戰系'},{n:'疾速系',imp:'aps'},{n:'訊號系',imp:'ele'}],
+  armor:[{n:'標準系'},{n:'輕量系',imp:'dodgeA'},{n:'重裝系',imp:'life'}],
+  head:[{n:'標準系'},{n:'堅固系',imp:'lifeP'},{n:'學習系',imp:'xpPct'}],
+  gloves:[{n:'標準系'},{n:'獵手系',imp:'vsElite'},{n:'精準系',imp:'crit'}],
+  boots:[{n:'標準系'},{n:'疾行系',imp:'moveSpd'},{n:'輕靈系',imp:'dodgeA'}],
+  ring:[{n:'標準系'},{n:'商人系',imp:'goldPct'},{n:'尋寶系',imp:'rarity'}],
+  offhand:[{n:'標準系'},{n:'緩衝系',imp:'takenRed'},{n:'生命系',imp:'lifeP'}] };
 const AFF = {
-  dmg:   { t:v => `+${v} 物理傷害`,   b:il => 2 + il*.9 },
-  inc:   { t:v => `${v}% 增加傷害`,    b:il => 8 + il*1.2 },
-  crit:  { t:v => `+${v}% 會心率`,     b:il => 3 + il*.35 },
-  cm:    { t:v => `+${v}% 會心傷害`,   b:il => 12 + il*1.6 },
-  aps:   { t:v => `${v}% 攻擊速度`,    b:il => 5 + il*.5 },
-  fire:  { t:v => `${v}% 火焰傷害`,    b:il => 10 + il*1.8 },
-  cold:  { t:v => `${v}% 冰霜傷害`,    b:il => 10 + il*1.8 },
-  light: { t:v => `${v}% 閃電傷害`,    b:il => 10 + il*1.8 },
-  haste: { t:v => `${v}% 技能急速`,    b:il => 4 + il*.4 },
-  life:  { t:v => `+${v} 生命`,        b:il => 12 + il*5 },
-  armor: { t:v => `+${v} 護甲`,        b:il => 6 + il*3.5 },
-  regen: { t:v => `+${v} 生命回復/秒`, b:il => 1 + il*.35 },
-  leech: { t:v => `${v}% 生命偷取`,    b:il => .8 + il*.07 },
+  dmg:   { g:'m', tags:['物理'], t:v => `+${v} 物理傷害`,   b:il => 2 + il*.9 },
+  inc:   { g:'m', tags:['傷害'], t:v => `${v}% 增加傷害`,    b:il => 8 + il*1.2 },
+  crit:  { g:'s', tags:['暴擊'], t:v => `+${v}% 會心率`,     b:il => 3 + il*.35 },
+  cm:    { g:'s', tags:['暴擊'], t:v => `+${v}% 會心傷害`,   b:il => 12 + il*1.6 },
+  aps:   { g:'s', tags:['速度'], t:v => `${v}% 攻擊速度`,    b:il => 5 + il*.5 },
+  fire:  { g:'m', tags:['火','元素'], t:v => `${v}% 火焰傷害`,    b:il => 10 + il*1.8 },
+  cold:  { g:'m', tags:['冰','元素'], t:v => `${v}% 冰霜傷害`,    b:il => 10 + il*1.8 },
+  light: { g:'m', tags:['電','元素'], t:v => `${v}% 閃電傷害`,    b:il => 10 + il*1.8 },
+  haste: { g:'s', tags:['速度'], t:v => `${v}% 技能急速`,    b:il => 4 + il*.4 },
+  life:  { g:'m', tags:['生命'], t:v => `+${v} 生命`,        b:il => 12 + il*5 },
+  armor: { g:'m', tags:['防禦'], t:v => `+${v} 護甲`,        b:il => 6 + il*3.5 },
+  regen: { g:'s', tags:['生命'], t:v => `+${v} 生命回復/秒`, b:il => 1 + il*.35 },
+  leech: { g:'s', tags:['生命'], t:v => `${v}% 生命偷取`,    b:il => .8 + il*.07 },
+  lifeP: { g:'m', tags:['生命'], t:v => `${v}% 最大生命`,        b:il => 3 + il*.35 },
+  armorP:{ g:'m', tags:['防禦'], t:v => `${v}% 護甲`,            b:il => 6 + il*.7 },
+  ele:   { g:'m', tags:['元素'], t:v => `${v}% 全元素傷害`,      b:il => 6 + il*1.0 },
+  vsElite:{ g:'m', tags:['傷害'], t:v => `${v}% 對精英與首領增傷`, b:il => 6 + il*1.1 },
+  dodgeA:{ g:'s', tags:['防禦'], t:v => `+${v}% 閃避率`,         b:il => 1.5 + il*.12 },
+  takenRed:{ g:'s', tags:['防禦'], t:v => `${v}% 受到傷害降低`,    b:il => 1.5 + il*.1 },
+  killHeal:{ g:'s', tags:['生命'], t:v => `擊殺回復 ${v}% 最大生命`, b:il => .3 + il*.02 },
+  goldPct:{ g:'s', tags:['獎勵'], t:v => `${v}% 金幣增加`,        b:il => 6 + il*1.0 },
+  xpPct: { g:'s', tags:['獎勵'], t:v => `${v}% 經驗增加`,        b:il => 5 + il*.8 },
+  rarity:{ g:'s', tags:['獎勵'], t:v => `${v}% 掉落稀有度`,      b:il => 6 + il*.9 },
+  moveSpd:{ g:'s', tags:['速度'], t:v => `${v}% 移動速度`,       b:il => 2 + il*.2 },
 };
-const POOL = { weapon:['dmg','inc','crit','aps','fire','cold','light'], armor:['life','armor','regen','leech','inc','haste'], ring:['crit','cm','leech','fire','cold','light','inc','aps','life','haste'] };
-const STAT_KEY = { dmg:'dmg', inc:'inc', crit:'crit', cm:'cm', aps:'apsInc', fire:'fire', cold:'cold', light:'light', haste:'haste', life:'life', armor:'armor', regen:'regen', leech:'leech' };
-const PREF = { dmg:'加重的', inc:'超頻的', crit:'會心的', cm:'暴走的', aps:'高速的', fire:'過熱的', cold:'冷氣的', light:'帶電的', haste:'寬頻的', life:'耐用的', armor:'加厚的', regen:'充電的', leech:'偷訊號的' };
+const POOL = {
+  weapon:['dmg','inc','fire','cold','light','vsElite','ele','crit','cm','aps','haste','leech'],
+  armor:['life','armor','lifeP','armorP','inc','regen','leech','haste','dodgeA','takenRed'],
+  ring:['fire','cold','light','inc','life','ele','crit','cm','leech','aps','haste','goldPct','rarity'] };
+const STAT_KEY = { lifeP:'lifePct', armorP:'armorPct', ele:'ele', vsElite:'vsElite', dodgeA:'dodge', takenRed:'takenRed', killHeal:'killHeal', goldPct:'goldPct', xpPct:'xpPct', rarity:'rarity', moveSpd:'moveSpd', dmg:'dmg', inc:'inc', crit:'crit', cm:'cm', aps:'apsInc', fire:'fire', cold:'cold', light:'light', haste:'haste', life:'life', armor:'armor', regen:'regen', leech:'leech' };
+const PREF = { lifeP:'厚實的', armorP:'堅固的', ele:'全頻的', vsElite:'獵手的', dodgeA:'靈巧的', takenRed:'緩衝的', killHeal:'回收的', goldPct:'進帳的', xpPct:'勤勉的', rarity:'幸運的', moveSpd:'輕快的', dmg:'加重的', inc:'超頻的', crit:'會心的', cm:'暴走的', aps:'高速的', fire:'過熱的', cold:'冷氣的', light:'帶電的', haste:'寬頻的', life:'耐用的', armor:'加厚的', regen:'充電的', leech:'偷訊號的' };
 // Y2K 城市物件：武器是街頭隨手可得的東西，外套是當年的潮服，配件是千禧年的電子小物
 const BASES = { weapon:['摺疊傘','鋁製球棒','霓虹光管','雷射光劍'], armor:['連帽衛衣','牛仔外套','羽絨背心','反光風褸'], ring:['BB Call 傳呼機','翻蓋手機','MD 隨身聽','電子寵物機'] };
 const RARE_NAMES = { weapon:['午夜特急','霓虹斷線','像素裂縫','千年蟲'], armor:['街角傳說','電波外套','夜行者','高架橋之影'], ring:['未接來電','Y2K 倒數','電波滿格','撥號連線'] };
@@ -57,8 +84,22 @@ const LEGENDS = {
            { id:'R_DIAL', name:'撥號連線',     aff:['cm','aps','haste','inc'],  d:'每次施放技能有 20% 機率免費再施放一次' } ],
 };
 // Additional equipment types share the same affix and rarity system.
-Object.assign(POOL,{head:['life','armor','regen','haste','inc'],gloves:['aps','crit','cm','inc','life'],boots:['life','armor','regen','haste','leech'],offhand:['armor','life','crit','haste','fire','cold','light']});
+Object.assign(POOL,{
+  head:['life','armor','lifeP','armorP','inc','regen','haste','takenRed','xpPct','killHeal'],
+  gloves:['inc','life','armor','vsElite','ele','aps','crit','cm','haste','leech'],
+  boots:['life','armor','lifeP','armorP','regen','haste','leech','dodgeA','moveSpd'],
+  offhand:['armor','life','armorP','lifeP','fire','cold','light','ele','crit','haste','takenRed','regen'] });
 Object.assign(BASES,{head:['網帽','隔音耳罩','金屬護目鏡','訊號頭盔'],gloves:['露指手套','機車手套','導電手套','脈衝護手'],boots:['厚底帆布鞋','街頭短靴','磁浮跑鞋','光軌長靴'],offhand:['迷你音箱','反射護板','訊號接收器','電磁護盾']});
+/* 系列 1、2 的名稱（第 0 系列沿用 BASES） */
+const BASES_ALT = {
+  weapon:[['彈弓','BB 槍','遙控飛鏢','電磁砲'],['天線棒','對講機','訊號槍','衛星天線']],
+  armor:[['運動外套','防風衣','機能背心','反光披風'],['工作服','安全帽夾克','防彈背心','鋼纖大衣']],
+  head:[['安全帽','工地頭盔','防護面罩','合金頭盔'],['學生帽','耳機頭帶','資料護目鏡','神經頭環']],
+  gloves:[['抓地手套','攀岩手套','獵手護腕','追蹤護手'],['射擊手套','精密指套','瞄準護腕','校準護手']],
+  boots:[['慢跑鞋','滑板鞋','彈跳靴','噴射靴'],['舞鞋','滾輪鞋','磁懸鞋','影步靴']],
+  ring:[['零錢包','錢夾','金卡吊飾','保險箱戒'],['尋寶雷達','金屬探測器','幸運吊飾','開箱令牌']],
+  offhand:[['緩衝墊','氣墊盾','吸能護板','力場盾'],['保溫瓶','急救包','生命核心','再生艙']] };
+function baseName(slot,il,bs=0){const t=Math.min(3,Math.floor(il/6));return bs>0&&BASES_ALT[slot]?.[bs-1]?BASES_ALT[slot][bs-1][t]:BASES[slot][t];}
 Object.assign(RARE_NAMES,{head:['夜航頻率','靜電視界','都市殘響','斷訊面罩'],gloves:['低頻握力','凌晨訊號','電弧手勢','超載觸點'],boots:['末班快線','午夜步頻','空白軌跡','高架疾走'],offhand:['倒帶回聲','電波隔離','鏡面訊號','城市屏障']});
 Object.assign(LEGENDS,{head:[{id:'H_BROADBAND',name:'寬頻耳罩',aff:['life','haste','armor','regen'],d:'偏重生命、技能急速與持續回復的頭部裝備。'}],gloves:[{id:'G_CONTACT',name:'超頻觸點',aff:['aps','crit','cm','life'],d:'偏重攻擊速度與會心的手部裝備。'}],boots:[{id:'B_LASTTRAIN',name:'末班快線',aff:['life','haste','regen','armor'],d:'偏重技能急速與生存的鞋子。'}],offhand:[{id:'O_REFLECTOR',name:'訊號反射板',aff:['armor','life','haste','light'],d:'偏重護甲與閃電傷害的副手裝備。'}]});
 // User supplied Y2K signature gear: kept out of ordinary rarity/pity/forge pools.
@@ -113,6 +154,9 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.56.0',d:'2026-10-26',t:['戰鬥畫面天空更明亮飽和，並加上白色雲線；森林、沙漠、雪原與霓虹夜城各有自己的天空色。','戰鬥場景改為暖白陽光加天光補色，地面色降低飽和，植物與怪物更醒目。','背包篩選「核心」改名為「傳奇」。']},
+  {v:'0.55.0',d:'2026-10-26',t:['裝備詞綴分成「主機位」與「副機位」，每件最多各 3 條；詞綴由 13 種增加到 23 種，新增最大生命%、護甲%、全元素傷害、對精英與首領增傷、閃避、受傷降低、擊殺回復、金幣、經驗、掉落稀有度、移動速度','每個裝備欄位有三條系列，隱性詞綴與名稱各不相同，共 21 條系列、約 80 個新裝備名稱','改裝與追加詞綴會遵守主副機位的上限，改裝時優先換成同組詞綴','改機頁顯示每條詞綴屬於主機位或副機位及標籤，並標示裝備系列'],},
+  {v:'0.54.0',d:'2026-10-26',t:['裝扮新增「身體特效」：電路光環、靜電火花、訊號波紋、像素星屑，純外觀不影響能力','血跡改為鮮紅色液體：落地後向外擴散，邊緣略深，慢慢變暗淡去','稀有裝備新增「追加詞綴」改機：打造出來的裝備多為 4 條詞綴，可以逐條追加，最多 6 條','手機面板的把手拖到最下方，放開後進入觀戰；點一下畫面回到操作台','移除標題列的「展」按鈕，改由把手控制；返回按鈕改放在標題列左側','離線結算頁加入 3D 低解像自轉標誌'],},
   {v:'0.53.6',d:'2026-10-25',t:['手機版面板：即使已自己拉過把手，往下捲內容仍會自動收起戰鬥畫面，捲回頂部恢復到你設定的高度','戰鬥畫面縮小時，倒下視窗改為精簡版並顯示在最上層，不再被分頁列蓋住','彈窗內容較長時底部顯示「更多」提示','展開按鈕現在會一併重設把手高度','手機連點兩下不再放大整個畫面','拾取規則按鈕現在會明顯標示目前選中的一項','外觀頁的部位分頁與款式分開顯示，並加上款式標題與選中標記'],},
   {v:'0.53.5',d:'2026-10-25',t:['手機版面板上方的把手可上下自由拖動，放手就停在該高度，輕點恢復自動；把手上不再有文字，標題列拿掉重複的戰場大小按鈕'],},
   {v:'0.53.4',d:'2026-10-25',t:['角色會主動走向怪群，不再遠離繞圈等怪撞過來','背包的目前配裝改為緊湊兩排，減少捲動','手機版面板往下捲時自動收起戰鬥畫面，捲回頂部恢復；面板上方新增把手可上滑展開、下滑回到戰鬥','配件選單顯示每個配件的效果，不適用的標明原因','配件規則說明改為收起','任務與目標頁改為分類進度條，只顯示數字與獎勵'],},
@@ -302,12 +346,13 @@ const RELICS = {
   SUN:   { n:'小太陽',     d:'每 10 秒，對全場敵人造成一次 120% 技能傷害' },
 };
 /* 裝扮：每個部位一組顏色，價格用金幣；第一個是預設（免費、已擁有） */
-const COS_CATS = [['weaponStyle','武器'],['offhandStyle','副手'],['accessoryStyle','飾品']];
+const COS_CATS = [['weaponStyle','武器'],['offhandStyle','副手'],['accessoryStyle','飾品'],['auraStyle','身體特效']];
 const cosAvailable=cat=>COS_CATS.some(([key])=>key===cat);
 const COS = {
   weaponStyle:[['0','裝備原貌','#c3cad6',0],['umbrella','摺疊傘','#8399b3',1200],['bat','鋁製球棒','#bbc7d4',1500],['tube','霓虹光管','#83c8cf',2000],['saber','雷射光劍','#929ddd',2500]],
   offhandStyle:[['0','不攜帶','#c3cad6',0],['disc','唱片圓盾','#8299b3',1500],['radio','掌上收音機','#729f9e',1800]],
   accessoryStyle:[['0','不配戴','#c3cad6',0],['pager','腰間傳呼機','#879bb8',1200],['charm','電台吊飾','#93c8c2',1500]],
+  auraStyle:[['0','無特效','#c3cad6',0],['circuit','電路光環','#69e0ff',3000],['spark','靜電火花','#fff3a0',3500],['wave','訊號波紋','#ff9be3',4000],['pixel','像素星屑','#7ef0ff',4500]],
   tstyle:[['0', '短袖 T', '#dfe6f7', 0], ['hood', '連帽衫', '#dfe6f7', 2000], ['jacket', '棒球外套', '#dfe6f7', 2500], ['scarf', '長圍巾', '#dfe6f7', 1800]],
   hat:   [['0', '無', '#dfe6f7', 0], ['cap', '鴨舌帽', '#4a6fb0', 1500], ['beanie', '毛帽', '#ff6aa8', 1500], ['bunny', '兔耳', '#f5f6fc', 2500], ['ant', '天線髮箍', '#7fe38a', 2000]],
   glasses:[['0', '無', '#dfe6f7', 0], ['round', '圓框', '#2b2552', 1200], ['visor', '護目鏡', '#46c8f0', 2000], ['shades', '墨鏡', '#2b2a3a', 1500]],
@@ -504,6 +549,10 @@ Object.assign(SUPPS,{"ANCHOR": {"n": "定錨電容", "d": "傷害 +80%，冷卻�
 Object.assign(BIOMES[3],{n:'焦黑熔爐',sky:['#1f2531','#695e55','#b7a58b'],board:{l:'#82715e',m:'#584738',d:'#302c31'},t1:'#bd713e',t2:'#a29c83',portal:'#ff9b54',glow:'#eabd78'});
 Object.assign(BIOMES[5],{n:'廢線貨運場',sky:['#15293c','#617a86','#b5c4c8'],board:{l:'#a2adb0',m:'#697c85',d:'#344658'},t1:'#6c8a80',t2:'#b7c5bc',portal:'#e0ad5a',glow:'#f1cf83'});
 Object.assign(BIOMES[8],{n:'山脊變電站',board:{l:'#adb9ad',m:'#748d83',d:'#3d5554'},t1:'#7e9f8c',t2:'#b5c5b3',portal:'#9fc2d1',glow:'#c4e9e4',sky:['#142632','#486b71','#a0beb5']});
+Object.assign(BIOMES[0],{sky:['#2fa8f0','#4fc8ff','#dff5ff'],board:{l:'#c6dcb0',m:'#a4c28f',d:'#6f957c'}});
+Object.assign(BIOMES[1],{sky:['#3aa6ea','#86d0f2','#ffe8c0'],board:{l:'#f2e0b4',m:'#e0c690',d:'#b09468'}});
+Object.assign(BIOMES[2],{sky:['#4aa8ec','#9bd6f8','#f4fbff']});
+Object.assign(BIOMES[4],{sky:['#160e68','#4a2cb4','#ff86d4']});
 BIOMES.push({"n": "黑砂煉鋼廠", "board": {"l": "#a49a88", "m": "#706e69", "d": "#353d44"}, "t1": "#706e69", "t2": "#a49a88", "portal": "#ba8c59", "glow": "#ba8c59", "sky": ["#152435", "#353d44", "#706e69"]});
 BIOMES.push({"n": "深海電纜港", "board": {"l": "#96b3b4", "m": "#567781", "d": "#253e56"}, "t1": "#567781", "t2": "#96b3b4", "portal": "#80d3cf", "glow": "#80d3cf", "sky": ["#152435", "#253e56", "#567781"]});
 BIOMES.push({"n": "廢棄衛星陣列", "board": {"l": "#b5c0d1", "m": "#7d8da8", "d": "#3a4864"}, "t1": "#7d8da8", "t2": "#b5c0d1", "portal": "#a9b6ec", "glow": "#a9b6ec", "sky": ["#152435", "#3a4864", "#7d8da8"]});

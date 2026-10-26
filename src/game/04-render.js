@@ -24,6 +24,7 @@ const basic = (hex, op=1) => new T3.MeshBasicMaterial({ color:hex, transparent:o
 const G_ = {};   // 共用幾何
 const geo = (key, fn) => G_[key] ||= fn();
 /* Small-radius chamfers and low-segment curves preserve the original footprint. */
+function sunWorldLighting(scene){scene.add(new T3.HemisphereLight(0x8fd8ff,0x8aa078,1.35));const key=new T3.DirectionalLight(0xfff2d6,1.9);key.position.set(30,60,50);scene.add(key);const rim=new T3.DirectionalLight(0x6f9fd8,.5);rim.position.set(-30,20,-30);scene.add(rim);scene.add(new T3.AmbientLight(0xdff0ff,.22));}
 function studioWorldLighting(scene){scene.add(new T3.HemisphereLight(0xeaf5ff,0x6e839e,1.5));const key=new T3.DirectionalLight(0xf3f8ff,1.6);key.position.set(30,60,50);scene.add(key);const rim=new T3.DirectionalLight(0x98bdd7,.45);rim.position.set(-30,20,-30);scene.add(rim);scene.add(new T3.AmbientLight(0xffffff,.2));}
 function roundedG(w,h,d){const r=Math.min(w,h,d)*.16;if(r<.08)return new T3.BoxGeometry(w,h,d);const shape=new T3.Shape(),x=-w/2,y=-h/2;shape.moveTo(x+r,y);shape.lineTo(x+w-r,y);shape.quadraticCurveTo(x+w,y,x+w,y+r);shape.lineTo(x+w,y+h-r);shape.quadraticCurveTo(x+w,y+h,x+w-r,y+h);shape.lineTo(x+r,y+h);shape.quadraticCurveTo(x,y+h,x,y+h-r);shape.lineTo(x,y+r);shape.quadraticCurveTo(x,y,x+r,y);const g=new T3.ExtrudeGeometry(shape,{depth:d,bevelEnabled:false,curveSegments:2,steps:1});g.translate(0,0,-d/2);return g;}
 function curvedPipe(points,radius=.35){return new T3.TubeGeometry(new T3.CatmullRomCurve3(points.map(p=>new T3.Vector3(...p))),8,radius,4,false);}
@@ -508,7 +509,7 @@ function r3init(){
   const rd = R3.rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true, preserveDrawingBuffer:!!(navigator.webdriver || location.search.includes('static')) });
   rd.setPixelRatio(1); rd.setClearColor(0x000000, 0); rd.outputColorSpace = T3.SRGBColorSpace;
   const sc = R3.sc = new T3.Scene();
-  studioWorldLighting(sc);
+  sunWorldLighting(sc);
   R3.cam = new T3.OrthographicCamera(-1, 1, 1, -1, -400, 600);
   R3.world = new T3.Group(); sc.add(R3.world); R3.fx = new T3.Group(); sc.add(R3.fx);
   R3.hero = null; R3.gnd = null; R3.portal = null; R3.decor = []; R3.bi = -1; R3.ready = true;
@@ -645,7 +646,10 @@ function updateFx(){
   };
   const sph=geo('fxs',()=>ico(1,1)),disc=geo('fxd',()=>new T3.CircleGeometry(1,20).rotateX(-Math.PI/2)),ring=geo('fxr',()=>new T3.RingGeometry(.83,1,24).rotateX(-Math.PI/2)),box=geo('fxf',()=>new T3.BoxGeometry(1,.25,1));
   const warnings=G.mons.filter(m=>!m.dead&&m.warning&&!(m.frozen>0)).map(m=>({k:'danger',...m.warning,t:1-m.warning.t/m.warning.duration,col:m.boss?'#c45b64':'#c87e48'}));
-  for(const stain of G.stains||[])add(disc,'#632b43',Math.min(.55,(12-stain.t)/5),stain.x,stain.y,BZ+.15,stain.r);
+  for(const stain of G.stains||[]){const sp=Math.min(1,stain.t/.7),ease=1-(1-sp)*(1-sp),dry=Math.min(1,stain.t/10),fade=Math.min(1,(12-stain.t)/4),col=dry<.5?'#e0131e':dry<.8?'#c20f1a':'#9a0c16',wet=stain.t<6?(1-stain.t/6)*.4:0;let zi=0;
+  if(stain.blobs){const m0=stain.blobs[0];add(disc,'#7a0710',.85*fade,stain.x,stain.y,BZ+.14,m0.r*1.12*ease);}
+  for(const b of stain.blobs||[{dx:0,dy:0,r:stain.r}]){const k=b.drop?Math.min(1,Math.max(0,(stain.t-.12)/.2)):ease;if(k<=0)continue;add(disc,col,.9*fade,stain.x+b.dx*ease,stain.y+b.dy*ease,BZ+.15+(zi++)*.006,b.r*k);}
+  if(wet>0&&stain.blobs)for(const b of stain.blobs.slice(0,2)){if(b.drop)continue;add(disc,'#ff5560',wet*fade,stain.x+b.dx*ease-b.r*.18,stain.y+b.dy*ease-b.r*.18,BZ+.15+(zi++)*.006,b.r*.45*ease);}}
   for(const e of warnings.concat(G.fx.filter(e=>e.sustained),G.fx.filter(e=>!e.sustained))){const fade=1-e.t;
     if(renderSpectacleFx(e,add,geo))continue;
     if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}

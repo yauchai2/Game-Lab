@@ -52,6 +52,8 @@ function killMon(m){
   let hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk * (G.relics.CALC ? 1.2 : 1) * (offPen() ? .75 : 1))), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
   if (m.elite){ gold *= 4; xp *= 4; } if (mods.includes('wise')) xp = Math.round(xp*1.5);
   if (G.relics.PIG) gold = Math.round(gold*1.3);
+  if (G.st.goldPct) gold = Math.max(1, Math.round(gold*(1+G.st.goldPct/100))); if (G.st.xpPct) xp = Math.max(1, Math.round(xp*(1+G.st.xpPct/100)));
+  if (G.st.killHeal && G.h.hp > 0 && G.time - (G.killHealAt||-1) > .25){ G.killHealAt = G.time; G.h.hp = Math.min(G.st.life, G.h.hp + G.st.life*G.st.killHeal/100); }
   dropGround({kind:'gold',amount:gold,x:m.x,y:m.y,t:0});if(m.boss||m.elite||Math.random()<.08)dropGround({kind:'chip',amount:m.boss?5:m.elite?2:1,x:m.x+2,y:m.y,t:0});G.totalKills++; if (m.boss){ G.bossKills = (G.bossKills || 0) + 1; if (GAME_FEATURES.cardChoices && Object.keys(G.relics).length < Object.keys(RELICS).length) G.relicPicks++; kick(2.4, .5, '#fff6c0', 1); hitStop(.14); if (G.fx.length < 40) addFx({ k:'ring', x:m.x, y:m.y, col:'#fff6c0', t:0, dur:.7 }); if (Math.random() < .25 && typeof COS !== 'undefined'){ const pool = []; for (const [c] of COS_CATS) for (const e of COS[c]) if (e[3] > 0 && !G.own[c + ':' + e[0]]) pool.push([c, e]); if (pool.length){ const [c, e] = tPick(pool); G.own[c + ':' + e[0]] = 1; logLine(`BOSS掉落裝扮：${e[1]}`, '#c28a00'); } } }
   gainXp(xp); if (R) R.kills++; else G.kills++; checkGoals();
   if (R && R.tower && R.floor % 10 !== 0 && R.kills >= R.need) towerNext();
@@ -197,7 +199,7 @@ function chooseReadySkill(){
 function hitMon(m, dmg, crit, source=G.src||'其他'){
   if (m.dead || m.fall > 0) return;
   if(!Number.isFinite(dmg)||dmg<=0)return;
-  dmg=cityIncoming(m,dmg)*(m.guardUntil>G.time?.55:1);if(dmg<=0)return;
+  dmg=cityIncoming(m,dmg)*(m.guardUntil>G.time?.55:1)*((m.boss||m.elite)&&G.st.vsElite?1+G.st.vsElite/100:1);if(dmg<=0)return;
   combatDamage(source,Math.min(Math.max(0,m.hp),dmg));
   if(!m.training&&!G.offline&&G.time-(G.impactAt??-10)>.16){G.impactAt=G.time;const skill=source!=='普通攻擊',heavy=crit||skill;const col=skill?'#b5dfff':'#ffffff';kick(heavy?2.2:1.05,heavy?.32:.12,col,heavy?.65:.25);}
   m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit');
@@ -397,7 +399,7 @@ function moveHero(dt){
       if(pick){h.gx=pick[0];h.gy=pick[1];}
     }
   }
-  const waypoint=terrainWaypoint(h.x,h.y,h.gx,h.gy),dx = waypoint[0] - h.x, dy = waypoint[1] - h.y, d = Math.hypot(dx, dy), want = d > 1.2 ? 24 : 0;
+  const waypoint=terrainWaypoint(h.x,h.y,h.gx,h.gy),dx = waypoint[0] - h.x, dy = waypoint[1] - h.y, d = Math.hypot(dx, dy), want = d > 1.2 ? 24*(1+(G.st.moveSpd||0)/100) : 0;
   h.vx += ((d ? dx/d : 0)*want - h.vx)*Math.min(1, dt*6); h.vy += ((d ? dy/d : 0)*want - h.vy)*Math.min(1, dt*6);
   terrainMove(h,h.x+h.vx*dt,h.y+h.vy*dt); h.mv = Math.hypot(h.vx, h.vy);
   if (h.dash){ h.dash.t += dt; if (h.dash.t >= .3) h.dash = null; }
