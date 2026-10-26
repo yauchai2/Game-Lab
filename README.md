@@ -68,7 +68,7 @@
 
 ## 美術風格
 
-Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機、街景高架橋，介面是作業系統視窗風，全介面保留 Cubic 11 像素字體，透過手機／桌機字級、行距及介面比例改善可讀性。細節見 [docs/art-style.md](docs/art-style.md) 與 [docs/art-direction-and-roadmap.md](docs/art-direction-and-roadmap.md)。
+Dreamcast／PS2 時代的日系街頭 3D：低解析貼圖、修長的寬鬆街服角色、有生活細節的街區，介面是作業系統視窗風，全介面保留 Cubic 11 像素字體，透過手機／桌機字級、行距及介面比例改善可讀性。細節見 [docs/art-style.md](docs/art-style.md)。
 
 ## 授權
 
