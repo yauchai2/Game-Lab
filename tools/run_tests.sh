@@ -10,4 +10,5 @@ for f in equipment_fit intro_logo phone_natural release_043 support wire_touch; 
   node tools/test_${f}_browser.cjs | tail -1
   kill $srv 2>/dev/null || true
 done
+node tools/test_site_boot.cjs | tail -1
 echo "全部通過"

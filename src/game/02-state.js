@@ -672,3 +672,6 @@ function noticeNew(kind,key){G.unread=G.unread||cleanUnread();const a=G.unread[k
 function noticeHas(kind,key){return !!G.unread?.[kind]?.includes(key);}
 function noticeRead(kind,key){if(!G.unread?.[kind])return;G.unread[kind]=key==null?[]:G.unread[kind].filter(v=>v!==key);G.dirty=true;}
 function cleanDeathReport(r){if(!r||!Number.isFinite(r.time)||typeof r.cause!=='string')return null;return {time:r.time,cause:r.cause.slice(0,100),area:typeof r.area==='string'?r.area.slice(0,80):'',total:Math.max(0,Number(r.total)||0),shield:Math.max(0,Number(r.shield)||0),largest:Math.max(0,Number(r.largest)||0),life:Math.max(1,Number(r.life)||1),sources:(Array.isArray(r.sources)?r.sources:[]).filter(q=>typeof q?.name==='string'&&Number.isFinite(q.amount)).slice(0,6).map(q=>({name:q.name.slice(0,100),amount:Math.max(0,q.amount)})),skills:(Array.isArray(r.skills)?r.skills:[]).filter(id=>SKILLS[id]).slice(0,6)};}
+
+/* 背景運行與小視窗的狀態（邏輯在 06b-background.js）；放在這裡才能在設定面板建立前使用。 */
+var BG={worker:null,pip:null,ctx:null,stats:null,last:0};
