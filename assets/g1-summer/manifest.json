@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "type": "non-destructive runtime material recipes",
+  "status": "candidate; integration and visual checks in progress",
+  "assets": [
+    {
+      "source": "assets/characters/aki.glb",
+      "sourceSha256": "969f738536a3e6a1a8de916477eaba97b9b684f3de8243a427afb043f32752d1",
+      "geometryModified": false,
+      "uvModified": false,
+      "skeletonModified": false,
+      "animations": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "source": "assets/equipment/aki_headphones.glb",
+      "sourceSha256": "59798344af1f27702b3e2e2f37357971bf66fb36f3803ad86b44bf14427d0a70",
+      "geometryModified": false,
+      "uvModified": false,
+      "skeletonModified": false,
+      "animations": []
+    },
+    {
+      "source": "assets/equipment/aki_baton.glb",
+      "sourceSha256": "0581444f378a11dd44b243f038fa6d8bb7a51a69db5b44f5693c77b93e6a5133",
+      "geometryModified": false,
+      "uvModified": false,
+      "skeletonModified": false,
+      "animations": []
+    }
+  ],
+  "integration": "material-pack.js exposes G1Materials.hero/equipment/dispose; requires THREE and existing source GLB material map",
+  "notes": [
+    "No new character or replacement monster is claimed.",
+    "Preserves original asset files and all four-limb proportions.",
+    "Original map is cloned; renderer shader recolors classified blue/olive/ivory regions only."
+  ]
+}
