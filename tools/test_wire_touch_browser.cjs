@@ -8,7 +8,8 @@ await p.goto(url+'?fresh&static');await p.waitForTimeout(800);
 await p.evaluate(()=>{try{hideOverlay()}catch(e){};WORLD_TRAVEL.remaining=0;G.lvl=4;recalc();openModal('skills');ui.render()});await p.waitForTimeout(400);
 for(const dy of [0,2,-2]){
  await p.evaluate(()=>{GridLab.clearWire(G.board,0);for(let i=0;i<6;i++)GridLab.clearWire(G.board,i);recalc();renderModal()});
- const r=await p.evaluate(()=>{const e=document.querySelector('.wb .pc.src:not(.off)');e.scrollIntoView({block:'center'});const q=e.getBoundingClientRect();return {x:q.x+q.width/2,y:q.y+q.height/2}});
+ await p.evaluate(()=>document.querySelector('.wb .pc.src:not(.off)').scrollIntoView({block:'center'}));await p.waitForTimeout(700);
+ const r=await p.evaluate(()=>{const e=document.querySelector('.wb .pc.src:not(.off)');const q=e.getBoundingClientRect();return {x:q.x+q.width/2,y:q.y+q.height/2}});
  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:r.x,y:r.y}]});
  for(let i=1;i<=12;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:r.x+i*8,y:r.y+i*dy}]});await p.waitForTimeout(16);}
  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await p.waitForTimeout(300);

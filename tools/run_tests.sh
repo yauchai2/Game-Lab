@@ -1,6 +1,6 @@
 #!/bin/bash
 # 日常測試：邏輯測試加仍然有效的瀏覽器測試。需要 playwright 與 chromium。
-set -e
+set -eo pipefail
 cd "$(dirname "$0")/.."
 for t in grid expansion mechanics progression gameplay ux; do node tools/test_$t.js | tail -1; done
 for f in equipment_fit intro_logo phone_natural release_043 support wire_touch; do
