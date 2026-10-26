@@ -24,6 +24,7 @@ const basic = (hex, op=1) => new T3.MeshBasicMaterial({ color:hex, transparent:o
 const G_ = {};   // 共用幾何
 const geo = (key, fn) => G_[key] ||= fn();
 /* Small-radius chamfers and low-segment curves preserve the original footprint. */
+function sunWorldLighting(scene){scene.add(new T3.HemisphereLight(0x8fd8ff,0x8aa078,1.35));const key=new T3.DirectionalLight(0xfff2d6,1.9);key.position.set(30,60,50);scene.add(key);const rim=new T3.DirectionalLight(0x6f9fd8,.5);rim.position.set(-30,20,-30);scene.add(rim);scene.add(new T3.AmbientLight(0xdff0ff,.22));}
 function studioWorldLighting(scene){scene.add(new T3.HemisphereLight(0xeaf5ff,0x6e839e,1.5));const key=new T3.DirectionalLight(0xf3f8ff,1.6);key.position.set(30,60,50);scene.add(key);const rim=new T3.DirectionalLight(0x98bdd7,.45);rim.position.set(-30,20,-30);scene.add(rim);scene.add(new T3.AmbientLight(0xffffff,.2));}
 function roundedG(w,h,d){const r=Math.min(w,h,d)*.16;if(r<.08)return new T3.BoxGeometry(w,h,d);const shape=new T3.Shape(),x=-w/2,y=-h/2;shape.moveTo(x+r,y);shape.lineTo(x+w-r,y);shape.quadraticCurveTo(x+w,y,x+w,y+r);shape.lineTo(x+w,y+h-r);shape.quadraticCurveTo(x+w,y+h,x+w-r,y+h);shape.lineTo(x+r,y+h);shape.quadraticCurveTo(x,y+h,x,y+h-r);shape.lineTo(x,y+r);shape.quadraticCurveTo(x,y,x+r,y);const g=new T3.ExtrudeGeometry(shape,{depth:d,bevelEnabled:false,curveSegments:2,steps:1});g.translate(0,0,-d/2);return g;}
 function curvedPipe(points,radius=.35){return new T3.TubeGeometry(new T3.CatmullRomCurve3(points.map(p=>new T3.Vector3(...p))),8,radius,4,false);}
@@ -508,7 +509,7 @@ function r3init(){
   const rd = R3.rd = new T3.WebGLRenderer({ canvas:cv, antialias:false, alpha:true, preserveDrawingBuffer:!!(navigator.webdriver || location.search.includes('static')) });
   rd.setPixelRatio(1); rd.setClearColor(0x000000, 0); rd.outputColorSpace = T3.SRGBColorSpace;
   const sc = R3.sc = new T3.Scene();
-  studioWorldLighting(sc);
+  sunWorldLighting(sc);
   R3.cam = new T3.OrthographicCamera(-1, 1, 1, -1, -400, 600);
   R3.world = new T3.Group(); sc.add(R3.world); R3.fx = new T3.Group(); sc.add(R3.fx);
   R3.hero = null; R3.gnd = null; R3.portal = null; R3.decor = []; R3.bi = -1; R3.ready = true;
