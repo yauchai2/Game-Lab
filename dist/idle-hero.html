@@ -1037,7 +1037,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  {v:'0.62.0',d:'2026-10-26',t:['新增夏日街區主線，共六章：電台前街、高架橋下、商店街與夜市、車站與河邊、山路電塔與商場地下、屋頂天線。每章有一個首領和一件失物，擊敗首領後找回。','電台手記新增「夏日主線」，記錄已找回的失物與每章的結尾。劇情只寫進日誌和手記，掛機時不會彈窗。','六章首領各有專屬頭飾與名稱：喇叭、回音環、招牌、月台擴音器、捲盤、天線冠。']},
+  {v:'0.62.0',d:'2026-10-26',t:['新增夏日街區主線，共六章：電台前街、高架橋下、商店街與夜市、車站與河邊、山路電塔與商場地下、屋頂天線。每章有一個首領和一件失物，擊敗首領後找回。','電台手記新增「夏日主線」，記錄已找回的失物與每章的結尾。劇情只寫進日誌和手記，掛機時不會彈窗。','六章首領各有專屬頭飾與名稱：喇叭、回音環、招牌、月台擴音器、捲盤、天線冠。','電台吉祥物會在找回失物時跳起來慶祝；通關第六章後，身上會多一張貼紙。']},
   {v:'0.61.1',d:'2026-10-26',t:['修正：0.61.0 的設定面板在正式網頁載入時出錯，導致整個介面排版跑掉；已還原為原本的藍紫窗口介面。']},
   {v:'0.61.0',d:'2026-10-26',t:['切到其他分頁或視窗時，遊戲會在背後繼續運行，不再停住，回來也不會跳出離線結算（除非瀏覽器已長時間凍結分頁）。','設定新增「小視窗」：在 Chrome、Edge 等支援的瀏覽器開啟置頂縮圖視窗，顯示戰鬥畫面與等級、生命、深度、金幣，可放在螢幕角落一邊工作一邊看。','離線結算頁取消 3D 自轉標誌，回到原本的樣式。']},
   {v:'0.60.1',d:'2026-10-26',t:['修正：關閉「街區地圖」後，角色與裝備的配色會一起還原。','修正：魔物倒下時，臉部會跟著身體一起淡出。']},
@@ -2195,7 +2195,7 @@ const STORY_CHAPTERS=[
 ];
 function storyChapter(){return Math.max(0,Math.min(STORY_CHAPTERS.length,G.storyFlags.ch|0));}
 function storyBossName(d){const c=STORY_CHAPTERS[storyChapter()];return c&&d>=c.depth?c.boss:null;}
-function storyAdvance(d){if(G.offline)return;const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c||d<c.depth)return;G.storyFlags.ch=i+1;G.dirty=true;logLine(`找回失物：${c.item}。${c.radio}`,'#c28a00');if(i+1===STORY_CHAPTERS.length)logLine('夏日街區的廣播全部恢復了。接下來是更深的街區。','#c28a00');}
+function storyAdvance(d){if(G.offline)return;const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c||d<c.depth)return;G.storyFlags.ch=i+1;G.dirty=true;G.mascotCheer=1.2;logLine(`找回失物：${c.item}。${c.radio}`,'#c28a00');if(i+1===STORY_CHAPTERS.length)logLine('夏日街區的廣播全部恢復了。接下來是更深的街區。','#c28a00');}
 const WORLD_TRAVEL={key:null,remaining:0,duration:.7};
 function fieldDiscover(profile,boss=false){if(G.offline||profile<0||profile>=FIELD_STORIES.length)return;const key='p'+profile,bit=boss?2:1,old=G.storyFlags[key]||0;if(old&bit)return;G.storyFlags[key]=old|bit;G.dirty=true;}
 function worldTravelStart(plan){if(G.offline||plan.key==='training')return;const changed=WORLD_TRAVEL.key!==plan.key;if(!changed)return;WORLD_TRAVEL.key=plan.key;WORLD_TRAVEL.remaining=WORLD_TRAVEL.duration;fieldDiscover(plan.profile);}
@@ -3354,7 +3354,8 @@ function mascotUpdate(){
   if (!R3.mascot){ R3.mascot = buildMascot(); R3.mascot.userData.px = G.h.x - 5; R3.mascot.userData.py = G.h.y + 4; R3.world.add(R3.mascot); }
   const m = R3.mascot, u = m.userData, dt = Math.min(.1, R3.frameDt || .016), tx = G.h.x - 5, ty = G.h.y + 4, d = Math.hypot(tx - u.px, ty - u.py), k = d > 30 ? 1 : 1 - Math.exp(-dt*3.2);
   u.px += (tx - u.px)*k; u.py += (ty - u.py)*k; u.t = (u.t || 0) + dt;
-  const bob = Math.abs(Math.sin(u.t*5))*(d > 1.2 ? 1.1 : .35);
+  G.mascotCheer = Math.max(0, (G.mascotCheer || 0) - dt); const bob = Math.abs(Math.sin(u.t*5))*(d > 1.2 ? 1.1 : .35) + (G.mascotCheer > 0 ? Math.abs(Math.sin(G.mascotCheer*9))*4 : 0);
+  if (storyChapter() >= STORY_CHAPTERS.length && !u.sticker){ u.sticker = mk(new T3.PlaneGeometry(1.6, 1.6), new T3.MeshBasicMaterial({ color:'#ff8fb0' }), 1.7, 4.4, 2.3, m); u.sticker.rotation.z = .4; }
   at3(m, u.px, u.py, BZ + terrainHeight(u.px, u.py) + bob); m.rotation.y = Math.atan2(G.h.x - u.px, G.h.y - u.py); u.tip.scale.setScalar(1 + .25*Math.sin(u.t*6));
 }
 function buildDrone(){   // 塑膠袋飛靈：半透明白袋身、兩條提手、簡化臉，貼著半空飄

@@ -672,7 +672,7 @@ const STORY_CHAPTERS=[
 ];
 function storyChapter(){return Math.max(0,Math.min(STORY_CHAPTERS.length,G.storyFlags.ch|0));}
 function storyBossName(d){const c=STORY_CHAPTERS[storyChapter()];return c&&d>=c.depth?c.boss:null;}
-function storyAdvance(d){if(G.offline)return;const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c||d<c.depth)return;G.storyFlags.ch=i+1;G.dirty=true;logLine(`找回失物：${c.item}。${c.radio}`,'#c28a00');if(i+1===STORY_CHAPTERS.length)logLine('夏日街區的廣播全部恢復了。接下來是更深的街區。','#c28a00');}
+function storyAdvance(d){if(G.offline)return;const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c||d<c.depth)return;G.storyFlags.ch=i+1;G.dirty=true;G.mascotCheer=1.2;logLine(`找回失物：${c.item}。${c.radio}`,'#c28a00');if(i+1===STORY_CHAPTERS.length)logLine('夏日街區的廣播全部恢復了。接下來是更深的街區。','#c28a00');}
 const WORLD_TRAVEL={key:null,remaining:0,duration:.7};
 function fieldDiscover(profile,boss=false){if(G.offline||profile<0||profile>=FIELD_STORIES.length)return;const key='p'+profile,bit=boss?2:1,old=G.storyFlags[key]||0;if(old&bit)return;G.storyFlags[key]=old|bit;G.dirty=true;}
 function worldTravelStart(plan){if(G.offline||plan.key==='training')return;const changed=WORLD_TRAVEL.key!==plan.key;if(!changed)return;WORLD_TRAVEL.key=plan.key;WORLD_TRAVEL.remaining=WORLD_TRAVEL.duration;fieldDiscover(plan.profile);}

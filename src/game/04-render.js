@@ -216,7 +216,8 @@ function mascotUpdate(){
   if (!R3.mascot){ R3.mascot = buildMascot(); R3.mascot.userData.px = G.h.x - 5; R3.mascot.userData.py = G.h.y + 4; R3.world.add(R3.mascot); }
   const m = R3.mascot, u = m.userData, dt = Math.min(.1, R3.frameDt || .016), tx = G.h.x - 5, ty = G.h.y + 4, d = Math.hypot(tx - u.px, ty - u.py), k = d > 30 ? 1 : 1 - Math.exp(-dt*3.2);
   u.px += (tx - u.px)*k; u.py += (ty - u.py)*k; u.t = (u.t || 0) + dt;
-  const bob = Math.abs(Math.sin(u.t*5))*(d > 1.2 ? 1.1 : .35);
+  G.mascotCheer = Math.max(0, (G.mascotCheer || 0) - dt); const bob = Math.abs(Math.sin(u.t*5))*(d > 1.2 ? 1.1 : .35) + (G.mascotCheer > 0 ? Math.abs(Math.sin(G.mascotCheer*9))*4 : 0);
+  if (storyChapter() >= STORY_CHAPTERS.length && !u.sticker){ u.sticker = mk(new T3.PlaneGeometry(1.6, 1.6), new T3.MeshBasicMaterial({ color:'#ff8fb0' }), 1.7, 4.4, 2.3, m); u.sticker.rotation.z = .4; }
   at3(m, u.px, u.py, BZ + terrainHeight(u.px, u.py) + bob); m.rotation.y = Math.atan2(G.h.x - u.px, G.h.y - u.py); u.tip.scale.setScalar(1 + .25*Math.sin(u.t*6));
 }
 function buildDrone(){   // 塑膠袋飛靈：半透明白袋身、兩條提手、簡化臉，貼著半空飄
