@@ -520,6 +520,9 @@ function damageFloatSize(amount){return Math.min(26,12+Math.log10(1+Math.max(0,a
 function terrainHash(text){let n=2166136261;for(const c of String(text))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;}
 function terrainKey(){const r=G.run;return G.train?'training':r?.map?'map:'+r.map.id+':'+(r.city?.stage??r.floor??0):'depth:'+G.depth;}
 let TERRAIN_CACHE=null;
+/* G1 街區樣板：城市綠洲地形改成一條橫街，兩側是連續店面。?street=0 或設定可關閉，回到原版地形。 */
+function streetSampleOn(){try{const q=new URLSearchParams(location.search).get('street');if(q==='0')return false;if(q==='1')return true;return localStorage.getItem('ih-street')!=='0';}catch(e){return true;}}
+const STREET_HW=7;
 function terrainBuild(key){
   const seed=terrainHash(key),training=key==='training',tower=key.startsWith('map:tower:'),room=tower?towerTheme(+key.split(':').at(-1)):null,profile=tower?11:training?0:seed%12,cell=6;
   // Rounded land masses with low-frequency coast variation, never letter-shaped cut-outs.
@@ -539,7 +542,17 @@ function terrainBuild(key){
   }
   const groundLookup=new Map(lookup),landmarks=[];
   const pick=(index)=>groundCells[terrainHash(key+':'+index)%groundCells.length];
-  const count=tower?6:training?0:Math.min(64,Math.round(groundCells.length/110)+3);
+  const street=profile===5&&!tower&&!training&&streetSampleOn();
+  if(street){const rad=11,lat=clearRadius+rad+6;
+    for(const side of [-1,1])for(let t=-w+rad+6;t<=w-rad-6;t+=rad*2+3){
+      const x=HX+t,y=HY+side*lat,cx=Math.floor((x-ox)/cell),cy=Math.floor((y-oy)/cell);
+      if(cx<0||cx>=nx||cy<0||cy>=ny||!groundLookup.has(cy*nx+cx)||Math.hypot((x-HX)/w,(y-HY)/h)>.8)continue;
+      const variant=terrainHash(key+':shop:'+side+':'+t);
+      landmarks.push({x,y,radius:rad,kind:'shop',scale:1,variant,height:15,face:-side,rotation:side<0?0:Math.PI});
+      for(const q of groundCells)if(Math.abs(q.x-x)<rad&&Math.abs(q.y-y)<rad)lookup.delete(q.k);
+    }
+  }
+  const count=tower?6:training?0:street?0:Math.min(64,Math.round(groundCells.length/110)+3);
   for(let n=0;n<count*12&&landmarks.length<count;n++){
     const c=pick(n),urban=[5,7,11].includes(profile),variant=terrainHash(key+':object:'+n);
     const family=tower?({prison:['cellblock','barrier','cellblock','console'],lab:['labtank','console','labtank','vent'],reactor:['generator','vent','server','generator']}[room.id]):profile===7?['cabin','pavilion','tree','building']:profile===11?['warehouse','building','tree','pavilion']:urban?['building','building','tree','pavilion']:profile===8?['windmill','tree','boulder','cabin']:profile===10?['ruin','boulder','tree','ruin']:profile===6?['tree','cabin','tree','boulder']:['tree','tree','boulder','tree'];
@@ -556,7 +569,7 @@ function terrainBuild(key){
   const cells=groundCells.filter(c=>seen.has(c.k));for(const k of lookup.keys())if(!seen.has(k))lookup.delete(k);
   const edges=cells.filter(c=>[[1,0],[-1,0],[0,1],[0,-1]].some(([di,dj])=>{const i=c.i+di,j=c.j+dj;return i<0||i>=nx||j<0||j>=ny||!groundLookup.has(j*nx+i);}));
   const bounds=[Math.min(...groundCells.map(c=>c.x))-3,Math.max(...groundCells.map(c=>c.x))+3,Math.min(...groundCells.map(c=>c.y))-3,Math.max(...groundCells.map(c=>c.y))+3];
-  return {key,seed,profile,sizeClass,shapeClass,clearRadius,name:tower?room.n:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:tower||training?0:[24,48,20,58,36,10,54,12,48,72,46,14][profile]};
+  return {key,seed,profile,street,sizeClass,shapeClass,clearRadius,name:tower?room.n:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:tower||training?0:[24,48,20,58,36,10,54,12,48,72,46,14][profile]};
 }
 
 function terrainNow(){const key=terrainKey();if(TERRAIN_CACHE?.key!==key)TERRAIN_CACHE=terrainBuild(key);return TERRAIN_CACHE;}
@@ -619,7 +632,7 @@ function terrainScenery(p=terrainNow()){
   if(p.key==='training')return [];const out=p.landmarks.map(o=>({...o})),occupied=(x,y,r)=>p.landmarks.some(o=>Math.hypot(o.x-x,o.y-y)<o.radius+r+4);
   const count=Math.min(260,Math.round(p.groundCells.length*.15));
   for(let i=0;i<count;i++){const c=p.cells[terrainHash(p.key+':detail:'+i)%p.cells.length];if(Math.hypot(c.x-HX,c.y-HY)<p.clearRadius+5||occupied(c.x,c.y,3))continue;
-    const feather=Math.max(0,Math.min(1,(Math.hypot(c.x-HX,c.y-HY)-p.clearRadius)/32));if(terrainHash(p.key+':density:'+i)%1000/1000>feather*feather*(3-2*feather))continue;
+    if(p.street&&Math.abs(c.y-HY)<STREET_HW+5)continue;const feather=Math.max(0,Math.min(1,(Math.hypot(c.x-HX,c.y-HY)-p.clearRadius)/32));if(terrainHash(p.key+':density:'+i)%1000/1000>feather*feather*(3-2*feather))continue;
     const n=terrainHash(p.key+':kind:'+i),urban=[5,7,11].includes(p.profile);
     const THEME={0:['reed','dock','boatwreck','lighthouse','cairn','umbrella','pond'],1:['cairn','radiotower','stump','fern','flagpole','mailbox','hotspring'],2:['reed','pond','dock','fern','kiosk','lantern','boatwreck'],3:['pipes','barrel','solar','satellite','tire','lantern','container'],4:['dock','boatwreck','lighthouse','umbrella','reed','cairn','barrel'],5:['phonebooth','busstop','hydrant','trashcan','billboard','streetclock','kiosk','mailbox','vending','pole','guardrail','crates','plantpot','acunit','shopbag','zebra'],6:['campfire','totem','stump','fern','lantern','flagpole','tent'],7:['well','statue','streetclock','lantern','mailbox','kiosk','busstop','vending','plantpot','shopbag','crates'],8:['haystack','fence','scarecrow','well','swing','mailbox','fern'],9:['icespire','hotspring','cairn','stump','lantern','radiotower'],10:['obelisk','arch','statue','brokenwall','cairn','totem','lantern'],11:['container','pallets','barrel','pipes','solar','satellite','billboard','pole','guardrail','crates','acunit']};
     const palette=[...(THEME[p.profile]||[]),...(urban?['bike','lamp','bench','planter','crate','grass']:p.profile===6?['tent','log','rock','bush','grass']:p.profile===10?['column','rock','bush','grass']:['rock','log','flowers','bush','grass','grass'])];
@@ -627,7 +640,7 @@ function terrainScenery(p=terrainNow()){
     out.push({x:c.x,y:c.y,kind,variant:n%9,scale:kind==='grass'?.5:kind==='bike'?1:kind==='rock'?1+(n%9)/5:['vending','pole','guardrail','crates','plantpot','acunit','shopbag','zebra'].includes(kind)?1.5+(n%4)/10:.8+(n%4)/10,rotation:n%628/100});
   }
   // Small, related satellites compose each landmark instead of scattering unrelated props.
-  for(const o of p.landmarks){const urban=['building','warehouse','pavilion'].includes(o.kind),items=urban?['bike','planter','bench']:o.kind==='cabin'?['log','tent','flowers']:o.kind==='ruin'?['column','rock','bush']:['bush','flowers','rock'];
+  for(const o of p.landmarks){const urban=['building','warehouse','pavilion','shop'].includes(o.kind),items=o.kind==='shop'?['vending','plantpot','crates']:urban?['bike','planter','bench']:o.kind==='cabin'?['log','tent','flowers']:o.kind==='ruin'?['column','rock','bush']:['bush','flowers','rock'];
     items.forEach((kind,i)=>{const a=(o.variant%628)/100+i*2.1,r=o.radius+7+i*2,x=o.x+Math.cos(a)*r,y=o.y+Math.sin(a)*r;if(terrainCell(x,y,p)&&Math.hypot(x-HX,y-HY)>p.clearRadius+5&&!occupied(x,y,1))out.push({x,y,kind,scale:kind==='flowers'?1.2:1,rotation:a});});
   }return out;
 }

@@ -1037,6 +1037,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.58.0',d:'2026-10-26',t:['城市綠洲地圖改成一條橫貫的街道：柏油路面、中線、斑馬線、人行道與路緣，兩側是連續的店面，有遮陽棚、招牌、玻璃櫥窗與冷氣機。','街道兩側擺放販賣機、盆栽與貨箱；戰鬥範圍與路線不變。可用網址參數 ?street=0 關閉，回到原版地形。']},
   {v:'0.57.0',d:'2026-10-26',t:['地面加上緩慢移動的樹影與雲影，陰影帶藍灰色。','街區地圖新增販賣機、電線桿、護欄、貨箱、盆栽、冷氣室外機、購物袋與斑馬線，數量與大小都加大。']},
   {v:'0.56.0',d:'2026-10-26',t:['戰鬥畫面天空更明亮飽和，並加上白色雲線；森林、沙漠、雪原與霓虹夜城各有自己的天空色。','戰鬥場景改為暖白陽光加天光補色，地面色降低飽和，植物與怪物更醒目。','背包篩選「核心」改名為「傳奇」。']},
   {v:'0.55.0',d:'2026-10-26',t:['裝備詞綴分成「主機位」與「副機位」，每件最多各 3 條；詞綴由 13 種增加到 23 種，新增最大生命%、護甲%、全元素傷害、對精英與首領增傷、閃避、受傷降低、擊殺回復、金幣、經驗、掉落稀有度、移動速度','每個裝備欄位有三條系列，隱性詞綴與名稱各不相同，共 21 條系列、約 80 個新裝備名稱','改裝與追加詞綴會遵守主副機位的上限，改裝時優先換成同組詞綴','改機頁顯示每條詞綴屬於主機位或副機位及標籤，並標示裝備系列'],},
@@ -2033,6 +2034,9 @@ function damageFloatSize(amount){return Math.min(26,12+Math.log10(1+Math.max(0,a
 function terrainHash(text){let n=2166136261;for(const c of String(text))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;}
 function terrainKey(){const r=G.run;return G.train?'training':r?.map?'map:'+r.map.id+':'+(r.city?.stage??r.floor??0):'depth:'+G.depth;}
 let TERRAIN_CACHE=null;
+/* G1 街區樣板：城市綠洲地形改成一條橫街，兩側是連續店面。?street=0 或設定可關閉，回到原版地形。 */
+function streetSampleOn(){try{const q=new URLSearchParams(location.search).get('street');if(q==='0')return false;if(q==='1')return true;return localStorage.getItem('ih-street')!=='0';}catch(e){return true;}}
+const STREET_HW=7;
 function terrainBuild(key){
   const seed=terrainHash(key),training=key==='training',tower=key.startsWith('map:tower:'),room=tower?towerTheme(+key.split(':').at(-1)):null,profile=tower?11:training?0:seed%12,cell=6;
   // Rounded land masses with low-frequency coast variation, never letter-shaped cut-outs.
@@ -2052,7 +2056,17 @@ function terrainBuild(key){
   }
   const groundLookup=new Map(lookup),landmarks=[];
   const pick=(index)=>groundCells[terrainHash(key+':'+index)%groundCells.length];
-  const count=tower?6:training?0:Math.min(64,Math.round(groundCells.length/110)+3);
+  const street=profile===5&&!tower&&!training&&streetSampleOn();
+  if(street){const rad=11,lat=clearRadius+rad+6;
+    for(const side of [-1,1])for(let t=-w+rad+6;t<=w-rad-6;t+=rad*2+3){
+      const x=HX+t,y=HY+side*lat,cx=Math.floor((x-ox)/cell),cy=Math.floor((y-oy)/cell);
+      if(cx<0||cx>=nx||cy<0||cy>=ny||!groundLookup.has(cy*nx+cx)||Math.hypot((x-HX)/w,(y-HY)/h)>.8)continue;
+      const variant=terrainHash(key+':shop:'+side+':'+t);
+      landmarks.push({x,y,radius:rad,kind:'shop',scale:1,variant,height:15,face:-side,rotation:side<0?0:Math.PI});
+      for(const q of groundCells)if(Math.abs(q.x-x)<rad&&Math.abs(q.y-y)<rad)lookup.delete(q.k);
+    }
+  }
+  const count=tower?6:training?0:street?0:Math.min(64,Math.round(groundCells.length/110)+3);
   for(let n=0;n<count*12&&landmarks.length<count;n++){
     const c=pick(n),urban=[5,7,11].includes(profile),variant=terrainHash(key+':object:'+n);
     const family=tower?({prison:['cellblock','barrier','cellblock','console'],lab:['labtank','console','labtank','vent'],reactor:['generator','vent','server','generator']}[room.id]):profile===7?['cabin','pavilion','tree','building']:profile===11?['warehouse','building','tree','pavilion']:urban?['building','building','tree','pavilion']:profile===8?['windmill','tree','boulder','cabin']:profile===10?['ruin','boulder','tree','ruin']:profile===6?['tree','cabin','tree','boulder']:['tree','tree','boulder','tree'];
@@ -2069,7 +2083,7 @@ function terrainBuild(key){
   const cells=groundCells.filter(c=>seen.has(c.k));for(const k of lookup.keys())if(!seen.has(k))lookup.delete(k);
   const edges=cells.filter(c=>[[1,0],[-1,0],[0,1],[0,-1]].some(([di,dj])=>{const i=c.i+di,j=c.j+dj;return i<0||i>=nx||j<0||j>=ny||!groundLookup.has(j*nx+i);}));
   const bounds=[Math.min(...groundCells.map(c=>c.x))-3,Math.max(...groundCells.map(c=>c.x))+3,Math.min(...groundCells.map(c=>c.y))-3,Math.max(...groundCells.map(c=>c.y))+3];
-  return {key,seed,profile,sizeClass,shapeClass,clearRadius,name:tower?room.n:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:tower||training?0:[24,48,20,58,36,10,54,12,48,72,46,14][profile]};
+  return {key,seed,profile,street,sizeClass,shapeClass,clearRadius,name:tower?room.n:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:tower||training?0:[24,48,20,58,36,10,54,12,48,72,46,14][profile]};
 }
 
 function terrainNow(){const key=terrainKey();if(TERRAIN_CACHE?.key!==key)TERRAIN_CACHE=terrainBuild(key);return TERRAIN_CACHE;}
@@ -2132,7 +2146,7 @@ function terrainScenery(p=terrainNow()){
   if(p.key==='training')return [];const out=p.landmarks.map(o=>({...o})),occupied=(x,y,r)=>p.landmarks.some(o=>Math.hypot(o.x-x,o.y-y)<o.radius+r+4);
   const count=Math.min(260,Math.round(p.groundCells.length*.15));
   for(let i=0;i<count;i++){const c=p.cells[terrainHash(p.key+':detail:'+i)%p.cells.length];if(Math.hypot(c.x-HX,c.y-HY)<p.clearRadius+5||occupied(c.x,c.y,3))continue;
-    const feather=Math.max(0,Math.min(1,(Math.hypot(c.x-HX,c.y-HY)-p.clearRadius)/32));if(terrainHash(p.key+':density:'+i)%1000/1000>feather*feather*(3-2*feather))continue;
+    if(p.street&&Math.abs(c.y-HY)<STREET_HW+5)continue;const feather=Math.max(0,Math.min(1,(Math.hypot(c.x-HX,c.y-HY)-p.clearRadius)/32));if(terrainHash(p.key+':density:'+i)%1000/1000>feather*feather*(3-2*feather))continue;
     const n=terrainHash(p.key+':kind:'+i),urban=[5,7,11].includes(p.profile);
     const THEME={0:['reed','dock','boatwreck','lighthouse','cairn','umbrella','pond'],1:['cairn','radiotower','stump','fern','flagpole','mailbox','hotspring'],2:['reed','pond','dock','fern','kiosk','lantern','boatwreck'],3:['pipes','barrel','solar','satellite','tire','lantern','container'],4:['dock','boatwreck','lighthouse','umbrella','reed','cairn','barrel'],5:['phonebooth','busstop','hydrant','trashcan','billboard','streetclock','kiosk','mailbox','vending','pole','guardrail','crates','plantpot','acunit','shopbag','zebra'],6:['campfire','totem','stump','fern','lantern','flagpole','tent'],7:['well','statue','streetclock','lantern','mailbox','kiosk','busstop','vending','plantpot','shopbag','crates'],8:['haystack','fence','scarecrow','well','swing','mailbox','fern'],9:['icespire','hotspring','cairn','stump','lantern','radiotower'],10:['obelisk','arch','statue','brokenwall','cairn','totem','lantern'],11:['container','pallets','barrel','pipes','solar','satellite','billboard','pole','guardrail','crates','acunit']};
     const palette=[...(THEME[p.profile]||[]),...(urban?['bike','lamp','bench','planter','crate','grass']:p.profile===6?['tent','log','rock','bush','grass']:p.profile===10?['column','rock','bush','grass']:['rock','log','flowers','bush','grass','grass'])];
@@ -2140,7 +2154,7 @@ function terrainScenery(p=terrainNow()){
     out.push({x:c.x,y:c.y,kind,variant:n%9,scale:kind==='grass'?.5:kind==='bike'?1:kind==='rock'?1+(n%9)/5:['vending','pole','guardrail','crates','plantpot','acunit','shopbag','zebra'].includes(kind)?1.5+(n%4)/10:.8+(n%4)/10,rotation:n%628/100});
   }
   // Small, related satellites compose each landmark instead of scattering unrelated props.
-  for(const o of p.landmarks){const urban=['building','warehouse','pavilion'].includes(o.kind),items=urban?['bike','planter','bench']:o.kind==='cabin'?['log','tent','flowers']:o.kind==='ruin'?['column','rock','bush']:['bush','flowers','rock'];
+  for(const o of p.landmarks){const urban=['building','warehouse','pavilion','shop'].includes(o.kind),items=o.kind==='shop'?['vending','plantpot','crates']:urban?['bike','planter','bench']:o.kind==='cabin'?['log','tent','flowers']:o.kind==='ruin'?['column','rock','bush']:['bush','flowers','rock'];
     items.forEach((kind,i)=>{const a=(o.variant%628)/100+i*2.1,r=o.radius+7+i*2,x=o.x+Math.cos(a)*r,y=o.y+Math.sin(a)*r;if(terrainCell(x,y,p)&&Math.hypot(x-HX,y-HY)>p.clearRadius+5&&!occupied(x,y,1))out.push({x,y,kind,scale:kind==='flowers'?1.2:1,rotation:a});});
   }return out;
 }
@@ -3407,6 +3421,19 @@ function buildGround(bi){
   const mesh=(values,color)=>{const q=new T3.BufferGeometry();q.setAttribute('position',new T3.Float32BufferAttribute(values,3));q.computeVertexNormals();g.add(new T3.Mesh(q,m3(color,{side:T3.DoubleSide})));};
   mesh(top,B.board.m);mesh(sides,B.board.d);
   {const q=new T3.BufferGeometry(),uv=new Float32Array(top.length/3*2);for(let i=0;i<top.length/3;i++){uv[i*2]=top[i*3]/56;uv[i*2+1]=top[i*3+2]/56;}q.setAttribute('position',new T3.Float32BufferAttribute(top,3));q.setAttribute('uv',new T3.BufferAttribute(uv,2));const o=new T3.Mesh(q,new T3.MeshBasicMaterial({map:dappleTexture(),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));o.renderOrder=1;g.add(o);}
+  if(p.street){
+    const hw=STREET_HW,paint=(w,h,d,c,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m3(c),x,y,z,g);
+    for(const c of p.groundCells){
+      const lat=Math.abs(c.y-HY),yy=BZ+terrainHeight(c.x,c.y,p);
+      if(lat<=hw+3){
+        const road=lat<=hw-.5;
+        paint(6,.22,6,road?'#4b535c':((c.i+c.j)%2?'#e4dfcc':'#d2ccb8'),c.x,yy+.14,c.y);
+        if(!road&&lat>hw-.5&&lat<=hw+.5)paint(6,.3,.9,'#f4f2e8',c.x,yy+.3,HY+Math.sign(c.y-HY)*(hw-.2));
+      }
+    }
+    for(const c of p.groundCells)if(Math.abs(c.y-HY)<3.2&&Math.abs(c.x-HX)>12&&c.i%2===0)paint(3.4,.12,.6,'#f4f6f2',c.x,BZ+terrainHeight(c.x,HY,p)+.3,HY);
+    for(const k of [30,-30])for(let n=-3;n<=3;n++)paint(.9,.12,5.4,'#f4f6f2',HX+k+n*1.7,BZ+terrainHeight(HX+k,HY,p)+.3,HY);
+  }
   // Narrow inlaid tiles mark the continuous slopes without obscuring the silhouette.
   for(const c of p.groundCells)if(Math.abs(c.y-HY-Math.sin((c.x-HX)/34)*8)<3){const o=mk(new T3.BoxGeometry(5.8,.1,4.8),m3(B.board.l),c.x,BZ+terrainHeight(c.x,c.y,p)+.12,c.y,g);o.rotation.y=p.profile*.4;}
   const batch=bake(g);g.traverse(o=>{if(o.isMesh)o.geometry.dispose();});return batch;
@@ -3442,7 +3469,7 @@ function buildWorldScenery(bi){
     if(bi>=12&&bi<18&&prop.radius!=null){const o=buildIndustrialLandmark(bi-12,prop.variant||0);o.updateMatrixWorld(true);const size=new T3.Box3().setFromObject(o).getSize(new T3.Vector3());o.scale.setScalar(Math.max(2,prop.radius)*1.65/Math.max(size.x,size.z,1));o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);}
     else if(prop.kind==='tree')treeAt(holder,bi===3||bi===5?4:bi%6,prop.x,z,prop.y,prop.scale);
     else{
-      const o=prop.kind==='building'?buildWorldBuilding(prop.height,bi,prop.variant):prop.kind==='bike'?buildWorldBike():prop.kind==='grass'?buildWorldGrass(bi):(['warehouse','cabin','pavilion','windmill','ruin','boulder','tent','log','bench','planter','crate','flowers','column'].includes(prop.kind)||EXTRA_PROPS.includes(prop.kind))?buildLandscapeProp(prop.kind,bi,prop.variant||0):buildDeco(prop.kind,1);
+      const o=prop.kind==='shop'?buildShop(prop.variant):prop.kind==='building'?buildWorldBuilding(prop.height,bi,prop.variant):prop.kind==='bike'?buildWorldBike():prop.kind==='grass'?buildWorldGrass(bi):(['warehouse','cabin','pavilion','windmill','ruin','boulder','tent','log','bench','planter','crate','flowers','column'].includes(prop.kind)||EXTRA_PROPS.includes(prop.kind))?buildLandscapeProp(prop.kind,bi,prop.variant||0):buildDeco(prop.kind,1);
       o.scale.multiplyScalar(prop.scale);o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);
     }
     if(large){const batch=merge(holder),materials=[];batch.traverse(o=>{if(o.isMesh){o.material=o.material.clone();materials.push(o.material);}});batch.userData.fade={materials,opacity:1,target:1};root.add(batch);occluders.push(batch);}
@@ -3558,6 +3585,20 @@ function buildLandscapeProp(kind,bi,variant){
   }else if(kind==='flowers'){
     for(let i=0;i<5;i++){const x=Math.cos(i*2.4)*2,z=Math.sin(i*2.4)*2;box(.2,1.8,.2,leaf,x,.9,z);mk(new T3.IcosahedronGeometry(.65,0),i%2?light:accent,x,2,z,g);}
   }return g;
+}
+/* 街區店面：低飽和牆面加一塊高飽和遮陽棚與招牌，正面朝 +z。 */
+function buildShop(variant=0){
+  const g=new T3.Group(),v=variant%6,wall=['#f4ebd8','#9db38a','#f2c9d0','#b8d8e8','#e8dcc0','#c8d4b8'][v],acc=['#f5b335','#e4503c','#ff7fa8','#5cd04a','#5cb8e8','#e4503c'][v],H=14+(variant>>3)%3*3,W=21,D=13;
+  const box=(w,h,d,c,x=0,y=h/2,z=0,mat)=>mk(roundedG(w,h,d),mat||m3(c),x,y,z,g);
+  box(W,H,D,wall);box(W+1.2,.9,D+1.2,'#6f7c86',0,H+.45);box(W+.6,.5,.4,'#4a5878',0,6.9,D/2+.05);
+  box(W-5,5,.3,'#9ecfe8',-1.6,3.6,D/2+.1,m3('#9ecfe8',{emissive:'#7fc0e0',emissiveIntensity:.25}));box(3.4,6.2,.3,'#4a5878',W/2-3.4,3.1,D/2+.12);
+  const aw=box(W-2,.4,4.2,acc,0,7.8,D/2+2);aw.rotation.x=.28;
+  box(W-9,2.6,.5,'#fbfaf2',0,H-2.6,D/2+.25);for(let i=0;i<4;i++)box(2.4,1.2,.3,i%2?acc:'#4a5878',-4.5+i*3,H-2.6,D/2+.6);
+  for(let i=0;i<3;i++)box(3,3,.25,'#9ecfe8',-6+i*6,H-8,D/2+.1,m3('#9ecfe8',{emissive:'#7fc0e0',emissiveIntensity:.2}));
+  for(let r=0;r<2;r++)for(let i=0;i<4;i++)box(2.6,2.6,.25,'#9ecfe8',-7.5+i*5,4+r*5.2,-D/2-.1,m3('#9ecfe8',{emissive:'#7fc0e0',emissiveIntensity:.18}));
+  box(.7,H,.7,'#b8c0b8',W/2-1,H/2,-D/2-.5);box(2.6,2.2,1.2,'#e6e8e0',-W/2+3,5,-D/2-.8);box(W-6,.4,1.6,acc,0,9.2,-D/2-.8);
+  box(3,2.2,1.4,'#e6e8e0',W/2-2,H+1.9,-2);box(1.2,3.4,1.2,'#b8c0b8',-W/2+2,H+2.1,2);
+  return g;
 }
 function buildWorldBuilding(height,bi,variant=0){
   const g=new T3.Group(),shell=m3(['#b7c4d4','#c9bfd8','#bcd0c8','#d4c8b8'][variant%4]),glass=m3(bi%2?'#456b8f':'#417f9b'),trim=m3('#e2e8ed'),roof=m3('#6f8092'),kind=variant%4;

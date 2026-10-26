@@ -307,6 +307,19 @@ function buildGround(bi){
   const mesh=(values,color)=>{const q=new T3.BufferGeometry();q.setAttribute('position',new T3.Float32BufferAttribute(values,3));q.computeVertexNormals();g.add(new T3.Mesh(q,m3(color,{side:T3.DoubleSide})));};
   mesh(top,B.board.m);mesh(sides,B.board.d);
   {const q=new T3.BufferGeometry(),uv=new Float32Array(top.length/3*2);for(let i=0;i<top.length/3;i++){uv[i*2]=top[i*3]/56;uv[i*2+1]=top[i*3+2]/56;}q.setAttribute('position',new T3.Float32BufferAttribute(top,3));q.setAttribute('uv',new T3.BufferAttribute(uv,2));const o=new T3.Mesh(q,new T3.MeshBasicMaterial({map:dappleTexture(),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));o.renderOrder=1;g.add(o);}
+  if(p.street){
+    const hw=STREET_HW,paint=(w,h,d,c,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m3(c),x,y,z,g);
+    for(const c of p.groundCells){
+      const lat=Math.abs(c.y-HY),yy=BZ+terrainHeight(c.x,c.y,p);
+      if(lat<=hw+3){
+        const road=lat<=hw-.5;
+        paint(6,.22,6,road?'#4b535c':((c.i+c.j)%2?'#e4dfcc':'#d2ccb8'),c.x,yy+.14,c.y);
+        if(!road&&lat>hw-.5&&lat<=hw+.5)paint(6,.3,.9,'#f4f2e8',c.x,yy+.3,HY+Math.sign(c.y-HY)*(hw-.2));
+      }
+    }
+    for(const c of p.groundCells)if(Math.abs(c.y-HY)<3.2&&Math.abs(c.x-HX)>12&&c.i%2===0)paint(3.4,.12,.6,'#f4f6f2',c.x,BZ+terrainHeight(c.x,HY,p)+.3,HY);
+    for(const k of [30,-30])for(let n=-3;n<=3;n++)paint(.9,.12,5.4,'#f4f6f2',HX+k+n*1.7,BZ+terrainHeight(HX+k,HY,p)+.3,HY);
+  }
   // Narrow inlaid tiles mark the continuous slopes without obscuring the silhouette.
   for(const c of p.groundCells)if(Math.abs(c.y-HY-Math.sin((c.x-HX)/34)*8)<3){const o=mk(new T3.BoxGeometry(5.8,.1,4.8),m3(B.board.l),c.x,BZ+terrainHeight(c.x,c.y,p)+.12,c.y,g);o.rotation.y=p.profile*.4;}
   const batch=bake(g);g.traverse(o=>{if(o.isMesh)o.geometry.dispose();});return batch;
@@ -342,7 +355,7 @@ function buildWorldScenery(bi){
     if(bi>=12&&bi<18&&prop.radius!=null){const o=buildIndustrialLandmark(bi-12,prop.variant||0);o.updateMatrixWorld(true);const size=new T3.Box3().setFromObject(o).getSize(new T3.Vector3());o.scale.setScalar(Math.max(2,prop.radius)*1.65/Math.max(size.x,size.z,1));o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);}
     else if(prop.kind==='tree')treeAt(holder,bi===3||bi===5?4:bi%6,prop.x,z,prop.y,prop.scale);
     else{
-      const o=prop.kind==='building'?buildWorldBuilding(prop.height,bi,prop.variant):prop.kind==='bike'?buildWorldBike():prop.kind==='grass'?buildWorldGrass(bi):(['warehouse','cabin','pavilion','windmill','ruin','boulder','tent','log','bench','planter','crate','flowers','column'].includes(prop.kind)||EXTRA_PROPS.includes(prop.kind))?buildLandscapeProp(prop.kind,bi,prop.variant||0):buildDeco(prop.kind,1);
+      const o=prop.kind==='shop'?buildShop(prop.variant):prop.kind==='building'?buildWorldBuilding(prop.height,bi,prop.variant):prop.kind==='bike'?buildWorldBike():prop.kind==='grass'?buildWorldGrass(bi):(['warehouse','cabin','pavilion','windmill','ruin','boulder','tent','log','bench','planter','crate','flowers','column'].includes(prop.kind)||EXTRA_PROPS.includes(prop.kind))?buildLandscapeProp(prop.kind,bi,prop.variant||0):buildDeco(prop.kind,1);
       o.scale.multiplyScalar(prop.scale);o.rotation.y=prop.rotation||0;at3(o,prop.x,prop.y,z);holder.add(o);
     }
     if(large){const batch=merge(holder),materials=[];batch.traverse(o=>{if(o.isMesh){o.material=o.material.clone();materials.push(o.material);}});batch.userData.fade={materials,opacity:1,target:1};root.add(batch);occluders.push(batch);}
@@ -458,6 +471,20 @@ function buildLandscapeProp(kind,bi,variant){
   }else if(kind==='flowers'){
     for(let i=0;i<5;i++){const x=Math.cos(i*2.4)*2,z=Math.sin(i*2.4)*2;box(.2,1.8,.2,leaf,x,.9,z);mk(new T3.IcosahedronGeometry(.65,0),i%2?light:accent,x,2,z,g);}
   }return g;
+}
+/* 街區店面：低飽和牆面加一塊高飽和遮陽棚與招牌，正面朝 +z。 */
+function buildShop(variant=0){
+  const g=new T3.Group(),v=variant%6,wall=['#f4ebd8','#9db38a','#f2c9d0','#b8d8e8','#e8dcc0','#c8d4b8'][v],acc=['#f5b335','#e4503c','#ff7fa8','#5cd04a','#5cb8e8','#e4503c'][v],H=14+(variant>>3)%3*3,W=21,D=13;
+  const box=(w,h,d,c,x=0,y=h/2,z=0,mat)=>mk(roundedG(w,h,d),mat||m3(c),x,y,z,g);
+  box(W,H,D,wall);box(W+1.2,.9,D+1.2,'#6f7c86',0,H+.45);box(W+.6,.5,.4,'#4a5878',0,6.9,D/2+.05);
+  box(W-5,5,.3,'#9ecfe8',-1.6,3.6,D/2+.1,m3('#9ecfe8',{emissive:'#7fc0e0',emissiveIntensity:.25}));box(3.4,6.2,.3,'#4a5878',W/2-3.4,3.1,D/2+.12);
+  const aw=box(W-2,.4,4.2,acc,0,7.8,D/2+2);aw.rotation.x=.28;
+  box(W-9,2.6,.5,'#fbfaf2',0,H-2.6,D/2+.25);for(let i=0;i<4;i++)box(2.4,1.2,.3,i%2?acc:'#4a5878',-4.5+i*3,H-2.6,D/2+.6);
+  for(let i=0;i<3;i++)box(3,3,.25,'#9ecfe8',-6+i*6,H-8,D/2+.1,m3('#9ecfe8',{emissive:'#7fc0e0',emissiveIntensity:.2}));
+  for(let r=0;r<2;r++)for(let i=0;i<4;i++)box(2.6,2.6,.25,'#9ecfe8',-7.5+i*5,4+r*5.2,-D/2-.1,m3('#9ecfe8',{emissive:'#7fc0e0',emissiveIntensity:.18}));
+  box(.7,H,.7,'#b8c0b8',W/2-1,H/2,-D/2-.5);box(2.6,2.2,1.2,'#e6e8e0',-W/2+3,5,-D/2-.8);box(W-6,.4,1.6,acc,0,9.2,-D/2-.8);
+  box(3,2.2,1.4,'#e6e8e0',W/2-2,H+1.9,-2);box(1.2,3.4,1.2,'#b8c0b8',-W/2+2,H+2.1,2);
+  return g;
 }
 function buildWorldBuilding(height,bi,variant=0){
   const g=new T3.Group(),shell=m3(['#b7c4d4','#c9bfd8','#bcd0c8','#d4c8b8'][variant%4]),glass=m3(bi%2?'#456b8f':'#417f9b'),trim=m3('#e2e8ed'),roof=m3('#6f8092'),kind=variant%4;
