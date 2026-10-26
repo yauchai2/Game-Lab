@@ -1,5 +1,7 @@
 # Game Lab 精簡接續紀錄
 
+- **M04第一隻實模完成：** Alan在修正版圖後「繼續」，已直接用既有Blender4.3.2建模（無game-dev CLI／receipt）；assets/monsters/m04-low-frequency/含Blend、179140bytes GLB（fcaa6a8f…7d1e45）、1764面5mesh、1unlit頂點色0貼圖、Idle/Move/Hurt。Blender重匯入／GLB零退化／320390模型完整／native街區三動作、單隻fade與A/B同actor資料不變全過；webgl-validation.json無pageerrors。tools/g2可重建dist/m04-street-preview.html（18MB本機產物不入git），source0c7d33b。只在adapter暫借普通brute外觀入口並Move→Hop，正式type未定；未改src／M01、未做其餘三隻。待首隻視覺驗收／Claude整合。
+
 - **M04新規格候選已交付：** Alan要求直接做並指定semi-lowpoly／Y2K PS1 Dreamcast／chunky／flat／unlit matte／無貼圖細節／素材純白完整置中，後說繼續。已生成修正版三視圖，保存assets/concepts/m04-revision，creative-direction同步硬規格，取代此前貼標／網罩紋理建議。圖片仍有少量明暗，不宣稱實際unlit模型已驗證；沒有新GLB／src改動，其他三隻未重做。
 
 - **36圖已收／映射更正：** Alan上傳ZIP，36PNG與hash保存assets/references/monster-concepts；逐隻審查docs/monster-style-review。這套是M01–08硬件精怪＋B01–04機械Boss，不含先前四題材（箱牛／井蓋／電線蜘蛛／便當蟹）；舊映射未核實，已撤為建模依據。G2-A四隻先一隻驗收仍批准，但具體M編號／type需對齊。建議M02／04／05／06，首隻M04只是提案，不直接重做。M01結構可留、表面需精修；B03／04需較大風格修訂。沒有新GLB。

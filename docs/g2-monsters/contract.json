@@ -1,15 +1,15 @@
 {
-  "status": "approved-batch-reference-review-complete-mapping-needs-correction",
+  "status": "first-M04-model-produced-and-isolated-runtime-verified",
   "approvedScope": "four monsters; validate first in game before producing remaining three",
-  "firstType": null,
-  "firstTypeStatus": "Earlier brute/beer-box proposal does not match uploaded set; propose M04 as first visual sample, await scope alignment",
+  "firstType": "brute (temporary visual fixture only)",
+  "firstTypeStatus": "M04 is the authored asset ID; final gameplay type mapping remains unconfirmed",
   "sourceReviewCommit": "2e3da0a",
   "integrationCandidateCommit": "0c7d33b",
   "existingAssetBranch": "codex/m01-battery-hopper-asset",
   "existingAssetCommit": "7ed725f",
   "existingAssetContains": "M01 GLB only; remaining 36 reference PNG now supplied separately by user",
   "sourceConceptIdsVerified": true,
-  "productionStatus": "36 images reviewed; no new GLB production started",
+  "productionStatus": "M04 Blend/GLB with three clips produced; standalone and isolated native street tests passed; remaining three not started",
   "actors": [
     {
       "type": "brute",
@@ -69,5 +69,6 @@
     }
   ],
   "sourceTypeMappingVerified": false,
-  "referenceManifest": "assets/references/monster-concepts/manifest.json"
+  "referenceManifest": "assets/references/monster-concepts/manifest.json",
+  "firstAssetPath": "assets/monsters/m04-low-frequency"
 }
