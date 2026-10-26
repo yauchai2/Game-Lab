@@ -260,10 +260,10 @@ body.ui-material #mbody :is(.ui-inventory-grid,.ui-cart-grid) .gt:active{box-sha
 body.ui-material #mbody .gt.on{outline:2px solid var(--ux-focus);outline-offset:1px}
 body.ui-material #uisettings{scroll-padding:8px;padding:10px!important}
 body.ui-material #uisettings #btns{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
-#uisettings #btns>.cap{display:none}#uisettings #btns .stepwrap{min-width:0}#uisettings #btns .stepwrap.open{grid-column:1/-1}
+#uisettings #btns>.cap{display:none}#uisettings #btns .stepwrap{min-width:0}#uisettings #btns .stepwrap{position:relative}#uisettings #btns .stepwrap.open{z-index:40}
 body.ui-material #uisettings #btns .act{gap:4px;min-height:72px;padding:8px!important;white-space:normal;line-height:24px!important}
 .ui-setting-copy{display:flex;flex-direction:column;min-width:0;gap:4px}.ui-setting-copy b{font-size:var(--ux-text)!important}.ui-setting-copy small{font-family:var(--ux-body)!important;font-size:var(--ux-small)!important;line-height:var(--ux-small-line)!important;color:var(--ux-muted)}
-body.ui-material #uisettings #btns .chips{display:none;margin:6px 0 0;padding:6px;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;box-shadow:none!important;border:1px solid var(--ux-edge)!important;background:var(--ux-screen)!important}
+body.ui-material #uisettings #btns .chips{display:none;position:absolute;left:0;right:0;top:calc(100% - 2px);z-index:41;margin:0;padding:6px;grid-template-columns:minmax(0,1fr);gap:6px;box-shadow:0 4px 0 #17275155,0 0 0 2px var(--ux-frame,#172751)!important;border:1px solid var(--ux-edge)!important;background:var(--ux-screen)!important}
 body.ui-material #uisettings #btns .stepwrap.open .chips{display:grid}body.ui-material #uisettings #btns .chip{white-space:normal;min-width:0;min-height:44px;font-size:var(--ux-text)!important;padding:6px!important}
 body.ui-material #uisettings .view-settings{margin-top:12px;padding-top:12px!important}
 .ui-setting-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;align-items:start}.ui-setting-grid>.view-options{display:contents}
