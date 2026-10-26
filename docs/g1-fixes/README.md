@@ -39,3 +39,7 @@ GAME_LAB_FIX_URL=http://localhost:8783/ node tools/g1/test_fixes.cjs
 ```
 
 Builder也會更新delivery內的`docs/g1-summer/build-source.json`；驗證後須檢查該metadata，勿把暫存修正來源誤當正式已發佈來源。測試預設寫入本目錄fixed.json，正式接入後請保留其新commit欄位。
+
+## Claude 已有修正，勿重複套 patch
+
+Claude另修`ab3642b`，現候選`0c7d33b`／PR80。本輪已對該候選執行320及390寬度的同一組定向回歸，全部通過，證據見[320](claude/320.json)／[390](claude/390.json)。其修法把Basic納入fade清單，並為flash加emissive存在檢查；測試已改驗可觀察行為與受擊不報錯，不要求與本包的獨立清單寫法相同。舊patch只保留為原始交付證據，不再建議套在已修候選上。這次不涵蓋0.61新增背景續跑／小視窗等功能。

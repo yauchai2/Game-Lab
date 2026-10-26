@@ -1,5 +1,7 @@
 # Game Lab 精簡接續紀錄
 
+- **2026-10-26 G2-A批准／Claude補驗：** Alan已選四種精怪、先一隻入場再擴批。docs/g2-monsters/含接入契約／現有姿態尺寸比較；第一隻建議brute，M編號待核。已讀素材聊天確認36張分圖完成，但7ed725f只有M01，不能冒稱取得其餘設計；等待補交原圖／ID。game-dev CLI本機缺少，未啟動其生產流程。Claude已另修F1/F2於ab3642b（現候選0c7d33b／PR80），320／390定向驗證全過，JSON在docs/g1-fixes/claude/；Basic納fade清單但flash已guard，測試驗行為而非強迫同一實作。main仍1d15538，不將候選說成已發佈。
+
 - **2026-10-26 G1修正工作包：** main仍1d15538／v0.60.0；F1 hero sig補g1On、F2 face Basic獨立死亡淡出已在隔離checkout e36e96a定向驗證，原版34檢查失配→修正版全部通過，十類臉／雙向開關／受擊／M01共用材質無錯。交付tools/g1/g1-render-fixes.patch、test_fixes.cjs、docs/g1-fixes/；本分支無src變更，待Claude接入後複驗，不宣稱正式已修／已發佈。下一批具體提案docs/g2-proposal/README.md：推薦已選四常見精怪（先一隻驗收），替代三主角＋六裝備；大改待Alan選擇，沒有開始新GLB／吉祥物。
 
 - **2026-10-26 重新對齊Claude：** 最新main1d15538／v0.60.0，G1、新序章／12地方故事、地區／精怪名及新臉皆已合併／有Release；本輪實測2e3da0a與該main程式無差異。本輪13項G1＋5項world、19actor抽查；數值／索引／塔樓id／SAVE_KEY與main相同。兩個P2交Claude：街區關閉未重建hero材質；Basic臉材質未跟身體死亡淡出。M01s8.5已修，勿再列舊尺寸問題。Alan於另一邊台北13:50要求取消氣泡，Claude已確認來源，按描邊字更新規範。完整證據docs/claude-review-2026-10-26/。不碰src；沒有開始另4隻GLB或吉祥物實作。

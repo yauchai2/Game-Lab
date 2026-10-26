@@ -1,0 +1,67 @@
+{
+  "status": "approved-batch-awaiting-selected-reference-files",
+  "approvedScope": "four monsters; validate first in game before producing remaining three",
+  "firstType": "brute",
+  "firstTypeStatus": "implementation order proposed to Claude; selected concept ID not yet verified",
+  "sourceReviewCommit": "2e3da0a",
+  "integrationCandidateCommit": "0c7d33b",
+  "existingAssetBranch": "codex/m01-battery-hopper-asset",
+  "existingAssetCommit": "7ed725f",
+  "existingAssetContains": "M01 only; does not supply remaining 36 reference views",
+  "sourceConceptIdsVerified": false,
+  "productionStatus": "not started; selected source images absent",
+  "actors": [
+    {
+      "type": "brute",
+      "theme": "啤酒箱牛",
+      "conceptId": null,
+      "referencePaths": [],
+      "referenceHashes": [],
+      "existingRuntimePoseBounds": {
+        "width": 10.068955759187439,
+        "height": 25.297174712213994,
+        "depth": 10.379725820189353
+      },
+      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size"
+    },
+    {
+      "type": "mole",
+      "theme": "井蓋地鼠",
+      "conceptId": null,
+      "referencePaths": [],
+      "referenceHashes": [],
+      "existingRuntimePoseBounds": {
+        "width": 11.259434218338768,
+        "height": 6.791336102275704,
+        "depth": 11.917785484020495
+      },
+      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size"
+    },
+    {
+      "type": "spider",
+      "theme": "電線團蛛",
+      "conceptId": null,
+      "referencePaths": [],
+      "referenceHashes": [],
+      "existingRuntimePoseBounds": {
+        "width": 8.554492967656977,
+        "height": 2.443933944702148,
+        "depth": 7.630024036948015
+      },
+      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size"
+    },
+    {
+      "type": "crab",
+      "theme": "便當盒蟹",
+      "conceptId": null,
+      "referencePaths": [],
+      "referenceHashes": [],
+      "existingRuntimePoseBounds": {
+        "width": 20.673721744122965,
+        "height": 7.916821703489369,
+        "depth": 18.839912043627038
+      },
+      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size"
+    }
+  ]
+}

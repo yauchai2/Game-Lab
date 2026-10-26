@@ -1,0 +1,304 @@
+{
+  "source": {
+    "sourceCommit": "0c7d33b17356dfb38ec63af69e41c20e64ac1593",
+    "materialSha256": "ea9114d9faf5765849224c0b22b760182f2ef725b9dfa820f7d2bb0af154c43c",
+    "storage": "page-lifetime memory",
+    "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險",
+    "monsterSha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+    "integration": "native Claude G1 materials, M01, signs and death effects; adapter only adds review controls and isolated storage"
+  },
+  "viewport": {
+    "width": 390,
+    "height": 1000
+  },
+  "mode": "fixed",
+  "toggle": [
+    {
+      "step": "on-to-off",
+      "hero": "",
+      "g1": false,
+      "materials": []
+    },
+    {
+      "step": "off-to-on",
+      "hero": "g1_summer_aki",
+      "g1": true,
+      "materials": [
+        "aki",
+        "aki_headphones",
+        "aki_baton"
+      ]
+    },
+    {
+      "step": "off-again",
+      "hero": "",
+      "g1": false,
+      "materials": []
+    },
+    {
+      "step": "restore",
+      "hero": "g1_summer_aki",
+      "g1": true,
+      "materials": [
+        "aki",
+        "aki_headphones",
+        "aki_baton"
+      ]
+    }
+  ],
+  "fades": [
+    {
+      "type": "skel",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.75
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.2500000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    },
+    {
+      "type": "drone",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.9375
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.4375000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    },
+    {
+      "type": "bomb",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.75
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.2500000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    },
+    {
+      "type": "mole",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.75
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.2500000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    },
+    {
+      "type": "spider",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.75
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.2500000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    },
+    {
+      "type": "crab",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.75
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.2500000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    },
+    {
+      "type": "ranger",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.75
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.2500000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    },
+    {
+      "type": "lantern",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.75
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.2500000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    },
+    {
+      "type": "speaker",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.75
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.2500000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    },
+    {
+      "type": "wisp",
+      "samples": [
+        {
+          "time": 0.1,
+          "faces": [
+            0.75
+          ]
+        },
+        {
+          "time": 0.3,
+          "faces": [
+            0.2500000000000001
+          ]
+        },
+        {
+          "time": 0.4,
+          "faces": [
+            0
+          ]
+        }
+      ],
+      "flashListHasBasic": true
+    }
+  ],
+  "shared": {
+    "m01": true,
+    "aliveOpacity": [
+      1,
+      1,
+      1
+    ]
+  },
+  "errors": [],
+  "failures": [],
+  "limits": [
+    "Local Chromium software WebGL; two targeted regression groups, not full device certification."
+  ]
+}
