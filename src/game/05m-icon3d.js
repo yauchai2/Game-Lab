@@ -154,7 +154,8 @@ function icon3dPortraitUrl(key){
     if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
     const asset = characterAsset(CHARS[key].model), img = asset.material.map && asset.material.map.image;
     if (!asset.flat&&!img){ if (!ICON3D.portWait){ ICON3D.portWait = setTimeout(() => { ICON3D.portWait = 0; if (typeof modalTab !== 'undefined' && !$('modal').hidden && modalTab === 'char') renderModal(); }, 350); } return ''; }
-    const prev = G.char; let g; G.char = key; try { g = buildHero(0, 0, 0, 0, G.cos); } finally { G.char = prev; }
+    const prev = G.char, prevEq = G.equip; let g; G.char = key; G.equip = {};   /* 肖像只畫角色本身，不穿目前的裝備與裝扮 */
+    try { g = buildHero(0, 0, 0, 0, { auraStyle:'0', tstyle:'0', hat:'0', glasses:'0', pack:'0', hstyle:'0', hair:'ink', top:'white', pants:'army', shoes:'silver', phones:'white', skin:'peach' }); } finally { G.char = prev; G.equip = prevEq; }
     g.userData.mixer && g.userData.mixer.update(.02); g.scale.setScalar(1); g.rotation.y = 0;
     for (const o of g.children) if (o.isMesh && o.geometry && o.geometry.type === 'RingGeometry') o.visible = false;
     const sc = new T3.Scene(), cam = new T3.PerspectiveCamera(24, 1, .1, 400); sc.add(g);
