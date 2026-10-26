@@ -2,6 +2,8 @@
 
 2026-10-26，Asia/Taipei。Alan授權「根據Ice Cream.mp4後的更新風格，繼續做哂全部需要的更新」。這次完成一套可玩的原生整合候選，不再停在M04或四隻樣板。分支`codex/ice-cream-style-complete`；以0.61.1開始，已納入Claude最新0.62.0（main `fd4ed11`）的六章、首領標記與同伴。**未合併／未發佈本批0.64改動。Claude後續`6fcaef6`的0.63精華玩法仍在其獨立分支，不混入本風格PR；本批預留0.64版本，待其落main後再同步基底，不覆寫其玩法。**
 
+審查PR：[Game-Lab #84](https://github.com/yauchai2/Game-Lab/pull/84)。
+
 核心參考見[creative-direction](../creative-direction.md)。新素材semi-lowpoly、清楚剪影、大塊平面色、unlit matte、無貼圖細節；素材展示白底，遊戲仍有各地區背景。保留四肢、職業、藍紫窗口、Cubic11與描邊飄字。
 
 ## 已完成範圍

@@ -12,3 +12,5 @@
 - 共用待辦只有docs/backlog.md；其餘較早記錄在git歷史及各交付文件，不複製整段聊天。
 
 - **版本協作：** fresh fetch見Claude6fcaef6正在做0.63精華／主題詞綴，未納入本風格PR。風格候選改編0.64，base已合併main fd4ed11／0.62；避免覆寫新玩法，等其落main後同步base。
+
+- **已交付PR84：** https://github.com/yauchai2/Game-Lab/pull/84，已推送並附到本聊天；Claude同步見PR80留言6411642131／PR84留言6411642696。本機site分檔boot亦通過。最新main仍fd4ed11；未合併0.63精華分支、未發佈。
