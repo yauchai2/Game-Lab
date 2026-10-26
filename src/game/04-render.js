@@ -765,8 +765,7 @@ function overlay(){
   for(const m of G.mons)if(!m.dead&&m.shield>0)s+=bar(m.x,m.y,BZ+(m.boss?44:32)*CK,8,m.shield/m.shieldMax,'#57dce8');
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + terrainHeight(fl.x,fl.y) + fl.t*9);
     const unit=R3.vbW/Math.max(1,R3.W),size=battleTextSize(fl.kind,fl.size,innerWidth)*unit;
-    const txt=String(fl.txt).replace(/<[^>]*>/g,''),cjk=(txt.match(/[^\x00-\x7f]/g)||[]).length,tw=(cjk+(txt.length-cjk)*.62)*size*.95,bw=tw+size*.9,bh=size*1.28,pop=1+Math.max(0,.22-fl.t*1.6),rot=((Math.abs(Math.round(fl.x*7+fl.y*3))%7)-3)*1.4,op=(1-fl.t*fl.t).toFixed(2);
-    s += `<g transform="translate(${X.toFixed(1)} ${Y.toFixed(1)}) rotate(${rot}) scale(${pop.toFixed(2)})" opacity="${op}"><rect x="${(-bw/2).toFixed(1)}" y="${(-size*.98).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${(bh/2).toFixed(1)}" fill="#2b2552" fill-opacity=".78" stroke="#f7faff" stroke-width="${(1.6*unit).toFixed(2)}"/><text x="0" y="0" text-anchor="middle" fill="${fl.col}" style="font-size:${size.toFixed(2)}px!important;font-family:var(--ux-body)!important" font-weight="400">${fl.txt}</text></g>`; }
+    s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" fill="${fl.col}" style="font-size:${size.toFixed(2)}px!important;font-family:var(--ux-body)!important;stroke:#f7faff;stroke-width:${(2.5*unit).toFixed(2)}px;stroke-linejoin:round;paint-order:stroke" font-weight="400" opacity="${(1-fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
 
   return s;
 }
