@@ -451,7 +451,7 @@ function forgeTargetCore(id){const C=G.city||(G.city=newCity()),route=cityRouteF
 function validCityRun(R){const c=R?.city;return !!(c&&CITY_ROUTES[c.route]&&Number.isInteger(c.tier)&&c.tier>=1&&c.tier<=8&&Number.isInteger(c.stage)&&c.stage>=1&&c.stage<=3&&Number.isFinite(c.bank)&&c.bank>=0&&Array.isArray(c.branches)&&c.branches.length===c.stage-1&&c.branches.every(id=>CITY_BRANCHES[id])&&LEGEND_BY[c.target]&&c.settled===false&&Number.isFinite(R.kills)&&Number.isFinite(R.need)&&BIOMES[R.map?.biome]&&Number.isFinite(R.map?.lvl));}
 function heroDamage(damage,source='未分類傷害',kind='直接命中'){
  if(!Number.isFinite(damage)||damage<=0)return 0;if(G.st&&G.st.takenRed)damage*=1-G.st.takenRed/100;if(lgOn('O_TOWER')&&G.h.hp>G.st.life*.8)damage*=.85;const h=G.h,before=h.hp,base=G.time<(h.bufferUntil||0)?h.buffer||0:0,supply=G.time<(h.airShieldUntil||0)?h.airShield||0:0,airUsed=Math.min(supply,damage),classUsed=Math.min(base,damage-airUsed),absorbed=airUsed+classUsed;
- h.airShield=supply-airUsed;h.buffer=base-classUsed;h.hp-=damage-absorbed;if(typeof recordIncoming==='function')recordIncoming(damage-absorbed,absorbed,source,kind,before>0&&h.hp<=0);if(damage>absorbed)h.lastDamageAt=G.time;return damage-absorbed;
+ h.airShield=supply-airUsed;h.buffer=base-classUsed;h.hp-=damage-absorbed;if(typeof recordIncoming==='function')recordIncoming(damage-absorbed,absorbed,source,kind,before>0&&h.hp<=0);if(damage>absorbed){h.lastDamageAt=G.time;if(before>0&&typeof SFX==='function')SFX('hurt');}return damage-absorbed;
 }
 
 function cityMonster(m){const c=G.run?.city;if(!c)return;const branch=c.branches,route=c.nexus?['signal','memory','power'][Math.min(2,c.stage-1)]:c.route;
@@ -566,12 +566,16 @@ function terrainBuild(key){
     landmarks.push({x:c.x,y:c.y,radius,kind,scale,variant,height:kind==='building'?(profile===7?22:30+(variant%5)*15):14*scale});
     for(const q of groundCells)if(['building','warehouse','cabin','pavilion','ruin'].includes(kind)?Math.abs(q.x-c.x)<radius&&Math.abs(q.y-c.y)<radius:Math.hypot(q.x-c.x,q.y-c.y)<radius)lookup.delete(q.k);
   }
+  if(!tower&&!training&&streetSampleOn()&&typeof neighborhoodSitePlan==='function'){
+    const site=neighborhoodSitePlan({key,seed,profile,street,clearRadius,cell,nx,ny,ox,oy,w,h,groundCells,lookup,landmarks,amplitude:[24,48,20,58,36,10,54,12,48,72,46,14][profile]});
+    if(site){landmarks.push(site);for(const q of groundCells)if(Math.abs(q.x-site.x)<6&&Math.abs(q.y-site.y)<6)lookup.delete(q.k);}
+  }
   const center=Math.floor(ny/2)*nx+Math.floor(nx/2),seen=new Set([center]),queue=[lookup.get(center)];
   for(let n=0;n<queue.length;n++){const c=queue[n];for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const i=c.i+di,j=c.j+dj,k=j*nx+i;if(i>=0&&i<nx&&j>=0&&j<ny&&lookup.has(k)&&!seen.has(k)){seen.add(k);queue.push(lookup.get(k));}}}
   const cells=groundCells.filter(c=>seen.has(c.k));for(const k of lookup.keys())if(!seen.has(k))lookup.delete(k);
   const edges=cells.filter(c=>[[1,0],[-1,0],[0,1],[0,-1]].some(([di,dj])=>{const i=c.i+di,j=c.j+dj;return i<0||i>=nx||j<0||j>=ny||!groundLookup.has(j*nx+i);}));
   const bounds=[Math.min(...groundCells.map(c=>c.x))-3,Math.max(...groundCells.map(c=>c.x))+3,Math.min(...groundCells.map(c=>c.y))-3,Math.max(...groundCells.map(c=>c.y))+3];
-  return {key,seed,profile,street,sizeClass,shapeClass,clearRadius,name:tower?room.n:training?'訓練平台':names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:tower||training?0:[24,48,20,58,36,10,54,12,48,72,46,14][profile]};
+  return {key,seed,profile,street,sizeClass,shapeClass,clearRadius,name:tower?room.n:training?'訓練平台':streetSampleOn()&&typeof STREET_NEIGHBORHOODS!=='undefined'?STREET_NEIGHBORHOODS[profile].name:names[profile],cell,nx,ny,ox,oy,cells,groundCells,groundLookup,landmarks,lookup,edges,bounds,routes:new Map(),amplitude:tower||training?0:[24,48,20,58,36,10,54,12,48,72,46,14][profile]};
 }
 
 function terrainNow(){const key=terrainKey();if(TERRAIN_CACHE?.key!==key)TERRAIN_CACHE=terrainBuild(key);return TERRAIN_CACHE;}
