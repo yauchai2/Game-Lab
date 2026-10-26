@@ -1,15 +1,15 @@
 {
-  "status": "approved-batch-awaiting-selected-reference-files",
+  "status": "approved-batch-reference-review-complete-mapping-needs-correction",
   "approvedScope": "four monsters; validate first in game before producing remaining three",
-  "firstType": "brute",
-  "firstTypeStatus": "implementation order proposed to Claude; selected concept ID not yet verified",
+  "firstType": null,
+  "firstTypeStatus": "Earlier brute/beer-box proposal does not match uploaded set; propose M04 as first visual sample, await scope alignment",
   "sourceReviewCommit": "2e3da0a",
   "integrationCandidateCommit": "0c7d33b",
   "existingAssetBranch": "codex/m01-battery-hopper-asset",
   "existingAssetCommit": "7ed725f",
-  "existingAssetContains": "M01 only; does not supply remaining 36 reference views",
-  "sourceConceptIdsVerified": false,
-  "productionStatus": "not started; selected source images absent",
+  "existingAssetContains": "M01 GLB only; remaining 36 reference PNG now supplied separately by user",
+  "sourceConceptIdsVerified": true,
+  "productionStatus": "36 images reviewed; no new GLB production started",
   "actors": [
     {
       "type": "brute",
@@ -22,7 +22,8 @@
         "height": 25.297174712213994,
         "depth": 10.379725820189353
       },
-      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size"
+      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size",
+      "themeStatus": "Previous proposed theme is absent from uploaded 12 concepts; not a verified mapping"
     },
     {
       "type": "mole",
@@ -35,7 +36,8 @@
         "height": 6.791336102275704,
         "depth": 11.917785484020495
       },
-      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size"
+      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size",
+      "themeStatus": "Previous proposed theme is absent from uploaded 12 concepts; not a verified mapping"
     },
     {
       "type": "spider",
@@ -48,7 +50,8 @@
         "height": 2.443933944702148,
         "depth": 7.630024036948015
       },
-      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size"
+      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size",
+      "themeStatus": "Previous proposed theme is absent from uploaded 12 concepts; not a verified mapping"
     },
     {
       "type": "crab",
@@ -61,7 +64,10 @@
         "height": 7.916821703489369,
         "depth": 18.839912043627038
       },
-      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size"
+      "boundsPurpose": "observed pose envelope for comparison, not a collider or mandatory new model size",
+      "themeStatus": "Previous proposed theme is absent from uploaded 12 concepts; not a verified mapping"
     }
-  ]
+  ],
+  "sourceTypeMappingVerified": false,
+  "referenceManifest": "assets/references/monster-concepts/manifest.json"
 }

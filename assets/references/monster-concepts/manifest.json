@@ -1,0 +1,150 @@
+{
+  "source": "User-uploaded Idle-Hero-12隻怪物-36張獨立視圖.zip",
+  "zipSha256": "8d7b8deb7d3ab3a10036cbf6807428544195eaf13bf678248f9f3b7e8a88e24a",
+  "files": [
+    {
+      "path": "M01-插頭跳豆/M01-插頭跳豆-1-front-正面.png",
+      "sha256": "44400d9573f4f5610283367adb9e10564338bd195b8c588cbcb1518a794ecf43"
+    },
+    {
+      "path": "M01-插頭跳豆/M01-插頭跳豆-2-right-右側.png",
+      "sha256": "d2340b56c879d8b1c8c1ad33f07c130452d6121e53ee3328da652c6d44362a6e"
+    },
+    {
+      "path": "M01-插頭跳豆/M01-插頭跳豆-3-back-背面.png",
+      "sha256": "64df038f9328d2ca4d522743734fb7b134ca9a8d99955f2088617cd71092ba21"
+    },
+    {
+      "path": "M02-拖板爬蟲/M02-拖板爬蟲-1-front-正面.png",
+      "sha256": "1caba16b27aadfaeb71123169ca5f4acf49fd80ee273b6e583246483cad3b727"
+    },
+    {
+      "path": "M02-拖板爬蟲/M02-拖板爬蟲-2-right-右側.png",
+      "sha256": "358af4f8bcb48c813bc866261d9b21370307fd8d551b931b4d55697803993acc"
+    },
+    {
+      "path": "M02-拖板爬蟲/M02-拖板爬蟲-3-back-背面.png",
+      "sha256": "496c88d6dbec9071d1a849491609bde78915802fd98370778b5c367f8702c387"
+    },
+    {
+      "path": "M03-MD滑翔盤/M03-MD滑翔盤-1-front-正面.png",
+      "sha256": "6bc712f04755eca865f729f74bc26564ffa02c908da5d721721e3428fad9f18b"
+    },
+    {
+      "path": "M03-MD滑翔盤/M03-MD滑翔盤-2-right-右側.png",
+      "sha256": "c32337d3887e157ec97f997ad5d8f1baeace350c847f5979eeb1b2eea5578c1a"
+    },
+    {
+      "path": "M03-MD滑翔盤/M03-MD滑翔盤-3-back-背面.png",
+      "sha256": "7d9182b08ac3919de743c9522b6a43350a13c20116809c7e23d69230b0f36949"
+    },
+    {
+      "path": "M04-低頻箱蟹/M04-低頻箱蟹-1-front-正面.png",
+      "sha256": "15da9da935e1ad699e2057ee2167115e6e0368b92fbd67f4e60ba7998b0365c9"
+    },
+    {
+      "path": "M04-低頻箱蟹/M04-低頻箱蟹-2-right-右側.png",
+      "sha256": "5ae7529163509b8b557005e437ccd9ba74ea64a977cb5f2cb87432bac885984a"
+    },
+    {
+      "path": "M04-低頻箱蟹/M04-低頻箱蟹-3-back-背面.png",
+      "sha256": "0e5c4073e64c216881eee11efa7d9b680aab784afb7aa8f888adf7c61dac6554"
+    },
+    {
+      "path": "M05-摺訊飛蛾/M05-摺訊飛蛾-1-front-正面.png",
+      "sha256": "eca7842787c92cd79f6662d6d613bb0a4524955a6a14e6a10e765fed68c1aef5"
+    },
+    {
+      "path": "M05-摺訊飛蛾/M05-摺訊飛蛾-2-right-右側.png",
+      "sha256": "933a31020122fa1abdf5b04b361acdad9805fe1698775c6d410d3ff9ba924259"
+    },
+    {
+      "path": "M05-摺訊飛蛾/M05-摺訊飛蛾-3-back-背面.png",
+      "sha256": "57049589b9a7f5e88fbbd0799a38a90a3aac08f18d044847c7cf5570e96d0ec8"
+    },
+    {
+      "path": "M06-錯址速遞車/M06-錯址速遞車-1-front-正面.png",
+      "sha256": "9e1915406dec2e3fb3f1a00e18c8226b74f2b35d52172bf0dbf2bed439558b7c"
+    },
+    {
+      "path": "M06-錯址速遞車/M06-錯址速遞車-2-right-右側.png",
+      "sha256": "45ce9dd18cd718f736b88a59ab3112209a0a6fdc22bc2d9502f373d53fbdb25b"
+    },
+    {
+      "path": "M06-錯址速遞車/M06-錯址速遞車-3-back-背面.png",
+      "sha256": "06fcb6db17dd11c6e6605c98a40a03398050ba7cc8f3ac4249bce603724db1e2"
+    },
+    {
+      "path": "M07-存檔游魂/M07-存檔游魂-1-front-正面.png",
+      "sha256": "029a912044a14cc609662d2133e8e8088b249f13541bab64a834f840a36cd987"
+    },
+    {
+      "path": "M07-存檔游魂/M07-存檔游魂-2-right-右側.png",
+      "sha256": "b97a51cb861bbe544f7fe0bbbdc50e962ce69303fe2199d69fa804e4902afe73"
+    },
+    {
+      "path": "M07-存檔游魂/M07-存檔游魂-3-back-背面.png",
+      "sha256": "2cdd937725ead0b6bd33410cfb4d99adefe939292862a0f3e5a886d1ebfe3861"
+    },
+    {
+      "path": "M08-補丁燈籠/M08-補丁燈籠-1-front-正面.png",
+      "sha256": "d2f670c202931b7aef54d7d1c99469a2c53db80a2f93403001a473f1bac3ee61"
+    },
+    {
+      "path": "M08-補丁燈籠/M08-補丁燈籠-2-right-右側.png",
+      "sha256": "9889e77e06308d8c8ad4a63a56a3208f14c4ddfcb5e76a5f203c1dae18f1fdc2"
+    },
+    {
+      "path": "M08-補丁燈籠/M08-補丁燈籠-3-back-背面.png",
+      "sha256": "b6b393c8c52c3873f74b4ea6ebaac0369924beb2a3f5670e49cd17145b7c8744"
+    },
+    {
+      "path": "B01-總掣工頭/B01-總掣工頭-1-front-正面.png",
+      "sha256": "4d42960ea2dd104254038f1cda1e651bc48ccf606939518cb92ff25720d16586"
+    },
+    {
+      "path": "B01-總掣工頭/B01-總掣工頭-2-right-右側.png",
+      "sha256": "387c857ea73850bb6e081aaa78cc81ad0a78f40d9118cb6f7e2f6cdd0390bddc"
+    },
+    {
+      "path": "B01-總掣工頭/B01-總掣工頭-3-back-背面.png",
+      "sha256": "7a00a9b3d7300fb7d893a5a97b39e3b098196d5ab534254d9aaed4f90be462ee"
+    },
+    {
+      "path": "B02-回帶港務機/B02-回帶港務機-1-front-正面.png",
+      "sha256": "bceaabed1b8a57a2891d84c1a9cb43ffa2e3df4a14fa1024eaefff4598d92ce2"
+    },
+    {
+      "path": "B02-回帶港務機/B02-回帶港務機-2-right-右側.png",
+      "sha256": "6b23097a7bc8c26e4741c6e4729975f72beda59fc212831eb82afd6eb11b9ee8"
+    },
+    {
+      "path": "B02-回帶港務機/B02-回帶港務機-3-back-背面.png",
+      "sha256": "be4ac6af8b5b746da996747e4ac5980a71e7ba85e4fe083839681a71d9f64f8d"
+    },
+    {
+      "path": "B03-無主分揀塔/B03-無主分揀塔-1-front-正面.png",
+      "sha256": "af294e35022bf282fd5fab2b3075b1162143d3063eb771badcdeac25f42e781e"
+    },
+    {
+      "path": "B03-無主分揀塔/B03-無主分揀塔-2-right-右側.png",
+      "sha256": "039463aac7a2b086300370e9ff7f58cb766deef9724da48f2bd4e12f369df812"
+    },
+    {
+      "path": "B03-無主分揀塔/B03-無主分揀塔-3-back-背面.png",
+      "sha256": "d222a312e49944bc93394f2836d633ab5feb04ecae82ae1811e4f0a1b7334b62"
+    },
+    {
+      "path": "B04-未登出者/B04-未登出者-1-front-正面.png",
+      "sha256": "8c9e36bbb293f502dc6ce9284dc6157f0162868da1721f2a916b0b1a4bebe8af"
+    },
+    {
+      "path": "B04-未登出者/B04-未登出者-2-right-右側.png",
+      "sha256": "ff6baeba1e28eaac7fd563b5be275031085945e296b8e8eb887e5a97bed84647"
+    },
+    {
+      "path": "B04-未登出者/B04-未登出者-3-back-背面.png",
+      "sha256": "a9a411df91366034cf894f5e872654290812698fe2a49f956641ee38b3ad43e2"
+    }
+  ]
+}

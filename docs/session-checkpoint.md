@@ -1,5 +1,7 @@
 # Game Lab 精簡接續紀錄
 
+- **36圖已收／映射更正：** Alan上傳ZIP，36PNG與hash保存assets/references/monster-concepts；逐隻審查docs/monster-style-review。這套是M01–08硬件精怪＋B01–04機械Boss，不含先前四題材（箱牛／井蓋／電線蜘蛛／便當蟹）；舊映射未核實，已撤為建模依據。G2-A四隻先一隻驗收仍批准，但具體M編號／type需對齊。建議M02／04／05／06，首隻M04只是提案，不直接重做。M01結構可留、表面需精修；B03／04需較大風格修訂。沒有新GLB。
+
 - **G2風格閘門補充：** Alan追問舊怪物是否適合新風格；既有12圖只是候選來源，不等於新美術定稿。已比對M01／原片：題材與結構可留，灰橄欖米色低對比、圖案少需精修。先審其餘原圖→第一隻修訂方向給Alan看→再建模。細節見docs/g2-monsters/README.md，勿收到36圖就直接批量照造。
 
 - **2026-10-26 G2-A批准／Claude補驗：** Alan已選四種精怪、先一隻入場再擴批。docs/g2-monsters/含接入契約／現有姿態尺寸比較；第一隻建議brute，M編號待核。已讀素材聊天確認36張分圖完成，但7ed725f只有M01，不能冒稱取得其餘設計；等待補交原圖／ID。game-dev CLI本機缺少，未啟動其生產流程。Claude已另修F1/F2於ab3642b（現候選0c7d33b／PR80），320／390定向驗證全過，JSON在docs/g1-fixes/claude/；Basic納fade清單但flash已guard，測試驗行為而非強迫同一實作。main仍1d15538，不將候選說成已發佈。
