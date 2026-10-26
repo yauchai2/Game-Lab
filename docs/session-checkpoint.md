@@ -1,5 +1,7 @@
 # Game Lab 精簡接續紀錄
 
+- **2026-10-26 核心決定（Asia/Taipei）：** Alan 明確要求 Ice Cream.mp4 作為所有遊戲風格、assets、世界觀、故事等內容的核心參考，並非只限前一輪場景預覽。必讀 docs/creative-direction.md；原片及 SHA-256 已存 assets/references/ice-cream/，不依賴聊天附件。衝突的舊 Q 版／粉彩／童話規範失效，預覽不是最高參考。AGENTS／DESIGN／UX／README／美術文件已加入入口，待辦 ICE-03至05。任務分支 codex/ice-cream-visual-preview；文件決定已記錄，尚未全遊戲實作／合併／發佈。fetch 得知 main 已到5c8e190；此分支未納入其0.54–0.56實作。
+
 2026-10-25，香港時間。先讀本頁，再查相關差異，避免重複研究。
 
 - 最新候選codex/onboarding-season-focus（base e67f73b，含後續3D Logo補完），已推送並建立PR #60：https://github.com/yauchai2/Game-Lab/pull/60：INTRO-01至08已實作／驗證，三步實作教學、手機按頁自動尺寸、紫色裂隙、紅點、單一季頁與紅框減法。需求／證據docs/onboarding-focus-2026-10-25/review.md。Logo已從Alan新Drive連結取得並導入：原件52.7MB／499960面→衍生814732bytes／15000面，320×180／40秒轉台，見assets/brand/logo-3d.json與logo-browser-results.json。候選仍未合併／發佈。

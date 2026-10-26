@@ -1,5 +1,7 @@
 # Idle Hero UI 操作契約
 
+> **2026-10-26 全專案方向更新：** Alan 已確認 Ice Cream 影片為所有遊戲風格、assets、角色、場景、介面、世界觀與故事的核心創作參考。請先讀[創作基準](docs/creative-direction.md)並查看原片；本文件中與其衝突的舊風格描述屬歷史資料，不再作為新內容的驗收依據。此為方向確認，不代表遊戲已全面改版。
+
 依據：Alan 的 UX 優化執行指示、docs/ux-optimization-plan-v0.25.2.md、遊戲現有資料定義與 0.25.2 UX 實測。價格、機率、解鎖與離線上限仍由遊戲資料及狀態邏輯決定。這是遊戲介面，不涉及帳號權限、付款或遠端 CRUD。
 
 | Capability | Canonical owner | Source of truth | Allowed variants | Verification |
