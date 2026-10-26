@@ -22,7 +22,7 @@ function spawnPack(){
   if (!R && G.need < 60) G.need = 60;   /* 舊存檔的門檻較低，大群怪的玩法改成 60 */
   pushHoldCheck(); const bossNow = !['expand','contain'].includes(riftState().encounter?.phase) && (R || (G.push && !G.pushHold)) && kills >= need && !bossOut && !(R && R.tower && R.floor % 10 !== 0) && (G.h.hp >= G.st.life*(G.bossHp || 0)/100 || R);   // 推進模式：生命低於設定值就先不開打
   let types;
-  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的BOSS出現了！`, '#8e3fd1'); }
+  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的${!R&&storyBossName(d)||'BOSS'}出現了！`, '#8e3fd1'); }
   else {const n=Math.min(hordeCap()-G.mons.filter(m=>!m.dead).length,4+Math.floor(Math.random()*4)+(mods.includes('more')?2:0)+(mods.includes('swarm')?3:0));const pool=R?.tower?towerTheme(R.floor).pool:(REGION_MOBS[biomeNow()]||REGION_MOBS[0]);types=Array.from({length:Math.max(0,n)},()=>tPick(pool));}
   if(R?.tower&&!bossNow){const big=['jailer','specimen','sentinel'],small=towerTheme(R.floor).pool.filter(id=>!big.includes(id));types=types.map(()=>tPick(small));if(types.length&&G.mons.filter(m=>!m.dead&&big.includes(m.type)).length<2&&Math.random()<.35)types[0]=towerTheme(R.floor).pool[0];}
   if(bossNow&&R?.tower)for(const m of G.mons)if(!m.dead){m.dead=true;m.deadT=.4;}
@@ -72,7 +72,7 @@ function killMon(m){
   if (m.boss&&!m.riftBoss){
     fieldDiscover(terrainNow().profile,true);
     if (R){ completeRun(); }
-    else { G.bossOut = false; G.kills = 0; G.pushFail = 0; G.pushHold = false; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗BOSS！進入深度 ${G.depth}`, '#2f9e4f'); } }
+    else { storyAdvance(G.depth); G.bossOut = false; G.kills = 0; G.pushFail = 0; G.pushHold = false; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗BOSS！進入深度 ${G.depth}`, '#2f9e4f'); } }
   }
 }
 /* 無限之塔：每層殺滿一定數量進下一層，每 10 層是BOSS層，打贏加一條規則並給遺物 */

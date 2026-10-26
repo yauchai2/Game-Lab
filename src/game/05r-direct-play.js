@@ -9,7 +9,7 @@ function directHelp(key){
 function directCharacterLinks(){return `<div class="direct-character-tools"><button class="mb" onclick="showDeathSummary()">死亡總結</button><button class="mb" onclick="openModal('warehouse')">配裝與核心</button><button class="mb" onclick="openModal('dress')">角色展示與裝扮</button><button class="mb" onclick="directCharacterStory()">職業資料</button><button class="mb" onclick="directEvents()">事件紀錄</button></div>`;}
 function directCharacterStory(){const c=CHARS[G.char];showOverlay(`<h2>${uxEsc(c.n)}</h2><blockquote>「${uxEsc(c.quote)}」</blockquote>${c.story.map(t=>`<p>${uxEsc(t)}</p>`).join('')}<button class="mb" onclick="hideOverlay()">返回角色</button>`);}
 function directEvents(){showOverlay(`<h2>事件紀錄</h2><ol class="log">${G.log.map(l=>`<li>${uxEsc(l.txt)}</li>`).join('')||'<li>尚無事件。</li>'}</ol><button class="mb" onclick="hideOverlay()">關閉</button>`);}
-function directJournal(){showOverlay(`<h2>電台手記</h2>${fieldJournalHtml()}<button class="mb" onclick="hideOverlay()">返回冒險</button>`);const d=$('ovl').querySelector('details');if(d)d.open=true;}
+function directJournal(){showOverlay(`<h2>電台手記</h2>${storyJournalHtml()}${fieldJournalHtml()}<button class="mb" onclick="hideOverlay()">返回冒險</button>`);const d=$('ovl').querySelector('details');if(d)d.open=true;}
 function directBuildTools(){DIRECT_VIEW.builds=!DIRECT_VIEW.builds;renderModal();}
 function directCombatReport(){showOverlay(`<h2>戰鬥分析</h2>${dpsBar()}${uiResolvedHtml()}${uiCombatHtml()}<button class="mb" onclick="hideOverlay()">關閉</button>`);$('ui-combat-report').open=true;uiCombatRefresh();}
 
