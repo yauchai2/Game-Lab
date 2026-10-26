@@ -10,5 +10,3 @@ body.intro-active #ovl>.intro-title{background:#c8d5e6!important;border:2px soli
 `;
 {const s=document.createElement('style');s.textContent=INTRO_LOGO_CSS;document.head.appendChild(s);}
 
-function returnLogoHtml(){return `<div id="return-logo-stage" class="intro-logo-stage return-logo" data-always="1" role="img" aria-label="Idle Hero立體標誌"><img src="${LOGO_3D.poster||''}" alt="" class="intro-logo-poster"></div>`;}
-function returnLogoMount(){const el=document.getElementById('return-logo-stage');if(el)introLogoMount(el);}
