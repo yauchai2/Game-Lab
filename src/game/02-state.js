@@ -522,8 +522,8 @@ function damageFloatSize(amount){return Math.min(26,12+Math.log10(1+Math.max(0,a
 function terrainHash(text){let n=2166136261;for(const c of String(text))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;}
 function terrainKey(){const r=G.run;return G.train?'training':r?.map?'map:'+r.map.id+':'+(r.city?.stage??r.floor??0):'depth:'+G.depth;}
 let TERRAIN_CACHE=null;
-/* G1 街區樣板：城市綠洲地形改成一條橫街，兩側是連續店面。?street=0 或設定可關閉，回到原版地形。 */
-function streetSampleOn(){try{const q=new URLSearchParams(location.search).get('street');if(q==='0')return false;if(q==='1')return true;return localStorage.getItem('ih-street')!=='0';}catch(e){return true;}}
+/* G1 街區樣板：城市綠洲地形改成一條橫街，兩側是連續店面。只保留新版街區；?street=0 僅供測試。 */
+function streetSampleOn(){try{const q=new URLSearchParams(location.search).get('street');if(q==='0')return false;return true;}catch(e){return true;}}
 const STREET_HW=7;
 function terrainBuild(key){
   const seed=terrainHash(key),training=key==='training',tower=key.startsWith('map:tower:'),room=tower?towerTheme(+key.split(':').at(-1)):null,profile=tower?11:training?0:seed%12,cell=6;
