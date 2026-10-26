@@ -204,6 +204,22 @@ function buildSkel(){
   addShadow(g, 4.6); return g;
 }
 function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));if(parent.userData.mats)parent.userData.mats.push(f.material);else parent.userData.mats=[f.material];f.position.set(x,y,z);parent.add(f);return f;}
+function buildMascot(){   // 電台吉祥物：圓滾滾的小收音機精靈，頭頂一根小天線，跟在角色身後
+  const g = new T3.Group();
+  mk(ico(1, 1), ownMat(g, '#ffe58a'), 0, 3.2, 0, g).scale.set(2.6, 2.3, 2.3);
+  for (const sx of [-1, 1]) mk(ico(.6, 0), ownMat(g, '#ffd05a'), sx*2, 5.2, 0, g).scale.set(.8, 1.2, .5);
+  mk(new T3.CylinderGeometry(.14, .14, 2.6, 5), ownMat(g, '#8a7fd8'), 0, 6.4, 0, g); g.userData.tip = mk(ico(.45, 0), ownMat(g, '#ff7a6e'), 0, 7.8, 0, g);
+  faceMesh(3.4, 0, 3.4, 2.4, g);
+  g.userData.s = 1; g.scale.setScalar(1.5); addShadow(g, 2.4); return g;
+}
+function mascotUpdate(){
+  if (!R3.mascot){ R3.mascot = buildMascot(); R3.mascot.userData.px = G.h.x - 5; R3.mascot.userData.py = G.h.y + 4; R3.world.add(R3.mascot); }
+  const m = R3.mascot, u = m.userData, dt = Math.min(.1, R3.frameDt || .016), tx = G.h.x - 5, ty = G.h.y + 4, d = Math.hypot(tx - u.px, ty - u.py), k = d > 30 ? 1 : 1 - Math.exp(-dt*3.2);
+  u.px += (tx - u.px)*k; u.py += (ty - u.py)*k; u.t = (u.t || 0) + dt;
+  G.mascotCheer = Math.max(0, (G.mascotCheer || 0) - dt); const bob = Math.abs(Math.sin(u.t*5))*(d > 1.2 ? 1.1 : .35) + (G.mascotCheer > 0 ? Math.abs(Math.sin(G.mascotCheer*9))*4 : 0);
+  if (storyChapter() >= STORY_CHAPTERS.length && !u.sticker){ u.sticker = mk(new T3.PlaneGeometry(1.6, 1.6), new T3.MeshBasicMaterial({ color:'#ff8fb0' }), 1.7, 4.4, 2.3, m); u.sticker.rotation.z = .4; }
+  at3(m, u.px, u.py, BZ + terrainHeight(u.px, u.py) + bob); m.rotation.y = Math.atan2(G.h.x - u.px, G.h.y - u.py); u.tip.scale.setScalar(1 + .25*Math.sin(u.t*6));
+}
 function buildDrone(){   // 塑膠袋飛靈：半透明白袋身、兩條提手、簡化臉，貼著半空飄
   const g = new T3.Group(), hex = ['#f4f8ff', '#fff3d8', '#e6f6ff', '#ffe6e2', '#e8ecff', '#ffeaf4'][biomeNow()%6];
   mk(ico(1, 1), ownMat(g, hex, { transparent:true, opacity:.92 }), 0, 8, 0, g).scale.set(4.2, 3.4, 3.2); mk(ico(.9, 0), ownMat(g, '#ffffff'), 0, 11, -.2, g).scale.set(2.4, 1.2, 1.6);
@@ -574,7 +590,7 @@ function r3init(){
   sunWorldLighting(sc);
   R3.cam = new T3.OrthographicCamera(-1, 1, 1, -1, -400, 600);
   R3.world = new T3.Group(); sc.add(R3.world); R3.fx = new T3.Group(); sc.add(R3.fx);
-  R3.hero = null; R3.gnd = null; R3.portal = null; R3.decor = []; R3.bi = -1; R3.ready = true;
+  R3.mascot = null; R3.hero = null; R3.gnd = null; R3.portal = null; R3.decor = []; R3.bi = -1; R3.ready = true;
   const ov = document.createElement('div'); ov.id = 'fxo'; ov.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9;opacity:0'; document.body.appendChild(ov);
   const fg = document.getElementById('fig'); fg.style.touchAction = 'none';   // 單指或滑鼠拖曳旋轉、雙指捏合縮放加扭轉、滾輪縮放、Q/E 轉向、雙擊還原
   const P = new Map(), cl = (v, a, b) => Math.max(a, Math.min(b, v)); let g0 = null;
@@ -804,9 +820,10 @@ function scene(){
   const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, ...Object.values(G.equip).map(it=>it?[it.lg||'',it.r,aTier(it)].join(':'):''), G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos), typeof g1On==='function'&&g1On()?'g1':''].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero){if(typeof characterDispose==='function')characterDispose(R3.hero);R3.world.remove(R3.hero);} R3.hero = G.h.dead>0&&G.h.dead<=2.15 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
+  mascotUpdate();
   // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
-  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
+  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm,m.chap??null):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
@@ -873,12 +890,21 @@ function buildFieldMonster(type,variant=0){
  {const F={mole:[4.2,0,6.2,5.9],lantern:[4,0,13,4.1],ranger:[3.6,0,10.5,2.7]}[type];if(F)faceMesh(F[0],F[1],F[2],F[3],g);}
  const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
-function buildCircuitBoss(bi,form=bi%3){
+function buildCircuitBoss(bi,form=bi%3,chap=null){
  const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);
  const dark=m3('#394d61'),silver=m3('#bdc8cf'),signal=m3(form===0?'#9dbda1':form===1?'#8cb9d0':'#bba8cb');
  if(form===0){for(const x of [-12,12]){mk(new T3.IcosahedronGeometry(6,0),dark,x,26,0,ex);mk(new T3.ConeGeometry(3,12,5),signal,x,32,0,ex);}}
  if(form===1){for(const x of [-12,12]){mk(roundedG(7,22,12),dark,x,24,0,ex);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,ex).rotation.x=Math.PI/2;}mk(roundedG(1,18,1),silver,0,39,0,ex);}
  if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,ex);for(const x of [-13,13])mk(roundedG(5,18,3),silver,x,21,3,ex);}
+ if(chap!==null){   // 主線首領：在身體上加一個一眼認得出的標記
+  const hot=m3('#ff9a6e'),warm=m3('#ffd36a'),pale=m3('#e8eef2');
+  if(chap===0){const h=mk(new T3.ConeGeometry(7,16,8,1,true),warm,0,40,0,ex);h.rotation.z=Math.PI/2;mk(new T3.CylinderGeometry(2,2,6,8),dark,-8,40,0,ex).rotation.z=Math.PI/2;}
+  if(chap===1){for(const y of [34,40,46])mk(new T3.TorusGeometry(8-(y-34)/4,.9,4,14),signal,0,y,0,ex).rotation.x=Math.PI/2;}
+  if(chap===2){mk(roundedG(26,12,2),pale,0,42,-2,ex);mk(roundedG(22,8,1),hot,0,42,-.5,ex);for(const x of [-9,0,9])mk(new T3.SphereGeometry(1.3,6,5),warm,x,42,.4,ex);}
+  if(chap===3){for(const x of [-14,0,14]){mk(new T3.CylinderGeometry(3,5,7,8),dark,x,38,0,ex);mk(new T3.CircleGeometry(2.6,10),warm,x,38,5.2,ex);}}
+  if(chap===4){for(const x of [-9,9]){const r=mk(new T3.TorusGeometry(6,1.6,5,12),pale,x,38,0,ex);r.rotation.y=Math.PI/2;mk(new T3.CylinderGeometry(1,1,3,6),hot,x,38,0,ex).rotation.z=Math.PI/2;}}
+  if(chap===5){for(let i=0;i<5;i++){const a=(i-2)*.5;mk(new T3.ConeGeometry(1.6,18,5),i%2?hot:signal,Math.sin(a)*8,44+Math.cos(a)*4,0,ex).rotation.z=-a;}mk(new T3.IcosahedronGeometry(3.2,0),warm,0,38,0,ex);}
+ }
  root.add(bake(ex));   // 肩甲與光環另外合併；手腳保持獨立，才能跟著擺動
  root.userData.limbs=body.userData.limbs;root.userData.simple=true;root.userData.s=4;root.userData.mats=[];root.traverse(o=>{if(o.isMesh){o.material=o.material.clone();root.userData.mats.push(o.material);}});return root;
 }

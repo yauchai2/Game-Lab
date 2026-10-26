@@ -1037,6 +1037,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.62.0',d:'2026-10-26',t:['新增夏日街區主線，共六章：電台前街、高架橋下、商店街與夜市、車站與河邊、山路電塔與商場地下、屋頂天線。每章有一個首領和一件失物，擊敗首領後找回。','電台手記新增「夏日主線」，記錄已找回的失物與每章的結尾。劇情只寫進日誌和手記，掛機時不會彈窗。','六章首領各有專屬頭飾與名稱：喇叭、回音環、招牌、月台擴音器、捲盤、天線冠。','電台吉祥物會在找回失物時跳起來慶祝；通關第六章後，身上會多一張貼紙。']},
   {v:'0.61.1',d:'2026-10-26',t:['修正：0.61.0 的設定面板在正式網頁載入時出錯，導致整個介面排版跑掉；已還原為原本的藍紫窗口介面。']},
   {v:'0.61.0',d:'2026-10-26',t:['切到其他分頁或視窗時，遊戲會在背後繼續運行，不再停住，回來也不會跳出離線結算（除非瀏覽器已長時間凍結分頁）。','設定新增「小視窗」：在 Chrome、Edge 等支援的瀏覽器開啟置頂縮圖視窗，顯示戰鬥畫面與等級、生命、深度、金幣，可放在螢幕角落一邊工作一邊看。','離線結算頁取消 3D 自轉標誌，回到原本的樣式。']},
   {v:'0.60.1',d:'2026-10-26',t:['修正：關閉「街區地圖」後，角色與裝備的配色會一起還原。','修正：魔物倒下時，臉部會跟著身體一起淡出。']},
@@ -1800,7 +1801,7 @@ function applySave(o){
   G.unread=cleanUnread(o.unread);G.summons=[];G.airSupply=null;G.airBuffs=[];G.damageLog=[];G.h.fatalSource=null;G.h.airShield=0;G.h.airShieldUntil=0;G.deathReport=cleanDeathReport(o.deathReport);
   G.startingChar=Object.hasOwn(CHARS,o.startingChar)?o.startingChar:null;
   const uidSeen=new Set(),uidConflicts=new Set();for(const it of Array.isArray(o.inventory)?o.inventory:[]){if(uidSeen.has(it.uid))uidConflicts.add(it.uid);uidSeen.add(it.uid);}
-  G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>/^p(?:[0-9]|1[01])$/.test(k)&&Number.isInteger(v)&&v>=0&&v<=3));
+  G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>(/^p(?:[0-9]|1[01])$/.test(k)&&v<=3||k==='ch'&&v<=6)&&Number.isInteger(v)&&v>=0));
   G.castPolicy=o.castPolicy==='combo'?'combo':'balanced';G.signalCharge=0;G.readySince={};G.combat=null;G.castSerial=0;G.signalGainRoot=null;G.h.castT=-1;G.h.swingT=-1;
   for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','gemTier','carts','seen','goals','mapsDone','pass','ach','legSeen','pity','parts','bossHp','towerBest','quest','craftN','mk','seenG','seenC','cz','userCz','autoFold','dmgNum','seenInv','seenParts','seenGoals','builds','bi','relics','relicPicks','cos','own','heroName','born','autoCard','bossKills','char','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
   normTier();G.builds=Array.isArray(o.builds)?o.builds.slice(0,3):[null,null,null];G.bi=[0,1,2].includes(o.bi)?o.bi:0;
@@ -2183,6 +2184,18 @@ const FIELD_STORIES=[
  ['石柱間的雜音','修理工 小禾','這些石柱比電台更古老。卡匣靠近時會發熱，像是這個地方也記得昔日的聲音。','石拱之間傳來短短三聲。那是舊時代表示平安的暗號。'],
  ['最後一批貨物','倉庫值班紀錄','貨倉裡剩下一批沒送出的收音機。搬運機照著排程等著，等一班晚點的貨車。','貨倉門開了。箱子上寫著：送往各個街角，讓大家聽得見彼此。']
 ];
+/* 夏日街區主線：六章，每章一個首領與一件失物。以首領擊敗的深度推進，不彈窗，只寫進日誌與電台手記。 */
+const STORY_CHAPTERS=[
+ {depth:3,boss:'走音喇叭',item:'電台天線零件',title:'電台前街',text:'喇叭倒下後，一截銀色的天線零件掉在柏油路上。阿澄說，訊號是從高架橋下傳來的。',radio:'前街已恢復連線。下一段訊號：高架橋下。'},
+ {depth:7,boss:'回音柱',item:'腳踏車鈴',title:'高架橋下',text:'小禾的腳踏車鈴在橋墩後面叮了一聲。她說，鈴響的時候，電台好像也跟著響了一下。',radio:'橋下有回應了。下一段訊號：商店街。'},
+ {depth:12,boss:'跑出來的招牌',item:'老闆娘的收音機',title:'商店街與夜市',text:'老闆娘接過收音機，笑著說這台從開店就沒關過。燒烤的煙裡，訊號又強了一點。',radio:'夜市的歌回來了。下一段訊號：車站。'},
+ {depth:18,boss:'失控的月台廣播',item:'站務員的麥克風',title:'車站與河邊',text:'麥克風掉在月台邊緣，還有一點餘溫。河邊的風把一句沒說完的廣播吹了回來。',radio:'月台報站聲恢復。下一段訊號：山路電塔。'},
+ {depth:25,boss:'重播機',item:'舊發射機的鑰匙',title:'山路電塔與商場地下',text:'一台沒人關掉的舊發射機，一直重播「暑假最後一天」。你拔掉它，街區的時間才繼續往前走。',radio:'重播結束。最後一段訊號：屋頂。'},
+ {depth:35,boss:'錯頻本體',item:'吉祥物的貼紙',title:'屋頂天線',text:'你把所有失物裝回天線。日落時，整條街的收音機同時響起，街區亮起了燈。吉祥物在天線旁留下一張貼紙。',radio:'廣播已恢復。夏日的最後一個傍晚，請慢慢走回家。'}
+];
+function storyChapter(){return Math.max(0,Math.min(STORY_CHAPTERS.length,G.storyFlags.ch|0));}
+function storyBossName(d){const c=STORY_CHAPTERS[storyChapter()];return c&&d>=c.depth?c.boss:null;}
+function storyAdvance(d){if(G.offline)return;const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c||d<c.depth)return;G.storyFlags.ch=i+1;G.dirty=true;G.mascotCheer=1.2;logLine(`找回失物：${c.item}。${c.radio}`,'#c28a00');if(i+1===STORY_CHAPTERS.length)logLine('夏日街區的廣播全部恢復了。接下來是更深的街區。','#c28a00');}
 const WORLD_TRAVEL={key:null,remaining:0,duration:.7};
 function fieldDiscover(profile,boss=false){if(G.offline||profile<0||profile>=FIELD_STORIES.length)return;const key='p'+profile,bit=boss?2:1,old=G.storyFlags[key]||0;if(old&bit)return;G.storyFlags[key]=old|bit;G.dirty=true;}
 function worldTravelStart(plan){if(G.offline||plan.key==='training')return;const changed=WORLD_TRAVEL.key!==plan.key;if(!changed)return;WORLD_TRAVEL.key=plan.key;WORLD_TRAVEL.remaining=WORLD_TRAVEL.duration;fieldDiscover(plan.profile);}
@@ -2491,7 +2504,7 @@ function spawnPack(){
   if (!R && G.need < 60) G.need = 60;   /* 舊存檔的門檻較低，大群怪的玩法改成 60 */
   pushHoldCheck(); const bossNow = !['expand','contain'].includes(riftState().encounter?.phase) && (R || (G.push && !G.pushHold)) && kills >= need && !bossOut && !(R && R.tower && R.floor % 10 !== 0) && (G.h.hp >= G.st.life*(G.bossHp || 0)/100 || R);   // 推進模式：生命低於設定值就先不開打
   let types;
-  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的BOSS出現了！`, '#8e3fd1'); }
+  if (bossNow){ types = ['boss']; if (R) R.bossOut = true; else G.bossOut = true; logLine(`${R ? '地圖' : `深度 ${d} `}的${!R&&storyBossName(d)||'BOSS'}出現了！`, '#8e3fd1'); }
   else {const n=Math.min(hordeCap()-G.mons.filter(m=>!m.dead).length,4+Math.floor(Math.random()*4)+(mods.includes('more')?2:0)+(mods.includes('swarm')?3:0));const pool=R?.tower?towerTheme(R.floor).pool:(REGION_MOBS[biomeNow()]||REGION_MOBS[0]);types=Array.from({length:Math.max(0,n)},()=>tPick(pool));}
   if(R?.tower&&!bossNow){const big=['jailer','specimen','sentinel'],small=towerTheme(R.floor).pool.filter(id=>!big.includes(id));types=types.map(()=>tPick(small));if(types.length&&G.mons.filter(m=>!m.dead&&big.includes(m.type)).length<2&&Math.random()<.35)types[0]=towerTheme(R.floor).pool[0];}
   if(bossNow&&R?.tower)for(const m of G.mons)if(!m.dead){m.dead=true;m.deadT=.4;}
@@ -2504,7 +2517,7 @@ function spawnPack(){
     const rf=rifts[packRift],sx=t==='boss'?G.h.x+tRand(-14,14):rf[0]+tRand(-3,3),sy=t==='boss'?G.h.y-18+tRand(-6,6):rf[1]+tRand(-3,3);
     const el = t !== 'boss' && (d >= 6 || mods.includes('elite')) && Math.random() < (mods.includes('elite') ? .3 : .06);   // 精英：體型大、金環、血厚、賞金多
     G.mons.push({ type:t, boss:t === 'boss', elite:el, x:sx, y:sy, hp:hp*(el ? 3.2 : 1), hpMax:hp*(el ? 3.2 : 1), dmg:(el ? 1.3 : 1) * 4.5 * Math.pow(1.22, d-1) * T.dmg * dmgK * (1.3+Math.min(1.1,Math.max(0,d-2)*.09)) * (t==='boss'?1.35:1) * (t !== 'boss' ? HORDE.dmg : 1) * (1 + earlyK()*.12), atkInt:T.atk/fastK, spdK:fastK, atkCd:tRand(.3, T.atk),
-      skillCd:2.5+(i%3)*.7,bossForm:t==='boss'?terrainNow().profile%3:null,slot, fall:t === 'boss' ? .9 : 0, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
+      skillCd:2.5+(i%3)*.7,bossForm:t==='boss'?terrainNow().profile%3:null,chap:t==='boss'&&!R&&storyBossName(d)?storyChapter():null,slot, fall:t === 'boss' ? .9 : 0, fight:false, dead:false, deadT:0, hurtT:0, frozen:0, lunge:-1, lungeHit:true, ph:Math.random()*6 });
   });
   if(R?.tower)for(const m of G.mons)if(!m.dead&&!m.towerTagged){towerMonster(m);m.towerTagged=true;}
   if(R?.city)for(const m of G.mons)if(!m.dead&&!m.cityRoute)cityMonster(m);
@@ -2541,7 +2554,7 @@ function killMon(m){
   if (m.boss&&!m.riftBoss){
     fieldDiscover(terrainNow().profile,true);
     if (R){ completeRun(); }
-    else { G.bossOut = false; G.kills = 0; G.pushFail = 0; G.pushHold = false; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗BOSS！進入深度 ${G.depth}`, '#2f9e4f'); } }
+    else { storyAdvance(G.depth); G.bossOut = false; G.kills = 0; G.pushFail = 0; G.pushHold = false; if (G.push){ G.depth++; G.maxDepth = Math.max(G.maxDepth, G.depth); logLine(`擊敗BOSS！進入深度 ${G.depth}`, '#2f9e4f'); } }
   }
 }
 /* 無限之塔：每層殺滿一定數量進下一層，每 10 層是BOSS層，打贏加一條規則並給遺物 */
@@ -3329,6 +3342,22 @@ function buildSkel(){
   addShadow(g, 4.6); return g;
 }
 function faceMesh(w,x,y,z,parent){const f=new T3.Mesh(new T3.PlaneGeometry(w,w),new T3.MeshBasicMaterial({map:cardboardFace(),transparent:true}));if(parent.userData.mats)parent.userData.mats.push(f.material);else parent.userData.mats=[f.material];f.position.set(x,y,z);parent.add(f);return f;}
+function buildMascot(){   // 電台吉祥物：圓滾滾的小收音機精靈，頭頂一根小天線，跟在角色身後
+  const g = new T3.Group();
+  mk(ico(1, 1), ownMat(g, '#ffe58a'), 0, 3.2, 0, g).scale.set(2.6, 2.3, 2.3);
+  for (const sx of [-1, 1]) mk(ico(.6, 0), ownMat(g, '#ffd05a'), sx*2, 5.2, 0, g).scale.set(.8, 1.2, .5);
+  mk(new T3.CylinderGeometry(.14, .14, 2.6, 5), ownMat(g, '#8a7fd8'), 0, 6.4, 0, g); g.userData.tip = mk(ico(.45, 0), ownMat(g, '#ff7a6e'), 0, 7.8, 0, g);
+  faceMesh(3.4, 0, 3.4, 2.4, g);
+  g.userData.s = 1; g.scale.setScalar(1.5); addShadow(g, 2.4); return g;
+}
+function mascotUpdate(){
+  if (!R3.mascot){ R3.mascot = buildMascot(); R3.mascot.userData.px = G.h.x - 5; R3.mascot.userData.py = G.h.y + 4; R3.world.add(R3.mascot); }
+  const m = R3.mascot, u = m.userData, dt = Math.min(.1, R3.frameDt || .016), tx = G.h.x - 5, ty = G.h.y + 4, d = Math.hypot(tx - u.px, ty - u.py), k = d > 30 ? 1 : 1 - Math.exp(-dt*3.2);
+  u.px += (tx - u.px)*k; u.py += (ty - u.py)*k; u.t = (u.t || 0) + dt;
+  G.mascotCheer = Math.max(0, (G.mascotCheer || 0) - dt); const bob = Math.abs(Math.sin(u.t*5))*(d > 1.2 ? 1.1 : .35) + (G.mascotCheer > 0 ? Math.abs(Math.sin(G.mascotCheer*9))*4 : 0);
+  if (storyChapter() >= STORY_CHAPTERS.length && !u.sticker){ u.sticker = mk(new T3.PlaneGeometry(1.6, 1.6), new T3.MeshBasicMaterial({ color:'#ff8fb0' }), 1.7, 4.4, 2.3, m); u.sticker.rotation.z = .4; }
+  at3(m, u.px, u.py, BZ + terrainHeight(u.px, u.py) + bob); m.rotation.y = Math.atan2(G.h.x - u.px, G.h.y - u.py); u.tip.scale.setScalar(1 + .25*Math.sin(u.t*6));
+}
 function buildDrone(){   // 塑膠袋飛靈：半透明白袋身、兩條提手、簡化臉，貼著半空飄
   const g = new T3.Group(), hex = ['#f4f8ff', '#fff3d8', '#e6f6ff', '#ffe6e2', '#e8ecff', '#ffeaf4'][biomeNow()%6];
   mk(ico(1, 1), ownMat(g, hex, { transparent:true, opacity:.92 }), 0, 8, 0, g).scale.set(4.2, 3.4, 3.2); mk(ico(.9, 0), ownMat(g, '#ffffff'), 0, 11, -.2, g).scale.set(2.4, 1.2, 1.6);
@@ -3699,7 +3728,7 @@ function r3init(){
   sunWorldLighting(sc);
   R3.cam = new T3.OrthographicCamera(-1, 1, 1, -1, -400, 600);
   R3.world = new T3.Group(); sc.add(R3.world); R3.fx = new T3.Group(); sc.add(R3.fx);
-  R3.hero = null; R3.gnd = null; R3.portal = null; R3.decor = []; R3.bi = -1; R3.ready = true;
+  R3.mascot = null; R3.hero = null; R3.gnd = null; R3.portal = null; R3.decor = []; R3.bi = -1; R3.ready = true;
   const ov = document.createElement('div'); ov.id = 'fxo'; ov.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9;opacity:0'; document.body.appendChild(ov);
   const fg = document.getElementById('fig'); fg.style.touchAction = 'none';   // 單指或滑鼠拖曳旋轉、雙指捏合縮放加扭轉、滾輪縮放、Q/E 轉向、雙擊還原
   const P = new Map(), cl = (v, a, b) => Math.max(a, Math.min(b, v)); let g0 = null;
@@ -3929,9 +3958,10 @@ function scene(){
   const A = G.equip.armor, W = G.equip.weapon, at = aTier(A), ar = A ? A.r : 0, wt = WOV.has('wt') ? +WOV.get('wt') : aTier(W), wr = WOV.has('wr') ? +WOV.get('wr') : W ? W.r : 0, sig = [at, ar, wt, wr, ...Object.values(G.equip).map(it=>it?[it.lg||'',it.r,aTier(it)].join(':'):''), G.h.dead>0?(G.h.dead>2.15?'falling':'grave'):'alive', G.char, JSON.stringify(G.cos), typeof g1On==='function'&&g1On()?'g1':''].join();
   if (!R3.hero || R3.hero.userData.sig !== sig){ if (R3.hero){if(typeof characterDispose==='function')characterDispose(R3.hero);R3.world.remove(R3.hero);} R3.hero = G.h.dead>0&&G.h.dead<=2.15 ? buildGrave() : buildHero(at, ar, wt, wr); R3.hero.userData.sig = sig; R3.world.add(R3.hero); }
   if (G.h.dead > 0&&!R3.hero.userData.y2k){ at3(R3.hero, G.h.x, G.h.y, BZ+terrainHeight(G.h.x,G.h.y)); R3.hero.rotation.y = Math.PI/4; } else heroLook(R3.hero);
+  mascotUpdate();
   // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
-  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
+  for (const m of G.mons){ const g = entFor(m, () => m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm,m.chap??null):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss)); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
@@ -3998,12 +4028,21 @@ function buildFieldMonster(type,variant=0){
  {const F={mole:[4.2,0,6.2,5.9],lantern:[4,0,13,4.1],ranger:[3.6,0,10.5,2.7]}[type];if(F)faceMesh(F[0],F[1],F[2],F[3],g);}
  const out=bake(g);if(limbs){out.userData.limbs={};for(const k in limbs){const [px,py,pz,fn]=limbs[k];out.userData.limbs[k]=monLimb(out,px,py,pz,fn);}}out.userData.simple=true;out.userData.mats=[];out.traverse(o=>{if(o.isMesh){o.material=o.material.clone();out.userData.mats.push(o.material);}});return out;
 }
-function buildCircuitBoss(bi,form=bi%3){
+function buildCircuitBoss(bi,form=bi%3,chap=null){
  const root=new T3.Group(),body=buildFieldMonster('golem',form),ex=new T3.Group();root.add(body);
  const dark=m3('#394d61'),silver=m3('#bdc8cf'),signal=m3(form===0?'#9dbda1':form===1?'#8cb9d0':'#bba8cb');
  if(form===0){for(const x of [-12,12]){mk(new T3.IcosahedronGeometry(6,0),dark,x,26,0,ex);mk(new T3.ConeGeometry(3,12,5),signal,x,32,0,ex);}}
  if(form===1){for(const x of [-12,12]){mk(roundedG(7,22,12),dark,x,24,0,ex);for(const y of [20,29])mk(new T3.CylinderGeometry(3,3,2,10),signal,x,y,7,ex).rotation.x=Math.PI/2;}mk(roundedG(1,18,1),silver,0,39,0,ex);}
  if(form===2){mk(new T3.TorusGeometry(12,1.3,5,14),signal,0,30,0,ex);for(const x of [-13,13])mk(roundedG(5,18,3),silver,x,21,3,ex);}
+ if(chap!==null){   // 主線首領：在身體上加一個一眼認得出的標記
+  const hot=m3('#ff9a6e'),warm=m3('#ffd36a'),pale=m3('#e8eef2');
+  if(chap===0){const h=mk(new T3.ConeGeometry(7,16,8,1,true),warm,0,40,0,ex);h.rotation.z=Math.PI/2;mk(new T3.CylinderGeometry(2,2,6,8),dark,-8,40,0,ex).rotation.z=Math.PI/2;}
+  if(chap===1){for(const y of [34,40,46])mk(new T3.TorusGeometry(8-(y-34)/4,.9,4,14),signal,0,y,0,ex).rotation.x=Math.PI/2;}
+  if(chap===2){mk(roundedG(26,12,2),pale,0,42,-2,ex);mk(roundedG(22,8,1),hot,0,42,-.5,ex);for(const x of [-9,0,9])mk(new T3.SphereGeometry(1.3,6,5),warm,x,42,.4,ex);}
+  if(chap===3){for(const x of [-14,0,14]){mk(new T3.CylinderGeometry(3,5,7,8),dark,x,38,0,ex);mk(new T3.CircleGeometry(2.6,10),warm,x,38,5.2,ex);}}
+  if(chap===4){for(const x of [-9,9]){const r=mk(new T3.TorusGeometry(6,1.6,5,12),pale,x,38,0,ex);r.rotation.y=Math.PI/2;mk(new T3.CylinderGeometry(1,1,3,6),hot,x,38,0,ex).rotation.z=Math.PI/2;}}
+  if(chap===5){for(let i=0;i<5;i++){const a=(i-2)*.5;mk(new T3.ConeGeometry(1.6,18,5),i%2?hot:signal,Math.sin(a)*8,44+Math.cos(a)*4,0,ex).rotation.z=-a;}mk(new T3.IcosahedronGeometry(3.2,0),warm,0,38,0,ex);}
+ }
  root.add(bake(ex));   // 肩甲與光環另外合併；手腳保持獨立，才能跟著擺動
  root.userData.limbs=body.userData.limbs;root.userData.simple=true;root.userData.s=4;root.userData.mats=[];root.traverse(o=>{if(o.isMesh){o.material=o.material.clone();root.userData.mats.push(o.material);}});return root;
 }
@@ -6043,6 +6082,7 @@ function feedbackPayload(d,device=''){const title=d.title.trim(),details=d.detai
 function feedbackClearError(input){input.removeAttribute('aria-invalid');const e=$('feedback-error');if(e)e.textContent='';FEEDBACK_STATE.requestId=null;}
 function feedbackDownload(){FEEDBACK_PREVIEW=feedbackPayload(FEEDBACK_DRAFT);if(!FEEDBACK_PREVIEW){uxAnnounce('先填寫標題與內容再下載。');return;}const p=FEEDBACK_PREVIEW,url=URL.createObjectURL(new Blob([p.title+'\n\n'+p.body],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='game-lab-feedback.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);uxAnnounce('已下載草稿，尚未送出。');}
 
+function storyJournalHtml(){const n=storyChapter();return `<details class="ui-rules"><summary>夏日主線 · 已找回 ${n}／${STORY_CHAPTERS.length}</summary>${STORY_CHAPTERS.map((c,i)=>i<n?`<details class="field-entry"><summary>第${'一二三四五六'[i]}章　${uxEsc(c.title)} · ${uxEsc(c.item)}</summary><p class="uxmeta">${uxEsc(c.boss)}</p><p>${uxEsc(c.text)}</p><p>${uxEsc(c.radio)}</p></details>`:i===n?`<p>下一段訊號：${uxEsc(c.title)}。</p>`:'').join('')}</details>`;}
 function fieldJournalHtml(){const count=FIELD_STORIES.filter((_,i)=>G.storyFlags['p'+i]).length;return `<details class="ui-rules"><summary>電台手記 · 已收錄 ${count}／${FIELD_STORIES.length}</summary><p>街角電台的訊號失常了。你帶著舊卡匣，沿各處的旋律追查它從哪裡來。</p>${FIELD_STORIES.map((e,i)=>{const f=G.storyFlags['p'+i]||0;return f?`<details class="field-entry"><summary>${uxEsc(e[0])}${f&2?' · 歸途已收錄':''}</summary><p class="uxmeta">${uxEsc(e[1])}</p><p>${uxEsc(e[2])}</p>${f&2?`<p>歸途：${uxEsc(e[3])}</p>`:''}</details>`:'';}).join('')||'<p>到達新的地景後，會收錄當地留言。</p>'}</details>`;}
 
 function uiWorldViewHtml(){const p=terrainNow(),size={regular:'一般',medium:'中型',large:'大型',giant:'巨型',training:'訓練場'}[p.sizeClass];return `<div class="direct-map-tools"><span>${uxEsc(p.name)} · ${size}</span><button class="mb" aria-pressed="${!!FXO.overview}" onclick="toggleWorldOverview()">${FXO.overview?'跟隨鏡頭':'全景'}</button><button class="mb" onclick="directJournal()">手記 ${FIELD_STORIES.filter((_,i)=>G.storyFlags['p'+i]).length}／12</button>${directHelpButton('maps')}</div>`;}
@@ -8084,7 +8124,7 @@ function directHelp(key){
 function directCharacterLinks(){return `<div class="direct-character-tools"><button class="mb" onclick="showDeathSummary()">死亡總結</button><button class="mb" onclick="openModal('warehouse')">配裝與核心</button><button class="mb" onclick="openModal('dress')">角色展示與裝扮</button><button class="mb" onclick="directCharacterStory()">職業資料</button><button class="mb" onclick="directEvents()">事件紀錄</button></div>`;}
 function directCharacterStory(){const c=CHARS[G.char];showOverlay(`<h2>${uxEsc(c.n)}</h2><blockquote>「${uxEsc(c.quote)}」</blockquote>${c.story.map(t=>`<p>${uxEsc(t)}</p>`).join('')}<button class="mb" onclick="hideOverlay()">返回角色</button>`);}
 function directEvents(){showOverlay(`<h2>事件紀錄</h2><ol class="log">${G.log.map(l=>`<li>${uxEsc(l.txt)}</li>`).join('')||'<li>尚無事件。</li>'}</ol><button class="mb" onclick="hideOverlay()">關閉</button>`);}
-function directJournal(){showOverlay(`<h2>電台手記</h2>${fieldJournalHtml()}<button class="mb" onclick="hideOverlay()">返回冒險</button>`);const d=$('ovl').querySelector('details');if(d)d.open=true;}
+function directJournal(){showOverlay(`<h2>電台手記</h2>${storyJournalHtml()}${fieldJournalHtml()}<button class="mb" onclick="hideOverlay()">返回冒險</button>`);const d=$('ovl').querySelector('details');if(d)d.open=true;}
 function directBuildTools(){DIRECT_VIEW.builds=!DIRECT_VIEW.builds;renderModal();}
 function directCombatReport(){showOverlay(`<h2>戰鬥分析</h2>${dpsBar()}${uiResolvedHtml()}${uiCombatHtml()}<button class="mb" onclick="hideOverlay()">關閉</button>`);$('ui-combat-report').open=true;uiCombatRefresh();}
 
@@ -8459,7 +8499,7 @@ body.ui-material #mbody .ui-item-tile[data-rarity]{border:2px solid var(--item-r
 /* Ephemeral battle signals; gameplay and rewards remain in the existing owners. */
 const STAGE_UI={seen:new WeakSet(),warningUntil:0,receipts:new Map()};
 function lootReceipt(d){if(G.offline||!importantLoot(d))return;const key=['gold','chip'].includes(d.kind)?d.kind:Math.random().toString(36);let text=d.kind==='activity'?({tower:'階層鎖片',season:'頻段結晶'}[d.id]+' +'+d.amount):d.kind==='rift'?'斷訊碎片 +'+d.amount:d.kind==='recycled'?'分解零件 +'+d.amount:d.kind==='item'?d.it.name:d.kind==='skill'?'圖紙 · '+SKILLS[d.id].n:d.kind==='gem'?SUPPS[d.id].n:d.kind==='cart'?'技能卡匣':d.kind==='circuit'?GridLab.TEMPLATES[d.id]?.n:d.kind==='map'?'地圖 · '+BIOMES[d.map.biome].n:d.kind==='boost'?(d.boost==='power'?'火力增幅 45秒':'護盾補給 45秒'):d.kind==='gold'?'金幣':'電路點數';const prior=STAGE_UI.receipts.get(key),amount=(prior?.amount||0)+(d.amount||1);if(['gold','chip'].includes(d.kind))text+=' +'+tFmt(amount);STAGE_UI.receipts.set(key,{text,amount,until:performance.now()+2800,r:d.it?.r||0});while(STAGE_UI.receipts.size>3)STAGE_UI.receipts.delete(STAGE_UI.receipts.keys().next().value);stageSignals();}
-function stageSignals(){const stage=document.querySelector('.stage');if(!stage)return;let panel=document.getElementById('stage-signals');if(!panel){panel=document.createElement('div');panel.id='stage-signals';panel.innerHTML='<section id="boss-signal" hidden><strong></strong><span></span><progress max="1" aria-label="BOSS生命"></progress></section><section id="tower-ascent" hidden><b></b><progress max="1" aria-label="登階進度"></progress><button class="mb" onclick="towerStairTick(0,true)">略過</button></section>';stage.appendChild(panel)}const hidden=document.body.classList.contains('battle-fold')||document.body.classList.contains('battle-off'),boss=G.mons.find(m=>m.boss&&!m.dead),box=panel.querySelector('#boss-signal');box.hidden=hidden||!boss;if(boss&&!hidden){if(!STAGE_UI.seen.has(boss)){STAGE_UI.seen.add(boss);STAGE_UI.warningUntil=performance.now()+2300;}const intro=performance.now()<STAGE_UI.warningUntil;box.classList.toggle('entering',intro);box.querySelector('strong').textContent=intro?'WARNING · BOSS接近':(boss.enraged?'BOSS · 覺醒':'BOSS戰鬥');box.querySelector('span').textContent=({warden:'鐵獄典獄長',chimera:'合成巨骸',executor:'零號執行體'}[boss.towerBoss]||['裂地監督','訊號吞噬者','深層潛行者'][boss.bossForm||0]);box.querySelector('progress').value=Math.max(0,boss.hp/boss.hpMax);}let rb=panel.querySelector('#rift-signal');if(!rb){rb=document.createElement('section');rb.id='rift-signal';panel.appendChild(rb)}const re=riftState().encounter;rb.hidden=hidden||!re;if(re){rb.innerHTML=`<b>${{dormant:'斷訊手',expand:'裂隙擴張',contain:'收束裂隙',complete:'封閉完成',failed:'訊號逸散'}[re.phase]}</b><span>${re.phase==='dormant'?'接近啟動':re.kills+'／22 · '+Math.max(0,Math.ceil(55-re.age))+'秒'}</span>`;}const a=G.run?.stair,climb=panel.querySelector('#tower-ascent');climb.hidden=hidden||!a;if(a){climb.querySelector('b').textContent=a.from+' F → '+(a.from+1)+' F · 登階';climb.querySelector('progress').value=a.age/(a.duration||1);}let loot=document.getElementById('loot-receipts');if(!loot){loot=document.createElement('div');loot.id='loot-receipts';loot.setAttribute('role','log');loot.setAttribute('aria-label','最近獲得');stage.append(loot)}for(const[key,r]of STAGE_UI.receipts)if(r.until<performance.now())STAGE_UI.receipts.delete(key);loot.hidden=hidden;const html=[...STAGE_UI.receipts.values()].map(r=>`<div style="--rc:${RAR[r.r]?.c||'#80cebd'}">${uxEsc(r.text)}</div>`).join('');if(loot.innerHTML!==html)loot.innerHTML=html;}
+function stageSignals(){const stage=document.querySelector('.stage');if(!stage)return;let panel=document.getElementById('stage-signals');if(!panel){panel=document.createElement('div');panel.id='stage-signals';panel.innerHTML='<section id="boss-signal" hidden><strong></strong><span></span><progress max="1" aria-label="BOSS生命"></progress></section><section id="tower-ascent" hidden><b></b><progress max="1" aria-label="登階進度"></progress><button class="mb" onclick="towerStairTick(0,true)">略過</button></section>';stage.appendChild(panel)}const hidden=document.body.classList.contains('battle-fold')||document.body.classList.contains('battle-off'),boss=G.mons.find(m=>m.boss&&!m.dead),box=panel.querySelector('#boss-signal');box.hidden=hidden||!boss;if(boss&&!hidden){if(!STAGE_UI.seen.has(boss)){STAGE_UI.seen.add(boss);STAGE_UI.warningUntil=performance.now()+2300;}const intro=performance.now()<STAGE_UI.warningUntil;box.classList.toggle('entering',intro);box.querySelector('strong').textContent=intro?'WARNING · BOSS接近':(boss.enraged?'BOSS · 覺醒':'BOSS戰鬥');box.querySelector('span').textContent=({warden:'鐵獄典獄長',chimera:'合成巨骸',executor:'零號執行體'}[boss.towerBoss]||(boss.chap!=null&&STORY_CHAPTERS[boss.chap]?.boss)||['裂地監督','訊號吞噬者','深層潛行者'][boss.bossForm||0]);box.querySelector('progress').value=Math.max(0,boss.hp/boss.hpMax);}let rb=panel.querySelector('#rift-signal');if(!rb){rb=document.createElement('section');rb.id='rift-signal';panel.appendChild(rb)}const re=riftState().encounter;rb.hidden=hidden||!re;if(re){rb.innerHTML=`<b>${{dormant:'斷訊手',expand:'裂隙擴張',contain:'收束裂隙',complete:'封閉完成',failed:'訊號逸散'}[re.phase]}</b><span>${re.phase==='dormant'?'接近啟動':re.kills+'／22 · '+Math.max(0,Math.ceil(55-re.age))+'秒'}</span>`;}const a=G.run?.stair,climb=panel.querySelector('#tower-ascent');climb.hidden=hidden||!a;if(a){climb.querySelector('b').textContent=a.from+' F → '+(a.from+1)+' F · 登階';climb.querySelector('progress').value=a.age/(a.duration||1);}let loot=document.getElementById('loot-receipts');if(!loot){loot=document.createElement('div');loot.id='loot-receipts';loot.setAttribute('role','log');loot.setAttribute('aria-label','最近獲得');stage.append(loot)}for(const[key,r]of STAGE_UI.receipts)if(r.until<performance.now())STAGE_UI.receipts.delete(key);loot.hidden=hidden;const html=[...STAGE_UI.receipts.values()].map(r=>`<div style="--rc:${RAR[r.r]?.c||'#80cebd'}">${uxEsc(r.text)}</div>`).join('');if(loot.innerHTML!==html)loot.innerHTML=html;}
 function skillBlueprintBuy(id){const k=SKILLS[id];if(!k||G.skillBooks?.[id])return;if(G.chips<skillBlueprintCost(id)){showOverlay('<h2>電路點數不足</h2><p>需要'+skillBlueprintCost(id)+'點，目前持有'+G.chips+'點。圖紙亦可由符合等級的魔物與BOSS掉落。</p>');return;}showOverlay(`<h2>兌換${uxEsc(k.n)}？</h2><p>${skillFindLabel(id)} · ${skillBlueprintCost(id)}電路點數</p><p>${uxEsc(k.d)}</p><button class="mb" data-initial-focus onclick="hideOverlay()">取消</button><button class="mb pri" onclick="if(buySkillBlueprint('${id}')){hideOverlay();renderModal()}else{uxAnnounce('資源不足或已取得，沒有扣款。')}">確認兌換</button>`);}
 function skillBlueprintShelf(){const ids=Object.keys(SKILLS).filter(id=>!skillAvailable(id)&&G.lvl>=SKILLS[id].lvl);return ids.length?`<details class="ui-section"><summary>技能圖紙 · BOSS保底 ${G.skillPity||0}／4</summary><p class="uxmeta">四次符合等級的BOSS掉落機會內保底一張未擁有圖紙（仍有未持有時）。一般魔物也會掉落；重複圖紙轉8電路。可直接定向兌換。</p><div class="blueprint-grid">${ids.map(id=>`<button class="mb" ${G.chips<skillBlueprintCost(id)?'disabled':''} onclick="skillBlueprintBuy('${id}')">${sico(id,32)}<span>${SKILLS[id].n}<small>${skillFindLabel(id)} · ${skillBlueprintCost(id)}電路</small></span></button>`).join('')}</div></details>`:'';}
 const STAGE_CSS=`
