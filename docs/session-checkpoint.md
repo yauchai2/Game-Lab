@@ -14,3 +14,5 @@
 - 回饋Worker已部署，公開端點只存feedback-config，憑證留Secrets；既有真實收單#59及防重複／CORS證據見feedback-service-setup-2026-10-25.md，兩項Token2027-01-23到期需輪替。
 - Patreon頁為Alan確認的公開創作者頁，簡短個人作品介紹、自願支持、不售戰力；不宣稱已測交易。全球排名仍未接通。
 - 繁中全形標點、銀灰藍紫Y2K／Cubic11、低面數像素酷感；公開文字不可提參考遊戲、內部研究、帳號或公司資源。
+
+- 2026-10-26 Asia/Taipei，影片風格預覽：基準a8d941b，codex/ice-cream-visual-preview；Alan選擇先做場景／角色可玩預覽。獨立dist/summer-street-preview.html、build_summer_preview.py及summer-preview-runtime.js，保留真戰鬥並以記憶體隔離所有存檔，正式來源與介面未改。範圍／證據docs/ice-cream-preview/README.md；沿用四個模型，尚未重製影片角色比例。未合併／未發佈。

@@ -1,0 +1,28 @@
+{
+  "checks": [
+    "street scene loads with navigable terrain and real hero model",
+    "real simulation advances and spawns enemies",
+    "autosave and preview storage wipe leave real storage untouched",
+    "all four rigged characters load, animate and keep equipment sockets",
+    "original/street comparison rebuilds lighting, terrain and hero",
+    "reset restores a live playable encounter",
+    "320px and 390px toolbar controls fit and remain clickable",
+    "reload starts a fresh isolated preview"
+  ],
+  "before": {
+    "t": 8.347,
+    "h": 28.160374599195343,
+    "k": 0
+  },
+  "after": {
+    "t": 17.37199999999995,
+    "h": 8.824750410928658,
+    "k": 2,
+    "mons": 25
+  },
+  "errors": [],
+  "limitations": [
+    "Headless Chromium with software WebGL; no real-device FPS or Safari validation.",
+    "Existing four hero meshes are retained; this preview does not remodel them to the video."
+  ]
+}
