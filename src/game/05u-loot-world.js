@@ -3,10 +3,10 @@ const LOOT_UI={rar:[0,1],slots:Object.keys(SLOTN),maxLevel:9999,junk:false,prese
 function gearProtection(it){return it.lg?'核心收藏':Object.values(G.equip).includes(it)?'穿著中':Object.values(G.equipBackup).includes(it)?'上一件':it.kept?'保管鎖定':it.lk!=null?'詞綴鎖定':it.cr?'已腐化':gearReferenced(it)?'構築引用':'';}
 function lootMatches(it,filter=LOOT_UI){return !gearProtection(it)&&filter.rar.includes(it.r)&&filter.slots.includes(it.slot)&&it.il<=filter.maxLevel&&(!filter.junk||it.junk===true)&&(!filter.preserveTop||!it.aff.some(a=>affTier(a,it.il)<=1));}
 function lootCandidates(filter=LOOT_UI){return G.inventory.filter(it=>lootMatches(it,filter));}
-function lootTotals(items){return {count:items.length,gold:items.reduce((n,it)=>n+itemValue(it),0),parts:items.reduce((n,it)=>n+[1,2,5,12][it.r],0)};}
+function lootTotals(items){return {count:items.length,gold:items.reduce((n,it)=>n+itemValue(it),0),parts:Math.round(items.reduce((n,it)=>n+PARTS_OF[it.r],0))};}
 function lootStorageToolsHtml(){
  const safe=G.inventory.filter(it=>!gearProtection(it)).length,pct=Math.round(G.inventory.length/whCap()*100);
- return `<section class="loot-manager" aria-label="背包整理"><div class="loot-capacity"><b>背包 ${G.inventory.length}／${whCap()}</b><span>${safe} 件可處理 · ${G.inventory.length-safe} 件保護中</span><meter min="0" max="${whCap()}" value="${G.inventory.length}" aria-label="背包使用量">${pct}%</meter></div><div class="uxactions"><button class="mb pri" data-focus="loot-clean" onclick="lootCleanupOpen()">篩選分解</button><button class="mb" onclick="lootManageRules()">容量與拾取</button><button class="mb" onclick="directBuildTools()">構築保管</button></div>${LOOT_UI.result?`<p class="loot-result" role="status">${uxEsc(LOOT_UI.result)}</p>`:''}${LOOT_UI.saveFailed?'<div class="uxwarning" role="alert">變更仍在目前畫面，尚未保存。請先匯出備份，避免關閉分頁後遺失。<div class="uxactions"><button class="mb" onclick="openModal(\'save\')">匯出備份</button><button class="mb" onclick="lootRetrySave()">重試保存</button></div></div>':''}</section>`;
+ return `<section class="loot-manager" aria-label="背包整理"><div class="loot-capacity"><b>背包 ${G.inventory.length}／${whCap()}</b><span>${safe} 件可處理 · ${G.inventory.length-safe} 件保護中</span><meter min="0" max="${whCap()}" value="${G.inventory.length}" aria-label="背包使用量">${pct}%</meter></div><div class="uxactions"><button class="mb pri" data-focus="loot-clean" onclick="lootCleanupOpen()">篩選分解</button><button class="mb" onclick="lootManageRules()">容量與拾取</button><button class="mb" onclick="lootBuildKeep()">構築保管</button></div>${LOOT_UI.result?`<p class="loot-result" role="status">${uxEsc(LOOT_UI.result)}</p>`:''}${LOOT_UI.saveFailed?'<div class="uxwarning" role="alert">變更仍在目前畫面，尚未保存。請先匯出備份，避免關閉分頁後遺失。<div class="uxactions"><button class="mb" onclick="openModal(\'save\')">匯出備份</button><button class="mb" onclick="lootRetrySave()">重試保存</button></div></div>':''}</section>`;
 }
 function lootCleanupOpen(focusKey=null){
  const scroll=document.querySelector('#ovl .mbox')?.scrollTop||0;
@@ -25,7 +25,7 @@ function lootCleanupAsk(){
 function lootCleanupConfirm(){
  const pending=LOOT_UI.pending;LOOT_UI.pending=null;if(!pending)return;
  if(typeof PROFILE_SESSION!=='undefined'&&pending.profile!==PROFILE_SESSION.active){uxAnnounce('目前角色已改變，沒有分解。');return;}
- let count=0,parts=0,gold=0;for(const entry of pending.items){const it=G.inventory.find(x=>x.uid===entry.id);if(!it||JSON.stringify(it)!==entry.stamp||!lootMatches(it,pending.filter))continue;const value=itemValue(it),part=[1,2,5,12][it.r];if(recycleStored(it.uid)){count++;gold+=value;parts+=part;}}
+ let count=0,parts=0,gold=0;for(const entry of pending.items){const it=G.inventory.find(x=>x.uid===entry.id);if(!it||JSON.stringify(it)!==entry.stamp||!lootMatches(it,pending.filter))continue;const value=itemValue(it),part=partsOf(it.r);if(recycleStored(it.uid)){count++;gold+=value;parts+=part;}}
  LOOT_UI.result=`已分解 ${count} 件，獲得 ${gold} 金幣、${parts} 零件；略過 ${pending.items.length-count} 件。`;LOOT_UI.saveFailed=!saveGame();hideOverlay();renderModal();document.querySelector('[data-focus="loot-clean"]')?.focus();uxAnnounce(LOOT_UI.result+(LOOT_UI.saveFailed?'尚未保存，請先匯出備份。':''));
 }
 function lootRetrySave(){LOOT_UI.saveFailed=!saveGame();renderModal();document.querySelector('[data-focus="loot-clean"]')?.focus();uxAnnounce(LOOT_UI.saveFailed?'仍未能保存，請先匯出備份。':'已保存目前進度，沒有重複分解。');}
@@ -48,3 +48,5 @@ body.d.battle-fold .stage::after{display:none!important}#battle-hidden-note{disp
 @media(max-height:500px){body.m #modal{margin-bottom:0!important}body.m>header{display:none!important}body.m.battle-fold .stage{height:88px;min-height:88px}body.m:not(.battle-fold) #fig{max-height:40px!important}}
 `;
 function lootWorldStyles(){if(document.getElementById('loot-world-style'))return;const style=document.createElement('style');style.id='loot-world-style';style.textContent=LOOT_WORLD_CSS;document.head.appendChild(style);}
+
+function lootBuildKeep(){showOverlay(`<h2 class="uxdialog-title">構築保管</h2><p>三套構築各自記住的裝備，會被保護，不會被自動回收或分解。想放走不需要的裝備，先解除該構築的裝備記憶。</p>${uiBuildGearHtml()}<div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">關閉</button></div>`);const d=$('ovl').querySelector('details');if(d)d.open=true;}
