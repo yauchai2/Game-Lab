@@ -62,20 +62,11 @@ const AFF = {
   rarity:{ g:'s', tags:['獎勵'], t:v => `${v}% 掉落稀有度`,      b:il => 6 + il*.9 },
   moveSpd:{ g:'s', tags:['速度'], t:v => `${v}% 移動速度`,       b:il => 2 + il*.2 },
 };
-/* 傳奇專屬詞綴：只會出現在傳奇裝備上，每條各帶一個附加效果，不會出現在一般裝備 */
-const LG_AFF = {
-  dmg:['震盪','+{v} 物理傷害，{w}% 增加傷害','inc',.3],inc:['共振','{v}% 增加傷害，{w}% 攻擊速度','aps',.25],
-  fire:['焚線','{v}% 火焰傷害，+{w}% 會心傷害','cm',.2],cold:['凍結','{v}% 冰霜傷害，+{w} 護甲','armor',.5],light:['放電','{v}% 閃電傷害，{w}% 技能急速','haste',.2],
-  crit:['致命','+{v}% 會心率，+{w}% 會心傷害','cm',2],cm:['爆裂','+{v}% 會心傷害，+{w}% 會心率','crit',.12],
-  aps:['連發','{v}% 攻擊速度，{w}% 技能急速','haste',.5],haste:['迴路','{v}% 技能急速，{w}% 移動速度','moveSpd',.6],
-  life:['強韌','+{v} 生命，{w}% 最大生命','lifeP',.1],armor:['鍍層','+{v} 護甲，{w}% 受到傷害降低','takenRed',.1],
-  regen:['再生','+{v} 生命回復/秒，{w}% 生命偷取','leech',.15],leech:['虹吸','{v}% 生命偷取，擊殺回復 {w}% 最大生命','killHeal',.3]};
-for(const [k,[n,text,also,ratio]] of Object.entries(LG_AFF)){const base=AFF[k];AFF['u_'+k]={g:base.g,tags:base.tags,lg:true,also:[also,ratio],t:v=>'傳奇・'+n+'：'+text.replace('{v}',v).replace('{w}',Math.round(v*ratio*10)/10),b:base.b};}
 const POOL = {
   weapon:['dmg','inc','fire','cold','light','vsElite','ele','crit','cm','aps','haste','leech'],
   armor:['life','armor','lifeP','armorP','inc','regen','leech','haste','dodgeA','takenRed'],
   ring:['fire','cold','light','inc','life','ele','crit','cm','leech','aps','haste','goldPct','rarity'] };
-const STAT_KEY = { u_dmg:'dmg',u_inc:'inc',u_fire:'fire',u_cold:'cold',u_light:'light',u_crit:'crit',u_cm:'cm',u_aps:'apsInc',u_haste:'haste',u_life:'life',u_armor:'armor',u_regen:'regen',u_leech:'leech', lifeP:'lifePct', armorP:'armorPct', ele:'ele', vsElite:'vsElite', dodgeA:'dodge', takenRed:'takenRed', killHeal:'killHeal', goldPct:'goldPct', xpPct:'xpPct', rarity:'rarity', moveSpd:'moveSpd', dmg:'dmg', inc:'inc', crit:'crit', cm:'cm', aps:'apsInc', fire:'fire', cold:'cold', light:'light', haste:'haste', life:'life', armor:'armor', regen:'regen', leech:'leech' };
+const STAT_KEY = {  lifeP:'lifePct', armorP:'armorPct', ele:'ele', vsElite:'vsElite', dodgeA:'dodge', takenRed:'takenRed', killHeal:'killHeal', goldPct:'goldPct', xpPct:'xpPct', rarity:'rarity', moveSpd:'moveSpd', dmg:'dmg', inc:'inc', crit:'crit', cm:'cm', aps:'apsInc', fire:'fire', cold:'cold', light:'light', haste:'haste', life:'life', armor:'armor', regen:'regen', leech:'leech' };
 const PREF = { lifeP:'厚實的', armorP:'堅固的', ele:'全頻的', vsElite:'獵手的', dodgeA:'靈巧的', takenRed:'緩衝的', killHeal:'回收的', goldPct:'進帳的', xpPct:'勤勉的', rarity:'幸運的', moveSpd:'輕快的', dmg:'加重的', inc:'超頻的', crit:'會心的', cm:'暴走的', aps:'高速的', fire:'過熱的', cold:'冷氣的', light:'帶電的', haste:'寬頻的', life:'耐用的', armor:'加厚的', regen:'充電的', leech:'偷訊號的' };
 // Y2K 城市物件：武器是街頭隨手可得的東西，外套是當年的潮服，配件是千禧年的電子小物
 const BASES = { weapon:['摺疊傘','鋁製球棒','霓虹光管','雷射光劍'], armor:['連帽衛衣','牛仔外套','羽絨背心','反光風褸'], ring:['BB Call 傳呼機','翻蓋手機','MD 隨身聽','電子寵物機'] };
@@ -148,6 +139,50 @@ LEGENDS.ring.push({id:'R_RIFT',owner:'rift',name:'閉環殘響',aff:['life','has
 LEGENDS.offhand.push({id:'O_TOWER',owner:'tower',name:'階層屏障',aff:['armor','life','haste','cold'],d:'生命高於80%時受到傷害降低15%；生命低於35%時技能命中傷害提高30%。以3階層鎖片鍛造。'});
 LEGENDS.ring.push({id:'R_SEASON',owner:'season',name:'午夜廣播器',aff:['crit','inc','haste','light'],d:'對閃電標記目標技能命中傷害提高35%；未標記目標降低15%。以3頻段結晶鍛造。'});
 const LEGEND_BY = {}; for (const sl in LEGENDS) for (const L of LEGENDS[sl]) LEGEND_BY[L.id] = L;
+/* 傳奇專屬詞綴：每件傳奇有自己的 4 條，帶有取捨或附加效果，不會出現在一般裝備上 */
+AFF.leech.dec = true; AFF.killHeal.dec = true;
+const LG_TPL = {
+  glass:{p:'inc',t:'{v}% 增加傷害，最大生命 -{w}%',neg:['lifePct',.25]},
+  rush:{p:'haste',t:'{v}% 技能急速，受到的傷害 +{w}%',neg:['takenRed',.5]},
+  hunter:{p:'vsElite',t:'{v}% 對精英與首領增傷，{w}% 移動速度',also:['moveSpd',.3]},
+  greed:{p:'goldPct',t:'{v}% 金幣增加，{w}% 掉落稀有度',also:['rarity',.6]},
+  scholar:{p:'xpPct',t:'{v}% 經驗增加，+{w}% 會心率',also:['crit',.15]},
+  ghost:{p:'dodgeA',t:'+{v}% 閃避率，{w}% 移動速度',also:['moveSpd',.5]},
+  reap:{p:'killHeal',t:'擊殺回復 {v}% 最大生命，{w}% 生命偷取',also:['leech',1.2]},
+  prism:{p:'ele',t:'{v}% 全元素傷害，護甲 -{w}%',neg:['armorPct',.3]},
+  bulwark:{p:'armorP',t:'{v}% 護甲，{w}% 受到傷害降低',also:['takenRed',.25]},
+  fort:{p:'lifeP',t:'{v}% 最大生命，技能急速 -{w}%',neg:['haste',.5]},
+  burst:{p:'cm',t:'+{v}% 會心傷害，攻擊速度 -{w}%',neg:['apsInc',.2]},
+  tempo:{p:'aps',t:'{v}% 攻擊速度，增加傷害 -{w}%',neg:['inc',.4]}};
+const LG_MODS = {
+  W_ECHO:[['rush','殘響'],['burst','迴音爆裂'],['tempo','回放'],['prism','共鳴']],
+  W_FORK:[['hunter','追星'],['burst','碎裂'],['glass','流星'],['reap','星屑回收']],
+  W_MULTI:[['tempo','多工'],['prism','全頻'],['scholar','說明書'],['rush','快轉']],
+  A_PHOENIX:[['fort','羽翼'],['reap','餘燼'],['bulwark','凝羽'],['ghost','輕盈']],
+  A_RIPOSTE:[['ghost','反光'],['bulwark','折射'],['tempo','反擊'],['reap','回流']],
+  A_RESET:[['rush','重置'],['fort','靜電'],['reap','迴路回收'],['bulwark','屏蔽']],
+  R_LAST:[['glass','來電'],['burst','最後通牒'],['rush','忙線'],['hunter','追蹤']],
+  R_LINK:[['prism','滿格'],['hunter','連線'],['reap','傳輸'],['scholar','訊號']],
+  R_DIAL:[['tempo','撥號'],['rush','快速撥號'],['greed','話費'],['burst','接通']],
+  H_BROADBAND:[['fort','寬頻'],['rush','低延遲'],['bulwark','隔音'],['reap','回授']],
+  G_CONTACT:[['tempo','超頻'],['burst','觸發'],['glass','過載'],['hunter','接觸']],
+  B_LASTTRAIN:[['ghost','末班'],['rush','快線'],['reap','終點'],['fort','月台']],
+  O_REFLECTOR:[['bulwark','反射'],['fort','板面'],['prism','折光'],['rush','中繼']],
+  W_RIFT:[['hunter','遠域'],['burst','斷訊'],['prism','寒域'],['glass','訊號衰減']],
+  R_RIFT:[['reap','閉環'],['rush','殘響'],['scholar','記錄'],['prism','寒流']],
+  O_TOWER:[['bulwark','階層'],['fort','屏障'],['prism','結冰'],['rush','層疊']],
+  R_SEASON:[['scholar','午夜'],['burst','廣播'],['rush','電波'],['greed','節目']]};
+const LG_SIG = { weapon:['tempo','burst','hunter','glass'], armor:['fort','bulwark','reap','ghost'], head:['fort','rush','bulwark','scholar'], gloves:['tempo','burst','hunter','glass'], boots:['ghost','rush','reap','fort'], offhand:['bulwark','prism','fort','rush'], ring:['burst','scholar','rush','tempo'] };
+const LG_SIG_NAME = ['專屬・增幅','專屬・協奏','專屬・同調','專屬・共振'];
+const lgModKey = (id, i) => 'lg_' + id + '_' + i;
+for (const slot in LEGENDS) for (const L of LEGENDS[slot]) {
+  const mods = LG_MODS[L.id] || (LG_SIG[slot] || LG_SIG.ring).map((t, i) => [t, LG_SIG_NAME[i]]);
+  mods.forEach(([tpl, name], i) => {
+    const T = LG_TPL[tpl], base = AFF[T.p], rel = T.also || T.neg, w = v => Math.round(v*rel[1]*10)/10, key = lgModKey(L.id, i);
+    AFF[key] = { g:base.g, tags:base.tags, lg:true, dec:!!base.dec, also:T.also, neg:T.neg, t:v => name + '：' + T.t.replace('{v}', v).replace('{w}', w(v)), b:base.b };
+    STAT_KEY[key] = STAT_KEY[T.p];
+  });
+}
 
 const SKILLS = {
   FIRE:  { n:'灼熱電池', lvl:1,  cd:2.6, mult:2.6, el:'fire',  col:'#ff7a2a', tg:1.4, d:'丟出過熱的電池，命中時爆炸並輕微擊退' },
@@ -163,6 +198,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.71.0',d:'2026-10-26',t:['傳奇裝備：四條詞綴改為各傳奇獨有的取捨型效果（強化一項、同時附帶另一項增益或代價），舊傳奇裝備自動轉換。','視野：可見範圍加大，近／標準／遠三檔皆放寬。','畫質：自動降低解析度的條件放寬，只在真正卡頓時才降，並保持更高清晰度。','血條：改為固定細幼厚度，畫面放大時不再變粗。']},
   {v:'0.70.0',d:'2026-10-26',t:['傳奇裝備：詞綴全部改為傳奇專屬詞，每條帶有附加效果，不會出現在一般裝備上；舊傳奇裝備自動轉換。','電腦版：戰鬥畫面鋪滿整個視窗，操作面板疊在右邊。','視野：改為以角色為中心，圈內清楚、走過的地方留有記憶、未到過的遠處較暗；設定可調視野範圍。','零件：裝備自動分解得到的零件大幅減少（普通與魔法裝備只有機率得到 1 個）。','背包「構築保管」按鈕現在會打開構築裝備記憶管理。','斷訊電台與巡迴頁的標題文字顏色修正，不再是淺色字壓在淺色底上。','斷訊裂隙進行中只在紫圈邊緣出怪；移除原版地形設定，只保留新版街區。']},
   {v:'0.69.0',d:'2026-10-26',t:['技能盤：連線加成改為按線長計算，線超過 6 格後每多一格技能傷害 +3%，上限 2.5 倍；配件上限維持 3 個，與配件無關。接線頁顯示傷害倍率。','視野：設定新增「視野範圍」（近／標準／遠），標準視野比舊版寬約 25%；大地圖跟隨鏡頭時，畫面邊緣會稍微變暗。','觀戰：新增快捷鍵 W 開始觀戰。','音樂：戰鬥畫面收起時，音效停止、音樂變細聲。','Logo、角色與裝扮預覽的自轉加快。','斷訊裂隙：怪物改為沿圈邊緣持續湧出，數量與同時在場上限提高。','效能：畫面渲染會依實測幀率自動降低或回升解析度，並限制清晰模式的總像素，減少卡頓。']},
   {v:'0.68.0',d:'2026-10-26',t:['技能盤：一條線上生效的配件由最多 3 個提高到最多 6 個，每多連一個配件，線上全部配件的效果再提高 25%，連得越多越強。','傳奇裝備：詞綴統一標示為「傳奇」，詳細頁註明專屬並固定不可改，不再顯示鎖定與階級範圍。','角色：移動時會面向前進方向並維持跑步動作，施法時不再原地滑行。','選擇角色：肖像只顯示角色本身，不再穿上目前的裝備與裝扮；下方按鈕重新排列，「開始冒險」最大，「返回故事」與「返回原角色」並排。']},

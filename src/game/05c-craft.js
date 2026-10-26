@@ -52,10 +52,10 @@ function craftDo(slot, act, confirmed = false){
   else if (act === 'extend'){ add(); const last = it.aff[it.aff.length-1]; msg = `追加詞綴：${AFF[last.k].t(last.v)}（${it.aff.length}／6）`; }
   else if (act === 'upgrade'){ it.r++; const n = it.r === 1 ? 1 : 2; for (let i = 0; i < n; i++) add(); it.name = it.r === 1 ? PREF[it.aff[0].k] + baseName(slot, it.il, it.bs || 0) : tPick(RARE_NAMES[slot]); msg = `升級成${RAR[it.r].n}`; }
   else if (act === 'corrupt'){ it.cr = 1; const r = Math.random();
-    if (r < .25){ for (const a of it.aff) a.v = (a.k === 'leech' || a.k === 'u_leech') ? Math.round(a.v*12)/10 : Math.max(1, Math.round(a.v*1.2)); msg = '腐化成功：數值 +20%'; }
+    if (r < .25){ for (const a of it.aff) a.v = AFF[a.k].dec ? Math.round(a.v*12)/10 : Math.max(1, Math.round(a.v*1.2)); msg = '腐化成功：數值 +20%'; }
     else if (r < .5) msg = add() ? '腐化成功：多了一條詞綴' : '腐化：沒有變化';
     else if (r < .75) msg = '腐化：沒有變化';
-    else { for (const a of it.aff) a.v = (a.k === 'leech' || a.k === 'u_leech') ? Math.round(a.v*8.5)/10 : Math.max(1, Math.round(a.v*.85)); msg = '腐化失敗：數值 -15%'; } }
+    else { for (const a of it.aff) a.v = AFF[a.k].dec ? Math.round(a.v*8.5)/10 : Math.max(1, Math.round(a.v*.85)); msg = '腐化失敗：數值 -15%'; } }
   it.lk = it.lk != null && it.lk < it.aff.length ? it.lk : null;
   const after = it.aff.map(a => AFF[a.k].t(a.v)).join('、') || '無額外詞綴';
   CRAFT_RESULTS[slot] = { it, msg, cost, before, after,beforeRows,afterRows:copyState(it.aff) };

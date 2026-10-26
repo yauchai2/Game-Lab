@@ -13,7 +13,7 @@ function r3Fog(on,W,H,left,top){
   const now=performance.now();f.style.display='';f.style.left=left+'px';f.style.top=top+'px';f.style.width=W+'px';f.style.height=H+'px';
   if(now-(R3.fogAt||0)<66)return;R3.fogAt=now;
   const w=Math.max(8,Math.ceil(W/3)),h=Math.max(8,Math.ceil(H/3));if(f.width!==w||f.height!==h){f.width=w;f.height=h;}
-  const key=terrainKey(),sight={near:42,far:78}[GAME_VIEW.prefs.range]||58,C=8;
+  const key=terrainKey(),sight={near:75,far:160}[GAME_VIEW.prefs.range]||110,C=8;
   if(!R3.exp||R3.exp.key!==key)R3.exp={key,cells:new Map(),at:0};
   const E=R3.exp,hx=G.h.x,hy=G.h.y;
   if(now-E.at>400){E.at=now;const n=Math.ceil(sight/C);for(let i=-n;i<=n;i++)for(let j=-n;j<=n;j++){const x=(Math.round(hx/C)+i)*C,y=(Math.round(hy/C)+j)*C;if(Math.hypot(x-hx,y-hy)<=sight)E.cells.set((Math.round(hx/C)+i)+','+(Math.round(hy/C)+j),[x,y]);}}
@@ -22,13 +22,13 @@ function r3Fog(on,W,H,left,top){
   ctx.globalCompositeOperation='source-over';ctx.clearRect(0,0,w,h);ctx.fillStyle='rgba(16,12,44,.72)';ctx.fillRect(0,0,w,h);
   ctx.globalCompositeOperation='destination-out';ctx.fillStyle='rgba(0,0,0,.4)';
   for(const [x,y] of E.cells.values()){const [px,py]=toPx(x,y);if(px<-20||py<-20||px>w+20||py>h+20)continue;ctx.beginPath();ctx.arc(px,py,C*pu*1.1,0,6.3);ctx.fill();}
-  const r=sight*pu,g=ctx.createRadialGradient(cx,cy,r*.35,cx,cy,r);g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(.65,'rgba(0,0,0,.95)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,r,0,6.3);ctx.fill();
+  const r=sight*pu,g=ctx.createRadialGradient(cx,cy,r*.35,cx,cy,r);g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(.75,'rgba(0,0,0,.95)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,r,0,6.3);ctx.fill();
 }
 function r3Quality(quality='auto',viewportWidth=1024){return ['low','medium','high'].includes(quality)?quality:(viewportWidth<768||typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches&&viewportWidth<1180)?'medium':'high';}
 function r3BufferSize(width,height,dpr=1,clean=false,quality='auto',viewportWidth=width,scale=1){
   const W=Math.max(2,Number.isFinite(width)?width:2),H=Math.max(2,Number.isFinite(height)?height:2);
   const q=r3Quality(quality,viewportWidth),policy={low:[.3,420],medium:[.4,560],high:[.5,720]}[q];
-  const budget={low:.7e6,medium:1.2e6,high:2.2e6}[q],ratio=clean?Math.max(.4,Math.min(Math.max(1,Math.min(2,Number.isFinite(dpr)?dpr:1))*scale,Math.sqrt(budget/(W*H)))):Math.min(policy[0],policy[1]/Math.max(W,H))*scale;   /* 清晰模式限制總像素；scale 由實測幀率自動調整 */
+  const budget={low:1e6,medium:1.8e6,high:3.4e6}[q],ratio=clean?Math.max(.4,Math.min(Math.max(1,Math.min(2,Number.isFinite(dpr)?dpr:1))*scale,Math.sqrt(budget/(W*H)))):Math.min(policy[0],policy[1]/Math.max(W,H))*scale;   /* 清晰模式限制總像素；scale 由實測幀率自動調整 */
   return {width:Math.max(1,Math.floor(W*ratio)),height:Math.max(1,Math.floor(H*ratio))};
 }
 function r3ViewQuality(){return typeof GAME_VIEW==='undefined'?'auto':GAME_VIEW.prefs.quality||'auto';}
@@ -657,7 +657,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   R3.W=W;R3.H=H;R3.dpr=dpr;
   if(buffer.width!==cv.width||buffer.height!==cv.height)R3.rd.setSize(buffer.width,buffer.height,false);
   const now = performance.now(), raw = now - (R3.tPrev || now), fdt = Math.min(.1, raw/1000); R3.tPrev = now;R3.frameDt=fdt;
-  if(!document.hidden&&raw>0&&raw<500){R3.ema=(R3.ema??16.7)*.94+raw*.06;if(now-(R3.perfAt||0)>1500){R3.perfAt=now;const s=R3.perfScale||1;if(R3.ema>26&&s>.5){R3.perfScale=Math.max(.5,s*.8);R3.perfGood=0;}else if(R3.ema<19&&s<1){if(++R3.perfGood>=5){R3.perfScale=Math.min(1,s*1.15);R3.perfGood=0;}}else R3.perfGood=0;}}   /* 自動調整解析度：卡頓時降低，順暢一段時間後回升 */
+  if(!document.hidden&&raw>0&&raw<500){R3.ema=(R3.ema??16.7)*.94+raw*.06;if(now-(R3.perfAt||0)>1500){R3.perfAt=now;const s=R3.perfScale||1;if(R3.ema>34&&s>.7){R3.perfScale=Math.max(.7,s*.9);R3.perfGood=0;}else if(R3.ema<24&&s<1){if(++R3.perfGood>=5){R3.perfScale=Math.min(1,s*1.15);R3.perfGood=0;}}else R3.perfGood=0;}}   /* 自動調整解析度：卡頓時降低，順暢一段時間後回升 */
   if(typeof GAME_VIEW!=='undefined'&&GAME_VIEW.prefs.shake===false){FXO.shake=0;FXO.punch=0;}
   FXO.yaw += (FXO.yawT - FXO.yaw)*Math.min(1, fdt*8); FXO.zoom += (FXO.zoomT - FXO.zoom)*Math.min(1, fdt*8); FXO.shake *= Math.pow(.0008, fdt); FXO.punch *= Math.pow(.003, fdt); FXO.flash *= Math.pow(.02, fdt);
   { const o = document.getElementById('fxo'), low = G.st && G.h.hp < G.st.life*.3 && G.h.dead <= 0, a = viewEffectsReduced()?0:Math.max(FXO.flash, low ? .22 + .08*Math.sin(now/180) : 0); if (o){ o.style.opacity = a > .01 ? a.toFixed(2) : 0; o.style.background = `radial-gradient(ellipse at center, ${FXO.flash>.05?'color-mix(in srgb, '+FXO.fc+' 16%, transparent)':'transparent'} 0%, transparent 45%, ${FXO.flash > .12 || !low ? FXO.fc : '#ff2a50'} 140%)`; } }
@@ -824,7 +824,7 @@ function terrainCameraWindow(p,width,overview=false){
 function toggleWorldOverview(){FXO.overview=!FXO.overview;FXO.zoomT=1;G.dirty=true;if(typeof renderModal==='function')renderModal();}
 function overlay(){
   const k = pxu(); let s = '';
-  const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = Math.max(14,w*k*.8), H2 = Math.max(2.1,Math.min(2.5,.34*k)); return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
+  const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = Math.max(14,w*k*.8), H2 = Math.min(2.5,3.2/Math.max(.5,R3.W/Math.max(1,R3.vbW)));   /* 血條固定約 3 像素厚，不隨畫面放大變粗 */ return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
   if (G.h.dead <= 0) s += bar(G.h.x, G.h.y, BZ + 36*CK, 9, G.h.hp/G.st.life, '#4fe38a');
   for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)){const anchor=typeof streetCreatureBarAnchor==='function'&&streetCreatureBarAnchor(m)||{x:m.x,y:m.y,z:BZ + (m.boss?140:m.type==='golem'?48:m.type==='lantern'?38:(m.type==='slime'?11:m.type==='brute'?32:m.type==='drone'?24:m.type==='bomb'?20:28)*(MONSTER_TRAITS[m.type]?.scale||1))*CK};s+=bar(anchor.x,anchor.y,anchor.z,m.boss?26:8,m.hp/m.hpMax,m.boss?'#ff3b3b':'#ff6a4a');}
   if(G.h.dead<=0&&G.time<(G.h.bufferUntil||0)&&G.h.buffer>0)s+=bar(G.h.x,G.h.y,BZ+40*CK,9,G.h.buffer/(G.st.life*.12),'#57dce8');
