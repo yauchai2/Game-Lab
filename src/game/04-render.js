@@ -311,13 +311,17 @@ function buildGround(bi){
     const hw=STREET_HW,paint=(w,h,d,c,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m3(c),x,y,z,g);
     for(const c of p.groundCells){
       const lat=Math.abs(c.y-HY),yy=BZ+terrainHeight(c.x,c.y,p);
-      if(lat<=hw+3){
+      if(lat<=hw+5){
         const road=lat<=hw-.5;
-        paint(6,.22,6,road?'#4b535c':((c.i+c.j)%2?'#e4dfcc':'#d2ccb8'),c.x,yy+.14,c.y);
+        paint(6,.22,6,road?'#4b535c':((c.i+c.j)%2?'#e8e3d0':'#cfc9b4'),c.x,yy+.14,c.y);
         if(!road&&lat>hw-.5&&lat<=hw+.5)paint(6,.3,.9,'#f4f2e8',c.x,yy+.3,HY+Math.sign(c.y-HY)*(hw-.2));
       }
     }
     for(const c of p.groundCells)if(Math.abs(c.y-HY)<3.2&&Math.abs(c.x-HX)>12&&c.i%2===0)paint(3.4,.12,.6,'#f4f6f2',c.x,BZ+terrainHeight(c.x,HY,p)+.3,HY);
+    {const bx=p.bounds,ez=bx[2]-22,cx=(bx[0]+bx[1])/2,len=bx[1]-bx[0]+60;
+      paint(len,3.4,16,'#c9ccc2',cx,26,ez);paint(len,.9,1.2,'#8f9a98',cx,28.1,ez-7.6);paint(len,.9,1.2,'#8f9a98',cx,28.1,ez+7.6);
+      for(let x=bx[0];x<=bx[1];x+=46){paint(5,24.6,5,'#d8dad0',x,12.3,ez);paint(7,1.4,7,'#b6bab0',x,24.8,ez);}
+      for(let x=bx[0]+12;x<=bx[1];x+=46)paint(.9,2.2,.5,'#e4503c',x,28.6,ez-7.6);}
     for(const k of [30,-30])for(let n=-3;n<=3;n++)paint(.9,.12,5.4,'#f4f6f2',HX+k+n*1.7,BZ+terrainHeight(HX+k,HY,p)+.3,HY);
   }
   // Narrow inlaid tiles mark the continuous slopes without obscuring the silhouette.

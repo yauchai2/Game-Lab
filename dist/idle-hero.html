@@ -1037,7 +1037,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  {v:'0.58.0',d:'2026-10-26',t:['城市綠洲地圖改成一條橫貫的街道：柏油路面、中線、斑馬線、人行道與路緣，兩側是連續的店面，有遮陽棚、招牌、玻璃櫥窗與冷氣機。','街道兩側擺放販賣機、盆栽與貨箱；戰鬥範圍與路線不變。可用網址參數 ?street=0 關閉，回到原版地形。']},
+  {v:'0.58.0',d:'2026-10-26',t:['城市綠洲地圖改成一條橫貫的街道：柏油路面、中線、斑馬線、人行道與路緣，兩側是連續的店面，有遮陽棚、招牌、玻璃櫥窗與冷氣機。','街道兩側擺放販賣機、盆栽與貨箱；戰鬥範圍與路線不變。島後方多了一道高架橋，人行道變寬。設定裡新增「街區地圖」，可切換街區樣板與原版地形。']},
   {v:'0.57.0',d:'2026-10-26',t:['地面加上緩慢移動的樹影與雲影，陰影帶藍灰色。','街區地圖新增販賣機、電線桿、護欄、貨箱、盆栽、冷氣室外機、購物袋與斑馬線，數量與大小都加大。']},
   {v:'0.56.0',d:'2026-10-26',t:['戰鬥畫面天空更明亮飽和，並加上白色雲線；森林、沙漠、雪原與霓虹夜城各有自己的天空色。','戰鬥場景改為暖白陽光加天光補色，地面色降低飽和，植物與怪物更醒目。','背包篩選「核心」改名為「傳奇」。']},
   {v:'0.55.0',d:'2026-10-26',t:['裝備詞綴分成「主機位」與「副機位」，每件最多各 3 條；詞綴由 13 種增加到 23 種，新增最大生命%、護甲%、全元素傷害、對精英與首領增傷、閃避、受傷降低、擊殺回復、金幣、經驗、掉落稀有度、移動速度','每個裝備欄位有三條系列，隱性詞綴與名稱各不相同，共 21 條系列、約 80 個新裝備名稱','改裝與追加詞綴會遵守主副機位的上限，改裝時優先換成同組詞綴','改機頁顯示每條詞綴屬於主機位或副機位及標籤，並標示裝備系列'],},
@@ -3425,13 +3425,17 @@ function buildGround(bi){
     const hw=STREET_HW,paint=(w,h,d,c,x,y,z)=>mk(new T3.BoxGeometry(w,h,d),m3(c),x,y,z,g);
     for(const c of p.groundCells){
       const lat=Math.abs(c.y-HY),yy=BZ+terrainHeight(c.x,c.y,p);
-      if(lat<=hw+3){
+      if(lat<=hw+5){
         const road=lat<=hw-.5;
-        paint(6,.22,6,road?'#4b535c':((c.i+c.j)%2?'#e4dfcc':'#d2ccb8'),c.x,yy+.14,c.y);
+        paint(6,.22,6,road?'#4b535c':((c.i+c.j)%2?'#e8e3d0':'#cfc9b4'),c.x,yy+.14,c.y);
         if(!road&&lat>hw-.5&&lat<=hw+.5)paint(6,.3,.9,'#f4f2e8',c.x,yy+.3,HY+Math.sign(c.y-HY)*(hw-.2));
       }
     }
     for(const c of p.groundCells)if(Math.abs(c.y-HY)<3.2&&Math.abs(c.x-HX)>12&&c.i%2===0)paint(3.4,.12,.6,'#f4f6f2',c.x,BZ+terrainHeight(c.x,HY,p)+.3,HY);
+    {const bx=p.bounds,ez=bx[2]-22,cx=(bx[0]+bx[1])/2,len=bx[1]-bx[0]+60;
+      paint(len,3.4,16,'#c9ccc2',cx,26,ez);paint(len,.9,1.2,'#8f9a98',cx,28.1,ez-7.6);paint(len,.9,1.2,'#8f9a98',cx,28.1,ez+7.6);
+      for(let x=bx[0];x<=bx[1];x+=46){paint(5,24.6,5,'#d8dad0',x,12.3,ez);paint(7,1.4,7,'#b6bab0',x,24.8,ez);}
+      for(let x=bx[0]+12;x<=bx[1];x+=46)paint(.9,2.2,.5,'#e4503c',x,28.6,ez-7.6);}
     for(const k of [30,-30])for(let n=-3;n<=3;n++)paint(.9,.12,5.4,'#f4f6f2',HX+k+n*1.7,BZ+terrainHeight(HX+k,HY,p)+.3,HY);
   }
   // Narrow inlaid tiles mark the continuous slopes without obscuring the silhouette.
@@ -5881,9 +5885,9 @@ function uiCityHtml(){const C=G.city||(G.city=newCity());CITY_UI.tier=Math.min(C
 let CITY_CHECKPOINT_REVEALED=null;
 function uiCityRevealCheckpoint(){const c=G.run?.city;if(modalTab!=='maps'||!c?.awaitChoice||UX_LAYERS.length)return;const key=G.run.map.id+':'+c.stage;if(CITY_CHECKPOINT_REVEALED===key)return;CITY_CHECKPOINT_REVEALED=key;requestAnimationFrame(()=>{if(modalTab!=='maps'||!G.run?.city?.awaitChoice)return;$('mbody').scrollTop=0;document.querySelector('[data-focus="city-branch-safe"]')?.focus({preventScroll:true});});}
 
-const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰BOSS':['BOSS條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'戰鬥畫面':['戰鬥畫面（手機）',()=>G.userCz?['大','大','小','收起'][Math.max(1,G.cz==null?1:G.cz)]:'自動'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
+const UI_SETTING_LABELS={'模式':['模式',()=>G.push?'持續推進':'原地刷怪'],'挑戰BOSS':['BOSS條件',()=>(G.bossHp||0)?'生命 '+G.bossHp+'% 以上':'一律挑戰'],'戰利品過濾':['拾取門檻',()=>['全部撿','魔法以上','稀有以上'][G.filter]],'街區地圖':['街區地圖',()=>streetSampleOn()?'街區樣板':'原版地形'],'音效':['音效',()=>({all:'音樂＋音效',sfx:'只有音效',off:'靜音'})[AUD.mode]||'靜音'],'戰鬥畫面':['戰鬥畫面（手機）',()=>G.userCz?['大','大','小','收起'][Math.max(1,G.cz==null?1:G.cz)]:'自動'],'混沌重鑄':['混沌重鑄',()=>`金幣 ${tFmt(G.gold)}`],'編年史':['編年史',()=>'查看遊戲資訊'],'扮工模式 ( ` )':['扮工模式',()=>'快捷鍵 `']};
 function uiInstallSettings(){const root=$('uisettings');if(!root||root.dataset.gridReady)return;root.dataset.gridReady='true';for(const wrap of root.querySelectorAll('#btns .stepwrap')){const button=wrap.querySelector('.act'),label=button.textContent.replace('▾','').trim();if(UI_SETTING_LABELS[label]){wrap.dataset.setting=label;button.dataset.focus='setting-'+label;}}
- const order=['模式','挑戰BOSS','戰利品過濾','戰鬥畫面','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
+ const order=['模式','挑戰BOSS','戰利品過濾','戰鬥畫面','街區地圖','音效','混沌重鑄','編年史','扮工模式 ( ` )'];for(const key of order){const wrap=[...root.querySelectorAll('[data-setting]')].find(w=>w.dataset.setting===key);if(wrap)$('btns').appendChild(wrap);}
  uiSyncSettings();}
 function uiSyncSettings(){for(const wrap of document.querySelectorAll('#uisettings [data-setting]')){const [label,value]=UI_SETTING_LABELS[wrap.dataset.setting],button=wrap.querySelector('.act'),text=value(),html=`<span class="ui-setting-copy"><b>${label}</b><small>${uxEsc(text)}</small></span>${wrap.querySelector('.chips')?'<span aria-hidden="true">▾</span>':'<span aria-hidden="true">↗</span>'}`;if(button.innerHTML!==html)button.innerHTML=html;}}
 
@@ -8445,6 +8449,7 @@ ui = mountFigure({
     { label:'戰利品過濾', choices: () => ['全部撿','魔法以上','稀有以上'].map((n, i) => ({ label:n, current:G.filter === i, onClick:() => { G.filter = i; } })) },
     { label:'戰鬥畫面', choices: () => [['auto','自動（按頁面調整）'],[1,'大'],[2,'小'],[3,'收起']].map(([v, n]) => ({ label:n, current:v === 'auto' ? !G.userCz : G.userCz && Math.max(1, G.cz) === v, onClick:() => { if (v === 'auto'){ G.userCz = false; G.autoFold = true; } else { G.cz = v; G.userCz = true; } G.dirty = true; uiTitle(); } })) },
     { label:'混沌重鑄', choices: () => Object.keys(SLOTN).map(k => { const it = G.equip[k], cost = it ? 30*it.il + 20 : 0; return { label:`${SLOTN[k]}${it ? ` ${cost}g` : ''}`, disabled:!it || it.r === 3 || G.gold < cost, why:!it ? '這個欄位是空的' : it.r === 3 ? '暗金裝備不能重鑄' : `金幣不夠（要 ${cost}g）`, onClick:() => reroll(k) }; }) },
+    { label:'街區地圖', choices: () => [[true, '街區樣板'], [false, '原版地形']].map(([v, n]) => ({ label:n, current:streetSampleOn() === v, onClick:() => { try{localStorage.setItem('ih-street', v ? '1' : '0');}catch(e){} TERRAIN_CACHE = null; R3.terrainKey = null; G.dirty = true; } })) },
     { label:'音效', choices: () => [['all', '音樂＋音效'], ['sfx', '只有音效'], ['off', '靜音']].map(([m, n]) => ({ label:n, current:AUD.mode === m, onClick:() => { audInit(); audMode(m); } })) },
     { label:'存檔', onClick:() => openModal('save') },
   ],
