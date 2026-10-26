@@ -1,16 +1,21 @@
 {
   "source": {
-    "sourceCommit": "b7f0629032bae844f509085d85389d1bdea38f65",
+    "sourceCommit": "2e3da0ad48bc6ef50f1d8734393046a205ed48fc",
     "materialSha256": "ea9114d9faf5765849224c0b22b760182f2ef725b9dfa820f7d2bb0af154c43c",
     "storage": "page-lifetime memory",
-    "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險"
+    "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險",
+    "monsterSha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+    "integration": "native Claude G1 materials, M01, signs and death effects; adapter only adds review controls and isolated storage"
   },
   "checks": [
     "Claude G1 street terrain loads with its real collision and shop placement",
     "source geometry, UVs, rig and all nine animation clips retained; two real signature models equipped",
+    "original M01 GLB renders in combat with 684 triangles, unlit vertex colours and no duplicate world hop",
+    "M01/original monster A/B preserves the same combat entity",
     "existing auto combat advances, spawns enemies and retains canonical equipment stats",
     "material A/B switches without modifying source atlas or baseline material",
     "three summer radio story panels are readable and cycle in the live sandbox",
+    "native death A/B changes rendered output with identical combat rewards and inventory",
     "all nine existing clips execute with candidate material and the unchanged skeleton",
     "repeated A/B rebuilds retain valid shader rendering",
     "save, wipe and settings stay in page memory; real player storage unchanged",
@@ -30,6 +35,23 @@
     ],
     "uniforms": 0
   },
+  "monster": {
+    "triangles": 684,
+    "meshes": 3,
+    "delta": 0,
+    "states": [
+      "Hop",
+      "Hurt",
+      "Idle"
+    ],
+    "worldHeight": 10.417760231266712,
+    "heroHeight": 14.520979922260764,
+    "clips": [
+      "Hop",
+      "Hurt",
+      "Idle"
+    ]
+  },
   "clips": [
     "attack",
     "cast",
@@ -45,6 +67,6 @@
   "httpErrors": [],
   "limits": [
     "Software WebGL, not real-device performance certification.",
-    "Monster candidate integration and death A/B depend on collaborative source/asset delivery; not claimed by this material test."
+    "M01 and G1 material/creature hooks are native to the pinned Claude candidate; this is not merged or released."
   ]
 }

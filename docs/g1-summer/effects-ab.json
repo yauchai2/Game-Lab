@@ -1,0 +1,45 @@
+{
+  "scope": "visual_only",
+  "A": {
+    "label": "原版液體",
+    "behavior": "保留目前紅液體擴散、變暗與12秒清理"
+  },
+  "B": {
+    "label": "街區碎片",
+    "mechanical": {
+      "stain": "#245b64",
+      "spark": "#c6ffff",
+      "accent": "#39c6bd"
+    },
+    "clutter_spirit": {
+      "fragmentColors": [
+        "#f1b94e",
+        "#62cbd4",
+        "#e37a96"
+      ],
+      "form": "少量平面紙片／訊號碎片",
+      "alpha": 0.75
+    },
+    "currentNative": {
+      "style": "signal",
+      "form": "four-colour block fragments",
+      "colors": [
+        "#5cd0f0",
+        "#ff7fa8",
+        "#f5d24a",
+        "#e8f4ff"
+      ],
+      "visibleSeconds": 7,
+      "sharedStateCleanupSeconds": 12
+    }
+  },
+  "invariants": [
+    "沿用既有stains/fx數量上限與清理生命週期",
+    "只繪製，不派傷害、不生成額外掉落",
+    "減少動態遵守現有設定",
+    "預警與角色優先可讀",
+    "切換不重置戰鬥狀態或收益"
+  ],
+  "integrationOwner": "Claude prototype thread; PR77",
+  "status": "current native A/B documented; per-material palette is future proposal"
+}

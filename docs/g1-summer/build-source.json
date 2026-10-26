@@ -1,6 +1,8 @@
 {
-  "sourceCommit": "b7f0629032bae844f509085d85389d1bdea38f65",
+  "sourceCommit": "2e3da0ad48bc6ef50f1d8734393046a205ed48fc",
   "materialSha256": "ea9114d9faf5765849224c0b22b760182f2ef725b9dfa820f7d2bb0af154c43c",
   "storage": "page-lifetime memory",
-  "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險"
+  "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險",
+  "monsterSha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+  "integration": "native Claude G1 materials, M01, signs and death effects; adapter only adds review controls and isolated storage"
 }

@@ -1,0 +1,2374 @@
+{
+  "summary": {
+    "source": {
+      "sourceCommit": "2e3da0ad48bc6ef50f1d8734393046a205ed48fc",
+      "materialSha256": "ea9114d9faf5765849224c0b22b760182f2ef725b9dfa820f7d2bb0af154c43c",
+      "storage": "page-lifetime memory",
+      "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險",
+      "monsterSha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+      "integration": "native Claude G1 materials, M01, signs and death effects; adapter only adds review controls and isolated storage"
+    },
+    "version": "0.60.0",
+    "intro": [
+      [
+        "下午三點的錯頻",
+        "夏日街區還在過它平常的一天。小禾忙著修風扇，阿澄的渡船剛靠岸。街角電台卻突然播出一段沒有人點過的旋律。"
+      ],
+      [
+        "會跟著節拍跑的雜物",
+        "販賣機開始找錯零，路邊的雜物也跟著旋律亂跑。小禾發現，異常訊號正沿著舊電纜往高架橋的另一頭傳。先把前街清出一條路，再找出那段聲音從哪裡來。"
+      ],
+      [
+        "把街區接回來",
+        "阿澄在港口等你的消息，小禾留在電台接應。帶上熟悉的裝置，從前街開始追查。選擇你的職業，以自己的名字，把街區的聲音一段段接回來。"
+      ]
+    ],
+    "stories": [
+      [
+        "潮聲裡的呼號",
+        "渡船員 阿澄",
+        "海邊的樹下掛著一台小收音機，同一段旋律被潮聲蓋了一半。阿澄說，靠岸的人都哼過它。",
+        "巨像倒下後，收音機清楚地說了一句：下一班船，準時靠岸。"
+      ],
+      [
+        "山路上的天線",
+        "巡山員 留言",
+        "山路旁的路牌曬得褪了色，風一吹，電線桿頂的天線跟著轉。跟著它轉的方向走就對了。",
+        "BOSS胸口掉出一張車票。背面用原子筆寫著：電台前街，請走中間那條。"
+      ],
+      [
+        "河灣的晚班",
+        "渡船員 阿澄",
+        "河邊的靠岸燈傍晚才亮，像在等最後一位乘客。船家把汽水留在欄杆上，說是請路過的人喝。",
+        "水面靜下來後，遠處傳來有人試著對這一帶打招呼的聲音。"
+      ],
+      [
+        "盆地裡的回音",
+        "修理工 小禾",
+        "這一帶的鐘全停在同一分鐘。小禾蹲在電箱旁，說地下電纜偶爾會傳來像腳步的脈衝。",
+        "電纜重新亮起了一小段，訊號向山那邊延伸。"
+      ],
+      [
+        "海岸的備忘錄",
+        "渡船員 阿澄",
+        "海風帶來另一個街區的聲音。別丟掉舊卡匣，說不定裡面留著某人的地址。",
+        "BOSS終於停止巡邏。遠方海岸亮起一盞很小的燈。"
+      ],
+      [
+        "沒有打烊的街",
+        "鄰居廣播",
+        "午後的街上，電單車的方向燈還在閃，招牌也亮著。這一帶好像還沒到收工的時間。",
+        "街角喇叭播出了一段走調的收工音樂，聽起來反而有點親切。"
+      ],
+      [
+        "營火旁的地圖",
+        "修理工 小禾",
+        "帳篷裡的地圖圈著同一個街角。大家說，只要電台還亮，迷路的人就不算失蹤。",
+        "營地的短波機又響了。這次，另一端有人回答。"
+      ],
+      [
+        "舊城的約定",
+        "鐘樓留言",
+        "廣場上的長椅留著一個空位。每到黃昏，修理工們會在這裡交換零件，也交換消息。",
+        "鐘樓響了一次，像有人終於記起了約定。"
+      ],
+      [
+        "風仍記得名字",
+        "巡山員 留言",
+        "風車替空下來的村子發電。小禾說，別讓它停，那是通往電台的路標。",
+        "風車重新對準了電台的方向。被雜音蓋住的呼號清楚了一點。"
+      ],
+      [
+        "雪線以外",
+        "巡山員 留言",
+        "雪埋住了高處與低處之間的舊路。電台仍在播放，卻沒有收到回程的訊號。",
+        "雪裡露出一塊路牌：回程請沿燈光前進。"
+      ],
+      [
+        "石柱間的雜音",
+        "修理工 小禾",
+        "這些石柱比電台更古老。卡匣靠近時會發熱，像是這個地方也記得昔日的聲音。",
+        "石拱之間傳來短短三聲。那是舊時代表示平安的暗號。"
+      ],
+      [
+        "最後一批貨物",
+        "倉庫值班紀錄",
+        "貨倉裡剩下一批沒送出的收音機。搬運機照著排程等著，等一班晚點的貨車。",
+        "貨倉門開了。箱子上寫著：送往各個街角，讓大家聽得見彼此。"
+      ]
+    ],
+    "biomes": [
+      {
+        "id": 0,
+        "name": "夏日街區・電台前街",
+        "sky": [
+          "#2fa8f0",
+          "#4fc8ff",
+          "#dff5ff"
+        ]
+      },
+      {
+        "id": 1,
+        "name": "午後空地",
+        "sky": [
+          "#3aa6ea",
+          "#86d0f2",
+          "#ffe8c0"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "白雪山路",
+        "sky": [
+          "#4aa8ec",
+          "#9bd6f8",
+          "#f4fbff"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "夜市燒烤攤",
+        "sky": [
+          "#6d4a58",
+          "#d98a62",
+          "#ffd2a0"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "霓虹商圈",
+        "sky": [
+          "#160e68",
+          "#4a2cb4",
+          "#ff86d4"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "車站貨運場",
+        "sky": [
+          "#7aa2b8",
+          "#b8d0d8",
+          "#f0f0e6"
+        ]
+      },
+      {
+        "id": 6,
+        "name": "電台頂樓",
+        "sky": [
+          "#5a86c0",
+          "#a8c6e0",
+          "#f2eadc"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "海邊堤防",
+        "sky": [
+          "#3fa6c8",
+          "#8fd6d8",
+          "#e8f6ee"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "山路電塔",
+        "sky": [
+          "#4f8fb8",
+          "#9fc8d4",
+          "#eaf2e6"
+        ]
+      },
+      {
+        "id": 9,
+        "name": "商場地下街",
+        "sky": [
+          "#2b3260",
+          "#5560a0",
+          "#9aa4d8"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "夜晚天橋",
+        "sky": [
+          "#3a3a8c",
+          "#c46aa8",
+          "#ffc898"
+        ]
+      },
+      {
+        "id": 11,
+        "name": "停業商場",
+        "sky": [
+          "#6a6ab0",
+          "#d8a0c0",
+          "#ffe0d0"
+        ]
+      },
+      {
+        "id": 12,
+        "name": "河邊鐵工廠",
+        "sky": [
+          "#8a6a58",
+          "#d8a878",
+          "#ffe2b8"
+        ]
+      },
+      {
+        "id": 13,
+        "name": "港口碼頭",
+        "sky": [
+          "#2f7fa8",
+          "#72b8cc",
+          "#d8f0ee"
+        ]
+      },
+      {
+        "id": 14,
+        "name": "屋頂天線群",
+        "sky": [
+          "#4a78c8",
+          "#9cb8e8",
+          "#f0f2fa"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "郊外採石場",
+        "sky": [
+          "#4a98d8",
+          "#a8cce0",
+          "#ffeac8"
+        ]
+      },
+      {
+        "id": 16,
+        "name": "頂樓冷氣區",
+        "sky": [
+          "#5ab0d0",
+          "#b0dce0",
+          "#f4fbf8"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "雨天地下道",
+        "sky": [
+          "#56708a",
+          "#8aa0b0",
+          "#c8d4d8"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "停業遊樂場",
+        "sky": [
+          "#101827",
+          "#202b40",
+          "#364255"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "冷藏倉庫",
+        "sky": [
+          "#0c1b2a",
+          "#173744",
+          "#345666"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "地下配電室",
+        "sky": [
+          "#171521",
+          "#302636",
+          "#50404d"
+        ]
+      }
+    ],
+    "names": [
+      [
+        "ranger",
+        "汽水罐射手",
+        "中距離停步，以三個預警落點封鎖走位"
+      ],
+      [
+        "lantern",
+        "巡路燈靈",
+        "浮游修理燈，每次回復附近最多三位同伴少量生命"
+      ],
+      [
+        "mole",
+        "井蓋地鼠",
+        "預警後鑽地移到鎖定位置，避開落點便能閃過"
+      ],
+      [
+        "golem",
+        "水泥墩守衛",
+        "高大而緩慢的石機，接近後以大範圍重踏驅散敵人"
+      ],
+      [
+        "slime",
+        "插頭跳豆",
+        "成群出現，會躍擊預告的位置"
+      ],
+      [
+        "skel",
+        "紙箱人",
+        "比插頭跳豆耐打，會圍向角色"
+      ],
+      [
+        "brute",
+        "啤酒箱牛",
+        "又慢又硬，打人很痛"
+      ],
+      [
+        "drone",
+        "塑膠袋飛靈",
+        "貼著半空飛，速度快但很脆"
+      ],
+      [
+        "bomb",
+        "氣球炸彈",
+        "死亡時爆炸，波及角色與附近敵人"
+      ],
+      [
+        "spider",
+        "電線團蛛",
+        "快速接近的多足拾荒體"
+      ],
+      [
+        "speaker",
+        "失控音箱",
+        "重裝音箱，會預警後轟炸落點"
+      ],
+      [
+        "wisp",
+        "雜訊小靈",
+        "低耐久的浮游訊號體，移動靈活"
+      ],
+      [
+        "crab",
+        "便當盒蟹",
+        "厚重機殼與雙鉗，短暫閉殼時減少受到的直擊傷害"
+      ],
+      [
+        "boss",
+        "BOSS",
+        "巨型雜物：失控販賣機、搬運板車或鐘樓看守，輪換三種預警攻勢，半血後加速；掉落高階戰利品"
+      ],
+      [
+        "scanner",
+        "探照燈哨",
+        "三角翼哨機，預警後三連射擊"
+      ],
+      [
+        "roller",
+        "手推車獸",
+        "圓輪重裝體，向預警路線衝鋒"
+      ],
+      [
+        "antenna",
+        "晾衣天線",
+        "高腳訊號塔，週期修復附近同伴"
+      ],
+      [
+        "cable",
+        "延長線水母",
+        "多條懸垂電纜，預警後釋出震波"
+      ],
+      [
+        "furnace",
+        "烤爐板車",
+        "方形熔爐履帶車，以重踏壓迫近處"
+      ],
+      [
+        "shard",
+        "碎鏡看板",
+        "分裂稜鏡裝置，以高速躍擊突入落點"
+      ],
+      [
+        "jailer",
+        "鐵閘看守",
+        "重甲巨型守衛，緩慢重踏"
+      ],
+      [
+        "specimen",
+        "跑出來的扭蛋",
+        "四足大型生體，以預警衝撞接近"
+      ],
+      [
+        "sentinel",
+        "三腳架哨",
+        "裝甲炮台，預警後三連射擊"
+      ]
+    ],
+    "types": {
+      "slime": {
+        "hp": 1,
+        "dmg": 0.8,
+        "xp": 1,
+        "g": 1,
+        "spd": 15,
+        "atk": 1.5
+      },
+      "skel": {
+        "hp": 1.25,
+        "dmg": 1.1,
+        "xp": 1.3,
+        "g": 1.2,
+        "spd": 17,
+        "atk": 1.35
+      },
+      "brute": {
+        "hp": 2.7,
+        "dmg": 1.7,
+        "xp": 2.4,
+        "g": 2.2,
+        "spd": 11,
+        "atk": 1.8
+      },
+      "boss": {
+        "hp": 15,
+        "dmg": 2.3,
+        "xp": 14,
+        "g": 12,
+        "spd": 9,
+        "atk": 1.9
+      },
+      "drone": {
+        "hp": 0.6,
+        "dmg": 0.7,
+        "xp": 1.2,
+        "g": 1.1,
+        "spd": 24,
+        "atk": 1.3
+      },
+      "bomb": {
+        "hp": 1.4,
+        "dmg": 1.2,
+        "xp": 1.8,
+        "g": 1.6,
+        "spd": 12,
+        "atk": 2.2
+      },
+      "spider": {
+        "hp": 0.8,
+        "dmg": 1.1,
+        "xp": 1.3,
+        "g": 1.2,
+        "spd": 27,
+        "atk": 1
+      },
+      "speaker": {
+        "hp": 2,
+        "dmg": 1.8,
+        "xp": 2,
+        "g": 1.8,
+        "spd": 10,
+        "atk": 2.1
+      },
+      "wisp": {
+        "hp": 0.65,
+        "dmg": 1.35,
+        "xp": 1.5,
+        "g": 1.4,
+        "spd": 22,
+        "atk": 1.25
+      },
+      "crab": {
+        "hp": 3.2,
+        "dmg": 2,
+        "xp": 2.7,
+        "g": 2.4,
+        "spd": 9,
+        "atk": 2.2
+      },
+      "ranger": {
+        "hp": 1.2,
+        "dmg": 1.1,
+        "xp": 1.6,
+        "g": 1.4,
+        "spd": 16,
+        "atk": 1.8
+      },
+      "lantern": {
+        "hp": 1.1,
+        "dmg": 0.6,
+        "xp": 2,
+        "g": 1.6,
+        "spd": 13,
+        "atk": 2.3
+      },
+      "mole": {
+        "hp": 1.8,
+        "dmg": 1.4,
+        "xp": 1.8,
+        "g": 1.6,
+        "spd": 20,
+        "atk": 1.8
+      },
+      "golem": {
+        "hp": 5.4,
+        "dmg": 2.2,
+        "xp": 4,
+        "g": 3.3,
+        "spd": 7,
+        "atk": 2.8
+      },
+      "jailer": {
+        "hp": 8,
+        "dmg": 2.1,
+        "xp": 4,
+        "g": 4,
+        "spd": 7,
+        "atk": 2.6
+      },
+      "specimen": {
+        "hp": 6,
+        "dmg": 1.9,
+        "xp": 3.8,
+        "g": 3.5,
+        "spd": 12,
+        "atk": 2.4
+      },
+      "sentinel": {
+        "hp": 5,
+        "dmg": 1.8,
+        "xp": 3.4,
+        "g": 3,
+        "spd": 9,
+        "atk": 2.7
+      },
+      "scanner": {
+        "hp": 0.9,
+        "dmg": 1.1,
+        "xp": 1.5,
+        "g": 1.4,
+        "spd": 22,
+        "atk": 1.8
+      },
+      "roller": {
+        "hp": 2.5,
+        "dmg": 1.6,
+        "xp": 2.2,
+        "g": 2,
+        "spd": 18,
+        "atk": 2
+      },
+      "antenna": {
+        "hp": 1.8,
+        "dmg": 0.7,
+        "xp": 2.5,
+        "g": 2,
+        "spd": 9,
+        "atk": 2.4
+      },
+      "cable": {
+        "hp": 1.5,
+        "dmg": 1.6,
+        "xp": 2,
+        "g": 1.8,
+        "spd": 17,
+        "atk": 2.1
+      },
+      "furnace": {
+        "hp": 4.8,
+        "dmg": 2.1,
+        "xp": 3.5,
+        "g": 3,
+        "spd": 8,
+        "atk": 2.8
+      },
+      "shard": {
+        "hp": 0.7,
+        "dmg": 1.25,
+        "xp": 1.5,
+        "g": 1.4,
+        "spd": 29,
+        "atk": 1.3
+      }
+    },
+    "traits": {
+      "slime": {
+        "size": "小型",
+        "scale": 0.8,
+        "skill": "leap"
+      },
+      "skel": {
+        "size": "中型",
+        "scale": 1,
+        "skill": "cleave"
+      },
+      "brute": {
+        "size": "大型",
+        "scale": 1.3,
+        "skill": "charge"
+      },
+      "drone": {
+        "size": "小型",
+        "scale": 0.85,
+        "skill": "salvo"
+      },
+      "bomb": {
+        "size": "中型",
+        "scale": 1,
+        "skill": "blast"
+      },
+      "spider": {
+        "size": "小型",
+        "scale": 0.8,
+        "skill": "charge"
+      },
+      "speaker": {
+        "size": "大型",
+        "scale": 1.55,
+        "skill": "pulse"
+      },
+      "wisp": {
+        "size": "小型",
+        "scale": 0.9,
+        "skill": "salvo"
+      },
+      "crab": {
+        "size": "大型",
+        "scale": 1.65,
+        "skill": "guard"
+      },
+      "ranger": {
+        "size": "中型",
+        "scale": 1,
+        "skill": "salvo"
+      },
+      "lantern": {
+        "size": "中型",
+        "scale": 1.1,
+        "skill": "mend"
+      },
+      "mole": {
+        "size": "中型",
+        "scale": 1.15,
+        "skill": "burrow"
+      },
+      "golem": {
+        "size": "大型",
+        "scale": 1.4,
+        "skill": "stomp"
+      },
+      "boss": {
+        "size": "巨型BOSS",
+        "scale": 1,
+        "skill": "boss"
+      },
+      "jailer": {
+        "size": "大型",
+        "scale": 1.3,
+        "skill": "stomp"
+      },
+      "specimen": {
+        "size": "大型",
+        "scale": 1.25,
+        "skill": "charge"
+      },
+      "sentinel": {
+        "size": "大型",
+        "scale": 1.2,
+        "skill": "salvo"
+      },
+      "scanner": {
+        "size": "小型",
+        "scale": 1,
+        "skill": "salvo"
+      },
+      "roller": {
+        "size": "大型",
+        "scale": 1.25,
+        "skill": "charge"
+      },
+      "antenna": {
+        "size": "大型",
+        "scale": 1.1,
+        "skill": "mend"
+      },
+      "cable": {
+        "size": "中型",
+        "scale": 1,
+        "skill": "pulse"
+      },
+      "furnace": {
+        "size": "大型",
+        "scale": 1.4,
+        "skill": "stomp"
+      },
+      "shard": {
+        "size": "小型",
+        "scale": 1,
+        "skill": "leap"
+      }
+    }
+  },
+  "actors": [
+    {
+      "type": "slime",
+      "box": {
+        "min": [
+          9.214424834806156,
+          3.0707199984192854,
+          30.214424834806156
+        ],
+        "max": [
+          20.785575165193844,
+          13.395840202331543,
+          41.78557516519384
+        ],
+        "height": 10.325120203912258
+      },
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 0.32,
+          "inFlashList": false
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": []
+    },
+    {
+      "type": "skel",
+      "box": {
+        "min": [
+          6.0909532406145335,
+          2.4235794449751946,
+          27.146587418521573
+        ],
+        "max": [
+          23.85341258147843,
+          26.63557936919799,
+          44.90904675938546
+        ],
+        "height": 24.211999924222795
+      },
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {
+        "legL": [
+          -0.01576094781113001,
+          0,
+          0
+        ],
+        "legR": [
+          0.01576094781113001,
+          0,
+          0
+        ],
+        "armL": [
+          0.01260875824890401,
+          0,
+          0
+        ],
+        "armR": [
+          -0.01260875824890401,
+          0,
+          0
+        ]
+      },
+      "rot1": {
+        "legL": [
+          -0.6704251895868355,
+          0,
+          0
+        ],
+        "legR": [
+          0.6704251895868355,
+          0,
+          0
+        ],
+        "armL": [
+          0.5363401516694685,
+          0,
+          0
+        ],
+        "armR": [
+          -0.5363401516694685,
+          0,
+          0
+        ]
+      },
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "drone",
+      "box": {
+        "min": [
+          13.226299141991014,
+          9.255444727244031,
+          34.226299141991014
+        ],
+        "max": [
+          17.846885383058677,
+          14.580314830920628,
+          38.84688538305868
+        ],
+        "height": 5.324870103676597
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 0.92,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 0.32,
+          "inFlashList": false
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "handles0": [
+        [
+          1.5707963267948966,
+          0,
+          0.4327782285390494
+        ],
+        [
+          1.5707963267948966,
+          0,
+          -0.46378445061748513
+        ]
+      ],
+      "handles1": [
+        [
+          1.5707963267948966,
+          0,
+          -0.42702961451858185
+        ],
+        [
+          1.5707963267948966,
+          0,
+          0.38605250966349397
+        ]
+      ],
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "bomb",
+      "box": {
+        "min": [
+          11.997600277985804,
+          3.908903870232577,
+          32.9976002779858
+        ],
+        "max": [
+          18.002399722014196,
+          9.272076877885434,
+          39.0023997220142
+        ],
+        "height": 5.363173007652857
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 0.32,
+          "inFlashList": false
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "brute",
+      "box": {
+        "min": [
+          10.741549607877499,
+          2.7983194769618454,
+          31.14559015712692
+        ],
+        "max": [
+          20.810505367064938,
+          28.09549418917584,
+          41.525315977316275
+        ],
+        "height": 25.297174712213994
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshBasicMaterial",
+          "face": false,
+          "opacity": 0.32,
+          "inFlashList": false
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": []
+    },
+    {
+      "type": "mole",
+      "box": {
+        "min": [
+          9.820355023447625,
+          2.075180523325953,
+          30.207489803546178
+        ],
+        "max": [
+          21.079789241786393,
+          8.866516625601657,
+          42.12527528756667
+        ],
+        "height": 6.791336102275704
+      },
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {
+        "pawL": [
+          -0.5431398074181216,
+          0,
+          0
+        ],
+        "pawR": [
+          0.5431398074181216,
+          0,
+          0
+        ]
+      },
+      "rot1": {
+        "pawL": [
+          0.47370617332066545,
+          0,
+          0
+        ],
+        "pawR": [
+          -0.47370617332066545,
+          0,
+          0
+        ]
+      },
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "spider",
+      "box": {
+        "min": [
+          10.280957966511703,
+          4.228508858067827,
+          32.41351984734864
+        ],
+        "max": [
+          18.83545093416868,
+          6.672442802769975,
+          40.04354388429665
+        ],
+        "height": 2.443933944702148
+      },
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {
+        "legL0": [
+          0,
+          -0.18497526545188264,
+          -0.13301731418368215
+        ],
+        "legL1": [
+          0,
+          0.30914455608301866,
+          -0.30390118925811305
+        ],
+        "legL2": [
+          0,
+          -0.176899006107463,
+          0
+        ],
+        "legL3": [
+          0,
+          0.0186514934574582,
+          0
+        ],
+        "legR0": [
+          0,
+          -0.5840907445827327,
+          0
+        ],
+        "legR1": [
+          0,
+          -0.5484558661360058,
+          0
+        ],
+        "legR2": [
+          0,
+          0.44321065844026925,
+          0.22274746090818845
+        ],
+        "legR3": [
+          0,
+          0.7164564834036444,
+          0.23901953838255108
+        ]
+      },
+      "rot1": {
+        "legL0": [
+          0,
+          -0.6006658528327465,
+          0
+        ],
+        "legL1": [
+          0,
+          -0.5383833471096392,
+          0
+        ],
+        "legL2": [
+          0,
+          0.45719018944981443,
+          -0.23253313261487008
+        ],
+        "legL3": [
+          0,
+          0.7027815931704455,
+          -0.22944711521931185
+        ],
+        "legR0": [
+          0,
+          -0.1309769320482001,
+          0.17081614756625993
+        ],
+        "legR1": [
+          0,
+          0.27633033656802813,
+          0.2809312355976197
+        ],
+        "legR2": [
+          0,
+          -0.22244147647292273,
+          0
+        ],
+        "legR3": [
+          0,
+          0.06320150609885661,
+          0
+        ]
+      },
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "crab",
+      "box": {
+        "min": [
+          6.4358429314029095,
+          2.4379443153271256,
+          27.823302694198894
+        ],
+        "max": [
+          27.109564675525874,
+          10.354766018816495,
+          46.66321473782593
+        ],
+        "height": 7.916821703489369
+      },
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {
+        "clawL": [
+          0,
+          0.03671686871864651,
+          0.00141836556856631
+        ],
+        "legL0": [
+          0,
+          -0.27439979598590275,
+          0
+        ],
+        "legL1": [
+          0,
+          0.4463999802012496,
+          0
+        ],
+        "legL2": [
+          0,
+          -0.17632678621020748,
+          0
+        ],
+        "clawR": [
+          0,
+          0.03671686871864651,
+          -0.00141836556856631
+        ],
+        "legR0": [
+          0,
+          -0.3484933311185187,
+          0
+        ],
+        "legR1": [
+          0,
+          -0.06981764115994323,
+          0
+        ],
+        "legR2": [
+          0,
+          0.41898765946241173,
+          0
+        ]
+      },
+      "rot1": {
+        "clawL": [
+          0,
+          -0.008393785332509118,
+          0.019047868509118535
+        ],
+        "legL0": [
+          0,
+          0.3874819665382437,
+          0
+        ],
+        "legL1": [
+          0,
+          -0.39313669371896653,
+          0
+        ],
+        "legL2": [
+          0,
+          0.009465090260333871,
+          0
+        ],
+        "clawR": [
+          0,
+          -0.008393785332509118,
+          -0.019047868509118535
+        ],
+        "legR0": [
+          0,
+          0.21740625027598356,
+          0
+        ],
+        "legR1": [
+          0,
+          0.23034617319650685,
+          0
+        ],
+        "legR2": [
+          0,
+          -0.4499849867714625,
+          0
+        ]
+      },
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "ranger",
+      "box": {
+        "min": [
+          10.82514744085818,
+          3.76564411255272,
+          32.11697308311507
+        ],
+        "max": [
+          20.699280656363573,
+          13.385644112552722,
+          40.59619407771256
+        ],
+        "height": 9.620000000000001
+      },
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "lantern",
+      "box": {
+        "min": [
+          10.471547413596916,
+          5.835754927424738,
+          31.471547413596916
+        ],
+        "max": [
+          19.528452586403084,
+          17.847754927424738,
+          40.528452586403084
+        ],
+        "height": 12.012
+      },
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "golem",
+      "box": {
+        "min": [
+          1.9476195986141427,
+          2.253639384544428,
+          26.826151870682082
+        ],
+        "max": [
+          28.99383775337694,
+          27.13499019230524,
+          46.449146408803145
+        ],
+        "height": 24.88135080776081
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {
+        "legL": [
+          -0.6495867055727477,
+          0,
+          0
+        ],
+        "legR": [
+          0.6495867055727477,
+          0,
+          0
+        ],
+        "armL": [
+          0.5196693644581981,
+          0,
+          0.08
+        ],
+        "armR": [
+          -0.5196693644581981,
+          0,
+          -0.08
+        ]
+      },
+      "rot1": {
+        "legL": [
+          -0.46588905473635156,
+          0,
+          0
+        ],
+        "legR": [
+          0.46588905473635156,
+          0,
+          0
+        ],
+        "armL": [
+          0.37271124378908127,
+          0,
+          0.08
+        ],
+        "armR": [
+          -0.37271124378908127,
+          0,
+          -0.08
+        ]
+      },
+      "deathFaces": []
+    },
+    {
+      "type": "speaker",
+      "box": {
+        "min": [
+          10.690075406897389,
+          3.2409322702840346,
+          32.088305127486144
+        ],
+        "max": [
+          18.911694872513856,
+          13.478512238454403,
+          40.30992459310261
+        ],
+        "height": 10.237579968170369
+      },
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "wisp",
+      "box": {
+        "min": [
+          12.656383140377198,
+          10.682039859391415,
+          33.32460247279891
+        ],
+        "max": [
+          17.13925059913668,
+          17.78825850557189,
+          39.51140153863648
+        ],
+        "height": 7.106218646180475
+      },
+      "materials": [
+        {
+          "type": "MeshBasicMaterial",
+          "face": true,
+          "opacity": 1,
+          "inFlashList": false
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": [
+        {
+          "type": "MeshBasicMaterial",
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "type": "scanner",
+      "box": {
+        "min": [
+          10.771501448504445,
+          9.876604418138584,
+          31.771501448504445
+        ],
+        "max": [
+          20.699280656363573,
+          11.436604418138584,
+          41.69928065636357
+        ],
+        "height": 1.5600000000000005
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": []
+    },
+    {
+      "type": "roller",
+      "box": {
+        "min": [
+          9.254757402859301,
+          4.340508144960111,
+          30.2547574028593
+        ],
+        "max": [
+          23.502959043768236,
+          13.115508144960112,
+          44.502959043768236
+        ],
+        "height": 8.775
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": []
+    },
+    {
+      "type": "antenna",
+      "box": {
+        "min": [
+          11.359814290451652,
+          3.430731462078218,
+          32.35981429045165
+        ],
+        "max": [
+          19.449115867225757,
+          21.46162603147519,
+          40.44911586722576
+        ],
+        "height": 18.030894569396974
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": []
+    },
+    {
+      "type": "cable",
+      "box": {
+        "min": [
+          10.486688515847101,
+          5.110963816337582,
+          31.463487680522725
+        ],
+        "max": [
+          19.5133114841529,
+          15.876744284324644,
+          40.536512319477275
+        ],
+        "height": 10.765780467987062
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": []
+    },
+    {
+      "type": "furnace",
+      "box": {
+        "min": [
+          7.021007081090998,
+          4.210211849375895,
+          28.021007081091
+        ],
+        "max": [
+          22.978992918909,
+          23.502211849375893,
+          43.978992918909
+        ],
+        "height": 19.291999999999998
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": []
+    },
+    {
+      "type": "shard",
+      "box": {
+        "min": [
+          10.137726218551347,
+          5.386945066593681,
+          31.137726218551347
+        ],
+        "max": [
+          19.862273781448653,
+          15.370945215366875,
+          40.86227378144866
+        ],
+        "height": 9.984000148773195
+      },
+      "materials": [
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        },
+        {
+          "type": "MeshLambertMaterial",
+          "face": false,
+          "opacity": 1,
+          "inFlashList": true
+        }
+      ],
+      "rot0": {},
+      "rot1": {},
+      "deathFaces": []
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Local Chromium software WebGL and isolated review controls; not production FPS or Safari certification.",
+    "Source/visual review only; does not authorize replacing the other chat’s selected GLB designs."
+  ]
+}

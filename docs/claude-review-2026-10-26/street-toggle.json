@@ -1,0 +1,9 @@
+{
+  "before": "g1_summer_aki",
+  "off": {
+    "g1": false,
+    "name": "g1_summer_aki",
+    "sameHero": true
+  },
+  "back": "g1_summer_aki"
+}

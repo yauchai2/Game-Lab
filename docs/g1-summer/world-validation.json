@@ -1,0 +1,76 @@
+{
+  "source": {
+    "sourceCommit": "2e3da0ad48bc6ef50f1d8734393046a205ed48fc",
+    "materialSha256": "ea9114d9faf5765849224c0b22b760182f2ef725b9dfa820f7d2bb0af154c43c",
+    "storage": "page-lifetime memory",
+    "storyDirection": "城市仍有日常生活，電台訊號失常引發冒險",
+    "monsterSha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+    "integration": "native Claude G1 materials, M01, signs and death effects; adapter only adds review controls and isolated storage"
+  },
+  "checks": [
+    "three cross-street and pavement routes remain navigable around real shop collision",
+    "textured signs keep their world transform and stay on storefronts",
+    "real storefront silhouettes fade when a navigable hero position is occluded",
+    "native street/original map switch rebuilds terrain and restores the G1 street",
+    "24-enemy daytime scene and separate night scene render at desktop/mobile widths"
+  ],
+  "navigation": [
+    {
+      "row": -22,
+      "ticks": 109,
+      "valid": true,
+      "remaining": 1.9999999999999858
+    },
+    {
+      "row": 0,
+      "ticks": 109,
+      "valid": true,
+      "remaining": 1.9999999999999858
+    },
+    {
+      "row": 22,
+      "ticks": 109,
+      "valid": true,
+      "remaining": 1.9999999999999858
+    }
+  ],
+  "signs": [
+    {
+      "x": 11,
+      "y": 20.02926959749479,
+      "z": 79.95,
+      "shopDistance": 7.049999999999997
+    },
+    {
+      "x": 36,
+      "y": 18.631899835793345,
+      "z": 79.95,
+      "shopDistance": 7.049999999999997
+    }
+  ],
+  "occlusion": {
+    "found": true,
+    "x": 15,
+    "y": -30,
+    "faded": 1
+  },
+  "overview": {
+    "before": 10,
+    "after": 0,
+    "restored": true
+  },
+  "dense": {
+    "enemies": 24,
+    "calls": 453,
+    "triangles": 72934,
+    "materials": {
+      "geometries": 405,
+      "textures": 7
+    }
+  },
+  "errors": [],
+  "limits": [
+    "Render counters and one dense fixture are not hardware FPS certification.",
+    "No real Safari/device or complete end-to-end campaign validation."
+  ]
+}

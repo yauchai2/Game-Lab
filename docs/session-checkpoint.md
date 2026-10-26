@@ -1,5 +1,7 @@
 # Game Lab 精簡接續紀錄
 
+- **2026-10-26 重新對齊Claude：** 最新main1d15538／v0.60.0，G1、新序章／12地方故事、地區／精怪名及新臉皆已合併／有Release；本輪實測2e3da0a與該main程式無差異。本輪13項G1＋5項world、19actor抽查；數值／索引／塔樓id／SAVE_KEY與main相同。兩個P2交Claude：街區關閉未重建hero材質；Basic臉材質未跟身體死亡淡出。M01s8.5已修，勿再列舊尺寸問題。Alan於另一邊台北13:50要求取消氣泡，Claude已確認來源，按描邊字更新規範。完整證據docs/claude-review-2026-10-26/。不碰src；沒有開始另4隻GLB或吉祥物實作。
+
 - **2026-10-26 全遊戲review：** Alan要求全風格／assets／故事重新審查、詳細計劃、可大改但先問意見，並與Claude協作。已確認明亮街頭＋戰鬥冒險、背景依地區、戰場色彩層次、藍紫UI、氣泡僅戰鬥、四肢比例先不動。main 5c8e190獨立擷取9張及資產／來源盤點；完整計劃docs/ice-cream-review-2026-10-26/README.md。下一批G1街區樣板、故事「日常城市訊號失常」或「停電後復甦」仍待Alan意見；不開始程式／模型／故事大改。Claude在PR75留言6407719650已確認本批分工（Codex審查／計劃，Claude文件清理／正式整合），不永久分割職責。另一怪物聊天正在做已選12怪物的第一個Blender樣本，不重做覆蓋。
 
 - **2026-10-26 核心決定（Asia/Taipei）：** Alan 明確要求 Ice Cream.mp4 作為所有遊戲風格、assets、世界觀、故事等內容的核心參考，並非只限前一輪場景預覽。必讀 docs/creative-direction.md；原片及 SHA-256 已存 assets/references/ice-cream/，不依賴聊天附件。衝突的舊 Q 版／粉彩／童話規範失效，預覽不是最高參考。AGENTS／DESIGN／UX／README／美術文件已加入入口，待辦 ICE-03至05。任務分支 codex/ice-cream-visual-preview；文件決定已記錄，尚未全遊戲實作／合併／發佈。fetch 得知 main 已到5c8e190；此分支未納入其0.54–0.56實作。

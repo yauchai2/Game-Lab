@@ -9,5 +9,16 @@
     "Idle",
     "Hurt"
   ],
-  "gameIntegration": "pending Claude G1 reader; source bytes received and verified"
+  "gameIntegration": "pending Claude G1 reader; source bytes received and verified",
+  "rootMotion": [
+    {
+      "clip": "Hop",
+      "node": 6,
+      "ranges": [
+        0.0,
+        0.5400000214576721,
+        0.0
+      ]
+    }
+  ]
 }
