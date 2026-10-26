@@ -44,9 +44,10 @@ const STREET_WORLD_CSS=`body.street-style::before{display:none!important}body.st
 function streetChapterHtml(){const i=storyChapter(),chapter=STORY_CHAPTERS[i];return `<div class="street-chapter"><b>${chapter?'第'+(i+1)+'章・'+uxEsc(chapter.title):'六章主線・廣播已恢復'}</b><span>${chapter?'追查下一段訊號，找回'+uxEsc(chapter.item)+'。':'各處的地方留言仍可繼續收錄。'}</span></div>`;}
 
 function streetMusicTrack(){
- if(typeof INTRO!=='undefined'&&INTRO.active)return 'drift';
+ if(typeof INTRO!=='undefined'&&INTRO.active)return 'radio';
  if(G.mons?.some(m=>m.boss&&!m.dead))return 'rush';
- if(G.run?.tower)return 'haze';
+ if(G.run?.tower)return 'underpass';
+ if([5,9,12,13,16,17].includes(biomeNow()))return 'underpass';
  const sky=BIOMES[biomeNow()]?.sky?.[0]||'#3aa6ea',c=new T3.Color(sky);
  return c.r+c.g+c.b<.35?'haze':'drift';
 }

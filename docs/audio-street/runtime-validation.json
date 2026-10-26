@@ -1,0 +1,166 @@
+{
+  "routes": {
+    "rows": [
+      {
+        "biome": 0,
+        "track": "drift"
+      },
+      {
+        "biome": 1,
+        "track": "drift"
+      },
+      {
+        "biome": 2,
+        "track": "drift"
+      },
+      {
+        "biome": 3,
+        "track": "haze"
+      },
+      {
+        "biome": 4,
+        "track": "haze"
+      },
+      {
+        "biome": 5,
+        "track": "underpass"
+      },
+      {
+        "biome": 6,
+        "track": "drift"
+      },
+      {
+        "biome": 7,
+        "track": "drift"
+      },
+      {
+        "biome": 8,
+        "track": "drift"
+      },
+      {
+        "biome": 9,
+        "track": "underpass"
+      },
+      {
+        "biome": 10,
+        "track": "haze"
+      },
+      {
+        "biome": 11,
+        "track": "drift"
+      },
+      {
+        "biome": 12,
+        "track": "underpass"
+      },
+      {
+        "biome": 13,
+        "track": "underpass"
+      },
+      {
+        "biome": 14,
+        "track": "drift"
+      },
+      {
+        "biome": 15,
+        "track": "drift"
+      },
+      {
+        "biome": 16,
+        "track": "underpass"
+      },
+      {
+        "biome": 17,
+        "track": "underpass"
+      },
+      {
+        "biome": 18,
+        "track": "haze"
+      },
+      {
+        "biome": 19,
+        "track": "haze"
+      },
+      {
+        "biome": 20,
+        "track": "haze"
+      }
+    ],
+    "boss": "rush",
+    "tower": "underpass",
+    "intro": "radio",
+    "missingSkills": []
+  },
+  "crossfadePlayingDecks": 2,
+  "muted": {
+    "mode": "off",
+    "paused": true,
+    "voices": 0,
+    "transition": null
+  },
+  "priority": {
+    "rows": [
+      {
+        "battle": true,
+        "priority": 1
+      },
+      {
+        "battle": true,
+        "priority": 1
+      },
+      {
+        "battle": true,
+        "priority": 1
+      },
+      {
+        "battle": true,
+        "priority": 1
+      },
+      {
+        "battle": true,
+        "priority": 1
+      },
+      {
+        "battle": false,
+        "priority": 3
+      },
+      {
+        "battle": false,
+        "priority": 3
+      },
+      {
+        "battle": false,
+        "priority": 3
+      }
+    ],
+    "musicPaused": true
+  },
+  "hidden": {
+    "battle": 0,
+    "ui": 1,
+    "offlineSuppressed": true
+  },
+  "pending": {
+    "paused": true,
+    "transition": null,
+    "blocked": false
+  },
+  "feedback": {
+    "damaged": true,
+    "shieldSilent": true,
+    "itemCue": true,
+    "goldSilent": true
+  },
+  "visibility": {
+    "paused": true,
+    "voices": 0
+  },
+  "mix": {
+    "peak": 0.6297425627708435,
+    "finite": true,
+    "sources": 9,
+    "scope": "Worst aligned 6 battle + 2 UI + music, same master/limiter values."
+  },
+  "errors": [],
+  "scope": "Real Chromium AudioContext and MP3 playback/decode; simulated document.hidden event; no subjective listening or device certification."
+}

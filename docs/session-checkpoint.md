@@ -1,5 +1,7 @@
 # Game Lab 最新接續紀錄
 
+**最新音訊加插：** Alan明確要求所有音樂／音效按更新風格優化。同PR88新增5段原創配樂＋33基礎cue（1.74MB）、兩deck crossfade、技能語意映射、聲音優先權／duck、靜音／隱藏戰場／offline與visibility邊界。38音檔／WAV hash、LUFS／peak／RMS、真實AudioContext播放與壓力mix、試聽頁41controls／390px、site／gameplay通過。舊17CC0原件與license在assets/audio-legacy；新為Project-original，未採樣影片。docs/audio-street/README.md與dist/street-audio-review.html可接續；未合併發佈，未冒稱聽感及真機驗收。
+
 **最新接續：** 同PR88追加一般裝備共用owner（七部位×四階，112配色fallback）及十二種敵人硬件輪廓模組。不是新造十二獨立GLB。角色／背包／掉落一致，胸甲下移、手套鞋尺寸校正；34HUD／尺寸血跡／stable-data及gameplay通過，分檔網站、四缺件複驗。docs/street-refinement/README.md有證據和界線；未合併發佈，Claude b28dc60列表布局未動。剩餘場景敘事／聲音／真機沿FINISH-04至06。
 
 **後續精修候選：** codex/street-equipment-finish，main a428ceb為base。四件缺件已新製原創GLB／Blend並接equipmentModel，972tri、零貼圖，36clip／兩風格／GPU失敗圖／10gameplay通過。資料、掛點、縮圖及重建見docs/equipment-completion/README.md；未合併發佈，正式站仍0.64。Claude b28dc60頭像列表修正留其分支，已同步。其餘精修沿FINISH-02至06，不稱全專案完成。
