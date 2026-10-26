@@ -1,5 +1,7 @@
 # Game Lab 最新接續紀錄
 
+> **怪物文件更正（2026-10-26）：** [現行名單](monster-catalog.md) 為 M01–M08、B01–B04 十二模型；22 個玩法 type 依 `street-creatures.js` 共用。另生成十六款及笑臉同伴預覽不得當成正式替換。只整理文件，不改程式、模型、圖片或部署。
+
 **v0.64.0已正式發佈（2026-10-26，Asia/Hong_Kong）。** Alan本輪授權release；PR84已合併，來源／tag為2f7c889，Pages為076180d。正式manifest、入口及21腳本SHA-256、Release附件digest／大小均吻合，直接正式站390px Chromium啟動通過。Release與證據見[整合紀錄](release-0.64.0/integration.md)。
 
 包含完整街頭風格、12精怪／4角色／16裝備衍生、尺寸血跡、移除笑臉與收音機／搬運箱精修。Claude最新7be9377已整合（僅文件），其精華系統已撤回，不在此版。所有分支／舊tag保留。下列為較早候選過程紀錄，未發佈字樣不再代表目前狀態。

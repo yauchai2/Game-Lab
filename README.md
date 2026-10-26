@@ -1,5 +1,7 @@
 # Game Lab：Idle Hero
 
+> **怪物／同伴最新設定：** 請先讀 [現行名單](docs/monster-catalog.md)。街頭風格為 M01–M08、B01–B04 共十二模型；本對話新生成十六款為錯誤設定試稿，不能代替正式素材。美術以 [Ice Cream 創作基準](docs/creative-direction.md) 為準。
+
 一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。目前已發佈版本：**v0.47.0**（手動接線、昇華分支與新品牌介面）。驗證及來源見 [部署紀錄](docs/deployment.md)。
 
 

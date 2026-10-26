@@ -137,7 +137,7 @@
 - ui.renderInterval 僅限制繪製。前景模擬使用實際 wall gap，超過既有三秒閾值才進 catchUp；hitStop 只暫停繪製且限制觸發間隔，不縮小模擬 dt。倉庫分頁／部位篩選保留可恢復的 data-focus；刪除後聚焦穩定控制。
 - UI_DATA：warehouse 是角色子頁，pagination 為 12 件，無搜尋欄或獨立主題。天賦原 SVG 與原生清單共用 allocPass／nodeOpen，不能繞過連線與點數限制。
 
-- MONSTER_GUIDE 由 01-data.js 擁有，圖鑑與編年史不各自維護怪物清單；新增類型必須與 MTYPES 覆蓋一致。
+- MONSTER_GUIDE 由 01-data.js 擁有，圖鑑與編年史不各自維護怪物清單；新增類型必須與 MTYPES 覆蓋一致。 此為玩法類型／名稱資料契約，不是現行美術清單。街頭模型以 `STREET_CREATURES`／`streetCreatureBuild` 與 `assets/monsters/catalog.json` 為準；十二個模型及首領覆寫見 [現行名單](docs/monster-catalog.md)，不得依舊 type 名稱另造角色。
 
 
 ## 連動構築（0.28.0）
