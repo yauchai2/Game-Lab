@@ -1,0 +1,130 @@
+{
+  "kind": "local authored visual candidate; originals retained",
+  "files": [
+    {
+      "path": "M01-battery-hopper.blend",
+      "bytes": 570984,
+      "sha256": "ffd10993f8fa6f88a997c35155323da11a5361119181b22cd415fa34eacb7d02"
+    },
+    {
+      "path": "M01-battery-hopper.glb",
+      "bytes": 66608,
+      "sha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53"
+    },
+    {
+      "path": "M01-interactive-preview.html",
+      "bytes": 764878,
+      "sha256": "e99178206999f2d32bbd45c4c0070a28149ddb792f1423f756ba5ec1a568fb40"
+    },
+    {
+      "path": "M01-three-views.png",
+      "bytes": 169356,
+      "sha256": "5e35f0c26c5f981d74580af9b64e6e6129a38143ac0a4b293fed41f6512f80c6"
+    },
+    {
+      "path": "M01-turntable.gif",
+      "bytes": 495354,
+      "sha256": "f2293df79fa51b5bac8f1de68e1af5d4c8b9eba6bb1c5a7f8b4cb33a6a09a9a4"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4237,
+      "sha256": "960f3490157b1860f4820da8568bec16de164bb01c6dc30f7a6b6d2d83b7b884"
+    },
+    {
+      "path": "blender-validation.json",
+      "bytes": 1279,
+      "sha256": "5f3e7d80e4c07dfa3b8963e7f4147e7fd607621c3502f43186fe21d3a3d3baef"
+    },
+    {
+      "path": "build_m01.py",
+      "bytes": 13604,
+      "sha256": "e1225ce0d519515e571a8de13b2b6e9a1f6e41f38c0cb6c7d98f32b61f33ef17"
+    },
+    {
+      "path": "import-validation.json",
+      "bytes": 508,
+      "sha256": "42418aa5cb96d9d5b0a7a695ab6d0676f87b418ecc21e4cb5af03443c1d98a03"
+    },
+    {
+      "path": "make_previews.py",
+      "bytes": 1364,
+      "sha256": "1ac68cb6f441bd80bb6e1ac0cef9f0d65c1f9920af2eb14af0eeee8d798b6f83"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 4630,
+      "sha256": "f0e922390b9e2ad03ccb308461962fba0483b66bc742c86c8b17418b31b3289b"
+    },
+    {
+      "path": "normalize_glb.py",
+      "bytes": 2167,
+      "sha256": "d6245c2e0b6e9e9a872a1d981c560093c3aae88686fbd8be0cd9f0ab29d9f888"
+    },
+    {
+      "path": "references/M01-\u63d2\u982d\u8df3\u8c46-1-front-\u6b63\u9762.png",
+      "bytes": 184527,
+      "sha256": "44400d9573f4f5610283367adb9e10564338bd195b8c588cbcb1518a794ecf43"
+    },
+    {
+      "path": "references/M01-\u63d2\u982d\u8df3\u8c46-2-right-\u53f3\u5074.png",
+      "bytes": 133075,
+      "sha256": "d2340b56c879d8b1c8c1ad33f07c130452d6121e53ee3328da652c6d44362a6e"
+    },
+    {
+      "path": "references/M01-\u63d2\u982d\u8df3\u8c46-3-back-\u80cc\u9762.png",
+      "bytes": 184946,
+      "sha256": "64df038f9328d2ca4d522743734fb7b134ca9a8d99955f2088617cd71092ba21"
+    },
+    {
+      "path": "renders/back.png",
+      "bytes": 403181,
+      "sha256": "3344d63a78dd9e4c6be18395c7015466367a37b1e02ebed244f83502e6ebd8e0"
+    },
+    {
+      "path": "renders/beauty.png",
+      "bytes": 482970,
+      "sha256": "c0d5fe7b676fe964f030becd80a0a3d54677f4c2bcdfd74117c63d459668e89e"
+    },
+    {
+      "path": "renders/front.png",
+      "bytes": 409194,
+      "sha256": "0cd66011dc7511604aaef5e28b51ee9d7438eaada0e111486489eaab4d07cef0"
+    },
+    {
+      "path": "renders/mobile-preview.png",
+      "bytes": 29469,
+      "sha256": "339626505003577adc55f3c759559e910f8b2c37c551f0a67142adacaa3291a4"
+    },
+    {
+      "path": "renders/right.png",
+      "bytes": 272658,
+      "sha256": "fad409b5d08d13cf437b2164cd66719342648daee7e9cb8cba84009e3947181a"
+    },
+    {
+      "path": "renders/webgl-preview.png",
+      "bytes": 39503,
+      "sha256": "4312e8201dca35147fe7636a0f4706439ca787ec16d4a9f4a492cb5240e686b1"
+    },
+    {
+      "path": "test_preview.cjs",
+      "bytes": 2605,
+      "sha256": "abf5b40b5df23aacdd75eb46b38cb7835858c38e6c845ef346436eb79021d269"
+    },
+    {
+      "path": "three.LICENSE",
+      "bytes": 1081,
+      "sha256": "852e0e8699169bf9f6fdc6bda3e682d078dcbc738b5d33e74df594721bff271d"
+    },
+    {
+      "path": "validate_import.py",
+      "bytes": 1352,
+      "sha256": "240e2c246a6ffb8eb1c89ccfe3c64e3e0684bdbc76250d8df1c6058a600895ab"
+    },
+    {
+      "path": "webgl-validation.json",
+      "bytes": 598,
+      "sha256": "4d982883f509b1130b26dc5aeb3f143e4a672257dda333e4f2bdce0a48f446f4"
+    }
+  ]
+}

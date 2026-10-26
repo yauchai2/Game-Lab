@@ -1,5 +1,5 @@
 /* 小型 GLB 讀取器（只接受建置時內嵌的怪物檔，不連網）：節點樹、頂點色網格與剛性分件動作。
-   目前用於街區樣板的 M01 插頭跳豆；接進戰鬥時只換外觀，數值與行為不變。 */
+   供M01與完整街頭精怪catalog共用；接進戰鬥時只換外觀，數值與行為不變。 */
 const G1_MONSTER_CACHE=new Map();
 function g1MonsterAsset(id,encoded){
  if(G1_MONSTER_CACHE.has(id))return G1_MONSTER_CACHE.get(id);

@@ -2,11 +2,11 @@
 const DEVICE_PROXY_CACHE=new Map();
 function equipmentProxyModel(id){
  if(!['ping_clip','milo_md_strap','ping_bag_strap','null_lanyard'].includes(id))return null;
- if(DEVICE_PROXY_CACHE.has(id))return DEVICE_PROXY_CACHE.get(id).clone(true);
+ const cacheKey=id+(typeof g1On==='function'&&g1On()?'+flat':'');if(DEVICE_PROXY_CACHE.has(cacheKey))return DEVICE_PROXY_CACHE.get(cacheKey).clone(true);
  const g=new T3.Group(),silver=m3('#b9c9d6'),dark=m3('#334358'),blue=m3('#738fca');
  if(id==='ping_clip'){for(const x of[-.11,.11])mk(new T3.BoxGeometry(.07,.7,.06),silver,x,0,0,g);mk(new T3.BoxGeometry(.3,.1,.1),blue,0,.3,0,g);mk(new T3.BoxGeometry(.3,.08,.1),dark,0,-.3,0,g);}
  else{const strap=mk(new T3.TorusGeometry(.34,.027,4,18),id==='null_lanyard'?blue:dark,0,0,0,g);strap.scale.set(id==='null_lanyard'?.65:.8,1.25,.4);if(id==='ping_bag_strap')strap.rotation.z=-.5;mk(new T3.BoxGeometry(.15,.12,.06),silver,.16,-.22,.02,g);if(id==='null_lanyard'){mk(new T3.BoxGeometry(.2,.25,.05),silver,0,-.47,.02,g);mk(new T3.BoxGeometry(.15,.13,.02),blue,0,-.45,.06,g);}}
- g.updateMatrixWorld(true);const box=new T3.Box3().setFromObject(g),size=box.getSize(new T3.Vector3()),center=box.getCenter(new T3.Vector3()),scale=1/Math.max(size.x,size.y,size.z);g.position.sub(center);const root=new T3.Group();root.add(g);root.scale.setScalar(scale);root.userData={equipmentModel:id,procedural:true};root.traverse(o=>{if(o.isMesh){o.geometry.userData.equipmentShared=true;o.material.userData.equipmentShared=true;}});DEVICE_PROXY_CACHE.set(id,root);return root.clone(true);
+ g.updateMatrixWorld(true);const box=new T3.Box3().setFromObject(g),size=box.getSize(new T3.Vector3()),center=box.getCenter(new T3.Vector3()),scale=1/Math.max(size.x,size.y,size.z);g.position.sub(center);const root=new T3.Group();root.add(g);root.scale.setScalar(scale);root.userData={equipmentModel:id,procedural:true};root.traverse(o=>{if(o.isMesh){o.geometry.userData.equipmentShared=true;o.material.userData.equipmentShared=true;}});DEVICE_PROXY_CACHE.set(cacheKey,root);return root.clone(true);
 }
 function deviceThumb(key,build){
  if(ICON3D.cache[key])return ICON3D.cache[key];if(ICON3D.fail)return '';
@@ -18,7 +18,7 @@ function deviceThumb(key,build){
  }catch(e){return '';}
  finally{if(model&&typeof disposeWorldObject==='function')disposeWorldObject(model);}
 }
-function icon3dProxyGearUrl(id){const spec=SIGNATURE_GEAR[id];if(!spec)return '';if(typeof GEAR_FALLBACKS!=='undefined'&&GEAR_FALLBACKS['signature:'+id])return GEAR_FALLBACKS['signature:'+id];if(typeof EQUIPMENT_ICONS!=='undefined'&&EQUIPMENT_ICONS[spec.model])return EQUIPMENT_ICONS[spec.model];return deviceThumb('proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;})||(typeof GEAR_FALLBACKS!=='undefined'?GEAR_FALLBACKS['signature:'+id]||'':'');}
+function icon3dProxyGearUrl(id){const spec=SIGNATURE_GEAR[id];if(!spec)return '';if(typeof g1On==='function'&&g1On())return deviceThumb('street-proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;});if(typeof GEAR_FALLBACKS!=='undefined'&&GEAR_FALLBACKS['signature:'+id])return GEAR_FALLBACKS['signature:'+id];if(typeof EQUIPMENT_ICONS!=='undefined'&&EQUIPMENT_ICONS[spec.model])return EQUIPMENT_ICONS[spec.model];return deviceThumb('proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;})||(typeof GEAR_FALLBACKS!=='undefined'?GEAR_FALLBACKS['signature:'+id]||'':'');}
 function icon3dOriginalCosmeticUrl(cat){
  const slot={weaponStyle:'weapon',offhandStyle:'offhand',accessoryStyle:'ring'}[cat],it=G.equip[slot];if(it?.lg&&SIGNATURE_GEAR[it.lg])return icon3dProxyGearUrl(it.lg);
  return deviceThumb('original:'+slot+':'+(it?[it.lg||'',aTier(it),it.r].join(':'):'empty'),()=>{if(it)return icon3dModel(slot,aTier(it),it.r);const g=new T3.Group();mk(new T3.BoxGeometry(3,.4,3),m3('#aab8cd'),0,0,0,g);mk(new T3.BoxGeometry(2,.12,2),m3('#334358'),0,.24,0,g);g.rotation.set(.6,-.45,0);return g;});

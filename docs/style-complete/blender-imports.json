@@ -1,0 +1,146 @@
+[
+  {
+    "asset": "b01",
+    "meshes": 5,
+    "triangles": 1032,
+    "textures": 0,
+    "clips": [
+      "Move",
+      "Idle",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "b02",
+    "meshes": 5,
+    "triangles": 664,
+    "textures": 0,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "b03",
+    "meshes": 6,
+    "triangles": 752,
+    "textures": 0,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "b04",
+    "meshes": 7,
+    "triangles": 280,
+    "textures": 0,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "m01-battery-hopper",
+    "meshes": 3,
+    "triangles": 684,
+    "textures": 0,
+    "clips": [
+      "Hop",
+      "Idle",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "m02",
+    "meshes": 5,
+    "triangles": 724,
+    "textures": 0,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "m03",
+    "meshes": 3,
+    "triangles": 296,
+    "textures": 0,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "m04-low-frequency",
+    "meshes": 5,
+    "triangles": 1764,
+    "textures": 0,
+    "clips": [
+      "Move",
+      "Idle",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "m05",
+    "meshes": 4,
+    "triangles": 756,
+    "textures": 0,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "m06",
+    "meshes": 4,
+    "triangles": 444,
+    "textures": 0,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "m07",
+    "meshes": 3,
+    "triangles": 488,
+    "textures": 0,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  },
+  {
+    "asset": "m08",
+    "meshes": 3,
+    "triangles": 244,
+    "textures": 0,
+    "clips": [
+      "Idle",
+      "Move",
+      "Hurt"
+    ],
+    "stockImport": "pass"
+  }
+]

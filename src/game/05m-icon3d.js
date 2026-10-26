@@ -149,11 +149,11 @@ function icon3dCosmeticUrl(cat,id){
 
 /* 角色選擇用的頭像：把角色模型放進離屏畫面，拍頭肩特寫並快取；貼圖還沒載入完就先回傳空字串，稍後自動重畫角色頁 */
 function icon3dPortraitUrl(key){
-  const ck = 'P_' + key; if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof buildHero !== 'function' || !CHARS[key] || !CHARS[key].model) return '';
+  const ck = 'P_' + key+(typeof g1On==='function'&&g1On()?'+flat':''); if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof buildHero !== 'function' || !CHARS[key] || !CHARS[key].model) return '';
   try {
     if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
     const asset = characterAsset(CHARS[key].model), img = asset.material.map && asset.material.map.image;
-    if (!img){ if (!ICON3D.portWait){ ICON3D.portWait = setTimeout(() => { ICON3D.portWait = 0; if (typeof modalTab !== 'undefined' && !$('modal').hidden && modalTab === 'char') renderModal(); }, 350); } return ''; }
+    if (!asset.flat&&!img){ if (!ICON3D.portWait){ ICON3D.portWait = setTimeout(() => { ICON3D.portWait = 0; if (typeof modalTab !== 'undefined' && !$('modal').hidden && modalTab === 'char') renderModal(); }, 350); } return ''; }
     const prev = G.char; let g; G.char = key; try { g = buildHero(0, 0, 0, 0, G.cos); } finally { G.char = prev; }
     g.userData.mixer && g.userData.mixer.update(.02); g.scale.setScalar(1); g.rotation.y = 0;
     for (const o of g.children) if (o.isMesh && o.geometry && o.geometry.type === 'RingGeometry') o.visible = false;

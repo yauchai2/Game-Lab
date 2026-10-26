@@ -1,0 +1,50 @@
+{
+  "id": "M06",
+  "name": "錯址速遞車",
+  "source": "Original Blender-authored geometry derived from user-provided three views; clean unlit style revision",
+  "meshes": [
+    {
+      "name": "M06_Body",
+      "triangles": 168,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M06_Head",
+      "triangles": 100,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M06_Wheel-1",
+      "triangles": 88,
+      "nonManifoldEdges": 0
+    },
+    {
+      "name": "M06_Wheel1",
+      "triangles": 88,
+      "nonManifoldEdges": 0
+    }
+  ],
+  "triangles": 444,
+  "bounds": {
+    "min": [
+      -0.8825000524520874,
+      -0.4779999852180481,
+      0.0
+    ],
+    "max": [
+      0.8825000524520874,
+      0.4775000214576721,
+      2.1449999809265137
+    ]
+  },
+  "height": 2.1449999809265137,
+  "clips": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "textures": 0,
+  "material": "flat vertex colors, unlit",
+  "styleRevision": "2026-10-26 textureless",
+  "validationStage": "Blender authoring; see docs/style-complete/runtime-validation.json for later runtime evidence"
+}

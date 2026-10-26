@@ -1,0 +1,49 @@
+{
+  "assetId": "M04",
+  "blender": "4.3.2",
+  "meshes": [
+    {
+      "name": "M04_Body",
+      "triangles": 1092,
+      "nonManifoldEdges": 0,
+      "flat": true
+    },
+    {
+      "name": "M04_Arm_0",
+      "triangles": 160,
+      "nonManifoldEdges": 0,
+      "flat": true
+    },
+    {
+      "name": "M04_Arm_1",
+      "triangles": 160,
+      "nonManifoldEdges": 0,
+      "flat": true
+    },
+    {
+      "name": "M04_Leg_0",
+      "triangles": 176,
+      "nonManifoldEdges": 0,
+      "flat": true
+    },
+    {
+      "name": "M04_Leg_1",
+      "triangles": 176,
+      "nonManifoldEdges": 0,
+      "flat": true
+    }
+  ],
+  "triangles": 1764,
+  "textureNodes": 0,
+  "animations": [
+    "Idle",
+    "Move",
+    "Hurt"
+  ],
+  "material": "emission vertex face colors; no lighting, AO, textures",
+  "axes": "glTF Y-up +Z front",
+  "notVerified": [
+    "formal gameplay integration",
+    "mobile hardware performance"
+  ]
+}

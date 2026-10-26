@@ -1,0 +1,16 @@
+{
+  "glbSha256": "fcaa6a8f1e37f60cc69efa9c2d2c77d686980f722960d23cd8ad1b08857d1e45",
+  "bytes": 179140,
+  "meshes": 5,
+  "triangles": 1764,
+  "materials": 1,
+  "textures": 0,
+  "degenerateTriangles": 0,
+  "clips": [
+    "Move",
+    "Idle",
+    "Hurt"
+  ],
+  "rootXZMotion": false,
+  "nativeReaderPolicy": "pass; TRS, rigid meshes, packed accessors, vertex COLOR_0, LINEAR clips"
+}
