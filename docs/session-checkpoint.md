@@ -1,5 +1,7 @@
 # Game Lab 最新接續紀錄
 
+**後續精修候選：** codex/street-equipment-finish，main a428ceb為base。四件缺件已新製原創GLB／Blend並接equipmentModel，972tri、零貼圖，36clip／兩風格／GPU失敗圖／10gameplay通過。資料、掛點、縮圖及重建見docs/equipment-completion/README.md；未合併發佈，正式站仍0.64。Claude b28dc60頭像列表修正留其分支，已同步。其餘精修沿FINISH-02至06，不稱全專案完成。
+
 **v0.64.0已正式發佈（2026-10-26，Asia/Hong_Kong）。** Alan本輪授權release；PR84已合併，來源／tag為2f7c889，Pages為076180d。正式manifest、入口及21腳本SHA-256、Release附件digest／大小均吻合，直接正式站390px Chromium啟動通過。Release與證據見[整合紀錄](release-0.64.0/integration.md)。
 
 包含完整街頭風格、12精怪／4角色／16裝備衍生、尺寸血跡、移除笑臉與收音機／搬運箱精修。Claude最新7be9377已整合（僅文件），其精華系統已撤回，不在此版。所有分支／舊tag保留。下列為較早候選過程紀錄，未發佈字樣不再代表目前狀態。

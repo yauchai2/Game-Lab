@@ -1,6 +1,7 @@
 /* Shared device workspaces. Visual models never alter item, skill or payment state. */
 const DEVICE_PROXY_CACHE=new Map();
 function equipmentProxyModel(id){
+ if(typeof EQUIPMENT_COMPLETION_GLB!=='undefined'&&EQUIPMENT_COMPLETION_GLB[id])return equipmentModel(id);
  if(!['ping_clip','milo_md_strap','ping_bag_strap','null_lanyard'].includes(id))return null;
  const cacheKey=id+(typeof g1On==='function'&&g1On()?'+flat':'');if(DEVICE_PROXY_CACHE.has(cacheKey))return DEVICE_PROXY_CACHE.get(cacheKey).clone(true);
  const g=new T3.Group(),silver=m3('#b9c9d6'),dark=m3('#334358'),blue=m3('#738fca');
@@ -18,7 +19,7 @@ function deviceThumb(key,build){
  }catch(e){return '';}
  finally{if(model&&typeof disposeWorldObject==='function')disposeWorldObject(model);}
 }
-function icon3dProxyGearUrl(id){const spec=SIGNATURE_GEAR[id];if(!spec)return '';if(typeof g1On==='function'&&g1On())return deviceThumb('street-proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;});if(typeof GEAR_FALLBACKS!=='undefined'&&GEAR_FALLBACKS['signature:'+id])return GEAR_FALLBACKS['signature:'+id];if(typeof EQUIPMENT_ICONS!=='undefined'&&EQUIPMENT_ICONS[spec.model])return EQUIPMENT_ICONS[spec.model];return deviceThumb('proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;})||(typeof GEAR_FALLBACKS!=='undefined'?GEAR_FALLBACKS['signature:'+id]||'':'');}
+function icon3dProxyGearUrl(id){const spec=SIGNATURE_GEAR[id];if(!spec)return '';if(typeof EQUIPMENT_COMPLETION_GLB!=='undefined'&&EQUIPMENT_COMPLETION_GLB[spec.model])return deviceThumb('authored-gear:'+id,()=>{const g=equipmentModel(spec.model);g.rotation.set(.15,-.45,0);return g;})||(typeof EQUIPMENT_COMPLETION_ICONS!=='undefined'?EQUIPMENT_COMPLETION_ICONS[spec.model]||'':'');if(typeof g1On==='function'&&g1On())return deviceThumb('street-proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;});if(typeof GEAR_FALLBACKS!=='undefined'&&GEAR_FALLBACKS['signature:'+id])return GEAR_FALLBACKS['signature:'+id];if(typeof EQUIPMENT_ICONS!=='undefined'&&EQUIPMENT_ICONS[spec.model])return EQUIPMENT_ICONS[spec.model];return deviceThumb('proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;})||(typeof GEAR_FALLBACKS!=='undefined'?GEAR_FALLBACKS['signature:'+id]||'':'');}
 function icon3dOriginalCosmeticUrl(cat){
  const slot={weaponStyle:'weapon',offhandStyle:'offhand',accessoryStyle:'ring'}[cat],it=G.equip[slot];if(it?.lg&&SIGNATURE_GEAR[it.lg])return icon3dProxyGearUrl(it.lg);
  return deviceThumb('original:'+slot+':'+(it?[it.lg||'',aTier(it),it.r].join(':'):'empty'),()=>{if(it)return icon3dModel(slot,aTier(it),it.r);const g=new T3.Group();mk(new T3.BoxGeometry(3,.4,3),m3('#aab8cd'),0,0,0,g);mk(new T3.BoxGeometry(2,.12,2),m3('#334358'),0,.24,0,g);g.rotation.set(.6,-.45,0);return g;});

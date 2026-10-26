@@ -1,0 +1,10 @@
+{
+  "file": "assets/equipment-completion/ping_bag_strap/ping_bag_strap.glb",
+  "sha256": "9eefdec36cb42604fe1756f2623b4e72736358b42727703145d443a9412fafd3",
+  "bytes": 11092,
+  "triangles": 260,
+  "importedMeshes": 1,
+  "textures": 0,
+  "unlit": true,
+  "authorship": "Original local Blender geometry, Game-Lab; no external model or paid provider."
+}

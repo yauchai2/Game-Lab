@@ -1,10 +1,11 @@
 /* Static reader for build-time normalized user meshes. No runtime network requests. */
 const EQUIPMENT_RENDER={cache:new Map()};
 function equipmentModel(id){
- if(typeof EQUIPMENT_GLB==='undefined'||!EQUIPMENT_GLB[id])return typeof equipmentProxyModel==='function'?equipmentProxyModel(id):null;
+ const authored=typeof EQUIPMENT_COMPLETION_GLB!=='undefined'&&EQUIPMENT_COMPLETION_GLB[id];
+ if(!authored&&(typeof EQUIPMENT_GLB==='undefined'||!EQUIPMENT_GLB[id]))return typeof equipmentProxyModel==='function'?equipmentProxyModel(id):null;
  const ck=id+(typeof g1On==='function'&&g1On()?'+g1':'');if(EQUIPMENT_RENDER.cache.has(ck))return EQUIPMENT_RENDER.cache.get(ck).clone(true);
- const flat=typeof STREET_EQUIPMENT_GLB!=='undefined'&&g1On();
- const bin=Uint8Array.from(atob(flat?STREET_EQUIPMENT_GLB[id]:EQUIPMENT_GLB[id]),c=>c.charCodeAt(0)),view=new DataView(bin.buffer),n=view.getUint32(12,true),doc=JSON.parse(new TextDecoder().decode(bin.subarray(20,20+n))),start=28+n;
+ const flat=!!authored||(typeof STREET_EQUIPMENT_GLB!=='undefined'&&g1On());
+ const bin=Uint8Array.from(atob(authored||(flat?STREET_EQUIPMENT_GLB[id]:EQUIPMENT_GLB[id])),c=>c.charCodeAt(0)),view=new DataView(bin.buffer),n=view.getUint32(12,true),doc=JSON.parse(new TextDecoder().decode(bin.subarray(20,20+n))),start=28+n;
  const types={5121:Uint8Array,5123:Uint16Array,5125:Uint32Array,5126:Float32Array},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4};
  const access=i=>{const a=doc.accessors[i],v=doc.bufferViews[a.bufferView],C=types[a.componentType],w=widths[a.type];if(!C||!w||v.byteStride||a.sparse)throw Error('Unsupported equipment accessor');const off=start+(v.byteOffset||0)+(a.byteOffset||0);return new T3.BufferAttribute(new C(bin.buffer.slice(off,off+a.count*w*C.BYTES_PER_ELEMENT)),w,!!a.normalized);};
  const materials=(doc.materials||[]).map(m=>{
@@ -21,13 +22,14 @@ function equipmentModel(id){
 // Socket dimensions use the existing character rig's units; assets are centered with max span 1.
 const EQUIPMENT_SOCKETS={
  aki_headphones:['head',15,0,1.3,-.3],aki_baton:['handR',10,0,0,.4],aki_chain:['hips',5.8,3.3,-1.1,2.4],aki_charm:['hips',1.6,5,-2.5,2.7],
- milo_headphones:['head',12.8,0,4.2,-.6],milo_md:['hips',3.3,-3.3,1.5,3.1],milo_disc:['hips',3.5,4.3,.1,1.2],milo_belt:['hips',3.5,1.8,-2.3,3],milo_md_strap:['torso',8,0,3,2.7],
- ping_clip:['head',2,-3.5,3,1],ping_comm:['head',3.2,-5.3,1.4,.3],ping_bag:['hips',5.2,-5.4,-1.2,1.8],ping_launcher:['foreR',5.4,0,-1.5,.6],ping_phone:['handL',2.5,0,0,.6],ping_bag_strap:['torso',9,0,3,2.6],
+ milo_headphones:['head',12.8,0,4.2,-.6],milo_md:['hips',3.3,-3.3,1.5,3.1],milo_disc:['hips',3.5,4.3,.1,1.2],milo_belt:['hips',3.5,1.8,-2.3,3],milo_md_strap:['torso',10,0,-.5,1.2],
+ ping_clip:['head',2.8,-4.0,4.2,3.0],ping_comm:['head',3.2,-5.3,1.4,.3],ping_bag:['hips',5.2,-5.4,-1.2,1.8],ping_launcher:['foreR',5.4,0,-1.5,.6],ping_phone:['handL',2.5,0,0,.6],ping_bag_strap:['torso',11,0,-.5,1.2],
  null_goggles:['head',10.5,0,5.5,-.2],null_controller:['handR',2.8,0,.2,.8],null_box:['hips',3.2,-4.5,.5,.8],null_pet:['pet',4,8,13,-2],null_lanyard:['torso',6,0,3,3]
 };
 // Object-local contact points, measured in normalized source coordinates. The
 // wrapper moves that contact to a bone socket; cached source meshes stay untouched.
 const EQUIPMENT_FITS={
+ ping_clip:{rotation:[0,0,-.3]},
  aki_headphones:{scale:[1,.9,1]},
  aki_baton:{pivot:[0,-.38,0]},
  aki_chain:{rotation:[0,.4,0]},aki_charm:{rotation:[0,.2,0]},
