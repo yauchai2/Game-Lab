@@ -104,14 +104,13 @@
   const from=startOf(i,b),to=endOf(i,b),used=wireCellSet(b,i),q=[[from]],seen=new Set([from.join(',')]);
   while(q.length){const path=q.shift(),p=path.at(-1);if(same(p,to))return path;for(const[dX,dY]of[[1,0],[-1,0],[0,1],[0,-1]]){const n=[p[0]+dX,p[1]+dY],k=n.join(',');if(isInner(...n,b)&&!isRock(...n,b)&&!used.has(k)&&!seen.has(k)){seen.add(k);q.push([...path,n]);}}}return null;
  }
- const CHAIN_MAX=6,CHAIN_BONUS=.25;
+ const CHAIN_MAX=3,lenMul=n=>Math.min(2.5,1+.03*Math.max(0,n-6));   /* 線越長技能越強：超過 6 格後每格 +3%，上限 2.5 倍 */
  function strength(b,p){return TIER_MUL[(p.t||1)-1];}
  function resolve(b,lvl=999){
   const out=[];for(const a of b.pieces.filter(p=>p.kind==='active')){const i=sockIndex(a,b),wire=i<unlockedCount(b,lvl)&&connected(b,i)?getWire(b,i):null,linked=[],weights=[],over=[],missed=[];
    if(wire)for(const[x,y]of wire.cells){const p=pieceAt(b,x,y,'support');if(!p)continue;if(padColor(x,y,b)!==GEM_COLOR[p.key]||!old.fits(p.key,a)){missed.push(p.id);continue;}if(linked.length>=CHAIN_MAX){over.push(p.id);continue;}linked.push(p.id);weights.push(strength(b,p));}
-   if(linked.length>1){const chain=1+CHAIN_BONUS*(linked.length-1);for(let j=0;j<weights.length;j++)weights[j]*=chain;}   /* 連得越多越強：每多一個配件，全部配件效果再 +25% */
    const stat={dmg:0,area:0,cd:0,crit:0,repeat:0,leech:0};linked.forEach((id,j)=>{const p=b.pieces.find(p=>p.id===id);for(const[k,v]of Object.entries(old.SUPPORTS[p.key].mod))stat[k]=(stat[k]||0)+v*weights[j];});
-   out.push({id:a.id,key:a.key,sock:i,wired:!!wire,linked,weights,over,missed,stat});
+   out.push({id:a.id,key:a.key,sock:i,wired:!!wire,linked,weights,over,missed,stat,len:wire?wire.cells.length:0,lenMul:wire?lenMul(wire.cells.length):1});
   }return out.sort((a,b)=>a.sock-b.sock);
  }
  function normalize(raw){
@@ -130,7 +129,7 @@
  const manual=()=>({ok:false,reason:'請手動裝上機件及逐格接線'});
  const api={...old,version:6,TEMPLATES,GEM_COLOR,TIER_MUL,TIER_COST,layout,createBoard,adopt,normalize,isInner,isRock,isPad,padAt,padColor,sockAt,sockIndex,startOf,endOf,unlockedCount,
   pieceAt,getWire,wireOf,wireLen,wireCellSet,powerUsed,validPath,connected,canPlace,place,remove,strength,resolve,extend,extendTo:extend,shrink,clearWire,cut:clearWire,route,findSpot,
-  dps:(b,hero,lvl)=>resolve(b,lvl).filter(r=>r.wired).map(r=>{const d=old.ACTIVES[r.key],keys=r.linked.map(id=>b.pieces.find(p=>p.id===id).key),mod=old.skillMods(keys,r.key,r.weights),crit=Math.min(1,Math.max(0,(hero.crit+mod.crit)/100)),hit=hero.hit*d.mult*mod.hit*(1+crit*(hero.cm/100-1)),interval=old.cooldown(d.cd,keys,hero.haste||0,1,r.weights);return {id:r.id,key:r.key,hit,interval,dps:hit*(1+mod.twin*old.LIMITS.repeatDamage+(mod.repeat?.45:0))/interval};}),
+  dps:(b,hero,lvl)=>resolve(b,lvl).filter(r=>r.wired).map(r=>{const d=old.ACTIVES[r.key],keys=r.linked.map(id=>b.pieces.find(p=>p.id===id).key),mod=old.skillMods(keys,r.key,r.weights),crit=Math.min(1,Math.max(0,(hero.crit+mod.crit)/100)),hit=hero.hit*d.mult*mod.hit*r.lenMul*(1+crit*(hero.cm/100-1)),interval=old.cooldown(d.cd,keys,hero.haste||0,1,r.weights);return {id:r.id,key:r.key,hit,interval,dps:hit*(1+mod.twin*old.LIMITS.repeatDamage+(mod.repeat?.45:0))/interval};}),
   PAD_MATCH:1,gemCap:()=>3,wireMax:b=>layout(b).size**2,autoWire:manual,autoWireAll:manual,dress:()=>0,
   fromLegacy:(slots,supp,lvl)=>adopt(old.fromLegacy(slots,supp,lvl),lvl),migrate:(raw,lvl)=>adopt(raw,lvl)};
  if(typeof module!=='undefined')module.exports=api;else root.GridLab=api;

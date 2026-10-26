@@ -643,6 +643,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   FXO.yaw += (FXO.yawT - FXO.yaw)*Math.min(1, fdt*8); FXO.zoom += (FXO.zoomT - FXO.zoom)*Math.min(1, fdt*8); FXO.shake *= Math.pow(.0008, fdt); FXO.punch *= Math.pow(.003, fdt); FXO.flash *= Math.pow(.02, fdt);
   { const o = document.getElementById('fxo'), low = G.st && G.h.hp < G.st.life*.3 && G.h.dead <= 0, a = viewEffectsReduced()?0:Math.max(FXO.flash, low ? .22 + .08*Math.sin(now/180) : 0); if (o){ o.style.opacity = a > .01 ? a.toFixed(2) : 0; o.style.background = `radial-gradient(ellipse at center, ${FXO.flash>.05?'color-mix(in srgb, '+FXO.fc+' 16%, transparent)':'transparent'} 0%, transparent 45%, ${FXO.flash > .12 || !low ? FXO.fc : '#ff2a50'} 140%)`; } }
   const plan=terrainNow(),framing=terrainCameraWindow(plan,innerWidth,!!FXO.overview),focus=G.run?.stair?{x:G.h.x,y:G.h.y}:framing.follow?{x:G.h.x,y:G.h.y}:{x:HX,y:HY};if(G.run?.stair&&!G.run.stair.reduced){framing.follow=true;framing.view=90;}
+  document.body.classList.toggle('view-follow',!!framing.follow);
   R3.focusX=R3.focusX??focus.x;R3.focusY=R3.focusY??focus.y;
   R3.focusX+=(focus.x-R3.focusX)*Math.min(1,fdt*4);R3.focusY+=(focus.y-R3.focusY)*Math.min(1,fdt*4);
   const cam = R3.cam, tgt = new T3.Vector3(R3.focusX,BZ+terrainHeight(R3.focusX,R3.focusY,plan)+6,R3.focusY); cam.position.copy(tgt).add((innerHeight > innerWidth ? new T3.Vector3(.34, .8, 1) : new T3.Vector3(1, .86, 1)).normalize().applyAxisAngle(new T3.Vector3(0, 1, 0), FXO.yaw).multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
@@ -796,7 +797,7 @@ function battleTextSize(kind,size,width){
 }
 function terrainCameraWindow(p,width,overview=false){
   const span=Math.max(p.bounds[1]-p.bounds[0],p.bounds[3]-p.bounds[2]);
-  const limit=width>=1180?240:width>=768?210:170;
+  const k={near:.85,far:1.25}[typeof GAME_VIEW!=='undefined'&&GAME_VIEW.prefs.range]||1,limit=(width>=1180?310:width>=768?270:215)*k;   /* 視野範圍：標準比舊版寬約 25%，可在設定改近／遠 */
   return {span,view:overview?span:Math.min(span,limit),follow:!overview&&span>limit*1.1};
 }
 function toggleWorldOverview(){FXO.overview=!FXO.overview;FXO.zoomT=1;G.dirty=true;if(typeof renderModal==='function')renderModal();}
