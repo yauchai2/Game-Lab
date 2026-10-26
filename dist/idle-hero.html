@@ -1037,7 +1037,7 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
-  {v:'0.63.0',d:'2026-10-26',t:['全遊戲街頭風格整合：十二款精怪造型、四位角色及十六件裝備改用純色切面、無貼圖的材質表現，保留角色四肢、職業及戰鬥數值。','精怪動作、主線首領標記、精英金環與異常狀態提示一起接入；角色頭像與裝備小圖跟隨新版模型。','各地區保留日夜變化，以清楚色階區分地面、人物及街頭物件；藍紫窗口及描邊戰鬥文字沿用。','接續六章電台主線，補完十二則地方留言和四位角色的日常背景；音樂依日間、夜間與首領情境切換。設定的街頭風格可切回原版造型。']},
+  {v:'0.64.0',d:'2026-10-26',t:['全遊戲街頭風格整合：十二款精怪造型、四位角色及十六件裝備改用純色切面、無貼圖的材質表現，保留角色四肢、職業及戰鬥數值。','精怪動作、主線首領標記、精英金環與異常狀態提示一起接入；角色頭像與裝備小圖跟隨新版模型。','各地區保留日夜變化，以清楚色階區分地面、人物及街頭物件；藍紫窗口及描邊戰鬥文字沿用。','接續六章電台主線，補完十二則地方留言和四位角色的日常背景；音樂依日間、夜間與首領情境切換。設定的街頭風格可切回原版造型。']},
   {v:'0.62.0',d:'2026-10-26',t:['新增夏日街區主線，共六章：電台前街、高架橋下、商店街與夜市、車站與河邊、山路電塔與商場地下、屋頂天線。每章有一個首領和一件失物，擊敗首領後找回。','電台手記新增「夏日主線」，記錄已找回的失物與每章的結尾。劇情只寫進日誌和手記，掛機時不會彈窗。','六章首領各有專屬頭飾與名稱：喇叭、回音環、招牌、月台擴音器、捲盤、天線冠。','電台吉祥物會在找回失物時跳起來慶祝；通關第六章後，身上會多一張貼紙。']},
   {v:'0.61.1',d:'2026-10-26',t:['修正：0.61.0 的設定面板在正式網頁載入時出錯，導致整個介面排版跑掉；已還原為原本的藍紫窗口介面。']},
   {v:'0.61.0',d:'2026-10-26',t:['切到其他分頁或視窗時，遊戲會在背後繼續運行，不再停住，回來也不會跳出離線結算（除非瀏覽器已長時間凍結分頁）。','設定新增「小視窗」：在 Chrome、Edge 等支援的瀏覽器開啟置頂縮圖視窗，顯示戰鬥畫面與等級、生命、深度、金幣，可放在螢幕角落一邊工作一邊看。','離線結算頁取消 3D 自轉標誌，回到原本的樣式。']},
@@ -7727,7 +7727,7 @@ function icon3dCosmeticUrl(cat,id){
 
 /* 角色選擇用的頭像：把角色模型放進離屏畫面，拍頭肩特寫並快取；貼圖還沒載入完就先回傳空字串，稍後自動重畫角色頁 */
 function icon3dPortraitUrl(key){
-  const ck = 'P_' + key+(g1On()?'+flat':''); if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof buildHero !== 'function' || !CHARS[key] || !CHARS[key].model) return '';
+  const ck = 'P_' + key+(typeof g1On==='function'&&g1On()?'+flat':''); if (ICON3D.cache[ck]) return ICON3D.cache[ck]; if (ICON3D.fail || typeof T3 === 'undefined' || typeof buildHero !== 'function' || !CHARS[key] || !CHARS[key].model) return '';
   try {
     if (!ICON3D.rd){ if (!icon3dUrl('weapon', 0, 0)) return ''; }
     const asset = characterAsset(CHARS[key].model), img = asset.material.map && asset.material.map.image;
@@ -8084,7 +8084,7 @@ body.ui-material #mbody .talent-tools{display:grid;grid-template-columns:auto au
 const DEVICE_PROXY_CACHE=new Map();
 function equipmentProxyModel(id){
  if(!['ping_clip','milo_md_strap','ping_bag_strap','null_lanyard'].includes(id))return null;
- const cacheKey=id+(g1On()?'+flat':'');if(DEVICE_PROXY_CACHE.has(cacheKey))return DEVICE_PROXY_CACHE.get(cacheKey).clone(true);
+ const cacheKey=id+(typeof g1On==='function'&&g1On()?'+flat':'');if(DEVICE_PROXY_CACHE.has(cacheKey))return DEVICE_PROXY_CACHE.get(cacheKey).clone(true);
  const g=new T3.Group(),silver=m3('#b9c9d6'),dark=m3('#334358'),blue=m3('#738fca');
  if(id==='ping_clip'){for(const x of[-.11,.11])mk(new T3.BoxGeometry(.07,.7,.06),silver,x,0,0,g);mk(new T3.BoxGeometry(.3,.1,.1),blue,0,.3,0,g);mk(new T3.BoxGeometry(.3,.08,.1),dark,0,-.3,0,g);}
  else{const strap=mk(new T3.TorusGeometry(.34,.027,4,18),id==='null_lanyard'?blue:dark,0,0,0,g);strap.scale.set(id==='null_lanyard'?.65:.8,1.25,.4);if(id==='ping_bag_strap')strap.rotation.z=-.5;mk(new T3.BoxGeometry(.15,.12,.06),silver,.16,-.22,.02,g);if(id==='null_lanyard'){mk(new T3.BoxGeometry(.2,.25,.05),silver,0,-.47,.02,g);mk(new T3.BoxGeometry(.15,.13,.02),blue,0,-.45,.06,g);}}
@@ -8100,7 +8100,7 @@ function deviceThumb(key,build){
  }catch(e){return '';}
  finally{if(model&&typeof disposeWorldObject==='function')disposeWorldObject(model);}
 }
-function icon3dProxyGearUrl(id){const spec=SIGNATURE_GEAR[id];if(!spec)return '';if(g1On())return deviceThumb('street-proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;});if(typeof GEAR_FALLBACKS!=='undefined'&&GEAR_FALLBACKS['signature:'+id])return GEAR_FALLBACKS['signature:'+id];if(typeof EQUIPMENT_ICONS!=='undefined'&&EQUIPMENT_ICONS[spec.model])return EQUIPMENT_ICONS[spec.model];return deviceThumb('proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;})||(typeof GEAR_FALLBACKS!=='undefined'?GEAR_FALLBACKS['signature:'+id]||'':'');}
+function icon3dProxyGearUrl(id){const spec=SIGNATURE_GEAR[id];if(!spec)return '';if(typeof g1On==='function'&&g1On())return deviceThumb('street-proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;});if(typeof GEAR_FALLBACKS!=='undefined'&&GEAR_FALLBACKS['signature:'+id])return GEAR_FALLBACKS['signature:'+id];if(typeof EQUIPMENT_ICONS!=='undefined'&&EQUIPMENT_ICONS[spec.model])return EQUIPMENT_ICONS[spec.model];return deviceThumb('proxy:'+id,()=>{const g=equipmentModel(spec.model);if(g)g.rotation.set(.15,-.45,0);return g;})||(typeof GEAR_FALLBACKS!=='undefined'?GEAR_FALLBACKS['signature:'+id]||'':'');}
 function icon3dOriginalCosmeticUrl(cat){
  const slot={weaponStyle:'weapon',offhandStyle:'offhand',accessoryStyle:'ring'}[cat],it=G.equip[slot];if(it?.lg&&SIGNATURE_GEAR[it.lg])return icon3dProxyGearUrl(it.lg);
  return deviceThumb('original:'+slot+':'+(it?[it.lg||'',aTier(it),it.r].join(':'):'empty'),()=>{if(it)return icon3dModel(slot,aTier(it),it.r);const g=new T3.Group();mk(new T3.BoxGeometry(3,.4,3),m3('#aab8cd'),0,0,0,g);mk(new T3.BoxGeometry(2,.12,2),m3('#334358'),0,.24,0,g);g.rotation.set(.6,-.45,0);return g;});

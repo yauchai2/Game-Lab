@@ -1,0 +1,15 @@
+{
+  "result": {
+    "version": "0.64.0",
+    "on": true,
+    "portrait": true,
+    "proxyOn": "MeshBasicMaterial",
+    "proxyOff": "MeshLambertMaterial",
+    "overflow": false,
+    "modelCount": 12,
+    "assetCount": 16
+  },
+  "errors": [],
+  "bad": [],
+  "scope": "Local cacheable website build with real script splitting; not a deployment"
+}

@@ -1,6 +1,6 @@
-# 全遊戲街頭風格整合 — 0.63.0 候選
+# 全遊戲街頭風格整合 — 0.64.0 候選
 
-2026-10-26，Asia/Taipei。Alan授權「根據Ice Cream.mp4後的更新風格，繼續做哂全部需要的更新」。這次完成一套可玩的原生整合候選，不再停在M04或四隻樣板。分支`codex/ice-cream-style-complete`；以0.61.1開始，已納入Claude最新0.62.0（main `fd4ed11`）的六章、首領標記與同伴。**未合併／未發佈本批0.63改動。**
+2026-10-26，Asia/Taipei。Alan授權「根據Ice Cream.mp4後的更新風格，繼續做哂全部需要的更新」。這次完成一套可玩的原生整合候選，不再停在M04或四隻樣板。分支`codex/ice-cream-style-complete`；以0.61.1開始，已納入Claude最新0.62.0（main `fd4ed11`）的六章、首領標記與同伴。**未合併／未發佈本批0.64改動。Claude後續`6fcaef6`的0.63精華玩法仍在其獨立分支，不混入本風格PR；本批預留0.64版本，待其落main後再同步基底，不覆寫其玩法。**
 
 核心參考見[creative-direction](../creative-direction.md)。新素材semi-lowpoly、清楚剪影、大塊平面色、unlit matte、無貼圖細節；素材展示白底，遊戲仍有各地區背景。保留四肢、職業、藍紫窗口、Cubic11與描邊飄字。
 
@@ -43,6 +43,8 @@
 - `test_equipment_slots.cjs`仍因過時「cosmetics remain three」斷言失敗；`test_terrain_mesh.cjs`仍因無document的舊VM harness執行dappleTexture失敗。已在乾淨基準`68934eb`重現相同失敗，這輪沒有把它們列為通過。新版材質／遮罩／地形改以本輪原生瀏覽器和數據對照驗證。
 
 限制：本機Chromium使用軟體WebGL，未做真機手機／Safari／FPS認證。這是完成實作及本地驗證的視覺候選，主觀品質仍可繼續精修；不把工具通過當作全遊戲美術已無可改善。
+
+本機可快取網站建置亦通過[site-validation.json](site-validation.json)：實際資源分檔、390px、角色頭像、代用品材質切換及無404；不代表已部署。
 
 ## 來源與重建
 

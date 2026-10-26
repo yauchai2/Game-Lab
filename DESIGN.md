@@ -471,4 +471,4 @@ Alan 本聊天選定 Patreon 並提供 https://www.patreon.com/c/alanycchan，�
 
 只前往公開創作者頁，不提供站內結帳、帳號綁定、戰力獎勵或付款成功回報。公開頁不列金額、福利或扣款說明；只有低調 Patreon 入口及自願支持短句。
 
-全遊戲美術基準及最新材質規格見[creative-direction](docs/creative-direction.md)；0.63整合交付見[style-complete](docs/style-complete/README.md)。藍紫窗口／Cubic11操作契約維持。
+全遊戲美術基準及最新材質規格見[creative-direction](docs/creative-direction.md)；0.64整合交付見[style-complete](docs/style-complete/README.md)。藍紫窗口／Cubic11操作契約維持。

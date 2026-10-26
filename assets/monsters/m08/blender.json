@@ -41,5 +41,5 @@
   "textures": 0,
   "material": "flat vertex colors, unlit",
   "styleRevision": "2026-10-26 textureless",
-  "runtimeVerified": false
+  "validationStage": "Blender authoring; see docs/style-complete/runtime-validation.json for later runtime evidence"
 }

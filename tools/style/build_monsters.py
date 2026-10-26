@@ -183,6 +183,6 @@ def build(id):
  for name,delta in [('front',(0,-8,0)),('right',(8,0,0)),('back',(0,8,0))]:
   cam.location=center+Vector(delta);cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=str(out/(name+'.png'));bpy.ops.render.render(write_still=True)
  bpy.ops.wm.save_as_mainfile(filepath=str(out/(id+'.blend')))
- report={'id':id,'name':NAMES[id],'source':'Original Blender-authored geometry derived from user-provided three views; clean unlit style revision','meshes':stats,'triangles':sum(x['triangles'] for x in stats),'bounds':{'min':list(low),'max':list(high)},'height':high.z-low.z,'clips':['Idle','Move','Hurt'],'textures':0,'material':'flat vertex colors, unlit','styleRevision':'2026-10-26 textureless','runtimeVerified':False}
+ report={'id':id,'name':NAMES[id],'source':'Original Blender-authored geometry derived from user-provided three views; clean unlit style revision','meshes':stats,'triangles':sum(x['triangles'] for x in stats),'bounds':{'min':list(low),'max':list(high)},'height':high.z-low.z,'clips':['Idle','Move','Hurt'],'textures':0,'material':'flat vertex colors, unlit','styleRevision':'2026-10-26 textureless','validationStage':'Blender authoring; see docs/style-complete/runtime-validation.json for later runtime evidence'}
  (out/'blender.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n');print('ASSET_DONE',id,report['triangles'],flush=True)
 for id in IDS:build(id)
