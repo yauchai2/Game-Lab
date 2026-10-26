@@ -84,7 +84,7 @@ index 379f64f..573fdc9 100644
      armL:[-7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}],armR:[7.5,18,0,l=>{mk(roundedG(3,9,3.4),cb,0,-4.5,0,l);mk(roundedG(3.6,3,3.8),tape,0,-9,0,l);}]};
   }else if(type==='golem'){
 @@ -999,3 +1007,11 @@ function towerDiorama(floor=1){return deviceThumb('tower-diorama:'+towerTheme(fl
- 
+
  function buildRiftHand(){const g=new T3.Group(),body=m3('#455478'),dark=m3('#28374f'),glow=m3('#ad9ae2',{emissive:'#ad9ae2',emissiveIntensity:.5});mk(roundedG(7,4,5),dark,0,3,0,g);for(let i=0;i<5;i++){const x=(i-2)*1.5,h=i===0?6:i===4?8:10+Math.sin(i)*2;mk(curvedPipe([[x,4,0],[x,7,-1],[x*.8,h,-2],[x*.7,h+1,-.5]],.65),body,0,0,0,g);mk(new T3.SphereGeometry(.8,6,4),glow,x*.7,h+1,-.5,g);}for(const o of g.children){o.position.multiplyScalar(1.6);o.scale.multiplyScalar(1.6);}mk(new T3.TorusGeometry(10,.3,4,32),glow,0,10,0,g).rotation.z=.45;const band=mk(new T3.TorusGeometry(1,.025,4,64),glow,0,.4,0,g);band.rotation.x=Math.PI/2;band.material=glow.clone();band.material.depthTest=false;band.material.depthWrite=false;band.material.transparent=true;band.material.opacity=.75;band.renderOrder=4;g.userData.band=band;return g;}
  function renderRiftWorld(){const e=riftState().encounter;if(!e||e.key!==terrainKey())return;const g=entFor(e,buildRiftHand);at3(g,e.x,e.y,BZ+terrainHeight(e.x,e.y));g.userData.band.scale.setScalar(e.phase==='dormant'?7:e.radius);g.userData.band.material.emissiveIntensity=.4+Math.sin(G.time*3)*.1;if(['complete','failed'].includes(e.phase))g.scale.setScalar(Math.max(.05,1-e.age/5));}
 +
