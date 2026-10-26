@@ -667,8 +667,10 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   const cam = R3.cam, tgt = new T3.Vector3(R3.focusX,BZ+terrainHeight(R3.focusX,R3.focusY,plan)+6,R3.focusY); cam.position.copy(tgt).add((innerHeight > innerWidth ? new T3.Vector3(.34, .8, 1) : new T3.Vector3(1, .86, 1)).normalize().applyAxisAngle(new T3.Vector3(0, 1, 0), FXO.yaw).multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
   for (const x of (framing.follow?[R3.focusX-framing.view/2,R3.focusX+framing.view/2]:plan.bounds.slice(0,2))) for (const y of (framing.follow?[R3.focusY-framing.view/2,R3.focusY+framing.view/2]:plan.bounds.slice(2,4))) for (const z of [BZ-20,BZ+plan.amplitude+35]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
-  const hudPad=Math.min(uiHudPad(),H*.5);let bw = x1 - x0, bh = y1 - y0, ar = W/Math.max(2,H-hudPad), cx = (x0 + x1)/2, cy = (y0 + y1)/2 - bh*.03;   // 整座浮島放進畫框，留一點天空
-  let vw = bw*(ptv ? .8 : 1.03), vh = bh*(ptv ? .84 : 1.05); if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;   // 手機直式拉近、裁掉島的左右，裁切處用 CSS 淡出
+  const panel=document.body.classList.contains('d')&&!document.body.classList.contains('watch-mode')?document.getElementById('modal')?.getBoundingClientRect().width+34||0:0,Weff=Math.max(W*.4,W-panel);   // 電腦版：面板疊在右邊，島嶼放在左邊可見區域中央
+  const hudPad=Math.min(uiHudPad(),H*.5);let bw = x1 - x0, bh = y1 - y0, ar = Weff/Math.max(2,H-hudPad), cx = (x0 + x1)/2, cy = (y0 + y1)/2 - bh*.03;   // 整座浮島放進畫框，留一點天空
+  let vw = bw*(ptv ? .8 : 1.03), vh = bh*(ptv ? .84 : 1.05); if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;
+  if(panel){vw*=W/Weff;cx+=vw*(1-Weff/W)/2;}   // 手機直式拉近、裁掉島的左右，裁切處用 CSS 淡出
   if (WOV.has('zoom')){ const z = +WOV.get('zoom'), p = new T3.Vector3(G.h.x, BZ + 10, G.h.y).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; cx = p.x; cy = p.y; }   // 測試用：?zoom=6 把鏡頭拉近到主角
   if (FXO.zoom !== 1){ const z = FXO.zoom, f = tClamp((z - 1)/1.2), p = new T3.Vector3(G.h.x, BZ + 10, G.h.y).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; if (z > 1){ cx = tLerp(cx, p.x, f); cy = tLerp(cy, p.y, f); } }
   vw *= 1 - FXO.punch*.055; vh *= 1 - FXO.punch*.055; cx += (Math.random() - .5)*FXO.shake*vw*.027; cy += (Math.random() - .5)*FXO.shake*vh*.027;

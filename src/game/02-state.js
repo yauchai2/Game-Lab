@@ -79,7 +79,7 @@ const runQ = () => G.run ? G.run.map.mods.reduce((a, m) => a + MODS[m].q, 0) : 0
 function rollAff(k, il, boost=1){
   const r=Math.random(),tier=il>=25&&r<.015?0:il>=12&&r<.1?1:il>=5&&r<.35?2:r<.7?3:4;
   const v=AFF[k].b(il)*[1.65,1.35,1.1,.88,.65][tier]*(.9+Math.random()*.2)*boost;
-  return {k,v:k==='leech'?Math.round(v*10)/10:Math.max(1,Math.round(v)),tier};
+  return {k,v:k==='leech'||k==='u_leech'?Math.round(v*10)/10:Math.max(1,Math.round(v)),tier};
 }
 function affPickKeys(slot,have,n,sameGroup=null){
   const cnt={m:0,s:0};for(const k of have)cnt[AFF[k]?.g||'m']++;
@@ -89,7 +89,7 @@ function affPickKeys(slot,have,n,sameGroup=null){
 }
 function makeItem(slot, rar, il, forcedCore=null){
   const n = rar === 0 ? 0 : rar === 1 ? (Math.random() < .5 ? 1 : 2) : rar === 2 ? (Math.random() < .5 ? 3 : 4) : 4;
-  const LG = rar === 3 ? (coreSlot(forcedCore)===slot?LEGEND_BY[forcedCore]:tPick(LEGENDS[slot].filter(L=>!L.owner))) : null, keys = rar === 3 ? LG.aff.slice() : affPickKeys(slot,[],n);
+  const LG = rar === 3 ? (coreSlot(forcedCore)===slot?LEGEND_BY[forcedCore]:tPick(LEGENDS[slot].filter(L=>!L.owner))) : null, keys = rar === 3 ? LG.aff.map(k => 'u_' + k) : affPickKeys(slot,[],n);
   const aff = keys.map(k => rollAff(k, il, rar === 3 ? 1.35 : 1));
   const tier = Math.min(3, Math.floor(il/6));
   const bs = rar === 3 ? 0 : Math.floor(Math.random()*(SERIES[slot]?.length||1));
@@ -115,9 +115,10 @@ function rarityRoll(boss){
   return i;
 }
 const itemValue = it => Math.round((1 + it.r*2.2) * (4 + it.il*2.4));
-const itemLines = it => [it.imp, ...it.aff].map((a, i) => ({ t:(i?(it.lg?'傳奇 · ':`T${affTier(a,it.il)} · `):'')+AFF[a.k].t(a.v), imp:i === 0, lg:!!(i&&it.lg) })).concat(it.cr ? [{ t:'已腐化', lg:true }] : []).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
+const itemLines = it => [it.imp, ...it.aff].map((a, i) => ({ t:(i?(it.lg?'':`T${affTier(a,it.il)} · `):'')+AFF[a.k].t(a.v), imp:i === 0, lg:!!(i&&it.lg) })).concat(it.cr ? [{ t:'已腐化', lg:true }] : []).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
 const offPen = () => G.offline && G.offPen;   // 離開超過 60 秒才算離線：經驗 75%、掉落 25%；暗金資格與保底和線上相同；短暫切走只是快轉補上
-const salvage = it => { G.parts = (G.parts || 0) + [1, 2, 5, 12][it.r]; };   // 拆下的裝備變成零件，拿去改機
+const PARTS_OF = [.25, .5, 2, 12], partsOf = r => { const v = PARTS_OF[r] || 0, b = Math.floor(v); return b + (Math.random() < v - b ? 1 : 0); };   /* 零件較罕有：普通 1／4、魔法 1／2 的機會得 1 個 */
+const salvage = it => { G.parts = (G.parts || 0) + partsOf(it.r); };   // 拆下的裝備變成零件，拿去改機
 const lgOn = id => Object.values(G.equip).some(it => it && it.lg === id);
 const coreSlot = id => Object.keys(LEGENDS).find(slot => LEGENDS[slot].some(it => it.id === id));
 function syncCoreCollection(){
@@ -173,7 +174,7 @@ function checkGoals(){
 function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, forceModern=false){
   const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:10, armorPct:0, ele:0, vsElite:0, takenRed:0, killHeal:0, goldPct:0, xpPct:0, rarity:0, moveSpd:0 };
   const baseLife = 90 + 14*G.lvl;
-  for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; for (const a of [it.imp, ...it.aff]) s[STAT_KEY[a.k]] += a.v; }
+  for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; for (const a of [it.imp, ...it.aff]) { s[STAT_KEY[a.k]] += a.v; const al = AFF[a.k].also; if (al) s[STAT_KEY[al[0]]] += a.v*al[1]; } }
   for (const [k, v] of Object.entries(CHARS[G.char].eff)) s[k] += v;
   const asc=typeof ascendInfo==='function'?ascendInfo():null;if(asc)for(const[k,v]of Object.entries(asc.eff))s[k]+=v;
   if(typeof ascensionNodeEffects==='function')for(const[k,v]of Object.entries(ascensionNodeEffects()))s[k]+=v;
@@ -261,7 +262,7 @@ function serialize(){ return { v:2,tutorial:G.tutorial,activityLoot:G.activityLo
 function migrateEquipmentSlots(input){
  if(input.equipmentVersion===2)return input;
  const o=copyState(input),empty=()=>Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null]));
- const fix=it=>{if(it&&SIGNATURE_GEAR[it.lg])it.slot=SIGNATURE_GEAR[it.lg].slot;return it;};
+ const fix=it=>{if(it&&SIGNATURE_GEAR[it.lg])it.slot=SIGNATURE_GEAR[it.lg].slot;if(it?.lg&&Array.isArray(it.aff))for(const a of it.aff)if(a&&AFF['u_'+a.k])a.k='u_'+a.k;return it;};   /* 舊傳奇裝備的詞綴轉成傳奇專屬詞 */
  o.armory=o.armory||{};for(const it of Object.values(o.armory))fix(it);
  for(const it of o.inventory||[])fix(it);for(const d of o.groundDrops||[])if(d.it)fix(d.it);
  for(const key of ['equip','equipBackup']){const group=empty();for(const it of Object.values(o[key]||{})){fix(it);if(!it||!SLOTN[it.slot])continue;if(it.lg&&!o.armory[it.lg])o.armory[it.lg]=it;if(!group[it.slot])group[it.slot]=it;}o[key]=group;}
@@ -501,7 +502,7 @@ function normalizeBuilds(conflicts=new Set()){
  G.builds=Array.from({length:3},(_,i)=>clean(G.builds?.[i]));if(G.legacyTalent?.builds)G.legacyTalent.builds=Array.from({length:3},(_,i)=>clean(G.legacyTalent.builds[i]));
 }
 const AFFIX_BANDS=[1.65,1.35,1.1,.88,.65];
-function affValue(k,il,tier,quality,boost=1){const v=AFF[k].b(il)*AFFIX_BANDS[tier]*(.9+.2*quality)*boost;return k==='leech'?Math.round(v*10)/10:Math.max(1,Math.round(v));}
+function affValue(k,il,tier,quality,boost=1){const v=AFF[k].b(il)*AFFIX_BANDS[tier]*(.9+.2*quality)*boost;return k==='leech'||k==='u_leech'?Math.round(v*10)/10:Math.max(1,Math.round(v));}
 function affRange(a,it){const tier=affTier(a,it.il),boost=it.r===3?1.35:1;return {tier,min:affValue(a.k,it.il,tier,0,boost),max:affValue(a.k,it.il,tier,1,boost)};}
 function affQuality(a,it){return Math.max(0,Math.min(1,(a.v/(AFF[a.k].b(it.il)*AFFIX_BANDS[affTier(a,it.il)]*(it.r===3?1.35:1))-.9)/.2));}
 function recalibrateAff(a,it){return {...a,tier:affTier(a,it.il),v:affValue(a.k,it.il,affTier(a,it.il),Math.random(),it.r===3?1.35:1)};}
