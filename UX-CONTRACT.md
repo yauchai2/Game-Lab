@@ -516,3 +516,10 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - 職業能力用可展開說明；創立前提示職業固定及獨立存檔。取消新增角色返回原角色。存檔失敗沿用匯出備份提示，不宣稱保存成功。
 - 圖片失敗仍能以職業按鍵完成；OS reduced-motion 或遊戲減少效果設定保留靜態亮色。窄屏／短屏採正常流捲動，開始按鍵可達。
 - 驗證：`python3 tools/test_intro_cast.py`、`node tools/test_intro_cast_browser.cjs`。Chromium 自動化不代表 Safari、真機或完整報讀器已驗收。
+
+
+## 封面原圖與首屏一致性（2026-10-28）
+
+最新封面圖為酸黃天線的直幅／橫幅原 PNG，picture 依方向切換，不使用用戶辨認素材的 screencap。tools/pack_pixel_art.py 為 source → native PNG → four-times NEAREST／PIXEL_ART／boot 的唯一 owner；tools/entry_cover_layout.css 為載入／互動頁幾何 owner，05ab-intro-logo.js 保留啟動生命週期。boot 與互動首屏的 Logo、背景選擇及排版一致。128 色以下的全圖量化與二值 Logo alpha 不再用於這組資產。
+
+全畫面開始保留原生按鈕、Enter／Space 與 Escape，焦點顯示於開始提示；hover 提示反色、pressed 位移 2px，退出只做一次淡出，減少效果立即轉頁。序章沿用 INTRO_STAGE 的字幕／計時／音效及下一頁動作，八個圖片框只提高來源密度與移除靜止旋轉，不改狀態／存檔。驗證見 tools/test_entry_art_browser.cjs 與 docs/entry-art-refresh/README.md。

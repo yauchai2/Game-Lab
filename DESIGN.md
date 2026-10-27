@@ -506,3 +506,10 @@ Alan 追加提供三頁漫畫原圖及手機、桌面效果稿，要求連同開
 已實作候選：使用 Alan 批准的白底四人圖，192px 原生寬、40 色，再以 nearest-neighbor 放大四倍。只裁去上下白邊，保留人物構圖；四個透明人物圖層與圖片熱區共用同一像素格與輪廓。選中人物恢復原色、硬邊淺藍描線並短暫上浮，其餘人物降低飽和度；沒有持續循環動畫或新增 3D renderer。
 
 手機為人物、四職業按鍵、職業資料及命名表單直排；桌機左右排列。白底留白、藍紫選中鍵、橘紅開始按鍵、Cubic 11 字體沿用現行語言。角色資料以 CHARS 為唯一來源。細節與驗證見 [character-select](docs/character-select/README.md)。
+
+
+## 入口原圖修復（2026-10-28，最新候選）
+
+Alan 指定酸黃天線圖作開始封面，手機及 desktop 各用本對話生成的原 PNG，截圖只作辨認。這取代歷史封面 157px／40 色、Logo 九倍縮小及常駐星星／漂雲／掃描線方案。新 canonical pipeline 為 tools/pack_pixel_art.py：從原圖一次 BOX 取樣，封面 320／640px、漫畫框 384px、RGBA Logo 640px；不減色、不硬切透明度，再 NEAREST 放大。原生及四倍審閱檔、SHA 均保存，執行期沿用 image-rendering:pixelated。
+
+開始頁與載入頁共用 tools/entry_cover_layout.css。手機 Logo 位於上方，橫屏位於右側留白；全畫面開始鍵的鍵盤焦點顯示於文字提示。去掉場景座標錯位的假燈及裝飾覆層，減少影像重複合成。序章保留故事／音效／倒數，靜止圖片不旋轉，取消爆閃及膠紙。詳見 docs/entry-art-refresh/README.md；此為候選，非發佈紀錄。
