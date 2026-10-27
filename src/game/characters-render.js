@@ -91,15 +91,40 @@ function buildBodyAura(parent,kind){
  }
  const a={root,t:0,update(dt){a.t+=dt;step(a.t,dt);}};step(.5,.2);return a;
 }
+/* Presentation-only action layer: rolls, spin and thrust slashes, cast styles and a lean while running.
+   Offsets are multiplied onto the mixer pose each frame and removed again before the next mixer update. */
+const HERO_RAISE=new Set(['FROST','SHARDS','METEOR','GIANTBLADE','ARROWS','THUNDER','SWARM','GUARDIAN','OVERTURE']);
+const HERO_SWEEP=new Set(['CYCLONE','BEAM','GRAVITY','PULSE','RESONANCE','RIFT','MAGNET']);
+function heroActionLayer(g,state){
+ const u=g.userData,tq=new T3.Quaternion(),te=new T3.Euler();u.actPose=u.actPose||{};u.actApplied=true;u.yawOff=0;u.fwd=0;u.lift=0;u.tilt=0;u.squash=1;
+ const turn=(name,x=0,y=0,z=0)=>{const b=u.B[name];if(!b)return;(u.actPose[name]||(u.actPose[name]=new T3.Quaternion())).copy(b.quaternion);b.quaternion.multiply(tq.setFromEuler(te.set(x,y,z)));};
+ const bell=x=>Math.sin(Math.PI*Math.max(0,Math.min(1,x))),ease=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);};
+ if(state.dead)return;
+ if(state.roll>=0){const r=state.roll,th=ease(r)*Math.PI*2;u.tilt=th;u.lift=8*(1-Math.cos(th))+3*bell(r);u.fwd=-8*Math.sin(th)+7*bell(r);u.squash=1-.14*bell(r);
+  turn('torso',.9*bell(r));turn('head',.7*bell(r));turn('legL',-1.3*bell(r));turn('legR',-1.3*bell(r));turn('shinL',1.5*bell(r));turn('shinR',1.5*bell(r));turn('armL',-1.2*bell(r));turn('armR',-1.2*bell(r));return;}
+ if(state.attack&&state.swing>=0){const p=Math.max(0,Math.min(1,state.swing/.3)),v=u.swingN%3;
+  if(v===1){u.fwd=5*bell(p);turn('torso',.35*bell(p),-.5*(1-ease(p))+.35*ease(p));turn('armR',-.7*bell(p));u.lift=1.5*bell(p);}
+  else if(v===2){u.yawOff=Math.PI*2*ease(p);u.lift=3*bell(p);turn('torso',.2*bell(p));turn('armR',-.5*bell(p));turn('armL',-.5*bell(p),0,-.4*bell(p));}
+  return;}
+ if(state.cast){const p=Math.max(0,Math.min(1,state.castTime/.45)),id=state.skill;
+  if(HERO_RAISE.has(id)){turn('armL',-1.4*bell(p),0,-.2*bell(p));turn('armR',-1.4*bell(p),0,.2*bell(p));turn('head',-.3*bell(p));turn('torso',-.25*bell(p));u.lift=4*bell(p);}
+  else if(HERO_SWEEP.has(id)){turn('torso',.15*bell(p),(-.8+1.6*ease(p))*bell(Math.min(1,p*1.1)+.0));turn('armL',-.3*bell(p),0,-1.1*bell(p));turn('armR',-.3*bell(p),0,1.1*bell(p));u.fwd=2*bell(p);}
+  else{turn('torso',.4*bell(p));turn('head',.2*bell(p));u.fwd=2.5*bell(p);}
+  return;}
+ if(state.speed>8){const k=Math.min(1,(state.speed-8)/10);turn('torso',.22*k);turn('head',-.12*k);u.tilt=.1*k;}
+}
 function characterAnimate(g,dt,state={}){
  const u=g.userData;if(!u.y2k)return;dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));
  // Preview offsets are temporary: remove them before the mixer writes the next pose.
  if(u.previewApplied){for(const [name,q]of Object.entries(u.previewPose))u.B[name].quaternion.copy(q);u.previewApplied=false;}
+ if(u.actApplied){for(const [name,q]of Object.entries(u.actPose))u.B[name].quaternion.copy(q);u.actApplied=false;}
  const mode=state.dead?'death':state.hurt?'hurt':state.dash?'dash':state.speed>8?'run':state.attack?'attack':state.cast?'cast':state.speed>7?'run':state.speed>1?'walk':'idle';
- if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack')u.actions.attack.reset().play();u.lastSwing=state.swing;
+ if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack'){u.actions.attack.reset().play();u.swingN=(u.swingN||0)+1;if(u.swingN%3&&typeof SFX==='function'&&!state.calm)SFX('swing');}u.lastSwing=state.swing;
  if(state.cast&&u.lastCast!=null&&state.castTime<u.lastCast&&u.animation==='cast')u.actions.cast.reset().play();u.lastCast=state.castTime;
  characterPlay(g,mode,mode==='hurt'?.045:.1);const action=u.actions[mode];if(action&&mode==='attack')action.timeScale=.6/.3;if(action&&mode==='cast')action.timeScale=.8/.45;
- u.mixer.update(dt);animateEquipment(g,state);if(u.aura){u.aura.root.visible=!state.dead;u.aura.update(dt);}
+ u.mixer.update(dt);
+ if(!state.calm)heroActionLayer(g,state);else{u.yawOff=0;u.fwd=0;u.lift=0;u.tilt=0;u.squash=1;}
+ animateEquipment(g,state);if(u.aura){u.aura.root.visible=!state.dead;u.aura.update(dt);}
  g.updateMatrixWorld(true);u.skeleton.update();
 }
 // Presentation only. No game clocks, combat flags, save data or model assets change.
@@ -149,9 +174,15 @@ function characterPreviewAnimate(g,dt,reduced=false){
  u.previewApplied=true;g.updateMatrixWorld(true);u.skeleton.update();
 }
 function characterHeroLook(g){
- const h=G.h,u=g.userData;characterAnimate(g,typeof heroFrozen==='function'&&heroFrozen()?0:R3.frameDt||1/60,{dead:h.dead>0,hurt:h.hurtT>0,dash:!!h.dash,attack:h.swingT>=0,swing:h.swingT,cast:h.castT>=0||G.time<(h.characterCastUntil||0),castTime:h.castT,speed:h.mv||0});
- at3(g,h.x,h.y,BZ+terrainHeight(h.x,h.y));const target=nearestMon(false);if(h.drama?.kind==='climb')u.face=Math.atan2(h.vx,h.vy);else if((h.mv||0)>8&&h.dead<=0)u.face=Math.atan2(h.vx,h.vy);else if(target&&h.dead<=0)u.face=Math.atan2(target.x-h.x,target.y-h.y);const d=Math.atan2(Math.sin(u.face-g.rotation.y),Math.cos(u.face-g.rotation.y));g.rotation.y+=d*(1-Math.exp(-12*(R3.frameDt||1/60)));
- g.scale.setScalar(.85*CK);u.orb.visible=h.castT>=0&&h.dead<=0;
+ const h=G.h,u=g.userData,calm=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches||typeof viewEffectsReduced==='function'&&viewEffectsReduced();
+ if(h.dash&&u.rollSeen!==h.dash){u.rollSeen=h.dash;u.rollAt=G.time;if(!calm&&typeof SFX==='function')SFX('roll');}
+ const rollAge=G.time-(u.rollAt??-9),roll=!calm&&h.dead<=0&&rollAge>=0&&rollAge<.42?rollAge/.42:-1;
+ characterAnimate(g,typeof heroFrozen==='function'&&heroFrozen()?0:R3.frameDt||1/60,{dead:h.dead>0,hurt:h.hurtT>0,dash:!!h.dash&&roll<0,roll,calm,attack:h.swingT>=0,swing:h.swingT,cast:h.castT>=0||G.time<(h.characterCastUntil||0),castTime:h.castT,skill:h.castSk,speed:h.mv||0});
+ at3(g,h.x,h.y,BZ+terrainHeight(h.x,h.y));const target=nearestMon(false);if(h.drama?.kind==='climb')u.face=Math.atan2(h.vx,h.vy);else if((h.mv||0)>8&&h.dead<=0)u.face=Math.atan2(h.vx,h.vy);else if(target&&h.dead<=0)u.face=Math.atan2(target.x-h.x,target.y-h.y);
+ const base=u.baseYaw??g.rotation.y,d=Math.atan2(Math.sin(u.face-base),Math.cos(u.face-base));u.baseYaw=base+d*(1-Math.exp(-12*(R3.frameDt||1/60)));
+ g.rotation.order='YXZ';g.rotation.y=u.baseYaw+(u.yawOff||0);g.rotation.x=u.tilt||0;
+ if(u.lift||u.fwd){g.position.y+=u.lift||0;g.position.x+=Math.sin(u.baseYaw)*(u.fwd||0);g.position.z+=Math.cos(u.baseYaw)*(u.fwd||0);}
+ g.scale.set(.85*CK/Math.sqrt(u.squash||1),.85*CK*(u.squash||1),.85*CK/Math.sqrt(u.squash||1));u.orb.visible=h.castT>=0&&h.dead<=0;
 }
 function characterDispose(g){if(!g?.userData.y2k)return;const u=g.userData;u.mixer.stopAllAction();u.mixer.uncacheRoot(g);disposeEquipmentStraps(g);u.skeleton.dispose();}
 

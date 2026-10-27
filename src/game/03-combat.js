@@ -593,7 +593,7 @@ function castExpansionSkill(id,mul,origin,prim,al){
 }
 
 /* Shared, bounded encounter systems. No extra UI or wall-clock loop owns combat. */
-const SPECTACLE_SKILLS=new Set(['SWARM','GUARDIAN','ARROWS','GIANTBLADE','OVERTURE','RIFT','RESONANCE','GRAVITY']);
+const SPECTACLE_SKILLS=new Set(['SWARM','GUARDIAN','ARROWS','GIANTBLADE','OVERTURE','RIFT','RESONANCE','GRAVITY','SHARDS','CYCLONE','THUNDER']);
 /* 抗性：深度 4 起，部分魔物帶火／冰／電元素；元素攻擊吃抗性（上限 75%），只吃一半護甲減傷 */
 const MON_EL_NAME = { fire:'火焰', cold:'冰霜', light:'閃電' }, MON_EL_RES = { fire:'resF', cold:'resC', light:'resL' };
 function monsterEl(m){if(lvlNow()<4)return null;let h=m.boss?G.depth:0;for(const c of String(m.type))h=(h*31+c.charCodeAt(0))>>>0;return [null,'fire','cold','light'][h%4];}
@@ -611,12 +611,15 @@ function castSpectacle(id,mul,origin,prim){
  if(id==='OVERTURE'){for(let i=0;i<6;i++)schedule(.05+i*.48,.5,{x:G.h.x,y:G.h.y,angle});}
  else if(id==='ARROWS'){for(let i=0;i<6;i++)schedule(.4+i*.55,1/6);addFx({sustained:true,k:'arrowstorm',x:prim.x,y:prim.y,z:BZ,t:0,dur:3.8,col:SKILLS[id].col});}
  else if(id==='GIANTBLADE'){schedule(1.85,.7,{main:true});schedule(2.35,.15);schedule(2.85,.15);addFx({sustained:true,k:'giantblade',x:prim.x,y:prim.y,z:BZ,t:0,dur:3.6,col:SKILLS[id].col});}
+ else if(id==='SHARDS'){for(let i=0;i<8;i++)schedule(.2+i*.5,1/8,{pulse:i});addFx({sustained:true,k:'crystalfield',x:prim.x,y:prim.y,t:0,dur:4.6,col:SKILLS[id].col});}
+ else if(id==='CYCLONE'){const ux=Math.cos(angle),uy=Math.sin(angle),at=p=>[prim.x+ux*(p-.5)*30,prim.y+uy*(p-.5)*30];for(let i=0;i<10;i++){const[x,y]=at(i/9);schedule(.2+i*.4,.1,{pulse:i,x,y});}addFx({sustained:true,k:'tornado',x:prim.x,y:prim.y,angle,t:0,dur:4.4,col:SKILLS[id].col});}
+ else if(id==='THUNDER'){for(let i=0;i<7;i++){const a=i*2.399,r=(i%3)*5;schedule(.3+i*.55,1/7,{pulse:i,x:prim.x+Math.cos(a)*r,y:prim.y+Math.sin(a)*r});}addFx({sustained:true,k:'stormcloud',x:prim.x,y:prim.y,t:0,dur:4.6,col:SKILLS[id].col});}
  else{const n=id==='RIFT'?3:id==='RESONANCE'?4:6;for(let i=0;i<n;i++)schedule(.35+i*(id==='RIFT'?.75:id==='RESONANCE'?.8:.5),1/n,{pulse:i,angle,x:prim.x+(id==='RIFT'?Math.cos(angle)*(i-1)*12:0),y:prim.y+(id==='RIFT'?Math.sin(angle)*(i-1)*12:0)});addFx({sustained:true,k:id==='RIFT'?'riftfield':id==='RESONANCE'?'resonance':'gravitywell',x:prim.x,y:prim.y,angle,t:0,dur:3.5,col:SKILLS[id].col});}
  SFX(id.toLowerCase());
 }
 function spectacleImpact(t){const k=G.st.sk[t.id];if(!k)return;let total=0;
  if(t.id==='OVERTURE'){const to={x:t.x+Math.cos(t.angle)*45,y:t.y+Math.sin(t.angle)*45};total=expansionLine(t.id,t,to,t.mul,t.origin,7*(k.has.includes('SPREAD')?1.4:1),5);addFx({k:'musicwave',x:t.x,y:t.y,angle:t.angle,col:SKILLS[t.id].col,t:0,dur:1.3});}
- else{const base=t.id==='ARROWS'?30:t.id==='RIFT'?16:t.id==='RESONANCE'?16+(t.pulse||0)*5:24,radius=base*(k.has.includes('SPREAD')?1.4:1),targets=aliveMons().filter(m=>Math.hypot(m.x-t.x,m.y-t.y)<=radius).sort((a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y)).slice(0,t.id==='ARROWS'?12:8);for(const m of targets){const dmg=applySkillHit(t.id,m,t.mul,t.origin);total+=dmg;if(t.id==='GIANTBLADE'&&t.main&&!m.dead)applyFreeze(m,.6,dmg);if(t.id==='GRAVITY'&&!m.dead&&!m.boss){const dist=Math.hypot(m.x-t.x,m.y-t.y)||1,q=terrainWaypoint(m.x,m.y,t.x,t.y),step=Math.min(4,dist),len=Math.hypot(q[0]-m.x,q[1]-m.y)||1;[m.x,m.y]=terrainProject(m.x+(q[0]-m.x)/len*step,m.y+(q[1]-m.y)/len*step);}}if(t.id==='GIANTBLADE'&&t.main){addFx({k:'ring',x:t.x,y:t.y,col:SKILLS[t.id].col,t:0,dur:1.1});kick(2,.15,SKILLS[t.id].col,.5);}}
+ else{const base=t.id==='ARROWS'?30:t.id==='SHARDS'?26:t.id==='CYCLONE'?18:t.id==='THUNDER'?18:t.id==='RIFT'?16:t.id==='RESONANCE'?16+(t.pulse||0)*5:24,radius=base*(k.has.includes('SPREAD')?1.4:1),targets=aliveMons().filter(m=>Math.hypot(m.x-t.x,m.y-t.y)<=radius).sort((a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y)).slice(0,t.id==='ARROWS'?12:8);for(const m of targets){const dmg=applySkillHit(t.id,m,t.mul,t.origin);total+=dmg;if(t.id==='GIANTBLADE'&&t.main&&!m.dead)applyFreeze(m,.6,dmg);if(t.id==='SHARDS'&&t.pulse===0&&!m.dead&&!m.boss)applyFreeze(m,.8,dmg);if((t.id==='GRAVITY'||t.id==='CYCLONE')&&!m.dead&&!m.boss){const dist=Math.hypot(m.x-t.x,m.y-t.y)||1,q=terrainWaypoint(m.x,m.y,t.x,t.y),step=Math.min(4,dist),len=Math.hypot(q[0]-m.x,q[1]-m.y)||1;[m.x,m.y]=terrainProject(m.x+(q[0]-m.x)/len*step,m.y+(q[1]-m.y)/len*step);}}if(t.id==='THUNDER'){addFx({k:'ring',x:t.x,y:t.y,col:SKILLS[t.id].col,t:0,dur:.7});kick(1.5,.1,SKILLS[t.id].col,.35);}if(t.id==='SHARDS'&&t.pulse===0){addFx({k:'ring',x:t.x,y:t.y,col:SKILLS[t.id].col,t:0,dur:.9});kick(2,.12,SKILLS[t.id].col,.4);}if(t.id==='GIANTBLADE'&&t.main){addFx({k:'ring',x:t.x,y:t.y,col:SKILLS[t.id].col,t:0,dur:1.1});kick(2,.15,SKILLS[t.id].col,.5);}}
  heroRecover(total*(G.st.leech/100+(k.leech?.12:0)));
 }
 function supportWorldTick(dt){
