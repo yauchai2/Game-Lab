@@ -2,7 +2,7 @@
 const INTRO_TITLE={timer:0};
 function introCoverRender(){
  const o=$('ovl');introLogoDispose();document.body.classList.add('title-screen-active');
- o.innerHTML=`<section class="intro-title" aria-label="Hello, Static! 哈囉，雜訊！"><div class="title-scene" aria-hidden="true"><img class="title-art" src="${TITLE_SCREEN.background}" width="941" height="1672" alt="" draggable="false" fetchpriority="high"><span class="title-radio-light"></span><span class="title-coast-light"></span></div><h1 class="title-wordmark"><img src="${ASSET.logo}" width="${TITLE_SCREEN.logoWidth}" height="${TITLE_SCREEN.logoHeight}" alt="Hello, Static! 哈囉，雜訊！" draggable="false" fetchpriority="high"></h1><div class="title-actions"><button type="button" class="title-start" data-initial-focus onclick="introTitleStart()"><span>開始遊戲</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></button></div></section>`;
+ o.innerHTML=`<section class="intro-title entry-surface" aria-label="Hello, Static! 哈囉，雜訊！"><div class="title-scene" aria-hidden="true"><img class="title-art" src="${TITLE_SCREEN.background}" width="941" height="1672" alt="" draggable="false" fetchpriority="high"><span class="title-radio-light"></span><span class="title-coast-light"></span></div><h1 class="title-wordmark"><img src="${ASSET.logo}" width="${TITLE_SCREEN.logoWidth}" height="${TITLE_SCREEN.logoHeight}" alt="Hello, Static! 哈囉，雜訊！" draggable="false" fetchpriority="high"></h1><div class="title-actions"><button type="button" class="title-start" data-initial-focus onclick="introTitleStart()"><span>開始遊戲</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></button></div></section>`;
  uxOpenDialog(o,'Hello, Static! 哈囉，雜訊！',introEscape);introPersist();
 }
 function introTitleStart(){
@@ -13,14 +13,15 @@ function introTitleStart(){
  INTRO_TITLE.timer=setTimeout(()=>{INTRO_TITLE.timer=0;if(INTRO.active&&INTRO.cover)introStep(0);},220);
 }
 /* Existing intro lifecycle hook, now without a WebGL renderer. */
-function introLogoDispose(){clearTimeout(INTRO_TITLE.timer);INTRO_TITLE.timer=0;document.body.classList.remove('title-screen-active');}
+function introLogoDispose(){if(typeof introComicDispose==='function')introComicDispose();clearTimeout(INTRO_TITLE.timer);INTRO_TITLE.timer=0;document.body.classList.remove('title-screen-active');}
 addEventListener('pagehide',introLogoDispose);
 addEventListener('pageshow',event=>{if(event.persisted&&INTRO.active&&INTRO.cover)introCoverRender();});
 document.addEventListener('visibilitychange',()=>document.body.classList.toggle('title-screen-paused',document.hidden));
 const INTRO_TITLE_CSS=`
 /* Full-viewport brand surface outside the silver dialog shell. */
 body.intro-active.title-screen-active #ovl{padding:0!important;align-items:center!important;overflow:hidden!important;background:#191919!important;max-height:none}
-body.intro-active.title-screen-active #ovl>.intro-title{--title-ink:#142c57;--title-key:#e5edfc;--title-edge:#8d9db9;position:relative;isolation:isolate;flex:none;width:min(100vw,56.25vh);width:min(100vw,56.25dvh);height:100vh;height:100dvh;min-height:0;margin:0;overflow:hidden;background:#4e77d0;animation:title-arrive 600ms ease-out both;transition:opacity 220ms ease}
+.entry-surface{--title-ink:#142c57;--title-key:#e5edfc;--title-edge:#8d9db9}
+body.intro-active.title-screen-active #ovl>.intro-title{position:relative;isolation:isolate;flex:none;width:min(100vw,56.25vh);width:min(100vw,56.25dvh);height:100vh;height:100dvh;min-height:0;margin:0;overflow:hidden;background:#4e77d0;animation:title-arrive 600ms ease-out both;transition:opacity 220ms ease}
 /* Artwork and decorative lights share coordinates even when narrow phones crop the sides. */
 .title-scene{position:absolute;top:0;left:50%;transform:translateX(-50%);width:max(100%,56.28vh);width:max(100%,56.28dvh);height:100%;pointer-events:none}
 .title-art{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated;user-select:none}

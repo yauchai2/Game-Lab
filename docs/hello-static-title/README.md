@@ -1,4 +1,4 @@
-# Hello, Static! 暮色屋頂開始頁
+# Hello, Static! 開始頁與漫畫序章
 
 2026-10-27，Asia/Taipei。**已實作／Chromium 已驗證；候選未合併、未發佈。**
 
@@ -41,3 +41,17 @@
 [手機](mobile.png) · [桌面](desktop.png) · [窄屏](narrow.png) · [橫屏](landscape.png) · [短手機](short-mobile.png)
 
 下一步：審閱候選並在有 release 授權時合併／發佈；之後才更新線上驗收紀錄。
+
+
+## 追加：序章完整重製
+
+同一任務期間 Alan 再提供三頁漫畫原件及版面效果圖，授權替換原序章。已在同一 [PR #101](https://github.com/yauchai2/Game-Lab/pull/101) 接續，非新平行流程。
+
+- 舊上下屏文字卡／introStoryArt SVG 已退出 runtime；選職業表單仍是原來的實作。新漫畫不裁格，保持 941:1672，桌面漫畫最高 900px；390×844 為約 390×693 置中，吻合提供效果圖。
+- 三頁使用已選定原圖；第三頁為正式遊戲手機版本。原件與 WebP／hash 在 assets/prologue，tools/pack_intro_comic.py 是唯一打包入口；三頁共 657,298 bytes，網站獨立內容 hash 快取、離線內嵌。
+- 右下下一頁／選擇角色；圖外返回／頁碼／故事文字／略過。左右鍵及 touch／pen 橫滑皆可翻頁；文字展開時不接管箭頭，垂直觸控不翻頁。故事文字直接來自 INTRO_STORY，圖片失敗有正文備援。
+- 返回封面／選職業會清除 comic-screen-active／手勢；重整接續原頁，選角草稿回故事後仍保存。第二頁名稱已同步 docs/story.md 為使用者指定「會跟著節拍跑的雜物」。
+- `node tools/test_intro_comic.cjs` 通過；來源入口與網站分段入口的 `test_intro_comic_browser.cjs` 各通過 9 組流程，零 pageerror。涵蓋 390×844、1920×1080、320×568、844×390 的全部三頁，以及 CDP 原生觸控、鍵盤／文字互斥、圖像失敗、續接、命名／職業／教學和封鎖子資源的單檔成品。詳見 [漫畫驗證](comic-browser-results.json)。
+- 開始頁 10 組流程亦於整合後重跑，確認封面 → 新漫畫 → 選職業／教學及既有角色載入。Premium strict audit 仍僅有上列相同兩項手機基線警示。實機 Safari／螢幕閱讀器尚未驗證。
+
+預覽：[第一頁手機](comic-mobile-1.png) · [第二頁手機](comic-mobile-2.png) · [第三頁手機](comic-mobile-3.png) · [桌面](comic-desktop-1.png) · [文字閱讀](comic-transcript.png) · [橫屏](comic-landscape-1.png)。

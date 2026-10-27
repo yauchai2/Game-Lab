@@ -1,6 +1,6 @@
 # Game Lab 最新接續紀錄
 
-**2026-10-27，Hello, Static! 開始頁候選：** Alan 提供暮色屋頂＋雙語 Logo 與手機／桌面效果稿，要求取代舊開始頁。獨立分支 `codex/hello-static-title`，基於 main `282b87c`。移除標題 3D renderer／舊裝置框，改滿高直幅、桌面黑邊、獨立透明 Logo／原生開始按鈕及局部燈號；素材隨離線及快取網站嵌入。序章／選職業／存檔仍由既有 INTRO 擁有。證據與已知基線失敗見 [交付紀錄](hello-static-title/README.md)。本批未合併／未發佈。
+**2026-10-27，Hello, Static! 開始頁候選：** Alan 提供暮色屋頂＋雙語 Logo 與手機／桌面效果稿，要求取代舊開始頁。獨立分支 `codex/hello-static-title`／[PR #101](https://github.com/yauchai2/Game-Lab/pull/101)，基於 main `282b87c`。移除標題 3D renderer／舊裝置框，改滿高直幅、桌面黑邊、獨立透明 Logo／原生開始按鈕及局部燈號。Alan 再要求序章重製，已移除舊 SVG／上下屏故事卡，改三頁完整直幅漫畫、圖外工具列／可展故事文字、左右鍵及真實觸控滑動。素材隨離線及快取網站嵌入。序章／選職業／存檔仍由既有 INTRO 擁有。證據與已知基線失敗見 [交付紀錄](hello-static-title/README.md)。本批未合併／未發佈。
 
 **本批場景／故事候選：** 已merge main d06be7b／v0.65，保留Claude裝備、手機、掉落及血跡40處／90秒。新增street-neighborhoods.js：十二地景生活工作點，沿terrainBuild放置／碰撞／BFS，120種子中118有位置、全區連通，原版／訓練／塔樓不加。六章contact/request/lead及結尾串錯送試音排程，失物歸還主人；沿同一ch與六深度，不建NPC任務state。directJournal實際手機、六次主線kill／save／地圖離線邊界、24actor、血跡、site0.65／audio及gameplay回歸通過。docs/neighborhood-scenes為入口，音訊及此批仍PR88候選未發佈；下一步處理review及真機／最終佩戴／聽感邊界。
 
