@@ -1,6 +1,5 @@
 ---
 
-> **怪物造型現行補註（2026-10-26）：** [十二款模型與同伴設定](docs/monster-catalog.md) 優先於本文歷史生物造型描述。舊敵人類型保留玩法職責；本次沒有改 AI、數值、存檔、模型或遊戲。
 version: alpha
 colors:
   ink: "#172751"
@@ -22,6 +21,8 @@ omitted:
     reason: "Shell geometry is owned by UI_LAYOUT_CSS; existing scene geometry remains in the renderer. No global spacing token migration."
 ---
 # Idle Hero
+
+> **怪物造型現行補註（2026-10-26）：** [十二款模型與同伴設定](docs/monster-catalog.md) 優先於本文歷史生物造型描述。舊敵人類型保留玩法職責；本次沒有改 AI、數值、存檔、模型或遊戲。
 
 ## Overview
 
@@ -474,3 +475,16 @@ Alan 本聊天選定 Patreon 並提供 https://www.patreon.com/c/alanycchan，�
 只前往公開創作者頁，不提供站內結帳、帳號綁定、戰力獎勵或付款成功回報。公開頁不列金額、福利或扣款說明；只有低調 Patreon 入口及自願支持短句。
 
 全遊戲美術基準及最新材質規格見[creative-direction](docs/creative-direction.md)；0.64整合交付見[style-complete](docs/style-complete/README.md)。藍紫窗口／Cubic11操作契約維持。
+
+
+## Hello, Static! 暮色屋頂開始頁（2026-10-27）
+
+本節取代上方舊 3D Logo 舞台的開始頁規格。Alan 選定 Hello, Static!／哈囉，雜訊！及暮色屋頂資產，提供手機與桌面合成稿並要求替換開始頁。頁面採品牌表現，序章、職業選擇與存檔仍由既有 INTRO／05r-direct-play 擁有。
+
+- `05ab-intro-logo.js` 是開始頁幾何與生命週期唯一 owner：滿視窗高度、桌面 9:16 置中及 #191919 黑邊，窄手機裁背景兩側。Logo 使用獨立透明圖，上方約 16–18%；按鈕距底 11.6%，最小觸控高 48px（短屏 44px），保留 Cubic 11。
+- 開始頁局部 token `--title-ink #142c57`、`--title-key #e5edfc`、`--title-edge #8d9db9` 僅由此檔 CSS 定義／消費；不是新的全局遊戲皮膚。按鈕沿用銀藍實體按鍵語言。Logo 是提供的圖像字標，正文仍用 UX_THEME 字體。
+- 原圖保存在 `assets/brand/hello-static`；`tools/pack_title_screen.py` 是唯一準備／打包入口，產生透明 Logo WebP、屋頂 WebP、hash 清單、`title-screen-assets.js`、`ASSET.logo` 與 boot 同源字標。`tools/pack_logo.py` 委派至此入口。單檔與網站共用嵌入資料，無外部素材請求。舊 3D 原件保留作歷史來源，但 index 不再載入／建立標題 WebGL renderer。
+- 唯一常駐動效是原畫燈位的緩慢階梯明滅；Logo 一次淡入、開始一次 220ms 淡出。減少動態或遊戲減少特效時停用；背景分頁停動效。沒有全屏閃爍、鏡頭晃動或新增音訊播放器。
+- 按鈕 hover／焦點／按下不改位置或尺寸；初始焦點沿用 uxOpenDialog，Enter／Space 原生啟動。Escape 沿用序章行為並清除待執行轉場；bfcache 回來重掛完整開始頁。允許瀏覽器縮放及安全區，保留圖像失敗時的操作入口。
+
+此輪為候選，驗證與狀態見 [交付紀錄](docs/hello-static-title/README.md)。
