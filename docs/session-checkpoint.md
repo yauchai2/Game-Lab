@@ -1,15 +1,9 @@
-# v0.74.0整合發佈接續
+# v0.74.0已發佈；接續人工驗收
 
-Alan已授權release後繼續。main基底4c90e05，Claude4a5d1e4與PR96／93004b5已整合，22浮島／抗性／特效／介面／肩帶耳罩同版；測試與排除範圍見[發佈整合](release-0.74.0/integration.md)。來源PR98；部署與Release完成情況以live-verification.json及GitHub為準。
+2026-10-27，香港時間。Alan要求release後繼續。PR98已合併，source/tag e61a351，Pages c68d5dd；Release40455614418／Pages40455613370成功。HTTPS manifest、26檔、附件實下載SHA／大小、tag及直接正式站390px啟動通過，見[證據](release-0.74.0/live-verification.json)與live-browser.json。
 
-# 接續點：全22浮島
+已包含22浮島／18區實際縮圖／舊手記附錄、Claude4a5d1e4待發0.73的抗性／技能特效／畫質／UI／更新檢查，以及PR96肩帶／耳罩；PR96已關閉為由PR98納入。未覆蓋原GLB／四肢／章節owner；歷史試稿、內部備份不納入，所有分支保留。
 
-2026-10-27 UTC。分支codex/floating-island-redesign／PR98，基底main4c90e05；Claude4a5d1e4已查核，源碼接入範圍已在PR交接。Alan要求全部完成並注意美感。
+發佈後接續：把PR97驗收工具移植到當前版本，生成確切e61a351來源的隔離驗收包，補六章入口／22島圖集／18手記遷移檢查；結果全部預設not-run。見[驗收交付](final-acceptance/README.md)。正式更新不需再生全部地圖或重做已上線配樂。
 
-22模型／44portableGLB／22Blend／110視圖齊，18故事刷圖＋3塔樓＋1訓練，index與原生戰鬥接入、正式單檔重建。六章／數值／存檔owner沿用；舊12手記附錄與新18手記有版本遷移。詳細設計、工具與驗證見[floating-island-redesign/series-completion.md](floating-island-redesign/series-completion.md)。
-
-未merge／release。下一步是整包驗收與合併review，無需再生其餘地圖；真機Safari、長時間效能及Alan主觀美術驗收仍未完成。其他PR96／97及Claude抗性／傳奇改動保留，未覆蓋。
-
-接續已修背包預覽錯用當前場景、米制詳情與18區實際GLB縮圖。證據series-review-validation.json：54詳情／132切圖／660模擬秒、GPU計數穩定與fade釋放；desktop/mobile新截圖已檢視。主線與活動、save migration、split-build再驗證。此測試是固定場景循環，不是真機長測。其他Claude分支仍4a5d1e4，main仍4c90e05。
-
-肩帶／耳罩修正PR96已整合至本次release候選；保留原GLB、四肢與20專屬裝備。
+剩餘FINISH-05／06是真機Safari、30分鐘實戰及主觀聽感／美術驗收。桌面software WebGL、660模擬秒與發包均不能代替。依實際回報修具體問題，不再新增平行全專案待辦。

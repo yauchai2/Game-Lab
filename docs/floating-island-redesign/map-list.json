@@ -1,5 +1,5 @@
 {
-  "status": "All22 authored model and native integrated candidates complete; not merged/deployed/released",
+  "status": "All22 shipped in v0.74.0 / e61a351 via PR98; manual device/art acceptance pending",
   "baseCommit": "4c90e05",
   "characterScaleReferenceMeters": 1.8,
   "maps": [
@@ -14,7 +14,7 @@
       ],
       "layout": "偏心綠地與折角街口",
       "landmarks": "長椅、公共收音機、兩簇切面樹",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi01-corner-park/fi01-corner-park.glb"
     },
     {
@@ -28,7 +28,7 @@
       ],
       "layout": "削角L形街口與開放前庭",
       "landmarks": "唱片店、洗衣店、屋頂小天線",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi02-record-lane/fi02-record-lane.glb"
     },
     {
@@ -42,7 +42,7 @@
       ],
       "layout": "橋墩框住的寬修理坪",
       "landmarks": "邊界高架橋段、小禾修理舖",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi03-bridge-repair/fi03-bridge-repair.glb"
     },
     {
@@ -56,7 +56,7 @@
       ],
       "layout": "開頂剖切地下道與兩側坡道",
       "landmarks": "雨棚、排水槽、轉播接口",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi04-rain-underpass/fi04-rain-underpass.glb"
     },
     {
@@ -70,7 +70,7 @@
       ],
       "layout": "偏置步行街與側廣場",
       "landmarks": "青紫實色招牌、唱片櫥窗",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi05-neon-promenade/fi05-neon-promenade.glb"
     },
     {
@@ -84,7 +84,7 @@
       ],
       "layout": "攤棚沿三側、中央淺色空地",
       "landmarks": "燒烤攤、餐牌幾何、點餐電台",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi06-night-market/fi06-night-market.glb"
     },
     {
@@ -98,7 +98,7 @@
       ],
       "layout": "開頂中庭、退後的半環店廊",
       "landmarks": "關門百貨、回收招牌、移動式廣播",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi07-closed-atrium/fi07-closed-atrium.glb"
     },
     {
@@ -112,7 +112,7 @@
       ],
       "layout": "月台側邊與錯位貨運前庭",
       "landmarks": "短月台、站務亭、貨物推車",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi08-freight-station/fi08-freight-station.glb"
     },
     {
@@ -126,7 +126,7 @@
       ],
       "layout": "外緣河道與開頂工作院",
       "landmarks": "折板工場、吊臂、量測工作台",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi09-riverside-works/fi09-riverside-works.glb"
     },
     {
@@ -140,7 +140,7 @@
       ],
       "layout": "折角碼頭、淺水外緣",
       "landmarks": "低貨櫃、派送台、短棧橋",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi10-cargo-quay/fi10-cargo-quay.glb"
     },
     {
@@ -154,7 +154,7 @@
       ],
       "layout": "弧折堤岸及寬候船廣場",
       "landmarks": "候船亭、收音機長椅、護欄",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi11-ferry-point/fi11-ferry-point.glb"
     },
     {
@@ -168,7 +168,7 @@
       ],
       "layout": "單一可走緩坡與展開的站坪",
       "landmarks": "電塔靠後、便利補給亭、線轆",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi12-hill-relay/fi12-hill-relay.glb"
     },
     {
@@ -182,7 +182,7 @@
       ],
       "layout": "緩坡平台與寬避風坪",
       "landmarks": "值班亭、熱水桌、低雪堤",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi13-snow-duty/fi13-snow-duty.glb"
     },
     {
@@ -196,7 +196,7 @@
       ],
       "layout": "淺切兩層台地、寬坡連接",
       "landmarks": "切面岩壁、工具棚、巡線標記",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi14-quarry-yard/fi14-quarry-yard.glb"
     },
     {
@@ -210,7 +210,7 @@
       ],
       "layout": "開頂剖切的地下步行廊",
       "landmarks": "舊發射機、兩側店鋪、服務梯",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi15-underground-relay/fi15-underground-relay.glb"
     },
     {
@@ -224,7 +224,7 @@
       ],
       "layout": "錯位退台與寬維修通道",
       "landmarks": "大型冷氣靠後、粗風管、維修亭",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi16-roof-cooling/fi16-roof-cooling.glb"
     },
     {
@@ -238,7 +238,7 @@
       ],
       "layout": "削角多邊形、偏置塔基",
       "landmarks": "天線在外緣、線纜架、測試台",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi17-antenna-relay/fi17-antenna-relay.glb"
     },
     {
@@ -252,7 +252,7 @@
       ],
       "layout": "外緣高低台、中央完整試音坪",
       "landmarks": "電台工作室、主天線、各站回覆台",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fi18-radio-rooftop/fi18-radio-rooftop.glb"
     },
     {
@@ -266,7 +266,7 @@
       ],
       "layout": "開放園內廣場",
       "landmarks": "停轉遊具只在後側、票亭",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/ft01-closed-fairground/ft01-closed-fairground.glb"
     },
     {
@@ -280,7 +280,7 @@
       ],
       "layout": "可見室內的開頂倉庫",
       "landmarks": "冷藏機、低貨架、保溫門框",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/ft02-cold-warehouse/ft02-cold-warehouse.glb"
     },
     {
@@ -294,7 +294,7 @@
       ],
       "layout": "開頂工程艙與環形通道",
       "landmarks": "變電櫃靠邊、粗電纜、檢修平台",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/ft03-power-vault/ft03-power-vault.glb"
     },
     {
@@ -308,7 +308,7 @@
       ],
       "layout": "沿FI02語彙簡化的開放方坪",
       "landmarks": "低圍欄、測試喇叭、可收起練習標記",
-      "state": "model + native series candidate; not released",
+      "state": "released in v0.74.0; manual art/device acceptance pending",
       "asset": "assets/maps/fp01-practice-court/fp01-practice-court.glb"
     }
   ]
