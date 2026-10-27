@@ -505,3 +505,14 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - comic-screen-active 僅在漫畫期存在，切封面／選職業即清理，手勢只存暫時起點，不改遊戲狀態。角色名稱／職業草稿仍由 INTRO 保存，返回漫畫不清除。
 - 故事文字直接讀 INTRO_STORY；圖像有 alt 及相同正文描述。圖片錯誤顯示正文備援，下一頁仍可操作；不以圖片解碼成功作為必經閘門。
 - 驗證：test_intro_comic.cjs／test_intro_comic_browser.cjs，含四尺寸三頁、真實 CDP 觸控、文字／鍵盤互斥、失敗備援、續接、選角草稿及離線子資源封鎖。記錄在 docs/hello-static-title。
+
+
+## 角色選擇頁（2026-10-27，候選）
+
+- `introCareerRender` 只擁有呈現；職業、能力由 `CHARS` 擁有，草稿由 `INTRO`／`introPersist` 擁有；建立、存檔、教學由既有 `introBegin` 負責。
+- 序章三頁 → 選角色／命名 → 開始冒險；同頁表單直接建立，不加入重複確認。已保存角色仍沿用既有載入規則。
+- Hover／focus 只預覽人物亮色；點選才提交，離開恢復目前選擇。圖片輪廓熱區有下方四個 44px 按鍵作替代，不依賴 hover 或精準觸控。
+- 四職業按鍵使用 `aria-pressed`，方向鍵／Home／End 切換並同步焦點。沿用共用 dialog 的焦點圈限；命名支援原生 Enter 提交、空白錯誤回到欄位，切換職業／返回故事／重新載入保留草稿。
+- 職業能力用可展開說明；創立前提示職業固定及獨立存檔。取消新增角色返回原角色。存檔失敗沿用匯出備份提示，不宣稱保存成功。
+- 圖片失敗仍能以職業按鍵完成；OS reduced-motion 或遊戲減少效果設定保留靜態亮色。窄屏／短屏採正常流捲動，開始按鍵可達。
+- 驗證：`python3 tools/test_intro_cast.py`、`node tools/test_intro_cast_browser.cjs`。Chromium 自動化不代表 Safari、真機或完整報讀器已驗收。
