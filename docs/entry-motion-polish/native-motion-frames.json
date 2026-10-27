@@ -1,0 +1,122 @@
+[
+  {
+    "job": "street",
+    "name": "walk",
+    "mode": "walk",
+    "tilt": 0
+  },
+  {
+    "job": "street",
+    "name": "run",
+    "mode": "run",
+    "tilt": 0.1
+  },
+  {
+    "job": "street",
+    "name": "roll-1",
+    "mode": "run",
+    "tilt": 1.1851001093787465
+  },
+  {
+    "job": "street",
+    "name": "roll-2",
+    "mode": "run",
+    "tilt": 3.291142047726455
+  },
+  {
+    "job": "street",
+    "name": "roll-3",
+    "mode": "run",
+    "tilt": 5.329338339737868
+  },
+  {
+    "job": "frost",
+    "name": "walk",
+    "mode": "walk",
+    "tilt": 0
+  },
+  {
+    "job": "frost",
+    "name": "run",
+    "mode": "run",
+    "tilt": 0.1
+  },
+  {
+    "job": "frost",
+    "name": "roll-1",
+    "mode": "run",
+    "tilt": 1.1851001093787465
+  },
+  {
+    "job": "frost",
+    "name": "roll-2",
+    "mode": "run",
+    "tilt": 3.291142047726455
+  },
+  {
+    "job": "frost",
+    "name": "roll-3",
+    "mode": "run",
+    "tilt": 5.329338339737868
+  },
+  {
+    "job": "beep",
+    "name": "walk",
+    "mode": "walk",
+    "tilt": 0
+  },
+  {
+    "job": "beep",
+    "name": "run",
+    "mode": "run",
+    "tilt": 0.1
+  },
+  {
+    "job": "beep",
+    "name": "roll-1",
+    "mode": "run",
+    "tilt": 1.1851001093787465
+  },
+  {
+    "job": "beep",
+    "name": "roll-2",
+    "mode": "run",
+    "tilt": 3.291142047726455
+  },
+  {
+    "job": "beep",
+    "name": "roll-3",
+    "mode": "run",
+    "tilt": 5.329338339737868
+  },
+  {
+    "job": "volt",
+    "name": "walk",
+    "mode": "walk",
+    "tilt": 0
+  },
+  {
+    "job": "volt",
+    "name": "run",
+    "mode": "run",
+    "tilt": 0.1
+  },
+  {
+    "job": "volt",
+    "name": "roll-1",
+    "mode": "run",
+    "tilt": 1.1851001093787465
+  },
+  {
+    "job": "volt",
+    "name": "roll-2",
+    "mode": "run",
+    "tilt": 3.291142047726455
+  },
+  {
+    "job": "volt",
+    "name": "roll-3",
+    "mode": "run",
+    "tilt": 5.329338339737868
+  }
+]

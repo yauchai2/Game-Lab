@@ -1,0 +1,44 @@
+{
+  "status": "review prototype and handoff, not installed in production",
+  "reference": "Ice Cream.mp4, approved Hello Static portrait and current mosaic story art",
+  "pixel_surface": {
+    "landscape_logical_width": 384,
+    "phone_portrait_logical_width": 160,
+    "tablet_portrait_logical_width": 240,
+    "logical_height": "round(logicalWidth * viewportHeight / viewportWidth)",
+    "landscape_threshold": 1.15,
+    "filter": "nearest-neighbour; imageSmoothingEnabled=false",
+    "decorations": "Paper, tape, shadows, image and page dots share the same raster. No arbitrary CSS rotation after rasterisation.",
+    "text": "Keep native Cubic 11 and semantic controls. Do not rasterize editable text, HUD values, focus or the entire game UI."
+  },
+  "camera_impacts": {
+    "unit": "CSS pixels of scene displacement, independent of screen width; proposed tuning, not production-tested",
+    "tiers": {
+      "damage_over_time": {"amplitude": 0, "duration_ms": 0},
+      "normal_hit": {"amplitude": 0.45, "duration_ms": 65},
+      "normal_critical": {"amplitude": 0.85, "duration_ms": 80},
+      "light_skill": {"amplitude": 1.2, "duration_ms": 100},
+      "heavy_hit": {"amplitude": 3.2, "duration_ms": 160},
+      "major_skill": {"amplitude": 5.0, "duration_ms": 200},
+      "boss_landing": {"amplitude": 6.5, "duration_ms": 220}
+    },
+    "hard_limit_px": 8,
+    "normal_zoom_punch": 0,
+    "normal_fullscreen_flash": 0,
+    "coalescing": "One camera event per cast/main impact; repeated DoT, secondary targets, shards and echo ticks do not refresh it. No amplitude summing.",
+    "preferences": "shake=false, reduced motion/effects, offline and hidden page suppress motion; do not move HUD or operation panel"
+  },
+  "hero_motion": {
+    "owner": "characters-render.js and actual movement/dodge events; existing clip/rig assets retained",
+    "speed_source": "Actual grounded displacement per simulated second, not desired velocity into obstacles",
+    "priority": ["death", "freeze_or_strong_hurt", "real_dodge_roll", "cast_or_attack_windup", "run", "walk", "idle"],
+    "run_enter_speed": 10,
+    "run_exit_speed": 7,
+    "hysteresis_ms": 120,
+    "roll_duration_ms": 420,
+    "roll_trigger": "A real existing combat dodge event or warning-avoidance dash if its simulation explicitly emits that event; no cosmetic rolls with invented invulnerability",
+    "roll_readability": "Preserve one event token across the complete anticipation/tuck/turn/landing/recovery; no early reset when h.dash is removed at 300ms",
+    "legs": "Keep running legs for moving attacks where upper-body blend exists; otherwise use a bounded attack/cast windup window before returning to run",
+    "prohibitions": ["no limb proportion change", "no dodge-rate or damage change", "no forced rolls for all ranged attacks", "no auto-enable of reduced-effects setting"]
+  }
+}

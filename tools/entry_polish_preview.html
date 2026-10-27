@@ -1,0 +1,62 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Hello, Static!｜開始頁與序章視覺樣板</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#1d2f6f;color:#fff;font-family:"Cubic 11",system-ui,sans-serif;font-synthesis:none}main{position:fixed;inset:0;isolation:isolate}canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}#captions{position:absolute;inset:0;pointer-events:none}.caption{position:absolute;display:flex;align-items:center;justify-content:center;margin:0;color:#342c43;font:400 clamp(14px,1.4vw,22px)/1.4 "Cubic 11",system-ui,sans-serif;text-align:center;white-space:nowrap}#hint{position:absolute;margin:0;color:#f9f5da;text-align:center;font:400 clamp(16px,1.7vw,24px)/1.5 "Cubic 11",system-ui,sans-serif;letter-spacing:.12em;pointer-events:none}#advance{position:absolute;inset:0;width:100%;height:100%;background:transparent;border:0;padding:0;margin:0;cursor:pointer;touch-action:manipulation}#advance:focus-visible{outline:4px solid #f8e9b0;outline-offset:-10px}#back{position:absolute;left:max(12px,env(safe-area-inset-left));top:max(12px,env(safe-area-inset-top));z-index:3;padding:8px 12px;min-width:44px;min-height:44px;border:2px solid #bdc8e4;background:#24366d;color:#fff;font:400 16px/1.3 "Cubic 11",system-ui,sans-serif;box-shadow:2px 2px #111e48;cursor:pointer}#back:focus-visible{outline:3px solid #fff2ac;outline-offset:3px}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}[hidden]{display:none!important}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}@media(forced-colors:active){#advance:focus-visible{outline:4px solid Highlight}#hint,.caption{forced-color-adjust:none}}
+</style>
+<script>/*__FONT__*/</script>
+<main aria-label="Hello, Static! 美術預覽"><canvas id="scene" aria-hidden="true"></canvas><div id="captions"></div><h1 class="sr">Hello, Static! 哈囉，雜訊！</h1><p id="hint">點擊開始遊戲</p><button id="advance" type="button" aria-label="開始遊戲"></button><button id="back" type="button" hidden>返回</button><p id="status" class="sr" role="status" aria-live="polite"></p></main>
+<script>
+/*__ART__*/
+const CAPS=[['午後三點，小禾在修風扇。','阿澄的渡船剛靠岸。','電台突然自己開麥。'],['販賣機亂找零。','連拖板都跑掉了。','訊號跑去高架橋了。'],['先清前街，再揪出那個頻道。','穿好拖鞋，選你的職業。']];
+const INK=['#1d2f6f','#643d61','#283961'],PAPER='#fff4d7',SHADE='#17254d',TAPE='#d8bf75';
+const query=new URLSearchParams(location.search),still=query.has('still'),state={view:query.get('view')==='story'?'story':'title',page:Math.min(2,Math.max(0,+query.get('page')||0)),shown:still?3:0,ready:false,layout:[],timers:[],logical:null,failed:[]};
+const c=document.getElementById('scene'),ctx=c.getContext('2d'),captions=document.getElementById('captions'),hint=document.getElementById('hint'),advance=document.getElementById('advance'),back=document.getElementById('back'),status=document.getElementById('status');
+const cache=new Map();
+function load(src){if(cache.has(src))return cache.get(src);const im=new Image();cache.set(src,im);im.onload=draw;im.onerror=()=>{state.failed.push(src.slice(0,24));draw()};im.src=src;return im;}
+function image(src,x,y,w,h){const im=load(src);if(im.complete&&im.naturalWidth)ctx.drawImage(im,Math.round(x),Math.round(y),Math.round(w),Math.round(h));else{ctx.fillStyle='#536aa5';ctx.fillRect(x,y,w,h)}}
+function rect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
+function paper(r,panel,index){const {x,y,w,h,ih,cap}=r;const notch=2;
+ rect(x+3,y+3,w,h,SHADE);rect(x,y,w,h,PAPER);
+ rect(x,y,notch,notch,INK[state.page]);rect(x+w-notch,y+h-notch,notch,notch,INK[state.page]);
+ image(panel.src,x+3,y+3,w-6,ih);
+ // Tape is drawn on the exact same raster as the picture and paper.
+ const tw=Math.round(w*.23),tx=Math.round(x+w*(index%2?.66:.34)-tw/2),ty=y-4;
+ rect(tx,ty,tw,8,TAPE);rect(tx,ty,2,2,INK[state.page]);rect(tx+tw-2,ty+6,2,2,PAPER);
+ rect(tx+2,ty,tw-4,1,'#e9d594');rect(tx+tw-2,ty+2,2,4,'#c3a86a');
+ const caption=document.createElement('p');caption.className='caption';caption.textContent=CAPS[state.page][index];
+ caption.style.cssText=`left:${x/c.width*100}%;top:${(y+ih+4)/c.height*100}%;width:${w/c.width*100}%;height:${cap/c.height*100}%`;
+ captions.append(caption);
+}
+function layoutCards(W,H,pages){
+ const cap=Math.max(9,Math.round(H*.045)),wide=W/H>=1.15,box=[];
+ if(!wide){const gap=8,budget=H-48,ratios=pages.length===3?[.94,.82,.9]:[.94,.94],widths=ratios.map(k=>(W-24)*k);let scale=Math.min(1,(budget-pages.length*(cap+6)-(pages.length-1)*gap)/widths.reduce((v,w,i)=>v+w*pages[i].h/pages[i].w,0));
+ const rows=widths.map((w,i)=>{w=Math.floor(w*scale);const ih=Math.round((w-6)*pages[i].h/pages[i].w);return{w,ih,h:ih+cap+6,cap}});let y=Math.round((H-rows.reduce((v,r)=>v+r.h,0)-(rows.length-1)*gap)/2);
+ rows.forEach((r,i)=>{box.push({...r,x:Math.round((W-r.w)/2+(i%2?3:-2)),y});y+=r.h+gap});
+ }else if(pages.length===3){
+ const candidates=[{x:.08,y:.22,w:.39},{x:.54,y:.16,w:.38},{x:.60,y:.57,w:.30}];
+ candidates.forEach((r,i)=>{let w=Math.floor(W*r.w);const maxH=H*(i===2?.36:i===0?.67:.35);w=Math.min(w,Math.floor((maxH-cap-6)*pages[i].w/pages[i].h)+6);const ih=Math.round((w-6)*pages[i].h/pages[i].w),h=ih+cap+6,x=Math.round(W*r.x),y=Math.min(Math.round(H*r.y),H-h-14);box.push({x,y,w,ih,h,cap})});
+ }else pages.forEach((p,i)=>{const capH=cap+6,w=Math.min(Math.round(W*.39),Math.floor((H*.73-capH)*p.w/p.h)+6),ih=Math.round((w-6)*p.h/p.w),h=ih+capH;box.push({x:Math.round(W*(i?.54:.08)),y:Math.round((H-h)/2),w,ih,h,cap})});return box;
+}
+function draw(){
+ const vw=innerWidth,vh=innerHeight,wide=vw/vh>=1.15,W=wide?384:vw>=600?240:160,H=Math.round(W*vh/vw);c.width=W;c.height=H;ctx.imageSmoothingEnabled=false;state.logical={width:W,height:H,pixelCss:vw/W,wide};captions.replaceChildren();state.layout=[];
+ if(state.view==='title'){
+  rect(0,0,W,H,'#5575cc');
+  if(wide){const scale=Math.max(W/1672,H/941),aw=Math.round(1672*scale),ah=Math.round(941*scale);image(ART.wide,W-aw,H-ah,aw,ah);const lw=Math.round(W*.40),lh=Math.round(lw*ART.logoH/ART.logoW),lx=Math.round(W*.07),ly=Math.round(H*.21);image(ART.logo,lx,ly,lw,lh);hint.style.cssText=`left:7%;width:40%;top:${(ly+lh+12)/H*100}%`;state.logo={x:lx,y:ly,w:lw,h:lh};}
+  else{const k=Math.max(W/ART.bgW,H/ART.bgH),w=Math.round(ART.bgW*k),h=Math.round(ART.bgH*k);image(ART.bg,Math.round((W-w)/2),H-h,w,h);const lw=Math.round(W*.87),lh=Math.round(lw*ART.logoH/ART.logoW),ly=Math.round(H*.16);image(ART.logo,(W-lw)/2,ly,lw,lh);hint.style.cssText='left:5%;width:90%;bottom:max(10%,24px)';state.logo={x:(W-lw)/2,y:ly,w:lw,h:lh};}
+  hint.hidden=false;hint.textContent='點擊開始遊戲';back.hidden=true;advance.setAttribute('aria-label','開始遊戲');
+ }else{
+  rect(0,0,W,H,INK[state.page]);
+  const pages=ART.pages[state.page],rows=layoutCards(W,H,pages);state.layout=rows;
+  rows.forEach((r,i)=>{if(i<state.shown)paper(r,pages[i],i)});
+  for(let i=0;i<3;i++)rect(W/2-8+i*7,5,3,3,i<=state.page?'#fff4d7':'#6175a0');
+  rect(0,H-2,W,2,'#17254d');hint.hidden=true;back.hidden=false;advance.setAttribute('aria-label',state.page<2?'下一頁':'完成預覽');
+ }
+ state.ready=true;
+}
+function clear(){state.timers.forEach(clearTimeout);state.timers=[]}
+function reveal(){clear();state.shown=ART.pages[state.page].length;draw()}
+function schedule(){clear();if(state.view!=='story'||still)return;state.shown=0;draw();ART.pages[state.page].forEach((_,i)=>state.timers.push(setTimeout(()=>{state.shown=i+1;draw()},550+i*1600)));}
+function show(view,page=0){clear();state.view=view;state.page=page;state.shown=still?3:0;draw();schedule();status.textContent=view==='title'?'Hello, Static! 點擊開始遊戲':`序章 ${page+1}／3。${CAPS[page].join('')}`;advance.focus({preventScroll:true})}
+advance.onclick=()=>{if(state.view==='title')show('story',0);else if(state.shown<ART.pages[state.page].length)reveal();else if(state.page<2)show('story',state.page+1);else show('title')};back.onclick=()=>state.page>0?show('story',state.page-1):show('title');
+addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();show('title')}else if(e.key==='ArrowLeft'&&state.view==='story'){e.preventDefault();back.click()}else if(e.key==='ArrowRight'){e.preventDefault();advance.click()}});addEventListener('resize',draw);addEventListener('pagehide',clear);document.addEventListener('visibilitychange',()=>{if(document.hidden)clear();else if(state.view==='story')reveal()});
+load(ART.bg);load(ART.wide);load(ART.logo);ART.pages.flat().forEach(p=>load(p.src));draw();schedule();window.ENTRY_REVIEW={state,show,reveal,draw};
+</script></html>
