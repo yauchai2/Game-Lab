@@ -21,3 +21,4 @@ tools/font/*.ttf
 /dist/audio-reference-review.html
 
 /tools/audio/__pycache__/
+/node_modules/
