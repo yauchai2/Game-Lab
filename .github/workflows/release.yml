@@ -16,6 +16,10 @@ on:
         description: '說明檔路徑，例如 docs/release-notes/v0.38.4.md'
         required: true
 
+      prerelease:
+        description: '標為預發佈（開發中版本，不算最新正式版）'
+        type: boolean
+        default: false
       upload_standalone:
         description: '附上指定來源提交的離線單檔'
         type: boolean
@@ -36,10 +40,12 @@ jobs:
           TITLE: ${{ inputs.title }}
           TARGET: ${{ inputs.target }}
           NOTES: ${{ inputs.notes_file }}
+          PRE: ${{ inputs.prerelease }}
         run: |
           test -f "$NOTES"
           if gh release view "$TAG" >/dev/null 2>&1; then echo "Release $TAG already exists"; exit 1; fi
-          gh release create "$TAG" --target "$TARGET" --title "$TITLE" --notes-file "$NOTES"
+          FLAGS=""; if [ "$PRE" = "true" ]; then FLAGS="--prerelease"; else FLAGS="--latest"; fi
+          gh release create "$TAG" --target "$TARGET" --title "$TITLE" --notes-file "$NOTES" $FLAGS
       - name: Attach exact standalone build
         if: ${{ inputs.upload_standalone }}
         env:

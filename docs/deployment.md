@@ -113,3 +113,11 @@ PR84已合併，來源／標籤2f7c889f6a272d278d0aa44335dfc58151c0f2e3；Pages0
 ## v0.78.0 已發佈（2026-10-27，Asia/Taipei）
 
 v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
+
+## 正式版與測試版（0.79 起）
+
+- 正式連結（根目錄）：只在 Alan 說「出 Release」時更新；GitHub Release 只用於正式版。
+- 測試連結 `/preview/`：日常開發版，用 `python3 tools/publish_pages.py --preview`，版本號自動加提交碼（例如 0.79.0-dev.abc1234），同一版本不會被舊頁面誤判為最新。
+- 平時要留存的開發節點可建預發佈：release 工作流程勾選 prerelease，不會變成最新正式版。
+- 遊戲設定頁與「系統記錄」會顯示正式版或測試版、版本與提交碼；回報問題時貼系統記錄即可。
+- cleanup-releases 工作流程：只刪指定 tag 之前的 Release 頁面與附件，tag 全部保留；預設只列出（dry run）。

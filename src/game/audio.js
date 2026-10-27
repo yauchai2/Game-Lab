@@ -64,6 +64,7 @@ function audMusic(){
  // Avoid switching twice for an instant non-boss scene change. Boss/intro changes are immediate.
  const now=AUD.ctx.currentTime;if(AUD.pendingTrack!==desired){AUD.pendingTrack=desired;AUD.pendingSince=now;}
  if(!loopWrap&&AUD.track&&desired!=='boss'&&desired!=='rush'&&!intro&&now-AUD.pendingSince<.8)return;
+ if(globalThis.SYS)SYS.info('music',(AUD.track||'無')+' → '+desired);
  const previous=AUD.active,index=AUD.track?1-previous:previous,next=AUD.decks[index],token=++AUD.musicGeneration,transition=AUD.transition={token};
  next.request=token;next.el.pause();next.el.src=AUDIO_ASSETS[desired].src;next.track=desired;next.gain.gain.cancelScheduledValues(now);next.gain.gain.setValueAtTime(0,now);
  next.el.play().then(()=>{
