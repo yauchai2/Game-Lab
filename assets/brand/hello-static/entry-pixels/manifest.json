@@ -1,0 +1,195 @@
+{
+  "pipeline": "original -> BOX once -> no color quantization or dithering -> NEAREST 4x; logo retains RGBA",
+  "sources": {
+    "assets/brand/hello-static/signal-cover/portrait-source.png": {
+      "sha256": "7680f7f5e9c35c83d54f11866f6abf2883ff39bc5fda76fb4a9b27f4f1705422",
+      "bytes": 1344930,
+      "size": [
+        941,
+        1672
+      ]
+    },
+    "assets/brand/hello-static/signal-cover/landscape-source.png": {
+      "sha256": "ba19f3beee0dc9bc043e61fedd7106e748c6538db0b5bee41b4f9ecccafc8c90",
+      "bytes": 1389456,
+      "size": [
+        1672,
+        941
+      ]
+    },
+    "assets/brand/hello-static/logo-source.png": {
+      "sha256": "afc31b6144f1ff60c36e6d445d7c12ce8bde18fa4518529ea009a4f2223975b3",
+      "bytes": 958768,
+      "size": [
+        2172,
+        724
+      ]
+    },
+    "assets/brand/hello-static/rooftop-source.png": {
+      "sha256": "379ed3b05835018d5371297264966b45661b9c96e2b2af3f948e6b7637ed11d9",
+      "bytes": 1311510,
+      "size": [
+        941,
+        1672
+      ]
+    },
+    "assets/prologue/01-afternoon-source.png": {
+      "sha256": "0f173cd10bf5ea76a54f1057735ddbb189a0784616e2ed24b401ca3761a26687",
+      "bytes": 1855810,
+      "size": [
+        941,
+        1672
+      ]
+    },
+    "assets/prologue/02-offbeat-source.png": {
+      "sha256": "23322b374a2d8e7f8cb6db59173edefe200656a99c422a0408b853006db19bda",
+      "bytes": 1877978,
+      "size": [
+        941,
+        1672
+      ]
+    },
+    "assets/prologue/03-reconnect-source.png": {
+      "sha256": "dcd225cb710ebbf061637911e8d72f12b715f10afe0b10cdc5511bb8e58851ae",
+      "bytes": 1776753,
+      "size": [
+        941,
+        1672
+      ]
+    }
+  },
+  "outputs": {
+    "cover-portrait": {
+      "native": [
+        180,
+        320
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/cover-portrait-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/cover-portrait-4x.png",
+      "sha256": "687dd17c7992632eabf5c53925f749a2fa6faa8deb5f31ac35f487f7b584e477",
+      "runtime": "assets/brand/hello-static/entry-pixels/cover-portrait-native.webp",
+      "runtime_sha256": "f568161df11062dbacb7f6044b4996cd4b957a9bc87c21d2cbd94f25b96cab54"
+    },
+    "cover-landscape": {
+      "native": [
+        320,
+        180
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/cover-landscape-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/cover-landscape-4x.png",
+      "sha256": "2f9f8922313e6660d4b415973bc7f4008df7f16d4af0c58d69844515227dfec2",
+      "runtime": "assets/brand/hello-static/entry-pixels/cover-landscape-native.webp",
+      "runtime_sha256": "4dfb38e88c2d946f845c0b976e34e9eefd44bd4cddcc507e976f0ff2bb3aa777"
+    },
+    "logo": {
+      "native": [
+        360,
+        131
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/logo-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/logo-4x.png",
+      "sha256": "f7e0e138b679d34443d86d6b6719a3eb51b09273e2fc4a7715d1547cf58d08b0",
+      "runtime": "assets/brand/hello-static/entry-pixels/logo-native.webp",
+      "runtime_sha256": "cdc2384db9441888b7c8aa9d2694f8abd735b11cbf2914417a38cfed33fa6e66"
+    },
+    "story-backdrop": {
+      "native": [
+        160,
+        284
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/story-backdrop-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/story-backdrop-4x.png",
+      "sha256": "7b7db7eebd03d50e8eb5a4ec44bc8fa865cff92d5eabe962bcf370ee56c86e63",
+      "runtime": "assets/brand/hello-static/entry-pixels/story-backdrop-native.webp",
+      "runtime_sha256": "4c1e6a14c282c9e7c2cc3b52edeffdf699a5c5362eed4d7915c81221ffb5998d"
+    },
+    "01-afternoon-1": {
+      "native": [
+        168,
+        129
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/01-afternoon-1-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/01-afternoon-1-4x.png",
+      "sha256": "b141fe3b325dd74610a583f6dacefeee3fe2dd313b2711a1c1ff6ac94ce75a2f",
+      "runtime": "assets/brand/hello-static/entry-pixels/01-afternoon-1-native.webp",
+      "runtime_sha256": "70bdbf8d1200a1ab38a7d6e26d1443eb5d28a7f00d8fb15c9502c9509b85b511"
+    },
+    "01-afternoon-2": {
+      "native": [
+        168,
+        62
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/01-afternoon-2-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/01-afternoon-2-4x.png",
+      "sha256": "46820caa4f6b0cafeb6152caa4d9e098a3103bc5e1957ef15bc5a2f396029637",
+      "runtime": "assets/brand/hello-static/entry-pixels/01-afternoon-2-native.webp",
+      "runtime_sha256": "dd49dabc1940a5a2b2a444cbcb5faaf241dd198fd33f031355b05a3e96d93421"
+    },
+    "01-afternoon-3": {
+      "native": [
+        168,
+        107
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/01-afternoon-3-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/01-afternoon-3-4x.png",
+      "sha256": "437546469adb97b1ab875cf8e26d13999d9c322ad6088de062fbcf1a177c4051",
+      "runtime": "assets/brand/hello-static/entry-pixels/01-afternoon-3-native.webp",
+      "runtime_sha256": "536680435e22c4e1d2e9662efa5bbc2c31e34c11dc36659773fa12439c5f57ab"
+    },
+    "02-offbeat-1": {
+      "native": [
+        168,
+        78
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/02-offbeat-1-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/02-offbeat-1-4x.png",
+      "sha256": "eda081054df54341ef09b60899e2b0a666fe361423441157ac71cc1a7a7cf818",
+      "runtime": "assets/brand/hello-static/entry-pixels/02-offbeat-1-native.webp",
+      "runtime_sha256": "58a44bd9a97b254253cd4ed5db74daae0fe95cadb9bc749df1c20d33d582a007"
+    },
+    "02-offbeat-2": {
+      "native": [
+        168,
+        119
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/02-offbeat-2-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/02-offbeat-2-4x.png",
+      "sha256": "f6147f3e32d12838f00f3a9125d5fc7e38fa9445608d49905d7839228300a2de",
+      "runtime": "assets/brand/hello-static/entry-pixels/02-offbeat-2-native.webp",
+      "runtime_sha256": "22b7f4e30f7a92a33b132b49b6fadd22f4863494fe0578c0dc4ae813df9ebbb8"
+    },
+    "02-offbeat-3": {
+      "native": [
+        168,
+        100
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/02-offbeat-3-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/02-offbeat-3-4x.png",
+      "sha256": "df803212b4866aa5e6c7801712f7610e121dff0056412bec0694dc7427f57cc9",
+      "runtime": "assets/brand/hello-static/entry-pixels/02-offbeat-3-native.webp",
+      "runtime_sha256": "5397cdcc62a3d90f31169023d315f4cef0f0ee7c66668d6bb914d8c1e6576ab1"
+    },
+    "03-reconnect-1": {
+      "native": [
+        168,
+        146
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/03-reconnect-1-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/03-reconnect-1-4x.png",
+      "sha256": "b9be214a13e17b9d9de047b3a43420d1630cc2569fc36d71199416d4dd2479e9",
+      "runtime": "assets/brand/hello-static/entry-pixels/03-reconnect-1-native.webp",
+      "runtime_sha256": "9cd789df6084b27b1d540639741b0c283ddc89ecc9e04748f248745b09dbcabd"
+    },
+    "03-reconnect-2": {
+      "native": [
+        168,
+        157
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/03-reconnect-2-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/03-reconnect-2-4x.png",
+      "sha256": "7109d63648e1b1435b005aea478b578ec7b0fedba9bcb3efe43d1a7358672034",
+      "runtime": "assets/brand/hello-static/entry-pixels/03-reconnect-2-native.webp",
+      "runtime_sha256": "2cdb195f36259955b934fb8f04564d0a3abaa822f6491147c75e7f4c46124fca"
+    }
+  }
+}

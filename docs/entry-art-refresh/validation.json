@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-28",
+  "timezone": "Asia/Hong_Kong",
+  "main_base": "c67529d",
+  "originals": "portrait/landscape/logo/prologue originals verified, screenshots excluded",
+  "pixels": "12 NEAREST 4x files and lossless WebP decoded pixels match native PNG exactly",
+  "title_prologue": "8 flows passed",
+  "entry_source": "4 matrices passed",
+  "entry_split": "4 matrices passed",
+  "split_boot": "passed",
+  "ux_logic": "passed",
+  "design_lint": "0 errors / 0 warnings",
+  "premium_static": "2 pre-existing phone delegated-button findings, no new entry findings",
+  "limitations": [
+    "No Safari",
+    "No physical device",
+    "No full screen reader audit",
+    "Not merged or deployed"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "base": "http://127.0.0.1:8814/",
+  "checks": [
+    "5 viewport sizes select real portrait/wide originals, keep logo and hint separated and on screen, no filter or horizontal overflow",
+    "keyboard start, visible focus, eight 384px prologue panels with zero resting rotation across all three pages",
+    "first paint without JS shares responsive portrait/wide source and layout with interactive title",
+    "standalone wide cover, logo, prologue and character creation work with subresources blocked"
+  ],
+  "errors": []
+}

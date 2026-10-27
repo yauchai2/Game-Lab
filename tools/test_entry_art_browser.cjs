@@ -1,0 +1,27 @@
+const{chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('fs');
+const base=process.env.ENTRY_TEST_URL||'http://127.0.0.1:8814/',out='docs/entry-art-refresh';
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader']});const errors=[],checks=[];try{
+ const ctx=await b.newContext({reducedMotion:'reduce'});await ctx.addInitScript(()=>localStorage.setItem('idle-hero-audio','off'));const p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.stack));await p.goto(base+'?fresh&intro&static',{waitUntil:'load',timeout:90000});
+ for(const[w,h,name]of[[390,844,'phone'],[1920,1080,'desktop'],[1024,768,'tablet'],[844,390,'short'],[320,568,'small']]){
+ await p.setViewportSize({width:w,height:h});await p.waitForTimeout(100);await p.waitForFunction(()=>{const a=document.querySelector('.title-art');return a?.complete&&a.currentSrc===(innerWidth>=innerHeight?PIXEL_ART.wide:PIXEL_ART.bg)});
+ const state=await p.evaluate(()=>{const art=document.querySelector('.title-art'),logo=document.querySelector('.cover-brand'),hint=document.querySelector('.cover-hint');return{src:art.currentSrc,expected:innerWidth>=innerHeight?PIXEL_ART.wide:PIXEL_ART.bg,natural:art.naturalWidth,filter:getComputedStyle(art).filter,pixels:getComputedStyle(art).imageRendering,logo:logo.getBoundingClientRect().toJSON(),hint:hint.getBoundingClientRect().toJSON(),w:innerWidth,h:innerHeight,sw:document.documentElement.scrollWidth};});
+ assert(state.src===state.expected,'picture must finish decoding the matching orientation source');assert.equal(state.natural,w>=h?320:180);assert.equal(state.filter,'none');assert.equal(state.pixels,'pixelated');assert(state.sw<=w+1);
+ for(const r of[state.logo,state.hint])assert(r.left>=0&&r.right<=w+1&&r.top>=0&&r.bottom<=h+1,JSON.stringify(state));assert(state.logo.bottom<state.hint.top);
+ await p.screenshot({path:out+'/cover-'+name+'.png'});
+ }
+ checks.push('5 viewport sizes select real portrait/wide originals, keep logo and hint separated and on screen, no filter or horizontal overflow');
+ await p.setViewportSize({width:390,height:844});await p.getByRole('button',{name:'開始遊戲',exact:true}).focus();assert.equal(await p.locator('.title-hint').evaluate(e=>getComputedStyle(e).outlineStyle),'solid');await p.keyboard.press('Enter');assert(await p.evaluate(()=>INTRO.step===0&&!INTRO.cover));
+ for(let step=0;step<3;step++){
+ await p.evaluate(s=>introStep(s),step);await p.waitForFunction(()=>[...document.querySelectorAll('.cut img')].every(i=>i.complete));
+ assert(await p.locator('.cut img').evaluateAll(es=>es.every(e=>e.naturalWidth===168&&getComputedStyle(e).imageRendering==='pixelated')));
+ assert((await p.locator('.cut').count())>=2);
+ await p.screenshot({path:out+'/prologue-'+(step+1)+'-phone.png'});await p.setViewportSize({width:1440,height:900});await p.waitForTimeout(100);await p.screenshot({path:out+'/prologue-'+(step+1)+'-desktop.png'});await p.setViewportSize({width:390,height:844});
+ }
+ checks.push('keyboard start, visible focus, eight 168px mosaic prologue panels with tilt across all three pages');
+ // A no-script first paint uses exactly the same responsive art and logo placement.
+ const boot=await b.newPage({javaScriptEnabled:false,viewport:{width:390,height:844}});await boot.goto(base,{waitUntil:'load',timeout:90000});assert(await boot.locator('#boot').isVisible());await boot.screenshot({path:out+'/loading-phone.png'});const narrow=await boot.locator('.boot-scene').evaluate(e=>e.naturalWidth);assert.equal(narrow,180);await boot.setViewportSize({width:1920,height:1080});await boot.waitForTimeout(100);assert.equal(await boot.locator('.boot-scene').evaluate(e=>e.naturalWidth),320);await boot.screenshot({path:out+'/loading-desktop.png'});
+ checks.push('first paint without JS shares responsive portrait/wide source and layout with interactive title');
+ const offline=await b.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'}),requests=[];offline.on('pageerror',e=>errors.push(e.stack));await offline.route('**/*',r=>r.request().isNavigationRequest()?r.fulfill({body:fs.readFileSync('dist/idle-hero.html'),contentType:'text/html'}):(requests.push(r.request().url()),r.abort()));await offline.goto('http://entry-offline.invalid/?fresh&intro&static',{waitUntil:'load',timeout:90000});await offline.waitForFunction(()=>document.querySelector('.title-art')?.complete);assert.equal(await offline.locator('.title-art').evaluate(e=>e.naturalWidth),320);await offline.getByRole('button',{name:'開始遊戲',exact:true}).click();await offline.waitForFunction(()=>document.querySelectorAll('.cut img').length===3&&[...document.querySelectorAll('.cut img')].every(e=>e.naturalWidth===168));await offline.evaluate(()=>introStep(3));await offline.locator('#intro-name').fill('原圖修復');await offline.locator('.cs-begin').click();assert(await offline.evaluate(()=>!INTRO.active&&G.heroName==='原圖修復'));assert.deepEqual(requests,[]);
+ checks.push('standalone wide cover, logo, prologue and character creation work with subresources blocked');assert.deepEqual(errors,[]);
+ fs.writeFileSync(process.env.ENTRY_REPORT||out+'/browser-results.json',JSON.stringify({base,checks,errors},null,2)+'\n');console.log('PASS',checks.length,'entry art matrices; zero pageerror');
+ }finally{await b.close()}})().catch(e=>{console.error(e);process.exitCode=1});

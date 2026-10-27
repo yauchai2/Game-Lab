@@ -1,0 +1,45 @@
+{
+  "native": [
+    192,
+    341
+  ],
+  "crop": [
+    0,
+    70,
+    192,
+    301
+  ],
+  "upscale": 4,
+  "colors": 40,
+  "sampling": "BOX down, NEAREST up; no dithering",
+  "files": {
+    "beep.png": {
+      "bytes": 56412,
+      "sha256": "56f8e404e1f06a01a705c5439e9c03aac47be0f24e6c245258fe53da23c1a10b"
+    },
+    "frost.png": {
+      "bytes": 56368,
+      "sha256": "98213015c7747ba83e6ec60e51ac0af9ff5f419f4901a178953d23f47a734c49"
+    },
+    "native.png": {
+      "bytes": 36141,
+      "sha256": "502332ba969ed23445bcd31cc84f7f702edd93cce071e30ff5ef246efd0d1de5"
+    },
+    "roster.png": {
+      "bytes": 56554,
+      "sha256": "8ca79e7ffe63164e667595f6e8489f380ef98c88e6d01ebf36fb2df0b15b623c"
+    },
+    "source.png": {
+      "bytes": 1418321,
+      "sha256": "32fabd66f06edd5328620a563a8bf05b06c851ef65ed163785c6445d8c6d8fa9"
+    },
+    "street.png": {
+      "bytes": 56336,
+      "sha256": "d1213a4db08376a1b5486d5c841d672173890be83c0c3e9cdfb05acd666495d8"
+    },
+    "volt.png": {
+      "bytes": 56408,
+      "sha256": "a956c7073d42b3c356cfaf582773adbd1fc822cd5cea765deb058edbcc3f4146"
+    }
+  }
+}

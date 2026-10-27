@@ -40,7 +40,7 @@ function introComicRender(){
  const step=INTRO.step,[title,text]=INTRO_STORY[step],pages=PIXEL_ART.pages[step],lay=INTRO_LAYOUT[step],o=$('ovl'),calm=matchMedia('(prefers-reduced-motion: reduce)').matches||GAME_VIEW.prefs.reducedEffects;
  introStageClear();document.body.classList.add('comic-screen-active');
  INTRO_STAGE.count=pages.length;INTRO_STAGE.shown=calm?pages.length:0;
- const bg=lay.pat==='dusk'?`<img class="story-dusk" src="${PIXEL_ART.bg}" alt="" draggable="false">`:'';
+ const bg=lay.pat==='dusk'?`<img class="story-dusk" src="${PIXEL_ART.storyBackdrop}" alt="" draggable="false">`:'';
  o.innerHTML=`<section class="story-stage pat-${lay.pat}" style="--bg:${lay.bg}" role="group" aria-label="${uxEsc(title)}。${uxEsc(text)}">${bg}<div class="story-dots" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>${pages.map((p,i)=>`<figure class="cut${calm?' on now':''}" data-w="${p.w}" data-h="${p.h}" aria-hidden="true"><img src="${p.src}" width="${p.w}" height="${p.h}" alt="" draggable="false"><figcaption>${uxEsc(INTRO_CAPS[step][i]||'')}</figcaption></figure>`).join('')}<div class="story-timer" aria-hidden="true"><i></i></div><button type="button" class="story-tap" data-initial-focus aria-label="${step<2?'下一頁':'選擇職業'}" onclick="introStageNext()"></button></section>`;
  introStageLayout();
  const hold=calm?INTRO_STAGE_HOLD+1800:INTRO_STAGE_HOLD,first=INTRO_STAGE_FIRST;

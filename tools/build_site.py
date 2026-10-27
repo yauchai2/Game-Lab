@@ -32,7 +32,7 @@ page = (ROOT / 'index.html').read_text()
 scripts = re.findall(r'<script src="([^"]+)"></script>', page)
 assets = {}
 HEAVY = {'island-series-assets', 'ordinary-equipment-icons', 'equipment-completion-assets', 'street-flat-assets', 'street-monster-assets', 'audio-assets', 'brand-asset', 'font', 'characters-assets', 'equipment-assets', 'phone-assets',
-         'phone-preview', 'gear-fallbacks', 'logo-3d-asset', 'pixel-art-assets'}   # 幾乎不變的大型資源：各自帶雜湊，改程式時瀏覽器不必重載
+         'phone-preview', 'gear-fallbacks', 'logo-3d-asset', 'pixel-art-assets', 'intro-cast-asset'}   # 幾乎不變的大型資源：各自帶雜湊，改程式時瀏覽器不必重載
 def emit(stem, paths):
     data = '\n;\n'.join((ROOT / p).read_text() for p in paths).encode()
     name = f'{stem}.{hashlib.sha256(data).hexdigest()[:16]}.js'
