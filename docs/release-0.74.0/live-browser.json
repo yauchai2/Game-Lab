@@ -1,0 +1,16 @@
+{
+  "url": "https://yauchai2.github.io/Game-Lab/?v=0.74.0",
+  "result": {
+    "version": "0.74.0",
+    "first": "FI01",
+    "last": "FI18",
+    "rendered": "FI18",
+    "journalVersion": 1,
+    "notes": 18,
+    "maps": 22,
+    "overflow": false
+  },
+  "errors": [],
+  "tls": "normal certificate checks; not disabled",
+  "scope": "Direct live Chromium 390px boot, chapter6 authored map/render and serialized journal version; not actual mobile Safari."
+}

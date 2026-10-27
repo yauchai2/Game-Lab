@@ -1,6 +1,6 @@
 # 浮島全地圖重製
 
-22／22模型、圖片與遊戲源碼接入已完成，PR98待review；未合併／未發佈。
+22／22模型、圖片與遊戲源碼已由PR98納入v0.74.0正式發佈，來源e61a351。見[發佈證據](../release-0.74.0/live-verification.json)。真機／主觀驗收仍待完成。
 
 請讀[完整清單、設計與驗證](series-completion.md)。[圖集1](series-sheet-1.png) · [圖集2](series-sheet-2.png) · [圖集3](series-sheet-3.png) · [圖集4](series-sheet-4.png)。
 

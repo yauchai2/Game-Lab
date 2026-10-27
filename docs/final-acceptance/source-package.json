@@ -1,0 +1,10 @@
+{
+  "sourceCommit": "e61a351a9f4c10e388145f02580d6cda719ad0eb",
+  "sourceVersion": "0.74.0",
+  "builderSha256": "f67823b88b0d678178b0b277ab7302dabcdd0b89838dfcc3a61d28b367cb6c1f",
+  "bytes": 16194326,
+  "sha256": "861295ba60a9b7e9cbbd91e900eeb42aa1f2aa85bdcf5bf226892ae31562d9ab",
+  "files": 8,
+  "crcAndAllHashes": "pass",
+  "manualStatuses": "all not-run"
+}

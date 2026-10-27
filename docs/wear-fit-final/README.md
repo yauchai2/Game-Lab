@@ -1,3 +1,5 @@
+> 更新：已經PR98整合至v0.74.0正式發佈，PR96關閉為已納入；驗證見[發佈整合](../release-0.74.0/integration.md)。以下候選文字為階段紀錄。
+
 # 肩帶與普通耳罩佩戴收尾
 
 2026-10-27，Asia/Hong_Kong。分支 `codex/street-wear-fit-final`，基於正式 main `4c90e05`／v0.72.0。本批已實作及本機驗證，待 [PR96](https://github.com/yauchai2/Game-Lab/pull/96) review；未合併、未發佈，也沒有另加版本號。
