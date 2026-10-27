@@ -71,7 +71,7 @@ const TIER_NAME = ['', 'Ⅱ', 'Ⅲ'];
 function normTier(){ const t = {}; for (const id of Object.keys(SUPPS)){ const a = G.gemTier && G.gemTier[id]; if (!Array.isArray(a)) continue; const tot = G.gems[id] || 0; const n3 = Math.min(Math.max(0, a[1] | 0), tot), n2 = Math.min(Math.max(0, a[0] | 0), tot - n3); if (n2 || n3) t[id] = [n2, n3]; } G.gemTier = t; }
 const passPoints = () => Math.max(0,talentBudget()-G.pass.length);
 const nodeOpen = id => !G.pass.includes(id) && id !== 'S' && TREE[id].links.some(l => l === 'S' || G.pass.includes(l));
-let biomeNow = () => G.run ? G.run.map.biome : (typeof towerNormalBiome==='function'?towerNormalBiome(Math.floor((G.depth-1)/4)):Math.floor((G.depth-1)/4)%BIOMES.length);
+const biomeNow = () => G.run ? G.run.map.biome : (typeof towerNormalBiome==='function'?towerNormalBiome(Math.floor((G.depth-1)/4)):Math.floor((G.depth-1)/4)%BIOMES.length);
 const lvlNow = () => G.run ? G.run.map.lvl : G.depth;
 const runQ = () => G.run ? G.run.map.mods.reduce((a, m) => a + MODS[m].q, 0) : 0;
 
@@ -279,7 +279,7 @@ function applySave(o){
   G.unread=cleanUnread(o.unread);G.summons=[];G.airSupply=null;G.airBuffs=[];G.damageLog=[];G.h.fatalSource=null;G.h.airShield=0;G.h.airShieldUntil=0;G.deathReport=cleanDeathReport(o.deathReport);
   G.startingChar=Object.hasOwn(CHARS,o.startingChar)?o.startingChar:null;
   const uidSeen=new Set(),uidConflicts=new Set();for(const it of Array.isArray(o.inventory)?o.inventory:[]){if(uidSeen.has(it.uid))uidConflicts.add(it.uid);uidSeen.add(it.uid);}
-  G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>(/^(?:p(?:[0-9]|1[0-7])|legacy_p(?:[0-9]|1[01]))$/.test(k)&&v<=3||k==='ch'&&v<=6)&&Number.isInteger(v)&&v>=0));
+  G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>(/^p(?:[0-9]|1[01])$/.test(k)&&v<=3||k==='ch'&&v<=6||k==='nc'&&v<=5||k==='end'&&v<=1)&&Number.isInteger(v)&&v>=0));
   G.castPolicy=o.castPolicy==='combo'?'combo':'balanced';G.signalCharge=0;G.readySince={};G.combat=null;G.castSerial=0;G.signalGainRoot=null;G.h.castT=-1;G.h.swingT=-1;
   for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','gemTier','carts','seen','goals','mapsDone','pass','ach','legSeen','pity','parts','bossHp','towerBest','quest','craftN','mk','seenG','seenC','cz','userCz','autoFold','dmgNum','seenInv','seenParts','seenGoals','builds','bi','relics','relicPicks','cos','own','heroName','born','autoCard','bossKills','char','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
   normTier();G.builds=Array.isArray(o.builds)?o.builds.slice(0,3):[null,null,null];G.bi=[0,1,2].includes(o.bi)?o.bi:0;
@@ -614,8 +614,8 @@ function terrainSegment(x,y,tx,ty,p=terrainNow()){
   }return false;
 }
 
-function terrainWaypoint(x,y,tx,ty,p=terrainNow()){
-  [tx,ty]=terrainProject(tx,ty,p);if(terrainSegment(x,y,tx,ty,p))return [tx,ty];
+function terrainWaypoint(x,y,tx,ty){
+  const p=terrainNow();[tx,ty]=terrainProject(tx,ty,p);if(terrainSegment(x,y,tx,ty,p))return [tx,ty];
   const from=terrainCell(x,y,p),target=terrainCell(tx,ty,p);if(!from)return terrainProject(x,y,p);
   let field=p.routes.get(target.k);
   if(!field){field=new Map([[target.k,0]]);const q=[target];for(let a=0;a<q.length;a++){const c=q[a];for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const i=c.i+di,j=c.j+dj,k=j*p.nx+i;if(i<0||i>=p.nx||j<0||j>=p.ny||field.has(k)||!p.lookup.has(k))continue;field.set(k,field.get(c.k)+1);q.push(p.lookup.get(k));}}if(p.routes.size>=160)p.routes.delete(p.routes.keys().next().value);p.routes.set(target.k,field);}
@@ -625,7 +625,7 @@ function terrainWaypoint(x,y,tx,ty,p=terrainNow()){
   if(best.j!==from.j&&Math.abs(x-from.x)>1.6)return [from.x,from.y];
   return [best.x,best.y];
 }
-function terrainMove(entity,x,y){const p=authoredTerrainPlan(entity);if(terrainSegment(entity.x,entity.y,x,y,p)){entity.x=x;entity.y=y;}else if(terrainSegment(entity.x,entity.y,x,entity.y,p)){entity.x=x;}else if(terrainSegment(entity.x,entity.y,entity.x,y,p)){entity.y=y;}else{[entity.x,entity.y]=terrainProject(entity.x,entity.y,p);}}
+function terrainMove(entity,x,y){const p=terrainNow();if(terrainSegment(entity.x,entity.y,x,y,p)){entity.x=x;entity.y=y;}else if(terrainSegment(entity.x,entity.y,x,entity.y,p)){entity.x=x;}else if(terrainSegment(entity.x,entity.y,entity.x,y,p)){entity.y=y;}else{[entity.x,entity.y]=terrainProject(entity.x,entity.y,p);}}
 // Normal maps use the coast; huge maps activate distant approaches around the hero.
 function terrainSpawnPoints(){
   const p=terrainNow(),local=p.sizeClass==='giant'||p.sizeClass==='large',x=local?G.h.x:HX,y=local?G.h.y:HY;
@@ -677,9 +677,20 @@ const STORY_CHAPTERS=[
  {depth:25,boss:'重播機',item:'舊發射機的鑰匙',title:'山路電塔與商場地下',text:'一台沒人關掉的舊發射機，一直重播「暑假最後一天」。你拔掉它，街區的時間才繼續往前走。',radio:'重播結束。最後一段訊號：屋頂。'},
  {depth:35,boss:'錯頻本體',item:'吉祥物的貼紙',title:'屋頂天線',text:'你把所有失物裝回天線。日落時，整條街的收音機同時響起，街區亮起了燈。吉祥物在天線旁留下一張貼紙。',radio:'廣播已恢復。夏日的最後一個傍晚，請慢慢走回家。'}
 ];
+/* 結局與終局：六章全部找回後寫入終章；之後的「夜間頻道」按首領擊敗的深度推進。不彈窗，只寫進日誌與電台手記。 */
+const STORY_ENDING={title:'夏日最後的傍晚',paras:['各站的回覆一段接一段亮起。天線上的小收音機把最後一首歌播完，整條街靜了一秒，才有人笑出聲。','阿澄把渡船繫好，小禾收起工具，老闆娘把餐牌翻到背面，寫下明天的菜單。沒有人說再見，因為明天還要開店。','日落後，收音機自己換了台。那個頻率你從沒聽過，只有一句話：夜裡的街區，也有人在等。'],radio:'夏日的傍晚結束了。夜間頻道已開啟，更深的街區還有訊號。'};
+const NIGHT_CHAPTERS=[
+ {depth:45,title:'夜間頻道',text:'午夜，街角電台自己換了台。呼號來自街區之外，音量很小，卻一直重複同一個名字。小禾說，那是還沒接回來的電台。',radio:'夜間頻道第一段：街外有人在呼叫。'},
+ {depth:55,title:'海岸的舊電台',text:'阿澄把渡船駛過河口，港口外的舊電台亮起一盞燈。它播的旋律和前街一樣，只是少了結尾。你替它補上最後一小節，電台第一次回答：收到。',radio:'海岸電台已回應。下一段訊號：山頂。'},
+ {depth:70,title:'山頂的空頻',text:'山路電塔頂端有一條沒人用的頻道。小禾檢查了三天，確定它不是故障，而是有人刻意留給之後才到的人。你把中繼接上去，空頻第一次有了雜音，像有人深呼吸。',radio:'空頻已接通。下一段訊號：舊城。'},
+ {depth:85,title:'舊城的鐘',text:'舊城的鐘停在同一分鐘，是因為有人把「暑假最後一天」留給了等不到回信的人。你替它寫下回覆，鐘樓響了一次，然後繼續走。',radio:'鐘樓重新走動。最後一段訊號：全頻。'},
+ {depth:100,title:'全頻',text:'所有電台在同一個夜晚接通：前街、海岸、山頂、舊城。吉祥物把貼紙貼上總天線，每一站各自播出自己的歌，沒有誰蓋過誰。夏天沒有結束，只是換到下一個頻道。',radio:'全頻已接通。夜間頻道會繼續收到新的訊號。'}
+];
+function storyNight(){return Math.max(0,Math.min(NIGHT_CHAPTERS.length,G.storyFlags.nc|0));}
+function nightAdvance(d){const j=storyNight(),n=NIGHT_CHAPTERS[j];if(!n||d<n.depth)return;G.storyFlags.nc=j+1;G.dirty=true;G.mascotCheer=1.2;logLine(`夜間頻道：${n.title}。${n.radio}`,'#6a7fd6');if(j+1===NIGHT_CHAPTERS.length)logLine('夜間頻道全部接通。之後的深度仍會收到新的訊號。','#6a7fd6');}
 function storyChapter(){return Math.max(0,Math.min(STORY_CHAPTERS.length,G.storyFlags.ch|0));}
 function storyBossName(d){const c=STORY_CHAPTERS[storyChapter()];return c&&d>=c.depth?c.boss:null;}
-function storyAdvance(d){if(G.offline)return;const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c||d<c.depth)return;G.storyFlags.ch=i+1;G.dirty=true;G.mascotCheer=1.2;logLine(`找回失物：${c.item}。${c.radio}`,'#c28a00');if(i+1===STORY_CHAPTERS.length)logLine('夏日街區的廣播全部恢復了。接下來是更深的街區。','#c28a00');}
+function storyAdvance(d){if(G.offline)return;const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c){nightAdvance(d);return;}if(d<c.depth)return;G.storyFlags.ch=i+1;G.dirty=true;G.mascotCheer=1.2;logLine(`找回失物：${c.item}。${c.radio}`,'#c28a00');if(i+1===STORY_CHAPTERS.length){G.storyFlags.end=1;logLine('夏日街區的廣播全部恢復了。'+STORY_ENDING.radio,'#c28a00');}}
 const WORLD_TRAVEL={key:null,remaining:0,duration:.7};
 function fieldDiscover(profile,boss=false){if(G.offline||profile<0||profile>=FIELD_STORIES.length)return;const key='p'+profile,bit=boss?2:1,old=G.storyFlags[key]||0;if(old&bit)return;G.storyFlags[key]=old|bit;G.dirty=true;}
 function worldTravelStart(plan){if(G.offline||plan.key==='training')return;const changed=WORLD_TRAVEL.key!==plan.key;if(!changed)return;WORLD_TRAVEL.key=plan.key;WORLD_TRAVEL.remaining=WORLD_TRAVEL.duration;fieldDiscover(plan.profile);}
@@ -694,6 +705,3 @@ function cleanDeathReport(r){if(!r||!Number.isFinite(r.time)||typeof r.cause!=='
 
 /* 背景運行與小視窗的狀態（邏輯在 06b-background.js）；放在這裡才能在設定面板建立前使用。 */
 var BG={worker:null,pip:null,ctx:null,stats:null,last:0};
-
-// Optional authored terrain module; core logic tests retain procedural terrain.
-function authoredTerrainPlan(entity){return terrainNow();}

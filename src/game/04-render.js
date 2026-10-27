@@ -6,24 +6,6 @@
    ============================================================ */
 const T3 = THREE, R3 = { clean:new URLSearchParams(location.search).has('clean'), ready:false, cache:{}, ent:new Map(), W:0, H:0 };
 // Canvas samples are independent of Retina DPR; each quality has a bounded budget.
-/* 視野：以角色為中心的圈內清楚；走過的地方留有記憶（較暗），未到過的遠處最暗。只在大地圖跟隨鏡頭時啟用。 */
-function r3Fog(on,W,H,left,top){
-  let f=R3.fog;if(!f){f=R3.fog=document.createElement('canvas');f.id='cvfog';f.style.cssText='position:absolute;pointer-events:none;z-index:-1';document.body.appendChild(f);R3.fogCtx=f.getContext('2d');}
-  if(!on){if(f.style.display!=='none')f.style.display='none';return;}
-  const now=performance.now();f.style.display='';f.style.left=left+'px';f.style.top=top+'px';f.style.width=W+'px';f.style.height=H+'px';
-  if(now-(R3.fogAt||0)<66)return;R3.fogAt=now;
-  const w=Math.max(8,Math.ceil(W/3)),h=Math.max(8,Math.ceil(H/3));if(f.width!==w||f.height!==h){f.width=w;f.height=h;}
-  const key=terrainKey(),sight={near:75,far:160}[GAME_VIEW.prefs.range]||110,C=8;
-  if(!R3.exp||R3.exp.key!==key)R3.exp={key,cells:new Map(),at:0};
-  const E=R3.exp,hx=G.h.x,hy=G.h.y;
-  if(now-E.at>400){E.at=now;const n=Math.ceil(sight/C);for(let i=-n;i<=n;i++)for(let j=-n;j<=n;j++){const x=(Math.round(hx/C)+i)*C,y=(Math.round(hy/C)+j)*C;if(Math.hypot(x-hx,y-hy)<=sight)E.cells.set((Math.round(hx/C)+i)+','+(Math.round(hy/C)+j),[x,y]);}}
-  const toPx=(x,y)=>{const v=new T3.Vector3(x,BZ+terrainHeight(x,y),y).project(R3.cam);return [(v.x+1)/2*w,(1-v.y)/2*h];};
-  const ctx=R3.fogCtx,[cx,cy]=toPx(hx,hy),[ux,uy]=toPx(hx+1,hy),[vx,vy]=toPx(hx,hy+1),pu=Math.max(Math.hypot(ux-cx,uy-cy),Math.hypot(vx-cx,vy-cy));
-  ctx.globalCompositeOperation='source-over';ctx.clearRect(0,0,w,h);ctx.fillStyle='rgba(16,12,44,.72)';ctx.fillRect(0,0,w,h);
-  ctx.globalCompositeOperation='destination-out';ctx.fillStyle='rgba(0,0,0,.4)';
-  for(const [x,y] of E.cells.values()){const [px,py]=toPx(x,y);if(px<-20||py<-20||px>w+20||py>h+20)continue;ctx.beginPath();ctx.arc(px,py,C*pu*1.1,0,6.3);ctx.fill();}
-  const r=sight*pu,g=ctx.createRadialGradient(cx,cy,r*.35,cx,cy,r);g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(.75,'rgba(0,0,0,.95)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,r,0,6.3);ctx.fill();
-}
 function r3Quality(quality='auto',viewportWidth=1024){return ['low','medium','high'].includes(quality)?quality:(viewportWidth<768||typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches&&viewportWidth<1180)?'medium':'high';}
 function r3BufferSize(width,height,dpr=1,clean=false,quality='auto',viewportWidth=width,scale=1){
   const W=Math.max(2,Number.isFinite(width)?width:2),H=Math.max(2,Number.isFinite(height)?height:2);
@@ -666,7 +648,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   R3.focusX+=(focus.x-R3.focusX)*Math.min(1,fdt*4);R3.focusY+=(focus.y-R3.focusY)*Math.min(1,fdt*4);
   const cam = R3.cam, tgt = new T3.Vector3(R3.focusX,BZ+terrainHeight(R3.focusX,R3.focusY,plan)+6,R3.focusY); cam.position.copy(tgt).add((innerHeight > innerWidth ? new T3.Vector3(.34, .8, 1) : new T3.Vector3(1, .86, 1)).normalize().applyAxisAngle(new T3.Vector3(0, 1, 0), FXO.yaw).multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-  for (const x of (framing.follow?[R3.focusX-framing.view/2,R3.focusX+framing.view/2]:plan.bounds.slice(0,2))) for (const y of (framing.follow?[R3.focusY-framing.view/2,R3.focusY+framing.view/2]:plan.bounds.slice(2,4))) for (const z of (plan.authoredIsland?plan.visualZ.map(z=>BZ+z):[BZ-20,BZ+plan.amplitude+35])){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
+  for (const x of (framing.follow?[R3.focusX-framing.view/2,R3.focusX+framing.view/2]:plan.bounds.slice(0,2))) for (const y of (framing.follow?[R3.focusY-framing.view/2,R3.focusY+framing.view/2]:plan.bounds.slice(2,4))) for (const z of [BZ-20,BZ+plan.amplitude+35]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
   const panel=document.body.classList.contains('d')&&!document.body.classList.contains('watch-mode')?document.getElementById('modal')?.getBoundingClientRect().width+34||0:0,Weff=Math.max(W*.4,W-panel);   // 電腦版：面板疊在右邊，島嶼放在左邊可見區域中央
   const hudPad=Math.min(uiHudPad(),H*.5);let bw = x1 - x0, bh = y1 - y0, ar = Weff/Math.max(2,H-hudPad), cx = (x0 + x1)/2, cy = (y0 + y1)/2 - bh*.03;   // 整座浮島放進畫框，留一點天空
   let vw = bw*(ptv ? .8 : 1.03), vh = bh*(ptv ? .84 : 1.05); if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;
@@ -675,7 +657,6 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   if (FXO.zoom !== 1){ const z = FXO.zoom, f = tClamp((z - 1)/1.2), p = new T3.Vector3(G.h.x, BZ + 10, G.h.y).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; if (z > 1){ cx = tLerp(cx, p.x, f); cy = tLerp(cy, p.y, f); } }
   vw *= 1 - FXO.punch*.055; vh *= 1 - FXO.punch*.055; cx += (Math.random() - .5)*FXO.shake*vw*.027; cy += (Math.random() - .5)*FXO.shake*vh*.027;
   cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2 + vh*hudPad/Math.max(2,H-hudPad); cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
-  r3Fog(!!framing.follow&&G.h.dead<=0&&!FXO.overview,W,H,r.left+scrollX,r.top+scrollY);
   const vb = fig.viewBox.baseVal; R3.vbW = vb.width; R3.vbH = vb.height;
 }
 const pj = (x, y, z) => { const v = new T3.Vector3(x, z, y).project(R3.cam); return [(v.x + 1)/2*R3.vbW, (1 - v.y)/2*R3.vbH]; };
@@ -821,7 +802,7 @@ function battleTextSize(kind,size,width){
 }
 function terrainCameraWindow(p,width,overview=false){
   const span=Math.max(p.bounds[1]-p.bounds[0],p.bounds[3]-p.bounds[2]);
-  const k={near:.85,far:1.25}[typeof GAME_VIEW!=='undefined'&&GAME_VIEW.prefs.range]||1,limit=(width>=1180?310:width>=768?270:215)*k;   /* 視野範圍：標準比舊版寬約 25%，可在設定改近／遠 */
+  const limit=width>=1180?240:width>=768?210:170;
   return {span,view:overview?span:Math.min(span,limit),follow:!overview&&span>limit*1.1};
 }
 function toggleWorldOverview(){FXO.overview=!FXO.overview;FXO.zoomT=1;G.dirty=true;if(typeof renderModal==='function')renderModal();}
@@ -854,7 +835,7 @@ function scene(){
   if (R3.bi !== bi || R3.terrainKey!==terrainKey()){
     R3.terrainKey=terrainKey();worldTravelStart(terrainNow());
     [G.h.x,G.h.y]=terrainProject(G.h.x,G.h.y);G.h.gx=G.h.x;G.h.gy=G.h.y;
-    for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y,authoredTerrainPlan(m));
+    for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y);
     R3.bi = bi; { const SK = BIOMES[bi].sky || [['#8fcdf7', '#c9e9ff', '#f5fbff'], ['#ffc98a', '#ffe6bf', '#fff7ea'], ['#a9d8ff', '#d9efff', '#ffffff'], ['#c07a9a', '#e9b4cc', '#ffe2ee'], ['#141450', '#3a3a8c', '#7a6ad0'], ['#ffa6d6', '#ffd0ee', '#fff0fa']][bi%6] || []; SK.forEach((c, i) => document.documentElement.style.setProperty('--sk' + i, c)); }
     for (const o of [R3.gnd, R3.portal, ...R3.decor]) if(o){R3.world.remove(o);disposeWorldObject(o);}
     R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];const staticDecor=new T3.Group();

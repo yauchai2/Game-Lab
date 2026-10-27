@@ -1,8 +1,0 @@
-{
-  "id": "FI08",
-  "method": "actual project-authored GLB rendered in Three.js",
-  "model": "assets/maps/fi08-freight-station/fi08-freight-station.glb",
-  "modelSha256": "bc5b955644ad4fe8d0fd4f5b2522ed3b391cb894c1984661a5c4ff8181e7086d",
-  "imageSha256": "d8acdee81a11f8b75fea291435c3ed5977c31fc2ce20781c3c8fdbbcd9592236",
-  "paidProviders": false
-}

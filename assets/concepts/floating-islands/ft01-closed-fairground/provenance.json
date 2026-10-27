@@ -1,8 +1,0 @@
-{
-  "id": "FT01",
-  "method": "actual project-authored GLB rendered in Three.js",
-  "model": "assets/maps/ft01-closed-fairground/ft01-closed-fairground.glb",
-  "modelSha256": "827b9e6cd085e76628d5b4bc1bb0bef00a1103516aac83389dd49708d34b6125",
-  "imageSha256": "61e5a7289ee0676bd40e1cf8d13dcb71b96e45a29d8b42915005175ea00d59c1",
-  "paidProviders": false
-}

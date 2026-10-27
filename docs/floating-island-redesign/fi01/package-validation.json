@@ -1,8 +1,0 @@
-{
-  "output": "/workspace/artifacts/FI01-native-combat.zip",
-  "bytes": 22194650,
-  "sha256": "10aa7f87871c73a64c37224471d5e896f7106589de4d536cfc33bc15000125b0",
-  "files": 33,
-  "sourceCommit": "439ba0441fe4acdaf33bcb3db2b04312424e75ff",
-  "zipCrcAndHashes": "pass"
-}

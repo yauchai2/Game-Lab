@@ -1,8 +1,0 @@
-{
-  "id": "FI12",
-  "method": "actual project-authored GLB rendered in Three.js",
-  "model": "assets/maps/fi12-hill-relay/fi12-hill-relay.glb",
-  "modelSha256": "15576e6597957ad2928296025bdc4041521dc3e82977604229e1a0ea8630cf94",
-  "imageSha256": "e2c73b5c13d3268233fde984e0912973dc0a3f7457eda6a06a57d88c199891e2",
-  "paidProviders": false
-}

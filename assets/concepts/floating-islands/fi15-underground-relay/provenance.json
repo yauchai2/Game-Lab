@@ -1,8 +1,0 @@
-{
-  "id": "FI15",
-  "method": "actual project-authored GLB rendered in Three.js",
-  "model": "assets/maps/fi15-underground-relay/fi15-underground-relay.glb",
-  "modelSha256": "c41da9234a6aa18affdb2598cd14a5d647c083ce7fbf82e027d8e3a3fd9215fb",
-  "imageSha256": "964e3e4bd694908159f8353fea751dd4dbf1841a3aaaded78e9b4b1bfa4b5dce",
-  "paidProviders": false
-}

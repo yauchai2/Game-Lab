@@ -1,8 +1,0 @@
-{
-  "id": "FT03",
-  "method": "actual project-authored GLB rendered in Three.js",
-  "model": "assets/maps/ft03-power-vault/ft03-power-vault.glb",
-  "modelSha256": "6a2a6eb71971220d1c81d720116c2aaa236c553f0d88a719ccafbdab7582875a",
-  "imageSha256": "9780fd364c1de873119217a3aaf2ae66c6692604e60e44107a76a9b27fa7d3c9",
-  "paidProviders": false
-}

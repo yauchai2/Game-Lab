@@ -109,9 +109,3 @@ PR #52合併，來源／tagcf0382089483843466ecc63590528c43dfc00c51，Pages764c1
 ## v0.64.0 已發佈（2026-10-26，香港時間）
 
 PR84已合併，來源／標籤2f7c889f6a272d278d0aa44335dfc58151c0f2e3；Pages076180d07bcfaa5d05c8a0f00c29bf2a7a717b78。Pages40324674500與Release40324886785成功。正式manifest、入口、21腳本SHA-256及附件digest／大小已核對，直接正式站390px Chromium啟動通過。[整合與證據](release-0.64.0/integration.md)。已重新查核所有遠端分支與PR，Claude最新7be9377文件合入、已撤回精華不納入，所有分支保留。
-
-## v0.74.0 已發佈（2026-10-27，香港時間）
-
-PR98已合併；來源／tag e61a351a9f4c10e388145f02580d6cda719ad0eb，Pages c68d5dd37428f7f16cb13599f1b5bf063f7c746d。Release40455614418與Pages40455613370成功；正式HTTPS manifest、入口及25腳本SHA-256、離線附件實際下載／digest／大小、tag來源已核對。直接正式站390px Chromium啟動、FI01→FI18與18手記版本驗證通過。[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.74.0)／[整合證據](release-0.74.0/live-verification.json)。
-
-納入22浮島、Claude最新4a5d1e4的0.73內容及PR96／93004b5佩戴修正；排除備份／舊角色試稿，所有分支保留。舊12手記保留附錄；新18地區沿原storyFlags owner。真機Safari、長時間實戰、最終美術與聽感仍待人工驗收，後續驗收包不代表已通過。

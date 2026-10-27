@@ -5,15 +5,3 @@ tools/font/*.ttf
 /tools/style/__pycache__/
 /dist/street-audio-review.html
 /tools/__pycache__/
-
-/dist/fi02-island-review.html
-/assets/maps/**/*.blend1
-/tools/maps/__pycache__/
-
-/dist/fi02-island-play.html
-
-/dist/fi01-island-play.html
-/dist/fi01-island-review.html
-
-/dist/island-series-play.html
-/dist/island-series-gallery.html

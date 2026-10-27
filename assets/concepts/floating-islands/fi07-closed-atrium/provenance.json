@@ -1,8 +1,0 @@
-{
-  "id": "FI07",
-  "method": "actual project-authored GLB rendered in Three.js",
-  "model": "assets/maps/fi07-closed-atrium/fi07-closed-atrium.glb",
-  "modelSha256": "a6dee3de03d3118c2f02ea0ffd5865779414e701a6f4bf65e0b1360a19ab6143",
-  "imageSha256": "b796ef81d3d4b48f882cd158d7da940c2b9f8acea46694b42faf14b2f7302b61",
-  "paidProviders": false
-}

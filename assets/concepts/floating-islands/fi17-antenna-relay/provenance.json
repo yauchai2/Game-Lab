@@ -1,8 +1,0 @@
-{
-  "id": "FI17",
-  "method": "actual project-authored GLB rendered in Three.js",
-  "model": "assets/maps/fi17-antenna-relay/fi17-antenna-relay.glb",
-  "modelSha256": "8b7eb6b4533bbda3aabc87906f0ca155008c76efc4595bf8306a59e2c8a7f140",
-  "imageSha256": "9c623673a49f2d471f4e57bce4fee3bd3ae67454edf516d8b7b82b29255a3988",
-  "paidProviders": false
-}

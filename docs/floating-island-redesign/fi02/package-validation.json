@@ -1,8 +1,0 @@
-{
-  "output": "/workspace/artifacts/FI02-record-lane-3D-preview.zip",
-  "bytes": 9770519,
-  "sha256": "450cabfab67d5897d06848a73cc9d860de766332a904f2a217decc2c08ff1c7a",
-  "files": 23,
-  "sourceCommit": "c2140871c9a8e1a49bec32c17cc8289232171218",
-  "zipCrcAndHashes": "pass"
-}

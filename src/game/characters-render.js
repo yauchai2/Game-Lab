@@ -49,8 +49,8 @@ function characterEquipment(g,cos,wt,wr){
   if(slot==='weapon'){const style={umbrella:0,bat:1,tube:2,saber:3}[cos.weaponStyle]??wt;buildWeapon(grip,style,wr);}
   else if(it){
    if(slot==='offhand'&&cos.offhandStyle&&cos.offhandStyle!=='0')continue;
-   const add=(bone,x,y,z)=>{const item=buildSimpleEquipment(slot,Math.min(3,Math.floor(it.il/6)),it.r);if(slot==='boots')item.scale.set(1.7,1.4,1.65);if(slot==='gloves')item.scale.setScalar(1.25);if(slot==='head'&&aTier(it)===1){item.scale.set(1.3,1,2.8);item.traverse(o=>{if(o.userData.wearPart==='earcup')o.scale.y=1.3;});}item.position.set(x,y,z);B[bone].add(item);};
-   if(slot==='head')add('head',0,aTier(it)===1?1.4:5,aTier(it)===1?.4:0);
+   const add=(bone,x,y,z)=>{const item=buildSimpleEquipment(slot,Math.min(3,Math.floor(it.il/6)),it.r);if(slot==='boots')item.scale.set(1.7,1.4,1.65);if(slot==='gloves')item.scale.setScalar(1.25);item.position.set(x,y,z);B[bone].add(item);};
+   if(slot==='head')add('head',0,5,0);
    else if(slot==='gloves'){add('handL',0,1,0);add('handR',0,1,0);}
    else if(slot==='boots'){add('footL',0,.7,0);add('footR',0,.7,0);}
    else if(slot==='offhand')add('handL',0,1,1);
@@ -153,5 +153,5 @@ function characterHeroLook(g){
  at3(g,h.x,h.y,BZ+terrainHeight(h.x,h.y));const target=nearestMon(false);if(h.drama?.kind==='climb')u.face=Math.atan2(h.vx,h.vy);else if((h.mv||0)>8&&h.dead<=0)u.face=Math.atan2(h.vx,h.vy);else if(target&&h.dead<=0)u.face=Math.atan2(target.x-h.x,target.y-h.y);const d=Math.atan2(Math.sin(u.face-g.rotation.y),Math.cos(u.face-g.rotation.y));g.rotation.y+=d*(1-Math.exp(-12*(R3.frameDt||1/60)));
  g.scale.setScalar(.85*CK);u.orb.visible=h.castT>=0&&h.dead<=0;
 }
-function characterDispose(g){if(!g?.userData.y2k)return;const u=g.userData;u.mixer.stopAllAction();u.mixer.uncacheRoot(g);disposeEquipmentStraps(g);u.skeleton.dispose();}
+function characterDispose(g){if(!g?.userData.y2k)return;const u=g.userData;u.mixer.stopAllAction();u.mixer.uncacheRoot(g);u.skeleton.dispose();}
 

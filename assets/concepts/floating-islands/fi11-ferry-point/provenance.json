@@ -1,8 +1,0 @@
-{
-  "id": "FI11",
-  "method": "actual project-authored GLB rendered in Three.js",
-  "model": "assets/maps/fi11-ferry-point/fi11-ferry-point.glb",
-  "modelSha256": "79f3d277463d782547cd119f133ff87e946950b501362d300491bc9df5c2ef25",
-  "imageSha256": "cf473b9eba248855a48435b8ea76116a4600feb73ad2522cba91d5cb1f171158",
-  "paidProviders": false
-}
