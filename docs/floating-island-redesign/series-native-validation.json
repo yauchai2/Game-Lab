@@ -1,5 +1,5 @@
 {
-  "candidateSha256": "515bef15c2c31cd21dfb648cf111d03dbc2af936e5200da3544ba6f8d98e638d",
+  "candidateSha256": "3bf29024a0c09a9764344727555b0b0aa84b386a9f03327a3b9b1e589eb0a199",
   "rows": [
     {
       "id": "FI01",
@@ -35,12 +35,12 @@
       "bossCells": 244,
       "pruned": 10,
       "simulatedSeconds": 30,
-      "kills": 31,
+      "kills": 28,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538036665508344e-8,
       "asset": "FI01",
-      "draws": 540
+      "draws": 105
     },
     {
       "id": "FI02",
@@ -76,12 +76,12 @@
       "bossCells": 309,
       "pruned": 22,
       "simulatedSeconds": 30,
-      "kills": 35,
+      "kills": 27,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538036665508344e-8,
       "asset": "FI02",
-      "draws": 564
+      "draws": 109
     },
     {
       "id": "FI03",
@@ -117,12 +117,12 @@
       "bossCells": 386,
       "pruned": 6,
       "simulatedSeconds": 30,
-      "kills": 32,
+      "kills": 28,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FI03",
-      "draws": 557
+      "draws": 119
     },
     {
       "id": "FI04",
@@ -158,12 +158,12 @@
       "bossCells": 405,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 29,
+      "kills": 24,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FI04",
-      "draws": 496
+      "draws": 96
     },
     {
       "id": "FI05",
@@ -204,7 +204,7 @@
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FI05",
-      "draws": 744
+      "draws": 103
     },
     {
       "id": "FI06",
@@ -240,12 +240,12 @@
       "bossCells": 365,
       "pruned": 29,
       "simulatedSeconds": 30,
-      "kills": 14,
+      "kills": 19,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538036665508344e-8,
       "asset": "FI06",
-      "draws": 259
+      "draws": 120
     },
     {
       "id": "FI07",
@@ -281,12 +281,12 @@
       "bossCells": 489,
       "pruned": 19,
       "simulatedSeconds": 30,
-      "kills": 47,
+      "kills": 43,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FI07",
-      "draws": 788
+      "draws": 100
     },
     {
       "id": "FI08",
@@ -322,12 +322,12 @@
       "bossCells": 540,
       "pruned": 2,
       "simulatedSeconds": 30,
-      "kills": 26,
+      "kills": 24,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538036665508344e-8,
       "asset": "FI08",
-      "draws": 454
+      "draws": 133
     },
     {
       "id": "FI09",
@@ -363,12 +363,12 @@
       "bossCells": 539,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 17,
+      "kills": 22,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FI09",
-      "draws": 343
+      "draws": 129
     },
     {
       "id": "FI10",
@@ -404,12 +404,12 @@
       "bossCells": 624,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 34,
+      "kills": 30,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FI10",
-      "draws": 577
+      "draws": 113
     },
     {
       "id": "FI11",
@@ -445,12 +445,12 @@
       "bossCells": 309,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 34,
+      "kills": 30,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538036665508344e-8,
       "asset": "FI11",
-      "draws": 537
+      "draws": 100
     },
     {
       "id": "FI12",
@@ -486,12 +486,12 @@
       "bossCells": 563,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 39,
+      "kills": 40,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 4.4962171230622516e-7,
       "asset": "FI12",
-      "draws": 659
+      "draws": 122
     },
     {
       "id": "FI13",
@@ -527,12 +527,12 @@
       "bossCells": 412,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 44,
+      "kills": 40,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.8827164893764348e-7,
       "asset": "FI13",
-      "draws": 682
+      "draws": 118
     },
     {
       "id": "FI14",
@@ -568,12 +568,12 @@
       "bossCells": 657,
       "pruned": 10,
       "simulatedSeconds": 30,
-      "kills": 23,
+      "kills": 28,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.1240543429380523e-7,
       "asset": "FI14",
-      "draws": 411
+      "draws": 122
     },
     {
       "id": "FI15",
@@ -609,12 +609,12 @@
       "bossCells": 535,
       "pruned": 5,
       "simulatedSeconds": 30,
-      "kills": 21,
+      "kills": 26,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FI15",
-      "draws": 356
+      "draws": 113
     },
     {
       "id": "FI16",
@@ -650,12 +650,12 @@
       "bossCells": 374,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 24,
+      "kills": 35,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.1240542718837787e-7,
       "asset": "FI16",
-      "draws": 378
+      "draws": 128
     },
     {
       "id": "FI17",
@@ -691,12 +691,12 @@
       "bossCells": 616,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 36,
+      "kills": 35,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 2.6345303716368562e-9,
       "asset": "FI17",
-      "draws": 613
+      "draws": 98
     },
     {
       "id": "FI18",
@@ -732,12 +732,12 @@
       "bossCells": 623,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 45,
+      "kills": 59,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FI18",
-      "draws": 685
+      "draws": 111
     },
     {
       "id": "FT01",
@@ -773,12 +773,12 @@
       "bossCells": 454,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 36,
+      "kills": 37,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0537980710267902e-8,
       "asset": "FT01",
-      "draws": 618
+      "draws": 121
     },
     {
       "id": "FT02",
@@ -814,12 +814,12 @@
       "bossCells": 449,
       "pruned": 2,
       "simulatedSeconds": 30,
-      "kills": 28,
+      "kills": 30,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0537980710267902e-8,
       "asset": "FT02",
-      "draws": 483
+      "draws": 121
     },
     {
       "id": "FT03",
@@ -855,12 +855,12 @@
       "bossCells": 514,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 21,
+      "kills": 36,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FT03",
-      "draws": 344
+      "draws": 99
     },
     {
       "id": "FP01",
@@ -896,12 +896,12 @@
       "bossCells": 145,
       "pruned": 0,
       "simulatedSeconds": 30,
-      "kills": 27,
+      "kills": 34,
       "rescues": 0,
       "goldGain": 6,
       "maxHeightError": 1.0538008687888123e-8,
       "asset": "FP01",
-      "draws": 408
+      "draws": 95
     }
   ],
   "errors": [],

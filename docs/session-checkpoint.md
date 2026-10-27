@@ -1,3 +1,7 @@
+# v0.74.0整合發佈接續
+
+Alan已授權release後繼續。main基底4c90e05，Claude4a5d1e4與PR96／93004b5已整合，22浮島／抗性／特效／介面／肩帶耳罩同版；測試與排除範圍見[發佈整合](release-0.74.0/integration.md)。來源PR98；部署與Release完成情況以live-verification.json及GitHub為準。
+
 # 接續點：全22浮島
 
 2026-10-27 UTC。分支codex/floating-island-redesign／PR98，基底main4c90e05；Claude4a5d1e4已查核，源碼接入範圍已在PR交接。Alan要求全部完成並注意美感。

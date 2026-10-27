@@ -376,6 +376,5 @@
     "isolated": true
   },
   "errors": [],
-  "scope": "Native 35-depth route, all18 biome map entries, six campaign bosses/save, three tower themes + real stair transition, training/return and memory isolation.",
-  "candidateSha256": "2ae2fc3ef9ffce441ed22e2911ac20bda8537d6bb5767df753ea87e98b207219"
+  "scope": "Native 35-depth route, all18 biome map entries, six campaign bosses/save, three tower themes + real stair transition, training/return and memory isolation."
 }
