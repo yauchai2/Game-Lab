@@ -54,6 +54,11 @@ flush()
 tags = '\n'.join(f'<script defer src="{name}"></script>' for name in assets)
 page = re.sub(r'<script src="[^"]+"></script>\s*', '', page)
 page = page.replace('</body>', tags + '\n</body>')
+# 新版自動更新：每次開啟先向伺服器核對版本，不同就繞過快取重新載入（每個新版只重載一次）
+guard = ("<script>(function(){var V=%s;try{fetch('version.json?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){"
+         "if(!j||!j.version||j.version===V)return;var k='ih-upd';if(sessionStorage.getItem(k)===j.version)return;sessionStorage.setItem(k,j.version);"
+         "location.replace(location.pathname+'?v='+j.version+'&_='+Date.now());}).catch(function(){});}catch(e){}})();</script>" % json.dumps(version))
+page = page.replace('<head>', '<head>\n' + guard, 1)
 site = page.encode()
 (out / 'index.html').write_bytes(site)
 (out / '.nojekyll').write_text('')

@@ -27,7 +27,7 @@ function r3Fog(on,W,H,left,top){
 function r3Quality(quality='auto',viewportWidth=1024){return ['low','medium','high'].includes(quality)?quality:(viewportWidth<768||typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches&&viewportWidth<1180)?'medium':'high';}
 function r3BufferSize(width,height,dpr=1,clean=false,quality='auto',viewportWidth=width,scale=1){
   const W=Math.max(2,Number.isFinite(width)?width:2),H=Math.max(2,Number.isFinite(height)?height:2);
-  const q=r3Quality(quality,viewportWidth),policy={low:[.3,420],medium:[.4,560],high:[.5,720]}[q];
+  const q=r3Quality(quality,viewportWidth),policy={low:[.3,420],medium:[.6,820],high:[.65,1000]}[q];
   const budget={low:1e6,medium:1.8e6,high:3.4e6}[q],ratio=clean?Math.max(.4,Math.min(Math.max(1,Math.min(2,Number.isFinite(dpr)?dpr:1))*scale,Math.sqrt(budget/(W*H)))):Math.min(policy[0],policy[1]/Math.max(W,H))*scale;   /* 清晰模式限制總像素；scale 由實測幀率自動調整 */
   return {width:Math.max(1,Math.floor(W*ratio)),height:Math.max(1,Math.floor(H*ratio))};
 }
@@ -344,7 +344,7 @@ function treeAt(g, bi, x, y, z, k){   // 依生態放一棵低面數樹：森林
   return t;
 }
 /* 樹影與雲影：一張小貼圖（最近點取樣）疊在地面，慢慢移動，陰影用藍灰色而非黑色。 */
-function deathFxStyle(){try{return localStorage.getItem('ih-deathfx')==='signal'?'signal':'blood';}catch(e){return 'blood';}}
+function deathFxStyle(){try{const v=localStorage.getItem('ih-deathfx');return v==='signal'||v==='blood'?v:'none';}catch(e){return 'none';}}
 function dappleTexture(){
   if(R3.dapple)return R3.dapple;
   const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
@@ -782,8 +782,11 @@ function updateFx(){
   if(stain.blobs){const m0=stain.blobs[0];add(disc,'#7a0710',.85*fade,stain.x,stain.y,stainGround-.01,m0.r*1.12*ease);}
   for(const b of (stain.blobs||[{dx:0,dy:0,r:stain.r}]).slice(0,old?3:99)){const k=b.drop?Math.min(1,Math.max(0,(stain.t-.12)/.2)):ease;if(k<=0)continue;add(disc,col,.9*fade,stain.x+b.dx*ease,stain.y+b.dy*ease,stainGround+(zi++)*.006,b.r*k);}
   if(wet>0&&!old&&stain.blobs)for(const b of stain.blobs.slice(0,2)){if(b.drop)continue;add(disc,'#ff5560',wet*fade,stain.x+b.dx*ease-b.r*.18,stain.y+b.dy*ease-b.r*.18,stainGround+(zi++)*.006,b.r*.45*ease);}}
+  {const hh=G.h;if(hh&&G.time<(hh.bufferUntil||0)&&(hh.buffer||0)>0)add(sph,'#7fd3ff',.16+.05*Math.sin(G.time*6),hh.x,hh.y,BZ+8,10);
+   if(!viewEffectsReduced())for(const m of G.mons){if(!m.dead&&m.frozen>0)add(sph,'#bfeaff',.22,m.x,m.y,BZ+5,m.boss?11:6);}}
   for(const e of warnings.concat(G.fx.filter(e=>e.sustained),G.fx.filter(e=>!e.sustained))){const fade=1-e.t;
     if(renderSpectacleFx(e,add,geo))continue;
+    if(['rune','charge','skillaura','impact','icebloom'].includes(e.k)){renderFlashFx(e,add,geo);continue;}
     if(e.k==='pickup'){const u=e.t*e.t*(3-2*e.t),x=tLerp(e.x,G.h.x,u),y=tLerp(e.y,G.h.y,u);add(sph,e.col,1-e.t*e.t*e.t,x,y,BZ+2+Math.sin(e.t*Math.PI)*5,1-e.t*.4);continue;}
     if(e.k==='danger'){
       if(e.owner&&(e.owner.dead||!e.owner.warning||e.owner.frozen>0))continue;
@@ -1008,6 +1011,28 @@ function renderSupportWorld(){
  if(G.run?.tower){const stair=entFor(G.run,buildTowerStairs),p=towerStairPosition();at3(stair,p[0],p[1],BZ+terrainHeight(...p));stair.rotation.y=-.4;}
  for(const p of G.summons||[]){const g=entFor(p,()=>buildSummonUnit(p.large));at3(g,p.x,p.y,BZ+terrainHeight(p.x,p.y)+(p.large?Math.max(0,Math.sin(p.attackAge*8))*1.5:5+Math.sin(G.time*6+p.seed)*1.4));g.rotation.y=p.angle||0;g.rotation.x=p.large&&p.attackAge<.35?-.3*Math.sin(p.attackAge/.35*Math.PI):0;g.scale.setScalar(p.large?1.05:1);}
  const f=G.airSupply?.flight;if(f){const g=entFor(f,buildSupplyAircraft);at3(g,f.x,f.y,BZ+85);g.rotation.z=Math.sin(f.age*.6)*.08;}
+}
+/* 技能華麗特效：起手符文與聚能、命中爆發、凍結冰花、護盾光罩 */
+function renderFlashFx(e,add,geo){
+ const reduced=viewEffectsReduced(),t=e.t,fade=1-t,col=e.col||'#9fe0ff',ease=u=>1-(1-u)*(1-u),
+  box=geo('fxf',()=>new T3.BoxGeometry(1,.25,1)),ring=geo('fxr',()=>new T3.RingGeometry(.83,1,24).rotateX(-Math.PI/2)),disc=geo('fxd',()=>new T3.CircleGeometry(1,20).rotateX(-Math.PI/2)),sph=geo('fxs',()=>ico(1,1)),
+  long=geo('fxlong',()=>new T3.BoxGeometry(2.6,.28,.28)),cone=geo('fxcone',()=>new T3.ConeGeometry(.55,1,5));
+ if(e.k==='rune'){const r=tLerp(8,30,ease(Math.min(1,t*3))),f=t<.65?1:(1-t)/.35;
+  add(ring,col,f,e.x,e.y,BZ+.5,r);add(ring,'#ffffff',f*.9,e.x,e.y,BZ+.56,r*.62);add(ring,col,f*.8,e.x,e.y,BZ+.52,r*.36);add(disc,col,f*.32,e.x,e.y,BZ+.45,r);
+  for(let i=0;i<(reduced?3:6);i++){const a=i*(reduced?2.094:1.047)+t*5,d=r*.8,o=add(box,i%2?'#ffffff':col,f,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,BZ+.9,3.8);o.rotation.y=-a;}
+  return;}
+ if(e.k==='charge'){const u=ease(t);for(let i=0;i<(reduced?4:9);i++){const a=i*.698+t*3,d=26*(1-u);add(sph,i%2?'#ffffff':col,1,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,e.z+(i%3)*2.8,1.1+(1-u)*.8);}
+  add(sph,col,.55+.4*u,e.x,e.y,e.z,1.8+u*4.2);add(sph,'#ffffff',.7*u,e.x,e.y,e.z,.9+u*2);return;}
+ if(e.k==='skillaura'){const o=add(geo('fxp',()=>new T3.CylinderGeometry(1,1,1,8,1,true)),col,fade*.65,e.x,e.y,BZ+12+t*10);o.scale.set(8*(1-t*.5),26+18*t,8*(1-t*.5));return;}
+ if(e.k==='impact'){const R=e.big?36:16,r=tLerp(3,e.big?28:10,ease(Math.min(1,t*1.6)));
+  add(sph,'#ffffff',fade,e.x,e.y,e.z,r*.55);add(sph,col,fade*.75,e.x,e.y,e.z,r);add(ring,col,fade,e.x,e.y,BZ+.55,tLerp(2,R,ease(t)));add(ring,'#ffffff',fade*.8,e.x,e.y,BZ+.6,tLerp(1,R*.6,ease(t)));
+  const n=reduced?4:e.big?12:8;for(let i=0;i<n;i++){const a=i*6.283/n+(e.seed||0),d=tLerp(2,R,ease(t)),o=add(long,i%2?'#ffffff':col,fade,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,e.z+Math.sin(i*2.1)*2,fade*1.9+.5);o.rotation.y=-a;}
+  if(reduced)return;
+  if(e.el==='fire')for(let i=0;i<6;i++){const a=i*1.05+(e.seed||0),d=2+i*.8;add(sph,i%2?'#ffd35a':'#ff7a2a',fade*.9,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,e.z+t*(20+i*4),1.5*fade+.4);}
+  else if(e.el==='cold')for(let i=0;i<6;i++){const a=i*1.047,d=6+(i%2)*4,u=Math.min(1,t*4),o=add(cone,i%2?'#ffffff':'#bfeaff',fade*.9,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,BZ+1+u*3,(7+(i%3)*1.5)*u*(1-t*.4)+.5);o.rotation.set(0,a,0);}
+  else for(let i=0;i<4;i++){const a=i*1.571+(e.seed||0)+t*6,d=tLerp(3,11,t),o=add(long,'#fff3a8',fade,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,e.z+Math.sin(a*2)*3,fade*3.2+.8);o.rotation.set(0,-a,Math.sin(t*34+i)*.7);}
+  return;}
+ if(e.k==='icebloom'){const u=Math.min(1,t*4);add(disc,'#bfeaff',fade*.5,e.x,e.y,BZ+.5,tLerp(3,18,ease(t)));for(let i=0;i<(reduced?3:7);i++){const a=i*.898,d=2+(i%3)*2.2,o=add(cone,i%2?'#ffffff':'#7fd3ff',fade*.95,e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,BZ+1+u*2,(8+(i%3)*2.4)*u+.4);o.rotation.set(0,a,0);}return;}
 }
 function renderSpectacleFx(e,add,geo){
  const reduced=viewEffectsReduced();

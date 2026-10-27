@@ -172,7 +172,7 @@ function checkGoals(){
 
 /* ---------- stats ---------- */
 function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, forceModern=false){
-  const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:10, armorPct:0, ele:0, vsElite:0, takenRed:0, killHeal:0, goldPct:0, xpPct:0, rarity:0, moveSpd:0, rulePool:0, rules:{} };
+  const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:10, armorPct:0, ele:0, vsElite:0, takenRed:0, killHeal:0, goldPct:0, xpPct:0, rarity:0, moveSpd:0, rulePool:0, resF:0, resC:0, resL:0, rules:{} };
   const baseLife = 90 + 14*G.lvl;
   for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; for (const a of [it.imp, ...it.aff]) { s[STAT_KEY[a.k]] += a.v; const al = AFF[a.k].also, ng = AFF[a.k].neg; if (al) s[al[0]] += a.v*al[1]; if (ng) s[ng[0]] -= a.v*ng[1]; const ru = AFF[a.k].rule; if (ru) s.rules[ru] = (s.rules[ru]||0) + a.v*AFF[a.k].rf; } }
   for (const [k, v] of Object.entries(CHARS[G.char].eff)) s[k] += v;
@@ -187,7 +187,7 @@ function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, fo
   const modern=forceModern||!G.legacyMode;s.firmware=modern?pass.filter(id=>FIRMWARE[id]):[];
   const city=G.run?.city;if(city){s.sinc+=18*city.branches.filter(id=>id==='cache').length;s.lifePct-=12*city.branches.filter(id=>id==='cache').length;}
   s.crit=Math.max(0,s.crit);s.apsInc=Math.max(-60,s.apsInc);
-  s.fire+=s.ele;s.cold+=s.ele;s.light+=s.ele;s.armor*=1+s.armorPct/100;s.takenRed=Math.min(40,s.takenRed);s.moveSpd=Math.min(30,s.moveSpd);s.killHeal=Math.min(3,s.killHeal);
+  s.fire+=s.ele;s.cold+=s.ele;s.light+=s.ele;s.armor*=1+s.armorPct/100;s.takenRed=Math.min(40,s.takenRed);s.moveSpd=Math.min(30,s.moveSpd);s.killHeal=Math.min(3,s.killHeal);s.resF=Math.min(75,s.resF);s.resC=Math.min(75,s.resC);s.resL=Math.min(75,s.resL);
   s.life = (baseLife + s.life) * (1 + s.lifePct/100);
   if(city)s.regen+=s.life*.01*city.branches.filter(id=>id==='safe').length;
   s.aps = Math.min(4, 1 + s.apsInc/100);
