@@ -1,3 +1,5 @@
+> 2026-10-27同步：已讀codex-sync-notes，基底main c67529d；Codex只動tools/assets/docs，src/index/dist交原型，QA區域交QA。PR107舊候選待依0.79重新整合，保留系統記錄／存檔修復；見[codex-107-integration-handoff](codex-107-integration-handoff.md)。QA仍建立中；未發佈新版本。
+
 > v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
 
 # v0.78.0音訊整合發佈
