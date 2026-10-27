@@ -48,6 +48,9 @@ function streetMusicTrack(){
  if(G.mons?.some(m=>m.boss&&!m.dead))return 'boss';
  if(G.mons?.some(m=>m.elite&&!m.dead))return 'rush';
  if(G.run?.tower)return 'underpass';
+ // Authored scene identity owns mood; sky brightness is only a legacy fallback.
+ const id=typeof ISLAND_SERIES!=='undefined'?ISLAND_SERIES.select()?.id:null;
+ const theme={FI01:'drift',FI02:'drift',FI03:'underpass',FI04:'haze',FI05:'haze',FI06:'drift',FI07:'haze',FI08:'underpass',FI09:'underpass',FI10:'drift',FI11:'haze',FI12:'haze',FI13:'haze',FI14:'underpass',FI15:'underpass',FI16:'haze',FI17:'underpass',FI18:'drift',FT01:'underpass',FT02:'underpass',FT03:'underpass',FP01:'drift'}[id];if(theme)return theme;
  if([5,9,12,13,16,17].includes(biomeNow()))return 'underpass';
  const sky=BIOMES[biomeNow()]?.sky?.[0]||'#3aa6ea',c=new T3.Color(sky);
  return c.r+c.g+c.b<.35?'haze':'drift';

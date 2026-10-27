@@ -876,3 +876,13 @@ v0.64.0／PR84已發佈，舊候選／未發佈文字以[正式紀錄](release-0
 - [x] MAP-REBUILD製作／接入：22張浮島模型、44 portable GLB、22 Blend、110實際模型視圖及源碼入口已完成。包含35深度／六章／18刷圖／3塔樓／訓練與舊手記遷移。見[完成交接](floating-island-redesign/series-completion.md)及PR98；未合併、未發佈，尚待真機長測與Alan美術驗收。此勾選只代表地圖製作／接入，不代表全遊戲所有待辦完成。
 
 MAP-REBUILD接續優化：背包詳情依指定map key選圖，18區卡片改真實GLB縮圖並適應畫幅；54詳情／132切圖與私有fade釋放檢查通過，見[完成交接](floating-island-redesign/series-completion.md)。未合併／發佈。
+
+## 新參考下的全音訊審查（2026-10-27）
+
+- [x] AUDIO-REVIEW來源／設計：main3add8a6＋Claude8ee3a2e共6曲／46cue、58事件綁定逐項盤點；4首CC0音樂比較片段與6個Kenney音效、來源hash／授權、62訊號解碼及64播放器A/B頁已備妥，見[審查與比較](audio-reference-review/README.md)。不是主觀聽感通過，也未替換正式src/audio。
+- [ ] AUDIO-REVIEW下一步：先對一張日間街區的配樂／核心戰鬥與UI音色做比較決定，再按52項表接入；保留原音訊owner。FINISH-05／06的真人聽感、真機／30分鐘疲勞仍未完成。
+
+
+2026-10-27 v0.78發佈候選：Alan已授權發佈並以整體效果優先；AUDIO-REVIEW後續實作已完成，4授權曲／2原創延長／46cue整音＋2材質命中，22場景選曲、完整曲循環淡換、故事／長聲配額與原混音owner接入。54檔、member／master／embed hash、實際MP3與重播／mute／stress及完整repo回歸通過，見[0.78整合](release-0.78.0/integration.md)。FINISH-05／06的真機、主觀聽感／30分鐘仍待實際結果，不把發佈當其已通過。
+
+v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。

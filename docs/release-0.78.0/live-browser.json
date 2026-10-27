@@ -1,0 +1,25 @@
+{
+  "url": "https://yauchai2.github.io/Game-Lab/?v=0.78.0",
+  "initial": {
+    "version": "0.78.0",
+    "assets": 54,
+    "scene": "FI01",
+    "desired": "drift",
+    "newMaterial": true
+  },
+  "day": {
+    "track": "drift",
+    "duration": 173.749031,
+    "playing": true,
+    "context": "running"
+  },
+  "night": {
+    "track": "haze",
+    "duration": 347.693531,
+    "scene": "FI05"
+  },
+  "muted": true,
+  "errors": [],
+  "tls": "default certificate checks; not disabled",
+  "scope": "Direct live Chromium390px with real MP3 playback advancement for full day/night scores,scene switch and mute; no subjective speaker/mobile-device claim."
+}

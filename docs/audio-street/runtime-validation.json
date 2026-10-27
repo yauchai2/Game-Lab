@@ -43,7 +43,7 @@
       },
       {
         "biome": 10,
-        "track": "haze"
+        "track": "drift"
       },
       {
         "biome": 11,
@@ -86,7 +86,7 @@
         "track": "haze"
       }
     ],
-    "boss": "rush",
+    "boss": "boss",
     "tower": "underpass",
     "intro": "radio",
     "missingSkills": []
@@ -156,7 +156,7 @@
     "voices": 0
   },
   "mix": {
-    "peak": 0.6297425627708435,
+    "peak": 0.5710929036140442,
     "finite": true,
     "sources": 9,
     "scope": "Worst aligned 6 battle + 2 UI + music, same master/limiter values."

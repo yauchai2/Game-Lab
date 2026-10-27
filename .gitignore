@@ -17,3 +17,7 @@ tools/font/*.ttf
 
 /dist/island-series-play.html
 /dist/island-series-gallery.html
+
+/dist/audio-reference-review.html
+
+/tools/audio/__pycache__/
