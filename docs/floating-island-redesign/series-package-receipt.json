@@ -1,11 +1,13 @@
 {
   "output": "/workspace/artifacts/Floating-Islands-22.zip",
-  "bytes": 18610660,
-  "sha256": "567d5d700ad303730aafc274d50f8a5a3ac5bd70fe58a650f1d68bc2958db7e8",
-  "sourceCommit": "6e5444a71efb82bc00532d2e019e7dc2e1949515",
+  "bytes": 18616935,
+  "sha256": "18b9313deb18dcfd2a0e0c8dfe362090f7915484a3c047a4f113c9c37c7e2d28",
+  "sourceCommit": "e61a351a9f4c10e388145f02580d6cda719ad0eb",
   "models": 22,
   "portableGLBs": 44,
   "sourceBlends": 22,
   "files": 308,
-  "crcAndHashes": "pass"
+  "crcAndHashes": "pass",
+  "packagerCommit": "79b04ef",
+  "note": "Source gameplay/models e61a351; post-release packager display/status wording refreshed. Not another release."
 }
