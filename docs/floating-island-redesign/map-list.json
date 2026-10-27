@@ -1,5 +1,5 @@
 {
-  "status": "proposed roster and art-space dimensions; no runtime migration",
+  "status": "Series direction approved; FI02 modeled prototype; remaining scenes pending production; no runtime migration",
   "baseCommit": "4c90e05",
   "characterScaleReferenceMeters": 1.8,
   "maps": [
@@ -27,7 +27,7 @@
       ],
       "layout": "削角L形街口與開放前庭",
       "landmarks": "唱片店、洗衣店、屋頂小天線",
-      "state": "proposal; not game-integrated"
+      "state": "modeled prototype; navigation/scale review; not game-integrated"
     },
     {
       "id": "FI03",

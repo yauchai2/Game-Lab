@@ -1,0 +1,44 @@
+(()=>{
+ const L=FI02_LAYOUT,$=id=>document.getElementById(id),rd=new T3.WebGLRenderer({canvas:$('map'),antialias:false,preserveDrawingBuffer:true});rd.setPixelRatio(1);rd.outputColorSpace=T3.SRGBColorSpace;rd.setClearColor('#ffffff');
+ const scene=new T3.Scene(),cam=new T3.OrthographicCamera(-25,25,20,-20,.1,2000),stage=new T3.Group();scene.add(stage);
+ G.char='street';G.equip={};const hero=buildY2KHero(0,0,0,0,{});hero.updateMatrixWorld(true);
+ const heroBox=new T3.Box3().setFromObject(hero),heroHeight=heroBox.max.y-heroBox.min.y,scale=heroHeight/1.8;
+ const models={color:equipmentModel('fi02_color'),white:equipmentModel('fi02_white')};Object.values(models).forEach(m=>{m.scale.setScalar(scale);stage.add(m)});models.white.visible=false;
+ const actors=new T3.Group();stage.add(actors);actors.add(hero);
+ const bosses=[];
+ for(const spec of [...Array.from({length:4},(_,bossForm)=>({bossForm})),...Array.from({length:6},(_,chap)=>({chap})),...['warden','chimera','executor'].map(towerBoss=>({towerBoss}))]){
+  const m={type:'sentinel',boss:true,elite:true,...spec},g=streetCreatureBuild(m);g.scale.setScalar(g.userData.s*CK*(MONSTER_TRAITS[m.type]?.scale||1)*1.3);g.updateMatrixWorld(true);const b=new T3.Box3().setFromObject(g);bosses.push({spec,g,box:b,size:b.getSize(new T3.Vector3())});
+ }
+ const worst=bosses.reduce((a,b)=>Math.max(b.size.x,b.size.z)>Math.max(a.size.x,a.size.z)?b:a),boss=worst.g;actors.add(boss);boss.position.set(5*scale,0,-(-2)*scale);
+ for(const b of bosses)if(b!==worst){b.g.userData.mixer?.stopAllAction();b.g.userData.skeleton?.dispose();}
+ const bossRadius=Math.max(worst.size.x,worst.size.z)/scale/2+.15;
+ function inside(x,y){let yes=false;const p=L.footprint;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if(((a[1]>y)!==(b[1]>y))&&(x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0]))yes=!yes;}return yes;}
+ function rectDistance(x,y,c,s){return Math.hypot(Math.max(0,Math.abs(x-c[0])-s[0]/2),Math.max(0,Math.abs(y-c[1])-s[1]/2));}
+ function segmentDistance(x,y,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/(dx*dx+dy*dy)));return Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy);}
+ function walkable(x,y,r=L.navigation.heroRadius){if(!inside(x,y))return false;for(let i=0;i<L.footprint.length;i++)if(segmentDistance(x,y,L.footprint[i],L.footprint[(i+1)%L.footprint.length])<r+L.navigation.edgeInset)return false;
+  for(const b of L.buildings){const e=b.collisionFrontExtension||0;if(rectDistance(x,y,[b.center[0],b.center[1]-e/2],[b.size[0],b.size[1]+e])<r)return false;}
+  for(const p of L.props)if(p.size?rectDistance(x,y,p.center,p.size)<r:Math.hypot(x-p.center[0],y-p.center[1])<r+p.radius)return false;
+  for(const q of L.rails)if(rectDistance(x,y,q.center,q.size)<r)return false;
+  for(const p of L.bridge.piers)if(rectDistance(x,y,p,[.65,.65])<r)return false;return true;
+ }
+ const cell=L.navigation.cell,key=(x,y)=>x+','+y,toCell=p=>[Math.round(p[0]/cell),Math.round(p[1]/cell)],center=k=>k.split(',').map(n=>+n*cell);
+ function grid(r){const s=new Set();for(let x=-36;x<=36;x++)for(let y=-28;y<=28;y++)if(walkable(x*cell,y*cell,r))s.add(key(x,y));return s;}
+ const nav=grid(L.navigation.heroRadius),bossNav=grid(bossRadius);
+ function path(a,b,cells=nav){const start=key(...toCell(a)),end=key(...toCell(b));if(!cells.has(start)||!cells.has(end))return [];const queue=[start],prev=new Map([[start,null]]);for(let i=0;i<queue.length&&!prev.has(end);i++){const [x,y]=queue[i].split(',').map(Number);for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const k=key(x+dx,y+dy);if(cells.has(k)&&!prev.has(k)){prev.set(k,queue[i]);queue.push(k);}}}if(!prev.has(end))return [];const out=[];for(let k=end;k;k=prev.get(k))out.push(center(k));return out.reverse();}
+ let current=[...L.navigation.start],route=[],routeIndex=0,walking=true,visibleActors=true,navVisible=false,auto=0;
+ function positionHero(){hero.position.set(current[0]*scale,-heroBox.min.y,-current[1]*scale);}
+ positionHero();
+ const dots=new T3.Group(),dg=new T3.PlaneGeometry(cell*.9*scale,cell*.9*scale).rotateX(-Math.PI/2),dm=new T3.MeshBasicMaterial({color:'#48ba88',transparent:true,opacity:.35,depthWrite:false});stage.add(dots);dots.visible=false;
+ // One point per cell, one draw. Grid remains presentation-only.
+ const inst=new T3.InstancedMesh(dg,dm,nav.size),matrix=new T3.Matrix4();let di=0;for(const k of nav){const [x,y]=center(k);inst.setMatrixAt(di++,matrix.makeTranslation(x*scale,.18,-y*scale));}dots.add(inst);
+ function frameView(view=$('view').value){const rect=$('map').getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height);rd.setSize(w,h,false);const target=new T3.Vector3(0,1.5*scale,0),dir={iso:[1,.95,1],game:innerHeight>innerWidth?[.34,.8,1]:[1,.86,1],top:[0,1,.0001],front:[0,0,1],right:[1,0,0]}[view];cam.position.copy(target).add(new T3.Vector3(...dir).normalize().multiplyScalar(200*scale));cam.up.set(0,1,0);cam.lookAt(target);cam.updateMatrixWorld(true);
+  const box=new T3.Box3().setFromObject(models.color),pts=[];for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z])pts.push(new T3.Vector3(x,y,z).applyMatrix4(cam.matrixWorldInverse));let x0=Math.min(...pts.map(p=>p.x)),x1=Math.max(...pts.map(p=>p.x)),y0=Math.min(...pts.map(p=>p.y)),y1=Math.max(...pts.map(p=>p.y));const ar=w/h;let cx=(x0+x1)/2,cy=(y0+y1)/2;let vw=(x1-x0)*1.12,vh=(y1-y0)*1.12;if(vw/vh<ar)vw=vh*ar;else vh=vw/ar;const zoom=Number($('zoom').value);if(zoom>1&&actors.visible){const focus=hero.position.clone().add(new T3.Vector3(0,.9*scale,0)).applyMatrix4(cam.matrixWorldInverse);cx=focus.x;cy=focus.y;}cam.zoom=zoom;cam.left=cx-vw/2;cam.right=cx+vw/2;cam.bottom=cy-vh/2;cam.top=cy+vh/2;cam.updateProjectionMatrix();rd.render(scene,cam);
+ }
+ $('zoom').oninput=()=>frameView();$('view').onchange=()=>frameView();$('mode').onchange=()=>{models.color.visible=$('mode').value==='color';models.white.visible=!models.color.visible;};$('actors').onclick=()=>{visibleActors=!visibleActors;actors.visible=visibleActors;$('actors').textContent=visibleActors?'隱藏角色':'顯示角色';};$('walk').onclick=()=>{walking=!walking;$('walk').textContent=walking?'暫停走動':'繼續走動';};$('nav').onclick=()=>{navVisible=!navVisible;dots.visible=navVisible;$('nav').textContent=navVisible?'隱藏可走區':'顯示可走區';};addEventListener('resize',()=>frameView());
+ const ray=new T3.Raycaster(),plane=new T3.Plane(new T3.Vector3(0,1,0),0);$('map').onclick=e=>{const r=$('map').getBoundingClientRect();ray.setFromCamera(new T3.Vector2((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2),cam);const hit=new T3.Vector3();if(ray.ray.intersectPlane(plane,hit)){const q=[hit.x/scale,-hit.z/scale],next=path(current,q);if(next.length){route=next;routeIndex=0;auto=10;}}};
+ let last=performance.now();function animate(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(walking){if(!route.length||routeIndex>=route.length){const anchors=[...L.navigation.spawnAnchors,L.navigation.start];route=path(current,anchors[(auto++)%anchors.length]);routeIndex=0;}if(route.length&&routeIndex<route.length){const target=route[routeIndex],dx=target[0]-current[0],dy=target[1]-current[1],d=Math.hypot(dx,dy),step=dt*2.6;if(d<=step){current=[...target];routeIndex++;}else{current[0]+=dx/d*step;current[1]+=dy/d*step;}hero.rotation.y=Math.atan2(dx,-dy);positionHero();}characterAnimate(hero,dt,{speed:9});}boss.userData.mixer.update(dt);rd.render(scene,cam);requestAnimationFrame(animate);}
+ function reachableCount(cells){const start=key(...toCell(L.navigation.start));if(!cells.has(start))return 0;const q=[start],seen=new Set(q);for(let i=0;i<q.length;i++){const [x,y]=q[i].split(',').map(Number);for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const k=key(x+dx,y+dy);if(cells.has(k)&&!seen.has(k)){seen.add(k);q.push(k);}}}return seen.size;}
+ const report={heroHeightGameUnits:heroHeight,gameUnitsPerMeter:scale,bossRadiusMeters:bossRadius,bossSource:worst.spec,bossDimensionsGameUnits:worst.size.toArray(),heroCells:nav.size,connectedCells:reachableCount(nav),bossCells:bossNav.size,spawnPaths:L.navigation.spawnAnchors.map(p=>path(L.navigation.start,p).length),bossPath:path(L.navigation.bossSpawnAnchor,L.navigation.bossArena.center,bossNav).length,draws:null};
+ $('status').textContent=`36 × 28米模型比例；${scale.toFixed(2)}遊戲單位／米（原角色不縮放）。可走區 ${nav.size} 格；最大首領視覺半徑 ${bossRadius.toFixed(2)}米。此頁用原生角色、GLB讀取與鏡頭方向，非完整戰鬥模擬。`;
+ window.FI02_REVIEW={report,rd,scene,cam,models,hero,boss,walkable,path,nav,bossNav,frameView,pause(){walking=false},setHeroPosition(p){if(walkable(...p)){current=[...p];positionHero();}},setZoom(z){$('zoom').value=z;frameView()},setView(v){$('view').value=v;frameView(v)},setActors(on){actors.visible=on},setWhite(on){models.white.visible=on;models.color.visible=!on}};frameView();requestAnimationFrame(animate);
+})();

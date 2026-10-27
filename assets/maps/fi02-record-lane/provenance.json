@@ -1,0 +1,38 @@
+{
+  "id": "FI02",
+  "name": "前街唱片巷",
+  "stage": "modeled navigation/scale prototype; not gameplay integrated or released",
+  "authoring": "Original local Blender geometry authored for this project from the user-approved FI02 concept; no generated 3D provider job",
+  "concept": "assets/concepts/floating-islands/fi02-record-lane/concept.png",
+  "conceptSha256": "ffc217a67315e3c42ac89548018f8b872f05c3d3af2ada4380ab2379afbd8424",
+  "source": "tools/maps/build_fi02.py and tools/maps/fi02-layout.json",
+  "material": "KHR_materials_unlit, COLOR_0, no images, no UV texture details",
+  "rights": "Project-authored geometry. No external asset license accepted or repository license changed.",
+  "files": {
+    "fi02-record-lane.glb": {
+      "bytes": 163600,
+      "sha256": "4e6e73aed0d015774ba77e2000c07071562c9fd55e9ffdcaedb5156e821f064b"
+    },
+    "fi02-blockout.glb": {
+      "bytes": 163600,
+      "sha256": "a781c0a80eb467aaf914b8b1ef02c0d19e4271edce6949925d4a3adf6d104a6b"
+    },
+    "fi02-source.blend": {
+      "bytes": 1232288,
+      "sha256": "46635afce110ea6576a002aa0a89ec9bd4dc466f29eb47f004f3bc59b5533802"
+    },
+    "fi02-native.glb": {
+      "bytes": 163684,
+      "sha256": "78cb968dfcaed79ef37a9121a616c7092429d49bb37ed92ce25f11386d7fa015"
+    },
+    "fi02-blockout-native.glb": {
+      "bytes": 163684,
+      "sha256": "55fbdf30bb53f30e76a1eb0ad773f91ca92580007b1caf2d37ed6e7f8700e5f7"
+    },
+    "layout.json": {
+      "bytes": 3562,
+      "sha256": "a2fb5ef5794379514969ce876699cf1629a881bc528921f7a5ff26eef40c259a"
+    }
+  },
+  "validation": "docs/floating-island-redesign/fi02; project checks, not a game-dev canonical package receipt"
+}

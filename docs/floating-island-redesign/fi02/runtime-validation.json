@@ -1,0 +1,267 @@
+{
+  "report": {
+    "heroHeightGameUnits": 14.143876071929931,
+    "gameUnitsPerMeter": 7.857708928849961,
+    "bossRadiusMeters": 3.0331612553607528,
+    "bossSource": {
+      "chap": 0
+    },
+    "bossDimensionsGameUnits": [
+      45.3100838791249,
+      44.788959215417805,
+      24.046464961283913
+    ],
+    "heroCells": 2352,
+    "connectedCells": 2352,
+    "bossCells": 1088,
+    "spawnPaths": [
+      35,
+      17,
+      37,
+      39
+    ],
+    "bossPath": 27,
+    "draws": 34,
+    "triangles": 18274,
+    "materials": [
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      }
+    ],
+    "segmentChecks": 750,
+    "occlusion": [
+      {
+        "yaw": -1.1,
+        "x": -6,
+        "y": -5,
+        "blocked": false
+      },
+      {
+        "yaw": -1.1,
+        "x": -6,
+        "y": -1,
+        "blocked": false
+      },
+      {
+        "yaw": -1.1,
+        "x": -6,
+        "y": 2,
+        "blocked": false
+      },
+      {
+        "yaw": -1.1,
+        "x": 0,
+        "y": -5,
+        "blocked": false
+      },
+      {
+        "yaw": -1.1,
+        "x": 0,
+        "y": -1,
+        "blocked": false
+      },
+      {
+        "yaw": -1.1,
+        "x": 0,
+        "y": 2,
+        "blocked": false
+      },
+      {
+        "yaw": -1.1,
+        "x": 6,
+        "y": -5,
+        "blocked": false
+      },
+      {
+        "yaw": -1.1,
+        "x": 6,
+        "y": -1,
+        "blocked": false
+      },
+      {
+        "yaw": -1.1,
+        "x": 6,
+        "y": 2,
+        "blocked": false
+      },
+      {
+        "yaw": 0,
+        "x": -6,
+        "y": -5,
+        "blocked": false
+      },
+      {
+        "yaw": 0,
+        "x": -6,
+        "y": -1,
+        "blocked": false
+      },
+      {
+        "yaw": 0,
+        "x": -6,
+        "y": 2,
+        "blocked": false
+      },
+      {
+        "yaw": 0,
+        "x": 0,
+        "y": -5,
+        "blocked": false
+      },
+      {
+        "yaw": 0,
+        "x": 0,
+        "y": -1,
+        "blocked": false
+      },
+      {
+        "yaw": 0,
+        "x": 0,
+        "y": 2,
+        "blocked": false
+      },
+      {
+        "yaw": 0,
+        "x": 6,
+        "y": -5,
+        "blocked": false
+      },
+      {
+        "yaw": 0,
+        "x": 6,
+        "y": -1,
+        "blocked": false
+      },
+      {
+        "yaw": 0,
+        "x": 6,
+        "y": 2,
+        "blocked": false
+      },
+      {
+        "yaw": 1.1,
+        "x": -6,
+        "y": -5,
+        "blocked": false
+      },
+      {
+        "yaw": 1.1,
+        "x": -6,
+        "y": -1,
+        "blocked": false
+      },
+      {
+        "yaw": 1.1,
+        "x": -6,
+        "y": 2,
+        "blocked": false
+      },
+      {
+        "yaw": 1.1,
+        "x": 0,
+        "y": -5,
+        "blocked": false
+      },
+      {
+        "yaw": 1.1,
+        "x": 0,
+        "y": -1,
+        "blocked": false
+      },
+      {
+        "yaw": 1.1,
+        "x": 0,
+        "y": 2,
+        "blocked": false
+      },
+      {
+        "yaw": 1.1,
+        "x": 6,
+        "y": -5,
+        "blocked": false
+      },
+      {
+        "yaw": 1.1,
+        "x": 6,
+        "y": -1,
+        "blocked": false
+      },
+      {
+        "yaw": 1.1,
+        "x": 6,
+        "y": 2,
+        "blocked": false
+      }
+    ],
+    "mapDraws": 14
+  },
+  "errors": [],
+  "scope": "Native GLB reader, original actors/scales and camera direction in standalone review; conservative layout-grid navigation, not actual game AI/combat."
+}
