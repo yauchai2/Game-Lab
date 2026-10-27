@@ -28,9 +28,9 @@ function directPortraitsRefresh(attempt=0){
 /* A first-run gate: never set by importing an existing save and never grants all characters. */
 const INTRO_KEY='idle-hero-intro-v1',INTRO={active:false,step:0,selected:'street',name:''};
 const INTRO_STORY=[
- ['下午三點的錯頻','夏日街區還在過它平常的一天。小禾忙著修風扇，阿澄的渡船剛靠岸。街角電台卻突然播出一段沒有人點過的旋律。'],
- ['走錯頻道的街頭器材','販賣機開始找錯零，音箱、拖板和速遞車也跟著旋律亂跑。小禾發現，異常訊號正沿著舊電纜往高架橋的另一頭傳。先把前街清出一條路，再找出那段聲音從哪裡來。'],
- ['把街區接回來','阿澄在港口等你的消息，小禾留在電台接應。帶上熟悉的裝置，從前街開始追查。選擇你的職業，以自己的名字，把街區的聲音一段段接回來。']
+ ['下午三點，電台走音','夏天，午後三點，冰棒滴了一地。小禾蹲著修風扇，阿澄的渡船剛靠岸。街角電台突然自己開麥，播了一首沒人點的歌，連貓都抬頭看。'],
+ ['全街設備一起發瘋','販賣機亂找零，音箱、拖板、速遞車跟著旋律亂跑。小禾說，異常訊號沿著舊電纜，一路竄去高架橋另一頭。先清前街，再揪出那個頻道。'],
+ ['把街區接回來','阿澄守港口，小禾守電台。穿好拖鞋，帶上裝備，從前街開始。選職業，報名字，把這條街的聲音一段段搶回來。']
 ];
 function introPersist(){try{localStorage.setItem(INTRO_KEY,JSON.stringify({step:INTRO.step,cover:INTRO.cover===true,selected:INTRO.selected,name:INTRO.name}));}catch(e){}}
 function introStart(reset=false){INTRO.active=true;INTRO.cover=true;G.paused=true;try{const d=reset?null:JSON.parse(localStorage.getItem(INTRO_KEY));if(d){INTRO.cover=d.cover===true;INTRO.step=Math.max(0,Math.min(3,d.step|0));if(Object.hasOwn(CHARS,d.selected))INTRO.selected=d.selected;INTRO.name=typeof d.name==='string'?d.name.slice(0,12):'';}}catch(e){}document.body.classList.add('intro-active');introRender();}
