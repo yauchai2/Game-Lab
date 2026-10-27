@@ -886,3 +886,8 @@ MAP-REBUILD接續優化：背包詳情依指定map key選圖，18區卡片改真
 2026-10-27 v0.78發佈候選：Alan已授權發佈並以整體效果優先；AUDIO-REVIEW後續實作已完成，4授權曲／2原創延長／46cue整音＋2材質命中，22場景選曲、完整曲循環淡換、故事／長聲配額與原混音owner接入。54檔、member／master／embed hash、實際MP3與重播／mute／stress及完整repo回歸通過，見[0.78整合](release-0.78.0/integration.md)。FINISH-05／06的真機、主觀聽感／30分鐘仍待實際結果，不把發佈當其已通過。
 
 v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
+
+## 打造／角色口號／血條（2026-10-27）
+
+- [x] 來源審查與離線互動樣板：傳奇物品等級入口去重、七種裝備與精確原生成本、全域術語表、四職業口號三處輸出、30怪／三zoom的薄條避讓比較。見 [交接](craft-health-review/README.md)。僅 tools/docs，不代表正式遊戲已改。
+- [ ] 原型 owner 接入 src；真裝備扣費／取消重驗、全部角色顯示面、近期受擊TTL、護盾與大型首領、真機及QA關卡仍需驗收。
