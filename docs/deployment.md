@@ -109,3 +109,7 @@ PR #52合併，來源／tagcf0382089483843466ecc63590528c43dfc00c51，Pages764c1
 ## v0.64.0 已發佈（2026-10-26，香港時間）
 
 PR84已合併，來源／標籤2f7c889f6a272d278d0aa44335dfc58151c0f2e3；Pages076180d07bcfaa5d05c8a0f00c29bf2a7a717b78。Pages40324674500與Release40324886785成功。正式manifest、入口、21腳本SHA-256及附件digest／大小已核對，直接正式站390px Chromium啟動通過。[整合與證據](release-0.64.0/integration.md)。已重新查核所有遠端分支與PR，Claude最新7be9377文件合入、已撤回精華不納入，所有分支保留。
+
+## v0.78.0 已發佈（2026-10-27，Asia/Taipei）
+
+v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
