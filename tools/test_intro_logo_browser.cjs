@@ -1,5 +1,6 @@
+const GAME_TEST_BASE=process.env.GAME_TEST_BASE||'http://127.0.0.1:8808';
 const{chromium}=require('playwright'),assert=require('node:assert/strict');
-const base=process.env.TITLE_TEST_URL||'http://127.0.0.1:8808/';
+const base=process.env.TITLE_TEST_URL||GAME_TEST_BASE+'/';
 (async()=>{
  const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader']});
  const checks=[],errors=[];
