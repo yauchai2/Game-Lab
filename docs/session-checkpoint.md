@@ -13,3 +13,9 @@
 素材8.35MB，上限9MB；完整源曲與逐檔CC0／原創／混合標記、raw/member/master/embed SHA齊。未採樣3參考影片、未付費。54資產／實際播放／22路由／loop-wrap／mute／mix／全repo回歸通過，見[整合](release-0.78.0/integration.md)、verification.json及audio-release-validation.json。線上部署／tag／附件完成證據以live-verification.json為準。
 
 歷史審查52檔凍結到assets/audio-review，不再讀現行src/audio冒認舊版；舊17封存音訊未變。舊生成器有防護，正式重建用tools/audio/build_release_palette.py、pack_audio.py、build.py。真機、主觀聽感與30分鐘疲勞仍未宣稱完成。
+
+## 打造與血條交接（2026-10-27）
+
+`codex/craft-copy-healthbar-review` 基於最新 main `641c43d`，按新分工只改 tools/docs。審查發現核心重構雙入口共用同一執行器，只有九款城市傳奇可提升物品等級；傳奇詞綴「固定不可改」也須更正為種類固定。四句角色口號需從舞台／footer、手機、職業資料完整刪除。原生30怪血條受視框比例放大（底條約24.97CSSpx），提出1–2px薄條／密度上限／固定首領讀數與目標避讓方案。
+
+離線樣板 `docs/craft-health-review/preview.html` 與 [整份接入說明](craft-health-review/README.md)，原生抽取、320–1440px五寬與15組投影幾何檢查通過。未改 src/index/dist，未發佈，原型接入與真交易／護盾／巨型首領驗收未完成；QA關卡建立中，不能稱全遊戲已修復。
