@@ -115,7 +115,17 @@ function rarityRoll(boss){
   return i;
 }
 const itemValue = it => Math.round((1 + it.r*2.2) * (4 + it.il*2.4));
-const itemLines = it => [it.imp, ...it.aff].map((a, i) => ({ t:(i?(it.lg?'':`T${affTier(a,it.il)} · `):'')+AFF[a.k].t(a.v), imp:i === 0, lg:!!(i&&it.lg) })).concat(it.cr ? [{ t:'已腐化', lg:true }] : []).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
+/* 保護：任何裝備若帶有不存在的詞綴，移除它並寫進系統記錄，避免畫面與數值計算整個中斷。 */
+function itemClean(it){
+  if(!it)return it;
+  if(!Array.isArray(it.aff))it.aff=[];
+  const bad=[];
+  if(!it.imp||!AFF[it.imp.k]){bad.push(it.imp&&it.imp.k);try{it.imp=gearImplicit(it.slot,it.il||1,it.bs||0);}catch(e){}}
+  const keep=it.aff.filter(a=>a&&AFF[a.k]);if(keep.length!==it.aff.length){for(const a of it.aff)if(!a||!AFF[a.k])bad.push(a&&a.k);it.aff=keep;}
+  if(bad.length&&globalThis.SYS)SYS.error('item','移除不存在的詞綴 '+bad.join(',')+'：'+(it.name||'?')+' '+(it.lg||it.slot));
+  return it;
+}
+const itemLines = it => (itemClean(it),[it.imp, ...it.aff]).map((a, i) => ({ t:(i?(it.lg?'':`T${affTier(a,it.il)} · `):'')+AFF[a.k].t(a.v), imp:i === 0, lg:!!(i&&it.lg) })).concat(it.cr ? [{ t:'已腐化', lg:true }] : []).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
 const offPen = () => G.offline && G.offPen;   // 離開超過 60 秒才算離線：經驗 75%、掉落 25%；暗金資格與保底和線上相同；短暫切走只是快轉補上
 const PARTS_OF = [.25, .5, 2, 12], partsOf = r => { const v = PARTS_OF[r] || 0, b = Math.floor(v); return b + (Math.random() < v - b ? 1 : 0); };   /* 零件較罕有：普通 1／4、魔法 1／2 的機會得 1 個 */
 const salvage = it => { G.parts = (G.parts || 0) + partsOf(it.r); };   // 拆下的裝備變成零件，拿去改機
@@ -174,7 +184,7 @@ function checkGoals(){
 function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, forceModern=false){
   const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:10, armorPct:0, ele:0, vsElite:0, takenRed:0, killHeal:0, goldPct:0, xpPct:0, rarity:0, moveSpd:0, rulePool:0, resF:0, resC:0, resL:0, rules:{} };
   const baseLife = 90 + 14*G.lvl;
-  for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; for (const a of [it.imp, ...it.aff]) { s[STAT_KEY[a.k]] += a.v; const al = AFF[a.k].also, ng = AFF[a.k].neg; if (al) s[al[0]] += a.v*al[1]; if (ng) s[ng[0]] -= a.v*ng[1]; const ru = AFF[a.k].rule; if (ru) s.rules[ru] = (s.rules[ru]||0) + a.v*AFF[a.k].rf; } }
+  for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; itemClean(it); for (const a of [it.imp, ...it.aff]) { s[STAT_KEY[a.k]] += a.v; const al = AFF[a.k].also, ng = AFF[a.k].neg; if (al) s[al[0]] += a.v*al[1]; if (ng) s[ng[0]] -= a.v*ng[1]; const ru = AFF[a.k].rule; if (ru) s.rules[ru] = (s.rules[ru]||0) + a.v*AFF[a.k].rf; } }
   for (const [k, v] of Object.entries(CHARS[G.char].eff)) s[k] += v;
   const asc=typeof ascendInfo==='function'?ascendInfo():null;if(asc)for(const[k,v]of Object.entries(asc.eff))s[k]+=v;
   if(typeof ascensionNodeEffects==='function')for(const[k,v]of Object.entries(ascensionNodeEffects()))s[k]+=v;
@@ -259,12 +269,20 @@ const SAVE_KEY = 'idle-hero-save-v2';
 function serialize(){ return { v:2,tutorial:G.tutorial,activityLoot:G.activityLoot,rift:G.rift,towerRoomVersion:1,skillCollectionVersion:1,skillBooks:G.skillBooks||{},skillPity:G.skillPity||0,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
+/* 已是新版格式的存檔：只把「不存在的」傳奇詞綴換成現行傳奇專屬詞（舊版 0.70 存檔），其餘數值不動，可重複執行 */
+function repairLegendAffixes(o){
+ const fixOne=it=>{if(it?.lg&&Array.isArray(it.aff))it.aff.forEach((a,i)=>{const key=lgModKey(it.lg,i);if(a&&!AFF[a.k]&&AFF[key]){a.k=key;a.v=rollAff(key,it.il||1,1.35).v;delete a.tier;}});};
+ for(const it of Object.values(o.armory||{}))fixOne(it);for(const it of o.inventory||[])fixOne(it);for(const d of o.groundDrops||[])if(d.it)fixOne(d.it);
+ for(const key of ['equip','equipBackup'])for(const it of Object.values(o[key]||{}))fixOne(it);
+ return o;
+}
 function migrateEquipmentSlots(input){
- if(input.equipmentVersion===2)return input;
+ if(input.equipmentVersion===2)return repairLegendAffixes(input);
  const o=copyState(input),empty=()=>Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null]));
  const fix=it=>{if(it&&SIGNATURE_GEAR[it.lg])it.slot=SIGNATURE_GEAR[it.lg].slot;if(it?.lg&&Array.isArray(it.aff))it.aff.forEach((a,i)=>{const key=lgModKey(it.lg,i);if(a&&AFF[key]&&(a.k!==key||it.lgv!==2)){a.k=key;a.v=rollAff(key,it.il||1,1.35).v;delete a.tier;}});if(it?.lg)it.lgv=2;return it;};   /* 舊傳奇裝備的詞綴轉成傳奇專屬詞 */
  o.armory=o.armory||{};for(const it of Object.values(o.armory))fix(it);
  for(const it of o.inventory||[])fix(it);for(const d of o.groundDrops||[])if(d.it)fix(d.it);
+   /* 已是新版格式：只重跑傳奇詞綴轉換（可重複執行），舊版 0.70 存檔的傳奇詞綴才不會殘留 */
  for(const key of ['equip','equipBackup']){const group=empty();for(const it of Object.values(o[key]||{})){fix(it);if(!it||!SLOTN[it.slot])continue;if(it.lg&&!o.armory[it.lg])o.armory[it.lg]=it;if(!group[it.slot])group[it.slot]=it;}o[key]=group;}
  const byUid=new Map((o.inventory||[]).map(it=>[it.uid,it]));
  const build=b=>{if(!b?.equipment)return;const refs=empty();for(const [slot,r]of Object.entries(b.equipment)){const target=r?.kind==='core'?coreSlot(r.id):r?.kind==='gear'?(byUid.get(r.uid)?.slot||slot):slot;if(SLOTN[target])refs[target]=r;}b.equipment=refs;};
