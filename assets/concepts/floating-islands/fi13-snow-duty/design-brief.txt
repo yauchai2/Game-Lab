@@ -1,0 +1,14 @@
+FI13 雪線值班亭
+Ice Cream reference; semi-lowpoly / faceted silhouette / Y2K PS1 Dreamcast / flat unlit matte / zero texture detail.
+{
+  "composition": "snow",
+  "landmarks": "值班亭、熱水桌、低雪堤",
+  "accent": "#337DA5",
+  "base": "snow",
+  "sky": [
+    "#3E9CC9",
+    "#96CCDC",
+    "#E7F0E3"
+  ]
+}
+Actual Blender geometry renders; no successful external image-generation job claimed.

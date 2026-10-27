@@ -1,0 +1,38 @@
+{
+  "01-afternoon-source.png": {
+    "sha256": "0f173cd10bf5ea76a54f1057735ddbb189a0784616e2ed24b401ca3761a26687",
+    "bytes": 1855810,
+    "width": 941,
+    "height": 1672
+  },
+  "01-afternoon.webp": {
+    "sha256": "4dcf6f2286c17accd09975a608be18a54e181fb6e9889ba468fa3e99f0efa82d",
+    "bytes": 226368,
+    "width": 941,
+    "height": 1672
+  },
+  "02-offbeat-source.png": {
+    "sha256": "23322b374a2d8e7f8cb6db59173edefe200656a99c422a0408b853006db19bda",
+    "bytes": 1877978,
+    "width": 941,
+    "height": 1672
+  },
+  "02-offbeat.webp": {
+    "sha256": "3c51d541bbe338af8631c75ec86505946ca516427e98a04dde62f20024b28ba9",
+    "bytes": 222940,
+    "width": 941,
+    "height": 1672
+  },
+  "03-reconnect-source.png": {
+    "sha256": "dcd225cb710ebbf061637911e8d72f12b715f10afe0b10cdc5511bb8e58851ae",
+    "bytes": 1776753,
+    "width": 941,
+    "height": 1672
+  },
+  "03-reconnect.webp": {
+    "sha256": "302c2f9efc9313b84e0d1435d6e8756b239acb470612029298eb781d2baa1fef",
+    "bytes": 207990,
+    "width": 941,
+    "height": 1672
+  }
+}

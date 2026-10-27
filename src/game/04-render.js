@@ -648,7 +648,7 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   R3.focusX+=(focus.x-R3.focusX)*Math.min(1,fdt*4);R3.focusY+=(focus.y-R3.focusY)*Math.min(1,fdt*4);
   const cam = R3.cam, tgt = new T3.Vector3(R3.focusX,BZ+terrainHeight(R3.focusX,R3.focusY,plan)+6,R3.focusY); cam.position.copy(tgt).add((innerHeight > innerWidth ? new T3.Vector3(.34, .8, 1) : new T3.Vector3(1, .86, 1)).normalize().applyAxisAngle(new T3.Vector3(0, 1, 0), FXO.yaw).multiplyScalar(160)); cam.lookAt(tgt); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-  for (const x of (framing.follow?[R3.focusX-framing.view/2,R3.focusX+framing.view/2]:plan.bounds.slice(0,2))) for (const y of (framing.follow?[R3.focusY-framing.view/2,R3.focusY+framing.view/2]:plan.bounds.slice(2,4))) for (const z of [BZ-20,BZ+plan.amplitude+35]){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
+  for (const x of (framing.follow?[R3.focusX-framing.view/2,R3.focusX+framing.view/2]:plan.bounds.slice(0,2))) for (const y of (framing.follow?[R3.focusY-framing.view/2,R3.focusY+framing.view/2]:plan.bounds.slice(2,4))) for (const z of (plan.authoredIsland?plan.visualZ.map(z=>BZ+z):[BZ-20,BZ+plan.amplitude+35])){ const p = new T3.Vector3(x, z, y).applyMatrix4(cam.matrixWorldInverse); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); }
   const panel=document.body.classList.contains('d')&&!document.body.classList.contains('watch-mode')?document.getElementById('modal')?.getBoundingClientRect().width+34||0:0,Weff=Math.max(W*.4,W-panel);   // 電腦版：面板疊在右邊，島嶼放在左邊可見區域中央
   const hudPad=Math.min(uiHudPad(),H*.5);let bw = x1 - x0, bh = y1 - y0, ar = Weff/Math.max(2,H-hudPad), cx = (x0 + x1)/2, cy = (y0 + y1)/2 - bh*.03;   // 整座浮島放進畫框，留一點天空
   let vw = bw*(ptv ? .8 : 1.03), vh = bh*(ptv ? .84 : 1.05); if (vw/vh < ar) vw = vh*ar; else vh = vw/ar;
@@ -835,7 +835,7 @@ function scene(){
   if (R3.bi !== bi || R3.terrainKey!==terrainKey()){
     R3.terrainKey=terrainKey();worldTravelStart(terrainNow());
     [G.h.x,G.h.y]=terrainProject(G.h.x,G.h.y);G.h.gx=G.h.x;G.h.gy=G.h.y;
-    for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y);
+    for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y,authoredTerrainPlan(m));
     R3.bi = bi; { const SK = BIOMES[bi].sky || [['#8fcdf7', '#c9e9ff', '#f5fbff'], ['#ffc98a', '#ffe6bf', '#fff7ea'], ['#a9d8ff', '#d9efff', '#ffffff'], ['#c07a9a', '#e9b4cc', '#ffe2ee'], ['#141450', '#3a3a8c', '#7a6ad0'], ['#ffa6d6', '#ffd0ee', '#fff0fa']][bi%6] || []; SK.forEach((c, i) => document.documentElement.style.setProperty('--sk' + i, c)); }
     for (const o of [R3.gnd, R3.portal, ...R3.decor]) if(o){R3.world.remove(o);disposeWorldObject(o);}
     R3.gnd = buildGround(bi); R3.world.add(R3.gnd); R3.portal = buildPortal(); R3.world.add(R3.portal); R3.decor = [];const staticDecor=new T3.Group();

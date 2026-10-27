@@ -1,0 +1,35 @@
+{
+  "source": "User-selected generated PNG artwork supplied in the title-screen request",
+  "logo_crop": [
+    148,
+    18,
+    2031,
+    709
+  ],
+  "logo_size": [
+    1883,
+    691
+  ],
+  "background_size": [
+    941,
+    1672
+  ],
+  "files": {
+    "logo-source.png": {
+      "bytes": 958768,
+      "sha256": "afc31b6144f1ff60c36e6d445d7c12ce8bde18fa4518529ea009a4f2223975b3"
+    },
+    "logo.webp": {
+      "bytes": 194922,
+      "sha256": "d5d6ee5546051c0b8afff76cc96c5689f393481177347e42e9e12583a600a2b0"
+    },
+    "rooftop-source.png": {
+      "bytes": 1311510,
+      "sha256": "379ed3b05835018d5371297264966b45661b9c96e2b2af3f948e6b7637ed11d9"
+    },
+    "rooftop.webp": {
+      "bytes": 60938,
+      "sha256": "b78dcb052a03ef0325a93b34209ad0f0843d6aa12f4ba34f1ff361b32a57ce85"
+    }
+  }
+}

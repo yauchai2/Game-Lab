@@ -1,0 +1,198 @@
+{
+  "id": "FI04",
+  "name": "雨巷地下道",
+  "stem": "fi04-rain-underpass",
+  "version": 1,
+  "profile": 17,
+  "legacyBiomeIndex": 17,
+  "chapter": 2,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -20.0,
+      -7.28
+    ],
+    [
+      -14.8,
+      -14.0
+    ],
+    [
+      12.0,
+      -14.0
+    ],
+    [
+      20.0,
+      -11.2
+    ],
+    [
+      20.0,
+      9.52
+    ],
+    [
+      14.399999999999999,
+      14.0
+    ],
+    [
+      -15.6,
+      14.0
+    ],
+    [
+      -20.0,
+      8.120000000000001
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "LAND_0_retaining",
+      "center": [
+        -17,
+        5
+      ],
+      "size": [
+        3.6,
+        16.6
+      ]
+    },
+    {
+      "id": "LAND_1_retaining",
+      "center": [
+        17,
+        5
+      ],
+      "size": [
+        3.6,
+        16.6
+      ]
+    },
+    {
+      "id": "LAND_2_canopy",
+      "center": [
+        0,
+        10
+      ],
+      "size": [
+        14.6,
+        3.6
+      ]
+    },
+    {
+      "id": "LAND_3_reels",
+      "center": [
+        -13,
+        -4
+      ],
+      "size": [
+        3.6,
+        3.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -13.600000000000001,
+        -3.9200000000000004
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "bench",
+      "center": [
+        14.0,
+        -2.24
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_retaining",
+    "LAND_1_retaining",
+    "LAND_2_canopy",
+    "LAND_3_reels"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -16.0,
+        -3.9200000000000004
+      ],
+      [
+        15.2,
+        -3.9200000000000004
+      ],
+      [
+        15.2,
+        3.64
+      ],
+      [
+        -16.0,
+        3.64
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -12.0,
+        -7.0
+      ],
+      [
+        0,
+        -9.799999999999999
+      ],
+      [
+        12.0,
+        -7.0
+      ],
+      [
+        12.0,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "underpass",
+    "landmarks": "雨棚、排水槽、轉播接口",
+    "accent": "#337DA5",
+    "base": "slate",
+    "sky": [
+      "#21334F",
+      "#687B9D",
+      "#C8D8DA"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    5.125
+  ]
+}

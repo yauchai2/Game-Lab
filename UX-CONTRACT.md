@@ -481,3 +481,27 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - 05ab-intro-logo擁有INTRO_LOGO短暫展示生命週期，INTRO.cover獨立於既有故事step0至3並保存續接。標題不改角色／獎勵；進入故事introStep即dispose。減少動態及暫停時貼圖載妥後不重繪，隱藏分頁不推進角度。原始GLB不隨遊戲分發，logo-3d-asset嵌入已驗證單網格衍生版與同模型PNG，啟動／無GPU皆無外部請求；boot及標題不使用舊2D Logo。
 
 全遊戲視覺變體由streetCreatureBuild／characterAsset／equipmentModel擁有，沿用ih-street單一偏好。原生type、數值、碰撞、SAVE_KEY與六章storyFlags.ch維持原owner；原／新切換重建實體與圖片快取，不寫入物品或戰鬥狀態。驗證見docs/style-complete。
+
+
+## Hello, Static! 開始頁替換（2026-10-27）
+
+來源：Alan 提供暮色屋頂／雙語 Logo 資產及手機、桌面效果圖，明確要求替換原開始頁。此節取代舊 3D 標題展示契約，其他序章及存檔條款不變。
+
+- `introCoverRender` 沿用 uxOpenDialog 的命名、焦點、Tab 圈限及 inert；只顯示一個原生「開始遊戲」按鈕。故事頁的略過及返回仍由 introRender 管理。
+- `introTitleStart` 只提交既有 introStep(0)，有 cover／active／timer 防重入及原生 disabled；短淡出取消或 Escape 不可產生第二次前進。`introLogoDispose` 保留既有呼叫名稱，負責清除暫存 timer 與 title-screen-active，已不擁有 WebGL 資源。
+- INTRO_KEY 及存檔鍵不改。重整未完成序章續接原 step／名稱／職業；已存在角色依原 boot 邏輯直接載入；新角色及重讀封面使用新設計。背景、Logo 或 localStorage 失敗不阻塞原生開始按鈕。
+- 封面尺寸局部限定於 title-screen-active，離開即還原原 overlay 版面；不得把直幅／overflow 契約擴散到序章、職業表單或遊戲主介面。
+- `pack_title_screen.py` 產生 boot 與 runtime 同源資產；build_site 將 title-screen-assets 獨立雜湊快取，離線單檔照樣內嵌。無額外帳號、網絡權限、付費、獎勵或遊戲狀態。
+- 驗證入口：`node tools/test_intro_logo.cjs`、`node tools/test_intro_logo_browser.cjs`（預設本機 8808）、`node tools/test_site_boot.cjs`；證據見 docs/hello-static-title。
+
+## 直幅漫畫序章替換（2026-10-27）
+
+來源：Alan 明確要求刪除舊序章頁，以三頁已提供的直幅漫畫及效果稿重製。此節只改呈現，沿用 INTRO step 0–2、step 3 選職業及同一 INTRO_KEY。
+
+- introRender 對 step<3 委派 introComicRender；step 3 使用原選職業／命名表單。舊 introStoryArt 及其 SVG 產生器已移除。
+- 閱讀器共用 uxOpenDialog 的 inert／焦點圈限／Escape；工具列返回、頁碼、故事文字、略過可達，原生右下鍵為初始焦點。summary 明確 tabindex=0，納入既有對話框 Tab 圈限。
+- ArrowRight 下一頁，ArrowLeft 上一頁，第一頁向左回封面；IME、修飾鍵及展開文字時不接管方向鍵。Escape／略過按原契約前往選職業，不創立角色。
+- 圖上 primary touch／pen 橫滑超過 60px 且少於 750ms 才翻頁；垂直偏移過大、pointercancel 不翻頁；所有操作有原生按鈕替代，pinch zoom 不被禁用。
+- comic-screen-active 僅在漫畫期存在，切封面／選職業即清理，手勢只存暫時起點，不改遊戲狀態。角色名稱／職業草稿仍由 INTRO 保存，返回漫畫不清除。
+- 故事文字直接讀 INTRO_STORY；圖像有 alt 及相同正文描述。圖片錯誤顯示正文備援，下一頁仍可操作；不以圖片解碼成功作為必經閘門。
+- 驗證：test_intro_comic.cjs／test_intro_comic_browser.cjs，含四尺寸三頁、真實 CDP 觸控、文字／鍵盤互斥、失敗備援、續接、選角草稿及離線子資源封鎖。記錄在 docs/hello-static-title。

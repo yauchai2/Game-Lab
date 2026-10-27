@@ -1,0 +1,209 @@
+{
+  "id": "FI10",
+  "name": "港口收貨坪",
+  "stem": "fi10-cargo-quay",
+  "version": 1,
+  "profile": 13,
+  "legacyBiomeIndex": 13,
+  "chapter": 4,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -22.0,
+      -13.94
+    ],
+    [
+      -10.559999999999999,
+      -17.0
+    ],
+    [
+      14.08,
+      -17.0
+    ],
+    [
+      22.0,
+      -12.239999999999998
+    ],
+    [
+      22.0,
+      11.559999999999999
+    ],
+    [
+      15.84,
+      17.0
+    ],
+    [
+      -17.16,
+      17.0
+    ],
+    [
+      -22.0,
+      9.86
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "water",
+      "center": [
+        -0.6599999999999999,
+        -15.65
+      ],
+      "size": [
+        24.200000000000003,
+        1.9
+      ]
+    },
+    {
+      "id": "LAND_0_cargo",
+      "center": [
+        -13,
+        11
+      ],
+      "size": [
+        11.6,
+        5.6
+      ]
+    },
+    {
+      "id": "LAND_1_cargo",
+      "center": [
+        1,
+        13
+      ],
+      "size": [
+        8.6,
+        4.6
+      ]
+    },
+    {
+      "id": "LAND_2_crane",
+      "center": [
+        16,
+        9
+      ],
+      "size": [
+        4.6,
+        4.6
+      ]
+    },
+    {
+      "id": "LAND_3_bollards",
+      "center": [
+        0,
+        -14
+      ],
+      "size": [
+        16.6,
+        1.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -14.96,
+        -4.760000000000001
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "trolley",
+      "center": [
+        15.399999999999999,
+        -2.72
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_cargo",
+    "LAND_1_cargo",
+    "LAND_2_crane",
+    "LAND_3_bollards"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -16.72,
+        -7.48
+      ],
+      [
+        13.64,
+        -7.48
+      ],
+      [
+        13.64,
+        4.760000000000001
+      ],
+      [
+        -16.72,
+        4.760000000000001
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -13.2,
+        -8.5
+      ],
+      [
+        0,
+        -11.899999999999999
+      ],
+      [
+        13.2,
+        -8.5
+      ],
+      [
+        13.2,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "port",
+    "landmarks": "低貨櫃、派送台、短棧橋",
+    "accent": "#337DA5",
+    "base": "concrete",
+    "sky": [
+      "#3E9CC9",
+      "#96CCDC",
+      "#E7F0E3"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    10.350000381469727
+  ]
+}

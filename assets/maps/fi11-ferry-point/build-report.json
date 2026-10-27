@@ -1,0 +1,33 @@
+{
+  "triangles": 606,
+  "semanticMeshes": 11,
+  "textures": 0,
+  "materials": 1,
+  "files": {
+    "layout.json": {
+      "bytes": 3128,
+      "sha256": "874edc99bcdb89ccf290ccf2ebf3a012978016cb318fbdf88049562a0662a031"
+    },
+    "fi11-ferry-point-source.blend": {
+      "bytes": 660148,
+      "sha256": "5cb6659a35ff20ec3caa9dd75ddbba6a40c6c9bb173d627cdbf3e5dfb85d43ff"
+    },
+    "fi11-ferry-point-blockout.glb": {
+      "bytes": 58900,
+      "sha256": "1fd27d587e1b1cb3b58b3dbaf45a09c2362730be94c1aabc38ee39e0bdd8cb52"
+    },
+    "fi11-ferry-point.glb": {
+      "bytes": 58900,
+      "sha256": "79f3d277463d782547cd119f133ff87e946950b501362d300491bc9df5c2ef25"
+    },
+    "fi11-ferry-point-native.glb": {
+      "bytes": 58944,
+      "sha256": "01550891223bd3b73a68f1ebd736380545c5a03bd4009eef5c1760baa5c1be6a"
+    },
+    "fi11-ferry-point-blockout-native.glb": {
+      "bytes": 58944,
+      "sha256": "dd2e4d15f84cb639b300dac2c198744429d3e6a49db07f368e5cb0b09dae172f"
+    }
+  },
+  "stage": "verified project model and isolated native candidate"
+}

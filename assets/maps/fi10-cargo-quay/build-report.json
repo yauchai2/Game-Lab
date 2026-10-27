@@ -1,0 +1,33 @@
+{
+  "triangles": 699,
+  "semanticMeshes": 11,
+  "textures": 0,
+  "materials": 1,
+  "files": {
+    "fi10-cargo-quay-blockout-native.glb": {
+      "bytes": 63556,
+      "sha256": "42e0bc54705d7edeee85dcd8038e5a1765b75551354baeafb1071c31347b1909"
+    },
+    "fi10-cargo-quay.glb": {
+      "bytes": 63512,
+      "sha256": "ed310d442123b3ce81753a40258ea4b067f52d1730c5a0715d9080e528ff03e1"
+    },
+    "layout.json": {
+      "bytes": 2908,
+      "sha256": "cd64eb1586d7f782d16359a89ad26f0ab74eafe726ed8367ea5083c686d056d1"
+    },
+    "fi10-cargo-quay-native.glb": {
+      "bytes": 63556,
+      "sha256": "e2dbdb18e897352ff2975917b3c9bfa6bba1b374123607863676500f9048a9ff"
+    },
+    "fi10-cargo-quay-source.blend": {
+      "bytes": 708164,
+      "sha256": "1b669f83e03055240e4ec125ec684a3f1cb46890ef5dce41fd6769eaecd7b177"
+    },
+    "fi10-cargo-quay-blockout.glb": {
+      "bytes": 63512,
+      "sha256": "488d9fd7c846b9704c0d459b176407af5e3fa01998c5c86ac0fc54dbaa7dcd04"
+    }
+  },
+  "stage": "verified project model and isolated native candidate"
+}

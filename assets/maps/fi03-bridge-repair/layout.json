@@ -1,0 +1,194 @@
+{
+  "id": "FI03",
+  "name": "橋下修理坪",
+  "stem": "fi03-bridge-repair",
+  "version": 1,
+  "profile": 10,
+  "legacyBiomeIndex": 10,
+  "chapter": 2,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -19.0,
+      -10.8
+    ],
+    [
+      -10.64,
+      -15.0
+    ],
+    [
+      15.2,
+      -15.0
+    ],
+    [
+      19.0,
+      -9.0
+    ],
+    [
+      19.0,
+      10.2
+    ],
+    [
+      13.68,
+      15.0
+    ],
+    [
+      -14.82,
+      15.0
+    ],
+    [
+      -19.0,
+      8.7
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "LAND_0_bridge",
+      "center": [
+        0,
+        11
+      ],
+      "size": [
+        27.6,
+        4.6
+      ]
+    },
+    {
+      "id": "LAND_1_repair",
+      "center": [
+        -13,
+        5
+      ],
+      "size": [
+        7.6,
+        5.6
+      ]
+    },
+    {
+      "id": "LAND_2_reels",
+      "center": [
+        14,
+        7
+      ],
+      "size": [
+        4.6,
+        4.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -12.920000000000002,
+        -4.2
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "bench",
+      "center": [
+        13.299999999999999,
+        -2.4
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_bridge",
+    "LAND_1_repair",
+    "LAND_2_reels"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -16.34,
+        -9.0
+      ],
+      [
+        -6.84,
+        -9.0
+      ],
+      [
+        -6.84,
+        6.6
+      ],
+      [
+        13.68,
+        6.6
+      ],
+      [
+        13.68,
+        11.4
+      ],
+      [
+        -16.34,
+        11.4
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -11.4,
+        -7.5
+      ],
+      [
+        0,
+        -10.5
+      ],
+      [
+        11.4,
+        -7.5
+      ],
+      [
+        11.4,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "bridge",
+    "landmarks": "邊界高架橋段、小禾修理舖",
+    "accent": "#649C73",
+    "base": "asphalt",
+    "sky": [
+      "#3E9CC9",
+      "#96CCDC",
+      "#E7F0E3"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    8.0
+  ]
+}

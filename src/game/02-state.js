@@ -71,7 +71,7 @@ const TIER_NAME = ['', 'Ⅱ', 'Ⅲ'];
 function normTier(){ const t = {}; for (const id of Object.keys(SUPPS)){ const a = G.gemTier && G.gemTier[id]; if (!Array.isArray(a)) continue; const tot = G.gems[id] || 0; const n3 = Math.min(Math.max(0, a[1] | 0), tot), n2 = Math.min(Math.max(0, a[0] | 0), tot - n3); if (n2 || n3) t[id] = [n2, n3]; } G.gemTier = t; }
 const passPoints = () => Math.max(0,talentBudget()-G.pass.length);
 const nodeOpen = id => !G.pass.includes(id) && id !== 'S' && TREE[id].links.some(l => l === 'S' || G.pass.includes(l));
-const biomeNow = () => G.run ? G.run.map.biome : (typeof towerNormalBiome==='function'?towerNormalBiome(Math.floor((G.depth-1)/4)):Math.floor((G.depth-1)/4)%BIOMES.length);
+let biomeNow = () => G.run ? G.run.map.biome : (typeof towerNormalBiome==='function'?towerNormalBiome(Math.floor((G.depth-1)/4)):Math.floor((G.depth-1)/4)%BIOMES.length);
 const lvlNow = () => G.run ? G.run.map.lvl : G.depth;
 const runQ = () => G.run ? G.run.map.mods.reduce((a, m) => a + MODS[m].q, 0) : 0;
 
@@ -279,7 +279,7 @@ function applySave(o){
   G.unread=cleanUnread(o.unread);G.summons=[];G.airSupply=null;G.airBuffs=[];G.damageLog=[];G.h.fatalSource=null;G.h.airShield=0;G.h.airShieldUntil=0;G.deathReport=cleanDeathReport(o.deathReport);
   G.startingChar=Object.hasOwn(CHARS,o.startingChar)?o.startingChar:null;
   const uidSeen=new Set(),uidConflicts=new Set();for(const it of Array.isArray(o.inventory)?o.inventory:[]){if(uidSeen.has(it.uid))uidConflicts.add(it.uid);uidSeen.add(it.uid);}
-  G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>(/^p(?:[0-9]|1[01])$/.test(k)&&v<=3||k==='ch'&&v<=6||k==='nc'&&v<=5||k==='end'&&v<=1)&&Number.isInteger(v)&&v>=0));
+  G.storyFlags=Object.fromEntries(Object.entries(o.storyFlags||{}).filter(([k,v])=>(/^(?:p(?:[0-9]|1[0-7])|legacy_p(?:[0-9]|1[01]))$/.test(k)&&v<=3||k==='ch'&&v<=6||k==='nc'&&v<=5||k==='end'&&v<=1)&&Number.isInteger(v)&&v>=0));
   G.castPolicy=o.castPolicy==='combo'?'combo':'balanced';G.signalCharge=0;G.readySince={};G.combat=null;G.castSerial=0;G.signalGainRoot=null;G.h.castT=-1;G.h.swingT=-1;
   for (const k of ['lvl','xp','gold','depth','maxDepth','kills','push','speed','filter','deaths','totalKills','equip','gems','gemTier','carts','seen','goals','mapsDone','pass','ach','legSeen','pity','parts','bossHp','towerBest','quest','craftN','mk','seenG','seenC','cz','userCz','autoFold','dmgNum','seenInv','seenParts','seenGoals','builds','bi','relics','relicPicks','cos','own','heroName','born','autoCard','bossKills','char','cards','picks','maps','run']) if (o[k] !== undefined) G[k] = o[k];
   normTier();G.builds=Array.isArray(o.builds)?o.builds.slice(0,3):[null,null,null];G.bi=[0,1,2].includes(o.bi)?o.bi:0;
@@ -614,8 +614,8 @@ function terrainSegment(x,y,tx,ty,p=terrainNow()){
   }return false;
 }
 
-function terrainWaypoint(x,y,tx,ty){
-  const p=terrainNow();[tx,ty]=terrainProject(tx,ty,p);if(terrainSegment(x,y,tx,ty,p))return [tx,ty];
+function terrainWaypoint(x,y,tx,ty,p=terrainNow()){
+  [tx,ty]=terrainProject(tx,ty,p);if(terrainSegment(x,y,tx,ty,p))return [tx,ty];
   const from=terrainCell(x,y,p),target=terrainCell(tx,ty,p);if(!from)return terrainProject(x,y,p);
   let field=p.routes.get(target.k);
   if(!field){field=new Map([[target.k,0]]);const q=[target];for(let a=0;a<q.length;a++){const c=q[a];for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const i=c.i+di,j=c.j+dj,k=j*p.nx+i;if(i<0||i>=p.nx||j<0||j>=p.ny||field.has(k)||!p.lookup.has(k))continue;field.set(k,field.get(c.k)+1);q.push(p.lookup.get(k));}}if(p.routes.size>=160)p.routes.delete(p.routes.keys().next().value);p.routes.set(target.k,field);}
@@ -625,7 +625,7 @@ function terrainWaypoint(x,y,tx,ty){
   if(best.j!==from.j&&Math.abs(x-from.x)>1.6)return [from.x,from.y];
   return [best.x,best.y];
 }
-function terrainMove(entity,x,y){const p=terrainNow();if(terrainSegment(entity.x,entity.y,x,y,p)){entity.x=x;entity.y=y;}else if(terrainSegment(entity.x,entity.y,x,entity.y,p)){entity.x=x;}else if(terrainSegment(entity.x,entity.y,entity.x,y,p)){entity.y=y;}else{[entity.x,entity.y]=terrainProject(entity.x,entity.y,p);}}
+function terrainMove(entity,x,y){const p=authoredTerrainPlan(entity);if(terrainSegment(entity.x,entity.y,x,y,p)){entity.x=x;entity.y=y;}else if(terrainSegment(entity.x,entity.y,x,entity.y,p)){entity.x=x;}else if(terrainSegment(entity.x,entity.y,entity.x,y,p)){entity.y=y;}else{[entity.x,entity.y]=terrainProject(entity.x,entity.y,p);}}
 // Normal maps use the coast; huge maps activate distant approaches around the hero.
 function terrainSpawnPoints(){
   const p=terrainNow(),local=p.sizeClass==='giant'||p.sizeClass==='large',x=local?G.h.x:HX,y=local?G.h.y:HY;
@@ -705,3 +705,6 @@ function cleanDeathReport(r){if(!r||!Number.isFinite(r.time)||typeof r.cause!=='
 
 /* 背景運行與小視窗的狀態（邏輯在 06b-background.js）；放在這裡才能在設定面板建立前使用。 */
 var BG={worker:null,pip:null,ctx:null,stats:null,last:0};
+
+// Optional authored terrain module; core logic tests retain procedural terrain.
+function authoredTerrainPlan(entity){return terrainNow();}

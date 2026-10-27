@@ -1,0 +1,35 @@
+{
+  "id": "FT01",
+  "name": "停業遊樂場",
+  "stage": "all-series native gameplay candidate; not deployed or released",
+  "authoring": "Original local Blender geometry by tools/maps/build_island_series.py using approved series direction",
+  "material": "KHR_materials_unlit / COLOR_0 / no image textures",
+  "files": {
+    "ft01-closed-fairground.glb": {
+      "bytes": 74616,
+      "sha256": "827b9e6cd085e76628d5b4bc1bb0bef00a1103516aac83389dd49708d34b6125"
+    },
+    "ft01-closed-fairground-blockout-native.glb": {
+      "bytes": 74632,
+      "sha256": "2f171ebf27af475516b10d4cc876271f2edac6673cc6d40dd3a4dce09e08d15e"
+    },
+    "layout.json": {
+      "bytes": 2580,
+      "sha256": "8ad067e15e154674a65dcaac71b5136dc819698f2ca118d48310be3d61c14e1b"
+    },
+    "ft01-closed-fairground-native.glb": {
+      "bytes": 74632,
+      "sha256": "f5d01f72031dbc902d76168a386ef9368d8998b9e2b44394316fc8f0cb9c01a5"
+    },
+    "ft01-closed-fairground-source.blend": {
+      "bytes": 731472,
+      "sha256": "5302b55c9c3ecb0853842403db969d7df4be6988833b8aede16e94b3ec4ae00e"
+    },
+    "ft01-closed-fairground-blockout.glb": {
+      "bytes": 74616,
+      "sha256": "2181533632f7c2f64015ef11a3962a1a6d83e69b23756136dcfd5264ecb4750c"
+    }
+  },
+  "rights": "Project-authored geometry; no new external asset license accepted or repository license changed.",
+  "evidence": "Project static/import/GPU/native checks, not a game-dev canonical package receipt."
+}

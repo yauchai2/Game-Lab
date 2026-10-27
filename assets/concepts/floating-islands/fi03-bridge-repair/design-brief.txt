@@ -1,0 +1,14 @@
+FI03 橋下修理坪
+Ice Cream reference; semi-lowpoly / faceted silhouette / Y2K PS1 Dreamcast / flat unlit matte / zero texture detail.
+{
+  "composition": "bridge",
+  "landmarks": "邊界高架橋段、小禾修理舖",
+  "accent": "#649C73",
+  "base": "asphalt",
+  "sky": [
+    "#3E9CC9",
+    "#96CCDC",
+    "#E7F0E3"
+  ]
+}
+Actual Blender geometry renders; no successful external image-generation job claimed.

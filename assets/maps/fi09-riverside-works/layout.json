@@ -1,0 +1,197 @@
+{
+  "id": "FI09",
+  "name": "河邊鐵工廠",
+  "stem": "fi09-riverside-works",
+  "version": 1,
+  "profile": 12,
+  "legacyBiomeIndex": 12,
+  "chapter": 4,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -21.0,
+      -8.32
+    ],
+    [
+      -15.54,
+      -16.0
+    ],
+    [
+      12.6,
+      -16.0
+    ],
+    [
+      21.0,
+      -12.8
+    ],
+    [
+      21.0,
+      10.879999999999999
+    ],
+    [
+      15.12,
+      16.0
+    ],
+    [
+      -16.38,
+      16.0
+    ],
+    [
+      -21.0,
+      9.280000000000001
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "water",
+      "center": [
+        -0.63,
+        -14.65
+      ],
+      "size": [
+        23.1,
+        1.9
+      ]
+    },
+    {
+      "id": "LAND_0_factory",
+      "center": [
+        -11,
+        10
+      ],
+      "size": [
+        17.6,
+        6.6
+      ]
+    },
+    {
+      "id": "LAND_1_crane",
+      "center": [
+        15,
+        9
+      ],
+      "size": [
+        5.6,
+        5.6
+      ]
+    },
+    {
+      "id": "LAND_2_pipes",
+      "center": [
+        -17,
+        0
+      ],
+      "size": [
+        3.6,
+        8.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -14.280000000000001,
+        -4.48
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "trolley",
+      "center": [
+        14.7,
+        -2.56
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_factory",
+    "LAND_1_crane",
+    "LAND_2_pipes"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -15.96,
+        -8.96
+      ],
+      [
+        -10.5,
+        -11.52
+      ],
+      [
+        15.12,
+        6.4
+      ],
+      [
+        10.92,
+        10.24
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -12.6,
+        -8.0
+      ],
+      [
+        0,
+        -11.2
+      ],
+      [
+        12.6,
+        -8.0
+      ],
+      [
+        12.6,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "factory",
+    "landmarks": "折板工場、吊臂、量測工作台",
+    "accent": "#D9755C",
+    "base": "concrete",
+    "sky": [
+      "#3E9CC9",
+      "#96CCDC",
+      "#E7F0E3"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    9.350000381469727
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "triangles": 512,
+  "semanticMeshes": 9,
+  "textures": 0,
+  "materials": 1,
+  "files": {
+    "fp01-practice-court.glb": {
+      "bytes": 47504,
+      "sha256": "0af5448ac739a7b0a13a2a54e4b2ddae1ee1f507a7e5cd57cb170eeaf5d9ef2a"
+    },
+    "layout.json": {
+      "bytes": 2626,
+      "sha256": "dba7f80c30a4fa88e025cf48b835c47bdeb01c2dc4be883be209100524972196"
+    },
+    "fp01-practice-court-blockout.glb": {
+      "bytes": 47504,
+      "sha256": "984f5b97fef2f75a0ea00e3ea5156203bf9a11ec1a5f75e330b7796b76dcc9a1"
+    },
+    "fp01-practice-court-source.blend": {
+      "bytes": 615928,
+      "sha256": "41f8f9f087da738ec3e344ce3728bfb353b4c0e1fcde0c28b093085d1bbd1f56"
+    },
+    "fp01-practice-court-native.glb": {
+      "bytes": 47524,
+      "sha256": "75259981441169966e7026bcde4ccf67aa657ee951d1ade997746e9538287cf5"
+    },
+    "fp01-practice-court-blockout-native.glb": {
+      "bytes": 47524,
+      "sha256": "2db5985e7fe9daff9b51637f1bd87ad71d90c3414dfcb1f6b2d9cc3b3bfa1a2d"
+    }
+  },
+  "stage": "verified project model and isolated native candidate"
+}
