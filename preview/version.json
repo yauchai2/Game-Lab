@@ -1,11 +1,11 @@
 {
-  "version": "0.77.0",
-  "commit": "581fc9056c845a3a053d2ba937175e919d1e5ceb",
-  "sha256": "3905eddb23204f3aca2c8a6330cfed7494f8bfd57c99758307a3fa677f011fdf",
-  "standalone_sha256": "94a6690b12938a295d05a44f55a86821f945dea16f8d8105f4fa419211ffebbc",
+  "version": "0.77.1",
+  "commit": "c4da516d067411475fe547ed65bca17e5c3c4729",
+  "sha256": "eafb5d12df92d2ea80daaa2c0bb9cf3182ae59c239ae80ed9041ff9ae1f527c5",
+  "standalone_sha256": "18924f7c759b00933da32ee63804431c4ded7528d0bc32f89887773dd9a4373c",
   "assets": {
     "vendor.170c6789f43217c9.js": "170c6789f43217c96b3170f4b42fafe135de7f7cd48497a4218f9757ee1d49fa",
-    "game-1.8030b4178290b16e.js": "8030b4178290b16ea2359deabc1f29dd81bf6ed1f1dd915958d002b93a26f15c",
+    "game-1.efc9d8aab426dd9d.js": "efc9d8aab426dd9de4481d3eda965765a5ab0ef54683ae24eaf7a60d1ea2cce0",
     "audio-assets.1c3ae07db24c7b34.js": "1c3ae07db24c7b34afde37a67f7e0f618c4ef596a6d719d21cf4ba73bcda02e2",
     "game-2.ccb5e2e0907647b7.js": "ccb5e2e0907647b7713b144e3d93b8a204b5cc9661d4499d40d37bdbaa10d766",
     "brand-asset.30f6cb4cccb2fd44.js": "30f6cb4cccb2fd448944ca32a5423ae5df2ec3d6f2a77b86a744fe1d545f24c0",
