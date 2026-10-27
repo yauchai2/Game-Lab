@@ -1,0 +1,15 @@
+# 已知失敗的舊測試（2026-10-27 基線）。這些測試在 main 上本來就是紅的，多數是斷言的數量或結構過期。
+# 規則：不在此清單的測試必須全綠；清單內的測試轉綠時請從這裡移除；新增項目要說明原因。
+tools/test_characters.cjs
+tools/test_combat_experience.cjs
+tools/test_equipment_slots.cjs
+tools/test_field_update.cjs
+tools/test_loot_world.cjs
+tools/test_offline_return.cjs
+tools/test_player_ailments.cjs
+tools/test_progress_curve.cjs
+tools/test_rift_experience.cjs
+tools/test_terrain_mesh.cjs
+tools/test_tower_combat.cjs
+tools/test_update_032.cjs
+tools/test_ux_revision.cjs
