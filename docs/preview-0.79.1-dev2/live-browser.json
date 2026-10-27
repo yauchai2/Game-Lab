@@ -1,0 +1,11 @@
+{
+  "source": "641c43d",
+  "version": "0.79.1-dev.641c43d",
+  "checks": [
+    "HTTPS preview loads cover and prologue",
+    "select class, name and create a fresh local character; native gold/DPS HUD fields exist",
+    "3 viewport sizes enter and exit watch mode after explicitly marking the tutorial complete in the test fixture"
+  ],
+  "errors": [],
+  "scope": "Direct HTTPS preview in an isolated fresh browser; tutorial completion is a controlled fixture. Does not validate outstanding unintegrated fixes."
+}

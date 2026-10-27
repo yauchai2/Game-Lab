@@ -1,0 +1,17 @@
+{
+  "tag": "v0.79.1-dev.2",
+  "source": "641c43d51601f9f3ed12a76bcf943238753c53b4",
+  "pages": "3df49cb41836d0299e870a901f2f1b995eb09f79",
+  "previousPages": "97683f22ca9db9464c05b0b8a2ffa155594306b2",
+  "changedFiles": [
+    "preview/index.html",
+    "preview/version.json"
+  ],
+  "stableManifestUnchanged": true,
+  "stableVersion": "0.78.0",
+  "stableSource": "bca2a6eb7c92350c431c39569d39094343808d5e",
+  "releaseCreated": false,
+  "stableManifestVerifiedOverHttps": true,
+  "pagesWorkflow": 40553262456,
+  "pagesConclusion": "success"
+}

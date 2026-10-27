@@ -1,0 +1,11 @@
+{
+  "source": "641c43d",
+  "version": "0.79.1-dev.641c43d",
+  "checks": [
+    "fingerprinted preview loads cover and prologue",
+    "select class, name and create a fresh local character; native gold/DPS HUD fields exist",
+    "3 viewport sizes enter and exit watch mode after explicitly marking the tutorial complete in the test fixture"
+  ],
+  "errors": [],
+  "scope": "Fresh local isolated browser using exact generated preview; not regression acceptance of outstanding fixes."
+}
