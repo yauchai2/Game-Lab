@@ -1,0 +1,86 @@
+{
+  "candidate": "0.78.1",
+  "base": "45d7c79407afc4076867f1890938050b865febc8",
+  "branch": "codex/navigation-audio-boss-fixes",
+  "status": "implemented and locally verified; not merged or deployed",
+  "tests": {
+    "default_regression": {
+      "status": "pass",
+      "summary": "全部通過"
+    },
+    "profile_browser": {
+      "status": "pass",
+      "summary": "PASS live new-character cancellation at 3 stages, completed profile switch-back, native six giant bosses, tower roles and responsive captures"
+    },
+    "audio_assets": {
+      "status": "pass",
+      "summary": "PASS 54 mixed-license assets, master/shipped hashes, complete embedded bytes, MP3 decode and peaks, <13MB; 17 legacy hashes preserved"
+    },
+    "audio_runtime": {
+      "status": "pass",
+      "summary": "PASS54-asset audio integration,22 routes,loop wrap,materials and voice limits"
+    },
+    "audio_lifecycle": {
+      "status": "pass",
+      "summary": "PASS music resumes, crossfade interruption, deferred story/combat cancellation, real new music playback, phone late timer"
+    },
+    "audio_stress": {
+      "status": "pass",
+      "summary": "PASS real audio unlock, 5 routes, every skill cue, crossfade, mute cancellation, priority, hidden battle/UI, offline and visibility"
+    },
+    "profile_state": {
+      "status": "pass",
+      "summary": "PASS 327 circuit topology, color, power, combat gating, manual equipment, 12 ascensions, acquisition, immutable jobs and atomic multi-character storage checks"
+    },
+    "direct_play_state": {
+      "status": "pass",
+      "summary": "PASS physical pickup delay, midflight save, death, range, offline and exactly-once reward; initial character unlock and old-save compatibility"
+    },
+    "standalone_profile_boss": {
+      "status": "pass",
+      "summary": "PASS live new-character cancellation at 3 stages, completed profile switch-back, native six giant bosses, tower roles and responsive captures",
+      "url": "/dist/idle-hero.html?fresh&lvl=20",
+      "scope": "Served self-contained HTML with same new-character return and native boss flows; not a physical file:// mobile test"
+    },
+    "font_grid": {
+      "status": "pass",
+      "summary": "native face and 1758 LCD glyphs aligned; Cubic 11 OFL preserved"
+    }
+  },
+  "changed_audio_assets": [
+    "underpass.mp3",
+    "rush.mp3",
+    "sf_hit.mp3",
+    "sf_crit.mp3",
+    "sf_kill.mp3",
+    "sf_pick.mp3",
+    "sf_snap.mp3",
+    "sf_ph_open.mp3",
+    "sf_ph_key.mp3",
+    "sf_ph_tab.mp3",
+    "sf_ph_zoom.mp3",
+    "sf_ph_zoomout.mp3",
+    "sf_ph_off.mp3",
+    "sf_st_roll.mp3",
+    "sf_st_swing.mp3"
+  ],
+  "runtime_audio_bytes": 12294360,
+  "standalone": {
+    "bytes": 39478805,
+    "sha256": "004ab02fe927da80323c20d2f8673f9e1637e3e21370007db394bcaaa28ab661"
+  },
+  "baseline_only_failure": {
+    "test": "tools/test_tower_combat.cjs",
+    "assertion": "23 distinct active mechanics",
+    "candidate": "fails because current skills count is26",
+    "base_source": "bca2a6e (v0.78.0)",
+    "base_result": "same failure; unchanged skill data, old test also predates authored tower maps; not hidden or labelled passing",
+    "coverage_for_this_change": "native six chapter boss spawn, tower GLB identity/height, browser framing and no gameplay mechanics edits"
+  },
+  "limits": [
+    "No physical-device Safari/headphone/speaker listening acceptance",
+    "No claim of listening to complete referenced YouTube recordings",
+    "No 30-minute fatigue certification",
+    "12.29MB audio payload increases offline/site first-load bytes; WAV masters and source pages not loaded by runtime"
+  ]
+}

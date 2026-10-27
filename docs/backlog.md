@@ -886,3 +886,5 @@ MAP-REBUILD接續優化：背包詳情依指定map key選圖，18區卡片改真
 2026-10-27 v0.78發佈候選：Alan已授權發佈並以整體效果優先；AUDIO-REVIEW後續實作已完成，4授權曲／2原創延長／46cue整音＋2材質命中，22場景選曲、完整曲循環淡換、故事／長聲配額與原混音owner接入。54檔、member／master／embed hash、實際MP3與重播／mute／stress及完整repo回歸通過，見[0.78整合](release-0.78.0/integration.md)。FINISH-05／06的真機、主觀聽感／30分鐘仍待實際結果，不把發佈當其已通過。
 
 v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
+
+2026-10-27（香港）v0.78.1候選：BUG-PROFILE-RETURN已重現為profileResetRuntime刪除renderer pal導致主迴圈拋錯，已修並驗三處取消與完成新角後切回；AUDIO-POLISH移除兩首舊合成曲、13常用cue換實體聲，精英不跳曲、場景續播與退出取消晚到聲音；BOSS-SCALE恢復六章／塔樓巨大比例及實際血條／血跡。候選分支codex/navigation-audio-boss-fixes，證據docs/navigation-audio-boss；尚未合併／發佈，不把正式v0.78.0覆寫為已更新。

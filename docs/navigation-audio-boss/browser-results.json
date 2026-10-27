@@ -1,0 +1,142 @@
+{
+  "profiles": [
+    {
+      "stage": "cover",
+      "id": "cmvqnn0cnj29a",
+      "name": "回街測試",
+      "paused": false,
+      "intro": false,
+      "pending": false,
+      "layers": 0,
+      "inert": 0,
+      "pal": "mint",
+      "classes": "street-style m ui-material signal-fx ui-pixelfx pixel-icons",
+      "stored": null
+    },
+    {
+      "stage": "comic",
+      "id": "cmvqnn0cnj29a",
+      "name": "回街測試",
+      "paused": false,
+      "intro": false,
+      "pending": false,
+      "layers": 0,
+      "inert": 0,
+      "pal": "mint",
+      "classes": "street-style m ui-material signal-fx ui-pixelfx pixel-icons",
+      "stored": null
+    },
+    {
+      "stage": "pick",
+      "id": "cmvqnn0cnj29a",
+      "name": "回街測試",
+      "paused": false,
+      "intro": false,
+      "pending": false,
+      "layers": 0,
+      "inert": 0,
+      "pal": "mint",
+      "classes": "street-style m ui-material signal-fx ui-pixelfx pixel-icons ui-fx-pulse",
+      "stored": null
+    }
+  ],
+  "bosses": [
+    {
+      "ch": 0,
+      "asset": "M04",
+      "height": 66.35401365247083,
+      "span": 66.35401365247083,
+      "stain": 17.252043549642416,
+      "bar": 66.05714285714286,
+      "target": 52
+    },
+    {
+      "ch": 1,
+      "asset": "B01",
+      "height": 70.0631658280189,
+      "span": 70.0631658280189,
+      "stain": 18.216423115284915,
+      "bar": 73.08857269287111,
+      "target": 58
+    },
+    {
+      "ch": 2,
+      "asset": "B03",
+      "height": 80.08746030931133,
+      "span": 80.08746030931133,
+      "stain": 20.822739680420945,
+      "bar": 81.20000000000002,
+      "target": 64
+    },
+    {
+      "ch": 3,
+      "asset": "M04",
+      "height": 67.05816854881475,
+      "span": 67.05816854881475,
+      "stain": 17.435123822691835,
+      "bar": 66.40000000000002,
+      "target": 56
+    },
+    {
+      "ch": 4,
+      "asset": "B02",
+      "height": 79.4384661921718,
+      "span": 79.4384661921718,
+      "stain": 20.65400120996467,
+      "bar": 81.33714141845704,
+      "target": 66
+    },
+    {
+      "ch": 5,
+      "asset": "B04",
+      "height": 96.38879792536326,
+      "span": 96.38879792536326,
+      "stain": 25.06108746059445,
+      "bar": 100.05714285714286,
+      "target": 72
+    }
+  ],
+  "screens": [
+    {
+      "width": 390,
+      "path": "boss-390.png"
+    },
+    {
+      "width": 1440,
+      "path": "boss-1440.png"
+    }
+  ],
+  "completeAndSwitchBack": {
+    "profiles": 2,
+    "job": "street",
+    "running": true,
+    "pal": "mint"
+  },
+  "tower": [
+    {
+      "towerBoss": "warden",
+      "spec": [
+        "B01",
+        64,
+        0
+      ]
+    },
+    {
+      "towerBoss": "chimera",
+      "spec": [
+        "B02",
+        64,
+        0
+      ]
+    },
+    {
+      "towerBoss": "executor",
+      "spec": [
+        "B03",
+        64,
+        0
+      ]
+    }
+  ],
+  "errors": []
+}

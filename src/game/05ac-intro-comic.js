@@ -41,7 +41,7 @@ function introComicRender(){
  introStageClear();document.body.classList.add('comic-screen-active');
  INTRO_STAGE.count=pages.length;INTRO_STAGE.shown=calm?pages.length:0;
  const bg=lay.pat==='dusk'?`<img class="story-dusk" src="${PIXEL_ART.bg}" alt="" draggable="false">`:'';
- o.innerHTML=`<section class="story-stage pat-${lay.pat}" style="--bg:${lay.bg}" role="group" aria-label="${uxEsc(title)}。${uxEsc(text)}">${bg}<div class="story-dots" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>${pages.map((p,i)=>`<figure class="cut${calm?' on now':''}" data-w="${p.w}" data-h="${p.h}" aria-hidden="true"><img src="${p.src}" width="${p.w}" height="${p.h}" alt="" draggable="false"><figcaption>${uxEsc(INTRO_CAPS[step][i]||'')}</figcaption></figure>`).join('')}<div class="story-timer" aria-hidden="true"><i></i></div><button type="button" class="story-tap" data-initial-focus aria-label="${step<2?'下一頁':'選擇職業'}" onclick="introStageNext()"></button></section>`;
+ o.innerHTML=`<section class="story-stage pat-${lay.pat}" style="--bg:${lay.bg}" role="group" aria-label="${uxEsc(title)}。${uxEsc(text)}">${bg}<div class="story-dots" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>${pages.map((p,i)=>`<figure class="cut${calm?' on now':''}" data-w="${p.w}" data-h="${p.h}" aria-hidden="true"><img src="${p.src}" width="${p.w}" height="${p.h}" alt="" draggable="false"><figcaption>${uxEsc(INTRO_CAPS[step][i]||'')}</figcaption></figure>`).join('')}<div class="story-timer" aria-hidden="true"><i></i></div><button type="button" class="story-tap" data-initial-focus aria-label="${step<2?'下一頁':'選擇職業'}" onclick="introStageNext()"></button>${introCancelButton()}</section>`;
  introStageLayout();
  const hold=calm?INTRO_STAGE_HOLD+1800:INTRO_STAGE_HOLD,first=INTRO_STAGE_FIRST;
  if(!calm)pages.forEach((p,i)=>INTRO_STAGE.timers.push(setTimeout(()=>{const c=o.querySelectorAll('.cut')[i];if(!c)return;c.classList.add('on');INTRO_STAGE.shown=i+1;if(typeof SFX==='function')SFX(INTRO_STAGE_SFX[step]?.[i]||'snap');},first+i*INTRO_STAGE_GAP)));
@@ -51,7 +51,7 @@ function introComicRender(){
  uxOpenDialog(o,`序章 ${step+1}／3`,introEscape);
 }
 function introComicCover(){if(!INTRO.active)return;INTRO.cover=true;introRender();}
-function introComicDispose(){introStageClear();document.body.classList.remove('comic-screen-active');}
+function introComicDispose(){introStageClear();if(typeof audStopStory==='function')audStopStory();document.body.classList.remove('comic-screen-active');}
 addEventListener('resize',()=>{if(INTRO.active&&!INTRO.cover&&INTRO.step<3)introStageLayout();});
 addEventListener('keydown',e=>{
  if(e.defaultPrevented||e.isComposing||!INTRO.active||INTRO.cover||INTRO.step>=3||e.altKey||e.metaKey||e.ctrlKey||e.target.closest('input,textarea,select,[contenteditable="true"]'))return;

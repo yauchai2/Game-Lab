@@ -1,0 +1,127 @@
+{
+  "routes": {
+    "rows": [
+      {
+        "id": "FI01",
+        "track": "drift"
+      },
+      {
+        "id": "FI02",
+        "track": "drift"
+      },
+      {
+        "id": "FI03",
+        "track": "underpass"
+      },
+      {
+        "id": "FI04",
+        "track": "haze"
+      },
+      {
+        "id": "FI05",
+        "track": "haze"
+      },
+      {
+        "id": "FI06",
+        "track": "drift"
+      },
+      {
+        "id": "FI07",
+        "track": "haze"
+      },
+      {
+        "id": "FI08",
+        "track": "underpass"
+      },
+      {
+        "id": "FI09",
+        "track": "underpass"
+      },
+      {
+        "id": "FI10",
+        "track": "drift"
+      },
+      {
+        "id": "FI11",
+        "track": "haze"
+      },
+      {
+        "id": "FI12",
+        "track": "haze"
+      },
+      {
+        "id": "FI13",
+        "track": "haze"
+      },
+      {
+        "id": "FI14",
+        "track": "underpass"
+      },
+      {
+        "id": "FI15",
+        "track": "underpass"
+      },
+      {
+        "id": "FI16",
+        "track": "haze"
+      },
+      {
+        "id": "FI17",
+        "track": "underpass"
+      },
+      {
+        "id": "FI18",
+        "track": "drift"
+      },
+      {
+        "id": "FT01",
+        "track": "underpass"
+      },
+      {
+        "id": "FT02",
+        "track": "underpass"
+      },
+      {
+        "id": "FT03",
+        "track": "underpass"
+      },
+      {
+        "id": "FP01",
+        "track": "drift"
+      }
+    ],
+    "boss": "boss",
+    "elite": "drift",
+    "skills": 26,
+    "missingSkills": []
+  },
+  "loopCrossfadePlayingDecks": 2,
+  "loop": {
+    "track": "radio",
+    "active": 1,
+    "playing": 1,
+    "loopFlags": [
+      false,
+      false
+    ]
+  },
+  "material": [
+    "sf_hit",
+    "sf_hit_wood",
+    "sf_hit_metal",
+    "sf_hit_metal"
+  ],
+  "voices": {
+    "story": 1,
+    "tornado": 1,
+    "total": 2
+  },
+  "sustainedReplacement": 1,
+  "off": {
+    "paused": true,
+    "transition": null,
+    "voices": 0
+  },
+  "errors": [],
+  "scope": "Real MP3 playback/context on local390px Chromium;22 scene routes,loop wrap/boss switch,material dispatch,story/sustained voice limits and mute cancellation. Not subjective listening or mobile hardware certification."
+}

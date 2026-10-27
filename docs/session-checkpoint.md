@@ -1,3 +1,5 @@
+> 最新工作：v0.78.1修正候選，branch codex/navigation-audio-boss-fixes；profile返回卡住根因已重現並修正、兩首舊合成配樂／13常用cue更新、巨大Boss恢復。證據與限制見[navigation-audio-boss](navigation-audio-boss/README.md)。未合併／未發佈；正式站仍v0.78.0。
+
 > v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
 
 # v0.78.0音訊整合發佈

@@ -51,11 +51,17 @@ function profileSave(){
  const profiles=PROFILE_SESSION.profiles.filter(p=>p.id!==id);if(profiles.length>=PROFILE_MAX)return false;profiles.push({id,save});
  try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:3,active:id,profiles}));PROFILE_SESSION.profiles=profiles;PROFILE_SESSION.active=id;PROFILE_SESSION.pending=false;PROFILE_SESSION.draft=null;PROFILE_SESSION.returnTo=null;return true;}catch(e){return false;}
 }
-function profileResetRuntime(){for(const k of Object.keys(G))delete G[k];Object.assign(G,copyState(GAME_NEW_STATE));PV.sig='';PV.lastTime=null;}
+function profileResetRuntime(){
+ // mountFigure adds these after GAME_NEW_STATE; they belong to the renderer,
+ // not to a character save. Removing pal terminates the animation loop.
+ const presentation={pal:G.pal||'mint',az:G.az??105};
+ if(typeof audResetScene==='function')audResetScene();
+ for(const k of Object.keys(G))delete G[k];Object.assign(G,copyState(GAME_NEW_STATE),presentation);PV.sig='';PV.lastTime=null;
+}
 function profileRestore(id){const p=PROFILE_SESSION.profiles.find(p=>p.id===id);if(!p)return false;profileResetRuntime();if(!applySave(copyState(p.save)))return false;PROFILE_SESSION.active=id;PROFILE_SESSION.pending=false;PROFILE_SESSION.draft=null;PROFILE_SESSION.returnTo=null;G.lastWall=Date.now();G.paused=false;return true;}
 function profileSwitch(id){if(G.run||G.train||PROFILE_SESSION.pending||id===PROFILE_SESSION.active||!PROFILE_SESSION.profiles.some(p=>p.id===id)||!saveGame())return false;const previous=PROFILE_SESSION.active;if(!profileRestore(id))return false;if(!saveGame()){profileRestore(previous);return false;}return true;}
 function profileNew(){if(G.run||G.train||PROFILE_SESSION.pending||PROFILE_SESSION.profiles.length>=PROFILE_MAX||!saveGame())return false;const id=PROFILE_SESSION.active;profileResetRuntime();PROFILE_SESSION.active=null;PROFILE_SESSION.returnTo=id;PROFILE_SESSION.pending=true;PROFILE_SESSION.draft=null;INTRO.step=0;INTRO.selected='street';INTRO.name='';introStart(true);return true;}
-function profileCancelNew(){const id=PROFILE_SESSION.returnTo;if(!id||!PROFILE_SESSION.pending)return false;INTRO.active=false;document.body.classList.remove('intro-active');uxCloseDialog($('ovl'));if(!profileRestore(id))return false;openModal('char');return true;}
+function profileCancelNew(){const id=PROFILE_SESSION.returnTo;if(!id||!PROFILE_SESSION.pending)return false;INTRO.active=false;introLogoDispose();try{localStorage.removeItem(INTRO_KEY);}catch(e){}document.body.classList.remove('intro-active');uxCloseDialog($('ovl'));if(!profileRestore(id))return false;openModal('char');return true;}
 function profileImportNew(raw){if(G.run||G.train||PROFILE_SESSION.profiles.length>=PROFILE_MAX||!raw||raw.v!==2||!Object.hasOwn(CHARS,raw.char)||!saveGame())return false;const returnTo=PROFILE_SESSION.active;profileResetRuntime();if(!applySave(copyState(raw))){profileRestore(returnTo);return false;}PROFILE_SESSION.active=null;PROFILE_SESSION.pending=true;PROFILE_SESSION.returnTo=returnTo;if(!saveGame()){profileRestore(returnTo);return false;}return true;}
 
 function profileDeleteCurrent(){

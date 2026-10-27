@@ -96,57 +96,61 @@
     {
       "asset": "underpass.mp3",
       "kind": "music",
-      "sha256": "46aed2cde2888efd8648c6120c5584f5929ca57864b196f8d5e697b126ee48ad",
-      "source_sha256": "a2ab65efb8de46d2b6fd31429854377de69b6dc1c3f4c2e0677afe8d13909003",
-      "bytes": 686564,
-      "duration": 68.571438,
+      "sha256": "84d7537586ef111b4a20b3dcee43c2e2dbe3911b540196a02aa63edcc4173f77",
+      "source_sha256": "bcde4a28863c3ba1f5c0061b907da6f3bac0b8fbec50cacca151e09f71169358",
+      "bytes": 4539284,
+      "duration": 453.830406,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab deterministic composition/synthesis",
-      "sourceCommit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-      "sourceGenerator": "tools/build_street_audio.py with32-bar arrangement",
-      "bpm": 112,
-      "bars": 32,
-      "mood": "industrial",
-      "processing": "Rearranged from immutable generator; two-pass music master; post-resample peak guard before MP3"
+      "license": "CC0-1.0",
+      "authorship": "dant-e",
+      "title": "After Midnight",
+      "sourceUrl": "https://opengameart.org/content/after-midnight",
+      "downloadUrl": "https://opengameart.org/sites/default/files/after_midnight.mp3",
+      "original_sha256": "398b10e6c05583512885dff17162a26844f6dc17e68d92d4553c7604d3d34eae",
+      "trimFrames": [
+        672,
+        14523245
+      ],
+      "processing": "Native arrangement; trim sub-audible edge, DC remove,6ms boundary protection, two-pass -18.7LUFS/-3.5dBTP; live deck crossfade on repeat; post-resample peak guard before MP3",
+      "mood": "industrial"
     },
     {
       "asset": "rush.mp3",
       "kind": "music",
-      "sha256": "8ef3f9af70fc7dacfd76fedf2b1f9bb671f1473cd103bf2b931a679e2376a009",
-      "source_sha256": "32f925dd66e21c102f49af24801152c2d2869ac6dafbff9e3c096c75393082e3",
-      "bytes": 620324,
-      "duration": 61.935469,
+      "sha256": "e5d5c36a06bcd3df3fde71c835f6c17d30be6e5727a1c8680c50462e4e13a43c",
+      "source_sha256": "6cccce220475689f54a08bfda987a77ea2db928a53c22988bcecefe25851f8ca",
+      "bytes": 720764,
+      "duration": 72.0,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab deterministic composition/synthesis",
-      "sourceCommit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-      "sourceGenerator": "tools/build_street_audio.py with32-bar arrangement",
-      "bpm": 124,
-      "bars": 32,
-      "mood": "elite",
-      "processing": "Rearranged from immutable generator; two-pass music master; post-resample peak guard before MP3"
+      "license": "CC0-1.0",
+      "authorship": "Nostromo",
+      "title": "Strong Downtempo / Space Ranger",
+      "sourceUrl": "https://opengameart.org/content/music-loop-strong-downtempo-seamless",
+      "downloadUrl": "https://opengameart.org/sites/default/files/space_ranger_seamless_loop.wav",
+      "original_sha256": "b7af8f7ca80958bcc79cb49faac128cd85093e484b8a42e661c2cda623a6521c",
+      "trimFrames": [
+        0,
+        2304000
+      ],
+      "processing": "Native arrangement; trim sub-audible edge, DC remove,6ms boundary protection, two-pass -18.7LUFS/-3.5dBTP; live deck crossfade on repeat; post-resample peak guard before MP3",
+      "mood": "challenge",
+      "post_normalization_gain_db": 0.6
     },
     {
       "asset": "sf_hit.mp3",
       "kind": "sfx",
-      "sha256": "7cca5c4d1c21053f1d7098325e1193c46407ba6a68ca12bee7d036880ba94e89",
-      "source_sha256": "47d01013c3212c73497de333d0d6936e28825c2ce7731f7dd4f52e7b2fc400ae",
-      "bytes": 2060,
-      "duration": 0.15,
+      "sha256": "3f6c1e936fc0d12c79073867b7d127e40a8066c887a7be37e9d207b50932192d",
+      "source_sha256": "2cd45d250d820af992e98191beec7710a3567e6fbcbab859b03e2bfea6178e1f",
+      "bytes": 1772,
+      "duration": 0.14,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "hit",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_hit.wav",
-          "sha256": "d4bdb642b874693f252239970b1f1df8e6df4fbc0ad296ed5fc996c74dd7daaf"
-        },
         {
           "package": "kenney-impact",
           "member": "Audio/impactGeneric_light_000.ogg",
@@ -160,21 +164,16 @@
     {
       "asset": "sf_crit.mp3",
       "kind": "sfx",
-      "sha256": "b9793122e77afce8928869bb2ee4e5526e81d996b1857c3e8040b81099463056",
-      "source_sha256": "e760ba7523ce61665251ca0a12814d345a1f82b738f71e37bb48615aac4a5d78",
+      "sha256": "571f1b77337a0981c37d7333245b45d7bc262ebbd712b5ade55b010a8cca0c1e",
+      "source_sha256": "c0c99bd6a7f5c1e3a78a26c01903952d857085cefa5660b021a39c95f6f2b6a9",
       "bytes": 2636,
-      "duration": 0.23,
+      "duration": 0.22,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "crit",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_crit.wav",
-          "sha256": "e3b4e299e27dcbe11909b564eb9d06137851c742e4d89a63fb95dae6a75c5050"
-        },
         {
           "package": "kenney-impact",
           "member": "Audio/impactMetal_light_000.ogg",
@@ -188,21 +187,16 @@
     {
       "asset": "sf_kill.mp3",
       "kind": "sfx",
-      "sha256": "6bfec5620d9b6b010b7097c5fd44b74dd38b2909af9726e7288248936e1569ee",
-      "source_sha256": "17eb66c23cf7945fd24220a392f5dcdb8aa6dcadb4aa96845f3e3e0c5be30ffc",
-      "bytes": 2636,
-      "duration": 0.24,
+      "sha256": "d5db7ece491820fcedb60eda8d4fd887549a7157c87e412e3b2247de0d5d672f",
+      "source_sha256": "49405f25f0ff0bad90335563ac89dffa9938b5e502a14e124b0883e6d5777bb6",
+      "bytes": 1772,
+      "duration": 0.14,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "kill",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_kill.wav",
-          "sha256": "94487945cb1efab1ceeccb92f492f96c484b28e92eebfc9ead7abd3d8312b34d"
-        },
         {
           "package": "kenney-impact",
           "member": "Audio/impactPlate_light_000.ogg",
@@ -391,21 +385,16 @@
     {
       "asset": "sf_pick.mp3",
       "kind": "sfx",
-      "sha256": "2f6b1d5a1346271f7757aab0df6d80610efa12864fed9f34a9ee7cd2fdc9c7d8",
-      "source_sha256": "61d0aa58e317e066035ae7b3549ccd2253c6bfadf715abf45e07df7b4252bea0",
-      "bytes": 1772,
-      "duration": 0.12,
+      "sha256": "a65ca5f385f2cf9e0dc98ea252e6eece528dc964942d02e6007cd9877c38e7c3",
+      "source_sha256": "3f17a22f22c0de5c8bd9a82b0f1fb7883a4c1837983487a159daf8ec2966b08b",
+      "bytes": 1484,
+      "duration": 0.1,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "pick",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_pick.wav",
-          "sha256": "0d89051d2dcdde99df075706394741b29e3ac980361212976c86aab40c63fb79"
-        },
         {
           "package": "kenney-interface",
           "member": "Audio/click_001.ogg",
@@ -489,21 +478,16 @@
     {
       "asset": "sf_snap.mp3",
       "kind": "sfx",
-      "sha256": "ae90500309a7a1580f0b38e4a09495fe65a6443d4f2abb2e2594f75a0dd679ae",
-      "source_sha256": "2068722185c66f153d09a7dfac9d5780e31495a3a9041101cf9abd3d4b00370c",
-      "bytes": 1196,
-      "duration": 0.07,
+      "sha256": "68fda0e75c9d61a66d59832a63b00ac8cb9832a58a75df84bb2079caf41e77eb",
+      "source_sha256": "5bd047eb40c23ed0cda2ae537340eeac608a0473977f30957963494fdb9be9ca",
+      "bytes": 1484,
+      "duration": 0.1,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "snap",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_snap.wav",
-          "sha256": "8dcb3445915f8654735b1be3304a94a35e2e75427994d7ed7aeb64d422ae07d1"
-        },
         {
           "package": "kenney-interface",
           "member": "Audio/click_002.ogg",
@@ -517,21 +501,16 @@
     {
       "asset": "sf_ph_open.mp3",
       "kind": "sfx",
-      "sha256": "f8808fcdef7b4e1982344cfeb8daf3463f36325de850bfde6f7b095f12b8da75",
-      "source_sha256": "8d405e4a007bf394f56d8face90705925c62bfd93fef2570499a9e7c0ba2fd1c",
+      "sha256": "0b3fb5d2c8a171125290d093d50e3454f215f718a8e8bc7112a8bdc3a99990c8",
+      "source_sha256": "7322b200c34c864f6f0c341e6632b15b0036e88a2ca38657cf9af67f77a480fd",
       "bytes": 2636,
-      "duration": 0.25,
+      "duration": 0.23,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "ph_open",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_open.wav",
-          "sha256": "e3ffd5f5ea8c9dd64feb553e1a5ba35d66d137a9d943762fc7b9e9b0f4793f2c"
-        },
         {
           "package": "kenney-interface",
           "member": "Audio/open_001.ogg",
@@ -566,21 +545,16 @@
     {
       "asset": "sf_ph_key.mp3",
       "kind": "sfx",
-      "sha256": "da2d8351d2506fd712a6ba0387ddc4e9328d7feac321e91b4ee69351c0f04d8c",
-      "source_sha256": "5d62fef28cf91e44b2054794e14704bd23fec282efaba3318b0951731aebacac",
-      "bytes": 1196,
-      "duration": 0.045,
+      "sha256": "d3b810320f9118fb09a458bdec97614243c5adf2f8eb553d2dbf63070d6f76a3",
+      "source_sha256": "f6ead0cc9613a2cb9dc63f7af4c9acb0d6f1db8927335d7d12261ae9cdb525cd",
+      "bytes": 1484,
+      "duration": 0.08,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "ph_key",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_key.wav",
-          "sha256": "03dc4c41db5f0c395f8dd576f0ef0adf2dcbe3f98a59ae522e18acc0afd12045"
-        },
         {
           "package": "kenney-interface",
           "member": "Audio/click_001.ogg",
@@ -594,21 +568,16 @@
     {
       "asset": "sf_ph_tab.mp3",
       "kind": "sfx",
-      "sha256": "c6c8a6cce6f1f6bf6dae5ef8621a4b99dff35e7f78a99efd2a47905fabc31b3f",
-      "source_sha256": "a16b3c6bf17ff8b3c514e40dd21520cd83802fd0ccd6b68640ef7034c3273377",
+      "sha256": "68fda0e75c9d61a66d59832a63b00ac8cb9832a58a75df84bb2079caf41e77eb",
+      "source_sha256": "5bd047eb40c23ed0cda2ae537340eeac608a0473977f30957963494fdb9be9ca",
       "bytes": 1484,
       "duration": 0.1,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "ph_tab",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_tab.wav",
-          "sha256": "00781f81d9347238add2dbfe8e4fbf4f1bd2e469f9fa6972066189cbba11bc53"
-        },
         {
           "package": "kenney-interface",
           "member": "Audio/click_002.ogg",
@@ -622,63 +591,62 @@
     {
       "asset": "sf_ph_zoom.mp3",
       "kind": "sfx",
-      "sha256": "c03c9ecef5994f5f494a744d5e59d35917746bbc9cedb2eeed9392d922d7f575",
-      "source_sha256": "16ece19516ef2c2be71b46eb16d5e744fb69839c20fbe3edce2417bc10550b7b",
+      "sha256": "c4fa1ee138eda841cf79dd9b1097e8375dd4f6176cbe10e834df746539890cc8",
+      "source_sha256": "bdff76cb594d5e6902ff2c9c2e30e2399398cd18fbde32df857e7d050bbc5e39",
       "bytes": 2060,
       "duration": 0.16,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "ph_zoom",
       "inputs": [
         {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_zoom.wav",
-          "sha256": "0a43f9343a2bd80424ac5c8c8cd9cd63d03a9a3341f8945ffd63f6d22ca744ad"
+          "package": "kenney-interface",
+          "member": "Audio/maximize_001.ogg",
+          "sha256": "fd3e75e1de2f2fda90aceeacaeb0427ac8bddd3b07a6ce2a8f9ba923df3771f9",
+          "sourceUrl": "https://kenney.nl/assets/interface-sounds",
+          "license": "CC0-1.0"
         }
       ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "processing": "Band shaping,short envelope,headroom master; physical layer"
     },
     {
       "asset": "sf_ph_zoomout.mp3",
       "kind": "sfx",
-      "sha256": "7198bb041b9f19a1e6d6f114b022439403172c7484432420d1a5b8332a075480",
-      "source_sha256": "7b85febf6aeecff0007e4b2593dba1fbac1feba6b2e4e16e6dc99d050161a2d9",
+      "sha256": "4048e698f99ee433c79bb9d0db36a1f74ea7183f99912be2593292ee468c8bce",
+      "source_sha256": "c6c09e63988371991ca4976b5fba70c256342436659ad7ca382797a1c4edd083",
       "bytes": 2060,
-      "duration": 0.17,
+      "duration": 0.16,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "ph_zoomout",
       "inputs": [
         {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_zoomout.wav",
-          "sha256": "b9895cb4ca39bd7a45d0e9d65166386c7cdfeba43122d879332e47b75af31262"
+          "package": "kenney-interface",
+          "member": "Audio/minimize_001.ogg",
+          "sha256": "8481912bc7fa5828924a00ef15b6cd613b994956e0817bd3122065c9b2896d2d",
+          "sourceUrl": "https://kenney.nl/assets/interface-sounds",
+          "license": "CC0-1.0"
         }
       ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "processing": "Band shaping,short envelope,headroom master; physical layer"
     },
     {
       "asset": "sf_ph_off.mp3",
       "kind": "sfx",
-      "sha256": "dcd577a7c3ebdc2aba80a420841097507ba25180bb1c7da0f2ff8e7625de2347",
-      "source_sha256": "d90e84bc3f6ab51baf5a2f64d59b2f6e2f8e6caafe208a6a93ed2ba76b4c3cbb",
-      "bytes": 2924,
-      "duration": 0.28,
+      "sha256": "53fb3685e41fbcec1f98ebda94554fba3bc516fd6e23721b00017b1eb0909dfe",
+      "source_sha256": "c684dbcd1f101186f014c5ca4ebf699e30c28dc69ae7f47b4c8b185946702c23",
+      "bytes": 2636,
+      "duration": 0.23,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "ph_off",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_off.wav",
-          "sha256": "815ebde03c7e7d0dc8d1463dfd7800e99676e209ad2de5ae77d28533b919cd45"
-        },
         {
           "package": "kenney-interface",
           "member": "Audio/close_001.ogg",
@@ -1168,21 +1136,16 @@
     {
       "asset": "sf_st_roll.mp3",
       "kind": "sfx",
-      "sha256": "a9b74f9deeb3ce0231c681966383d1fb4d181ffccf0d0e93374b52f2d41f4a6f",
-      "source_sha256": "4055d524fafb3874399d74c951dd9e95408b22144876675c22288a56338b2cf6",
-      "bytes": 3788,
-      "duration": 0.38,
+      "sha256": "096e853ccacac8ec7e431be39f1521269ddd9e09aeba22e42cb20d4d17505f63",
+      "source_sha256": "1c469f031742ed3a8f5138a0bb8a43b6fc2bd388d0faffc1bec5559c3bfbd9a7",
+      "bytes": 2060,
+      "duration": 0.16,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "st_roll",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_roll.wav",
-          "sha256": "2e37be5196abf8d5ed013db68e0e1a30cce94f1a048772174dda1bd4bfdf06db"
-        },
         {
           "package": "kenney-impact",
           "member": "Audio/footstep_carpet_000.ogg",
@@ -1196,21 +1159,16 @@
     {
       "asset": "sf_st_swing.mp3",
       "kind": "sfx",
-      "sha256": "e37da122da6a9fb056640fee594ceb0843c3a385ae07c954fb89ea94a8913971",
-      "source_sha256": "b03072f750c869549dc91646b09f66b095505c166cb768367b1977d401f7b164",
-      "bytes": 3500,
-      "duration": 0.34,
+      "sha256": "b26be59caea9eb30e4b590f5875ee751c6f4932bbbde9d3cf34d98322f10ead6",
+      "source_sha256": "47554026942bcc7b58c2c4dc9697fa27bf1491400972b0ac9bd03539147270ec",
+      "bytes": 1772,
+      "duration": 0.14,
       "sample_rate": 32000,
       "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
+      "license": "CC0-1.0",
+      "authorship": "Kenney; Game-Lab edit/master",
       "event": "st_swing",
       "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_swing.wav",
-          "sha256": "9e3c71eebc0537d6bf928b2417a3672fd3b56d1092f33deac1dc2c9df2e9d73b"
-        },
         {
           "package": "kenney-impact",
           "member": "Audio/impactSoft_medium_000.ogg",

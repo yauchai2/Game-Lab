@@ -156,7 +156,7 @@
     "voices": 0
   },
   "mix": {
-    "peak": 0.5710929036140442,
+    "peak": 0.5710927844047546,
     "finite": true,
     "sources": 9,
     "scope": "Worst aligned 6 battle + 2 UI + music, same master/limiter values."

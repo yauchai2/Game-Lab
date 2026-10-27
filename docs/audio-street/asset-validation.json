@@ -46,52 +46,52 @@
     },
     {
       "asset": "underpass.mp3",
-      "duration": 68.616,
-      "bytes": 686564,
+      "duration": 453.888,
+      "bytes": 4539284,
       "channels": 2,
-      "peak": 0.48834,
-      "rms": 0.0933,
-      "dc": -5.4e-06,
-      "lufs": -19.22,
-      "true_peak_db": -6.21
+      "peak": 0.52237,
+      "rms": 0.08314,
+      "dc": -3.3e-06,
+      "lufs": -19.16,
+      "true_peak_db": -5.53
     },
     {
       "asset": "rush.mp3",
-      "duration": 61.992,
-      "bytes": 620324,
+      "duration": 72.036,
+      "bytes": 720764,
       "channels": 2,
-      "peak": 0.49989,
-      "rms": 0.09292,
-      "dc": -2.25e-05,
-      "lufs": -19.15,
-      "true_peak_db": -6.02
+      "peak": 0.53483,
+      "rms": 0.09618,
+      "dc": -2.81e-05,
+      "lufs": -19.13,
+      "true_peak_db": -5.42
     },
     {
       "asset": "sf_hit.mp3",
-      "duration": 0.216,
-      "bytes": 2060,
+      "duration": 0.18,
+      "bytes": 1772,
       "channels": 2,
-      "peak": 0.45622,
-      "rms": 0.07251,
-      "dc": -2.08e-05
+      "peak": 0.51328,
+      "rms": 0.07698,
+      "dc": 3.29e-05
     },
     {
       "asset": "sf_crit.mp3",
       "duration": 0.288,
       "bytes": 2636,
       "channels": 2,
-      "peak": 0.4911,
-      "rms": 0.06364,
-      "dc": 4.75e-05
+      "peak": 0.47849,
+      "rms": 0.07136,
+      "dc": -2.2e-06
     },
     {
       "asset": "sf_kill.mp3",
-      "duration": 0.288,
-      "bytes": 2636,
+      "duration": 0.18,
+      "bytes": 1772,
       "channels": 2,
-      "peak": 0.581,
-      "rms": 0.08029,
-      "dc": -0.0001878
+      "peak": 0.53273,
+      "rms": 0.05593,
+      "dc": -7.37e-05
     },
     {
       "asset": "sf_hurt.mp3",
@@ -158,12 +158,12 @@
     },
     {
       "asset": "sf_pick.mp3",
-      "duration": 0.18,
-      "bytes": 1772,
+      "duration": 0.144,
+      "bytes": 1484,
       "channels": 2,
-      "peak": 0.48021,
-      "rms": 0.13999,
-      "dc": -3.26e-05
+      "peak": 0.46898,
+      "rms": 0.03973,
+      "dc": -0.000215
     },
     {
       "asset": "sf_rare.mp3",
@@ -194,21 +194,21 @@
     },
     {
       "asset": "sf_snap.mp3",
-      "duration": 0.108,
-      "bytes": 1196,
+      "duration": 0.144,
+      "bytes": 1484,
       "channels": 2,
-      "peak": 0.49812,
-      "rms": 0.14014,
-      "dc": -1.73e-05
+      "peak": 0.4451,
+      "rms": 0.06749,
+      "dc": 3.62e-05
     },
     {
       "asset": "sf_ph_open.mp3",
       "duration": 0.288,
       "bytes": 2636,
       "channels": 2,
-      "peak": 0.47142,
-      "rms": 0.10672,
-      "dc": -2.91e-05
+      "peak": 0.49252,
+      "rms": 0.10423,
+      "dc": -8.9e-05
     },
     {
       "asset": "sf_ph_on.mp3",
@@ -221,48 +221,48 @@
     },
     {
       "asset": "sf_ph_key.mp3",
-      "duration": 0.108,
-      "bytes": 1196,
+      "duration": 0.144,
+      "bytes": 1484,
       "channels": 2,
-      "peak": 0.48954,
-      "rms": 0.14511,
-      "dc": -0.0002009
+      "peak": 0.46898,
+      "rms": 0.04441,
+      "dc": -0.0002681
     },
     {
       "asset": "sf_ph_tab.mp3",
       "duration": 0.144,
       "bytes": 1484,
       "channels": 2,
-      "peak": 0.45203,
-      "rms": 0.12199,
-      "dc": -6.02e-05
+      "peak": 0.4451,
+      "rms": 0.06749,
+      "dc": 3.62e-05
     },
     {
       "asset": "sf_ph_zoom.mp3",
       "duration": 0.216,
       "bytes": 2060,
       "channels": 2,
-      "peak": 0.47819,
-      "rms": 0.14952,
-      "dc": -3.3e-06
+      "peak": 0.50478,
+      "rms": 0.1615,
+      "dc": 3e-07
     },
     {
       "asset": "sf_ph_zoomout.mp3",
       "duration": 0.216,
       "bytes": 2060,
       "channels": 2,
-      "peak": 0.48183,
-      "rms": 0.14144,
-      "dc": -2.9e-06
+      "peak": 0.46407,
+      "rms": 0.17019,
+      "dc": -3e-06
     },
     {
       "asset": "sf_ph_off.mp3",
-      "duration": 0.324,
-      "bytes": 2924,
+      "duration": 0.288,
+      "bytes": 2636,
       "channels": 2,
-      "peak": 0.64238,
-      "rms": 0.11767,
-      "dc": -8.58e-05
+      "peak": 0.47623,
+      "rms": 0.10476,
+      "dc": -2.6e-05
     },
     {
       "asset": "sf_stair.mp3",
@@ -464,21 +464,21 @@
     },
     {
       "asset": "sf_st_roll.mp3",
-      "duration": 0.432,
-      "bytes": 3788,
+      "duration": 0.216,
+      "bytes": 2060,
       "channels": 2,
-      "peak": 0.43991,
-      "rms": 0.10052,
-      "dc": -8.91e-05
+      "peak": 0.48781,
+      "rms": 0.06537,
+      "dc": 0.0001303
     },
     {
       "asset": "sf_st_swing.mp3",
-      "duration": 0.396,
-      "bytes": 3500,
+      "duration": 0.18,
+      "bytes": 1772,
       "channels": 2,
-      "peak": 0.48822,
-      "rms": 0.11441,
-      "dc": -1.17e-05
+      "peak": 0.48959,
+      "rms": 0.10099,
+      "dc": 5.79e-05
     },
     {
       "asset": "sf_hit_metal.mp3",
@@ -504,6 +504,6 @@
   "all_event_cues_resolve": true,
   "legacy_hashes_preserved": 17,
   "runtime_external_requests": 0,
-  "total_bytes": 8345808,
+  "total_bytes": 12294360,
   "limits": "Decoded peak/RMS checks are technical evidence, not a subjective listening approval."
 }

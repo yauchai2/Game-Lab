@@ -46,7 +46,8 @@ function streetChapterHtml(){const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c)re
 function streetMusicTrack(){
  if(typeof INTRO!=='undefined'&&INTRO.active)return 'radio';
  if(G.mons?.some(m=>m.boss&&!m.dead))return 'boss';
- if(G.mons?.some(m=>m.elite&&!m.dead))return 'rush';
+ // Elites share the scene groove; brief spawns must not restart the soundtrack.
+ if(G.run?.map?.mods?.includes('deadly'))return 'rush';
  if(G.run?.tower)return 'underpass';
  // Authored scene identity owns mood; sky brightness is only a legacy fallback.
  const id=typeof ISLAND_SERIES!=='undefined'?ISLAND_SERIES.select()?.id:null;
