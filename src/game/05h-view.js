@@ -187,6 +187,17 @@ body.d:not(.watch-mode) #fig{display:block!important;width:100%!important;height
 body.d:not(.watch-mode)>header,body.d:not(.watch-mode)>#modal{position:relative;z-index:6}
 body.d:not(.watch-mode) .stage #stats{left:12px!important;right:calc(clamp(480px,34vw,620px) + 40px)!important;top:58px!important}
 body.d:not(.watch-mode) #nexthint{bottom:44px!important}
+@media(min-width:900px){
+body.d:not(.watch-mode) #mtabs{padding-top:4px!important;padding-bottom:4px!important}
+body.d:not(.watch-mode) #mttl{min-height:0!important;padding:0!important}
+body.d:not(.watch-mode) #mttl h2{font-size:18px!important;line-height:1.2!important;padding:5px 10px!important;margin:0!important}
+body.d:not(.watch-mode) #onboarding-card{padding:6px 10px!important;margin:0 0 6px!important}
+body.d:not(.watch-mode) #onboarding-card p{display:none!important}
+body.d:not(.watch-mode) #onboarding-card strong{font-size:15px!important;line-height:1.3!important;margin:2px 0 4px!important}
+}
+@media(min-width:900px) and (max-height:900px){body.d:not(.watch-mode) #mbody{zoom:.88}}
+@media(min-width:900px) and (max-height:720px){body.d:not(.watch-mode) #mbody{zoom:.78}body.d:not(.watch-mode) #mbody .pz.wb{max-width:340px!important}}
+@media(min-width:900px) and (min-height:721px) and (max-height:900px){body.d:not(.watch-mode) #mbody .pz.wb{max-width:400px!important}}
 body.watch-mode{display:block!important;position:relative!important;width:100%!important;height:100dvh!important;min-height:0!important;max-width:none!important;padding:0!important;margin:0!important;overflow:hidden!important}
 body.watch-mode>header,body.watch-mode>#modal,body.watch-mode>#readout,body.watch-mode>.rpg,body.watch-mode>.tfoot,body.watch-mode>footer,body.watch-mode::after{display:none!important}
 body.watch-mode .stage{position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;max-width:none!important;margin:0!important;padding:0!important;min-height:0!important}
