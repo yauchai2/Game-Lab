@@ -1,0 +1,167 @@
+{
+  "report": {
+    "straps": [
+      {
+        "enabled": true,
+        "owner": "frost",
+        "id": "milo_md_strap",
+        "poses": 27,
+        "privateMeshes": 1,
+        "maxRigidGap": 1.4482827586269162,
+        "maxError": 1.7911404597589805e-7,
+        "changed": 5856,
+        "isolated": true,
+        "sourceUnchanged": true,
+        "disposed": 1,
+        "worst": {
+          "name": "cast",
+          "phase": 0.5
+        }
+      },
+      {
+        "enabled": true,
+        "owner": "beep",
+        "id": "ping_bag_strap",
+        "poses": 27,
+        "privateMeshes": 1,
+        "maxRigidGap": 0.5348690490350781,
+        "maxError": 1.3465433803056155e-7,
+        "changed": 6000,
+        "isolated": true,
+        "sourceUnchanged": true,
+        "disposed": 1,
+        "worst": {
+          "name": "dash",
+          "phase": 0.9
+        }
+      },
+      {
+        "enabled": false,
+        "owner": "frost",
+        "id": "milo_md_strap",
+        "poses": 27,
+        "privateMeshes": 1,
+        "maxRigidGap": 1.4482827586269162,
+        "maxError": 1.7911404597589805e-7,
+        "changed": 5856,
+        "isolated": true,
+        "sourceUnchanged": true,
+        "disposed": 1,
+        "worst": {
+          "name": "cast",
+          "phase": 0.5
+        }
+      },
+      {
+        "enabled": false,
+        "owner": "beep",
+        "id": "ping_bag_strap",
+        "poses": 27,
+        "privateMeshes": 1,
+        "maxRigidGap": 0.5348690490350781,
+        "maxError": 1.3465433803056155e-7,
+        "changed": 6000,
+        "isolated": true,
+        "sourceUnchanged": true,
+        "disposed": 1,
+        "worst": {
+          "name": "dash",
+          "phase": 0.9
+        }
+      }
+    ],
+    "mask": {
+      "plainOriginal": true,
+      "removed": 2276,
+      "expected": 2276,
+      "capOriginal": true,
+      "restored": true,
+      "sourceTriangles": 14000
+    },
+    "version": "0.74.0"
+  },
+  "allGear": [
+    {
+      "id": "aki_headphones",
+      "clips": 9
+    },
+    {
+      "id": "aki_baton",
+      "clips": 9
+    },
+    {
+      "id": "aki_chain",
+      "clips": 9
+    },
+    {
+      "id": "aki_charm",
+      "clips": 9
+    },
+    {
+      "id": "milo_headphones",
+      "clips": 9
+    },
+    {
+      "id": "milo_md",
+      "clips": 9
+    },
+    {
+      "id": "milo_disc",
+      "clips": 9
+    },
+    {
+      "id": "milo_belt",
+      "clips": 9
+    },
+    {
+      "id": "milo_md_strap",
+      "clips": 9
+    },
+    {
+      "id": "ping_clip",
+      "clips": 9
+    },
+    {
+      "id": "ping_comm",
+      "clips": 9
+    },
+    {
+      "id": "ping_bag",
+      "clips": 9
+    },
+    {
+      "id": "ping_launcher",
+      "clips": 9
+    },
+    {
+      "id": "ping_phone",
+      "clips": 9
+    },
+    {
+      "id": "ping_bag_strap",
+      "clips": 9
+    },
+    {
+      "id": "null_goggles",
+      "clips": 9
+    },
+    {
+      "id": "null_controller",
+      "clips": 9
+    },
+    {
+      "id": "null_box",
+      "clips": 9
+    },
+    {
+      "id": "null_pet",
+      "clips": 9
+    },
+    {
+      "id": "null_lanyard",
+      "clips": 9
+    }
+  ],
+  "errors": [],
+  "scope": "27 sampled poses per shoulder strap with transformed root; endpoint/blend errors, private geometry/cache isolation/disposal; AKI mask restoration; all20 signature gear through 9 clips."
+}

@@ -1,0 +1,14 @@
+FI15 地下轉播商場
+Ice Cream reference; semi-lowpoly / faceted silhouette / Y2K PS1 Dreamcast / flat unlit matte / zero texture detail.
+{
+  "composition": "underground",
+  "landmarks": "舊發射機、兩側店鋪、服務梯",
+  "accent": "#30AEB9",
+  "base": "slate",
+  "sky": [
+    "#3E9CC9",
+    "#96CCDC",
+    "#E7F0E3"
+  ]
+}
+Actual Blender geometry renders; no successful external image-generation job claimed.

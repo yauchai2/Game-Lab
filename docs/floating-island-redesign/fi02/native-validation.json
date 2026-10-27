@@ -1,0 +1,157 @@
+{
+  "candidateSha256": "d832c20f8bd6ece49da7a08f5106a0a825b929c24a7fde3fac0a99a2e6098131",
+  "navigation": {
+    "rows": [
+      {
+        "boss": false,
+        "start": [
+          15,
+          36
+        ],
+        "end": [
+          -87.1502160750495,
+          91.00396250194973
+        ],
+        "steps": 58,
+        "moved": 116.00000000000003,
+        "distance": 0.01768199328578308,
+        "cells": 830,
+        "pruned": 22
+      },
+      {
+        "boss": false,
+        "start": [
+          -87.13464759097235,
+          90.99557947206203
+        ],
+        "end": [
+          15,
+          122.43479821734957
+        ],
+        "steps": 53,
+        "moved": 105.99999999999999,
+        "distance": 0.8639823038902017,
+        "cells": 830,
+        "pruned": 22
+      },
+      {
+        "boss": false,
+        "start": [
+          14.174253792248487,
+          122.18061595632528
+        ],
+        "end": [
+          132.8656339327494,
+          83.14625357309977
+        ],
+        "steps": 62,
+        "moved": 124,
+        "distance": 0.9452886919786634,
+        "cells": 830,
+        "pruned": 22
+      },
+      {
+        "boss": false,
+        "start": [
+          131.96765994223944,
+          83.4415727623685
+        ],
+        "end": [
+          107.7,
+          4.569164284600156
+        ],
+        "steps": 50,
+        "moved": 99.53023507968726,
+        "distance": 0,
+        "cells": 830,
+        "pruned": 22
+      },
+      {
+        "boss": true,
+        "start": [
+          93.57708928849961,
+          91.00396250194973
+        ],
+        "end": [
+          30.715417857699922,
+          51.71541785769992
+        ],
+        "steps": 37,
+        "moved": 74.00000000000003,
+        "distance": 0.12947777596320498,
+        "cells": 309,
+        "pruned": 0
+      }
+    ],
+    "cellCorners": 4556,
+    "cell": 6,
+    "asset": true,
+    "occluders": 6
+  },
+  "combat": {
+    "seconds": 60,
+    "kills": 54,
+    "maxMons": 21,
+    "moved": 1097.2613738656332,
+    "hpBefore": 351,
+    "hpAfter": 351,
+    "rescues": 0,
+    "liveMonsters": 21,
+    "draws": 689
+  },
+  "drops": {
+    "checked": [
+      {
+        "x": -89.7,
+        "y": 15.3,
+        "valid": true
+      },
+      {
+        "x": 137.7,
+        "y": 104.7,
+        "valid": true
+      },
+      {
+        "x": 15,
+        "y": 36,
+        "valid": true
+      },
+      {
+        "x": 72.3,
+        "y": -62.7,
+        "valid": true
+      }
+    ],
+    "goldGain": 12,
+    "remaining": 0
+  },
+  "boss": {
+    "spawn": [
+      93.57708928849961,
+      91.00396250194973
+    ],
+    "after": [
+      107.7,
+      92.7
+    ],
+    "safe": true,
+    "used": 1,
+    "cleared": true,
+    "dead": true,
+    "chapter": 0
+  },
+  "lifecycle": {
+    "entered": true,
+    "consumed": true,
+    "sameRunId": true,
+    "restored": true,
+    "returned": true,
+    "training": true,
+    "tower": true,
+    "biomesUnchanged": true,
+    "isolated": true
+  },
+  "errors": [],
+  "external": [],
+  "scope": "Actual native terrain lookup/BFS/Move, update combat, loot, map lifecycle and serialize/applySave in page-lifetime memory; 60 simulated seconds, not 60 seconds of real-device performance."
+}

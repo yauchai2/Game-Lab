@@ -1,0 +1,190 @@
+{
+  "id": "FI18",
+  "name": "街角電台屋頂",
+  "stem": "fi18-radio-rooftop",
+  "version": 1,
+  "profile": 6,
+  "legacyBiomeIndex": 6,
+  "chapter": 6,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -21.0,
+      -12.239999999999998
+    ],
+    [
+      -11.76,
+      -17.0
+    ],
+    [
+      16.8,
+      -17.0
+    ],
+    [
+      21.0,
+      -10.2
+    ],
+    [
+      21.0,
+      11.559999999999999
+    ],
+    [
+      15.12,
+      17.0
+    ],
+    [
+      -16.38,
+      17.0
+    ],
+    [
+      -21.0,
+      9.86
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "LAND_0_studio",
+      "center": [
+        -8,
+        11
+      ],
+      "size": [
+        14.6,
+        5.6
+      ]
+    },
+    {
+      "id": "LAND_1_lattice",
+      "center": [
+        14,
+        10
+      ],
+      "size": [
+        4.6,
+        4.6
+      ]
+    },
+    {
+      "id": "LAND_2_mixdesk",
+      "center": [
+        6,
+        9
+      ],
+      "size": [
+        6.6,
+        3.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -14.280000000000001,
+        -4.760000000000001
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "bench",
+      "center": [
+        14.7,
+        -2.72
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_studio",
+    "LAND_1_lattice",
+    "LAND_2_mixdesk"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -15.96,
+        -10.2
+      ],
+      [
+        13.44,
+        -10.2
+      ],
+      [
+        13.44,
+        -3.4000000000000004
+      ],
+      [
+        -3.78,
+        9.520000000000001
+      ],
+      [
+        -15.96,
+        9.520000000000001
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -12.6,
+        -8.5
+      ],
+      [
+        0,
+        -11.899999999999999
+      ],
+      [
+        12.6,
+        -8.5
+      ],
+      [
+        12.6,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "radio",
+    "landmarks": "電台工作室、主天線、各站回覆台",
+    "accent": "#D9755C",
+    "base": "concrete",
+    "sky": [
+      "#3E9CC9",
+      "#96CCDC",
+      "#E7F0E3"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    10.074999809265137
+  ]
+}

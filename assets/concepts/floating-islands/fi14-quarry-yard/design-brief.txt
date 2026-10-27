@@ -1,0 +1,14 @@
+FI14 郊外採石場
+Ice Cream reference; semi-lowpoly / faceted silhouette / Y2K PS1 Dreamcast / flat unlit matte / zero texture detail.
+{
+  "composition": "quarry",
+  "landmarks": "切面岩壁、工具棚、巡線標記",
+  "accent": "#D0A14C",
+  "base": "sand",
+  "sky": [
+    "#3E9CC9",
+    "#96CCDC",
+    "#E7F0E3"
+  ]
+}
+Actual Blender geometry renders; no successful external image-generation job claimed.

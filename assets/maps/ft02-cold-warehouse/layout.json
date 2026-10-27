@@ -1,0 +1,186 @@
+{
+  "id": "FT02",
+  "name": "冷藏倉庫",
+  "stem": "ft02-cold-warehouse",
+  "version": 1,
+  "profile": -1,
+  "legacyBiomeIndex": 19,
+  "chapter": null,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -19.0,
+      -12.3
+    ],
+    [
+      -9.12,
+      -15.0
+    ],
+    [
+      12.16,
+      -15.0
+    ],
+    [
+      19.0,
+      -10.8
+    ],
+    [
+      19.0,
+      10.2
+    ],
+    [
+      13.68,
+      15.0
+    ],
+    [
+      -14.82,
+      15.0
+    ],
+    [
+      -19.0,
+      8.7
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "LAND_0_coldwall",
+      "center": [
+        0,
+        13
+      ],
+      "size": [
+        26.6,
+        3.6
+      ]
+    },
+    {
+      "id": "LAND_1_freezer",
+      "center": [
+        -14,
+        5
+      ],
+      "size": [
+        4.6,
+        10.6
+      ]
+    },
+    {
+      "id": "LAND_2_coldcargo",
+      "center": [
+        13,
+        8
+      ],
+      "size": [
+        5.6,
+        5.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -12.920000000000002,
+        -4.2
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "trolley",
+      "center": [
+        13.299999999999999,
+        -2.4
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_coldwall",
+    "LAND_1_freezer",
+    "LAND_2_coldcargo"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -12.540000000000001,
+        -8.4
+      ],
+      [
+        12.16,
+        -8.4
+      ],
+      [
+        12.16,
+        6.6
+      ],
+      [
+        -12.540000000000001,
+        6.6
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -11.4,
+        -7.5
+      ],
+      [
+        0,
+        -10.5
+      ],
+      [
+        11.4,
+        -7.5
+      ],
+      [
+        11.4,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "coldstore",
+    "landmarks": "冷藏機、低貨架、保溫門框",
+    "accent": "#30AEB9",
+    "base": "slate",
+    "sky": [
+      "#3E9CC9",
+      "#96CCDC",
+      "#E7F0E3"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    6.0
+  ]
+}

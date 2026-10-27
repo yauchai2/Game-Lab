@@ -1,0 +1,8 @@
+{
+  "id": "FP01",
+  "method": "actual project-authored GLB rendered in Three.js",
+  "model": "assets/maps/fp01-practice-court/fp01-practice-court.glb",
+  "modelSha256": "0af5448ac739a7b0a13a2a54e4b2ddae1ee1f507a7e5cd57cb170eeaf5d9ef2a",
+  "imageSha256": "1129b07a068e41c1744524b2d1cd4ae61e6338310f020c317f9f6442ed4d950d",
+  "paidProviders": false
+}

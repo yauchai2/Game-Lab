@@ -9,7 +9,7 @@ function ordinaryEquipmentModel(slot,tier=0,rarity=0,single=false){
  if(slot==='weapon'){buildWeapon(g,t,r);return g;}
  if(slot==='head'){
   if(t===0){cyl(4.4,4.8,1.5,shell);box(7,.4,3.8,dark,0,-.5,3.8);box(2,.4,.25,accent,2,.2,4.5);}
-  if(t===1){const band=mk(new T3.TorusGeometry(4.6,.45,4,10,Math.PI),dark,0,-1,0,g);for(const x of[-4.6,4.6]){box(1.3,3.3,2.6,shell,x,-1,0);box(.3,1.7,1.7,accent,x+Math.sign(x)*.7,-1,0);}}
+  if(t===1){const band=mk(new T3.TorusGeometry(4.6,.45,4,10,Math.PI),dark,0,-1,0,g);band.userData.wearPart='band';for(const x of[-4.6,4.6]){box(1.3,3.3,2.6,shell,x,-1,0).userData.wearPart='earcup';box(.3,1.7,1.7,accent,x+Math.sign(x)*.7,-1,0).userData.wearPart='earcup';}}
   if(t===2){box(8.6,2,1.1,dark,0,-1,4.3);box(7.2,.6,.2,accent,0,-.7,4.95);for(const x of[-4.5,4.5])box(.6,1.1,6,silver,x,-.8,1.6);}
   if(t===3){box(8.5,1.4,6.8,shell,0,.5,-.5);for(const x of[-4.3,4.3])box(1.1,4.5,5.8,shell,x,-1.5,-.5);box(8.6,3.6,1,dark,0,-1,-3.5);box(6.7,.6,.6,accent,0,.05,3.1);}
  }else if(slot==='armor'){

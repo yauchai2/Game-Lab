@@ -1,0 +1,10 @@
+{
+  "id": "FI01",
+  "method": "Actual locally authored GLB rendered with the project Three.js reader",
+  "hostImageGenAttempt": "403 Forbidden; no generated image returned; no retry or paid provider used",
+  "prompt": "prompt.txt records the intended concept request, not a successful image-generation receipt",
+  "image": "concept.png",
+  "imageSha256": "e765590208508d1701ca94780cc8607631312061bf6ac95162893443996e7e89",
+  "model": "assets/maps/fi01-corner-park/fi01-corner-park.glb",
+  "modelSha256": "03f935d8c0dff878b41ce23950e34b34dea53d3240fb57bfcde5aacbad0b4e19"
+}
