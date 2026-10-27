@@ -2,7 +2,7 @@
 
 Production src/audio and its project-original license record are unchanged. The14files in claude-8ee3a2e are copies of Game-Lab candidate material at commit8ee3a2e115bc3c13e8bbe80b64146943934477c0, verified against its provenance; no new third-party license is asserted for those files or the two project comparison mixes.
 
-External review candidates are CC0 according to each source page, checked2026-10-27. Page URLs, authors, exact original download/member hashes and edited preview hashes are in docs/audio-reference-review/online-sources.json and candidate-previews.json. Kenney package License.txt files are included unmodified. Source bytes are retained separately in /workspace/audio-review-downloads; candidates are not used by runtime assets.
+External review candidates are CC0 according to each source page, checked2026-10-27. Page URLs, authors, exact original download/member hashes and edited preview hashes are in docs/audio-reference-review/online-sources.json and candidate-previews.json. Kenney License.txt legal text is included with normalized line endings/trailing whitespace; original license/member and ZIP hashes are recorded. Source bytes are retained separately in /workspace/audio-review-downloads; candidates are not used by runtime assets.
 
 Credits (included regardless of optional status):
 - Funky Menu Loop: iamoneabe — https://opengameart.org/content/funky-menu-loop

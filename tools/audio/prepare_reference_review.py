@@ -16,7 +16,7 @@ for r in online['sources']:
   dest=A/'candidates'/(r['id']+'-review.mp3');args=['ffmpeg','-v','error','-y','-ss','0','-i',str(raw),'-t','30','-af','loudnorm=I=-18.7:TP=-3.5:LRA=8','-ar','32000','-ac','2','-b:a','96k',str(dest)];subprocess.run(args,check=True)
   previews.append({**r,'path':str(dest.relative_to(R)),'excerptSeconds':30,'processing':'first30 seconds; FFmpeg single-pass loudnorm I=-18.7 TP=-3.5 LRA8; MP3 96k stereo32k; not a production loop','credit':r['author']+(' / The Cynic Project / cynicmusic.com / pixelsphere.org' if r['id']=='november-snow' else '')})
  else:
-  z=zipfile.ZipFile(raw);assert z.testzip() is None;(A/'candidates'/(r['id']+'-License.txt')).write_bytes(z.read('License.txt'))
+  z=zipfile.ZipFile(raw);assert z.testzip() is None;(A/'candidates'/(r['id']+'-License.txt')).write_text('\n'.join(line.rstrip() for line in z.read('License.txt').decode('utf8').splitlines()).strip()+'\n')
   names=['click_001','open_001','confirmation_001'] if r['id']=='kenney-interface' else ['impactGeneric_light_000','impactMetal_light_000','impactWood_medium_000']
   for name in names:
    member='Audio/'+name+'.ogg';assert member in z.namelist(),member;dest=A/'candidates'/(r['id']+'-'+name+'.ogg');dest.write_bytes(z.read(member));previews.append({**r,'id':r['id']+'-'+name,'title':r['title']+' / '+name,'path':str(dest.relative_to(R)),'member':member,'processing':'unmodified package member','credit':'Kenney / kenney.nl'})

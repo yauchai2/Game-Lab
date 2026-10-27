@@ -74,7 +74,10 @@
       "pageSha256": "29c2aabc8ba66bd80268cca9d5be0ff9185e45fecccbd3f28ca3943dffbbeda7",
       "originalLocalPath": "/workspace/audio-review-downloads/kenney-interface.zip",
       "downloadedFor": "review only; not admitted to production",
-      "assessment": "metadata shortlist; human listening pending"
+      "assessment": "metadata shortlist; human listening pending",
+      "licenseMember": "License.txt",
+      "originalLicenseSha256": "f7966c773bbed0eca6a9c75081c44a178b38eae112724dbb5fdfbd4192d118a9",
+      "licenseTextProcessing": "Line endings and trailing whitespace normalized; legal text unchanged; original zip retained by sourceSha256"
     },
     {
       "id": "kenney-impact",
@@ -89,7 +92,10 @@
       "pageSha256": "197579182f2f58271b2cef15426fcb6393da71bf2bcd3573d0bb535867a73b8b",
       "originalLocalPath": "/workspace/audio-review-downloads/kenney-impact.zip",
       "downloadedFor": "review only; not admitted to production",
-      "assessment": "metadata shortlist; human listening pending"
+      "assessment": "metadata shortlist; human listening pending",
+      "licenseMember": "License.txt",
+      "originalLicenseSha256": "b49aa9c56b04528b95913de13e506a0f7c5e807b9925db9bfef86af1f91120db",
+      "licenseTextProcessing": "Line endings and trailing whitespace normalized; legal text unchanged; original zip retained by sourceSha256"
     }
   ]
 }
