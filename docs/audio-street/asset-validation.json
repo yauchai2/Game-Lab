@@ -351,13 +351,141 @@
       "peak": 0.57339,
       "rms": 0.13916,
       "dc": 1.21e-05
+    },
+    {
+      "asset": "sf_st_fan.mp3",
+      "duration": 1.368,
+      "bytes": 9873,
+      "channels": 1,
+      "peak": 0.52952,
+      "rms": 0.09985,
+      "dc": 5.7e-06
+    },
+    {
+      "asset": "sf_st_horn.mp3",
+      "duration": 1.548,
+      "bytes": 11133,
+      "channels": 1,
+      "peak": 0.52631,
+      "rms": 0.16503,
+      "dc": -1.09e-05
+    },
+    {
+      "asset": "sf_st_static.mp3",
+      "duration": 0.936,
+      "bytes": 6849,
+      "channels": 1,
+      "peak": 0.52698,
+      "rms": 0.11983,
+      "dc": -2.9e-06
+    },
+    {
+      "asset": "sf_st_coin.mp3",
+      "duration": 1.152,
+      "bytes": 8361,
+      "channels": 1,
+      "peak": 0.47823,
+      "rms": 0.1465,
+      "dc": -4e-07
+    },
+    {
+      "asset": "sf_st_skid.mp3",
+      "duration": 1.044,
+      "bytes": 7605,
+      "channels": 1,
+      "peak": 0.51828,
+      "rms": 0.08812,
+      "dc": -5.87e-05
+    },
+    {
+      "asset": "sf_st_ding.mp3",
+      "duration": 1.044,
+      "bytes": 7605,
+      "channels": 1,
+      "peak": 0.50595,
+      "rms": 0.13028,
+      "dc": -2.6e-06
+    },
+    {
+      "asset": "sf_st_chime.mp3",
+      "duration": 1.188,
+      "bytes": 8613,
+      "channels": 1,
+      "peak": 0.53282,
+      "rms": 0.1647,
+      "dc": 1.1e-06
+    },
+    {
+      "asset": "sf_st_jingle.mp3",
+      "duration": 2.052,
+      "bytes": 14661,
+      "channels": 1,
+      "peak": 0.50395,
+      "rms": 0.14358,
+      "dc": -1.1e-06
+    },
+    {
+      "asset": "sf_st_crystal.mp3",
+      "duration": 1.44,
+      "bytes": 10377,
+      "channels": 1,
+      "peak": 0.49915,
+      "rms": 0.10029,
+      "dc": -0.0002351
+    },
+    {
+      "asset": "sf_st_tornado.mp3",
+      "duration": 2.448,
+      "bytes": 17433,
+      "channels": 1,
+      "peak": 0.54763,
+      "rms": 0.1196,
+      "dc": -3.76e-05
+    },
+    {
+      "asset": "sf_st_tears.mp3",
+      "duration": 2.052,
+      "bytes": 14661,
+      "channels": 1,
+      "peak": 0.48023,
+      "rms": 0.15566,
+      "dc": -5.3e-06
+    },
+    {
+      "asset": "sf_st_roll.mp3",
+      "duration": 0.432,
+      "bytes": 3321,
+      "channels": 1,
+      "peak": 0.46574,
+      "rms": 0.1079,
+      "dc": 1.89e-05
+    },
+    {
+      "asset": "sf_st_swing.mp3",
+      "duration": 0.396,
+      "bytes": 3069,
+      "channels": 1,
+      "peak": 0.52767,
+      "rms": 0.12088,
+      "dc": 0.0003192
+    },
+    {
+      "asset": "boss.mp3",
+      "duration": 27.468,
+      "bytes": 192573,
+      "channels": 2,
+      "peak": 0.52081,
+      "rms": 0.10119,
+      "dc": 1.62e-05,
+      "lufs": -18.66,
+      "true_peak_db": -5.62
     }
   ],
   "authorship": "Project-original; no external samples",
-  "samples_embedded": 38,
+  "samples_embedded": 52,
   "all_event_cues_resolve": true,
   "legacy_hashes_preserved": 17,
   "runtime_external_requests": 0,
-  "total_bytes": 1736512,
+  "total_bytes": 2052646,
   "limits": "Decoded peak/RMS checks are technical evidence, not a subjective listening approval."
 }

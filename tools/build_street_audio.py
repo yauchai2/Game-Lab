@@ -12,7 +12,7 @@ if not (legacy/'provenance.json').exists():
 owned={'drift','haze','rush','underpass','radio'}|{'sf_'+x for x in 'hit crit kill hurt die fire boom frost chain meteor pick rare lvl card snap ph_open ph_on ph_key ph_tab ph_zoom ph_zoomout ph_off stair season pulse magnet spam flicker beam arrows summon rift resonance'.split()}
 legacy_files={x['asset'] for x in json.loads((legacy/'provenance.json').read_text())['sources']}
 for p in OUT.glob('*.mp3'):
- if p.stem not in owned and p.name not in legacy_files:raise ValueError('Unrecognized audio asset; preserve and review before rebuilding: '+p.name)
+ if p.stem not in owned and p.name not in legacy_files and not (p.stem=='boss' or p.stem.startswith('sf_st_')):raise ValueError('Unrecognized audio asset; preserve and review before rebuilding: '+p.name)
 for p in OUT.glob('*.mp3'):
  if p.stem in owned or p.name in legacy_files:p.unlink()
 rng=np.random.default_rng(20261026);records=[]

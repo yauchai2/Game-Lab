@@ -32,6 +32,9 @@ function deviceCircuitModel(kind,id){
  if(kind==='skill'){
   if(id==='RIFT'){for(const x of[-.6,0,.6])mk(new T3.OctahedronGeometry(.5,0),accent,x,1.2+Math.abs(x),0,g).scale.set(.6,1.8,.5);}
   else if(id==='RESONANCE'){for(const y of[.7,1.2,1.7])mk(new T3.TorusGeometry(.65,.08,4,12),accent,0,y,0,g).rotation.x=Math.PI/2;mk(new T3.CylinderGeometry(.2,.2,1.4,6),silver,0,1.1,0,g);}
+  else if(id==='SHARDS'){for(const[x,h]of[[-.7,1.6],[0,2.2],[.7,1.5]])mk(new T3.ConeGeometry(.35,h,5),accent,x,h/2,0,g);}
+  else if(id==='CYCLONE'){for(const[i,y]of[.4,.9,1.4,1.9].entries())mk(new T3.TorusGeometry(.3+i*.17,.07,4,12),accent,0,y,0,g).rotation.x=Math.PI/2;}
+  else if(id==='THUNDER'){mk(new T3.SphereGeometry(.7,8,5),dark,0,1.7,0,g);for(const[x,y]of[[-.15,1.0],[.15,.55]])mk(new T3.BoxGeometry(.18,.5,.18),accent,x,y,0,g);}
   else if(id==='GRAVITY'){mk(new T3.SphereGeometry(.45,8,5),dark,0,1,0,g);for(const a of[0,Math.PI/2])mk(new T3.TorusGeometry(.9,.08,4,12),accent,0,1,0,g).rotation.y=a;}
   else
   if(['SWARM','GUARDIAN'].includes(id)){mk(new T3.BoxGeometry(id==='GUARDIAN'?1.4:.7,1,.8),silver,0,1,0,g);for(const x of[-.9,.9])mk(new T3.BoxGeometry(.4,id==='GUARDIAN'?1:.2,1),accent,x,1,0,g);}

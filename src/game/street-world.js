@@ -45,7 +45,8 @@ function streetChapterHtml(){const i=storyChapter(),c=STORY_CHAPTERS[i];if(!c)re
 
 function streetMusicTrack(){
  if(typeof INTRO!=='undefined'&&INTRO.active)return 'radio';
- if(G.mons?.some(m=>m.boss&&!m.dead))return 'rush';
+ if(G.mons?.some(m=>m.boss&&!m.dead))return 'boss';
+ if(G.mons?.some(m=>m.elite&&!m.dead))return 'rush';
  if(G.run?.tower)return 'underpass';
  if([5,9,12,13,16,17].includes(biomeNow()))return 'underpass';
  const sky=BIOMES[biomeNow()]?.sky?.[0]||'#3aa6ea',c=new T3.Color(sky);
