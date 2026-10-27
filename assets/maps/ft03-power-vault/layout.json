@@ -1,0 +1,186 @@
+{
+  "id": "FT03",
+  "name": "地下配電室",
+  "stem": "ft03-power-vault",
+  "version": 1,
+  "profile": -1,
+  "legacyBiomeIndex": 20,
+  "chapter": null,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -19.0,
+      -9.92
+    ],
+    [
+      -12.92,
+      -16.0
+    ],
+    [
+      8.739999999999998,
+      -16.0
+    ],
+    [
+      19.0,
+      -13.120000000000001
+    ],
+    [
+      19.0,
+      10.879999999999999
+    ],
+    [
+      13.68,
+      16.0
+    ],
+    [
+      -14.82,
+      16.0
+    ],
+    [
+      -19.0,
+      9.280000000000001
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "LAND_0_transformer",
+      "center": [
+        -11,
+        10
+      ],
+      "size": [
+        9.6,
+        5.6
+      ]
+    },
+    {
+      "id": "LAND_1_transformer",
+      "center": [
+        5,
+        12
+      ],
+      "size": [
+        8.6,
+        4.6
+      ]
+    },
+    {
+      "id": "LAND_2_busbars",
+      "center": [
+        14,
+        6
+      ],
+      "size": [
+        3.6,
+        8.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -12.920000000000002,
+        -4.48
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "trolley",
+      "center": [
+        13.299999999999999,
+        -2.56
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_transformer",
+    "LAND_1_transformer",
+    "LAND_2_busbars"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -13.299999999999999,
+        -3.2
+      ],
+      [
+        12.920000000000002,
+        -3.2
+      ],
+      [
+        12.920000000000002,
+        3.52
+      ],
+      [
+        -13.299999999999999,
+        3.52
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -11.4,
+        -8.0
+      ],
+      [
+        0,
+        -11.2
+      ],
+      [
+        11.4,
+        -8.0
+      ],
+      [
+        11.4,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "substation",
+    "landmarks": "變電櫃靠邊、粗電纜、檢修平台",
+    "accent": "#D0A14C",
+    "base": "concrete",
+    "sky": [
+      "#21334F",
+      "#687B9D",
+      "#C8D8DA"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    6.150000095367432
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "rows": [
+    {
+      "file": "fi02-record-lane.glb",
+      "importedMeshes": 16,
+      "boundsBlenderXYZ": [
+        [
+          -18.125,
+          18.125
+        ],
+        [
+          -14.125,
+          14.125001907348633
+        ],
+        [
+          -5.099999904632568,
+          9.34999942779541
+        ]
+      ],
+      "groundDimensions": [
+        36.0,
+        28.0,
+        0.0
+      ],
+      "triangles": 1946
+    },
+    {
+      "file": "fi02-blockout.glb",
+      "importedMeshes": 16,
+      "boundsBlenderXYZ": [
+        [
+          -18.125,
+          18.125
+        ],
+        [
+          -14.125,
+          14.125001907348633
+        ],
+        [
+          -5.099999904632568,
+          9.34999942779541
+        ]
+      ],
+      "groundDimensions": [
+        36.0,
+        28.0,
+        0.0
+      ],
+      "triangles": 1946
+    }
+  ],
+  "scope": "Actual Blender re-import of portable normalized GLBs; no files overwritten."
+}

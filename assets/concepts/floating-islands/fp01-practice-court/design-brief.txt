@@ -1,0 +1,14 @@
+FP01 電台練習坪
+Ice Cream reference; semi-lowpoly / faceted silhouette / Y2K PS1 Dreamcast / flat unlit matte / zero texture detail.
+{
+  "composition": "practice",
+  "landmarks": "低圍欄、測試喇叭、可收起練習標記",
+  "accent": "#30AEB9",
+  "base": "concrete",
+  "sky": [
+    "#3E9CC9",
+    "#96CCDC",
+    "#E7F0E3"
+  ]
+}
+Actual Blender geometry renders; no successful external image-generation job claimed.

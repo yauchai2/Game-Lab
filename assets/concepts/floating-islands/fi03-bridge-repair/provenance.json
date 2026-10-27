@@ -1,0 +1,8 @@
+{
+  "id": "FI03",
+  "method": "actual project-authored GLB rendered in Three.js",
+  "model": "assets/maps/fi03-bridge-repair/fi03-bridge-repair.glb",
+  "modelSha256": "59a311eb40a252c64b6acecde905ae1014c6bc4c2c2e85ee4b535d9032302657",
+  "imageSha256": "00608381d5f97177fdf98605017a8d7283e74a24ba0a4ef277bb1d32c828a6df",
+  "paidProviders": false
+}

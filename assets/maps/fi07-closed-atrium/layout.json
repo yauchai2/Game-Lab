@@ -1,0 +1,186 @@
+{
+  "id": "FI07",
+  "name": "休業商場中庭",
+  "stem": "fi07-closed-atrium",
+  "version": 1,
+  "profile": 11,
+  "legacyBiomeIndex": 11,
+  "chapter": 3,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -19.0,
+      -12.16
+    ],
+    [
+      -14.440000000000001,
+      -16.0
+    ],
+    [
+      10.64,
+      -16.0
+    ],
+    [
+      19.0,
+      -8.0
+    ],
+    [
+      19.0,
+      10.879999999999999
+    ],
+    [
+      13.68,
+      16.0
+    ],
+    [
+      -14.82,
+      16.0
+    ],
+    [
+      -19.0,
+      9.280000000000001
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "LAND_0_arcade",
+      "center": [
+        0,
+        12
+      ],
+      "size": [
+        25.6,
+        3.6
+      ]
+    },
+    {
+      "id": "LAND_1_shop",
+      "center": [
+        -15,
+        4
+      ],
+      "size": [
+        5.6,
+        8.6
+      ]
+    },
+    {
+      "id": "LAND_2_escalator",
+      "center": [
+        13,
+        7
+      ],
+      "size": [
+        4.6,
+        7.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -12.920000000000002,
+        -4.48
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "bench",
+      "center": [
+        13.299999999999999,
+        -2.56
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_arcade",
+    "LAND_1_shop",
+    "LAND_2_escalator"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -12.16,
+        -8.0
+      ],
+      [
+        11.4,
+        -8.0
+      ],
+      [
+        11.4,
+        5.76
+      ],
+      [
+        -12.16,
+        5.76
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -11.4,
+        -8.0
+      ],
+      [
+        0,
+        -11.2
+      ],
+      [
+        11.4,
+        -8.0
+      ],
+      [
+        11.4,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "atrium",
+    "landmarks": "關門百貨、回收招牌、移動式廣播",
+    "accent": "#7B68AC",
+    "base": "ivory",
+    "sky": [
+      "#3E9CC9",
+      "#96CCDC",
+      "#E7F0E3"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    6.324999809265137
+  ]
+}

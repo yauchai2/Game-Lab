@@ -1,0 +1,32 @@
+{
+  "models": [
+    {
+      "file": "fi02-record-lane.glb",
+      "triangles": 1946,
+      "meshes": 16,
+      "materials": 1,
+      "textures": 0,
+      "unlit": true,
+      "distinctColors": 40,
+      "normalizationPreservesBinary": true,
+      "bytes": 164812,
+      "sha256": "d92f86326eaa43c05645b602b06806f268fd58c0ea95fca765189b5e0f5b9f17"
+    },
+    {
+      "file": "fi02-blockout.glb",
+      "triangles": 1946,
+      "meshes": 16,
+      "materials": 1,
+      "textures": 0,
+      "unlit": true,
+      "distinctColors": 3,
+      "normalizationPreservesBinary": true,
+      "bytes": 164812,
+      "sha256": "f44584c6f87776cc65b60731121fb8d109500a31b4a2f2403a4bc35f1d29ee82"
+    }
+  ],
+  "whiteColorPositionsAndTopologyIdentical": true,
+  "layoutMatchesGenerator": true,
+  "footprintAreaMeters2": 954.5,
+  "scope": "Original local Blender geometry and explicit glTF unlit/color policy; no game-dev canonical package claim."
+}

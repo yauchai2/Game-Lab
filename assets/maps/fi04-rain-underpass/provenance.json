@@ -1,0 +1,35 @@
+{
+  "id": "FI04",
+  "name": "雨巷地下道",
+  "stage": "all-series native gameplay candidate; not deployed or released",
+  "authoring": "Original local Blender geometry by tools/maps/build_island_series.py using approved series direction",
+  "material": "KHR_materials_unlit / COLOR_0 / no image textures",
+  "files": {
+    "layout.json": {
+      "bytes": 2721,
+      "sha256": "a20acbe1822a082da5498822bbaaab4f84a7a138f0c73d1040903e219f8b717e"
+    },
+    "fi04-rain-underpass-native.glb": {
+      "bytes": 56824,
+      "sha256": "c3a03ae05ef660c17d1ccfb28373b1ed762f1b2e654182f5679115b8913f2e66"
+    },
+    "fi04-rain-underpass.glb": {
+      "bytes": 56792,
+      "sha256": "82fa447022b32acb93f30790c498301aca67f471180bac9d9042d13e1f04dfb8"
+    },
+    "fi04-rain-underpass-blockout-native.glb": {
+      "bytes": 56824,
+      "sha256": "1633abc01e25b042cda7a6b99e60570917b2a1351caeb73bdf585da9aec25ab3"
+    },
+    "fi04-rain-underpass-source.blend": {
+      "bytes": 637520,
+      "sha256": "9801cfcb08c72d2429d84fecd037e279ac0b2c07de4694a3d001297f2604dc23"
+    },
+    "fi04-rain-underpass-blockout.glb": {
+      "bytes": 56792,
+      "sha256": "f4d67b215a16db9da33d5a8ef03adfb6f368dce89a3645fed7f9eb01d9ea5198"
+    }
+  },
+  "rights": "Project-authored geometry; no new external asset license accepted or repository license changed.",
+  "evidence": "Project static/import/GPU/native checks, not a game-dev canonical package receipt."
+}

@@ -1,0 +1,35 @@
+{
+  "id": "FT02",
+  "name": "冷藏倉庫",
+  "stage": "all-series native gameplay candidate; not deployed or released",
+  "authoring": "Original local Blender geometry by tools/maps/build_island_series.py using approved series direction",
+  "material": "KHR_materials_unlit / COLOR_0 / no image textures",
+  "files": {
+    "layout.json": {
+      "bytes": 2520,
+      "sha256": "9ecd53708f34973eb112460b5dfe420a254d7231eea1836bf15a8394f848965a"
+    },
+    "ft02-cold-warehouse-source.blend": {
+      "bytes": 708536,
+      "sha256": "cbb2294ded93426a3933f9eba56f48363140ccca55df3d3246a8a799702e8fe5"
+    },
+    "ft02-cold-warehouse-blockout.glb": {
+      "bytes": 68124,
+      "sha256": "4b1057ac7706f4e894f182983c98ef588a8d86d39c36236b1781c857aa99b402"
+    },
+    "ft02-cold-warehouse-native.glb": {
+      "bytes": 68144,
+      "sha256": "a514f7c319a7da8d53025e5ae83e7377ddd7e07e2cb17122380bfba79c15a172"
+    },
+    "ft02-cold-warehouse-blockout-native.glb": {
+      "bytes": 68144,
+      "sha256": "000ebb65cc1a8327fb69e48b52c84acf39ede792f73ff46802514cf34dd59ee2"
+    },
+    "ft02-cold-warehouse.glb": {
+      "bytes": 68124,
+      "sha256": "a56cff555497e0d6b3cb07d44c189c413eded923ab72fc6ab14b5db2b693b875"
+    }
+  },
+  "rights": "Project-authored geometry; no new external asset license accepted or repository license changed.",
+  "evidence": "Project static/import/GPU/native checks, not a game-dev canonical package receipt."
+}

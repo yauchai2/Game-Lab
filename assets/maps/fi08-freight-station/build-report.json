@@ -1,0 +1,33 @@
+{
+  "triangles": 661,
+  "semanticMeshes": 11,
+  "textures": 0,
+  "materials": 1,
+  "files": {
+    "fi08-freight-station-blockout.glb": {
+      "bytes": 61536,
+      "sha256": "862927ebf0be697218ee566a4ea38092b4694558bd0f92d71cc7b1f6592324a9"
+    },
+    "fi08-freight-station-source.blend": {
+      "bytes": 703724,
+      "sha256": "b38ab6b402b26e1a67bb6b0e63cef48df674b53697b391651b265271b5001e27"
+    },
+    "layout.json": {
+      "bytes": 2904,
+      "sha256": "5d5585038db1e1978f4564cfa1fe8197a16b97110b2c3dffc94c0283101adfdd"
+    },
+    "fi08-freight-station.glb": {
+      "bytes": 61536,
+      "sha256": "bc5b955644ad4fe8d0fd4f5b2522ed3b391cb894c1984661a5c4ff8181e7086d"
+    },
+    "fi08-freight-station-blockout-native.glb": {
+      "bytes": 61580,
+      "sha256": "d85312c578367a4c7c39f235f344f80946b7a48a43dfa436e483edb163200781"
+    },
+    "fi08-freight-station-native.glb": {
+      "bytes": 61580,
+      "sha256": "4c674955bd3b1d7a117db2a9c78563653fddf55b9fccf81378ca08a4fc427cd1"
+    }
+  },
+  "stage": "verified project model and isolated native candidate"
+}

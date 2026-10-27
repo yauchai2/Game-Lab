@@ -39,7 +39,7 @@ function spawnPack(){
   });
   if(R?.tower)for(const m of G.mons)if(!m.dead&&!m.towerTagged){towerMonster(m);m.towerTagged=true;}
   if(R?.city)for(const m of G.mons)if(!m.dead&&!m.cityRoute)cityMonster(m);
-  for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y);
+  for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y,authoredTerrainPlan(m));
   // Ordinary monsters approach over land; bosses retain their sky-drop entrance.
 }
 function dropItem(m, it){ dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'item', it, t:0 }); if (it.r >= 2 && !G.offline){ SFX('rare');  } }
@@ -64,6 +64,7 @@ function killMon(m){
   let hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk * (G.relics.CALC ? 1.2 : 1) * (offPen() ? .75 : 1))), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
   if (m.elite){ gold *= 4; xp *= 4; } if (mods.includes('wise')) xp = Math.round(xp*1.5);
   if (G.relics.PIG) gold = Math.round(gold*1.3);
+  if (!G.push && !G.run){ gold *= 1.3; xp *= 1.3; }   /* 原地刷怪：不挑戰首領，換取較多經驗與金幣 */
   if (G.st.goldPct) gold = Math.max(1, Math.round(gold*(1+G.st.goldPct/100))); if (G.st.xpPct) xp = Math.max(1, Math.round(xp*(1+G.st.xpPct/100)));
   {const R=G.st.rules;if(R){if(R.rage)G.rage=Math.min(10,(G.rage||0)+1);if(R.eliteHeal&&(m.elite||m.boss))lgRuleHeal(R.eliteHeal);}}
   if (G.st.killHeal && G.h.hp > 0 && G.time - (G.killHealAt||-1) > .25){ G.killHealAt = G.time; G.h.hp = Math.min(G.st.life, G.h.hp + G.st.life*G.st.killHeal/100); }
@@ -186,6 +187,7 @@ function applyFreeze(m,seconds=COMBAT_RULES.freezeSeconds,damage=null){
     if(m.freezeBuildup<1)return false;
     m.freezeBuildup=0;m.freezeGuard=G.time+seconds+COMBAT_RULES.bossFreezeGuard;
   }
+  if(!(m.frozen>0)&&!G.offline)addFx({k:'icebloom',x:m.x,y:m.y,t:0,dur:.7});
   m.frozen=Math.max(m.frozen||0,seconds);combatCombo('freezes');return true;
 }
 function signalHit(id,m,origin){
@@ -259,6 +261,7 @@ function applySkillHit(id,m,mult=1,origin=G.eventOrigin||'primary'){
   if(lgOn('W_RIFT')){const distance=Math.hypot(m.x-G.h.x,m.y-G.h.y);mult*=distance>18?1.45:distance<10?.8:1;}
   if(lgOn('O_TOWER')&&G.h.hp<G.st.life*.35)mult*=1.3;if(lgOn('R_SEASON'))mult*=m.shock>0?1.35:.85;
   const source=SKILLS[id].n+(origin==='primary'?'':origin==='repeat'?'·回放':origin==='summon'?'·召喚':'·觸發');G.src=source;
+  if (G.fx.length < 44) addFx({ k:'impact', x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, el:SKILLS[id].el, big:SKILLS[id].cd >= 4 || !!m.boss, seed:Math.random()*6.28, t:0, dur:SKILLS[id].cd >= 4 ? .6 : .45 });
   if (G.fx.length < 36){ const el = SKILLS[id].el, k = el === 'fire' ? 'embers' : el === 'cold' ? 'snow' : Math.random() < .5 ? 'zap' : 'shard'; addFx({ k, x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, t:0, dur:k === 'embers' ? .7 : k === 'snow' ? .8 : .4 }); }
   if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
   const supportPower=key=>k.supportPower?.[key]||1;
@@ -299,7 +302,7 @@ function performSkill(id,repeat,origin){
   const k = G.st.sk[id], s = G.st, h = G.h; let total = 0; if (!k) return;
   const al = castMons(); if (!al.length) return;
   const p=k.pattern,prim=(p.coldStart?al.filter(m=>m.frozen>0).sort((a,b)=>Math.hypot(a.x-h.x,a.y-h.y)-Math.hypot(b.x-h.x,b.y-h.y))[0]:null)||nearestMon(false)||al[0],mode=k.mode;combatCast(id,origin);SFX(id.toLowerCase());
-  if (origin === 'primary' && !G.offline){ const K0 = SKILLS[id]; addFx({ k:'ring', x:h.x, y:h.y, col:K0.col, t:0, dur:.45 });
+  if (origin === 'primary' && !G.offline){ const K0 = SKILLS[id]; addFx({ k:'ring', x:h.x, y:h.y, col:K0.col, t:0, dur:.45 }); addFx({ k:'rune', x:h.x, y:h.y, col:K0.col, t:0, dur:.75 }); addFx({ k:'charge', x:h.x+3.4, y:h.y-3.6, z:BZ+9, col:K0.col, t:0, dur:.35 }); if(K0.cd>=2.5)addFx({ k:'skillaura', x:h.x, y:h.y, col:K0.col, t:0, dur:.7 });
     if (K0.cd >= 2 && G.fx.length < 30 && G.time-(h.labelAt??-99)>1.2){ h.labelAt=G.time;addFloat(h.x - 2,h.y,BZ+34,K0.n,K0.col,12,'skill'); }
     kick(K0.cd>=4?1.7:.65,K0.cd>=4?.22:0,K0.col,K0.cd>=4?.6:.2); }
   if(origin==='primary'){if(k.has.includes('DELAY'))G.timers.push({id,t:.6,rep:.45});if(G.pass.includes('EK'))G.timers.push({id,t:.8,rep:s.firmware.includes('EK')?.6:.35});}
@@ -469,16 +472,16 @@ function update(dt){
     if (m.burn > 0){ m.burn -= dt; m.bt = (m.bt || 0) + dt; if (m.bt >= .5){ m.bt = 0; const burnHit=cityIncoming(m,m.burnD*.5);combatDamage('燃燒',Math.min(m.hp,burnHit));m.hp-=burnHit; if (m.hp <= 0){ killMon(m); continue; } } }
     if(m.freezeBuildup>0)m.freezeBuildup=Math.max(0,m.freezeBuildup-COMBAT_RULES.freezeDecay*dt);
     if(m.frozen>0){m.warning=null;m.skillCd=Math.max(m.skillCd||0,1.2);m.frozen=Math.max(0,m.frozen-dt);if(m.frozen>0)continue;}
-    const oldX=m.x,oldY=m.y,so = SLOTS[m.slot % SLOTS.length],ranged=['ranger','lantern','wisp','drone'].includes(m.type),reach=ranged?22:m.boss?24:0,away=Math.hypot(m.x-h.x,m.y-h.y)||1,goalX=ranged?h.x+(m.x-h.x)/away*reach:m.boss?h.x+so[0]/Math.hypot(...so)*reach:h.x+so[0],goalY=ranged?h.y+(m.y-h.y)/away*reach:m.boss?h.y+so[1]/Math.hypot(...so)*reach:h.y+so[1],waypoint=terrainWaypoint(m.x,m.y,goalX,goalY),dx = waypoint[0] - m.x, dy = waypoint[1] - m.y, dist = Math.hypot(dx, dy), spd = MTYPES[m.type].spd * m.spdK;
+    const oldX=m.x,oldY=m.y,so = SLOTS[m.slot % SLOTS.length],ranged=['ranger','lantern','wisp','drone'].includes(m.type),reach=ranged?22:m.boss?24:0,away=Math.hypot(m.x-h.x,m.y-h.y)||1,goalX=ranged?h.x+(m.x-h.x)/away*reach:m.boss?h.x+so[0]/Math.hypot(...so)*reach:h.x+so[0],goalY=ranged?h.y+(m.y-h.y)/away*reach:m.boss?h.y+so[1]/Math.hypot(...so)*reach:h.y+so[1],waypoint=terrainWaypoint(m.x,m.y,goalX,goalY,authoredTerrainPlan(m)),dx = waypoint[0] - m.x, dy = waypoint[1] - m.y, dist = Math.hypot(dx, dy), spd = MTYPES[m.type].spd * m.spdK;
     if (dist > .6&&!m.warning){ const st = Math.min(dist, spd*dt); m.x += dx/dist*st; m.y += dy/dist*st; m.fight = false;
-      if (!m.boss && dist > 3){ const sw = Math.sin(G.time*2.4 + m.ph*3)*spd*.7*dt*Math.min(1, dist/8); m.x += -dy/dist*sw; m.y += dx/dist*sw; }   /* 左右蛇行 */ } else {const [tx,ty]=terrainProject(goalX,goalY);m.fight=Math.hypot(m.x-tx,m.y-ty)<1;}
+      if (!m.boss && dist > 3){ const sw = Math.sin(G.time*2.4 + m.ph*3)*spd*.7*dt*Math.min(1, dist/8); m.x += -dy/dist*sw; m.y += dx/dist*sw; }   /* 左右蛇行 */ } else {const [tx,ty]=terrainProject(goalX,goalY,authoredTerrainPlan(m));m.fight=Math.hypot(m.x-tx,m.y-ty)<1;}
     if (m.dv){ m.dv.t -= dt; m.x += m.dv.x*dt; m.y += m.dv.y*dt; if (m.dv.t <= 0) m.dv = null; }
     const nextX=m.x,nextY=m.y;m.x=oldX;m.y=oldY;terrainMove(m,nextX,nextY);
     monsterSkillTick(m,dt);
     if (m.fight&&!m.warning&&!ranged){ m.atkCd -= dt; if (m.atkCd <= 0 && m.lunge < 0){ m.lunge = 0; m.lungeHit = false; m.atkCd = m.atkInt; } }
     if (m.lunge >= 0){
       m.lunge += dt;
-      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ { const a = Math.random()*6.28; h.dash = { a, t:0 }; h.vx += Math.cos(a)*70; h.vy += Math.sin(a)*70; } addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); if(s.rules&&s.rules.dodgeHeal)lgRuleHeal(s.rules.dodgeHeal); if (lgOn('A_RIPOSTE')){ const sid = tPick(G.slots.filter(Boolean)); if (sid) castSkill(sid, .8); } continue; } const dmg = Math.max(1, m.dmg * (1 - s.red) * tRand(.9, 1.1)); const received=heroDamage(dmg,monsterLabel(m.type)+'・普通攻擊');if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,false); h.hurtT = .15; kick(Math.min(1.6, .6 + dmg/G.st.life*4), .35, '#ff3050'); if (dmg >= G.st.life*.08) hitStop(.07); addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#b32628', damageFloatSize(dmg), 'damage'); }
+      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ { const a = Math.random()*6.28; h.dash = { a, t:0 }; h.vx += Math.cos(a)*70; h.vy += Math.sin(a)*70; } addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); if(s.rules&&s.rules.dodgeHeal)lgRuleHeal(s.rules.dodgeHeal); if (lgOn('A_RIPOSTE')){ const sid = tPick(G.slots.filter(Boolean)); if (sid) castSkill(sid, .8); } continue; } const dmg = Math.max(1, monsterHitDmg(m, m.dmg * tRand(.9, 1.1))); const received=heroDamage(dmg,monsterLabelEl(m,'普通攻擊'));if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,false); h.hurtT = .15; kick(Math.min(1.6, .6 + dmg/G.st.life*4), .35, '#ff3050'); if (dmg >= G.st.life*.08) hitStop(.07); addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#b32628', damageFloatSize(dmg), 'damage'); }
       if (m.lunge >= .3) m.lunge = -1;
     }
   }
@@ -560,7 +563,7 @@ function monsterSkillTick(m,dt){
   }
   if(!m.warning)return;
   const w=m.warning;w.t-=dt;if(w.t>0)return;
-  if(monsterWarningContains(w,G.h.x,G.h.y)){const dmg=Math.max(1,m.dmg*(m.boss?1.5:1.15)*(1-G.st.red));const received=heroDamage(dmg,monsterLabel(m.type)+'・'+(MONSTER_SKILL_NAMES[w.skill]||'攻勢'),w.skill);if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,true);G.h.hurtT=.15;addFloat(G.h.x,G.h.y,BZ+18,tFmt(dmg),'#b32628',damageFloatSize(dmg),'damage');kick(m.boss?2.8:1.2,.24,'#dca19a',.5);}
+  if(monsterWarningContains(w,G.h.x,G.h.y)){const dmg=Math.max(1,monsterHitDmg(m,m.dmg*(m.boss?1.5:1.15)));const received=heroDamage(dmg,monsterLabelEl(m,MONSTER_SKILL_NAMES[w.skill]||'攻勢'),w.skill);if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,true);G.h.hurtT=.15;addFloat(G.h.x,G.h.y,BZ+18,tFmt(dmg),'#b32628',damageFloatSize(dmg),'damage');kick(m.boss?2.8:1.2,.24,'#dca19a',.5);}
   if(w.skill==='charge'||w.skill==='burrow'){const [x,y]=terrainProject(w.x2,w.y2);if(w.skill==='burrow'||terrainSegment(m.x,m.y,x,y)){m.x=x;m.y=y;}addFx({k:'ghost',x:w.x,y:w.y,x2:m.x,y2:m.y,col:'#b6c5d1',t:0,dur:.3});}
   for(const [x,y]of w.points)addFx({k:w.skill==='pulse'?'ring':'boom',x,y,z:BZ+2,col:w.skill==='salvo'?'#a2cae2':'#dbb08c',t:0,dur:.45,big:m.boss});
   m.skillsUsed=(m.skillsUsed||0)+1;m.warning=null;m.skillCd=m.boss?(m.enraged?2.7:4.2):5+(m.slot%3);
@@ -591,6 +594,11 @@ function castExpansionSkill(id,mul,origin,prim,al){
 
 /* Shared, bounded encounter systems. No extra UI or wall-clock loop owns combat. */
 const SPECTACLE_SKILLS=new Set(['SWARM','GUARDIAN','ARROWS','GIANTBLADE','OVERTURE','RIFT','RESONANCE','GRAVITY']);
+/* 抗性：深度 4 起，部分魔物帶火／冰／電元素；元素攻擊吃抗性（上限 75%），只吃一半護甲減傷 */
+const MON_EL_NAME = { fire:'火焰', cold:'冰霜', light:'閃電' }, MON_EL_RES = { fire:'resF', cold:'resC', light:'resL' };
+function monsterEl(m){if(lvlNow()<4)return null;let h=m.boss?G.depth:0;for(const c of String(m.type))h=(h*31+c.charCodeAt(0))>>>0;return [null,'fire','cold','light'][h%4];}
+function monsterHitDmg(m,raw){const el=monsterEl(m),red=G.st.red;if(!el)return raw*(1-red);return raw*(1-Math.min(75,G.st[MON_EL_RES[el]]||0)/100)*(1-red*.5);}
+function monsterLabelEl(m,tail){const el=monsterEl(m);return monsterLabel(m.type)+(el?'・'+MON_EL_NAME[el]:'')+'・'+tail;}
 function monsterLabel(type){return MONSTER_GUIDE.find(r=>r[0]===type)?.[1]||'未知魔物';}
 function recordIncoming(amount,shield,source,kind,lethal=false){if(G.train||G.h.dead>0||G.offline||G.h.hp<=0&&!lethal)return;if(lethal)G.h.fatalSource=String(source).slice(0,100);G.damageLog=G.damageLog||[];G.damageLog.push({time:G.time,amount:Math.max(0,amount),shield:Math.max(0,shield),source:String(source).slice(0,100),kind});G.damageLog=G.damageLog.filter(r=>r.time>=G.time-8).slice(-80);}
 function recordDeath(){if(G.offline)return;const hits=(G.damageLog||[]).filter(r=>G.time-r.time<=8),groups={};for(const r of hits)groups[r.source]=(groups[r.source]||0)+r.amount;const last=hits.at(-1);G.deathReport={time:G.time,cause:G.h.fatalSource||last?.source||'沒有足夠承傷紀錄',area:G.run?(G.run.city?'城市遠征':G.run.tower?'無限之塔':BIOMES[G.run.map?.biome||0].n):BIOMES[biomeNow()].n,total:hits.reduce((n,r)=>n+r.amount,0),shield:hits.reduce((n,r)=>n+r.shield,0),largest:Math.max(0,...hits.map(r=>r.amount)),life:G.st.life,sources:Object.entries(groups).map(([name,amount])=>({name,amount})).sort((a,b)=>b.amount-a.amount).slice(0,6),skills:[...G.slots]};G.damageLog=[];G.h.fatalSource=null;}

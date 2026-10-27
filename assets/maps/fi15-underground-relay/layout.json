@@ -1,0 +1,186 @@
+{
+  "id": "FI15",
+  "name": "地下轉播商場",
+  "stem": "fi15-underground-relay",
+  "version": 1,
+  "profile": 9,
+  "legacyBiomeIndex": 9,
+  "chapter": 5,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -20.0,
+      -13.120000000000001
+    ],
+    [
+      -9.6,
+      -16.0
+    ],
+    [
+      12.8,
+      -16.0
+    ],
+    [
+      20.0,
+      -11.52
+    ],
+    [
+      20.0,
+      10.879999999999999
+    ],
+    [
+      14.399999999999999,
+      16.0
+    ],
+    [
+      -15.6,
+      16.0
+    ],
+    [
+      -20.0,
+      9.280000000000001
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "LAND_0_arcade",
+      "center": [
+        0,
+        13
+      ],
+      "size": [
+        27.6,
+        3.6
+      ]
+    },
+    {
+      "id": "LAND_1_transmitter",
+      "center": [
+        -14,
+        6
+      ],
+      "size": [
+        5.6,
+        7.6
+      ]
+    },
+    {
+      "id": "LAND_2_escalator",
+      "center": [
+        14,
+        7
+      ],
+      "size": [
+        4.6,
+        7.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -13.600000000000001,
+        -4.48
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "trolley",
+      "center": [
+        14.0,
+        -2.56
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_arcade",
+    "LAND_1_transmitter",
+    "LAND_2_escalator"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -16.0,
+        -3.2
+      ],
+      [
+        15.2,
+        -3.2
+      ],
+      [
+        15.2,
+        4.8
+      ],
+      [
+        -16.0,
+        4.8
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -12.0,
+        -8.0
+      ],
+      [
+        0,
+        -11.2
+      ],
+      [
+        12.0,
+        -8.0
+      ],
+      [
+        12.0,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "underground",
+    "landmarks": "舊發射機、兩側店鋪、服務梯",
+    "accent": "#30AEB9",
+    "base": "slate",
+    "sky": [
+      "#3E9CC9",
+      "#96CCDC",
+      "#E7F0E3"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    5.824999809265137
+  ]
+}

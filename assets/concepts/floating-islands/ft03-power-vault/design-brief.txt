@@ -1,0 +1,14 @@
+FT03 地下配電室
+Ice Cream reference; semi-lowpoly / faceted silhouette / Y2K PS1 Dreamcast / flat unlit matte / zero texture detail.
+{
+  "composition": "substation",
+  "landmarks": "變電櫃靠邊、粗電纜、檢修平台",
+  "accent": "#D0A14C",
+  "base": "concrete",
+  "sky": [
+    "#21334F",
+    "#687B9D",
+    "#C8D8DA"
+  ]
+}
+Actual Blender geometry renders; no successful external image-generation job claimed.

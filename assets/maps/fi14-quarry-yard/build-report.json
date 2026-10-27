@@ -1,0 +1,33 @@
+{
+  "triangles": 1823,
+  "semanticMeshes": 9,
+  "textures": 0,
+  "materials": 1,
+  "files": {
+    "fi14-quarry-yard-blockout-native.glb": {
+      "bytes": 155360,
+      "sha256": "40ba51ab474ca6220bb34f52b339117a004f538cdaf3a0c8c389cf2d419875f5"
+    },
+    "layout.json": {
+      "bytes": 2632,
+      "sha256": "3f28dc507e876755afa68377eed2fec416a32d9be094f86da36c70f660519ee1"
+    },
+    "fi14-quarry-yard-source.blend": {
+      "bytes": 852024,
+      "sha256": "7c5078893c484deed6ec45abdad61587495763c182d74acac6e1d224e7a286f6"
+    },
+    "fi14-quarry-yard.glb": {
+      "bytes": 155340,
+      "sha256": "5d9755af98b43337bad20bce828b16cc993633dfc863f6bbd5129a2ea010277c"
+    },
+    "fi14-quarry-yard-blockout.glb": {
+      "bytes": 155340,
+      "sha256": "968b43879a557a1f67fa46a5d08ce0fb78e755d3c28404790689a8360bd058d1"
+    },
+    "fi14-quarry-yard-native.glb": {
+      "bytes": 155360,
+      "sha256": "2f2857eaf9d63ce76059bf954bd3f945eb59423849fdc1d867e2e964cfbeaae3"
+    }
+  },
+  "stage": "verified project model and isolated native candidate"
+}

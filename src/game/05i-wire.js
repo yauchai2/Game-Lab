@@ -19,7 +19,7 @@ const PORT_COLORS={r:'#ff6d60',b:'#528fff',g:'#58dc83',y:'#ffd34e',v:'#c793ff',c
 const WIRE_SHAPES=['▲','●','■','◆','✚','✦'];
 function wireStatus(){
   const B = G.board, used = GridLab.wireLen(B), pads = B.wires.reduce((a, w) => a + w.cells.filter(c => GridLab.isPad(c[0], c[1],G.board)).length, 0), put = B.pieces.filter(p => p.kind === 'support' && GridLab.wireOf(B, p.x, p.y)).length;
-  return `線 ${used} 格　線經過襯墊 ${pads}　已放配件 ${put}`;
+  return `線 ${used} 格　已放配件 ${put}`;
 }
 function wireGemFlow(x, y, w, lit){   // 線穿過配件格時，在格內畫出隱約的虛線，接通時流動
   if (!w) return '';
@@ -109,7 +109,7 @@ function wireSelCard(){
     return `<section class="uxinspect wsel" aria-label="選中的配件"><div class="uxinspect-head">${gemIco(p.key, 24)}<b>${uxEsc(S.n + TIER_NAME[(p.t || 1) - 1])}</b><button class="uxquiet" onclick="uxCancelPiece()">取消</button></div><div class="uxeffect">${uxEsc(S.d)}</div><div class="uxmeta">${uxEsc(why)}${bonus}</div><div class="uxactions"><button class="mb" onclick="wireTake(${p.id})">收回庫存</button></div></section>`;
   }
   const first = B.pieces.some(p => p.kind === 'active');
-  return first ? '' : `<p class="uxgrid-help">點板邊的插槽（上面與右邊），選一個技能裝上。</p>`;
+  return '';
 }
 
 function wireNextUnlock(){return '取得不同電路板可增加可用格與終點。';}

@@ -1,0 +1,206 @@
+{
+  "id": "FI05",
+  "name": "霓虹商店街",
+  "stem": "fi05-neon-promenade",
+  "version": 1,
+  "profile": 4,
+  "legacyBiomeIndex": 4,
+  "chapter": 3,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -20.0,
+      -12.3
+    ],
+    [
+      -9.6,
+      -15.0
+    ],
+    [
+      12.8,
+      -15.0
+    ],
+    [
+      20.0,
+      -10.8
+    ],
+    [
+      20.0,
+      10.2
+    ],
+    [
+      14.399999999999999,
+      15.0
+    ],
+    [
+      -15.6,
+      15.0
+    ],
+    [
+      -20.0,
+      8.7
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "LAND_0_shop",
+      "center": [
+        -11,
+        10
+      ],
+      "size": [
+        9.6,
+        5.6
+      ]
+    },
+    {
+      "id": "LAND_1_shop",
+      "center": [
+        0,
+        11
+      ],
+      "size": [
+        9.6,
+        4.6
+      ]
+    },
+    {
+      "id": "LAND_2_signs",
+      "center": [
+        11,
+        10
+      ],
+      "size": [
+        6.6,
+        4.6
+      ]
+    },
+    {
+      "id": "LAND_3_tree",
+      "center": [
+        -17,
+        0
+      ],
+      "size": [
+        3.6,
+        3.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -13.600000000000001,
+        -4.2
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "bench",
+      "center": [
+        14.0,
+        -2.4
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_shop",
+    "LAND_1_shop",
+    "LAND_2_signs",
+    "LAND_3_tree"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -17.2,
+        -8.100000000000001
+      ],
+      [
+        -9.6,
+        -8.100000000000001
+      ],
+      [
+        -9.6,
+        6.0
+      ],
+      [
+        15.2,
+        6.0
+      ],
+      [
+        15.2,
+        11.700000000000001
+      ],
+      [
+        -17.2,
+        11.700000000000001
+      ]
+    ],
+    "ramp": null
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -12.0,
+        -7.5
+      ],
+      [
+        0,
+        -10.5
+      ],
+      [
+        12.0,
+        -7.5
+      ],
+      [
+        12.0,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "neon",
+    "landmarks": "青紫實色招牌、唱片櫥窗",
+    "accent": "#7B68AC",
+    "base": "slate",
+    "sky": [
+      "#21334F",
+      "#687B9D",
+      "#C8D8DA"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    7.599999904632568
+  ]
+}

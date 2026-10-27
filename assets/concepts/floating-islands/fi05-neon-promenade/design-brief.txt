@@ -1,0 +1,14 @@
+FI05 霓虹商店街
+Ice Cream reference; semi-lowpoly / faceted silhouette / Y2K PS1 Dreamcast / flat unlit matte / zero texture detail.
+{
+  "composition": "neon",
+  "landmarks": "青紫實色招牌、唱片櫥窗",
+  "accent": "#7B68AC",
+  "base": "slate",
+  "sky": [
+    "#21334F",
+    "#687B9D",
+    "#C8D8DA"
+  ]
+}
+Actual Blender geometry renders; no successful external image-generation job claimed.

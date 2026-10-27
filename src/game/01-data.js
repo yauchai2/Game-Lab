@@ -61,13 +61,16 @@ const AFF = {
   xpPct: { g:'s', tags:['獎勵'], t:v => `${v}% 經驗增加`,        b:il => 5 + il*.8 },
   rarity:{ g:'s', tags:['獎勵'], t:v => `${v}% 掉落稀有度`,      b:il => 6 + il*.9 },
   moveSpd:{ g:'s', tags:['速度'], t:v => `${v}% 移動速度`,       b:il => 2 + il*.2 },
+  resF:  { g:'s', tags:['防禦','火'], t:v => `+${v}% 火焰抗性`,  b:il => 5 + il*.5 },
+  resC:  { g:'s', tags:['防禦','冰'], t:v => `+${v}% 冰霜抗性`,  b:il => 5 + il*.5 },
+  resL:  { g:'s', tags:['防禦','電'], t:v => `+${v}% 閃電抗性`,  b:il => 5 + il*.5 },
 };
 const POOL = {
   weapon:['dmg','inc','fire','cold','light','vsElite','ele','crit','cm','aps','haste','leech'],
-  armor:['life','armor','lifeP','armorP','inc','regen','leech','haste','dodgeA','takenRed'],
-  ring:['fire','cold','light','inc','life','ele','crit','cm','leech','aps','haste','goldPct','rarity'] };
-const STAT_KEY = {  lifeP:'lifePct', armorP:'armorPct', ele:'ele', vsElite:'vsElite', dodgeA:'dodge', takenRed:'takenRed', killHeal:'killHeal', goldPct:'goldPct', xpPct:'xpPct', rarity:'rarity', moveSpd:'moveSpd', dmg:'dmg', inc:'inc', crit:'crit', cm:'cm', aps:'apsInc', fire:'fire', cold:'cold', light:'light', haste:'haste', life:'life', armor:'armor', regen:'regen', leech:'leech' };
-const PREF = { lifeP:'厚實的', armorP:'堅固的', ele:'全頻的', vsElite:'獵手的', dodgeA:'靈巧的', takenRed:'緩衝的', killHeal:'回收的', goldPct:'進帳的', xpPct:'勤勉的', rarity:'幸運的', moveSpd:'輕快的', dmg:'加重的', inc:'超頻的', crit:'會心的', cm:'暴走的', aps:'高速的', fire:'過熱的', cold:'冷氣的', light:'帶電的', haste:'寬頻的', life:'耐用的', armor:'加厚的', regen:'充電的', leech:'偷訊號的' };
+  armor:['life','armor','lifeP','armorP','inc','regen','leech','haste','dodgeA','takenRed','resF','resC','resL'],
+  ring:['fire','cold','light','inc','life','ele','crit','cm','leech','aps','haste','goldPct','rarity','resF','resC','resL'] };
+const STAT_KEY = {  lifeP:'lifePct', armorP:'armorPct', ele:'ele', vsElite:'vsElite', dodgeA:'dodge', takenRed:'takenRed', killHeal:'killHeal', goldPct:'goldPct', xpPct:'xpPct', rarity:'rarity', moveSpd:'moveSpd', resF:'resF', resC:'resC', resL:'resL', dmg:'dmg', inc:'inc', crit:'crit', cm:'cm', aps:'apsInc', fire:'fire', cold:'cold', light:'light', haste:'haste', life:'life', armor:'armor', regen:'regen', leech:'leech' };
+const PREF = { resF:'耐熱的', resC:'抗凍的', resL:'絕緣的', lifeP:'厚實的', armorP:'堅固的', ele:'全頻的', vsElite:'獵手的', dodgeA:'靈巧的', takenRed:'緩衝的', killHeal:'回收的', goldPct:'進帳的', xpPct:'勤勉的', rarity:'幸運的', moveSpd:'輕快的', dmg:'加重的', inc:'超頻的', crit:'會心的', cm:'暴走的', aps:'高速的', fire:'過熱的', cold:'冷氣的', light:'帶電的', haste:'寬頻的', life:'耐用的', armor:'加厚的', regen:'充電的', leech:'偷訊號的' };
 // Y2K 城市物件：武器是街頭隨手可得的東西，外套是當年的潮服，配件是千禧年的電子小物
 const BASES = { weapon:['摺疊傘','鋁製球棒','霓虹光管','雷射光劍'], armor:['連帽衛衣','牛仔外套','羽絨背心','反光風褸'], ring:['BB Call 傳呼機','翻蓋手機','MD 隨身聽','電子寵物機'] };
 const RARE_NAMES = { weapon:['午夜特急','霓虹斷線','像素裂縫','千年蟲'], armor:['街角傳說','電波外套','夜行者','高架橋之影'], ring:['未接來電','Y2K 倒數','電波滿格','撥號連線'] };
@@ -85,10 +88,10 @@ const LEGENDS = {
 };
 // Additional equipment types share the same affix and rarity system.
 Object.assign(POOL,{
-  head:['life','armor','lifeP','armorP','inc','regen','haste','takenRed','xpPct','killHeal'],
+  head:['life','armor','lifeP','armorP','inc','regen','haste','takenRed','xpPct','killHeal','resF','resC','resL'],
   gloves:['inc','life','armor','vsElite','ele','aps','crit','cm','haste','leech'],
-  boots:['life','armor','lifeP','armorP','regen','haste','leech','dodgeA','moveSpd'],
-  offhand:['armor','life','armorP','lifeP','fire','cold','light','ele','crit','haste','takenRed','regen'] });
+  boots:['life','armor','lifeP','armorP','regen','haste','leech','dodgeA','moveSpd','resF','resC','resL'],
+  offhand:['armor','life','armorP','lifeP','fire','cold','light','ele','crit','haste','takenRed','regen','resF','resC','resL'] });
 Object.assign(BASES,{head:['網帽','隔音耳罩','金屬護目鏡','訊號頭盔'],gloves:['露指手套','機車手套','導電手套','脈衝護手'],boots:['厚底帆布鞋','街頭短靴','磁浮跑鞋','光軌長靴'],offhand:['迷你音箱','反射護板','訊號接收器','電磁護盾']});
 /* 系列 1、2 的名稱（第 0 系列沿用 BASES） */
 const BASES_ALT = {
@@ -208,6 +211,8 @@ const SKILLS = {
 /* 更新日誌：最新的放最前面。版本號 0.主要.小修：新增玩法系統就加主要，修正與打磨就加小修，1.0 留給正式版；改了遊戲就在最前面加一筆 */
 const VERSION = () => CHANGELOG[0].v;
 const CHANGELOG = [
+  {v:'0.74.0',d:'2026-10-27',t:['22座手工浮島：18個故事與刷圖地區、3種塔樓主題、1座練習坪，重新評審大小與地標構圖。','地圖卡片顯示實際模型；詳情按指定地圖顯示場地與尺寸，舊地景手記保留為附錄。','肩帶跟隨肩腰動作，修正普通耳罩與角色原生耳機重疊。','整合新版抗性、技能特效、手機畫質、介面精簡與開啟時版本檢查。']},
+  {v:'0.73.0',d:'2026-10-27',t:['自動更新：每次開啟遊戲會先核對版本，有新版就自動重新載入，不用再清除手機資料。（舊版本需要先手動重新整理一次，之後就會自動更新。）','技能特效大幅加強：施放時有符文法陣與聚能光點、技能光柱，命中時有爆發、衝擊環、火焰、冰刺與電光，凍結的敵人長出冰花並發出冰藍光，護盾生效時有光罩。','手機版戰鬥畫面解像度提高，畫面更清晰。','設定：倒下表現新增「無」並成為預設；移除設定頁的混沌重鑄。','模式：原地刷怪時經驗與金幣增加 30%，與推進挑戰首領有明確差別。','精簡畫面：隱藏設定頁與技能頁的重複說明文字，接線板只留必要資訊。','電腦版面板：較矮的電腦視窗會自動縮小面板內容，標題列與操作入門卡變得精簡，接線板縮小，重要內容不必再捲動才看到。','新增抗性：裝備可帶火焰、冰霜、閃電抗性（上限 75%）；深度 4 起部分魔物帶元素攻擊，按對應抗性減傷，護甲只發揮一半效果。']},
   {v:'0.72.0',d:'2026-10-26',t:['傳奇裝備：每件有兩條專屬規則詞，例如生命全滿時增傷、低血量爆發、擊殺疊層、被擊中後短暫減傷、閃避回血、擊殺精英回血，其餘兩條為取捨型數值；舊傳奇裝備自動轉換。','血條：調回清楚可見的厚度。']},
   {v:'0.71.0',d:'2026-10-26',t:['傳奇裝備：四條詞綴改為各傳奇獨有的取捨型效果（強化一項、同時附帶另一項增益或代價），舊傳奇裝備自動轉換。','視野：可見範圍加大，近／標準／遠三檔皆放寬。','畫質：自動降低解析度的條件放寬，只在真正卡頓時才降，並保持更高清晰度。','血條：改為固定細幼厚度，畫面放大時不再變粗。']},
   {v:'0.70.0',d:'2026-10-26',t:['傳奇裝備：詞綴全部改為傳奇專屬詞，每條帶有附加效果，不會出現在一般裝備上；舊傳奇裝備自動轉換。','電腦版：戰鬥畫面鋪滿整個視窗，操作面板疊在右邊。','視野：改為以角色為中心，圈內清楚、走過的地方留有記憶、未到過的遠處較暗；設定可調視野範圍。','零件：裝備自動分解得到的零件大幅減少（普通與魔法裝備只有機率得到 1 個）。','背包「構築保管」按鈕現在會打開構築裝備記憶管理。','斷訊電台與巡迴頁的標題文字顏色修正，不再是淺色字壓在淺色底上。','斷訊裂隙進行中只在紫圈邊緣出怪；移除原版地形設定，只保留新版街區。']},
