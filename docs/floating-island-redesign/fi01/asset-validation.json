@@ -1,0 +1,32 @@
+{
+  "models": [
+    {
+      "file": "fi01-corner-park.glb",
+      "triangles": 1192,
+      "meshes": 16,
+      "materials": 1,
+      "textures": 0,
+      "unlit": true,
+      "distinctColors": 37,
+      "normalizationPreservesBinary": true,
+      "bytes": 112644,
+      "sha256": "03f935d8c0dff878b41ce23950e34b34dea53d3240fb57bfcde5aacbad0b4e19"
+    },
+    {
+      "file": "fi01-corner-park-blockout.glb",
+      "triangles": 1192,
+      "meshes": 16,
+      "materials": 1,
+      "textures": 0,
+      "unlit": true,
+      "distinctColors": 3,
+      "normalizationPreservesBinary": true,
+      "bytes": 112644,
+      "sha256": "71e175c81952191dad3f4b3437d1f4f6802f60195ef3a5141ec69d334f64929a"
+    }
+  ],
+  "whiteColorPositionsAndTopologyIdentical": true,
+  "layoutMatchesGenerator": true,
+  "footprintAreaMeters2": 808.5,
+  "scope": "Original local Blender geometry and explicit glTF unlit/color policy; no game-dev canonical package claim."
+}

@@ -1,5 +1,5 @@
 {
-  "candidateSha256": "f0db5b84e65a2e9171d0b697a92ed84040ee6136c6af90c8140df2ae71f03178",
+  "candidateSha256": "d832c20f8bd6ece49da7a08f5106a0a825b929c24a7fde3fac0a99a2e6098131",
   "navigation": {
     "rows": [
       {
@@ -92,12 +92,12 @@
     "seconds": 60,
     "kills": 54,
     "maxMons": 21,
-    "moved": 1084.5900132191744,
-    "hpBefore": 356,
-    "hpAfter": 350.8168438706006,
+    "moved": 1097.2613738656332,
+    "hpBefore": 351,
+    "hpAfter": 351,
     "rescues": 0,
     "liveMonsters": 21,
-    "draws": 678
+    "draws": 689
   },
   "drops": {
     "checked": [

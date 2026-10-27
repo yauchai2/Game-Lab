@@ -1,5 +1,5 @@
 {
-  "status": "Series direction approved; FI02 modeled prototype; remaining scenes pending production; no runtime migration",
+  "status": "Series direction approved; FI01/FI02 native gameplay candidates; other20 layouts pending; no production migration",
   "baseCommit": "4c90e05",
   "characterScaleReferenceMeters": 1.8,
   "maps": [
@@ -14,7 +14,7 @@
       ],
       "layout": "偏心綠地與折角街口",
       "landmarks": "長椅、公共收音機、兩簇切面樹",
-      "state": "proposal; not game-integrated"
+      "state": "native gameplay candidate; not deployed"
     },
     {
       "id": "FI02",

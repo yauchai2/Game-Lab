@@ -8,7 +8,7 @@
 
 核對現行18普通BIOMES＋3塔樓主題、獨立訓練坪；12種地景profile不是21張完整設計地圖。新提案18普通＋3塔樓＋1訓練，共22場景版型，沿六章故事及原biome索引，尺寸按構圖設計，取消隨機巨型作美術基準但尚未改程式。首張FI02前街唱片巷36×28米設計尺度，圖已由host ImageGen產出，完整prompt／provenance在assets/concepts/floating-islands/fi02-record-lane。生成圖有柔和光照偏差，正式GLB仍須unlit純色；未冒稱尺寸導航實測。
 
-Alan已確認方向；FI02已有可編輯Blend、1946tri彩色／同拓撲白模GLB、layout及同一模型三視圖，[交付](floating-island-redesign/fi02/README.md)。Blender重匯入、unlit零貼圖政策及Three.js匯入通過；2352角色格全連通、四入口與最大首領指定路線、中央遮擋及路段採樣通過。隔離預覽用原生角色／動畫／鏡頭方向，未接入terrainBuild或真實AI，不冒稱正式可玩關卡完成。最新已完成FI02原生接入候選，見[接入交付](floating-island-redesign/fi02/native-integration.md)：候選編譯副本7項可追溯修改＋adapter，原src／index不變；原6單位格網／BFS／update／23技能／掉落／六章／serialize及地圖返回通過。首領3.8米保守派生plan、末端擊退校正及私有材質遮擋；訓練／塔樓fallback。頁面記憶體，未發佈。下一張FI01公園，之後其餘場景；正式整合先核對Claude最新主線。共用小物另作模組，島地面與主要地標每圖獨有，碰撞／出生／掉落由同一layout來源。白底只素材展示。
+Alan已確認方向；FI02已有可編輯Blend、1946tri彩色／同拓撲白模GLB、layout及同一模型三視圖，[交付](floating-island-redesign/fi02/README.md)。Blender重匯入、unlit零貼圖政策及Three.js匯入通過；2352角色格全連通、四入口與最大首領指定路線、中央遮擋及路段採樣通過。隔離預覽用原生角色／動畫／鏡頭方向，未接入terrainBuild或真實AI，不冒稱正式可玩關卡完成。最新已完成FI02原生接入候選，見[接入交付](floating-island-redesign/fi02/native-integration.md)：候選編譯副本7項可追溯修改＋adapter，原src／index不變；原6單位格網／BFS／update／23技能／掉落／六章／serialize及地圖返回通過。首領3.8米保守派生plan、末端擊退校正及私有材質遮擋；訓練／塔樓fallback。頁面記憶體，未發佈。FI01公園也已完成[模型／原生候選](floating-island-redesign/fi01/README.md)：32×28米、1192tri／16mesh、白模及三視圖；Host ImageGen403無輸出，改以真實GLB出圖，無另付費服務。建置／驗證工具新增--map fi01、讀取每島資料，FI02原生回歸亦通過。FI01沿p0呈現公園試音手記，沒有另建進度。共2張候選、20張待製作，下一張FI03橋下修理坪；正式整合先核對Claude最新主線。共用小物另作模組，島地面與主要地標每圖獨有，碰撞／出生／掉落由同一layout來源。白底只素材展示。
 
 ## 既有狀態
 

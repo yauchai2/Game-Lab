@@ -11,3 +11,6 @@ tools/font/*.ttf
 /tools/maps/__pycache__/
 
 /dist/fi02-island-play.html
+
+/dist/fi01-island-play.html
+/dist/fi01-island-review.html

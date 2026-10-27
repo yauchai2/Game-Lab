@@ -1,14 +1,15 @@
 """Package the FI02 editable model and standalone review, without publishing."""
 from pathlib import Path
-import zipfile,json,hashlib,subprocess,sys
-R=Path(__file__).resolve().parents[2];out=Path(sys.argv[1] if len(sys.argv)>1 else '/tmp/FI02-record-lane-3D.zip').resolve();out.parent.mkdir(parents=True,exist_ok=True)
+import zipfile,json,hashlib,subprocess,sys,argparse
+R=Path(__file__).resolve().parents[2]
+parser=argparse.ArgumentParser();parser.add_argument('output',nargs='?',default='/tmp/FI02-native-combat.zip');parser.add_argument('--map',choices=['fi01','fi02'],default='fi02');args=parser.parse_args();map_id=args.map;stem={'fi01':'fi01-corner-park','fi02':'fi02-record-lane'}[map_id];out=Path(args.output).resolve();out.parent.mkdir(parents=True,exist_ok=True)
 files={}
-for f in (R/'assets/maps/fi02-record-lane').iterdir():
+for f in (R/'assets/maps'/stem).iterdir():
  if f.is_file() and f.suffix!='.blend1':files['model/'+f.name]=f.read_bytes()
-for f in (R/'docs/floating-island-redesign/fi02').iterdir():
+for f in (R/('docs/floating-island-redesign/'+map_id)).iterdir():
  if f.suffix in ['.png','.json']:files['review/'+f.name]=f.read_bytes()
-files['fi02-island-review.html']=(R/'dist/fi02-island-review.html').read_bytes()
-if (R/'dist/fi02-island-play.html').exists():files['fi02-island-play.html']=(R/'dist/fi02-island-play.html').read_bytes()
+files[map_id+'-island-review.html']=(R/('dist/'+map_id+'-island-review.html')).read_bytes()
+if (R/('dist/'+map_id+'-island-play.html')).exists():files[map_id+'-island-play.html']=(R/('dist/'+map_id+'-island-play.html')).read_bytes()
 files['START.html']='''<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前街唱片巷・可玩候選</title><style>body{margin:0;background:#e9ecf5;color:#24384f;font:17px/1.7 system-ui,sans-serif}main{max-width:700px;margin:10vh auto;padding:24px}h1{font-size:30px}a{display:block;background:#334e85;color:white;padding:16px;margin:16px 0;border-radius:8px;text-decoration:none}small{display:block;color:#53657d}code{font-size:14px}</style><main><h1>前街唱片巷</h1><p>FI02 浮島原生戰鬥候選：走位、施技、打首領、撿裝備。</p><a href="fi02-island-play.html?fresh&amp;lvl=12&amp;give&amp;slots=FIRE,FROST,CHAIN">快速試戰：12級，配好三個測試技能</a><a href="fi02-island-play.html?fresh">由新角色開始</a><a href="fi02-island-review.html">查看模型、白模與三視圖</a><p>進度與偏好只留在本頁記憶體，重新載入便重設，不讀寫正式存檔。這是單一浮島候選，未正式發佈。</p><small>若瀏覽器不接受本機HTML，可在解壓資料夾啟動 <code>python3 -m http.server 8797</code>，再開啟 <code>http://localhost:8797/START.html</code>。</small></main></html>'''.encode()
 files['START-HERE.txt']='''FI02 前街唱片巷 — 第一張3D樣板
 
@@ -23,6 +24,9 @@ review/有同一模型的頂前右視圖與驗證報告，跨圖像素不是統�
 儲存庫：https://github.com/yauchai2/Game-Lab/pull/98
 重建工具：tools/maps/，須完整repo與Blender，不是只解壓ZIP就可執行所有建置。
 '''.encode()
+if map_id=='fi01':
+ for key in ['START.html','START-HERE.txt']:
+  files[key]=files[key].decode().replace('FI02','FI01').replace('前街唱片巷','綠蔭街角公園').replace('fi02','fi01').replace('fi01-record-lane.glb','fi01-corner-park.glb').replace('fi01-blockout.glb','fi01-corner-park-blockout.glb').replace('fi01-source.blend','fi01-corner-park-source.blend').encode()
 manifest={'sourceCommit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=R,text=True).strip(),'trackedWorktreeDirty':bool(subprocess.check_output(['git','status','--porcelain','--untracked-files=no'],cwd=R,text=True).strip()),'status':'review asset package; not deployed, not game-dev canonical package','files':{n:{'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()} for n,b in sorted(files.items())}}
 files['manifest.json']=(json.dumps(manifest,indent=2)+'\n').encode()
 with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:

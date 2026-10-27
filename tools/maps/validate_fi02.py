@@ -1,7 +1,8 @@
 """Static policy checks for FI02 portable GLBs; does not prove gameplay or FPS."""
 from pathlib import Path
-import json,struct,math,hashlib
-ROOT=Path(__file__).resolve().parents[2];A=ROOT/'assets/maps/fi02-record-lane'
+import json,struct,math,hashlib,argparse
+ROOT=Path(__file__).resolve().parents[2]
+parser=argparse.ArgumentParser();parser.add_argument('--map',choices=['fi01','fi02'],default='fi02');args=parser.parse_args();stem={'fi01':'fi01-corner-park','fi02':'fi02-record-lane'}[args.map];A=ROOT/'assets/maps'/stem;files=[stem+'.glb',stem+'-blockout.glb' if args.map=='fi01' else 'fi02-blockout.glb']
 def load(p):
  b=p.read_bytes();assert struct.unpack_from('<4sII',b)==(b'glTF',2,len(b));n=struct.unpack_from('<I',b,12)[0];d=json.loads(b[20:20+n]);blob=b[28+n:]
  def acc(i):
@@ -9,7 +10,7 @@ def load(p):
   return [struct.unpack_from('<'+code*z,blob,start+j*stride) for j in range(a['count'])]
  return d,acc,blob
 reports=[];signatures=[]
-for name in ['fi02-record-lane.glb','fi02-blockout.glb']:
+for name in files:
  d,acc,blob=load(A/name);assert not d.get('images') and not d.get('textures') and not d.get('animations') and not d.get('skins');assert len(d['materials'])==1
  assert all('KHR_materials_unlit' in m['extensions'] for m in d['materials']);assert len({n['name'] for n in d['nodes']})==len(d['nodes'])
  tri=0;signature=[];colors=set()
@@ -23,10 +24,10 @@ for name in ['fi02-record-lane.glb','fi02-blockout.glb']:
    tri+=len(ids)//3;signature.append((pos,ids))
  assert tri<30000
  signatures.append(signature)
- native='fi02-native.glb' if name=='fi02-record-lane.glb' else 'fi02-blockout-native.glb'
+ native=name.replace('.glb','-native.glb') if args.map=='fi01' else ('fi02-native.glb' if name==files[0] else 'fi02-blockout-native.glb')
  assert blob==load(A/native)[2]
  reports.append({'file':name,'triangles':tri,'meshes':len(d['meshes']),'materials':len(d['materials']),'textures':0,'unlit':True,'distinctColors':len(colors),'normalizationPreservesBinary':True,'bytes':(A/name).stat().st_size,'sha256':hashlib.sha256((A/name).read_bytes()).hexdigest()})
 assert signatures[0]==signatures[1]
-l=json.loads((A/'layout.json').read_text());assert l==json.loads((ROOT/'tools/maps/fi02-layout.json').read_text());p=l['footprint'];area=abs(sum(p[i][0]*p[(i+1)%len(p)][1]-p[(i+1)%len(p)][0]*p[i][1] for i in range(len(p))))/2
+l=json.loads((A/'layout.json').read_text());assert l==json.loads((ROOT/('tools/maps/'+args.map+'-layout.json')).read_text());p=l['footprint'];area=abs(sum(p[i][0]*p[(i+1)%len(p)][1]-p[(i+1)%len(p)][0]*p[i][1] for i in range(len(p))))/2
 r={'models':reports,'whiteColorPositionsAndTopologyIdentical':True,'layoutMatchesGenerator':True,'footprintAreaMeters2':area,'scope':'Original local Blender geometry and explicit glTF unlit/color policy; no game-dev canonical package claim.'}
-(ROOT/'docs/floating-island-redesign/fi02/asset-validation.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r,indent=2))
+(ROOT/('docs/floating-island-redesign/'+args.map+'/asset-validation.json')).write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r,indent=2))

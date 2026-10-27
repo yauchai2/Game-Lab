@@ -77,10 +77,10 @@
     "src/game/06-main.js": "2cccdb70282d8e579f441638430e885efc0ba2f6c8b54262c0c5aab14a519444",
     "src/game/06b-background.js": "ecf2c70acb8920c932b912cbedeaaa091c15edaa45c9c44e762629ae9bdf9f95"
   },
-  "adapterSha256": "163af4d7d9e4e18f972a0959a43bedec79e2f494f3bf6c338459b5e48f44b64d",
+  "adapterSha256": "89088aba60b322913be71531994185d4c514fe26342d1f28963616c03dc7a0f9",
   "layoutToolkitSha256": "da77a9bfeb8e87122cd6ae8b6f7d61b06d85b3110eabdfec204c1757cc092239",
   "layoutSha256": "941632a993452e099d0f6102388dab6cd18316adbcd2c40611841569f4ef197d",
-  "candidateSha256": "f0db5b84e65a2e9171d0b697a92ed84040ee6136c6af90c8140df2ae71f03178",
+  "candidateSha256": "d832c20f8bd6ece49da7a08f5106a0a825b929c24a7fde3fac0a99a2e6098131",
   "candidateOnlyPatches": [
     {
       "source": "src/game/02-state.js",

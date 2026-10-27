@@ -1,0 +1,53 @@
+{
+  "rows": [
+    {
+      "file": "fi01-corner-park.glb",
+      "importedMeshes": 16,
+      "boundsBlenderXYZ": [
+        [
+          -19.552091598510742,
+          19.857690811157227
+        ],
+        [
+          -18.39657211303711,
+          18.85768699645996
+        ],
+        [
+          -4.699999809265137,
+          7.564000129699707
+        ]
+      ],
+      "groundDimensions": [
+        32.0,
+        28.0,
+        0.0
+      ],
+      "triangles": 1192
+    },
+    {
+      "file": "fi01-corner-park-blockout.glb",
+      "importedMeshes": 16,
+      "boundsBlenderXYZ": [
+        [
+          -19.552091598510742,
+          19.857690811157227
+        ],
+        [
+          -18.39657211303711,
+          18.85768699645996
+        ],
+        [
+          -4.699999809265137,
+          7.564000129699707
+        ]
+      ],
+      "groundDimensions": [
+        32.0,
+        28.0,
+        0.0
+      ],
+      "triangles": 1192
+    }
+  ],
+  "scope": "Actual Blender re-import of portable normalized GLBs; no files overwritten."
+}
