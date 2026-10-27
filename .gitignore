@@ -9,3 +9,5 @@ tools/font/*.ttf
 /dist/fi02-island-review.html
 /assets/maps/**/*.blend1
 /tools/maps/__pycache__/
+
+/dist/fi02-island-play.html

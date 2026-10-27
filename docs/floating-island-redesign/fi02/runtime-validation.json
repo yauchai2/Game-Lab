@@ -2,7 +2,7 @@
   "report": {
     "heroHeightGameUnits": 14.143876071929931,
     "gameUnitsPerMeter": 7.857708928849961,
-    "bossRadiusMeters": 3.0331612553607528,
+    "bossRadiusMeters": 3.8,
     "bossSource": {
       "chap": 0
     },
@@ -13,7 +13,7 @@
     ],
     "heroCells": 2352,
     "connectedCells": 2352,
-    "bossCells": 1088,
+    "bossCells": 867,
     "spawnPaths": [
       35,
       17,
@@ -21,9 +21,19 @@
       39
     ],
     "bossPath": 27,
-    "draws": 34,
+    "draws": 36,
     "triangles": 18274,
     "materials": [
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "texture": false,
+        "color": true
+      },
       {
         "type": "MeshBasicMaterial",
         "texture": false,
@@ -260,7 +270,7 @@
         "blocked": false
       }
     ],
-    "mapDraws": 14
+    "mapDraws": 16
   },
   "errors": [],
   "scope": "Native GLB reader, original actors/scales and camera direction in standalone review; conservative layout-grid navigation, not actual game AI/combat."

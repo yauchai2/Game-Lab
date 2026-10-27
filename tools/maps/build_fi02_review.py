@@ -9,5 +9,5 @@ for f in files:
  s=re.sub(r'\b(?:localStorage|sessionStorage)\b','reviewStorage',(ROOT/f).read_text());page+='<script>\n'+s+'\n</script>'
 page+='<script>const FI02_LAYOUT='+json.dumps(json.loads((A/'layout.json').read_text()),ensure_ascii=False)+';\n'
 for key,file in [('fi02_color','fi02-record-lane.glb'),('fi02_white','fi02-blockout.glb')]:page+='EQUIPMENT_COMPLETION_GLB.'+key+'='+json.dumps(base64.b64encode((A/file).read_bytes()).decode())+';\n'
-page+='</script><script>'+ (ROOT/'tools/maps/fi02-review-runtime.js').read_text()+'</script></html>'
+page+='</script><script>'+ (ROOT/'tools/maps/fi02-layout-runtime.js').read_text()+'</script><script>'+ (ROOT/'tools/maps/fi02-review-runtime.js').read_text()+'</script></html>'
 OUT.write_text(page);print('Built',OUT,'bytes',OUT.stat().st_size)

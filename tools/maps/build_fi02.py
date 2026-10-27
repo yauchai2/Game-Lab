@@ -36,8 +36,8 @@ verts=[(x,y,z) for z,scale in [(0,1),(-.9,1),(-3.0,.98),(-4.2,.91)] for x,y in [
 for i in range(N):
  x,y,z=verts[3*N+i];verts[3*N+i]=(x,y,z-[.2,.9,0,.65,.25,.8,.1,.55][i])
 faces=[tuple(range(N)),tuple(reversed(range(3*N,4*N)))];faces += [(j*N+i,j*N+(i+1)%N,(j+1)*N+(i+1)%N) for j in range(3) for i in range(N)] + [(j*N+i,(j+1)*N+(i+1)%N,(j+1)*N+i) for j in range(3) for i in range(N)]
-mesh('GEO_foundation',verts,faces,'rock',True);polygon('GEO_ground',fp,.015,'road')
-polygon('GEO_forecourt',[(-15,0),(-12,4),(-12,12),(10,12),(15,8),(15,1),(10,0),(6,-4),(-4,-5),(-10,-2)],.06,'ivory')
+mesh('GEO_foundation',verts,faces,'rock',True);polygon('GEO_ground',fp,L['surfaces']['roadZ'],'road')
+polygon('GEO_forecourt',L['surfaces']['forecourt'],L['surfaces']['forecourtZ'],'ivory')
 # Curbs follow the main ground silhouette as short low solids, not full blocking walls.
 for i,(a,b) in enumerate(zip(fp,fp[1:]+fp[:1])):
  x,y=(a[0]+b[0])/2,(a[1]+b[1])/2;length=math.dist(a,b);o=box('GEO_edge_'+str(i),x,y,.06,length,.25,.12,'edge');o.rotation_euler.z=math.atan2(b[1]-a[1],b[0]-a[0])
@@ -99,8 +99,8 @@ for o in list(scene.objects):
   mod=o.modifiers.new('Triangulated','TRIANGULATE');bpy.context.view_layer.objects.active=o;bpy.ops.object.modifier_apply(modifier=mod.name)
 # Blend remains editable per part. GLB groups are merged by role for bounded draws.
 bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'fi02-source.blend'))
-for prefix in ['GEO_foundation','GEO_ground','GEO_forecourt','GEO_edge','GEO_crosswalk','GEO_bridge','GEO_exposed','GEO_corner','GEO_records','GEO_laundry','GEO_washer','GEO_record','GEO_roof','GEO_aerial','PROP_']:
- objects=[o for o in list(scene.objects) if o.type=='MESH' and o.name.startswith(prefix)]
+for prefix in ['GEO_foundation','GEO_ground','GEO_forecourt','GEO_edge','GEO_crosswalk','GEO_bridge','GEO_exposed','GEO_corner','GEO_records','GEO_laundry','GEO_washer','GEO_record','GEO_roof','GEO_aerial','PROP_tree_left','PROP_tree_right','PROP_']:
+ objects=[o for o in list(scene.objects) if o.type=='MESH' and o.name.startswith(prefix) and not(prefix=='PROP_' and o.name in ['PROP_tree_left','PROP_tree_right'])]
  if len(objects)<2:continue
  bpy.ops.object.select_all(action='DESELECT')
  for o in objects:o.select_set(True)

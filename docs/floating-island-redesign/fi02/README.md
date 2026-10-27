@@ -1,12 +1,14 @@
 # FI02 前街唱片巷：第一張3D樣板
 
+> **最新：已接原生戰鬥候選。** 見[原生地圖接入交付](native-integration.md)，可刷怪／施技／打首領／撿物及進出地圖。仍是隔離候選，未部署正式版；下文「未接terrainBuild」指較早模型檢視頁，不代表新可玩檔。
+
 2026-10-27，Asia/Taipei。Alan已確認首張概念方向並要求繼續。PR98／codex/floating-island-redesign接續，基於main4c90e05，不動Claude4a5d1e4的技能／抗性／畫質候選。
 
 **已產出可攜式GLB、同拓撲白模、可編輯Blend，以及同一模型的頂／前／右正交渲染。** 這是第一張模型與導航／尺度樣板，尚未替換正式遊戲地圖，不代表其餘21場景已製作。
 
 ## 模型
 
-[素材目錄](../../../assets/maps/fi02-record-lane)：`fi02-record-lane.glb`（彩色）、`fi02-blockout.glb`（白模）、`fi02-source.blend`（逐件可編輯源檔）、`layout.json`、provenance及原始native匯出。模型1946三角面／14個語意mesh／1材質／零圖像貼圖，每份portable GLB約163KB。材質有明確KHR_materials_unlit，頂點色由COLOR_1提升到COLOR_0，幾何binary不改，其他GLB檢視器不需依賴本遊戲的特殊材質處理。
+[素材目錄](../../../assets/maps/fi02-record-lane)：`fi02-record-lane.glb`（彩色）、`fi02-blockout.glb`（白模）、`fi02-source.blend`（逐件可編輯源檔）、`layout.json`、provenance及原始native匯出。模型1946三角面／16個語意mesh／1材質／零圖像貼圖，每份portable GLB約163KB。材質有明確KHR_materials_unlit，頂點色由COLOR_1提升到COLOR_0，幾何binary不改，其他GLB檢視器不需依賴本遊戲的特殊材質處理。
 
 島體36×28米模型空間，削角地面實際面積954.5平方米；後側三店、唱片標誌、洗衣機、工作台、販賣機、樹、短橋段和管道都是實際幾何，並非把概念圖投到模型上。地面只兩大色塊，避免貼圖／AO／光照。底部不規則切面收邊，保留足夠島厚而不變成巨型尖錐。
 
@@ -24,7 +26,7 @@
 
 角色使用現有AKI GLB、原骨架與原遊戲縮放，測得約14.144遊戲單位高，定1.8米美術比例，故每米7.858遊戲單位；**沒有改原角色四肢、職業或實際遊戲屬性**。這個島映射後約283×220遊戲單位，介乎舊regular與large之間，取消任意種子抽成648跨度作首張設計基準，但尚未移除正式大小規則。
 
-檢查4種普通首領形態、6章標記形態與3塔首領，全部用既有elite 1.3倍尺度。最寬者為第一章M04形態，視覺寬約45.31遊戲單位；採外接圓半徑約3.033米作保守導航檢查，不更改原遊戲碰撞半徑。其餘首領只作尺寸比較，不擅自成為FI02新敵人配置。
+檢查4種普通首領形態、6章標記形態與3塔首領，全部用既有elite 1.3倍尺度。最寬者為第一章M04形態，視覺寬約45.31遊戲單位；早期以寬邊半徑約3.033米作檢查；原生接入後改為layout統一的3.8米保守半徑，涵蓋轉身對角寬度及餘量，不更改原遊戲碰撞半徑。其餘首領只作尺寸比較，不擅自成為FI02新敵人配置。
 
 layout用同一建築box、街物circle／box、橋墩及護欄生成視覺與碰撞。店前預留1.6米碰撞延伸涵蓋箱子；後側六格孤立狹隙已加入實體花槽收邊，沒有只在測試中忽略壞格。
 
@@ -41,8 +43,8 @@ layout用同一建築box、街物circle／box、橋墩及護欄生成視覺與�
 ## 驗證與重建
 
 - [asset-validation.json](asset-validation.json)：零貼圖、unlit、唯一節點、有限頂點、非退化三角形、白／彩位置與拓撲相同、normalize保留binary、layout與來源相同。
-- [blender-reimport.json](blender-reimport.json)：兩份portable GLB實際重匯入Blender，14mesh、地面36×28及完整bounds核對。
-- [runtime-validation.json](runtime-validation.json)：Chromium SwiftShader實際GPU匯入，原比例角色／13種elite首領候選比較、連通性／四入口／最大首領路線、路段插值及中央頭部遮擋採樣、五視角與390px；14個map draws，連角色共34。不是手機GPU效能認證。
+- [blender-reimport.json](blender-reimport.json)：兩份portable GLB實際重匯入Blender，16mesh、地面36×28及完整bounds核對。
+- [runtime-validation.json](runtime-validation.json)：Chromium SwiftShader實際GPU匯入，原比例角色／13種elite首領候選比較、連通性／四入口／最大首領路線、路段插值及中央頭部遮擋採樣、五視角與390px；16個map draws，連角色共36。不是手機GPU效能認證。
 
 ```sh
 blender -b --python-exit-code 1 --python tools/maps/build_fi02.py
@@ -55,6 +57,6 @@ node tools/maps/test_fi02_review.cjs
 
 ## 下一步
 
-先把FI02 layout接入獨立可玩地圖候選，沿既有terrainKey／lookup／BFS、敵人AI、掉落邊界及存檔owner；驗證真實移動、全技能預警、島緣掉落、清場、地圖返回與鏡頭後，才成正式地圖。外觀仍可沿此源檔精修門窗與地標，不再等待「是否批准最初方向」。然後依六章逐組製作其餘場景；目前不宣稱22張全部完成或已release。
+FI02已接入獨立可玩地圖候選，交付見native-integration.md；接下來，沿既有terrainKey／lookup／BFS、敵人AI、掉落邊界及存檔owner；驗證真實移動、全技能預警、島緣掉落、清場、地圖返回與鏡頭後，才成正式地圖。外觀仍可沿此源檔精修門窗與地標，不再等待「是否批准最初方向」。然後依六章逐組製作其餘場景；目前不宣稱22張全部完成或已release。
 
 game-dev CLI仍缺，本批以Blender、GLB靜態政策及Three.js檢查交付專案素材，沒有冒稱已取得該工具的canonical package receipt。未執行真機Safari／完整戰鬥／長時間測試，亦不把14 draws換算成手機FPS。

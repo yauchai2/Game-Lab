@@ -2,7 +2,7 @@
   "rows": [
     {
       "file": "fi02-record-lane.glb",
-      "importedMeshes": 14,
+      "importedMeshes": 16,
       "boundsBlenderXYZ": [
         [
           -18.125,
@@ -26,7 +26,7 @@
     },
     {
       "file": "fi02-blockout.glb",
-      "importedMeshes": 14,
+      "importedMeshes": 16,
       "boundsBlenderXYZ": [
         [
           -18.125,

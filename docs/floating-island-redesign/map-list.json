@@ -27,7 +27,7 @@
       ],
       "layout": "削角L形街口與開放前庭",
       "landmarks": "唱片店、洗衣店、屋頂小天線",
-      "state": "modeled prototype; navigation/scale review; not game-integrated"
+      "state": "native gameplay candidate; not deployed"
     },
     {
       "id": "FI03",

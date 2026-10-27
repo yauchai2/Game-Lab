@@ -219,7 +219,9 @@
     "bossSpawnAnchor": [
       10,
       -7
-    ]
+    ],
+    "bossRadius": 3.8,
+    "bossRadiusReason": "Conservative yaw clearance: standing maximum 45.31 by 24.05 game units gives ~3.42m half-diagonal incl margin; use3.8m to allow rotation/pose variation. Not all animation extrema proven."
   },
   "rails": [
     {
@@ -262,5 +264,51 @@
         4
       ]
     }
-  ]
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -15,
+        0
+      ],
+      [
+        -12,
+        4
+      ],
+      [
+        -12,
+        12
+      ],
+      [
+        10,
+        12
+      ],
+      [
+        15,
+        8
+      ],
+      [
+        15,
+        1
+      ],
+      [
+        10,
+        0
+      ],
+      [
+        6,
+        -4
+      ],
+      [
+        -4,
+        -5
+      ],
+      [
+        -10,
+        -2
+      ]
+    ]
+  }
 }
