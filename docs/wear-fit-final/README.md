@@ -1,6 +1,6 @@
 # 肩帶與普通耳罩佩戴收尾
 
-2026-10-27，Asia/Hong_Kong。分支 `codex/street-wear-fit-final`，基於正式 main `4c90e05`／v0.72.0。本批已實作及本機驗證，待 PR review；未合併、未發佈，也沒有另加版本號。
+2026-10-27，Asia/Hong_Kong。分支 `codex/street-wear-fit-final`，基於正式 main `4c90e05`／v0.72.0。本批已實作及本機驗證，待 [PR96](https://github.com/yauchai2/Game-Lab/pull/96) review；未合併、未發佈，也沒有另加版本號。
 
 MILO MD 肩帶縮短並轉向左腰播放器；PING 肩帶調整至肩腰範圍。兩件肩帶上端跟 torso、下端跟 hips，中段線性混合，減少跑步／施法時整條剛性漂移。只複製穿戴實例的幾何，離場釋放；原始 GLB、快取、角色骨架及四肢比例不變。PING 肩帶和郵差袋仍同屬 armor，不能同時穿戴。
 

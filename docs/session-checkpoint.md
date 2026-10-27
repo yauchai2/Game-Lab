@@ -8,7 +8,7 @@
 
 ## 本批候選
 
-`codex/street-wear-fit-final`，base4c90e05，僅兩肩帶肩腰跟隨及AKI普通耳罩掛點／原生耳機遮罩，見[交付與對照](wear-fit-final/README.md)。108採樣姿態、20件×九動畫、原始GLB與舊遮罩不變、脫下還原、stable-data與本機分檔網站通過。已重建dist，未merge／未release；不改版本、傳奇技能、肖像、跑步朝向或40處／90秒血跡。
+[PR96](https://github.com/yauchai2/Game-Lab/pull/96)，`codex/street-wear-fit-final`，base4c90e05，僅兩肩帶肩腰跟隨及AKI普通耳罩掛點／原生耳機遮罩，見[交付與對照](wear-fit-final/README.md)。108採樣姿態、20件×九動畫、原始GLB與舊遮罩不變、脫下還原、stable-data與本機分檔網站通過。已重建dist，未merge／未release；不改版本、傳奇技能、肖像、跑步朝向或40處／90秒血跡。
 
 ## 共同規則與未完成事項
 
