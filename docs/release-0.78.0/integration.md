@@ -1,3 +1,5 @@
+> v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
+
 # v0.78.0全音訊更新
 
 Alan在全項審查後明確要求「發佈」，並補充Claude首領曲／序章音效等不一定要跟，以整體效果為重。本批因此是實際54音訊接入，不是只發審查頁。
