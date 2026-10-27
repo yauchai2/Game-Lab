@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Push only the already-pushed game build to gh-pages, without changing worktrees."""
+"""Push only the already-pushed game build to gh-pages, without changing worktrees.
+
+Default publishes the fixed trial site at the root. With --preview it publishes the
+current branch build to the preview/ subfolder (a test link; the root stays untouched).
+"""
 import os
 import json
 import re
@@ -9,6 +13,8 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
+PREVIEW = '--preview' in sys.argv
+PREFIX = 'preview/' if PREVIEW else ''
 def git(*args, env=None):
     return subprocess.check_output(['git', *args], cwd=ROOT, env=env, text=True).strip()
 
@@ -30,17 +36,19 @@ with tempfile.TemporaryDirectory(prefix='game-lab-pages-') as temp:
     # Retain fingerprinted scripts so a browser with a cached older index can finish loading.
     if parent:
         names = git('ls-tree', '-r', '--name-only', parent).splitlines()
-        if any(not re.fullmatch(r'(index\.html|version\.json|\.nojekyll|[a-z][a-z0-9-]*\.[0-9a-f]{16}\.js|lab/buildcraft/(?:index\.html|style\.css|engine\.js|app\.js))', n) for n in names):
+        if any(not re.fullmatch(r'(?:preview/)?(index\.html|version\.json|\.nojekyll|[a-z][a-z0-9-]*\.[0-9a-f]{16}\.js|lab/buildcraft/(?:index\.html|style\.css|engine\.js|app\.js))', n) for n in names):
             sys.exit('Unexpected deployment files; inspect gh-pages before publishing.')
         git('read-tree', parent, env=env)
     else:
         git('read-tree', '--empty', env=env)
     assets = json.loads((site / 'version.json').read_text())['assets']
     for name in ['index.html', 'version.json', '.nojekyll', *assets]:
+        if PREVIEW and name == '.nojekyll':
+            continue
         blob = git('hash-object', '-w', str(site / name))
-        git('update-index', '--add', '--cacheinfo', f'100644,{blob},{name}', env=env)
+        git('update-index', '--add', '--cacheinfo', f'100644,{blob},{PREFIX}{name}', env=env)
     tree = git('write-tree', env=env)
-    args = ['commit-tree', tree, '-m', f'Publish game from {head[:7]}']
+    args = ['commit-tree', tree, '-m', f'Publish {"preview" if PREVIEW else "game"} from {head[:7]}']
     if parent:
         args += ['-p', parent]
     commit = git(*args)
