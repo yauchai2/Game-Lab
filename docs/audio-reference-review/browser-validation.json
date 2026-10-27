@@ -1,0 +1,18 @@
+{
+  "sha256": "8508a3defa798801f01f642cc578636f36e569c2efa058de463fe3d2cf82d5c5",
+  "cards": 62,
+  "audioControls": 64,
+  "filters": {
+    "music": 6,
+    "sfx": 46,
+    "online": 10
+  },
+  "mobileNoOverflow": true,
+  "exclusiveAB": true,
+  "stop": true,
+  "exportChoices": 62,
+  "unchosenRemainUnreviewed": true,
+  "errors": [],
+  "external": [],
+  "scope": "Local Chromium390px,64 embedded controls,source-labelled A/B,stop/filter/export; not subjective listening or game integration."
+}
