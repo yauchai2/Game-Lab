@@ -51,7 +51,7 @@ function profileSave(){
  const profiles=PROFILE_SESSION.profiles.filter(p=>p.id!==id);if(profiles.length>=PROFILE_MAX)return false;profiles.push({id,save});
  try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:3,active:id,profiles}));PROFILE_SESSION.profiles=profiles;PROFILE_SESSION.active=id;PROFILE_SESSION.pending=false;PROFILE_SESSION.draft=null;PROFILE_SESSION.returnTo=null;return true;}catch(e){return false;}
 }
-function profileResetRuntime(){for(const k of Object.keys(G))delete G[k];Object.assign(G,copyState(GAME_NEW_STATE));PV.sig='';PV.lastTime=null;}
+function profileResetRuntime(){const pal=G.pal;for(const k of Object.keys(G))delete G[k];Object.assign(G,copyState(GAME_NEW_STATE));G.pal=pal||'mint';PV.sig='';PV.lastTime=null;}
 function profileRestore(id){const p=PROFILE_SESSION.profiles.find(p=>p.id===id);if(!p)return false;profileResetRuntime();if(!applySave(copyState(p.save)))return false;PROFILE_SESSION.active=id;PROFILE_SESSION.pending=false;PROFILE_SESSION.draft=null;PROFILE_SESSION.returnTo=null;G.lastWall=Date.now();G.paused=false;return true;}
 function profileSwitch(id){if(G.run||G.train||PROFILE_SESSION.pending||id===PROFILE_SESSION.active||!PROFILE_SESSION.profiles.some(p=>p.id===id)||!saveGame())return false;const previous=PROFILE_SESSION.active;if(!profileRestore(id))return false;if(!saveGame()){profileRestore(previous);return false;}return true;}
 function profileNew(){if(G.run||G.train||PROFILE_SESSION.pending||PROFILE_SESSION.profiles.length>=PROFILE_MAX||!saveGame())return false;const id=PROFILE_SESSION.active;profileResetRuntime();PROFILE_SESSION.active=null;PROFILE_SESSION.returnTo=id;PROFILE_SESSION.pending=true;PROFILE_SESSION.draft=null;INTRO.step=0;INTRO.selected='street';INTRO.name='';introStart(true);return true;}

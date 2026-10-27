@@ -1,0 +1,17 @@
+/* Shared first-paint and interactive cover. Both use the same source picture and geometry. */
+.entry-cover{--cover-ink:#101a3c;position:relative;isolation:isolate;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#efff50;color:var(--cover-ink)}
+.cover-picture{position:absolute;inset:0;display:block;pointer-events:none}
+.cover-art{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 100%;image-rendering:pixelated;user-select:none}
+.cover-brand{position:absolute;top:max(8%,env(safe-area-inset-top));left:50%;width:min(86vw,520px);margin:0;transform:translateX(-50%);line-height:0;pointer-events:none}
+.cover-brand img{display:block;width:100%;height:auto;image-rendering:pixelated;user-select:none}
+.cover-hint{position:absolute;top:calc(8% + min(86vw,520px) * .365 + 24px);left:50%;transform:translateX(-50%);margin:0;padding:10px 16px;border:2px solid var(--cover-ink);background:#efff50;color:var(--cover-ink);font:18px/1.4 var(--ux-display,monospace);letter-spacing:.08em;white-space:nowrap;pointer-events:none}
+@media(min-aspect-ratio:1/1){.cover-art{object-position:28% 100%}.cover-brand{top:27%;left:auto;right:5%;transform:none;width:min(42vw,640px)}.cover-hint{top:calc(27% + min(42vw,640px) * .365 + 30px);left:auto;right:5%;width:min(42vw,640px);transform:none;text-align:center;box-sizing:border-box;background:transparent;border-color:transparent}}
+@media(max-height:500px) and (min-aspect-ratio:1/1){.cover-brand{top:20%;width:min(38vw,520px)}.cover-hint{top:calc(20% + min(38vw,520px) * .365 + 12px);width:min(38vw,520px);font-size:16px}}
+@media(forced-colors:active){.cover-hint{background:Canvas;color:CanvasText;border-color:CanvasText}}
+#boot{position:fixed;inset:0;z-index:100;font-family:monospace}
+#boot .boot-progress{position:absolute;left:calc(50% - 36px);top:calc(8% + min(86vw,520px) * .365 + 80px);width:72px;height:4px;background:#101a3c40;overflow:hidden}
+#boot .boot-progress::after{content:'';display:block;width:100%;height:100%;background:#101a3c;transform-origin:left;animation:boot-bar 2.4s steps(8,end) infinite}
+@media(min-aspect-ratio:1/1){#boot .boot-progress{left:auto;right:calc(5% + min(42vw,640px) / 2 - 36px);top:calc(27% + min(42vw,640px) * .365 + 86px)}}
+@media(max-height:500px) and (min-aspect-ratio:1/1){#boot .boot-progress{right:calc(5% + min(38vw,520px) / 2 - 36px);top:calc(20% + min(38vw,520px) * .365 + 60px)}}
+@keyframes boot-bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){#boot .boot-progress::after{animation:none}}
