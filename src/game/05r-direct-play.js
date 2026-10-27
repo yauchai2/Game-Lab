@@ -34,7 +34,7 @@ const INTRO_STORY=[
 ];
 function introPersist(){try{localStorage.setItem(INTRO_KEY,JSON.stringify({step:INTRO.step,cover:INTRO.cover===true,selected:INTRO.selected,name:INTRO.name}));}catch(e){}}
 function introStart(reset=false){INTRO.active=true;INTRO.cover=true;G.paused=true;try{const d=reset?null:JSON.parse(localStorage.getItem(INTRO_KEY));if(d){INTRO.cover=d.cover===true;INTRO.step=Math.max(0,Math.min(3,d.step|0));if(Object.hasOwn(CHARS,d.selected))INTRO.selected=d.selected;INTRO.name=typeof d.name==='string'?d.name.slice(0,12):'';}}catch(e){}document.body.classList.add('intro-active');introRender();}
-function introStep(n){if(!INTRO.active)return;INTRO.cover=false;introLogoDispose();INTRO.step=Math.max(0,Math.min(3,n));introPersist();introRender();}
+function introStep(n){if(!INTRO.active)return;if(globalThis.SYS)SYS.info('intro','序章第 '+n+' 步');INTRO.cover=false;introLogoDispose();INTRO.step=Math.max(0,Math.min(3,n));introPersist();introRender();}
 function introChoose(id){if(!INTRO.active||!Object.hasOwn(CHARS,id))return;INTRO.selected=id;introPersist();introRender();}
 function introEscape(){if(INTRO.cover){introStep(0);return;}if(INTRO.step<3)introStep(3);else uxAnnounce('選一位角色，再按開始冒險。');}
 function introRender(){

@@ -9,7 +9,9 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-out = Path(sys.argv[1] if len(sys.argv) > 1 else '/tmp/game-lab-site')
+args = [a for a in sys.argv[1:] if not a.startswith('--')]
+CHANNEL = 'preview' if '--preview' in sys.argv else 'stable'
+out = Path(args[0] if args else '/tmp/game-lab-site')
 game = (ROOT / 'dist/idle-hero.html').read_bytes()
 with tempfile.TemporaryDirectory(prefix='game-lab-build-check-') as temp:
     expected = Path(temp) / 'game.html'
@@ -21,6 +23,10 @@ if not version_match:
     sys.exit('Cannot read the first CHANGELOG version; refusing to publish stale metadata.')
 version = version_match[1]
 commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+# Test builds carry the commit in their version, so a changed build always refreshes pages that cached an older one.
+if CHANNEL == 'preview':
+    version = f'{version}-dev.{commit[:7]}'
+build_info = json.dumps({'channel': '測試版' if CHANNEL == 'preview' else '正式版', 'version': version, 'commit': commit[:7]}, ensure_ascii=False)
 out.mkdir(parents=True, exist_ok=True)
 page = (ROOT / 'index.html').read_text()
 scripts = re.findall(r'<script src="([^"]+)"></script>', page)
@@ -58,7 +64,7 @@ page = page.replace('</body>', tags + '\n</body>')
 guard = ("<script>(function(){var V=%s;try{fetch('version.json?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){"
          "if(!j||!j.version||j.version===V)return;var k='ih-upd';if(sessionStorage.getItem(k)===j.version)return;sessionStorage.setItem(k,j.version);"
          "location.replace(location.pathname+'?v='+j.version+'&_='+Date.now());}).catch(function(){});}catch(e){}})();</script>" % json.dumps(version))
-page = page.replace('<head>', '<head>\n' + guard, 1)
+page = page.replace('<head>', '<head>\n<script>window.__BUILD=' + build_info + ';</script>\n' + guard, 1)
 site = page.encode()
 (out / 'index.html').write_bytes(site)
 (out / '.nojekyll').write_text('')
