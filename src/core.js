@@ -311,7 +311,7 @@ function mountFigure(cfg){
 
   const art = document.getElementById('art'), readout = document.getElementById('readout');
   const ui = { st };
-  ui.render = () => { _clipN = 0; document.documentElement.style.setProperty('--accent', PALS[st.pal].l); { const sv = inkScale(cfg.scene(st, PALS[st.pal])); if (sv !== ui._sv){ ui._sv = sv; art.innerHTML = sv; } } if (!ui._flash) readout.textContent = cfg.readout ? cfg.readout(st) : ''; if (ui.drawStats) ui.drawStats(); };
+  ui.render = () => { _clipN = 0; if (!PALS[st.pal]) st.pal = cfg.palette || 'mustard'; document.documentElement.style.setProperty('--accent', PALS[st.pal].l); { const sv = inkScale(cfg.scene(st, PALS[st.pal])); if (sv !== ui._sv){ ui._sv = sv; art.innerHTML = sv; } } if (!ui._flash) readout.textContent = cfg.readout ? cfg.readout(st) : ''; if (ui.drawStats) ui.drawStats(); };
   // big numbers in the top-right corner (credit, change, score…); a value that changes gets a little bump
   const statsEl = document.getElementById('stats'), prevStats = {};
   ui.drawStats = () => { if (!statsEl) return;

@@ -115,7 +115,17 @@ function rarityRoll(boss){
   return i;
 }
 const itemValue = it => Math.round((1 + it.r*2.2) * (4 + it.il*2.4));
-const itemLines = it => [it.imp, ...it.aff].map((a, i) => ({ t:(i?(it.lg?'':`T${affTier(a,it.il)} · `):'')+AFF[a.k].t(a.v), imp:i === 0, lg:!!(i&&it.lg) })).concat(it.cr ? [{ t:'已腐化', lg:true }] : []).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
+/* 保護：任何裝備若帶有不存在的詞綴，移除它並寫進系統記錄，避免畫面與數值計算整個中斷。 */
+function itemClean(it){
+  if(!it)return it;
+  if(!Array.isArray(it.aff))it.aff=[];
+  const bad=[];
+  if(!it.imp||!AFF[it.imp.k]){bad.push(it.imp&&it.imp.k);try{it.imp=gearImplicit(it.slot,it.il||1,it.bs||0);}catch(e){}}
+  const keep=it.aff.filter(a=>a&&AFF[a.k]);if(keep.length!==it.aff.length){for(const a of it.aff)if(!a||!AFF[a.k])bad.push(a&&a.k);it.aff=keep;}
+  if(bad.length&&globalThis.SYS)SYS.error('item','移除不存在的詞綴 '+bad.join(',')+'：'+(it.name||'?')+' '+(it.lg||it.slot));
+  return it;
+}
+const itemLines = it => (itemClean(it),[it.imp, ...it.aff]).map((a, i) => ({ t:(i?(it.lg?'':`T${affTier(a,it.il)} · `):'')+AFF[a.k].t(a.v), imp:i === 0, lg:!!(i&&it.lg) })).concat(it.cr ? [{ t:'已腐化', lg:true }] : []).concat(it.lg && LEGEND_BY[it.lg] ? [{ t:'★ ' + LEGEND_BY[it.lg].d, lg:true }] : []);
 const offPen = () => G.offline && G.offPen;   // 離開超過 60 秒才算離線：經驗 75%、掉落 25%；暗金資格與保底和線上相同；短暫切走只是快轉補上
 const PARTS_OF = [.25, .5, 2, 12], partsOf = r => { const v = PARTS_OF[r] || 0, b = Math.floor(v); return b + (Math.random() < v - b ? 1 : 0); };   /* 零件較罕有：普通 1／4、魔法 1／2 的機會得 1 個 */
 const salvage = it => { G.parts = (G.parts || 0) + partsOf(it.r); };   // 拆下的裝備變成零件，拿去改機
@@ -174,7 +184,7 @@ function checkGoals(){
 function calc(equip = G.equip, pass = G.pass, slots = G.slots, supp = G.supp, forceModern=false){
   const s = { life:0, dmg:5 + 1.8*G.lvl, inc:0, crit:5, cm:150, apsInc:0, regen:1.5, leech:0, armor:0, fire:0, cold:0, light:0, haste:0, sinc:0, lifePct:0, dodge:10, armorPct:0, ele:0, vsElite:0, takenRed:0, killHeal:0, goldPct:0, xpPct:0, rarity:0, moveSpd:0, rulePool:0, resF:0, resC:0, resL:0, rules:{} };
   const baseLife = 90 + 14*G.lvl;
-  for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; for (const a of [it.imp, ...it.aff]) { s[STAT_KEY[a.k]] += a.v; const al = AFF[a.k].also, ng = AFF[a.k].neg; if (al) s[al[0]] += a.v*al[1]; if (ng) s[ng[0]] -= a.v*ng[1]; const ru = AFF[a.k].rule; if (ru) s.rules[ru] = (s.rules[ru]||0) + a.v*AFF[a.k].rf; } }
+  for (const k in equip){ const it = equip[k]; if (!it || !canUseGear(it)) continue; itemClean(it); for (const a of [it.imp, ...it.aff]) { s[STAT_KEY[a.k]] += a.v; const al = AFF[a.k].also, ng = AFF[a.k].neg; if (al) s[al[0]] += a.v*al[1]; if (ng) s[ng[0]] -= a.v*ng[1]; const ru = AFF[a.k].rule; if (ru) s.rules[ru] = (s.rules[ru]||0) + a.v*AFF[a.k].rf; } }
   for (const [k, v] of Object.entries(CHARS[G.char].eff)) s[k] += v;
   const asc=typeof ascendInfo==='function'?ascendInfo():null;if(asc)for(const[k,v]of Object.entries(asc.eff))s[k]+=v;
   if(typeof ascensionNodeEffects==='function')for(const[k,v]of Object.entries(ascensionNodeEffects()))s[k]+=v;
