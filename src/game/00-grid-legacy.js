@@ -15,7 +15,7 @@
 
   // 主動機件：mult、cd 與 src/game/01-data.js 的 SKILLS 相同；原型獨立，所以在這裡複製一份
   const ACTIVES = {
-    RIFT:{n:'稜鏡斷層',tags:['area','cold'],mult:4.2,cd:7.2},RESONANCE:{n:'低頻震盪',tags:['area','light'],mult:4.6,cd:9},GRAVITY:{n:'引力封鎖',tags:['area','cold'],mult:3.6,cd:11},
+    RIFT:{n:'稜鏡斷層',tags:['area','cold'],mult:4.2,cd:7.2},RESONANCE:{n:'低頻震盪',tags:['area','light'],mult:4.6,cd:9},GRAVITY:{n:'引力封鎖',tags:['area','cold'],mult:3.6,cd:11},SHARDS:{n:'冰櫃爆晶',tags:['area','cold'],mult:5,cd:13},CYCLONE:{n:'超強電風扇',tags:['area','light'],mult:5.4,cd:14},THUNDER:{n:'落雷警報',tags:['area','light'],mult:6,cd:15},
     FIRE:   { n: '灼熱電池',   tags: ['proj', 'fire'],  mult: 2.6, cd: 2.6 },
     FROST:  { n: '冷氣爆發',   tags: ['area', 'cold'],  mult: 1.9, cd: 4.2 },
     CHAIN:  { n: '紅外線連鎖', tags: ['proj', 'light'], mult: 2.3, cd: 3.2 },

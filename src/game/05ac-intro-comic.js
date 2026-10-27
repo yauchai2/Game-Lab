@@ -8,7 +8,9 @@ const INTRO_LAYOUT=[
  {bg:'#a8324a',pat:'check',tall:[{k:.9,dx:.05,r:2.4},{k:.98,dx:-.04,r:-2},{k:.84,dx:.05,r:3}],wide:[{cx:.30,cy:.30,wf:.44,r:2},{cx:.70,cy:.56,wf:.46,r:-2},{cx:.26,cy:.74,wf:.32,r:-3}]},
  {bg:'#2b2f69',pat:'dusk',tall:[{k:.96,dx:-.03,r:-2.4},{k:.96,dx:.03,r:1.8}],wide:[{cx:.30,cy:.50,wf:.34,r:-2.5},{cx:.68,cy:.50,wf:.34,r:2}]}
 ];
-const INTRO_STAGE_GAP=820,INTRO_STAGE_HOLD=2600;
+const INTRO_STAGE_GAP=1600,INTRO_STAGE_HOLD=4200,INTRO_STAGE_FIRST=550;
+/* One cue per panel, in story order: fan repair, ferry, radio shout / coins, runaway plug, pointing / handset, new street. */
+const INTRO_STAGE_SFX=[['st_fan','st_horn','st_static'],['st_coin','st_skid','st_ding'],['st_chime','st_jingle']];
 function introStageClear(){for(const t of INTRO_STAGE.timers)clearTimeout(t);INTRO_STAGE.timers=[];}
 function introStageLayout(){
  const stage=$('ovl')?.querySelector('.story-stage');if(!stage)return;
@@ -26,7 +28,7 @@ function introStageNext(){
  if(INTRO_STAGE.shown<INTRO_STAGE.count){
   /* Tap while the collage is still building: finish it at once, then give the viewer a beat. */
   introStageClear();INTRO_STAGE.shown=INTRO_STAGE.count;introStageReveal();if(typeof SFX==='function')SFX('snap');
-  INTRO_STAGE.timers.push(setTimeout(()=>introStep(INTRO.step+1),INTRO_STAGE_HOLD));introStageTimer(INTRO_STAGE_HOLD);return;
+  INTRO_STAGE.timers.push(setTimeout(()=>introStep(INTRO.step+1),2400));introStageTimer(2400);return;
  }
  introStageClear();if(typeof SFX==='function')SFX('card');introStep(INTRO.step+1);
 }
@@ -38,8 +40,8 @@ function introComicRender(){
  const bg=lay.pat==='dusk'?`<img class="story-dusk" src="${PIXEL_ART.bg}" alt="" draggable="false">`:'';
  o.innerHTML=`<section class="story-stage pat-${lay.pat}" style="--bg:${lay.bg}" role="group" aria-label="${uxEsc(title)}。${uxEsc(text)}">${bg}<div class="story-dots" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>${pages.map((p,i)=>`<figure class="cut${calm?' on now':''}" data-w="${p.w}" data-h="${p.h}" aria-hidden="true"><img src="${p.src}" width="${p.w}" height="${p.h}" alt="" draggable="false"></figure>`).join('')}<div class="story-timer" aria-hidden="true"><i></i></div><button type="button" class="story-tap" data-initial-focus aria-label="${step<2?'下一頁':'選擇職業'}" onclick="introStageNext()"></button></section>`;
  introStageLayout();
- const hold=calm?INTRO_STAGE_HOLD+1800:INTRO_STAGE_HOLD,first=260;
- if(!calm)pages.forEach((p,i)=>INTRO_STAGE.timers.push(setTimeout(()=>{const c=o.querySelectorAll('.cut')[i];if(!c)return;c.classList.add('on');INTRO_STAGE.shown=i+1;if(typeof SFX==='function')SFX(i%2?'snap':'card');},first+i*INTRO_STAGE_GAP)));
+ const hold=calm?INTRO_STAGE_HOLD+1800:INTRO_STAGE_HOLD,first=INTRO_STAGE_FIRST;
+ if(!calm)pages.forEach((p,i)=>INTRO_STAGE.timers.push(setTimeout(()=>{const c=o.querySelectorAll('.cut')[i];if(!c)return;c.classList.add('on');INTRO_STAGE.shown=i+1;if(typeof SFX==='function')SFX(INTRO_STAGE_SFX[step]?.[i]||'snap');},first+i*INTRO_STAGE_GAP)));
  const total=(calm?0:first+(pages.length-1)*INTRO_STAGE_GAP)+hold;
  INTRO_STAGE.timers.push(setTimeout(()=>{if(INTRO.active&&!INTRO.cover&&INTRO.step===step&&INTRO_STAGE.shown>=INTRO_STAGE.count)introStep(step+1);},total));
  introStageTimer(total);

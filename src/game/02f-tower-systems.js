@@ -9,11 +9,11 @@ for(const t of TOWER_THEMES)BIOMES.push({n:t.n,board:t.board,t1:t.board.m,t2:t.b
 function towerTheme(f=G.run?.floor||1){return TOWER_THEMES[Math.floor((Math.max(1,f)-1)/10)%3]}
 function towerBiome(f){return TOWER_BIOME_START+TOWER_THEMES.indexOf(towerTheme(f))}
 function towerNormalBiome(index){const n=BIOMES.findIndex(b=>b.towerOnly);return n<0?index:index%n}
-const PRE_COLLECTION_SKILLS=Object.keys(SKILLS).filter(id=>!['RIFT','RESONANCE','GRAVITY'].includes(id));
+const PRE_COLLECTION_SKILLS=Object.keys(SKILLS).filter(id=>!['RIFT','RESONANCE','GRAVITY','SHARDS','CYCLONE','THUNDER'].includes(id));
 const SKILL_FIND={
  basic:['FIRE','FROST','CHAIN','PULSE','MAGNET','SPAM','BEAM','FLICKER'],
  advanced:['DISC','COIL','ORBIT','RAIL','RELAY','SWARM','RIFT'],
- rare:['METEOR','DEFRAG','GUARDIAN','ARROWS','GIANTBLADE','OVERTURE','RESONANCE','GRAVITY']
+ rare:['METEOR','DEFRAG','GUARDIAN','ARROWS','GIANTBLADE','OVERTURE','RESONANCE','GRAVITY','SHARDS','CYCLONE','THUNDER']
 };
 function skillRarity(id){return SKILL_FIND.basic.includes(id)?'basic':SKILL_FIND.rare.includes(id)?'rare':'advanced'}
 function skillAvailable(id){return Object.hasOwn(SKILLS,id)&&G.lvl>=SKILLS[id].lvl&&(skillRarity(id)==='basic'||!!G.skillBooks?.[id])}
