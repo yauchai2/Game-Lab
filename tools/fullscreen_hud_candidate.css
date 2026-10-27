@@ -1,0 +1,7 @@
+/* Review-only override. Prototype owner must fold this into VIEW_CSS, not add a second HUD. */
+body .stage #stats.battle-hud{display:grid!important;grid-template-columns:minmax(0,1fr)!important;justify-content:start!important;gap:7px!important;right:auto!important;width:min(360px,calc(100% - 24px))!important;max-width:calc(100% - 24px)!important}
+body .stage #stats.battle-hud .hud-left{zoom:1!important;width:100%;max-width:none!important;grid-template-columns:48px minmax(0,1fr);min-width:0}
+body .stage #stats.battle-hud .hud-right{zoom:1!important;display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;justify-content:flex-start;gap:6px 12px;min-width:0;max-width:100%;padding:0}
+body .stage #stats.battle-hud .hud-right>div{justify-content:flex-start;min-width:0;max-width:100%}
+body .stage #stats.battle-hud .hud-right b{font-size:18px!important;line-height:24px!important}
+@media(max-width:480px){body .stage #stats.battle-hud{width:min(300px,calc(100% - 20px))!important;max-width:calc(100% - 20px)!important}body .stage #stats.battle-hud .hud-left{grid-template-columns:40px minmax(0,1fr)}body .stage #stats.battle-hud .hud-right b{font-size:16px!important}}

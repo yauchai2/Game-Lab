@@ -1,0 +1,12 @@
+{
+  "base": "641c43d",
+  "scope": "Review prototype, not production integration",
+  "checks": [
+    "7 responsive sizes: no horizontal overflow, fixed header return, health toggle preserves player HUD and gold/DPS",
+    "Keyboard class selection, draft preserved, empty name error focus, safe mock submission and return context",
+    "3 story pages: canvas panels/frame/tape, no old backdrop or CSS layers",
+    "No roster filters/layers; failed image still allows selection; no localStorage changes",
+    "Offline embedded image/font load with subresources blocked, zero page errors"
+  ],
+  "errors": []
+}
