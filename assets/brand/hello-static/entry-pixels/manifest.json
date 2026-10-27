@@ -61,135 +61,135 @@
   "outputs": {
     "cover-portrait": {
       "native": [
-        320,
-        569
+        180,
+        320
       ],
       "source": "assets/brand/hello-static/entry-pixels/cover-portrait-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/cover-portrait-4x.png",
-      "sha256": "c15cf5b152fa4ed20d95dab3bc46518b9ac5bc229800633a00d2f012ebec71aa",
+      "sha256": "687dd17c7992632eabf5c53925f749a2fa6faa8deb5f31ac35f487f7b584e477",
       "runtime": "assets/brand/hello-static/entry-pixels/cover-portrait-native.webp",
-      "runtime_sha256": "18e4ccf30dd29f3559822d32c7151e3a889f79636ce21f1fd3d845de39ef6bb0"
+      "runtime_sha256": "f568161df11062dbacb7f6044b4996cd4b957a9bc87c21d2cbd94f25b96cab54"
     },
     "cover-landscape": {
       "native": [
-        640,
-        360
+        320,
+        180
       ],
       "source": "assets/brand/hello-static/entry-pixels/cover-landscape-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/cover-landscape-4x.png",
-      "sha256": "cfd2b9c513d6f85d26471e09883ec5a50368b6eb9f792271409e6ce187ab5509",
+      "sha256": "2f9f8922313e6660d4b415973bc7f4008df7f16d4af0c58d69844515227dfec2",
       "runtime": "assets/brand/hello-static/entry-pixels/cover-landscape-native.webp",
-      "runtime_sha256": "349f9c96404e3317c265bce248e993d0668a03c60cc1c734b1410d8dca49cba2"
+      "runtime_sha256": "4dfb38e88c2d946f845c0b976e34e9eefd44bd4cddcc507e976f0ff2bb3aa777"
     },
     "logo": {
       "native": [
-        640,
-        233
+        360,
+        131
       ],
       "source": "assets/brand/hello-static/entry-pixels/logo-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/logo-4x.png",
-      "sha256": "478cf6084fdbc440b72bf87bb2d6c68b831b5551c08fc629eb7ec63c566f8f3f",
+      "sha256": "f7e0e138b679d34443d86d6b6719a3eb51b09273e2fc4a7715d1547cf58d08b0",
       "runtime": "assets/brand/hello-static/entry-pixels/logo-native.webp",
-      "runtime_sha256": "e7087ab0dff77daae7ab692421e00c705013027eef5f56dc3bae5fa1a562adf5"
+      "runtime_sha256": "cdc2384db9441888b7c8aa9d2694f8abd735b11cbf2914417a38cfed33fa6e66"
     },
     "story-backdrop": {
       "native": [
-        320,
-        569
+        160,
+        284
       ],
       "source": "assets/brand/hello-static/entry-pixels/story-backdrop-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/story-backdrop-4x.png",
-      "sha256": "7b2c249ccb7779b9498ad5a667cf2c42c01657bf8187773d13c1b0ebf9e4b381",
+      "sha256": "7b7db7eebd03d50e8eb5a4ec44bc8fa865cff92d5eabe962bcf370ee56c86e63",
       "runtime": "assets/brand/hello-static/entry-pixels/story-backdrop-native.webp",
-      "runtime_sha256": "ba7b5203681d5f3a6716b664de0a29d0879129161191c7fbf4f9ecfdff657b7b"
+      "runtime_sha256": "4c1e6a14c282c9e7c2cc3b52edeffdf699a5c5362eed4d7915c81221ffb5998d"
     },
     "01-afternoon-1": {
       "native": [
-        384,
-        295
+        168,
+        129
       ],
       "source": "assets/brand/hello-static/entry-pixels/01-afternoon-1-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/01-afternoon-1-4x.png",
-      "sha256": "97b6977b67a730a7af5856e8e3d78fb0e9fd2edd64d7fb9a3838b3f0f5fac789",
+      "sha256": "b141fe3b325dd74610a583f6dacefeee3fe2dd313b2711a1c1ff6ac94ce75a2f",
       "runtime": "assets/brand/hello-static/entry-pixels/01-afternoon-1-native.webp",
-      "runtime_sha256": "1ff2d6de4141eabd8fbc99a74f62fab47ec0b856c0fcbe56df2c79fa7b80d72d"
+      "runtime_sha256": "70bdbf8d1200a1ab38a7d6e26d1443eb5d28a7f00d8fb15c9502c9509b85b511"
     },
     "01-afternoon-2": {
       "native": [
-        384,
-        142
+        168,
+        62
       ],
       "source": "assets/brand/hello-static/entry-pixels/01-afternoon-2-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/01-afternoon-2-4x.png",
-      "sha256": "616ccd8c0a3f9803d625c17611eeeea8e64b1fe6c819441213af4d0da3fd6c0a",
+      "sha256": "46820caa4f6b0cafeb6152caa4d9e098a3103bc5e1957ef15bc5a2f396029637",
       "runtime": "assets/brand/hello-static/entry-pixels/01-afternoon-2-native.webp",
-      "runtime_sha256": "770fd500834ae3e6b8fe8520feaa8a7f49e519107e40523440134942f665c00e"
+      "runtime_sha256": "dd49dabc1940a5a2b2a444cbcb5faaf241dd198fd33f031355b05a3e96d93421"
     },
     "01-afternoon-3": {
       "native": [
-        384,
-        244
+        168,
+        107
       ],
       "source": "assets/brand/hello-static/entry-pixels/01-afternoon-3-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/01-afternoon-3-4x.png",
-      "sha256": "866248593db0ac3a7852e127300072253186881fd91cfc905d88e8292af66b66",
+      "sha256": "437546469adb97b1ab875cf8e26d13999d9c322ad6088de062fbcf1a177c4051",
       "runtime": "assets/brand/hello-static/entry-pixels/01-afternoon-3-native.webp",
-      "runtime_sha256": "fe35c03f2f7d4051a6aab193bc5ecd2a41ad174809c897231ca946f9804de9d8"
+      "runtime_sha256": "536680435e22c4e1d2e9662efa5bbc2c31e34c11dc36659773fa12439c5f57ab"
     },
     "02-offbeat-1": {
       "native": [
-        384,
-        179
+        168,
+        78
       ],
       "source": "assets/brand/hello-static/entry-pixels/02-offbeat-1-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/02-offbeat-1-4x.png",
-      "sha256": "6bdf32f04b3977eadf499634fad6cf2c32f9f64c49be245c46e4a828904e85f5",
+      "sha256": "eda081054df54341ef09b60899e2b0a666fe361423441157ac71cc1a7a7cf818",
       "runtime": "assets/brand/hello-static/entry-pixels/02-offbeat-1-native.webp",
-      "runtime_sha256": "c8dac36a3b4e82821d09b2b86697ce1109f0c1e54cc81fc08e5dd4d527359556"
+      "runtime_sha256": "58a44bd9a97b254253cd4ed5db74daae0fe95cadb9bc749df1c20d33d582a007"
     },
     "02-offbeat-2": {
       "native": [
-        384,
-        271
+        168,
+        119
       ],
       "source": "assets/brand/hello-static/entry-pixels/02-offbeat-2-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/02-offbeat-2-4x.png",
-      "sha256": "ca009eab714c3d3238800c64896625a7a4a251e641c5d4e81c31b717a40ca787",
+      "sha256": "f6147f3e32d12838f00f3a9125d5fc7e38fa9445608d49905d7839228300a2de",
       "runtime": "assets/brand/hello-static/entry-pixels/02-offbeat-2-native.webp",
-      "runtime_sha256": "321193ddd40074817023b1a7da77b3108ff7dafc48df5512026434b4f9e7e063"
+      "runtime_sha256": "22b7f4e30f7a92a33b132b49b6fadd22f4863494fe0578c0dc4ae813df9ebbb8"
     },
     "02-offbeat-3": {
       "native": [
-        384,
-        229
+        168,
+        100
       ],
       "source": "assets/brand/hello-static/entry-pixels/02-offbeat-3-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/02-offbeat-3-4x.png",
-      "sha256": "3a135bed14534bf86d6e03214fedf7ba48b0483ab1ec32b816548dac59d9e090",
+      "sha256": "df803212b4866aa5e6c7801712f7610e121dff0056412bec0694dc7427f57cc9",
       "runtime": "assets/brand/hello-static/entry-pixels/02-offbeat-3-native.webp",
-      "runtime_sha256": "56eaa7354de03d9d25dca0b1deefd7c4959a8210121f60c22b769b78273360bc"
+      "runtime_sha256": "5397cdcc62a3d90f31169023d315f4cef0f0ee7c66668d6bb914d8c1e6576ab1"
     },
     "03-reconnect-1": {
       "native": [
-        384,
-        334
+        168,
+        146
       ],
       "source": "assets/brand/hello-static/entry-pixels/03-reconnect-1-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/03-reconnect-1-4x.png",
-      "sha256": "1627c7153065b6c9b36bcdc31cf1ecc8a18f68dc1458c2667af9572514c9ba74",
+      "sha256": "b9be214a13e17b9d9de047b3a43420d1630cc2569fc36d71199416d4dd2479e9",
       "runtime": "assets/brand/hello-static/entry-pixels/03-reconnect-1-native.webp",
-      "runtime_sha256": "7c29c1e5625e0a29c9c2215d41bb96d3e903310cba4bd44b4f57bb7cd433c871"
+      "runtime_sha256": "9cd789df6084b27b1d540639741b0c283ddc89ecc9e04748f248745b09dbcabd"
     },
     "03-reconnect-2": {
       "native": [
-        384,
-        358
+        168,
+        157
       ],
       "source": "assets/brand/hello-static/entry-pixels/03-reconnect-2-native.png",
       "upscaled": "assets/brand/hello-static/entry-pixels/03-reconnect-2-4x.png",
-      "sha256": "89f75e78f0af1560121c3d8f472138654198fdcb0573c37b24fdaaaefd0de69e",
+      "sha256": "7109d63648e1b1435b005aea478b578ec7b0fedba9bcb3efe43d1a7358672034",
       "runtime": "assets/brand/hello-static/entry-pixels/03-reconnect-2-native.webp",
-      "runtime_sha256": "15bbd43a3e31485829973b7b29d632b37e0bf192cd08afc6ecbc5664ad741cf8"
+      "runtime_sha256": "2cdb195f36259955b934fb8f04564d0a3abaa822f6491147c75e7f4c46124fca"
     }
   }
 }

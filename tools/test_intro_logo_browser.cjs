@@ -15,7 +15,7 @@ const base=process.env.TITLE_TEST_URL||GAME_TEST_BASE+'/';
   assert.equal(await p.locator('.intro-title button').count(),1);
   assert.equal(await p.locator('.intro-title canvas').count(),0);
   assert.equal(await p.locator('.title-art').evaluate(e=>getComputedStyle(e).imageRendering),'pixelated');
-  assert(await p.locator('.title-art').evaluate(e=>e.naturalWidth<=640),'title scene is stored as a low-resolution mosaic');
+  assert(await p.locator('.title-art').evaluate(e=>e.naturalWidth<=320),'title scene is stored as a low-resolution mosaic');
   for(const[width,height]of[[390,844],[1920,1080],[320,568],[844,390],[1024,768]]){
    await p.setViewportSize({width,height});await p.waitForTimeout(500);
    const g=await p.evaluate(()=>{const f=document.querySelector('.intro-title').getBoundingClientRect(),b=document.querySelector('.title-start').getBoundingClientRect(),l=document.querySelector('.title-wordmark img').getBoundingClientRect();return{fw:f.width,fh:f.height,bw:b.width,bh:b.height,l:l.toJSON(),sw:document.documentElement.scrollWidth,iw:innerWidth,ih:innerHeight};});
@@ -34,7 +34,7 @@ const base=process.env.TITLE_TEST_URL||GAME_TEST_BASE+'/';
   const caps=await p.locator('.cut figcaption').allTextContents();assert.equal(caps.length,3);assert(caps.every(c=>c.length>=4&&c.length<=14),'one short caption under each panel '+caps);
   assert.equal(await p.locator('.cut').count(),3);
   assert.equal(await p.locator('.cut img').first().evaluate(e=>getComputedStyle(e).imageRendering),'pixelated');
-  assert(await p.locator('.cut img').evaluateAll(a=>a.every(i=>i.naturalWidth===384)),'panels are stored as low-resolution mosaics');
+  assert(await p.locator('.cut img').evaluateAll(a=>a.every(i=>i.naturalWidth===168)),'panels are stored as low-resolution mosaics');
   checks.push('keyboard start opens a captioned, button-free prologue');
   /* Tapping while panels are still arriving completes the collage; the next tap turns the page. */
   await p.locator('.story-tap').click();

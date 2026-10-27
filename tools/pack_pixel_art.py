@@ -28,15 +28,15 @@ def asset(name,im):
  runtime=OUT/(name+'-native.webp');im.save(runtime,format='WEBP',lossless=True,method=6,exact=True)
  manifest['outputs'][name]={'native':list(im.size),'source':str(path.relative_to(ROOT)),'upscaled':str(high.relative_to(ROOT)),'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'runtime':str(runtime.relative_to(ROOT)),'runtime_sha256':hashlib.sha256(runtime.read_bytes()).hexdigest()}
  return {'src':'data:image/webp;base64,'+base64.b64encode(runtime.read_bytes()).decode(),'w':im.width,'h':im.height}
-portrait=asset('cover-portrait',pixel(source(BG/'signal-cover/portrait-source.png').convert('RGB'),320))
-landscape=asset('cover-landscape',pixel(source(BG/'signal-cover/landscape-source.png').convert('RGB'),640))
+portrait=asset('cover-portrait',pixel(source(BG/'signal-cover/portrait-source.png').convert('RGB'),180))
+landscape=asset('cover-landscape',pixel(source(BG/'signal-cover/landscape-source.png').convert('RGB'),320))
 logo=source(BG/'logo-source.png').convert('RGBA');logo=logo.crop(logo.getchannel('A').getbbox())
-logo=asset('logo',pixel(logo,640,colors=None))
-backdrop=asset('story-backdrop',pixel(source(BG/'rooftop-source.png').convert('RGB'),320))
+logo=asset('logo',pixel(logo,360,colors=None))
+backdrop=asset('story-backdrop',pixel(source(BG/'rooftop-source.png').convert('RGB'),160))
 panels=[]
 for stem,boxes in PAGES.items():
  page=source(PRO/(stem+'-source.png')).convert('RGB')
- panels.append([asset(stem+'-'+str(i+1),pixel(page.crop(box),384))for i,box in enumerate(boxes)])
+ panels.append([asset(stem+'-'+str(i+1),pixel(page.crop(box),168))for i,box in enumerate(boxes)])
 data={'bg':portrait['src'],'bgW':portrait['w'],'bgH':portrait['h'],'wide':landscape['src'],'wideW':landscape['w'],'wideH':landscape['h'],'logo':logo['src'],'logoW':logo['w'],'logoH':logo['h'],'storyBackdrop':backdrop['src'],'pages':panels}
 (ROOT/'src/game/pixel-art-assets.js').write_text('/* Generated from originals by tools/pack_pixel_art.py. */\nconst PIXEL_ART='+json.dumps(data,separators=(',',':'))+';\n')
 (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
