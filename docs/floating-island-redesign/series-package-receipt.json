@@ -1,11 +1,11 @@
 {
   "output": "/workspace/artifacts/Floating-Islands-22.zip",
-  "bytes": 18370998,
-  "sha256": "d0917c19d5cf609255ec59a9eed0a12e4c826207cb1b16152bc19305909ec47c",
-  "sourceCommit": "a1fd4a699aca7c3b31718c3a8a47e0a539e314fb",
+  "bytes": 18610660,
+  "sha256": "567d5d700ad303730aafc274d50f8a5a3ac5bd70fe58a650f1d68bc2958db7e8",
+  "sourceCommit": "6e5444a71efb82bc00532d2e019e7dc2e1949515",
   "models": 22,
   "portableGLBs": 44,
   "sourceBlends": 22,
-  "files": 305,
+  "files": 308,
   "crcAndHashes": "pass"
 }
