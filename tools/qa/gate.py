@@ -3,6 +3,7 @@
 
     python3 tools/qa/gate.py                 完整關卡（出測試版、出 Release 前）
     python3 tools/qa/gate.py --quick         快速關卡（推送時自動跑，掛機縮短）
+    python3 tools/qa/gate.py --release       出 Release 前：已登記的未修問題也算失敗
     python3 tools/qa/gate.py --base v0.78.0  指定比對基準（預設為最新正式 tag）
 
 結果寫入 docs/qa/reports/（latest.md 與以版本命名的存檔），有失敗則結束碼為 1，Release 應被攔住。
@@ -62,6 +63,7 @@ def main():
     ap.add_argument('--base')
     ap.add_argument('--skip', default='', help='略過的項目，逗號分隔：legacy,catalog,browser,saves')
     ap.add_argument('--seed')
+    ap.add_argument('--release', action='store_true', help='出 Release 用：已登記的未修問題也算失敗')
     a = ap.parse_args()
     skip = set(filter(None, a.skip.split(',')))
     base = a.base or latest_tag()
@@ -80,6 +82,18 @@ def main():
     if 'saves' not in skip:
         d = run_node('old_saves.cjs', [] if not a.quick else ['--tags', ','.join(filter(None, [base, 'v0.70.0']))], os.path.join(tmp, 's.json')); d['suite'] = '舊版存檔相容'; suites.append(d)
 
+    # 已登記、已有記錄的未修問題：一般檢查（CI）只當警告，避免擋住無關的 PR；--release 時仍然攔住
+    known = json.load(open(os.path.join(ROOT, 'docs/qa/known-issues.json'), encoding='utf-8'))
+    for s in suites:
+        for i in s['items']:
+            for k in known:
+                if k['match'] in i['name']:
+                    if i['ok']:
+                        i['name'] += f'（{k["id"]} 已修好，請從 known-issues.json 移除）'
+                    elif not a.release:
+                        i['warn'] = True; i['detail'] = f'已知未修 {k["id"]}：{k["note"]}\n' + (i.get('detail') or '')
+                    else:
+                        i['detail'] = f'{k["id"]} 未修，Release 被攔住：{k["note"]}\n' + (i.get('detail') or '')
     fails = [(s['suite'], i) for s in suites for i in s['items'] if not i['ok'] and not i.get('warn')]
     warns = [(s['suite'], i) for s in suites for i in s['items'] if i.get('warn')]
     passed = sum(1 for s in suites for i in s['items'] if i['ok'] and not i.get('warn'))

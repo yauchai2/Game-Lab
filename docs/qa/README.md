@@ -5,6 +5,7 @@
 ## 出版前關卡（出測試版、出 Release 前必跑）
 
 ```
+python3 tools/qa/gate.py --release  # 出 Release 前（已登記的未修問題 known-issues.json 也算失敗）
 python3 tools/qa/gate.py            # 完整，約 12 分鐘（每位角色掛機 2 遊戲小時）
 python3 tools/qa/gate.py --quick    # 快速，約 5 分鐘（推送時 GitHub Actions 自動跑）
 python3 tools/qa/gate.py --base v0.78.0   # 指定比對基準，預設為最新正式 tag
