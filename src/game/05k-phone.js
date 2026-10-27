@@ -281,7 +281,7 @@ function phoneOpen(){
   root.addEventListener('click', phonePress); root.addEventListener('pointerdown', phoneDown); root.addEventListener('pointermove', phoneMove); root.addEventListener('pointerup', phoneUp); root.addEventListener('dblclick', phoneFlip); root.addEventListener('pointercancel', phoneUp);
   document.addEventListener('keydown', phoneKey, true); addEventListener('resize', phoneFit);
   phoneFit(); phoneRender(false); if (!PH.gl) document.getElementById('ph-enter').classList.add('in');
-  setTimeout(() => { if (PH.open) { document.getElementById('ph-crt')?.classList.add('on'); phSfx('ph_on'); } }, 900);
+  const openedAt=PH.t0;setTimeout(() => { if (PH.open&&!PH.closing&&PH.t0===openedAt) { document.getElementById('ph-crt')?.classList.add('on'); phSfx('ph_on'); } }, 900);
   phSfx('ph_open');
   PH.timer = setInterval(phoneRefresh, 1000); PH.raf = requestAnimationFrame(PH.gl ? phoneLoopGL : phoneLoop);
   root.querySelector('.ph-close')?.focus({ preventScroll:true });

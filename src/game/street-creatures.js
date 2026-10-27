@@ -12,6 +12,8 @@ function streetCreatureSpec(m){
  if(m.towerBoss)spec=[{warden:'B01',chimera:'B02',executor:'B03'}[m.towerBoss]||'B04',27];
  else if(m.boss)spec=[['B01','B02','B03','B04'][((m.bossForm??biomeNow())%4+4)%4],27];
  if(m.boss&&!m.towerBoss&&Number.isInteger(m.chap)&&m.chap>=0&&m.chap<6)spec=[['M04','B01','B03','M04','B02','B04'][m.chap],27];
+ // Keep native boss roles and attacks, restore a clear giant silhouette.
+ if(spec&&m.boss)spec=[spec[0],m.towerBoss?64:[52,58,64,56,66,72][m.chap]||58,spec[2]||0];
  return spec;
 }
 function streetCreatureBuild(m){

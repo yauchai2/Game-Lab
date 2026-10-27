@@ -505,3 +505,9 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 - comic-screen-active 僅在漫畫期存在，切封面／選職業即清理，手勢只存暫時起點，不改遊戲狀態。角色名稱／職業草稿仍由 INTRO 保存，返回漫畫不清除。
 - 故事文字直接讀 INTRO_STORY；圖像有 alt 及相同正文描述。圖片錯誤顯示正文備援，下一頁仍可操作；不以圖片解碼成功作為必經閘門。
 - 驗證：test_intro_comic.cjs／test_intro_comic_browser.cjs，含四尺寸三頁、真實 CDP 觸控、文字／鍵盤互斥、失敗備援、續接、選角草稿及離線子資源封鎖。記錄在 docs/hello-static-title。
+
+## 角色切換與音訊生命週期（v0.78.1候選）
+
+profileResetRuntime只重設角色狀態；保留mountFigure於啟動後加入的pal／az，避免renderer失去配色令主迴圈停止。建立新角色的標題／序章／選角均可取消回到原角色，清理共用dialog、草稿、timer與音訊；不更改存檔schema。
+
+音訊仍唯一AUD／audio.js。角色與序章退出使待解碼聲音失效；快速換曲只保留最新情境，晚到play結果不得繞過mute。精英不改場景曲，場景回訪續播；首次手勢、all／sfx／off與背景暫停保留。驗證見docs/navigation-audio-boss。

@@ -1,0 +1,33 @@
+{
+  "resume": 27.312,
+  "interrupt": {
+    "track": "boss",
+    "playing": [
+      "boss"
+    ]
+  },
+  "deferred": {
+    "storyAfterExit": 0,
+    "totalAfterReset": 0
+  },
+  "newMusic": [
+    {
+      "track": "underpass",
+      "duration": 453.830406,
+      "playing": true
+    },
+    {
+      "track": "rush",
+      "duration": 72,
+      "playing": true
+    }
+  ],
+  "phoneTimer": {
+    "events": [
+      "ph_open"
+    ],
+    "closed": true
+  },
+  "errors": [],
+  "scope": "Local Chromium with actual MP3/context; interruption/resume and controlled deferred-decode lifecycle, immediate phone close. No real-device or subjective hearing claim."
+}
