@@ -1,7 +1,7 @@
 {
-  "version": "0.79.1-dev.727ed6d",
-  "commit": "727ed6dfdafc8aaac8b78d9bf9aa27801e87ba5e",
-  "sha256": "73783935477f52f7e77999b3e0ddecd6fa4ec3c905ce26be7dc45809a1c71470",
+  "version": "0.79.1-dev.641c43d",
+  "commit": "641c43d51601f9f3ed12a76bcf943238753c53b4",
+  "sha256": "2bbf6d6660473476a464bd5108573b110b933bf38ec0eab27a6b756517cc1c38",
   "standalone_sha256": "1a9544aaf715be0902884e3d5cacb423fa78fef3b524d336ea4521eee3e5165c",
   "assets": {
     "vendor.170c6789f43217c9.js": "170c6789f43217c96b3170f4b42fafe135de7f7cd48497a4218f9757ee1d49fa",
