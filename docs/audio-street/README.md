@@ -1,6 +1,6 @@
 # 更新街頭風格：全套音樂與音效候選
 
-2026-10-26，Asia/Hong_Kong。Alan加插要求所有音樂和音效都按更新風格優化。沿codex/street-equipment-finish／PR88接續；**已製作、接入及技術驗證，未合併或發佈；主觀聽感尚待試聽，不把量測當成已獲認可。**
+2026-10-26，Asia/Hong_Kong。Alan加插要求所有音樂和音效都按更新風格優化。沿codex/street-equipment-finish／PR88接續；**已製作、接入及技術驗證，並由PR90納入正式版（現main為v0.72.0）；主觀聽感尚待試聽，不把量測當成已獲認可。**
 
 ## 配樂方向
 
@@ -54,3 +54,5 @@ node tools/style/test_street_audio.cjs
 - [site-validation.json](site-validation.json)：新分檔網站390px啟動。10gameplay及stable-data檢查通過；combat／state來源只補入袋／實際扣血回饋和召喚／大技能的SFX key，不改戰鬥規則。
 
 未宣稱已親耳比較全部素材、真機Safari／Android音訊延遲、長時間混音疲勞或實體喇叭失真。可試聽的具體候選已完成，這些最終聽感／裝置邊界不以程式綠燈冒認。
+
+2026-10-27後續：真機驗收操作表與隔離包工具見[final-acceptance](../final-acceptance/README.md)，不再用本頁較早候選措辭推斷未發佈。

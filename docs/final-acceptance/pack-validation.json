@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "93004b5e9bcc65d88e256452c6648f2b39808691",
+  "game": {
+    "version": "0.72.0",
+    "memory": "isolated",
+    "persistent": "keep",
+    "overflow": false,
+    "headsetMask": 2276
+  },
+  "audioControls": 41,
+  "reloadClearsMemory": true,
+  "persistentSentinelPreserved": true,
+  "exclusivePlayback": true,
+  "stop": true,
+  "errors": [],
+  "external": [],
+  "scope": "Packaged review files served over local HTTP, Chromium SwiftShader 390px; not Safari/real-device or subjective listening acceptance."
+}
