@@ -6,24 +6,6 @@
    ============================================================ */
 const T3 = THREE, R3 = { clean:new URLSearchParams(location.search).has('clean'), ready:false, cache:{}, ent:new Map(), W:0, H:0 };
 // Canvas samples are independent of Retina DPR; each quality has a bounded budget.
-/* 視野：以角色為中心的圈內清楚；走過的地方留有記憶（較暗），未到過的遠處最暗。只在大地圖跟隨鏡頭時啟用。 */
-function r3Fog(on,W,H,left,top){
-  let f=R3.fog;if(!f){f=R3.fog=document.createElement('canvas');f.id='cvfog';f.style.cssText='position:absolute;pointer-events:none;z-index:-1';document.body.appendChild(f);R3.fogCtx=f.getContext('2d');}
-  if(!on){if(f.style.display!=='none')f.style.display='none';return;}
-  const now=performance.now();f.style.display='';f.style.left=left+'px';f.style.top=top+'px';f.style.width=W+'px';f.style.height=H+'px';
-  if(now-(R3.fogAt||0)<66)return;R3.fogAt=now;
-  const w=Math.max(8,Math.ceil(W/3)),h=Math.max(8,Math.ceil(H/3));if(f.width!==w||f.height!==h){f.width=w;f.height=h;}
-  const key=terrainKey(),sight={near:75,far:160}[GAME_VIEW.prefs.range]||110,C=8;
-  if(!R3.exp||R3.exp.key!==key)R3.exp={key,cells:new Map(),at:0};
-  const E=R3.exp,hx=G.h.x,hy=G.h.y;
-  if(now-E.at>400){E.at=now;const n=Math.ceil(sight/C);for(let i=-n;i<=n;i++)for(let j=-n;j<=n;j++){const x=(Math.round(hx/C)+i)*C,y=(Math.round(hy/C)+j)*C;if(Math.hypot(x-hx,y-hy)<=sight)E.cells.set((Math.round(hx/C)+i)+','+(Math.round(hy/C)+j),[x,y]);}}
-  const toPx=(x,y)=>{const v=new T3.Vector3(x,BZ+terrainHeight(x,y),y).project(R3.cam);return [(v.x+1)/2*w,(1-v.y)/2*h];};
-  const ctx=R3.fogCtx,[cx,cy]=toPx(hx,hy),[ux,uy]=toPx(hx+1,hy),[vx,vy]=toPx(hx,hy+1),pu=Math.max(Math.hypot(ux-cx,uy-cy),Math.hypot(vx-cx,vy-cy));
-  ctx.globalCompositeOperation='source-over';ctx.clearRect(0,0,w,h);ctx.fillStyle='rgba(16,12,44,.72)';ctx.fillRect(0,0,w,h);
-  ctx.globalCompositeOperation='destination-out';ctx.fillStyle='rgba(0,0,0,.4)';
-  for(const [x,y] of E.cells.values()){const [px,py]=toPx(x,y);if(px<-20||py<-20||px>w+20||py>h+20)continue;ctx.beginPath();ctx.arc(px,py,C*pu*1.1,0,6.3);ctx.fill();}
-  const r=sight*pu,g=ctx.createRadialGradient(cx,cy,r*.35,cx,cy,r);g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(.75,'rgba(0,0,0,.95)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,r,0,6.3);ctx.fill();
-}
 function r3Quality(quality='auto',viewportWidth=1024){return ['low','medium','high'].includes(quality)?quality:(viewportWidth<768||typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches&&viewportWidth<1180)?'medium':'high';}
 function r3BufferSize(width,height,dpr=1,clean=false,quality='auto',viewportWidth=width,scale=1){
   const W=Math.max(2,Number.isFinite(width)?width:2),H=Math.max(2,Number.isFinite(height)?height:2);
@@ -675,7 +657,6 @@ function r3frame(){   // 讓 canvas 對齊 #fig，並用同一個外框決定相
   if (FXO.zoom !== 1){ const z = FXO.zoom, f = tClamp((z - 1)/1.2), p = new T3.Vector3(G.h.x, BZ + 10, G.h.y).applyMatrix4(cam.matrixWorldInverse); vw /= z; vh /= z; if (z > 1){ cx = tLerp(cx, p.x, f); cy = tLerp(cy, p.y, f); } }
   vw *= 1 - FXO.punch*.055; vh *= 1 - FXO.punch*.055; cx += (Math.random() - .5)*FXO.shake*vw*.027; cy += (Math.random() - .5)*FXO.shake*vh*.027;
   cam.left = cx - vw/2; cam.right = cx + vw/2; cam.top = cy + vh/2 + vh*hudPad/Math.max(2,H-hudPad); cam.bottom = cy - vh/2; cam.updateProjectionMatrix();
-  r3Fog(!!framing.follow&&G.h.dead<=0&&!FXO.overview,W,H,r.left+scrollX,r.top+scrollY);
   const vb = fig.viewBox.baseVal; R3.vbW = vb.width; R3.vbH = vb.height;
 }
 const pj = (x, y, z) => { const v = new T3.Vector3(x, z, y).project(R3.cam); return [(v.x + 1)/2*R3.vbW, (1 - v.y)/2*R3.vbH]; };
@@ -821,7 +802,7 @@ function battleTextSize(kind,size,width){
 }
 function terrainCameraWindow(p,width,overview=false){
   const span=Math.max(p.bounds[1]-p.bounds[0],p.bounds[3]-p.bounds[2]);
-  const k={near:.85,far:1.25}[typeof GAME_VIEW!=='undefined'&&GAME_VIEW.prefs.range]||1,limit=(width>=1180?310:width>=768?270:215)*k;   /* 視野範圍：標準比舊版寬約 25%，可在設定改近／遠 */
+  const limit=width>=1180?240:width>=768?210:170;
   return {span,view:overview?span:Math.min(span,limit),follow:!overview&&span>limit*1.1};
 }
 function toggleWorldOverview(){FXO.overview=!FXO.overview;FXO.zoomT=1;G.dirty=true;if(typeof renderModal==='function')renderModal();}
