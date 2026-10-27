@@ -1,0 +1,33 @@
+{
+  "triangles": 1395,
+  "semanticMeshes": 10,
+  "textures": 0,
+  "materials": 1,
+  "files": {
+    "fi13-snow-duty-blockout-native.glb": {
+      "bytes": 120940,
+      "sha256": "c6d3c59ed2d95dca6d4a2a7c91cebcc7f30220e1724f1f0cf2fa24ea6f5edb9a"
+    },
+    "layout.json": {
+      "bytes": 2697,
+      "sha256": "3bc875e0d4381332a382f02a22ffcd59fccdc4808e2e3c2fd4d2e6e37715767f"
+    },
+    "fi13-snow-duty-native.glb": {
+      "bytes": 120940,
+      "sha256": "d57b4f41c9cdca904e06af29e0712c5300373980391219ad2ff018f8409c2df1"
+    },
+    "fi13-snow-duty.glb": {
+      "bytes": 120908,
+      "sha256": "373194a0a7356928fb865964a165624230fb6690898befa9faf52ad34eb2b1a0"
+    },
+    "fi13-snow-duty-source.blend": {
+      "bytes": 774604,
+      "sha256": "6133364b2c3ee840b817d124058800b54798c823cf63ea71426f5065120b848c"
+    },
+    "fi13-snow-duty-blockout.glb": {
+      "bytes": 120908,
+      "sha256": "6381ae6f13b9677a08c71cc22a1f950520139013355ddb190ad792d925aa3f0f"
+    }
+  },
+  "stage": "verified project model and isolated native candidate"
+}

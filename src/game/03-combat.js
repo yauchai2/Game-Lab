@@ -39,7 +39,7 @@ function spawnPack(){
   });
   if(R?.tower)for(const m of G.mons)if(!m.dead&&!m.towerTagged){towerMonster(m);m.towerTagged=true;}
   if(R?.city)for(const m of G.mons)if(!m.dead&&!m.cityRoute)cityMonster(m);
-  for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y);
+  for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y,authoredTerrainPlan(m));
   // Ordinary monsters approach over land; bosses retain their sky-drop entrance.
 }
 function dropItem(m, it){ dropGround({ x:m.x + tRand(-3,3), y:m.y + tRand(-3,3), kind:'item', it, t:0 }); if (it.r >= 2 && !G.offline){ SFX('rare');  } }
@@ -469,9 +469,9 @@ function update(dt){
     if (m.burn > 0){ m.burn -= dt; m.bt = (m.bt || 0) + dt; if (m.bt >= .5){ m.bt = 0; const burnHit=cityIncoming(m,m.burnD*.5);combatDamage('燃燒',Math.min(m.hp,burnHit));m.hp-=burnHit; if (m.hp <= 0){ killMon(m); continue; } } }
     if(m.freezeBuildup>0)m.freezeBuildup=Math.max(0,m.freezeBuildup-COMBAT_RULES.freezeDecay*dt);
     if(m.frozen>0){m.warning=null;m.skillCd=Math.max(m.skillCd||0,1.2);m.frozen=Math.max(0,m.frozen-dt);if(m.frozen>0)continue;}
-    const oldX=m.x,oldY=m.y,so = SLOTS[m.slot % SLOTS.length],ranged=['ranger','lantern','wisp','drone'].includes(m.type),reach=ranged?22:m.boss?24:0,away=Math.hypot(m.x-h.x,m.y-h.y)||1,goalX=ranged?h.x+(m.x-h.x)/away*reach:m.boss?h.x+so[0]/Math.hypot(...so)*reach:h.x+so[0],goalY=ranged?h.y+(m.y-h.y)/away*reach:m.boss?h.y+so[1]/Math.hypot(...so)*reach:h.y+so[1],waypoint=terrainWaypoint(m.x,m.y,goalX,goalY),dx = waypoint[0] - m.x, dy = waypoint[1] - m.y, dist = Math.hypot(dx, dy), spd = MTYPES[m.type].spd * m.spdK;
+    const oldX=m.x,oldY=m.y,so = SLOTS[m.slot % SLOTS.length],ranged=['ranger','lantern','wisp','drone'].includes(m.type),reach=ranged?22:m.boss?24:0,away=Math.hypot(m.x-h.x,m.y-h.y)||1,goalX=ranged?h.x+(m.x-h.x)/away*reach:m.boss?h.x+so[0]/Math.hypot(...so)*reach:h.x+so[0],goalY=ranged?h.y+(m.y-h.y)/away*reach:m.boss?h.y+so[1]/Math.hypot(...so)*reach:h.y+so[1],waypoint=terrainWaypoint(m.x,m.y,goalX,goalY,authoredTerrainPlan(m)),dx = waypoint[0] - m.x, dy = waypoint[1] - m.y, dist = Math.hypot(dx, dy), spd = MTYPES[m.type].spd * m.spdK;
     if (dist > .6&&!m.warning){ const st = Math.min(dist, spd*dt); m.x += dx/dist*st; m.y += dy/dist*st; m.fight = false;
-      if (!m.boss && dist > 3){ const sw = Math.sin(G.time*2.4 + m.ph*3)*spd*.7*dt*Math.min(1, dist/8); m.x += -dy/dist*sw; m.y += dx/dist*sw; }   /* 左右蛇行 */ } else {const [tx,ty]=terrainProject(goalX,goalY);m.fight=Math.hypot(m.x-tx,m.y-ty)<1;}
+      if (!m.boss && dist > 3){ const sw = Math.sin(G.time*2.4 + m.ph*3)*spd*.7*dt*Math.min(1, dist/8); m.x += -dy/dist*sw; m.y += dx/dist*sw; }   /* 左右蛇行 */ } else {const [tx,ty]=terrainProject(goalX,goalY,authoredTerrainPlan(m));m.fight=Math.hypot(m.x-tx,m.y-ty)<1;}
     if (m.dv){ m.dv.t -= dt; m.x += m.dv.x*dt; m.y += m.dv.y*dt; if (m.dv.t <= 0) m.dv = null; }
     const nextX=m.x,nextY=m.y;m.x=oldX;m.y=oldY;terrainMove(m,nextX,nextY);
     monsterSkillTick(m,dt);

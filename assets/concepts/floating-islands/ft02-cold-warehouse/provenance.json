@@ -1,0 +1,8 @@
+{
+  "id": "FT02",
+  "method": "actual project-authored GLB rendered in Three.js",
+  "model": "assets/maps/ft02-cold-warehouse/ft02-cold-warehouse.glb",
+  "modelSha256": "a56cff555497e0d6b3cb07d44c189c413eded923ab72fc6ab14b5db2b693b875",
+  "imageSha256": "b2739b27af14a4f87c2678e68cbe75c630847c1a3339668cc44de61f4b13282d",
+  "paidProviders": false
+}

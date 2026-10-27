@@ -1,0 +1,381 @@
+{
+  "report": {
+    "routes": [
+      {
+        "depth": 1,
+        "id": "FI01",
+        "biome": 0,
+        "expected": "FI01"
+      },
+      {
+        "depth": 2,
+        "id": "FI02",
+        "biome": 1,
+        "expected": "FI02"
+      },
+      {
+        "depth": 3,
+        "id": "FI02",
+        "biome": 1,
+        "expected": "FI02"
+      },
+      {
+        "depth": 4,
+        "id": "FI03",
+        "biome": 10,
+        "expected": "FI03"
+      },
+      {
+        "depth": 5,
+        "id": "FI04",
+        "biome": 17,
+        "expected": "FI04"
+      },
+      {
+        "depth": 6,
+        "id": "FI03",
+        "biome": 10,
+        "expected": "FI03"
+      },
+      {
+        "depth": 7,
+        "id": "FI03",
+        "biome": 10,
+        "expected": "FI03"
+      },
+      {
+        "depth": 8,
+        "id": "FI05",
+        "biome": 4,
+        "expected": "FI05"
+      },
+      {
+        "depth": 9,
+        "id": "FI07",
+        "biome": 11,
+        "expected": "FI07"
+      },
+      {
+        "depth": 10,
+        "id": "FI06",
+        "biome": 3,
+        "expected": "FI06"
+      },
+      {
+        "depth": 11,
+        "id": "FI05",
+        "biome": 4,
+        "expected": "FI05"
+      },
+      {
+        "depth": 12,
+        "id": "FI06",
+        "biome": 3,
+        "expected": "FI06"
+      },
+      {
+        "depth": 13,
+        "id": "FI09",
+        "biome": 12,
+        "expected": "FI09"
+      },
+      {
+        "depth": 14,
+        "id": "FI10",
+        "biome": 13,
+        "expected": "FI10"
+      },
+      {
+        "depth": 15,
+        "id": "FI11",
+        "biome": 7,
+        "expected": "FI11"
+      },
+      {
+        "depth": 16,
+        "id": "FI08",
+        "biome": 5,
+        "expected": "FI08"
+      },
+      {
+        "depth": 17,
+        "id": "FI09",
+        "biome": 12,
+        "expected": "FI09"
+      },
+      {
+        "depth": 18,
+        "id": "FI08",
+        "biome": 5,
+        "expected": "FI08"
+      },
+      {
+        "depth": 19,
+        "id": "FI12",
+        "biome": 8,
+        "expected": "FI12"
+      },
+      {
+        "depth": 20,
+        "id": "FI13",
+        "biome": 2,
+        "expected": "FI13"
+      },
+      {
+        "depth": 21,
+        "id": "FI14",
+        "biome": 15,
+        "expected": "FI14"
+      },
+      {
+        "depth": 22,
+        "id": "FI12",
+        "biome": 8,
+        "expected": "FI12"
+      },
+      {
+        "depth": 23,
+        "id": "FI15",
+        "biome": 9,
+        "expected": "FI15"
+      },
+      {
+        "depth": 24,
+        "id": "FI15",
+        "biome": 9,
+        "expected": "FI15"
+      },
+      {
+        "depth": 25,
+        "id": "FI15",
+        "biome": 9,
+        "expected": "FI15"
+      },
+      {
+        "depth": 26,
+        "id": "FI16",
+        "biome": 16,
+        "expected": "FI16"
+      },
+      {
+        "depth": 27,
+        "id": "FI17",
+        "biome": 14,
+        "expected": "FI17"
+      },
+      {
+        "depth": 28,
+        "id": "FI16",
+        "biome": 16,
+        "expected": "FI16"
+      },
+      {
+        "depth": 29,
+        "id": "FI17",
+        "biome": 14,
+        "expected": "FI17"
+      },
+      {
+        "depth": 30,
+        "id": "FI18",
+        "biome": 6,
+        "expected": "FI18"
+      },
+      {
+        "depth": 31,
+        "id": "FI16",
+        "biome": 16,
+        "expected": "FI16"
+      },
+      {
+        "depth": 32,
+        "id": "FI17",
+        "biome": 14,
+        "expected": "FI17"
+      },
+      {
+        "depth": 33,
+        "id": "FI18",
+        "biome": 6,
+        "expected": "FI18"
+      },
+      {
+        "depth": 34,
+        "id": "FI18",
+        "biome": 6,
+        "expected": "FI18"
+      },
+      {
+        "depth": 35,
+        "id": "FI18",
+        "biome": 6,
+        "expected": "FI18"
+      }
+    ],
+    "chapters": [
+      {
+        "depth": 3,
+        "id": "FI02",
+        "chapter": 1
+      },
+      {
+        "depth": 7,
+        "id": "FI03",
+        "chapter": 2
+      },
+      {
+        "depth": 12,
+        "id": "FI06",
+        "chapter": 3
+      },
+      {
+        "depth": 18,
+        "id": "FI08",
+        "chapter": 4
+      },
+      {
+        "depth": 25,
+        "id": "FI15",
+        "chapter": 5
+      },
+      {
+        "depth": 35,
+        "id": "FI18",
+        "chapter": 6
+      }
+    ],
+    "savedChapter": 6,
+    "regionalFlagsRestored": true,
+    "offline": 0,
+    "maps": [
+      {
+        "expected": "FI01",
+        "id": "FI01",
+        "consumed": true
+      },
+      {
+        "expected": "FI02",
+        "id": "FI02",
+        "consumed": true
+      },
+      {
+        "expected": "FI03",
+        "id": "FI03",
+        "consumed": true
+      },
+      {
+        "expected": "FI04",
+        "id": "FI04",
+        "consumed": true
+      },
+      {
+        "expected": "FI05",
+        "id": "FI05",
+        "consumed": true
+      },
+      {
+        "expected": "FI06",
+        "id": "FI06",
+        "consumed": true
+      },
+      {
+        "expected": "FI07",
+        "id": "FI07",
+        "consumed": true
+      },
+      {
+        "expected": "FI08",
+        "id": "FI08",
+        "consumed": true
+      },
+      {
+        "expected": "FI09",
+        "id": "FI09",
+        "consumed": true
+      },
+      {
+        "expected": "FI10",
+        "id": "FI10",
+        "consumed": true
+      },
+      {
+        "expected": "FI11",
+        "id": "FI11",
+        "consumed": true
+      },
+      {
+        "expected": "FI12",
+        "id": "FI12",
+        "consumed": true
+      },
+      {
+        "expected": "FI13",
+        "id": "FI13",
+        "consumed": true
+      },
+      {
+        "expected": "FI14",
+        "id": "FI14",
+        "consumed": true
+      },
+      {
+        "expected": "FI15",
+        "id": "FI15",
+        "consumed": true
+      },
+      {
+        "expected": "FI16",
+        "id": "FI16",
+        "consumed": true
+      },
+      {
+        "expected": "FI17",
+        "id": "FI17",
+        "consumed": true
+      },
+      {
+        "expected": "FI18",
+        "id": "FI18",
+        "consumed": true
+      }
+    ],
+    "towers": [
+      {
+        "floor": 1,
+        "id": "FT01",
+        "portal": true,
+        "heroOnFloor": true
+      },
+      {
+        "floor": 11,
+        "id": "FT02",
+        "portal": true,
+        "heroOnFloor": true
+      },
+      {
+        "floor": 21,
+        "id": "FT03",
+        "portal": true,
+        "heroOnFloor": true
+      }
+    ],
+    "stair": {
+      "floor": 11,
+      "id": "FT02"
+    },
+    "training": {
+      "id": "FP01",
+      "targets": 5
+    },
+    "trainReturned": true,
+    "journal": {
+      "records": 18,
+      "noHoles": true,
+      "text": true
+    },
+    "isolated": true
+  },
+  "errors": [],
+  "scope": "Native 35-depth route, all18 biome map entries, six campaign bosses/save, three tower themes + real stair transition, training/return and memory isolation.",
+  "candidateSha256": "515bef15c2c31cd21dfb648cf111d03dbc2af936e5200da3544ba6f8d98e638d"
+}

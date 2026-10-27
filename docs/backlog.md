@@ -874,10 +874,4 @@ v0.64.0／PR84已發佈，舊候選／未發佈文字以[正式紀錄](release-0
 
 ## 全地圖浮島重設（2026-10-27，Asia/Taipei）
 
-- [ ] MAP-REBUILD：Alan要求全部地圖按更新風格重做並重新評審大小。先交付[22場景版型提案與FI02首圖](floating-island-redesign/README.md)：18普通＋3塔樓＋1訓練；FI02前街唱片巷已生圖，尚待方向意見。其後鎖平面／三視圖、白模、角色／首領尺度及導航驗證，再產正式GLB。此項優先新地圖製作，原PR96／97保留；概念不代表模型或遊戲接入完成。
-
-MAP-REBUILD最新：Alan已確認方向。FI02已交Blender／1946tri純色GLB與同拓撲白模、原模型三視圖及隔離循路預覽，見[FI02交付](floating-island-redesign/fi02/README.md)。全部2352角色格連通、四入口及指定最大首領路線通過；未接正式terrain／AI，不稱全地圖完成。下一步原生玩法接入候選，再按故事逐組製作其餘21版型。
-
-MAP-REBUILD接續：FI02已接[原生戰鬥候選](floating-island-redesign/fi02/native-integration.md)，用原6單位格網／BFS／AI／掉落／章節／存檔owner；首領3.8米派生避障、23技能／六章／進出與邊界檢查通過。正式src／index未變，獨立HTML頁面記憶體，未發佈；下一張FI01公園，再按章節做其餘場景。
-
-MAP-REBUILD接續：第二張[FI01綠蔭街角公園](floating-island-redesign/fi01/README.md)完成32×28米模型／三視圖／原生候選。共用建置器與碰撞／BFS，公園手記沿p0呈現；AI生圖403無輸出，圖改用真實GLB渲染。FI01／FI02共2張候選，其他20待製作；下一張FI03橋下修理坪，未merge／release。
+- [x] MAP-REBUILD製作／接入：22張浮島模型、44 portable GLB、22 Blend、110實際模型視圖及源碼入口已完成。包含35深度／六章／18刷圖／3塔樓／訓練與舊手記遷移。見[完成交接](floating-island-redesign/series-completion.md)及PR98；未合併、未發佈，尚待真機長測與Alan美術驗收。此勾選只代表地圖製作／接入，不代表全遊戲所有待辦完成。

@@ -1,0 +1,190 @@
+{
+  "id": "FI12",
+  "name": "山路巡線站",
+  "stem": "fi12-hill-relay",
+  "version": 1,
+  "profile": 8,
+  "legacyBiomeIndex": 8,
+  "chapter": 5,
+  "units": "meters; Blender Z up, glTF Y up",
+  "footprint": [
+    [
+      -20.0,
+      -12.16
+    ],
+    [
+      -15.2,
+      -16.0
+    ],
+    [
+      11.2,
+      -16.0
+    ],
+    [
+      20.0,
+      -8.0
+    ],
+    [
+      20.0,
+      10.879999999999999
+    ],
+    [
+      14.399999999999999,
+      16.0
+    ],
+    [
+      -15.6,
+      16.0
+    ],
+    [
+      -20.0,
+      9.280000000000001
+    ]
+  ],
+  "buildings": [],
+  "obstacles": [
+    {
+      "id": "LAND_0_lattice",
+      "center": [
+        11,
+        10
+      ],
+      "size": [
+        5.6,
+        5.6
+      ]
+    },
+    {
+      "id": "LAND_1_supply",
+      "center": [
+        -11,
+        10
+      ],
+      "size": [
+        9.6,
+        5.6
+      ]
+    },
+    {
+      "id": "LAND_2_reels",
+      "center": [
+        -15,
+        1
+      ],
+      "size": [
+        3.6,
+        3.6
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "radio",
+      "kind": "radio",
+      "center": [
+        -13.600000000000001,
+        -4.48
+      ],
+      "radius": 0.8
+    },
+    {
+      "id": "bench",
+      "kind": "trolley",
+      "center": [
+        14.0,
+        -2.56
+      ],
+      "radius": 1.1
+    }
+  ],
+  "bridge": {
+    "piers": []
+  },
+  "rails": [],
+  "occluderNodes": [
+    "LAND_0_lattice",
+    "LAND_1_supply",
+    "LAND_2_reels"
+  ],
+  "surfaces": {
+    "roadZ": 0.015,
+    "forecourtZ": 0.06,
+    "forecourt": [
+      [
+        -16.0,
+        -10.56
+      ],
+      [
+        -6.0,
+        -10.56
+      ],
+      [
+        8.8,
+        11.84
+      ],
+      [
+        -1.6,
+        11.84
+      ]
+    ],
+    "ramp": {
+      "start": 4,
+      "end": 10,
+      "rise": 1.0
+    }
+  },
+  "navigation": {
+    "cell": 0.5,
+    "edgeInset": 0.8,
+    "heroRadius": 0.38,
+    "bossRadius": 3.8,
+    "start": [
+      0,
+      -3
+    ],
+    "bossArena": {
+      "center": [
+        0,
+        -2
+      ],
+      "radius": 6
+    },
+    "spawnAnchors": [
+      [
+        -12.0,
+        -8.0
+      ],
+      [
+        0,
+        -11.2
+      ],
+      [
+        12.0,
+        -8.0
+      ],
+      [
+        12.0,
+        0
+      ]
+    ],
+    "bossSpawnAnchor": [
+      3,
+      -5
+    ]
+  },
+  "art": {
+    "composition": "hill",
+    "landmarks": "電塔靠後、便利補給亭、線轆",
+    "accent": "#649C73",
+    "base": "grass",
+    "sky": [
+      "#3E9CC9",
+      "#96CCDC",
+      "#E7F0E3"
+    ]
+  },
+  "visualZ": [
+    -4.699999809265137,
+    11.074999809265137
+  ]
+}

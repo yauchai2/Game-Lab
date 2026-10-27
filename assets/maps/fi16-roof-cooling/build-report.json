@@ -1,0 +1,33 @@
+{
+  "triangles": 1676,
+  "semanticMeshes": 9,
+  "textures": 0,
+  "materials": 1,
+  "files": {
+    "layout.json": {
+      "bytes": 2604,
+      "sha256": "f93a8bcae5aa5d20369bf9182515a5a3610eaf99093f09a21d30414b1abe628d"
+    },
+    "fi16-roof-cooling-blockout-native.glb": {
+      "bytes": 136076,
+      "sha256": "b43688e5cdc8488475dd52bc9978a52fa1c71c892fd87c250a2306477b306642"
+    },
+    "fi16-roof-cooling-blockout.glb": {
+      "bytes": 136056,
+      "sha256": "0ec1455dc4bab0abb60cba245a22ad8bca611902fddb07b9e1e3d7dd4ca50793"
+    },
+    "fi16-roof-cooling.glb": {
+      "bytes": 136056,
+      "sha256": "8becfe4e95199b9c31f7bddb44e1c7d22d4611875e2378f56526afe52b1a6d29"
+    },
+    "fi16-roof-cooling-source.blend": {
+      "bytes": 868348,
+      "sha256": "365eee9e18401f529a72c7324ffcb1ac5e6f4c7ce7ca8762155af396004c2394"
+    },
+    "fi16-roof-cooling-native.glb": {
+      "bytes": 136076,
+      "sha256": "ad0b09c89d466b2bd0fc62d6a9e9fb42cd97c0b4cb9fa485220dc00881f7dbb6"
+    }
+  },
+  "stage": "verified project model and isolated native candidate"
+}

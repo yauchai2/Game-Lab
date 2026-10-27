@@ -1,0 +1,14 @@
+FT01 停業遊樂場
+Ice Cream reference; semi-lowpoly / faceted silhouette / Y2K PS1 Dreamcast / flat unlit matte / zero texture detail.
+{
+  "composition": "fairground",
+  "landmarks": "停轉遊具只在後側、票亭",
+  "accent": "#D9755C",
+  "base": "asphalt",
+  "sky": [
+    "#3E9CC9",
+    "#96CCDC",
+    "#E7F0E3"
+  ]
+}
+Actual Blender geometry renders; no successful external image-generation job claimed.

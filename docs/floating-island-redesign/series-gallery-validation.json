@@ -1,0 +1,94 @@
+{
+  "rows": [
+    {
+      "id": "FI01",
+      "draws": 16
+    },
+    {
+      "id": "FI02",
+      "draws": 16
+    },
+    {
+      "id": "FI03",
+      "draws": 9
+    },
+    {
+      "id": "FI04",
+      "draws": 10
+    },
+    {
+      "id": "FI05",
+      "draws": 10
+    },
+    {
+      "id": "FI06",
+      "draws": 10
+    },
+    {
+      "id": "FI07",
+      "draws": 9
+    },
+    {
+      "id": "FI08",
+      "draws": 11
+    },
+    {
+      "id": "FI09",
+      "draws": 10
+    },
+    {
+      "id": "FI10",
+      "draws": 11
+    },
+    {
+      "id": "FI11",
+      "draws": 11
+    },
+    {
+      "id": "FI12",
+      "draws": 9
+    },
+    {
+      "id": "FI13",
+      "draws": 10
+    },
+    {
+      "id": "FI14",
+      "draws": 9
+    },
+    {
+      "id": "FI15",
+      "draws": 9
+    },
+    {
+      "id": "FI16",
+      "draws": 9
+    },
+    {
+      "id": "FI17",
+      "draws": 9
+    },
+    {
+      "id": "FI18",
+      "draws": 9
+    },
+    {
+      "id": "FT01",
+      "draws": 9
+    },
+    {
+      "id": "FT02",
+      "draws": 9
+    },
+    {
+      "id": "FT03",
+      "draws": 9
+    },
+    {
+      "id": "FP01",
+      "draws": 9
+    }
+  ],
+  "errors": [],
+  "scope": "Actual imported GLBs rendered in Chromium; same geometry in four orthographic directions and white variant; no AI image generation."
+}

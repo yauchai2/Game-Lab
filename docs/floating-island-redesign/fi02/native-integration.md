@@ -1,3 +1,5 @@
+> 最新：全22張模型與源碼接入已完成，見[全套交接](../series-completion.md)。以下為早期單圖階段紀錄。
+
 # FI02 原生戰鬥接入候選
 
 2026-10-27，Asia/Taipei。Alan要求「繼續下一步」。同PR98／codex/floating-island-redesign，沿main4c90e05／v0.72.0製作可玩候選；未merge、未部署、未release，也未把Claude尚在4a5d1e4的v0.73／抗性候選覆蓋進來。

@@ -5,21 +5,12 @@ recorded and fail closed if the native signatures change.
 from pathlib import Path
 import re,json,base64,hashlib,argparse
 R=Path(__file__).resolve().parents[2]
+if 'src/game/island-series-world.js' in (R/'index.html').read_text():
+ raise SystemExit('Legacy single-map builder retired; use python3 tools/maps/build_series_preview.py and ?island=FI01 or FI02')
 parser=argparse.ArgumentParser();parser.add_argument('--map',choices=['fi01','fi02'],default='fi02');args=parser.parse_args();map_id=args.map;stem={'fi01':'fi01-corner-park','fi02':'fi02-record-lane'}[map_id];A=R/'assets/maps'/stem
 layout=json.loads((A/'layout.json').read_text());asset=base64.b64encode((A/(stem+'.glb')).read_bytes()).decode()
 adapter='const FI02_LAYOUT='+json.dumps(layout,ensure_ascii=False)+';\nEQUIPMENT_COMPLETION_GLB.fi02_native='+json.dumps(asset)+';\n'+(R/'tools/maps/fi02-layout-runtime.js').read_text()+'\n'+(R/'tools/maps/fi02-native-adapter.js').read_text()
-patches={
- 'src/game/equipment-render.js':[('const g=new T3.Group();g.name=id;', 'const g=new T3.Group();g.name=node.name||id;')],
- 'src/game/02-state.js':[
-  ('function terrainWaypoint(x,y,tx,ty){\n  const p=terrainNow();','function terrainWaypoint(x,y,tx,ty,p=terrainNow()){\n  '),
-  ('function terrainMove(entity,x,y){const p=terrainNow();','function terrainMove(entity,x,y){const p=fi02EntityPlan(entity);')],
- 'src/game/03-combat.js':[
-  ('waypoint=terrainWaypoint(m.x,m.y,goalX,goalY)','waypoint=terrainWaypoint(m.x,m.y,goalX,goalY,fi02EntityPlan(m))'),
-  ('const [tx,ty]=terrainProject(goalX,goalY);m.fight','const [tx,ty]=terrainProject(goalX,goalY,fi02EntityPlan(m));m.fight'),
-  ('for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y);','for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y,fi02EntityPlan(m));')],
- 'src/game/04-render.js':[
-  ('for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y);','for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y,fi02EntityPlan(m));')]
-}
+from native_patches import PATCHES as patches
 sourceHashes={};applied=[]
 def inline(m):
  path=m[1];s=(R/path).read_text();sourceHashes[path]=hashlib.sha256(s.encode()).hexdigest()

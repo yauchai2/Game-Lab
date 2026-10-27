@@ -1,0 +1,8 @@
+{
+  "id": "FI10",
+  "method": "actual project-authored GLB rendered in Three.js",
+  "model": "assets/maps/fi10-cargo-quay/fi10-cargo-quay.glb",
+  "modelSha256": "ed310d442123b3ce81753a40258ea4b067f52d1730c5a0715d9080e528ff03e1",
+  "imageSha256": "0103bb02ba4bcf7c1340837ac5eb4b1b59111287497b58b764080396f8182b74",
+  "paidProviders": false
+}

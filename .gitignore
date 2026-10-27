@@ -14,3 +14,6 @@ tools/font/*.ttf
 
 /dist/fi01-island-play.html
 /dist/fi01-island-review.html
+
+/dist/island-series-play.html
+/dist/island-series-gallery.html
