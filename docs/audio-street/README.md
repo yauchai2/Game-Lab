@@ -1,3 +1,5 @@
+> 現行0.78整合改用混合授權palette：4首CC0完整曲、2首32小節原創、48cue。原有52檔全部替換／整音，不再宣稱全部是原創或2MB大小。入口：[整合與驗證](../release-0.78.0/integration.md)、[來源／署名](../../src/audio/LICENSES.md)。下文為舊版原創palette歷史紀錄。
+
 > 最新：本批原音訊已由PR90納入正式版。2026-10-27按新增Dream Logic／Dorephin參考重新審查，並納入Claude8ee3a2e的boss與故事音效；見[全音訊審查](../audio-reference-review/README.md)。下文未發佈字樣為歷史階段。
 
 # 更新街頭風格：全套音樂與音效候選

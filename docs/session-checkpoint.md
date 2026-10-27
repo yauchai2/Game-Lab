@@ -1,11 +1,9 @@
-# 全音訊審查接續（2026-10-27，Asia/Taipei）
+# v0.78.0音訊整合發佈
 
-Alan要求所有音樂／音效可選線上資源，全部review；參考Ice Cream.mp4、Into Moon〈Dream Logic〉、Lionclad〈Dorephin Shopping Center〉。後兩曲身分由使用者補齊，Dorephin有官方製作說明；YouTube／SoundCloud直接播放受限，未捏造已聽完整或量測參考曲。
+2026-10-27，Asia/Taipei。Alan明確要求發佈，並說Claude首領曲／序章音效不一定跟，以整體效果為重。基於main96ec21e／v0.77.1，Claude最新d2aab10與main程式相同；PR104從審查轉成正式音訊整合。
 
-本分支codex/audio-reference-review基於main3add8a6／v0.75.0，另檢查Claude8ee3a2e／v0.77候選：共6曲46基礎cue、58綁定。Claude14新檔只複製到review目錄，不合併或覆寫其待發工作。正式src/audio／audio.js／audio-assets／存檔未變。
+實際54檔：日間Wednesday Night、夜景November Snow、開始Funky Menu Loop、首領Midnight Cruiser（CC0），工業underpass與精英rush重編32小節；46舊cue全部整音／實體層／短通知，另2金屬木箱命中。22場景明確選曲；原雙deck循環淡換、story單聲、長技能同家族配額。角色／故事／技能／地圖／存檔不改，怪物材質取同streetCreatureSpec owner。
 
-已完成來源／用途／數值與設計審查：52項表、62音訊解碼、4首CC0音樂與6個CC0音效候選、來源／衍生hash與license；64控制項比較頁含兩段固定事件A/B、篩選／播放互斥／停止／匯出意見。詳見[audio-reference-review/README.md](audio-reference-review/README.md)。主觀聽感未被自動填通過。
+素材8.35MB，上限9MB；完整源曲與逐檔CC0／原創／混合標記、raw/member/master/embed SHA齊。未採樣3參考影片、未付費。54資產／實際播放／22路由／loop-wrap／mute／mix／全repo回歸通過，見[整合](release-0.78.0/integration.md)、verification.json及audio-release-validation.json。線上部署／tag／附件完成證據以live-verification.json為準。
 
-建議共通音色、日間彈跳與夜間漂浮兩軸；先做一張街區完整聲景樣板，確認音色再重編／替換其餘52項。未採樣YouTube／Ice Cream錄音、未買素材或聯絡作者，候選尚未進正式音訊。原17份CC0歷史素材繼續封存。
-
-既有浮島22張已在main，PR98與PR96的模型／掛點無需重做；v0.75故事／開始頁及Claude0.76／0.77候選分開看，不用舊交接未發佈文字判斷現況。FINISH-05／06真機、主觀美術／聽感及30分鐘實戰仍待實際結果。
+歷史審查52檔凍結到assets/audio-review，不再讀現行src/audio冒認舊版；舊17封存音訊未變。舊生成器有防護，正式重建用tools/audio/build_release_palette.py、pack_audio.py、build.py。真機、主觀聽感與30分鐘疲勞仍未宣稱完成。

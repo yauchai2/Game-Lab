@@ -2,11 +2,13 @@ from pathlib import Path
 import json,subprocess,hashlib,zipfile,concurrent.futures,numpy as np
 R=Path.cwd();D=R/'docs/audio-reference-review';A=R/'assets/audio-review';(A/'claude-8ee3a2e').mkdir(exist_ok=True);(A/'candidates').mkdir(exist_ok=True)
 ref='8ee3a2e115bc3c13e8bbe80b64146943934477c0';j=json.loads(subprocess.check_output(['git','show',ref+':src/audio/provenance.json'],text=True))
+published={r['asset'] for r in json.loads(subprocess.check_output(['git','show','3add8a6e7282b8138aacbd6bc40cfc66b73e2242:src/audio/provenance.json'],text=True))['sources']}
 rows=[]
 for r in j['sources']:
- path=R/'src/audio'/r['asset'];status='main 3add8a6'
- if not path.exists():
-  path=A/'claude-8ee3a2e'/r['asset'];path.write_bytes(subprocess.check_output(['git','show',ref+':src/audio/'+r['asset']]));status='Claude 8ee3a2e candidate'
+ source='3add8a6e7282b8138aacbd6bc40cfc66b73e2242' if r['asset'] in published else ref
+ folder='base-3add8a6' if r['asset'] in published else 'claude-8ee3a2e'
+ path=A/folder/r['asset'];path.parent.mkdir(exist_ok=True);path.write_bytes(subprocess.check_output(['git','show',source+':src/audio/'+r['asset']]))
+ status='main 3add8a6' if r['asset'] in published else 'Claude 8ee3a2e candidate'
  assert hashlib.sha256(path.read_bytes()).hexdigest()==r['sha256'],r['asset']
  rows.append({**r,'path':str(path.relative_to(R)),'sourceStatus':status})
 online=json.loads((D/'online-sources.json').read_text());previews=[]

@@ -881,3 +881,6 @@ MAP-REBUILD接續優化：背包詳情依指定map key選圖，18區卡片改真
 
 - [x] AUDIO-REVIEW來源／設計：main3add8a6＋Claude8ee3a2e共6曲／46cue、58事件綁定逐項盤點；4首CC0音樂比較片段與6個Kenney音效、來源hash／授權、62訊號解碼及64播放器A/B頁已備妥，見[審查與比較](audio-reference-review/README.md)。不是主觀聽感通過，也未替換正式src/audio。
 - [ ] AUDIO-REVIEW下一步：先對一張日間街區的配樂／核心戰鬥與UI音色做比較決定，再按52項表接入；保留原音訊owner。FINISH-05／06的真人聽感、真機／30分鐘疲勞仍未完成。
+
+
+2026-10-27 v0.78發佈候選：Alan已授權發佈並以整體效果優先；AUDIO-REVIEW後續實作已完成，4授權曲／2原創延長／46cue整音＋2材質命中，22場景選曲、完整曲循環淡換、故事／長聲配額與原混音owner接入。54檔、member／master／embed hash、實際MP3與重播／mute／stress及完整repo回歸通過，見[0.78整合](release-0.78.0/integration.md)。FINISH-05／06的真機、主觀聽感／30分鐘仍待實際結果，不把發佈當其已通過。

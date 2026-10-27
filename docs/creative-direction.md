@@ -83,3 +83,6 @@ Alan 已選「明亮街頭為主，保留戰鬥冒險」，並明確補充：各
 Alan指定全部音樂／音效重新review，可選線上素材；除了Ice Cream.mp4，新增Into Moon〈Dream Logic〉（YouTube Gbu3iBi9F7Y）及Lionclad〈Dorephin Shopping Center〉（gvtrG92q32Q）。這是音訊選材參考，不自行更改已批准的角色比例、場景材質或UI方向。
 
 寧靜／漂浮與日間彈跳節奏作兩條提案，共用硬件／柔和電子音色；不可只按「lo-fi」標籤配滿全遊戲。參考曲與線上播放不等於獲得遊戲授權；不採樣影片錄音或借用旋律。來源、完整52檔審查、10個可授權比較片段及播放受限界線見[audio-reference-review](audio-reference-review/README.md)。本批提案尚未替換正式音訊或宣稱最終聽感通過。
+
+
+2026-10-27發佈接續：Alan要求「發佈」，並強調Claude首領曲／序章音效不一定要跟，以整體效果為重。本次0.78候選實際替換4首授權完整曲、重編2首原創、重整46cue並加2材質命中；不因原作者而限制保留。原3參考曲不採樣，逐檔授權與來源見src/audio/LICENSES.md，正式範圍見[0.78整合](release-0.78.0/integration.md)。
