@@ -870,3 +870,8 @@ v0.64.0／PR84已發佈，舊候選／未發佈文字以[正式紀錄](release-0
 - [x] FINISH-04：十二地景補日常工作點並與地方手記呼應，六章委託／線索／歸還串連；仍唯一storyFlags.ch。120種子導航、六次原生boss／save、手機手記及工業實景驗證通過，PR88候選未發佈。這是程序式場景／敘事收尾，非新NPCAI／十二手工地圖或最終真人美術驗收；見[neighborhood-scenes](neighborhood-scenes/README.md)。
 - [ ] FINISH-05：五首原創街頭配樂＋33基礎cue已實作／技術驗證（PR88候選），所有技能映射、交叉淡入淡出／優先權／duck／mute／visibility已驗；剩餘最終聽感、真機延遲／疲勞驗收不以綠燈代替。見[audio-street](audio-street/README.md)。
 - [ ] FINISH-06：手機／Safari真機、長時間效能與完整佩戴視覺驗收；本機software WebGL不當作真機證據。
+
+
+## 全地圖浮島重設（2026-10-27，Asia/Taipei）
+
+- [ ] MAP-REBUILD：Alan要求全部地圖按更新風格重做並重新評審大小。先交付[22場景版型提案與FI02首圖](floating-island-redesign/README.md)：18普通＋3塔樓＋1訓練；FI02前街唱片巷已生圖，尚待方向意見。其後鎖平面／三視圖、白模、角色／首領尺度及導航驗證，再產正式GLB。此項優先新地圖製作，原PR96／97保留；概念不代表模型或遊戲接入完成。
