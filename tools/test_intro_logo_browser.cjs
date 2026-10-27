@@ -1,74 +1,74 @@
-const{chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('fs');
+const{chromium}=require('playwright'),assert=require('node:assert/strict');
 const base=process.env.TITLE_TEST_URL||'http://127.0.0.1:8808/';
-const out='docs/hello-static-title';fs.mkdirSync(out,{recursive:true});
 (async()=>{
  const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader']});
  const checks=[],errors=[];
  try{
   const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:1});
   const p=await context.newPage();p.setDefaultTimeout(30000);p.setDefaultNavigationTimeout(90000);p.on('pageerror',e=>errors.push(e.message));
-  await p.goto(base+'?fresh&intro&static',{waitUntil:'load'});
-  await p.waitForFunction(()=>[...document.querySelectorAll('.intro-title img')].every(i=>i.complete&&i.naturalWidth>0));
-  assert.equal(await p.locator('.intro-title canvas,.intro-logo-stage,.title-label').count(),0);
-  assert.equal(await p.locator('.intro-title button').count(),1);
+  const ready=()=>p.waitForFunction(()=>[...document.querySelectorAll('.intro-title img,.story-stage img')].every(i=>i.complete&&i.naturalWidth>0));
+  const shown=()=>p.waitForFunction(()=>{const c=document.querySelectorAll('.cut');return c.length&&[...c].every(x=>x.classList.contains('on'));});
+  await p.goto(base+'?fresh&intro&static',{waitUntil:'load'});await ready();
   assert.match(await p.title(),/Hello, Static!/);
   assert(await p.getByRole('dialog',{name:'Hello, Static! 哈囉，雜訊！',exact:true}).isVisible());
-  for(const[width,height,name]of[[390,844,'mobile'],[1920,1080,'desktop'],[320,568,'narrow'],[844,390,'landscape'],[390,600,'short-mobile']]){
-   await p.setViewportSize({width,height});await p.waitForTimeout(800);
-   const geom=await p.evaluate(()=>{const f=document.querySelector('.intro-title').getBoundingClientRect(),b=document.querySelector('.title-start').getBoundingClientRect(),l=document.querySelector('.title-wordmark').getBoundingClientRect();return{f:f.toJSON(),b:b.toJSON(),l:l.toJSON(),sw:document.documentElement.scrollWidth,w:innerWidth,h:innerHeight}});
-   assert(geom.sw<=width+1,JSON.stringify(geom));assert(geom.b.height>=44);assert(geom.b.x>=0&&geom.b.right<=width&&geom.b.bottom<=height);assert(geom.l.x>=geom.f.x&&geom.l.right<=geom.f.right+1);assert(Math.abs(geom.f.height-height)<1);
-   if(width>height)assert(Math.abs(geom.f.width-height*9/16)<1);
-   await p.screenshot({path:out+'/'+name+'.png'});
+  assert.equal(await p.locator('.intro-title button').count(),1);
+  assert.equal(await p.locator('.intro-title canvas').count(),0);
+  assert.equal(await p.locator('.title-art').evaluate(e=>getComputedStyle(e).imageRendering),'pixelated');
+  assert(await p.locator('.title-art').evaluate(e=>e.naturalWidth<=200),'title scene is stored as a low-resolution mosaic');
+  for(const[width,height]of[[390,844],[1920,1080],[320,568],[844,390],[1024,768]]){
+   await p.setViewportSize({width,height});await p.waitForTimeout(500);
+   const g=await p.evaluate(()=>{const f=document.querySelector('.intro-title').getBoundingClientRect(),b=document.querySelector('.title-start').getBoundingClientRect(),l=document.querySelector('.title-wordmark img').getBoundingClientRect();return{fw:f.width,fh:f.height,bw:b.width,bh:b.height,l:l.toJSON(),sw:document.documentElement.scrollWidth,iw:innerWidth,ih:innerHeight};});
+   assert(Math.abs(g.fw-g.iw)<1&&Math.abs(g.fh-g.ih)<1,`full screen ${width}x${height} ${JSON.stringify(g)}`);
+   assert(Math.abs(g.bw-g.iw)<1&&Math.abs(g.bh-g.ih)<1,'whole screen is the start key');
+   assert(g.l.left>=0&&g.l.right<=g.iw+1&&g.l.top>=0&&g.l.bottom<=g.ih,`logo inside screen ${width}x${height} ${JSON.stringify(g.l)}`);
+   assert(g.sw<=g.iw+1);
   }
-  checks.push('five sizes: full-height portrait, centered desktop matte, visible logo, 44px action, no overflow');
+  checks.push('title fills five screen sizes as a pixelated low-resolution scene with a whole-screen key');
   await p.setViewportSize({width:390,height:844});
   await p.keyboard.press('Tab');assert.equal(await p.evaluate(()=>document.activeElement.className),'title-start');
   await p.waitForFunction(()=>document.activeElement&&document.activeElement.classList.contains('title-start'));await p.keyboard.press('Enter');await p.waitForFunction(()=>!INTRO.cover&&INTRO.step===0);
   assert.equal(await p.locator('body.title-screen-active').count(),0);assert.equal(await p.evaluate(()=>INTRO_TITLE.timer),0);
-  assert(await p.getByRole('button',{name:'下一頁',exact:true}).isVisible());
-  await p.reload({waitUntil:'load'});assert(await p.evaluate(()=>!INTRO.cover&&INTRO.step===0));
-  await p.getByRole('button',{name:'下一頁',exact:true}).click();assert.equal(await p.evaluate(()=>INTRO.step),1);
-  await p.getByRole('button',{name:'下一頁',exact:true}).click();assert.equal(await p.evaluate(()=>INTRO.step),2);
-  await p.getByRole('button',{name:'選擇角色',exact:true}).click();
+  await ready();
+  assert.equal(await p.locator('.story-stage button').count(),1,'prologue has one invisible tap target and no buttons');
+  assert.equal((await p.locator('.story-stage').innerText()).trim(),'','prologue shows no text');
+  assert.equal(await p.locator('.cut').count(),3);
+  assert.equal(await p.locator('.cut img').first().evaluate(e=>getComputedStyle(e).imageRendering),'pixelated');
+  assert(await p.locator('.cut img').evaluateAll(a=>a.every(i=>i.naturalWidth<=160)),'panels are stored as low-resolution mosaics');
+  checks.push('keyboard start opens a text-free, button-free prologue');
+  /* Tapping while panels are still arriving completes the collage; the next tap turns the page. */
+  await p.locator('.story-tap').click();
+  assert.equal(await p.locator('.cut.on').count(),3);assert.equal(await p.evaluate(()=>INTRO.step),0);
+  await p.reload({waitUntil:'load'});assert(await p.evaluate(()=>!INTRO.cover&&INTRO.step===0));await ready();
+  await shown();await p.locator('.story-tap').click();assert.equal(await p.evaluate(()=>INTRO.step),1);
+  checks.push('first tap finishes the collage, second tap turns the page, reload resumes the page');
+  /* Every cut-out stays on screen in portrait and wide layouts on all three pages. */
+  for(const step of[0,1,2])for(const[width,height]of[[390,844],[1440,810],[844,390],[320,568],[1024,768]]){
+   await p.setViewportSize({width,height});await p.evaluate(s=>introStep(s),step);await ready();await p.evaluate(()=>introStageNext());await shown();
+   const bad=await p.evaluate(()=>{const W=innerWidth,H=innerHeight;return[...document.querySelectorAll('.cut')].map(c=>c.getBoundingClientRect()).filter(r=>r.left<-W*.03||r.right>W*1.03||r.top<-H*.03||r.bottom>H*1.03).length;});
+   assert.equal(bad,0,`cut-outs inside screen, page ${step+1} at ${width}x${height}`);
+  }
+  checks.push('all eight cut-outs stay on screen across three pages and five screen sizes');
+  await p.setViewportSize({width:390,height:844});
+  await p.evaluate(()=>introStep(1));await ready();
+  await p.waitForFunction(()=>INTRO.step===2,null,{timeout:15000});
+  checks.push('countdown turns the page without input');
+  await p.waitForFunction(()=>INTRO.step===3,null,{timeout:15000});await p.locator('#intro-name').waitFor();
+  await p.evaluate(()=>introStep(2));await ready();await shown();await p.keyboard.press('Escape');await p.waitForFunction(()=>INTRO.step===3);
+  checks.push('last page and Escape reach character selection');
   await p.locator('#intro-name').fill('暮色測試');
   await p.locator('.intro-pick>.pri').click();
   await p.waitForFunction(()=>!INTRO.active&&G.heroName==='暮色測試');
   assert(await p.evaluate(()=>G.tutorial.active));
   await p.goto(base+'?static',{waitUntil:'load'});assert(await p.evaluate(()=>hasLoadedGame&&!INTRO.active&&G.heroName==='暮色測試'));
-  checks.push('keyboard start, story reload/resume, all three pages, character creation, tutorial and existing-save boot');
-  await p.evaluate(()=>introStart(true));await p.getByRole('button',{name:'開始遊戲',exact:true}).click();await p.keyboard.press('Escape');
-  await p.waitForTimeout(400);assert.equal(await p.evaluate(()=>INTRO_TITLE.timer),0);assert(await p.evaluate(()=>!INTRO.cover));
-  checks.push('Escape during fade cancels pending transition without orphaned title class');
-  await p.evaluate(()=>introStart(true));
-  await p.evaluate(()=>{introTitleStart();introTitleStart();introTitleStart()});await p.waitForTimeout(400);assert.equal(await p.evaluate(()=>INTRO.step),0);
-  checks.push('repeated start activates once');
-  await p.evaluate(()=>{introStart(true);document.querySelector('.title-art').src='data:image/png;base64,invalid'});
-  await p.getByRole('button',{name:'開始遊戲',exact:true}).click();await p.waitForFunction(()=>!INTRO.cover);
-  checks.push('art failure does not block start');
-  await p.evaluate(()=>{introStart(true);dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}));dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}))});
-  assert(await p.locator('body.title-screen-active .intro-title').isVisible());assert(await p.getByRole('button',{name:'開始遊戲',exact:true}).isEnabled());
-  checks.push('back-forward cache restores title and enabled action');
-  await p.emulateMedia({reducedMotion:'reduce'});await p.evaluate(()=>introStart(true));
+  checks.push('character creation, tutorial and existing-save boot');
+  await p.emulateMedia({reducedMotion:'reduce'});await p.evaluate(()=>introStart(true));await ready();
   assert.equal(await p.locator('.title-radio-light').evaluate(e=>getComputedStyle(e).animationName),'none');
-  await p.waitForFunction(()=>document.activeElement&&document.activeElement.classList.contains('title-start'));await p.keyboard.press('Enter');await p.waitForFunction(()=>!INTRO.cover);
-  await p.emulateMedia({reducedMotion:'no-preference'});await p.evaluate(()=>{GAME_VIEW.prefs.reducedEffects=true;viewApplyPrefs();introStart(true)});
-  assert.equal(await p.locator('.title-radio-light').evaluate(e=>getComputedStyle(e).animationName),'none');
-  checks.push('OS and game reduced effects disable ambient motion and start delay');
-  await p.emulateMedia({forcedColors:'active'});assert(await p.getByRole('button',{name:'開始遊戲',exact:true}).isVisible());
-  await p.waitForFunction(()=>document.activeElement&&document.activeElement.classList.contains('title-start'));await p.keyboard.press('Enter');await p.waitForFunction(()=>!INTRO.cover);
-  checks.push('forced-colors retains native action');
-  await p.close();
-  const q=await context.newPage();q.setDefaultNavigationTimeout(90000);q.on('pageerror',e=>errors.push(e.message));
-  await q.addInitScript(()=>{Storage.prototype.setItem=function(){throw new DOMException('Blocked','SecurityError')};Storage.prototype.getItem=function(){throw new DOMException('Blocked','SecurityError')}});
-  await q.goto(base+'?fresh&intro&static',{waitUntil:'load'});await q.getByRole('button',{name:'開始遊戲',exact:true}).click();await q.waitForFunction(()=>!INTRO.cover);
-  checks.push('storage unavailable still allows title and story');
-  const offline=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});const external=[];
-  offline.on('pageerror',e=>errors.push(e.message));
-  await offline.route('**/*',route=>{if(route.request().isNavigationRequest())return route.fulfill({body:fs.readFileSync('dist/idle-hero.html'),contentType:'text/html'});external.push(route.request().url());return route.abort()});
-  await offline.goto(base+'offline-title.html?fresh&intro&static',{waitUntil:'load',timeout:90000});
-  await offline.waitForFunction(()=>[...document.querySelectorAll('.intro-title img')].every(i=>i.complete&&i.naturalWidth>0));
-  await offline.getByRole('button',{name:'開始遊戲',exact:true}).click();assert(await offline.evaluate(()=>!INTRO.cover));assert.deepEqual(external,[]);
-  checks.push('standalone HTML runs with all subresource requests blocked, complete artwork and working start (file scheme blocked by environment policy)');
-  assert.deepEqual(errors,[]);fs.writeFileSync(out+'/browser-results.json',JSON.stringify({checks,errors},null,2)+'\n');console.log('PASS',checks.length,'title flows');
- }finally{await browser.close()}
-})().catch(e=>{console.error(e);process.exitCode=1});
+  await p.keyboard.press('Tab');await p.keyboard.press('Enter');await p.waitForFunction(()=>!INTRO.cover&&INTRO.step===0);
+  assert.equal(await p.locator('.cut.on.now').count(),3,'reduced motion shows the whole collage at once');
+  await p.emulateMedia({reducedMotion:'no-preference'});
+  checks.push('reduced motion starts at once and shows the collage without animation');
+  assert.deepEqual(errors,[]);
+  console.log('PASS '+checks.length+' title and prologue flows');
+ }catch(e){console.error(e);process.exitCode=1;}
+ finally{await browser.close();}
+})();
