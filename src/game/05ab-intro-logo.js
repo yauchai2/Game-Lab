@@ -14,7 +14,7 @@ function introTitleStart(){
  INTRO_TITLE.timer=setTimeout(()=>{INTRO_TITLE.timer=0;if(INTRO.active&&INTRO.cover)introStep(0);},320);
 }
 /* Existing intro lifecycle hook, now without a WebGL renderer. */
-function introLogoDispose(){if(typeof introComicDispose==='function')introComicDispose();clearTimeout(INTRO_TITLE.timer);INTRO_TITLE.timer=0;document.body.classList.remove('title-screen-active');}
+function introLogoDispose(){if(typeof introCareerDispose==='function')introCareerDispose();if(typeof introComicDispose==='function')introComicDispose();clearTimeout(INTRO_TITLE.timer);INTRO_TITLE.timer=0;document.body.classList.remove('title-screen-active');}
 addEventListener('pagehide',introLogoDispose);
 addEventListener('pageshow',event=>{if(event.persisted&&INTRO.active&&INTRO.cover)introCoverRender();});
 document.addEventListener('visibilitychange',()=>document.body.classList.toggle('title-screen-paused',document.hidden));
