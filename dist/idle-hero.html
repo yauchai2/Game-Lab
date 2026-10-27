@@ -6348,7 +6348,7 @@ function uiAdventureHtml(){
   return nav+(R?current:'')+`<div class="ui-map-state"><h3>可用地圖</h3><span class="uxmeta">${G.maps.length}／15 張</span></div><div class="ui-mgroups" role="group" aria-label="地圖庫存">${G.maps.length?uiMapGroups():'<p class="ui-grid-empty">還沒有地圖。繼續一般冒險，打贏BOSS便有機會取得。</p>'}</div>`;
 }
 let UI_MAP_PENDING=null;
-function uiInspectMap(encoded){let id;try{id=decodeURIComponent(encoded);}catch(_){return;}const m=G.maps.find(x=>x.id===id);if(!m)return;noticeRead('maps',id);UI_MAP_PENDING={id,stamp:JSON.stringify(m)};const biome=BIOMES[m.biome],land=terrainBuild('map:'+m.id+':0'),q=m.mods.reduce((sum,k)=>sum+(MODS[k]?.q||0),0);showOverlay(`<h2 class="uxdialog-title">${biome.n} · Lv. ${m.lvl}</h2><div class="ui-map-banner" style="--land:${biome.board.l};--land2:${biome.board.m}"><span>挑戰詞綴 ${mapChallenge(m.mods)} · 戰利品 +${Math.round(q*100)}%</span></div><p>${land.name} · ${land.bounds[1]-land.bounds[0]} × ${land.bounds[3]-land.bounds[2]} · 起伏最高 ${land.amplitude} 單位</p><ul>${m.mods.length?m.mods.map(k=>`<li>${mapKind(k)} · ${MODS[k].n}</li>`).join(''):'<li>沒有額外詞綴</li>'}</ul>${m.mods.includes('rich')?'<p>金幣 +60%</p>':''}${m.mods.includes('lucky')?'<p>稀有度提升</p>':''}<p>進入會消耗這張地圖，離開不退還。${G.run||G.train?'先結束目前挑戰或訓練。':''}</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回地圖</button><button class="mb pri" ${G.run||G.train?'disabled':''} onclick="uiUseMapPreview()">進入 · 消耗這張地圖</button></div>`);}
+function uiInspectMap(encoded){let id;try{id=decodeURIComponent(encoded);}catch(_){return;}const m=G.maps.find(x=>x.id===id);if(!m)return;noticeRead('maps',id);UI_MAP_PENDING={id,stamp:JSON.stringify(m)};const biome=BIOMES[m.biome],land=terrainBuild('map:'+m.id+':0'),q=m.mods.reduce((sum,k)=>sum+(MODS[k]?.q||0),0);showOverlay(`<h2 class="uxdialog-title">${biome.n} · Lv. ${m.lvl}</h2><div class="ui-map-banner" style="--land:${biome.board.l};--land2:${biome.board.m}"><span>挑戰詞綴 ${mapChallenge(m.mods)} · 戰利品 +${Math.round(q*100)}%</span></div><p>${uxEsc(uiMapTerrainSummary(land))}</p><ul>${m.mods.length?m.mods.map(k=>`<li>${mapKind(k)} · ${MODS[k].n}</li>`).join(''):'<li>沒有額外詞綴</li>'}</ul>${m.mods.includes('rich')?'<p>金幣 +60%</p>':''}${m.mods.includes('lucky')?'<p>稀有度提升</p>':''}<p>進入會消耗這張地圖，離開不退還。${G.run||G.train?'先結束目前挑戰或訓練。':''}</p><div class="uxactions"><button class="mb" data-initial-focus onclick="hideOverlay()">返回地圖</button><button class="mb pri" ${G.run||G.train?'disabled':''} onclick="uiUseMapPreview()">進入 · 消耗這張地圖</button></div>`);}
 function uiUseMapPreview(){const p=UI_MAP_PENDING;hideOverlay();if(!p||G.run||G.train||JSON.stringify(G.maps.find(x=>x.id===p.id))!==p.stamp){uxAnnounce('地圖或挑戰狀態已變動，沒有消耗地圖。');return;}enterMap(p.id);}
 function uiLeaveMap(){
   if(!G.run)return;
@@ -6669,6 +6669,9 @@ addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{if(typeof AUD==='undefi
 /* 離線結算頁的 3D 低解像標誌。 */
 (function(){const st=document.createElement('style');st.textContent='#ovl .return-logo{width:min(320px,100%);max-height:150px;margin:6px auto 12px}';document.head.appendChild(st);})();
 
+
+// Player-facing scene description; authored layouts are measured in metres.
+function uiMapTerrainSummary(p){if(p.authoredIsland){const L=p.record.layout,x=L.footprint.map(q=>q[0]),y=L.footprint.map(q=>q[1]);return `${p.name} · ${Math.round(Math.max(...x)-Math.min(...x))} × ${Math.round(Math.max(...y)-Math.min(...y))} 米 · ${L.surfaces.ramp?'緩坡場地':'平坦場地'}`;}return `${p.name} · ${{regular:'一般場地',medium:'中型場地',large:'大型場地',giant:'廣闊場地',training:'練習場地'}[p.sizeClass]||'冒險場地'}`;}
 
 </script>
 <script>
@@ -9209,9 +9212,11 @@ const ISLAND_SERIES={scale:7.857708928849961,plans:new Map(),select(key=terrainK
  const q=new URLSearchParams(location.search).get('island');if(q==='off')return null;
  if(q&&ISLAND_REGISTRY.maps[q.toUpperCase()])return ISLAND_REGISTRY.maps[q.toUpperCase()];
  if(key==='training')return ISLAND_REGISTRY.maps.FP01;
- if(G.run?.tower||key.startsWith('map:tower:'))return ISLAND_REGISTRY.maps[['FT01','FT02','FT03'][Math.floor(((G.run?.floor||1)-1)/10)%3]];
- if(G.run)return Object.values(ISLAND_REGISTRY.maps).find(r=>r.layout.legacyBiomeIndex===G.run.map.biome)||null;
- const id=G.depth<=ISLAND_REGISTRY.route.length?ISLAND_REGISTRY.route[Math.max(0,G.depth-1)]:Object.values(ISLAND_REGISTRY.maps).filter(r=>r.id.startsWith('FI'))[(G.depth-36)%18].id;return ISLAND_REGISTRY.maps[id];
+ if(key.startsWith('map:tower:'))return ISLAND_REGISTRY.maps[['FT01','FT02','FT03'][Math.floor(((G.run?.floor||1)-1)/10)%3]];
+ // Inspecting an inventory map must use the requested key, not the current activity.
+ if(key.startsWith('map:')){const id=key.slice(4,key.lastIndexOf(':')),map=G.run?.map?.id===id?G.run.map:G.maps.find(m=>m.id===id);return map?Object.values(ISLAND_REGISTRY.maps).find(r=>r.layout.legacyBiomeIndex===map.biome)||null:null;}
+ const depth=key.startsWith('depth:')?Math.max(1,parseInt(key.slice(6),10)||1):G.depth;
+ const id=depth<=ISLAND_REGISTRY.route.length?ISLAND_REGISTRY.route[depth-1]:Object.values(ISLAND_REGISTRY.maps).filter(r=>r.id.startsWith('FI'))[(depth-36)%18].id;return ISLAND_REGISTRY.maps[id];
 },world(p){return [HX+p[0]*this.scale,HY-p[1]*this.scale]},metric(x,y){return [(x-HX)/this.scale,-(y-HY)/this.scale]}};
 function seriesPlan(key,radius=.38){
  const F=ISLAND_SERIES,record=F.select(key);if(!record)return null;const L=record.layout,cacheKey=L.id+':'+key+':'+radius;if(F.plans.has(cacheKey))return F.plans.get(cacheKey);
@@ -9237,6 +9242,11 @@ function authoredTerrainPlan(entity){const p=terrainNow();return p.authoredIslan
  // Extend the existing regional journal table and pN flags; chapter owner unchanged.
  const legacyNotes=FIELD_STORIES.map(e=>e.slice());
  const normal=Object.values(ISLAND_REGISTRY.maps).filter(r=>r.layout.profile>=0);const notes=[];for(const r of normal){const L=r.layout,j=L.journal;notes[L.profile]=[j.title,j.contact,j.activity,j.return];STREET_NEIGHBORHOODS[L.profile]={name:L.name,site:j.site,activity:j.activity};if(L.art?.sky)BIOMES[L.legacyBiomeIndex].sky=L.art.sky;BIOMES[L.legacyBiomeIndex].n=L.name;}FIELD_STORIES.splice(0,FIELD_STORIES.length,...notes);
+ // Inventory cards show the actual authored island, cached once per region.
+ const nativeMapIcon=icon3dMapUrl;
+ icon3dMapUrl=function(m){const record=Object.values(ISLAND_REGISTRY.maps).find(r=>r.layout.profile>=0&&r.layout.legacyBiomeIndex===m.biome);if(!record)return nativeMapIcon(m);const key='ISLAND_ICON_'+record.id;if(ICON3D.cache[key])return ICON3D.cache[key];if(ICON3D.fail)return '';try{if(!ICON3D.rd&&!icon3dUrl('weapon',0,0))return '';const sc=new T3.Scene(),g=equipmentModel('series_'+record.id);sc.add(g);g.updateMatrixWorld(true);const bounds=new T3.Box3().setFromObject(g),center=bounds.getCenter(new T3.Vector3()),radius=bounds.getBoundingSphere(new T3.Sphere()).radius;g.position.sub(center);const aspect=112/80,span=radius*1.08,cam=new T3.OrthographicCamera(-span*aspect,span*aspect,span,-span,.1,radius*10);cam.position.set(radius*2,radius*2.6,radius*3);cam.lookAt(0,0,0);cam.updateMatrixWorld(true);sc.updateMatrixWorld(true);
+ // Fit the projected mesh, including tall landmarks, without wasting card space.
+ let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;const v=new T3.Vector3();g.traverse(o=>{if(o.isMesh){const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){v.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld).applyMatrix4(cam.matrixWorldInverse);minX=Math.min(minX,v.x);maxX=Math.max(maxX,v.x);minY=Math.min(minY,v.y);maxY=Math.max(maxY,v.y);}}});const halfY=Math.max((maxY-minY)/2,(maxX-minX)/(2*aspect))*1.12,cx=(minX+maxX)/2,cy=(minY+maxY)/2;cam.left=cx-halfY*aspect;cam.right=cx+halfY*aspect;cam.top=cy+halfY;cam.bottom=cy-halfY;cam.updateProjectionMatrix();ICON3D.rd.setSize(112,80,false);ICON3D.rd.render(sc,cam);return ICON3D.cache[key]=ICON3D.rd.domElement.toDataURL('image/png');}catch(e){return '';}finally{if(ICON3D.rd)ICON3D.rd.setSize(ICON3D.S,ICON3D.S,false);}};
  // Preserve historical notes under their original text, using the same storyFlags owner.
  const nativeSerialize=serialize,nativeApply=applySave,nativeJournal=fieldJournalHtml;
  serialize=function(){return {...nativeSerialize(),islandJournalVersion:1};};

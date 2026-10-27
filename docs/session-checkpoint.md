@@ -5,3 +5,5 @@
 22模型／44portableGLB／22Blend／110視圖齊，18故事刷圖＋3塔樓＋1訓練，index與原生戰鬥接入、正式單檔重建。六章／數值／存檔owner沿用；舊12手記附錄與新18手記有版本遷移。詳細設計、工具與驗證見[floating-island-redesign/series-completion.md](floating-island-redesign/series-completion.md)。
 
 未merge／release。下一步是整包驗收與合併review，無需再生其餘地圖；真機Safari、長時間效能及Alan主觀美術驗收仍未完成。其他PR96／97及Claude抗性／傳奇改動保留，未覆蓋。
+
+接續已修背包預覽錯用當前場景、米制詳情與18區實際GLB縮圖。證據series-review-validation.json：54詳情／132切圖／660模擬秒、GPU計數穩定與fade釋放；desktop/mobile新截圖已檢視。主線與活動、save migration、split-build再驗證。此測試是固定場景循環，不是真機長測。其他Claude分支仍4a5d1e4，main仍4c90e05。

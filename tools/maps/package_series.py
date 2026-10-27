@@ -10,6 +10,7 @@ for rec in reg['maps']:
 files['models/series-registry.json']=(R/'assets/maps/series-registry.json').read_bytes()
 for f in (R/'docs/floating-island-redesign').glob('series-*-validation.json'):files['validation/'+f.name]=f.read_bytes()
 for f in (R/'docs/floating-island-redesign').glob('series-sheet-*.png'):files['previews/'+f.name]=f.read_bytes()
+for f in (R/'docs/floating-island-redesign').glob('series-inventory-*.png'):files['previews/'+f.name]=f.read_bytes()
 cards=[]
 for rec in reg['maps']:
  id=rec['id'];url='island-series-play.html?fresh&amp;lvl='+('35' if id.startswith('FT') else '12')+'&amp;give&amp;slots=FIRE,FROST,CHAIN&amp;island='+id

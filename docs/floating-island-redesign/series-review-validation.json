@@ -1,0 +1,567 @@
+{
+  "candidateSha256": "2ae2fc3ef9ffce441ed22e2911ac20bda8537d6bb5767df753ea87e98b207219",
+  "preview": {
+    "rows": [
+      {
+        "expected": "FI01",
+        "actual": "FI01",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI01",
+        "actual": "FI01",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI01",
+        "actual": "FI01",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI02",
+        "actual": "FI02",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI02",
+        "actual": "FI02",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI02",
+        "actual": "FI02",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI03",
+        "actual": "FI03",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI03",
+        "actual": "FI03",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI03",
+        "actual": "FI03",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI04",
+        "actual": "FI04",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI04",
+        "actual": "FI04",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI04",
+        "actual": "FI04",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI05",
+        "actual": "FI05",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI05",
+        "actual": "FI05",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI05",
+        "actual": "FI05",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI06",
+        "actual": "FI06",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI06",
+        "actual": "FI06",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI06",
+        "actual": "FI06",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI07",
+        "actual": "FI07",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI07",
+        "actual": "FI07",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI07",
+        "actual": "FI07",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI08",
+        "actual": "FI08",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI08",
+        "actual": "FI08",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI08",
+        "actual": "FI08",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI09",
+        "actual": "FI09",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI09",
+        "actual": "FI09",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI09",
+        "actual": "FI09",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI10",
+        "actual": "FI10",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI10",
+        "actual": "FI10",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI10",
+        "actual": "FI10",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI11",
+        "actual": "FI11",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI11",
+        "actual": "FI11",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI11",
+        "actual": "FI11",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI12",
+        "actual": "FI12",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI12",
+        "actual": "FI12",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI12",
+        "actual": "FI12",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI13",
+        "actual": "FI13",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI13",
+        "actual": "FI13",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI13",
+        "actual": "FI13",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI14",
+        "actual": "FI14",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI14",
+        "actual": "FI14",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI14",
+        "actual": "FI14",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI15",
+        "actual": "FI15",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI15",
+        "actual": "FI15",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI15",
+        "actual": "FI15",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI16",
+        "actual": "FI16",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI16",
+        "actual": "FI16",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI16",
+        "actual": "FI16",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI17",
+        "actual": "FI17",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI17",
+        "actual": "FI17",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI17",
+        "actual": "FI17",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI18",
+        "actual": "FI18",
+        "activity": "story",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI18",
+        "actual": "FI18",
+        "activity": "tower",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      },
+      {
+        "expected": "FI18",
+        "actual": "FI18",
+        "activity": "training",
+        "correctName": true,
+        "metric": true,
+        "noEngineUnits": true,
+        "unchanged": true
+      }
+    ],
+    "explicit": "FI18",
+    "uniqueIcons": 18,
+    "reusedIcon": true,
+    "validIcons": true
+  },
+  "cycles": [
+    {
+      "cycle": 0,
+      "disposed": 79,
+      "expected": 79,
+      "sharedUntouched": true,
+      "geometries": 253,
+      "textures": 1,
+      "programs": 5,
+      "cachedPlans": 41,
+      "cachedModels": 22
+    },
+    {
+      "cycle": 1,
+      "disposed": 78,
+      "expected": 78,
+      "sharedUntouched": true,
+      "geometries": 253,
+      "textures": 1,
+      "programs": 5,
+      "cachedPlans": 41,
+      "cachedModels": 22
+    },
+    {
+      "cycle": 2,
+      "disposed": 78,
+      "expected": 78,
+      "sharedUntouched": true,
+      "geometries": 253,
+      "textures": 1,
+      "programs": 5,
+      "cachedPlans": 41,
+      "cachedModels": 22
+    },
+    {
+      "cycle": 3,
+      "disposed": 78,
+      "expected": 78,
+      "sharedUntouched": true,
+      "geometries": 253,
+      "textures": 1,
+      "programs": 5,
+      "cachedPlans": 41,
+      "cachedModels": 22
+    },
+    {
+      "cycle": 4,
+      "disposed": 78,
+      "expected": 78,
+      "sharedUntouched": true,
+      "geometries": 253,
+      "textures": 1,
+      "programs": 5,
+      "cachedPlans": 41,
+      "cachedModels": 22
+    },
+    {
+      "cycle": 5,
+      "disposed": 78,
+      "expected": 78,
+      "sharedUntouched": true,
+      "geometries": 253,
+      "textures": 1,
+      "programs": 5,
+      "cachedPlans": 41,
+      "cachedModels": 22
+    }
+  ],
+  "errors": [],
+  "scope": "54 inventory-map previews across story/tower/training, explicit depth35,132 scene switches with660 simulated seconds; private fade material disposal/shared source preservation and bounded GPU counters after warmup. Desktop software WebGL, not real-device FPS or elapsed10-minute soak."
+}

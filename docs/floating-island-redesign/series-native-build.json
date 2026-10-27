@@ -45,7 +45,7 @@
     "src/game/05d-boss.js": "4734d6faa38ff7246304fdafd4603155fac360d55e832ec231dee85e5d35fcb0",
     "src/game/05f-ux.js": "d9cc4fce5de6bbbd2965ed3149bdbc4d773ca3311348f3980ecb7aa5c8961fe2",
     "src/game/05e-wiki.js": "68ab01af211381ca55e3acdceb53f0c91f32e76880b12980c2f260b62f6a6764",
-    "src/game/05g-layout.js": "b091414ca42bc3e5ef139bc0ad3ced75a18e6efa531f7a49ab44c34b1b9bc08c",
+    "src/game/05g-layout.js": "3483c890ecbc4d78a0212039ef3c127c7563bab5e5a5490b58ad220e9b6352da",
     "src/game/05h-view.js": "d1bdef151da54fd574f4a42cf40be6bf5d1d6845ac96fc378c81bfee04e03289",
     "src/game/05i-wire.js": "fbebbdbd2b6a2019e87c03fb291679e76fc832804aad8ee4e16321bd776004c3",
     "src/game/05j-tip.js": "22885ea0190938f38480f207dee3b4a35093b8fc1393914df65d38e5bb9330b4",
@@ -76,14 +76,14 @@
     "src/game/street-world.js": "c91d42c7e759b4482344b5d83fd26263cc94f9c3e76e3440147d20033b21cbe9",
     "src/game/street-neighborhoods.js": "e61dc84cb29e2ea7b86ce0d31c2a9030cde21235d13e9882c0c71cc63842d07c",
     "src/game/island-series-assets.js": "d793d3880215cd91a70022c004ced54e7c8a4d5fabcd9e15929067347bc8fe05",
-    "src/game/island-series-world.js": "fa0a58d3497090984130f3060df71f57fae19ad411c30e19a2c5d80db6f47a5b",
+    "src/game/island-series-world.js": "0158abf4852c4a40e3abddd675049b595fd7491838e174add87ec4f72394ba5a",
     "src/game/06-main.js": "2cccdb70282d8e579f441638430e885efc0ba2f6c8b54262c0c5aab14a519444",
     "src/game/06b-background.js": "ecf2c70acb8920c932b912cbedeaaa091c15edaa45c9c44e762629ae9bdf9f95"
   },
   "candidatePatches": [],
-  "candidateSha256": "515bef15c2c31cd21dfb648cf111d03dbc2af936e5200da3544ba6f8d98e638d",
+  "candidateSha256": "2ae2fc3ef9ffce441ed22e2911ac20bda8537d6bb5767df753ea87e98b207219",
   "registrySha256": "fe2b09f216f03f4f26665680b58041f44324f3ab9429fdb38a0c5ff06516a815",
   "models": 22,
-  "bytes": 26322802,
+  "bytes": 26325365,
   "storage": "page-lifetime memory; no persistent reads or writes"
 }

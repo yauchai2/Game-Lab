@@ -19,9 +19,11 @@ const ISLAND_SERIES={scale:7.857708928849961,plans:new Map(),select(key=terrainK
  const q=new URLSearchParams(location.search).get('island');if(q==='off')return null;
  if(q&&ISLAND_REGISTRY.maps[q.toUpperCase()])return ISLAND_REGISTRY.maps[q.toUpperCase()];
  if(key==='training')return ISLAND_REGISTRY.maps.FP01;
- if(G.run?.tower||key.startsWith('map:tower:'))return ISLAND_REGISTRY.maps[['FT01','FT02','FT03'][Math.floor(((G.run?.floor||1)-1)/10)%3]];
- if(G.run)return Object.values(ISLAND_REGISTRY.maps).find(r=>r.layout.legacyBiomeIndex===G.run.map.biome)||null;
- const id=G.depth<=ISLAND_REGISTRY.route.length?ISLAND_REGISTRY.route[Math.max(0,G.depth-1)]:Object.values(ISLAND_REGISTRY.maps).filter(r=>r.id.startsWith('FI'))[(G.depth-36)%18].id;return ISLAND_REGISTRY.maps[id];
+ if(key.startsWith('map:tower:'))return ISLAND_REGISTRY.maps[['FT01','FT02','FT03'][Math.floor(((G.run?.floor||1)-1)/10)%3]];
+ // Inspecting an inventory map must use the requested key, not the current activity.
+ if(key.startsWith('map:')){const id=key.slice(4,key.lastIndexOf(':')),map=G.run?.map?.id===id?G.run.map:G.maps.find(m=>m.id===id);return map?Object.values(ISLAND_REGISTRY.maps).find(r=>r.layout.legacyBiomeIndex===map.biome)||null:null;}
+ const depth=key.startsWith('depth:')?Math.max(1,parseInt(key.slice(6),10)||1):G.depth;
+ const id=depth<=ISLAND_REGISTRY.route.length?ISLAND_REGISTRY.route[depth-1]:Object.values(ISLAND_REGISTRY.maps).filter(r=>r.id.startsWith('FI'))[(depth-36)%18].id;return ISLAND_REGISTRY.maps[id];
 },world(p){return [HX+p[0]*this.scale,HY-p[1]*this.scale]},metric(x,y){return [(x-HX)/this.scale,-(y-HY)/this.scale]}};
 function seriesPlan(key,radius=.38){
  const F=ISLAND_SERIES,record=F.select(key);if(!record)return null;const L=record.layout,cacheKey=L.id+':'+key+':'+radius;if(F.plans.has(cacheKey))return F.plans.get(cacheKey);
@@ -47,6 +49,11 @@ function authoredTerrainPlan(entity){const p=terrainNow();return p.authoredIslan
  // Extend the existing regional journal table and pN flags; chapter owner unchanged.
  const legacyNotes=FIELD_STORIES.map(e=>e.slice());
  const normal=Object.values(ISLAND_REGISTRY.maps).filter(r=>r.layout.profile>=0);const notes=[];for(const r of normal){const L=r.layout,j=L.journal;notes[L.profile]=[j.title,j.contact,j.activity,j.return];STREET_NEIGHBORHOODS[L.profile]={name:L.name,site:j.site,activity:j.activity};if(L.art?.sky)BIOMES[L.legacyBiomeIndex].sky=L.art.sky;BIOMES[L.legacyBiomeIndex].n=L.name;}FIELD_STORIES.splice(0,FIELD_STORIES.length,...notes);
+ // Inventory cards show the actual authored island, cached once per region.
+ const nativeMapIcon=icon3dMapUrl;
+ icon3dMapUrl=function(m){const record=Object.values(ISLAND_REGISTRY.maps).find(r=>r.layout.profile>=0&&r.layout.legacyBiomeIndex===m.biome);if(!record)return nativeMapIcon(m);const key='ISLAND_ICON_'+record.id;if(ICON3D.cache[key])return ICON3D.cache[key];if(ICON3D.fail)return '';try{if(!ICON3D.rd&&!icon3dUrl('weapon',0,0))return '';const sc=new T3.Scene(),g=equipmentModel('series_'+record.id);sc.add(g);g.updateMatrixWorld(true);const bounds=new T3.Box3().setFromObject(g),center=bounds.getCenter(new T3.Vector3()),radius=bounds.getBoundingSphere(new T3.Sphere()).radius;g.position.sub(center);const aspect=112/80,span=radius*1.08,cam=new T3.OrthographicCamera(-span*aspect,span*aspect,span,-span,.1,radius*10);cam.position.set(radius*2,radius*2.6,radius*3);cam.lookAt(0,0,0);cam.updateMatrixWorld(true);sc.updateMatrixWorld(true);
+ // Fit the projected mesh, including tall landmarks, without wasting card space.
+ let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;const v=new T3.Vector3();g.traverse(o=>{if(o.isMesh){const a=o.geometry.attributes.position;for(let i=0;i<a.count;i++){v.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld).applyMatrix4(cam.matrixWorldInverse);minX=Math.min(minX,v.x);maxX=Math.max(maxX,v.x);minY=Math.min(minY,v.y);maxY=Math.max(maxY,v.y);}}});const halfY=Math.max((maxY-minY)/2,(maxX-minX)/(2*aspect))*1.12,cx=(minX+maxX)/2,cy=(minY+maxY)/2;cam.left=cx-halfY*aspect;cam.right=cx+halfY*aspect;cam.top=cy+halfY;cam.bottom=cy-halfY;cam.updateProjectionMatrix();ICON3D.rd.setSize(112,80,false);ICON3D.rd.render(sc,cam);return ICON3D.cache[key]=ICON3D.rd.domElement.toDataURL('image/png');}catch(e){return '';}finally{if(ICON3D.rd)ICON3D.rd.setSize(ICON3D.S,ICON3D.S,false);}};
  // Preserve historical notes under their original text, using the same storyFlags owner.
  const nativeSerialize=serialize,nativeApply=applySave,nativeJournal=fieldJournalHtml;
  serialize=function(){return {...nativeSerialize(),islandJournalVersion:1};};

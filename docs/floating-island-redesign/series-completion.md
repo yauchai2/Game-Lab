@@ -61,3 +61,13 @@
 - `series-migration-validation.json`：舊手記附錄、新18則往返、原存檔輸入及章節／金錢／背包保留。
 
 未做真機Safari及長時間效能測試；尚待Alan主觀美術驗收、PR合併與另行release。此包為本專案GLB與完整性驗證，並非game-dev CLI canonical package receipt（本機無該CLI）。
+
+## 接續優化：背包預覽與切圖驗證（2026-10-27，香港時間）
+
+修正terrainBuild(key)選圖：查看背包地圖時按指定map ID取biome，不再沿用當前主線、塔樓或訓練；明確depth key也按該深度選場景。詳情改顯示米制寬深與平坦／緩坡，不向玩家列出引擎高度單位。
+
+18個地區的卡片縮圖改用實際GLB，按投影頂點包圍範圍取景，留12%邊距避免裁掉地標；每區共用一張縮圖，不按背包副本ID重複快取。見[桌面](series-inventory-desktop.png)／[手機](series-inventory-mobile.png)。模型本體、碰撞、技能與數值不變。
+
+`series-review-validation.json`：54次背包詳情（18地區×主線／塔樓／訓練）均取到指定場景、不消耗地圖或改動活動；18張不同縮圖且同區快取共用。6輪×22場景共132次切換、660模擬秒；預熱後GPU geometry=253、texture=1、program=5保持穩定，所有私有fade材質釋放，共用GLB材質保持原樣。固定測試不生成隨機怪物，以隔離切圖資源；這不代表完整戰鬥10分鐘實時或手機效能。
+
+本次另重跑35深度／六章／18地區活動與存檔相容、split-build啟動。44GLB／Blender匯入、22地圖戰鬥與506技能證據沿用前次未變的模型／戰鬥實作；其舊candidate hash不冒認成這次UI候選hash。未merge／release。

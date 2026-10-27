@@ -875,3 +875,5 @@ v0.64.0／PR84已發佈，舊候選／未發佈文字以[正式紀錄](release-0
 ## 全地圖浮島重設（2026-10-27，Asia/Taipei）
 
 - [x] MAP-REBUILD製作／接入：22張浮島模型、44 portable GLB、22 Blend、110實際模型視圖及源碼入口已完成。包含35深度／六章／18刷圖／3塔樓／訓練與舊手記遷移。見[完成交接](floating-island-redesign/series-completion.md)及PR98；未合併、未發佈，尚待真機長測與Alan美術驗收。此勾選只代表地圖製作／接入，不代表全遊戲所有待辦完成。
+
+MAP-REBUILD接續優化：背包詳情依指定map key選圖，18區卡片改真實GLB縮圖並適應畫幅；54詳情／132切圖與私有fade釋放檢查通過，見[完成交接](floating-island-redesign/series-completion.md)。未合併／發佈。
