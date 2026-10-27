@@ -187,6 +187,7 @@ body.d:not(.watch-mode) #fig{display:block!important;width:100%!important;height
 body.d:not(.watch-mode)>header,body.d:not(.watch-mode)>#modal{position:relative;z-index:6}
 body.d:not(.watch-mode) .stage #stats{left:12px!important;right:calc(clamp(480px,34vw,620px) + 40px)!important;top:58px!important}
 body.d:not(.watch-mode) #nexthint{bottom:44px!important}
+.view-settings .view-fx-sample,.view-settings .view-range>p.uxmeta,.view-settings .view-quality>p.uxmeta,.view-settings details.ui-rules{display:none!important}
 @media(min-width:900px){
 body.d:not(.watch-mode) #mtabs{padding-top:4px!important;padding-bottom:4px!important}
 body.d:not(.watch-mode) #mttl{min-height:0!important;padding:0!important}
