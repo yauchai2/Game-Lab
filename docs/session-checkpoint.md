@@ -1,18 +1,11 @@
-# v0.74.0整合發佈接續
+# 全音訊審查接續（2026-10-27，Asia/Taipei）
 
-Alan已授權release後繼續。main基底4c90e05，Claude4a5d1e4與PR96／93004b5已整合，22浮島／抗性／特效／介面／肩帶耳罩同版；測試與排除範圍見[發佈整合](release-0.74.0/integration.md)。來源PR98；部署與Release完成情況以live-verification.json及GitHub為準。
-**2026-10-27，Hello, Static! 開始頁候選：** Alan 提供暮色屋頂＋雙語 Logo 與手機／桌面效果稿，要求取代舊開始頁。獨立分支 `codex/hello-static-title`／[PR #101](https://github.com/yauchai2/Game-Lab/pull/101)，基於 main `282b87c`。移除標題 3D renderer／舊裝置框，改滿高直幅、桌面黑邊、獨立透明 Logo／原生開始按鈕及局部燈號。Alan 再要求序章重製，已移除舊 SVG／上下屏故事卡，改三頁完整直幅漫畫、圖外工具列／可展故事文字、左右鍵及真實觸控滑動。素材隨離線及快取網站嵌入。序章／選職業／存檔仍由既有 INTRO 擁有。證據與已知基線失敗見 [交付紀錄](hello-static-title/README.md)。本批未合併／未發佈。
+Alan要求所有音樂／音效可選線上資源，全部review；參考Ice Cream.mp4、Into Moon〈Dream Logic〉、Lionclad〈Dorephin Shopping Center〉。後兩曲身分由使用者補齊，Dorephin有官方製作說明；YouTube／SoundCloud直接播放受限，未捏造已聽完整或量測參考曲。
 
-**本批場景／故事候選：** 已merge main d06be7b／v0.65，保留Claude裝備、手機、掉落及血跡40處／90秒。新增street-neighborhoods.js：十二地景生活工作點，沿terrainBuild放置／碰撞／BFS，120種子中118有位置、全區連通，原版／訓練／塔樓不加。六章contact/request/lead及結尾串錯送試音排程，失物歸還主人；沿同一ch與六深度，不建NPC任務state。directJournal實際手機、六次主線kill／save／地圖離線邊界、24actor、血跡、site0.65／audio及gameplay回歸通過。docs/neighborhood-scenes為入口，音訊及此批仍PR88候選未發佈；下一步處理review及真機／最終佩戴／聽感邊界。
+本分支codex/audio-reference-review基於main3add8a6／v0.75.0，另檢查Claude8ee3a2e／v0.77候選：共6曲46基礎cue、58綁定。Claude14新檔只複製到review目錄，不合併或覆寫其待發工作。正式src/audio／audio.js／audio-assets／存檔未變。
 
-# 接續點：全22浮島
+已完成來源／用途／數值與設計審查：52項表、62音訊解碼、4首CC0音樂與6個CC0音效候選、來源／衍生hash與license；64控制項比較頁含兩段固定事件A/B、篩選／播放互斥／停止／匯出意見。詳見[audio-reference-review/README.md](audio-reference-review/README.md)。主觀聽感未被自動填通過。
 
-2026-10-27 UTC。分支codex/floating-island-redesign／PR98，基底main4c90e05；Claude4a5d1e4已查核，源碼接入範圍已在PR交接。Alan要求全部完成並注意美感。
+建議共通音色、日間彈跳與夜間漂浮兩軸；先做一張街區完整聲景樣板，確認音色再重編／替換其餘52項。未採樣YouTube／Ice Cream錄音、未買素材或聯絡作者，候選尚未進正式音訊。原17份CC0歷史素材繼續封存。
 
-22模型／44portableGLB／22Blend／110視圖齊，18故事刷圖＋3塔樓＋1訓練，index與原生戰鬥接入、正式單檔重建。六章／數值／存檔owner沿用；舊12手記附錄與新18手記有版本遷移。詳細設計、工具與驗證見[floating-island-redesign/series-completion.md](floating-island-redesign/series-completion.md)。
-
-未merge／release。下一步是整包驗收與合併review，無需再生其餘地圖；真機Safari、長時間效能及Alan主觀美術驗收仍未完成。其他PR96／97及Claude抗性／傳奇改動保留，未覆蓋。
-
-接續已修背包預覽錯用當前場景、米制詳情與18區實際GLB縮圖。證據series-review-validation.json：54詳情／132切圖／660模擬秒、GPU計數穩定與fade釋放；desktop/mobile新截圖已檢視。主線與活動、save migration、split-build再驗證。此測試是固定場景循環，不是真機長測。其他Claude分支仍4a5d1e4，main仍4c90e05。
-
-肩帶／耳罩修正PR96已整合至本次release候選；保留原GLB、四肢與20專屬裝備。
+既有浮島22張已在main，PR98與PR96的模型／掛點無需重做；v0.75故事／開始頁及Claude0.76／0.77候選分開看，不用舊交接未發佈文字判斷現況。FINISH-05／06真機、主觀美術／聽感及30分鐘實戰仍待實際結果。

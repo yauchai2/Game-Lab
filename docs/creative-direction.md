@@ -77,3 +77,9 @@ Alan 已選「明亮街頭為主，保留戰鬥冒險」，並明確補充：各
 5. 遷移待辦沿用 [backlog.md](backlog.md) 的 ICE 系列，按階段保留實作與驗證證據。
 
 本次只確立、保存並同步創作規範，未全面修改遊戲程式、素材或故事。分支為 `codex/ice-cream-visual-preview`；未合併／未發佈。同步時已 fetch：遠端 main 為 `5c8e190`，本分支預覽基於 `a8d941b`，沒有把 main 新增的 0.54–0.56 實作宣稱為本分支內容。
+
+## 音訊參考更新（2026-10-27，Asia/Taipei）
+
+Alan指定全部音樂／音效重新review，可選線上素材；除了Ice Cream.mp4，新增Into Moon〈Dream Logic〉（YouTube Gbu3iBi9F7Y）及Lionclad〈Dorephin Shopping Center〉（gvtrG92q32Q）。這是音訊選材參考，不自行更改已批准的角色比例、場景材質或UI方向。
+
+寧靜／漂浮與日間彈跳節奏作兩條提案，共用硬件／柔和電子音色；不可只按「lo-fi」標籤配滿全遊戲。參考曲與線上播放不等於獲得遊戲授權；不採樣影片錄音或借用旋律。來源、完整52檔審查、10個可授權比較片段及播放受限界線見[audio-reference-review](audio-reference-review/README.md)。本批提案尚未替換正式音訊或宣稱最終聽感通過。

@@ -876,3 +876,8 @@ v0.64.0／PR84已發佈，舊候選／未發佈文字以[正式紀錄](release-0
 - [x] MAP-REBUILD製作／接入：22張浮島模型、44 portable GLB、22 Blend、110實際模型視圖及源碼入口已完成。包含35深度／六章／18刷圖／3塔樓／訓練與舊手記遷移。見[完成交接](floating-island-redesign/series-completion.md)及PR98；未合併、未發佈，尚待真機長測與Alan美術驗收。此勾選只代表地圖製作／接入，不代表全遊戲所有待辦完成。
 
 MAP-REBUILD接續優化：背包詳情依指定map key選圖，18區卡片改真實GLB縮圖並適應畫幅；54詳情／132切圖與私有fade釋放檢查通過，見[完成交接](floating-island-redesign/series-completion.md)。未合併／發佈。
+
+## 新參考下的全音訊審查（2026-10-27）
+
+- [x] AUDIO-REVIEW來源／設計：main3add8a6＋Claude8ee3a2e共6曲／46cue、58事件綁定逐項盤點；4首CC0音樂比較片段與6個Kenney音效、來源hash／授權、62訊號解碼及64播放器A/B頁已備妥，見[審查與比較](audio-reference-review/README.md)。不是主觀聽感通過，也未替換正式src/audio。
+- [ ] AUDIO-REVIEW下一步：先對一張日間街區的配樂／核心戰鬥與UI音色做比較決定，再按52項表接入；保留原音訊owner。FINISH-05／06的真人聽感、真機／30分鐘疲勞仍未完成。

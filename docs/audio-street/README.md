@@ -1,3 +1,5 @@
+> 最新：本批原音訊已由PR90納入正式版。2026-10-27按新增Dream Logic／Dorephin參考重新審查，並納入Claude8ee3a2e的boss與故事音效；見[全音訊審查](../audio-reference-review/README.md)。下文未發佈字樣為歷史階段。
+
 # 更新街頭風格：全套音樂與音效候選
 
 2026-10-26，Asia/Hong_Kong。Alan加插要求所有音樂和音效都按更新風格優化。沿codex/street-equipment-finish／PR88接續；**已製作、接入及技術驗證，未合併或發佈；主觀聽感尚待試聽，不把量測當成已獲認可。**
