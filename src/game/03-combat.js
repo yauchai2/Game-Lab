@@ -481,7 +481,7 @@ function update(dt){
     if (m.fight&&!m.warning&&!ranged){ m.atkCd -= dt; if (m.atkCd <= 0 && m.lunge < 0){ m.lunge = 0; m.lungeHit = false; m.atkCd = m.atkInt; } }
     if (m.lunge >= 0){
       m.lunge += dt;
-      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ { const a = Math.random()*6.28; h.dash = { a, t:0 }; h.vx += Math.cos(a)*70; h.vy += Math.sin(a)*70; } addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); if(s.rules&&s.rules.dodgeHeal)lgRuleHeal(s.rules.dodgeHeal); if (lgOn('A_RIPOSTE')){ const sid = tPick(G.slots.filter(Boolean)); if (sid) castSkill(sid, .8); } continue; } const dmg = Math.max(1, m.dmg * (1 - s.red) * tRand(.9, 1.1)); const received=heroDamage(dmg,monsterLabel(m.type)+'・普通攻擊');if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,false); h.hurtT = .15; kick(Math.min(1.6, .6 + dmg/G.st.life*4), .35, '#ff3050'); if (dmg >= G.st.life*.08) hitStop(.07); addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#b32628', damageFloatSize(dmg), 'damage'); }
+      if (!m.lungeHit && m.lunge >= .14){ m.lungeHit = true; if (Math.random()*100 < s.dodge){ { const a = Math.random()*6.28; h.dash = { a, t:0 }; h.vx += Math.cos(a)*70; h.vy += Math.sin(a)*70; } addFloat(G.h.x + 3, G.h.y, BZ + 18, '閃避', '#4a8fe0', 3.6); if(s.rules&&s.rules.dodgeHeal)lgRuleHeal(s.rules.dodgeHeal); if (lgOn('A_RIPOSTE')){ const sid = tPick(G.slots.filter(Boolean)); if (sid) castSkill(sid, .8); } continue; } const dmg = Math.max(1, monsterHitDmg(m, m.dmg * tRand(.9, 1.1))); const received=heroDamage(dmg,monsterLabelEl(m,'普通攻擊'));if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,false); h.hurtT = .15; kick(Math.min(1.6, .6 + dmg/G.st.life*4), .35, '#ff3050'); if (dmg >= G.st.life*.08) hitStop(.07); addFloat(G.h.x + 3, G.h.y + tRand(-2,2), BZ + 16, tFmt(dmg), '#b32628', damageFloatSize(dmg), 'damage'); }
       if (m.lunge >= .3) m.lunge = -1;
     }
   }
@@ -563,7 +563,7 @@ function monsterSkillTick(m,dt){
   }
   if(!m.warning)return;
   const w=m.warning;w.t-=dt;if(w.t>0)return;
-  if(monsterWarningContains(w,G.h.x,G.h.y)){const dmg=Math.max(1,m.dmg*(m.boss?1.5:1.15)*(1-G.st.red));const received=heroDamage(dmg,monsterLabel(m.type)+'・'+(MONSTER_SKILL_NAMES[w.skill]||'攻勢'),w.skill);if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,true);G.h.hurtT=.15;addFloat(G.h.x,G.h.y,BZ+18,tFmt(dmg),'#b32628',damageFloatSize(dmg),'damage');kick(m.boss?2.8:1.2,.24,'#dca19a',.5);}
+  if(monsterWarningContains(w,G.h.x,G.h.y)){const dmg=Math.max(1,monsterHitDmg(m,m.dmg*(m.boss?1.5:1.15)));const received=heroDamage(dmg,monsterLabelEl(m,MONSTER_SKILL_NAMES[w.skill]||'攻勢'),w.skill);if(received>0&&typeof heroStatusHit==='function')heroStatusHit(m,dmg,true);G.h.hurtT=.15;addFloat(G.h.x,G.h.y,BZ+18,tFmt(dmg),'#b32628',damageFloatSize(dmg),'damage');kick(m.boss?2.8:1.2,.24,'#dca19a',.5);}
   if(w.skill==='charge'||w.skill==='burrow'){const [x,y]=terrainProject(w.x2,w.y2);if(w.skill==='burrow'||terrainSegment(m.x,m.y,x,y)){m.x=x;m.y=y;}addFx({k:'ghost',x:w.x,y:w.y,x2:m.x,y2:m.y,col:'#b6c5d1',t:0,dur:.3});}
   for(const [x,y]of w.points)addFx({k:w.skill==='pulse'?'ring':'boom',x,y,z:BZ+2,col:w.skill==='salvo'?'#a2cae2':'#dbb08c',t:0,dur:.45,big:m.boss});
   m.skillsUsed=(m.skillsUsed||0)+1;m.warning=null;m.skillCd=m.boss?(m.enraged?2.7:4.2):5+(m.slot%3);
@@ -594,6 +594,11 @@ function castExpansionSkill(id,mul,origin,prim,al){
 
 /* Shared, bounded encounter systems. No extra UI or wall-clock loop owns combat. */
 const SPECTACLE_SKILLS=new Set(['SWARM','GUARDIAN','ARROWS','GIANTBLADE','OVERTURE','RIFT','RESONANCE','GRAVITY']);
+/* 抗性：深度 4 起，部分魔物帶火／冰／電元素；元素攻擊吃抗性（上限 75%），只吃一半護甲減傷 */
+const MON_EL_NAME = { fire:'火焰', cold:'冰霜', light:'閃電' }, MON_EL_RES = { fire:'resF', cold:'resC', light:'resL' };
+function monsterEl(m){if(lvlNow()<4)return null;let h=m.boss?G.depth:0;for(const c of String(m.type))h=(h*31+c.charCodeAt(0))>>>0;return [null,'fire','cold','light'][h%4];}
+function monsterHitDmg(m,raw){const el=monsterEl(m),red=G.st.red;if(!el)return raw*(1-red);return raw*(1-Math.min(75,G.st[MON_EL_RES[el]]||0)/100)*(1-red*.5);}
+function monsterLabelEl(m,tail){const el=monsterEl(m);return monsterLabel(m.type)+(el?'・'+MON_EL_NAME[el]:'')+'・'+tail;}
 function monsterLabel(type){return MONSTER_GUIDE.find(r=>r[0]===type)?.[1]||'未知魔物';}
 function recordIncoming(amount,shield,source,kind,lethal=false){if(G.train||G.h.dead>0||G.offline||G.h.hp<=0&&!lethal)return;if(lethal)G.h.fatalSource=String(source).slice(0,100);G.damageLog=G.damageLog||[];G.damageLog.push({time:G.time,amount:Math.max(0,amount),shield:Math.max(0,shield),source:String(source).slice(0,100),kind});G.damageLog=G.damageLog.filter(r=>r.time>=G.time-8).slice(-80);}
 function recordDeath(){if(G.offline)return;const hits=(G.damageLog||[]).filter(r=>G.time-r.time<=8),groups={};for(const r of hits)groups[r.source]=(groups[r.source]||0)+r.amount;const last=hits.at(-1);G.deathReport={time:G.time,cause:G.h.fatalSource||last?.source||'沒有足夠承傷紀錄',area:G.run?(G.run.city?'城市遠征':G.run.tower?'無限之塔':BIOMES[G.run.map?.biome||0].n):BIOMES[biomeNow()].n,total:hits.reduce((n,r)=>n+r.amount,0),shield:hits.reduce((n,r)=>n+r.shield,0),largest:Math.max(0,...hits.map(r=>r.amount)),life:G.st.life,sources:Object.entries(groups).map(([name,amount])=>({name,amount})).sort((a,b)=>b.amount-a.amount).slice(0,6),skills:[...G.slots]};G.damageLog=[];G.h.fatalSource=null;}
