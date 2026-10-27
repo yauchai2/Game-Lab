@@ -269,12 +269,20 @@ const SAVE_KEY = 'idle-hero-save-v2';
 function serialize(){ return { v:2,tutorial:G.tutorial,activityLoot:G.activityLoot,rift:G.rift,towerRoomVersion:1,skillCollectionVersion:1,skillBooks:G.skillBooks||{},skillPity:G.skillPity||0,season:G.season,secrets:G.secrets,unread:G.unread,deathReport:G.deathReport, careerVersion:1,ascension:G.ascension||null,ascensionNodes:G.ascensionNodes||[],circuits:G.circuits||[G.board.template],circuitLayouts:G.circuitLayouts||{},circuitPity:G.circuitPity||0,startingChar:G.startingChar||null, equipmentVersion:2, progressionVersion:1,storyFlags:G.storyFlags,city:G.city,legacyMode:G.legacyMode,legacyTalent:G.legacyTalent,t:Date.now(), castPolicy:G.castPolicy, lvl:G.lvl, xp:G.xp, gold:G.gold, depth:G.depth, maxDepth:G.maxDepth, kills:G.kills, push:G.push, speed:G.speed, filter:G.filter, deaths:G.deaths, totalKills:G.totalKills,
   coreDust:G.coreDust,inventory:G.inventory,nextGearId:G.nextGearId,autoEquip:G.autoEquip,storageRecycled:G.storageRecycled,whUp:G.whUp,offUp:G.offUp,chips:G.chips,groundDrops:G.drops.filter(d=>!d.done),equip:G.equip, armory:G.armory, equipBackup:G.equipBackup, deferChoices:G.deferChoices, gems:G.gems,gemTier:G.gemTier, carts:G.carts, seen:G.seen, goals:G.goals, mapsDone:G.mapsDone, board:G.board, pass:G.pass, ach:G.ach, legSeen:G.legSeen, pity:G.pity, parts:G.parts, bossHp:G.bossHp, towerBest:G.towerBest, quest:G.quest, craftN:G.craftN, mk:G.mk, seenG:G.seenG, seenC:G.seenC, cz:G.cz, userCz:G.userCz, dmgNum:G.dmgNum, seenInv:G.seenInv, seenParts:G.seenParts, seenGoals:G.seenGoals, builds:G.builds, bi:G.bi, relics:G.relics, relicPicks:G.relicPicks, cos:G.cos, own:G.own, heroName:G.heroName, born:G.born, autoCard:G.autoCard, bossKills:G.bossKills, char:G.char, cards:G.cards, picks:G.picks, maps:G.maps, run:G.run, hp:Number.isFinite(G.train?.hpBefore)?G.train.hpBefore*G.st.life:G.h.hp, log:G.log.slice(0, 5) }; }
 /* Old three-slot saves keep every item and reference; only signature categories move. */
+/* 已是新版格式的存檔：只把「不存在的」傳奇詞綴換成現行傳奇專屬詞（舊版 0.70 存檔），其餘數值不動，可重複執行 */
+function repairLegendAffixes(o){
+ const fixOne=it=>{if(it?.lg&&Array.isArray(it.aff))it.aff.forEach((a,i)=>{const key=lgModKey(it.lg,i);if(a&&!AFF[a.k]&&AFF[key]){a.k=key;a.v=rollAff(key,it.il||1,1.35).v;delete a.tier;}});};
+ for(const it of Object.values(o.armory||{}))fixOne(it);for(const it of o.inventory||[])fixOne(it);for(const d of o.groundDrops||[])if(d.it)fixOne(d.it);
+ for(const key of ['equip','equipBackup'])for(const it of Object.values(o[key]||{}))fixOne(it);
+ return o;
+}
 function migrateEquipmentSlots(input){
- if(input.equipmentVersion===2)return input;
+ if(input.equipmentVersion===2)return repairLegendAffixes(input);
  const o=copyState(input),empty=()=>Object.fromEntries(Object.keys(SLOTN).map(k=>[k,null]));
  const fix=it=>{if(it&&SIGNATURE_GEAR[it.lg])it.slot=SIGNATURE_GEAR[it.lg].slot;if(it?.lg&&Array.isArray(it.aff))it.aff.forEach((a,i)=>{const key=lgModKey(it.lg,i);if(a&&AFF[key]&&(a.k!==key||it.lgv!==2)){a.k=key;a.v=rollAff(key,it.il||1,1.35).v;delete a.tier;}});if(it?.lg)it.lgv=2;return it;};   /* 舊傳奇裝備的詞綴轉成傳奇專屬詞 */
  o.armory=o.armory||{};for(const it of Object.values(o.armory))fix(it);
  for(const it of o.inventory||[])fix(it);for(const d of o.groundDrops||[])if(d.it)fix(d.it);
+   /* 已是新版格式：只重跑傳奇詞綴轉換（可重複執行），舊版 0.70 存檔的傳奇詞綴才不會殘留 */
  for(const key of ['equip','equipBackup']){const group=empty();for(const it of Object.values(o[key]||{})){fix(it);if(!it||!SLOTN[it.slot])continue;if(it.lg&&!o.armory[it.lg])o.armory[it.lg]=it;if(!group[it.slot])group[it.slot]=it;}o[key]=group;}
  const byUid=new Map((o.inventory||[]).map(it=>[it.uid,it]));
  const build=b=>{if(!b?.equipment)return;const refs=empty();for(const [slot,r]of Object.entries(b.equipment)){const target=r?.kind==='core'?coreSlot(r.id):r?.kind==='gear'?(byUid.get(r.uid)?.slot||slot):slot;if(SLOTN[target])refs[target]=r;}b.equipment=refs;};
