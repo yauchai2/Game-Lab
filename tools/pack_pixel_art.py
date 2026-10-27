@@ -61,3 +61,25 @@ data = {'bg': png_url(bg), 'bgW': bg.width, 'bgH': bg.height,
 print('title', bg.size, 'logo', logo_small.size,
       'panels', [[(p['w'], p['h']) for p in row] for row in panels],
       'bytes', (ROOT / 'src/game/pixel-art-assets.js').stat().st_size)
+
+# The loading screen in index.html shares the title's mosaic scene and logo, so it is blocky too.
+import re
+BOOT_CSS = ('#boot{--u:max(calc(100vw / 157),calc(100dvh / 279));position:fixed;inset:0;z-index:100;overflow:hidden;background:#3a4f9a;color:#fff}'
+            '#boot .boot-scene{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:calc(var(--u) * 157);height:calc(var(--u) * 279);image-rendering:pixelated;display:block}'
+            '@media(min-aspect-ratio:1/1){#boot .boot-scene{bottom:auto;top:calc(62dvh - var(--u) * 176)}}'
+            '.boot-brand{position:absolute;top:max(15%,env(safe-area-inset-top));left:50%;width:min(88vw,calc(var(--u) * 134));transform:translateX(-50%);line-height:0}'
+            '.boot-brand img{image-rendering:pixelated;display:block;width:100%;height:auto}'
+            '#boot small{position:absolute;left:0;right:0;bottom:max(12%,24px);text-align:center;font:600 20px/1.2 monospace;letter-spacing:.14em;text-shadow:2px 2px 0 #142c57,-2px 2px 0 #142c57,2px -2px 0 #142c57,-2px -2px 0 #142c57}'
+            '#boot i{position:absolute;left:50%;bottom:max(8%,12px);width:calc(var(--u) * 40);height:calc(var(--u) * 3);margin-left:calc(var(--u) * -20);background:#142c57;box-shadow:0 0 0 calc(var(--u) * 1) #fff}'
+            '#boot i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:100%;background:#c6e96c;transform-origin:0 50%;animation:boot-bar 2.4s steps(10,end) infinite}'
+            '@keyframes boot-bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}'
+            '@media(prefers-reduced-motion:reduce){#boot i::after{animation:none}}')
+BOOT_HTML = ('<div id="boot" role="status"><img class="boot-scene" src="%s" width="%d" height="%d" alt="">'
+             '<span class="boot-brand"><img src="%s" width="%d" height="%d" alt="Hello, Static! 哈囉，雜訊！"></span>'
+             '<small>正在準備街區…</small><i aria-hidden="true"></i></div>') % (
+    data['bg'], bg.width, bg.height, data['logo'], logo_small.width, logo_small.height)
+page = (ROOT / 'index.html').read_text()
+page = re.sub(r'<style>#boot\{.*?</style>', lambda m: '<style>' + BOOT_CSS + '</style>', page, count=1, flags=re.S)
+page = re.sub(r'<div id="boot".*?</div>', lambda m: BOOT_HTML, page, count=1, flags=re.S)
+(ROOT / 'index.html').write_text(page)
+print('boot page updated')

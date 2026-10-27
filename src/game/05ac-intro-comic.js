@@ -4,23 +4,26 @@ const INTRO_STAGE={timers:[],shown:0,count:0,tapReady:false};
 /* Portrait: stacked cut-outs (k = width scale, dx = sideways nudge, r = tilt).
    Wide: scattered collage (cx/cy = centre, wf = width as a share of the screen). */
 const INTRO_LAYOUT=[
- {bg:'#1d2f6f',pat:'stripe',tall:[{k:.96,dx:-.03,r:-2.2},{k:.8,dx:.06,r:2.6},{k:.9,dx:-.04,r:-1.6}],wide:[{cx:.24,cy:.42,wf:.32,r:-2.5},{cx:.70,cy:.28,wf:.46,r:2},{cx:.60,cy:.72,wf:.32,r:-1.5}]},
- {bg:'#a8324a',pat:'check',tall:[{k:.9,dx:.05,r:2.4},{k:.98,dx:-.04,r:-2},{k:.84,dx:.05,r:3}],wide:[{cx:.30,cy:.30,wf:.44,r:2},{cx:.70,cy:.56,wf:.46,r:-2},{cx:.26,cy:.74,wf:.32,r:-3}]},
+ {bg:'#1d2f6f',pat:'stripe',tall:[{k:.96,dx:-.03,r:-2.2},{k:.8,dx:.06,r:2.6},{k:.9,dx:-.04,r:-1.6}],wide:[{cx:.24,cy:.42,wf:.32,r:-2.5},{cx:.70,cy:.24,wf:.44,r:2},{cx:.62,cy:.72,wf:.27,r:-1.5}]},
+ {bg:'#a8324a',pat:'check',tall:[{k:.9,dx:.05,r:2.4},{k:.98,dx:-.04,r:-2},{k:.84,dx:.05,r:3}],wide:[{cx:.30,cy:.25,wf:.42,r:2},{cx:.72,cy:.58,wf:.42,r:-2},{cx:.26,cy:.73,wf:.27,r:-3}]},
  {bg:'#2b2f69',pat:'dusk',tall:[{k:.96,dx:-.03,r:-2.4},{k:.96,dx:.03,r:1.8}],wide:[{cx:.30,cy:.50,wf:.34,r:-2.5},{cx:.68,cy:.50,wf:.34,r:2}]}
 ];
 const INTRO_STAGE_GAP=1600,INTRO_STAGE_HOLD=4200,INTRO_STAGE_FIRST=550;
 /* One cue per panel, in story order: fan repair, ferry, radio shout / coins, runaway plug, pointing / handset, new street. */
 const INTRO_STAGE_SFX=[['st_fan','st_horn','st_static'],['st_coin','st_skid','st_ding'],['st_chime','st_jingle']];
+/* One short line under each panel; together they carry the story into character selection. */
+const INTRO_CAPS=[['午後三點，小禾在修風扇。','阿澄的渡船剛靠岸。','電台突然自己開麥。'],['販賣機亂找零。','連拖板都跑掉了。','訊號跑去高架橋了。'],['先清前街，再揪出那個頻道。','穿好拖鞋，選你的職業。']];
+const introCapFs=(W,H)=>Math.max(12,Math.min(20,Math.min(W,H*.9)*.045)),introCapH=fs=>fs*1.9;
 function introStageClear(){for(const t of INTRO_STAGE.timers)clearTimeout(t);INTRO_STAGE.timers=[];}
 function introStageLayout(){
  const stage=$('ovl')?.querySelector('.story-stage');if(!stage)return;
- const W=stage.clientWidth,H=stage.clientHeight,cuts=[...stage.querySelectorAll('.cut')],lay=INTRO_LAYOUT[INTRO.step],ar=cuts.map(c=>+c.dataset.w/+c.dataset.h);
+ const W=stage.clientWidth,H=stage.clientHeight,cuts=[...stage.querySelectorAll('.cut')],lay=INTRO_LAYOUT[INTRO.step],ar=cuts.map(c=>+c.dataset.w/+c.dataset.h),fs=introCapFs(W,H);
  const rects=[];
  if(W<H*.9){
-  const base=Math.min(W*.94,H*.5),w=lay.tall.map((p,i)=>base*p.k),h=w.map((x,i)=>x/ar[i]),gap=(H-h.reduce((a,b)=>a+b,0))/(cuts.length+1);let y=gap;
+  const base=Math.min(W*.94,H*.44),w=lay.tall.map((p,i)=>base*p.k),h=w.map((x,i)=>x/ar[i]+introCapH(fs)),gap=(H-h.reduce((a,b)=>a+b,0))/(cuts.length+1);let y=gap;
   cuts.forEach((c,i)=>{rects.push({x:W/2+lay.tall[i].dx*W-w[i]/2,y,w:w[i],r:lay.tall[i].r});y+=h[i]+gap;});
- }else cuts.forEach((c,i)=>{const p=lay.wide[i],w=Math.min(p.wf*W,H*.56*ar[i]),h=w/ar[i];rects.push({x:p.cx*W-w/2,y:p.cy*H-h/2,w,r:p.r});});
- cuts.forEach((c,i)=>{const r=rects[i];c.style.cssText=`left:${r.x.toFixed(1)}px;top:${r.y.toFixed(1)}px;width:${r.w.toFixed(1)}px;--r:${r.r}deg;--pad:${Math.max(3,r.w*.022).toFixed(1)}px;--fx:${i%2?'60vw':'-60vw'};--fy:${i%2?'-12vh':'12vh'}`;});
+ }else cuts.forEach((c,i)=>{const p=lay.wide[i],w=Math.min(p.wf*W,H*.42*ar[i]),h=w/ar[i]+introCapH(fs);rects.push({x:p.cx*W-w/2,y:p.cy*H-h/2,w,r:p.r});});
+ cuts.forEach((c,i)=>{const r=rects[i];c.style.cssText=`left:${r.x.toFixed(1)}px;top:${r.y.toFixed(1)}px;width:${r.w.toFixed(1)}px;--r:${r.r}deg;--pad:${Math.max(3,r.w*.022).toFixed(1)}px;--fs:${Math.min(fs,r.w/13.5).toFixed(1)}px;--fx:${i%2?'60vw':'-60vw'};--fy:${i%2?'-12vh':'12vh'}`;});
 }
 function introStageReveal(){$('ovl')?.querySelectorAll('.story-stage .cut').forEach(c=>c.classList.add('on','now'));}
 function introStageNext(){
@@ -38,7 +41,7 @@ function introComicRender(){
  introStageClear();document.body.classList.add('comic-screen-active');
  INTRO_STAGE.count=pages.length;INTRO_STAGE.shown=calm?pages.length:0;
  const bg=lay.pat==='dusk'?`<img class="story-dusk" src="${PIXEL_ART.bg}" alt="" draggable="false">`:'';
- o.innerHTML=`<section class="story-stage pat-${lay.pat}" style="--bg:${lay.bg}" role="group" aria-label="${uxEsc(title)}。${uxEsc(text)}">${bg}<div class="story-dots" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>${pages.map((p,i)=>`<figure class="cut${calm?' on now':''}" data-w="${p.w}" data-h="${p.h}" aria-hidden="true"><img src="${p.src}" width="${p.w}" height="${p.h}" alt="" draggable="false"></figure>`).join('')}<div class="story-timer" aria-hidden="true"><i></i></div><button type="button" class="story-tap" data-initial-focus aria-label="${step<2?'下一頁':'選擇職業'}" onclick="introStageNext()"></button></section>`;
+ o.innerHTML=`<section class="story-stage pat-${lay.pat}" style="--bg:${lay.bg}" role="group" aria-label="${uxEsc(title)}。${uxEsc(text)}">${bg}<div class="story-dots" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>${pages.map((p,i)=>`<figure class="cut${calm?' on now':''}" data-w="${p.w}" data-h="${p.h}" aria-hidden="true"><img src="${p.src}" width="${p.w}" height="${p.h}" alt="" draggable="false"><figcaption>${uxEsc(INTRO_CAPS[step][i]||'')}</figcaption></figure>`).join('')}<div class="story-timer" aria-hidden="true"><i></i></div><button type="button" class="story-tap" data-initial-focus aria-label="${step<2?'下一頁':'選擇職業'}" onclick="introStageNext()"></button></section>`;
  introStageLayout();
  const hold=calm?INTRO_STAGE_HOLD+1800:INTRO_STAGE_HOLD,first=INTRO_STAGE_FIRST;
  if(!calm)pages.forEach((p,i)=>INTRO_STAGE.timers.push(setTimeout(()=>{const c=o.querySelectorAll('.cut')[i];if(!c)return;c.classList.add('on');INTRO_STAGE.shown=i+1;if(typeof SFX==='function')SFX(INTRO_STAGE_SFX[step]?.[i]||'snap');},first+i*INTRO_STAGE_GAP)));
@@ -69,6 +72,7 @@ body.intro-active.comic-screen-active #ovl>.story-stage{position:relative;flex:n
 .cut::before{content:'';position:absolute;top:calc(var(--pad,4px) * -3);left:50%;width:calc(var(--pad,4px) * 9);height:calc(var(--pad,4px) * 4);margin-left:calc(var(--pad,4px) * -4.5);background:#ffe27acc;transform:rotate(-4deg);box-shadow:0 0 0 1px #0002}
 .cut:nth-of-type(even)::before{transform:rotate(5deg);left:22%}
 .cut img{display:block;width:100%;height:auto;image-rendering:pixelated;user-select:none}
+.cut figcaption{margin-top:calc(var(--pad,4px) * 1.2);color:#3a2418;font:var(--fs,14px)/1.5 var(--ux-display);text-align:center;white-space:nowrap}
 .cut.on{visibility:visible;animation:cut-pop 380ms steps(6,end) both}
 .cut.on.now{animation:none}
 .story-timer{position:absolute;left:0;right:0;bottom:0;height:8px;background:#0006;z-index:3;pointer-events:none}

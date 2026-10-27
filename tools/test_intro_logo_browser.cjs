@@ -30,11 +30,11 @@ const base=process.env.TITLE_TEST_URL||'http://127.0.0.1:8808/';
   assert.equal(await p.locator('body.title-screen-active').count(),0);assert.equal(await p.evaluate(()=>INTRO_TITLE.timer),0);
   await ready();
   assert.equal(await p.locator('.story-stage button').count(),1,'prologue has one invisible tap target and no buttons');
-  assert.equal((await p.locator('.story-stage').innerText()).trim(),'','prologue shows no text');
+  const caps=await p.locator('.cut figcaption').allTextContents();assert.equal(caps.length,3);assert(caps.every(c=>c.length>=4&&c.length<=14),'one short caption under each panel '+caps);
   assert.equal(await p.locator('.cut').count(),3);
   assert.equal(await p.locator('.cut img').first().evaluate(e=>getComputedStyle(e).imageRendering),'pixelated');
   assert(await p.locator('.cut img').evaluateAll(a=>a.every(i=>i.naturalWidth<=160)),'panels are stored as low-resolution mosaics');
-  checks.push('keyboard start opens a text-free, button-free prologue');
+  checks.push('keyboard start opens a captioned, button-free prologue');
   /* Tapping while panels are still arriving completes the collage; the next tap turns the page. */
   await p.locator('.story-tap').click();
   assert.equal(await p.locator('.cut.on').count(),3);assert.equal(await p.evaluate(()=>INTRO.step),0);
