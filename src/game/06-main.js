@@ -13,7 +13,7 @@ if (!loadedT) logLine('冒險開始！英雄會自動戰鬥並走近拾取掉落
 let ui;
 const simulate = sec => { G.offline = true; for (let i = 0; i < sec/.05; i++){ while (GAME_FEATURES.cardChoices && G.picks > 0){ const c = rollCards(1)[0]; if (!c) break; takeCard(c); } while (GAME_FEATURES.cardChoices && G.relicPicks > 0){ const r = rollRelics(1)[0]; if (!r){ G.relicPicks = 0; break; } takeRelic(r); } update(.05); } G.offline = false; G.floats = []; G.fx = []; };
 ui = mountFigure({
-  fig:'06', title:'Idle Hero', hint:'', size:[BXW, BYW, 36], palette:'mint', state:G, credit:false, header:false,
+  fig:'06', title:'Hello, Static! 哈囉，雜訊！', hint:'', size:[BXW, BYW, 36], palette:'mint', state:G, credit:false, header:false,
   scene, buttonsLabel:'英雄指令',
   onChoiceChange:()=>uiSyncSettings(),
   choiceMessages:{current:label=>label+'：目前設定。',unavailable:label=>label+'：目前無法使用。'},

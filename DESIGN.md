@@ -1,6 +1,5 @@
 ---
 
-> **怪物造型現行補註（2026-10-26）：** [十二款模型與同伴設定](docs/monster-catalog.md) 優先於本文歷史生物造型描述。舊敵人類型保留玩法職責；本次沒有改 AI、數值、存檔、模型或遊戲。
 version: alpha
 colors:
   ink: "#172751"
@@ -22,6 +21,8 @@ omitted:
     reason: "Shell geometry is owned by UI_LAYOUT_CSS; existing scene geometry remains in the renderer. No global spacing token migration."
 ---
 # Idle Hero
+
+> **怪物造型現行補註（2026-10-26）：** [十二款模型與同伴設定](docs/monster-catalog.md) 優先於本文歷史生物造型描述。舊敵人類型保留玩法職責；本次沒有改 AI、數值、存檔、模型或遊戲。
 
 ## Overview
 
@@ -474,3 +475,27 @@ Alan 本聊天選定 Patreon 並提供 https://www.patreon.com/c/alanycchan，�
 只前往公開創作者頁，不提供站內結帳、帳號綁定、戰力獎勵或付款成功回報。公開頁不列金額、福利或扣款說明；只有低調 Patreon 入口及自願支持短句。
 
 全遊戲美術基準及最新材質規格見[creative-direction](docs/creative-direction.md)；0.64整合交付見[style-complete](docs/style-complete/README.md)。藍紫窗口／Cubic11操作契約維持。
+
+
+## Hello, Static! 暮色屋頂開始頁（2026-10-27）
+
+本節取代上方舊 3D Logo 舞台的開始頁規格。Alan 選定 Hello, Static!／哈囉，雜訊！及暮色屋頂資產，提供手機與桌面合成稿並要求替換開始頁。頁面採品牌表現，序章、職業選擇與存檔仍由既有 INTRO／05r-direct-play 擁有。
+
+- `05ab-intro-logo.js` 是開始頁幾何與生命週期唯一 owner：滿視窗高度、桌面 9:16 置中及 #191919 黑邊，窄手機裁背景兩側。Logo 使用獨立透明圖，上方約 16–18%；按鈕距底 11.6%，最小觸控高 48px（短屏 44px），保留 Cubic 11。
+- 開始頁局部 token `--title-ink #142c57`、`--title-key #e5edfc`、`--title-edge #8d9db9` 僅由此檔 CSS 定義／消費；不是新的全局遊戲皮膚。按鈕沿用銀藍實體按鍵語言。Logo 是提供的圖像字標，正文仍用 UX_THEME 字體。
+- 原圖保存在 `assets/brand/hello-static`；`tools/pack_title_screen.py` 是唯一準備／打包入口，產生透明 Logo WebP、屋頂 WebP、hash 清單、`title-screen-assets.js`、`ASSET.logo` 與 boot 同源字標。`tools/pack_logo.py` 委派至此入口。單檔與網站共用嵌入資料，無外部素材請求。舊 3D 原件保留作歷史來源，但 index 不再載入／建立標題 WebGL renderer。
+- 唯一常駐動效是原畫燈位的緩慢階梯明滅；Logo 一次淡入、開始一次 220ms 淡出。減少動態或遊戲減少特效時停用；背景分頁停動效。沒有全屏閃爍、鏡頭晃動或新增音訊播放器。
+- 按鈕 hover／焦點／按下不改位置或尺寸；初始焦點沿用 uxOpenDialog，Enter／Space 原生啟動。Escape 沿用序章行為並清除待執行轉場；bfcache 回來重掛完整開始頁。允許瀏覽器縮放及安全區，保留圖像失敗時的操作入口。
+
+此輪為候選，驗證與狀態見 [交付紀錄](docs/hello-static-title/README.md)。
+
+## Hello, Static! 直幅漫畫序章（2026-10-27）
+
+Alan 追加提供三頁漫畫原圖及手機、桌面效果稿，要求連同開始頁一併替換舊序章。此節取代前文舊 SVG 插圖／上下屏故事卡的呈現規格，選職業頁與遊戲主介面不在這次改造範圍。
+
+- `05ac-intro-comic.js` 是閱讀器的唯一呈現 owner，圖像來源為 `assets/prologue` 的三張已批准原圖；第三頁必須使用銀灰／青藍／綠鍵的正式遊戲手機版本，不是藍色對講機舊稿。
+- 整頁保持 941:1672 比例及 contain，不能裁掉漫畫格；置中 #191919 霧面底，最大漫畫高 900px；短屏預留工具列與焦點空間。主「下一頁／選擇角色」按鍵覆於右下，其他閱讀工具置於圖外，避免佔用人物／情節主體。
+- 按鍵共用 `05ab-intro-logo.js` 的 `.entry-surface` 局部 token 與 title-start 銀藍實體材質；無第二組色票或新字型。正文共用 Cubic 11，完整故事可用原生 details 展開，維持 16px／1.7 閱讀行距。
+- `INTRO_STORY` 仍是唯一文字來源；這次第二頁標題同步為「會跟著節拍跑的雜物」。沒有把故事文字燒入圖像，也不把玩家命名或職業畫死在素材內。
+- 原生按鈕、左右鍵、觸控滑動皆可翻頁；垂直／取消觸控不翻頁，文字展開期間方向鍵留給閱讀。翻頁僅 200ms 淡入，OS／遊戲減少動態時停用；無自動翻頁、抖動或付費媒體依賴。
+- `tools/pack_intro_comic.py` 產生 WebP、hash 清單及嵌入 `intro-comic-assets.js`；三頁共 657,298 bytes，來源 PNG 保留。獨立快取及離線單檔共用，無素材熱連結。
