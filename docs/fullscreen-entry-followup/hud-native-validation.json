@@ -1,0 +1,870 @@
+{
+  "base": "641c43d",
+  "scope": "Native DOM with review CSS injected only; source unchanged. 6 viewports × normal/watch × before/after.",
+  "rows": [
+    {
+      "variant": "before",
+      "width": 390,
+      "height": 844,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 325.125,
+          "y": 11,
+          "width": 52.875,
+          "height": 24,
+          "top": 11,
+          "right": 378,
+          "bottom": 35,
+          "left": 325.125
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 366.078125,
+          "y": 43,
+          "width": 11.921875,
+          "height": 24,
+          "top": 43,
+          "right": 378,
+          "bottom": 67,
+          "left": 366.078125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 390,
+      "height": 844,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 323.125,
+          "y": 13,
+          "width": 52.875,
+          "height": 24,
+          "top": 13,
+          "right": 376,
+          "bottom": 37,
+          "left": 323.125
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 364.078125,
+          "y": 45,
+          "width": 11.921875,
+          "height": 24,
+          "top": 45,
+          "right": 376,
+          "bottom": 69,
+          "left": 364.078125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 1024,
+      "height": 768,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 948.71875,
+          "y": 11,
+          "width": 63.28125,
+          "height": 24,
+          "top": 11,
+          "right": 1012,
+          "bottom": 35,
+          "left": 948.71875
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 997.734375,
+          "y": 46,
+          "width": 14.265625,
+          "height": 24,
+          "top": 46,
+          "right": 1012,
+          "bottom": 70,
+          "left": 997.734375
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 1024,
+      "height": 768,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 940.71875,
+          "y": 19,
+          "width": 63.28125,
+          "height": 24,
+          "top": 19,
+          "right": 1004,
+          "bottom": 43,
+          "left": 940.71875
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 989.734375,
+          "y": 54,
+          "width": 14.265625,
+          "height": 24,
+          "top": 54,
+          "right": 1004,
+          "bottom": 78,
+          "left": 989.734375
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 1440,
+      "height": 900,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 805.28125,
+          "y": 62.328125,
+          "width": 99.328125,
+          "height": 34.796875,
+          "top": 62.328125,
+          "right": 904.609375,
+          "bottom": 97.125,
+          "left": 805.28125
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 882.21875,
+          "y": 113.703125,
+          "width": 22.390625,
+          "height": 34.796875,
+          "top": 113.703125,
+          "right": 904.609375,
+          "bottom": 148.5,
+          "left": 882.21875
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 1440,
+      "height": 900,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 1318.875,
+          "y": 20.328125,
+          "width": 99.328125,
+          "height": 34.796875,
+          "top": 20.328125,
+          "right": 1418.203125,
+          "bottom": 55.125,
+          "left": 1318.875
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 1395.8125,
+          "y": 71.703125,
+          "width": 22.390625,
+          "height": 34.796875,
+          "top": 71.703125,
+          "right": 1418.203125,
+          "bottom": 106.5,
+          "left": 1395.8125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 1920,
+      "height": 1080,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 1154.875,
+          "y": 62.328125,
+          "width": 99.328125,
+          "height": 34.796875,
+          "top": 62.328125,
+          "right": 1254.203125,
+          "bottom": 97.125,
+          "left": 1154.875
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 1231.8125,
+          "y": 113.703125,
+          "width": 22.390625,
+          "height": 34.796875,
+          "top": 113.703125,
+          "right": 1254.203125,
+          "bottom": 148.5,
+          "left": 1231.8125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 1920,
+      "height": 1080,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 1798.875,
+          "y": 20.328125,
+          "width": 99.328125,
+          "height": 34.796875,
+          "top": 20.328125,
+          "right": 1898.203125,
+          "bottom": 55.125,
+          "left": 1798.875
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 1875.8125,
+          "y": 71.703125,
+          "width": 22.390625,
+          "height": 34.796875,
+          "top": 71.703125,
+          "right": 1898.203125,
+          "bottom": 106.5,
+          "left": 1875.8125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 2309,
+      "height": 1269,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 1543.875,
+          "y": 62.328125,
+          "width": 99.328125,
+          "height": 34.796875,
+          "top": 62.328125,
+          "right": 1643.203125,
+          "bottom": 97.125,
+          "left": 1543.875
+        },
+        "covered": true,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 1620.8125,
+          "y": 113.703125,
+          "width": 22.390625,
+          "height": 34.796875,
+          "top": 113.703125,
+          "right": 1643.203125,
+          "bottom": 148.5,
+          "left": 1620.8125
+        },
+        "covered": true,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 2309,
+      "height": 1269,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 2187.875,
+          "y": 20.328125,
+          "width": 99.328125,
+          "height": 34.796875,
+          "top": 20.328125,
+          "right": 2287.203125,
+          "bottom": 55.125,
+          "left": 2187.875
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 2264.8125,
+          "y": 71.703125,
+          "width": 22.390625,
+          "height": 34.796875,
+          "top": 71.703125,
+          "right": 2287.203125,
+          "bottom": 106.5,
+          "left": 2264.8125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 2560,
+      "height": 1440,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 1794.875,
+          "y": 62.328125,
+          "width": 99.328125,
+          "height": 34.796875,
+          "top": 62.328125,
+          "right": 1894.203125,
+          "bottom": 97.125,
+          "left": 1794.875
+        },
+        "covered": true,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 1871.8125,
+          "y": 113.703125,
+          "width": 22.390625,
+          "height": 34.796875,
+          "top": 113.703125,
+          "right": 1894.203125,
+          "bottom": 148.5,
+          "left": 1871.8125
+        },
+        "covered": true,
+        "visible": true
+      }
+    },
+    {
+      "variant": "before",
+      "width": 2560,
+      "height": 1440,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 2438.875,
+          "y": 20.328125,
+          "width": 99.328125,
+          "height": 34.796875,
+          "top": 20.328125,
+          "right": 2538.203125,
+          "bottom": 55.125,
+          "left": 2438.875
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 2515.8125,
+          "y": 71.703125,
+          "width": 22.390625,
+          "height": 34.796875,
+          "top": 71.703125,
+          "right": 2538.203125,
+          "bottom": 106.5,
+          "left": 2515.8125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 390,
+      "height": 844,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 25.578125,
+          "y": 101,
+          "width": 42.546875,
+          "height": 24,
+          "top": 101,
+          "right": 68.125,
+          "bottom": 125,
+          "left": 25.578125
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 118.515625,
+          "y": 101,
+          "width": 9.578125,
+          "height": 24,
+          "top": 101,
+          "right": 128.09375,
+          "bottom": 125,
+          "left": 118.515625
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 390,
+      "height": 844,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 27.578125,
+          "y": 103,
+          "width": 42.546875,
+          "height": 24,
+          "top": 103,
+          "right": 70.125,
+          "bottom": 127,
+          "left": 27.578125
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 120.515625,
+          "y": 103,
+          "width": 9.578125,
+          "height": 24,
+          "top": 103,
+          "right": 130.09375,
+          "bottom": 127,
+          "left": 120.515625
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 1024,
+      "height": 768,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 26.265625,
+          "y": 105,
+          "width": 47.78125,
+          "height": 24,
+          "top": 105,
+          "right": 74.046875,
+          "bottom": 129,
+          "left": 26.265625
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 126.3125,
+          "y": 105,
+          "width": 10.765625,
+          "height": 24,
+          "top": 105,
+          "right": 137.078125,
+          "bottom": 129,
+          "left": 126.3125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 1024,
+      "height": 768,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 34.265625,
+          "y": 113,
+          "width": 47.78125,
+          "height": 24,
+          "top": 113,
+          "right": 82.046875,
+          "bottom": 137,
+          "left": 34.265625
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 134.3125,
+          "y": 113,
+          "width": 10.765625,
+          "height": 24,
+          "top": 113,
+          "right": 145.078125,
+          "bottom": 137,
+          "left": 134.3125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 1440,
+      "height": 900,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 30.9375,
+          "y": 155,
+          "width": 47.859375,
+          "height": 24,
+          "top": 155,
+          "right": 78.796875,
+          "bottom": 179,
+          "left": 30.9375
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 132.953125,
+          "y": 155,
+          "width": 10.78125,
+          "height": 24,
+          "top": 155,
+          "right": 143.734375,
+          "bottom": 179,
+          "left": 132.953125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 1440,
+      "height": 900,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 34.9375,
+          "y": 113,
+          "width": 47.859375,
+          "height": 24,
+          "top": 113,
+          "right": 82.796875,
+          "bottom": 137,
+          "left": 34.9375
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 136.953125,
+          "y": 113,
+          "width": 10.78125,
+          "height": 24,
+          "top": 113,
+          "right": 147.734375,
+          "bottom": 137,
+          "left": 136.953125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 1920,
+      "height": 1080,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 30.9375,
+          "y": 155,
+          "width": 47.859375,
+          "height": 24,
+          "top": 155,
+          "right": 78.796875,
+          "bottom": 179,
+          "left": 30.9375
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 132.953125,
+          "y": 155,
+          "width": 10.78125,
+          "height": 24,
+          "top": 155,
+          "right": 143.734375,
+          "bottom": 179,
+          "left": 132.953125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 1920,
+      "height": 1080,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 34.9375,
+          "y": 113,
+          "width": 47.859375,
+          "height": 24,
+          "top": 113,
+          "right": 82.796875,
+          "bottom": 137,
+          "left": 34.9375
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 136.953125,
+          "y": 113,
+          "width": 10.78125,
+          "height": 24,
+          "top": 113,
+          "right": 147.734375,
+          "bottom": 137,
+          "left": 136.953125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 2309,
+      "height": 1269,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 30.9375,
+          "y": 155,
+          "width": 47.859375,
+          "height": 24,
+          "top": 155,
+          "right": 78.796875,
+          "bottom": 179,
+          "left": 30.9375
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 132.953125,
+          "y": 155,
+          "width": 10.78125,
+          "height": 24,
+          "top": 155,
+          "right": 143.734375,
+          "bottom": 179,
+          "left": 132.953125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 2309,
+      "height": 1269,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 34.9375,
+          "y": 113,
+          "width": 47.859375,
+          "height": 24,
+          "top": 113,
+          "right": 82.796875,
+          "bottom": 137,
+          "left": 34.9375
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 136.953125,
+          "y": 113,
+          "width": 10.78125,
+          "height": 24,
+          "top": 113,
+          "right": 147.734375,
+          "bottom": 137,
+          "left": 136.953125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 2560,
+      "height": 1440,
+      "watch": false,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 30.9375,
+          "y": 155,
+          "width": 47.859375,
+          "height": 24,
+          "top": 155,
+          "right": 78.796875,
+          "bottom": 179,
+          "left": 30.9375
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 132.953125,
+          "y": 155,
+          "width": 10.78125,
+          "height": 24,
+          "top": 155,
+          "right": 143.734375,
+          "bottom": 179,
+          "left": 132.953125
+        },
+        "covered": false,
+        "visible": true
+      }
+    },
+    {
+      "variant": "after",
+      "width": 2560,
+      "height": 1440,
+      "watch": true,
+      "gold": {
+        "text": "42.0k",
+        "rect": {
+          "x": 34.9375,
+          "y": 113,
+          "width": 47.859375,
+          "height": 24,
+          "top": 113,
+          "right": 82.796875,
+          "bottom": 137,
+          "left": 34.9375
+        },
+        "covered": false,
+        "visible": true
+      },
+      "dps": {
+        "text": "8",
+        "rect": {
+          "x": 136.953125,
+          "y": 113,
+          "width": 10.78125,
+          "height": 24,
+          "top": 113,
+          "right": 147.734375,
+          "bottom": 137,
+          "left": 136.953125
+        },
+        "covered": false,
+        "visible": true
+      }
+    }
+  ]
+}

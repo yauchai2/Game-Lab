@@ -1,0 +1,326 @@
+{
+  "base": "641c43d",
+  "cast": {
+    "profiles": {
+      "street": {
+        "name": "戰士",
+        "model": "aki",
+        "title": "近戰與護盾",
+        "role": "近戰、連鎖電擊、護盾續戰",
+        "passive": "普通攻擊連續命中可累積短暫護盾，上限生命5%。",
+        "sig": {
+          "n": "短路連打",
+          "cd": 7,
+          "d": "每7秒重擊近處目標，再向最多3個鄰近敵人跳電。"
+        }
+      },
+      "frost": {
+        "name": "樂師",
+        "model": "milo",
+        "title": "音波與節拍",
+        "role": "中距離、環形音波、連擊加速",
+        "passive": "持續普攻可累積5層節拍，最多加快音波節奏20%；中斷3秒重置。",
+        "sig": {
+          "n": "低頻環流",
+          "cd": 7,
+          "d": "每7秒向半徑42內釋放音波，持續命中可縮短間隔。"
+        }
+      },
+      "beep": {
+        "name": "獵手",
+        "model": "ping",
+        "title": "投射與鎖定",
+        "role": "遠程投射、標記追蹤、會心",
+        "passive": "普攻討伐目標後，下一輪職業連射傷害提高25%。",
+        "sig": {
+          "n": "訊號連射",
+          "cd": 6,
+          "d": "每6秒向最多6個目標發出2.8倍訊號彈，依會心率判定。"
+        }
+      },
+      "volt": {
+        "name": "寵機師",
+        "model": "null",
+        "title": "寵機與修復",
+        "role": "召喚、持續輸出、修復增益",
+        "passive": "寵機每8次有效攻擊可修復1.5%生命，受共用回復額度限制。",
+        "sig": {
+          "n": "寵機出動",
+          "cd": 8,
+          "d": "寵機持續自動索敵，每8秒增幅4秒，期間寵機傷害提高50%。"
+        }
+      }
+    },
+    "elements": [
+      {
+        "tag": "IMG",
+        "cls": "cs-group",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "saturate(0.35) brightness(0.87)",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "none",
+        "rect": {
+          "x": 285,
+          "y": 165.5625,
+          "width": 448.21875,
+          "height": 539.25,
+          "top": 165.5625,
+          "right": 733.21875,
+          "bottom": 704.8125,
+          "left": 285
+        }
+      },
+      {
+        "tag": "IMG",
+        "cls": "cs-layer is-active",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "brightness(1.04) drop-shadow(rgb(197, 217, 243) 2px 0px 0px) drop-shadow(rgb(197, 217, 243) -2px 0px 0px)",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "none",
+        "rect": {
+          "x": 285,
+          "y": 165.5625,
+          "width": 448.21875,
+          "height": 539.25,
+          "top": 165.5625,
+          "right": 733.21875,
+          "bottom": 704.8125,
+          "left": 285
+        }
+      },
+      {
+        "tag": "IMG",
+        "cls": "cs-layer ",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "brightness(1.04) drop-shadow(rgb(197, 217, 243) 2px 0px 0px) drop-shadow(rgb(197, 217, 243) -2px 0px 0px)",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "none",
+        "rect": {
+          "x": 285,
+          "y": 165.5625,
+          "width": 448.21875,
+          "height": 539.25,
+          "top": 165.5625,
+          "right": 733.21875,
+          "bottom": 704.8125,
+          "left": 285
+        }
+      },
+      {
+        "tag": "IMG",
+        "cls": "cs-layer ",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "brightness(1.04) drop-shadow(rgb(197, 217, 243) 2px 0px 0px) drop-shadow(rgb(197, 217, 243) -2px 0px 0px)",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "none",
+        "rect": {
+          "x": 285,
+          "y": 165.5625,
+          "width": 448.21875,
+          "height": 539.25,
+          "top": 165.5625,
+          "right": 733.21875,
+          "bottom": 704.8125,
+          "left": 285
+        }
+      },
+      {
+        "tag": "IMG",
+        "cls": "cs-layer ",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "brightness(1.04) drop-shadow(rgb(197, 217, 243) 2px 0px 0px) drop-shadow(rgb(197, 217, 243) -2px 0px 0px)",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "none",
+        "rect": {
+          "x": 285,
+          "y": 165.5625,
+          "width": 448.21875,
+          "height": 539.25,
+          "top": 165.5625,
+          "right": 733.21875,
+          "bottom": 704.8125,
+          "left": 285
+        }
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "cs-hotspot",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "none",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "polygon(41.445% 0.598%, 80.128% 0.598%, 80.128% 29.733%, 74.389% 33.265%, 69.607% 38.121%, 68.013% 44.743%, 72.264% 52.247%, 73.326% 60.635%, 73.114% 67.256%, 71.838% 71.671%, 72.689% 75.467%, 69.926% 78.734%, 66.1% 80.323%, 59.299% 79.617%, 57.811% 77.498%, 56.323% 74.143%, 56.642% 68.581%, 53.985% 65.049%, 53.241% 58.251%, 53.348% 55.337%, 53.135% 51.364%, 49.097% 49.51%, 45.165% 47.833%, 42.721% 47.833%, 40.808% 45.625%, 39.957% 40.328%)",
+        "rect": {
+          "x": 285,
+          "y": 165.5625,
+          "width": 448.21875,
+          "height": 539.25,
+          "top": 165.5625,
+          "right": 733.21875,
+          "bottom": 704.8125,
+          "left": 285
+        }
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "cs-hotspot",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "none",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "polygon(0% 5.013%, 40.383% 5.013%, 40.383% 47.038%, 34.538% 47.391%, 31.881% 48.892%, 29.118% 51.099%, 27.205% 52.953%, 26.036% 55.867%, 24.23% 57.28%, 25.08% 58.869%, 22.104% 61.959%, 23.911% 65.579%, 22.317% 66.462%, 22.742% 70.346%, 22.317% 74.319%, 20.51% 81.647%, 0% 82.707%)",
+        "rect": {
+          "x": 285,
+          "y": 165.5625,
+          "width": 448.21875,
+          "height": 539.25,
+          "top": 165.5625,
+          "right": 733.21875,
+          "bottom": 704.8125,
+          "left": 285
+        }
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "cs-hotspot",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "none",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "polygon(80.765% 27.085%, 100% 27.085%, 100% 99.482%, 64.293% 99.482%, 61.955% 93.301%, 64.4% 90.653%, 66.631% 87.121%, 67.481% 84.031%, 69.501% 80.941%, 70.988% 76.88%, 70.032% 72.642%, 71.095% 69.463%, 73.751% 65.932%, 74.283% 60.988%, 75.77% 60.017%, 74.389% 57.633%, 73.858% 55.867%, 74.283% 53.836%, 78.002% 50.305%, 77.471% 49.157%, 69.819% 49.157%, 67.375% 46.508%, 68.013% 40.328%, 73.114% 35.031%, 78.108% 32.47%, 80.765% 27.085%)",
+        "rect": {
+          "x": 285,
+          "y": 165.5625,
+          "width": 448.21875,
+          "height": 539.25,
+          "top": 165.5625,
+          "right": 733.21875,
+          "bottom": 704.8125,
+          "left": 285
+        }
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "cs-hotspot",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "none",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "polygon(35.069% 46.95%, 41.445% 47.126%, 53.135% 50.481%, 53.135% 55.779%, 55.26% 57.986%, 52.604% 61.871%, 53.135% 66.108%, 56.111% 69.728%, 58.661% 73.348%, 57.067% 77.851%, 58.236% 80.941%, 61.637% 84.473%, 63.549% 88.181%, 63.762% 94.626%, 61.53% 97.716%, 17.003% 97.716%, 15.94% 93.301%, 20.298% 88.004%, 19.447% 83.59%, 20.191% 80.5%, 22.317% 75.644%, 22.848% 71.229%, 24.867% 67.698%, 26.036% 65.932%, 22.317% 62.842%, 24.442% 59.575%, 23.911% 57.986%, 26.567% 55.337%, 27.099% 53.307%, 29.862% 50.923%)",
+        "rect": {
+          "x": 285,
+          "y": 165.5625,
+          "width": 448.21875,
+          "height": 539.25,
+          "top": 165.5625,
+          "right": 733.21875,
+          "bottom": 704.8125,
+          "left": 285
+        }
+      },
+      {
+        "tag": "P",
+        "cls": "cs-art-error",
+        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "filter": "none",
+        "before": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "after": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+        "clip": "none",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      }
+    ]
+  },
+  "hud": {
+    "width": 1440,
+    "stats": {
+      "x": 12,
+      "y": 58,
+      "width": 898.40625,
+      "height": 127.578125,
+      "top": 58,
+      "right": 910.40625,
+      "bottom": 185.578125,
+      "left": 12
+    },
+    "right": {
+      "x": 794.40625,
+      "y": 58,
+      "width": 116,
+      "height": 95.5,
+      "top": 58,
+      "right": 910.40625,
+      "bottom": 153.5,
+      "left": 794.40625
+    },
+    "gold": {
+      "x": 882.21875,
+      "y": 62.328125,
+      "width": 22.390625,
+      "height": 34.796875,
+      "top": 62.328125,
+      "right": 904.609375,
+      "bottom": 97.125,
+      "left": 882.21875
+    },
+    "dps": {
+      "x": 882.21875,
+      "y": 113.703125,
+      "width": 22.390625,
+      "height": 34.796875,
+      "top": 113.703125,
+      "right": 904.609375,
+      "bottom": 148.5,
+      "left": 882.21875
+    },
+    "modal": {
+      "x": 932.40625,
+      "y": 16,
+      "width": 489.59375,
+      "height": 850,
+      "top": 16,
+      "right": 1422,
+      "bottom": 866,
+      "left": 932.40625
+    },
+    "mbox": {
+      "x": 932.40625,
+      "y": 16,
+      "width": 489.59375,
+      "height": 850,
+      "top": 16,
+      "right": 1422,
+      "bottom": 866,
+      "left": 932.40625
+    },
+    "hudStyle": "",
+    "fields": {
+      "dps": 8.20369,
+      "gold": 0
+    },
+    "prefs": {
+      "idle": 60,
+      "pixels": true,
+      "glitch": true,
+      "uiFx": 1,
+      "uiFxVersion": 2,
+      "quality": "auto",
+      "hideBattle": false,
+      "shake": true,
+      "reducedEffects": false
+    }
+  }
+}

@@ -13,3 +13,9 @@
 素材8.35MB，上限9MB；完整源曲與逐檔CC0／原創／混合標記、raw/member/master/embed SHA齊。未採樣3參考影片、未付費。54資產／實際播放／22路由／loop-wrap／mute／mix／全repo回歸通過，見[整合](release-0.78.0/integration.md)、verification.json及audio-release-validation.json。線上部署／tag／附件完成證據以live-verification.json為準。
 
 歷史審查52檔凍結到assets/audio-review，不再讀現行src/audio冒認舊版；舊17封存音訊未變。舊生成器有防護，正式重建用tools/audio/build_release_palette.py、pack_audio.py、build.py。真機、主觀聽感與30分鐘疲勞仍未宣稱完成。
+
+## 全屏／選角後續（2026-10-27）
+
+`codex/fullscreen-entry-followup` 基於 main641c43d，按分工只動tools/docs。原生2309/2560CSSpx桌面確認DPS／金幣遭右面板遮擋；參考CSS把資源放生命下方，六尺寸×一般／觀戰before/after24組通過。第三頁序章仍明確載入PIXEL_ART.storyBackdrop；新版預覽去舊背景、紙／膠紙與插圖同像素網格，選角使用原色合照＋職業卡，返回原角色移頂欄且首次建立改返回故事，七尺寸驗證。巨藍色塊未在本機Chromium重現，新設計取消人物疊層／濾鏡／大片polygon點擊區，不冒稱已修好真機。
+
+四職業原生clip動作比較384格：移動保留下身步態與上身出招，取消普攻整圈旋轉，roll以骨盆支點補償；僅短片段參考，完整動作自然度與真遊戲未驗。已核對Quaternius CC0／Mixamo官方FAQ，無外部動畫下載／接入。入口 [docs/fullscreen-entry-followup/README.md](fullscreen-entry-followup/README.md)，有互動頁、原生證據、詳細接入規格。與#117同樣等原型owner接入src，再複驗。未發佈；QA關卡建立中。

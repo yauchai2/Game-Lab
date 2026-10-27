@@ -886,3 +886,8 @@ MAP-REBUILD接續優化：背包詳情依指定map key選圖，18區卡片改真
 2026-10-27 v0.78發佈候選：Alan已授權發佈並以整體效果優先；AUDIO-REVIEW後續實作已完成，4授權曲／2原創延長／46cue整音＋2材質命中，22場景選曲、完整曲循環淡換、故事／長聲配額與原混音owner接入。54檔、member／master／embed hash、實際MP3與重播／mute／stress及完整repo回歸通過，見[0.78整合](release-0.78.0/integration.md)。FINISH-05／06的真機、主觀聽感／30分鐘仍待實際結果，不把發佈當其已通過。
 
 v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
+
+## 全屏／選角／動作後續（2026-10-27）
+
+- [x] 審查與可操作樣板：寬桌面HUD被面板覆蓋已原生重現；參考CSS24組before/after、七尺寸選角與血條開關、三頁序章去舊背景、四職業384格動作比較完成，見[交接](fullscreen-entry-followup/README.md)。只動tools/docs，不代表正式接入。
+- [ ] 原型owner接入HUD／持久化血條開關／選角返回與舊背景清理、動作blend，並驗真角色恢復、完整動作循環、裝備穿插與iPad／手機；接續#117薄條與打造／口號修訂。
