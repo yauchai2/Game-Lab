@@ -64,6 +64,7 @@ function killMon(m){
   let hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk * (G.relics.CALC ? 1.2 : 1) * (offPen() ? .75 : 1))), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
   if (m.elite){ gold *= 4; xp *= 4; } if (mods.includes('wise')) xp = Math.round(xp*1.5);
   if (G.relics.PIG) gold = Math.round(gold*1.3);
+  if (!G.push && !G.run){ gold *= 1.3; xp *= 1.3; }   /* 原地刷怪：不挑戰首領，換取較多經驗與金幣 */
   if (G.st.goldPct) gold = Math.max(1, Math.round(gold*(1+G.st.goldPct/100))); if (G.st.xpPct) xp = Math.max(1, Math.round(xp*(1+G.st.xpPct/100)));
   {const R=G.st.rules;if(R){if(R.rage)G.rage=Math.min(10,(G.rage||0)+1);if(R.eliteHeal&&(m.elite||m.boss))lgRuleHeal(R.eliteHeal);}}
   if (G.st.killHeal && G.h.hp > 0 && G.time - (G.killHealAt||-1) > .25){ G.killHealAt = G.time; G.h.hp = Math.min(G.st.life, G.h.hp + G.st.life*G.st.killHeal/100); }
@@ -186,6 +187,7 @@ function applyFreeze(m,seconds=COMBAT_RULES.freezeSeconds,damage=null){
     if(m.freezeBuildup<1)return false;
     m.freezeBuildup=0;m.freezeGuard=G.time+seconds+COMBAT_RULES.bossFreezeGuard;
   }
+  if(!(m.frozen>0)&&!G.offline)addFx({k:'icebloom',x:m.x,y:m.y,t:0,dur:.7});
   m.frozen=Math.max(m.frozen||0,seconds);combatCombo('freezes');return true;
 }
 function signalHit(id,m,origin){
@@ -259,6 +261,7 @@ function applySkillHit(id,m,mult=1,origin=G.eventOrigin||'primary'){
   if(lgOn('W_RIFT')){const distance=Math.hypot(m.x-G.h.x,m.y-G.h.y);mult*=distance>18?1.45:distance<10?.8:1;}
   if(lgOn('O_TOWER')&&G.h.hp<G.st.life*.35)mult*=1.3;if(lgOn('R_SEASON'))mult*=m.shock>0?1.35:.85;
   const source=SKILLS[id].n+(origin==='primary'?'':origin==='repeat'?'·回放':origin==='summon'?'·召喚':'·觸發');G.src=source;
+  if (G.fx.length < 44) addFx({ k:'impact', x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, el:SKILLS[id].el, big:SKILLS[id].cd >= 4 || !!m.boss, seed:Math.random()*6.28, t:0, dur:SKILLS[id].cd >= 4 ? .6 : .45 });
   if (G.fx.length < 36){ const el = SKILLS[id].el, k = el === 'fire' ? 'embers' : el === 'cold' ? 'snow' : Math.random() < .5 ? 'zap' : 'shard'; addFx({ k, x:m.x, y:m.y, z:BZ + 6, col:SKILLS[id].col, t:0, dur:k === 'embers' ? .7 : k === 'snow' ? .8 : .4 }); }
   if (m.frozen > 0 && cardN('V_SHATTER')) mult *= 1 + .4*cardN('V_SHATTER');
   const supportPower=key=>k.supportPower?.[key]||1;
@@ -299,7 +302,7 @@ function performSkill(id,repeat,origin){
   const k = G.st.sk[id], s = G.st, h = G.h; let total = 0; if (!k) return;
   const al = castMons(); if (!al.length) return;
   const p=k.pattern,prim=(p.coldStart?al.filter(m=>m.frozen>0).sort((a,b)=>Math.hypot(a.x-h.x,a.y-h.y)-Math.hypot(b.x-h.x,b.y-h.y))[0]:null)||nearestMon(false)||al[0],mode=k.mode;combatCast(id,origin);SFX(id.toLowerCase());
-  if (origin === 'primary' && !G.offline){ const K0 = SKILLS[id]; addFx({ k:'ring', x:h.x, y:h.y, col:K0.col, t:0, dur:.45 });
+  if (origin === 'primary' && !G.offline){ const K0 = SKILLS[id]; addFx({ k:'ring', x:h.x, y:h.y, col:K0.col, t:0, dur:.45 }); addFx({ k:'rune', x:h.x, y:h.y, col:K0.col, t:0, dur:.75 }); addFx({ k:'charge', x:h.x+3.4, y:h.y-3.6, z:BZ+9, col:K0.col, t:0, dur:.35 }); if(K0.cd>=2.5)addFx({ k:'skillaura', x:h.x, y:h.y, col:K0.col, t:0, dur:.7 });
     if (K0.cd >= 2 && G.fx.length < 30 && G.time-(h.labelAt??-99)>1.2){ h.labelAt=G.time;addFloat(h.x - 2,h.y,BZ+34,K0.n,K0.col,12,'skill'); }
     kick(K0.cd>=4?1.7:.65,K0.cd>=4?.22:0,K0.col,K0.cd>=4?.6:.2); }
   if(origin==='primary'){if(k.has.includes('DELAY'))G.timers.push({id,t:.6,rep:.45});if(G.pass.includes('EK'))G.timers.push({id,t:.8,rep:s.firmware.includes('EK')?.6:.35});}
