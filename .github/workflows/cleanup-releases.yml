@@ -1,0 +1,35 @@
+name: cleanup-releases
+
+# 只刪 Release 頁面與附件，tag 全部保留（--cleanup-tag 不開）。keep 指定的 tag 與其後的版本不刪。
+on:
+  workflow_dispatch:
+    inputs:
+      keep_from:
+        description: '從這個 tag 起（含）保留，更早的 Release 刪除，例如 v0.77.1'
+        required: true
+      dry_run:
+        description: '只列出，不刪除'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete older releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEEP: ${{ inputs.keep_from }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          set -eo pipefail
+          gh release view "$KEEP" --repo "$GITHUB_REPOSITORY" >/dev/null
+          gh release list --repo "$GITHUB_REPOSITORY" --limit 500 --json tagName,createdAt > /tmp/releases.json
+          KEEP_AT=$(jq -r --arg k "$KEEP" '.[] | select(.tagName==$k) | .createdAt' /tmp/releases.json)
+          jq -r --arg t "$KEEP_AT" '.[] | select(.createdAt < $t) | .tagName' /tmp/releases.json > /tmp/old.txt
+          echo "將處理 $(wc -l < /tmp/old.txt) 個 Release（保留 $KEEP 與較新者）"; cat /tmp/old.txt
+          if [ "$DRY" = "true" ]; then echo "dry run，未刪除"; exit 0; fi
+          while read -r tag; do gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes; done < /tmp/old.txt

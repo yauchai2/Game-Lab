@@ -1,7 +1,6 @@
-const GAME_TEST_BASE=process.env.GAME_TEST_BASE||'http://127.0.0.1:8780';
 // 手機觸控拖線：按住起點向右（含輕微斜向）拖，線不可被取消
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
-const url=process.env.GAME_LAB_TEST_URL||GAME_TEST_BASE+'/dist/idle-hero.html';
+const url=process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8780/dist/idle-hero.html';
 (async()=>{const b=await chromium.launch({executablePath:process.env.GAME_LAB_CHROMIUM||'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});
 try{
 const ctx=await b.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2}),p=await ctx.newPage(),cdp=await ctx.newCDPSession(p);

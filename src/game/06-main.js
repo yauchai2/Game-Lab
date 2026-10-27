@@ -80,5 +80,6 @@ ui.animate(dt => {
 setInterval(() => { if (!G.paused) saveGame(); }, 5000);
 addEventListener('pagehide', () => { if (!G.paused) saveGame(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && !G.paused) saveGame(); });
+if(globalThis.SYS){SYS.snapshot=()=>({char:G.char,lvl:G.lvl,depth:G.depth,paused:G.paused,offline:G.offline,mons:(G.mons||[]).length,fx:(G.fx||[]).length,music:AUD.track,audio:AUD.mode});SYS.info('boot','遊戲啟動完成，用時 '+Math.round(performance.now())+'ms');}
 document.getElementById('boot')?.remove();
 

@@ -31,7 +31,7 @@ if parent:
     git('fetch', 'origin', 'gh-pages')
 with tempfile.TemporaryDirectory(prefix='game-lab-pages-') as temp:
     site = Path(temp) / 'site'
-    subprocess.run([sys.executable, str(ROOT / 'tools/build_site.py'), str(site)], check=True)
+    subprocess.run([sys.executable, str(ROOT / 'tools/build_site.py'), str(site), *(['--preview'] if PREVIEW else [])], check=True)
     env = dict(os.environ, GIT_INDEX_FILE=str(Path(temp) / 'index'))
     # Retain fingerprinted scripts so a browser with a cached older index can finish loading.
     if parent:

@@ -217,7 +217,7 @@ function hitMon(m, dmg, crit, source=G.src||'其他'){
   dmg=cityIncoming(m,dmg)*lgRuleMul()*(m.guardUntil>G.time?.55:1)*((m.boss||m.elite)&&G.st.vsElite?1+G.st.vsElite/100:1);if(dmg<=0)return;
   combatDamage(source,Math.min(Math.max(0,m.hp),dmg));
   if(!m.training&&!G.offline&&G.time-(G.impactAt??-10)>.16){G.impactAt=G.time;const skill=source!=='普通攻擊',heavy=crit||skill;const col=skill?'#b5dfff':'#ffffff';kick(heavy?2.2:1.05,heavy?.32:.12,col,heavy?.65:.25);}
-  m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit',m);
+  m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit');
   if (!m.training && !m.boss && !m.dv && !G.offline && Math.random() < .14){ const a = Math.random()*6.28; m.dv = { x:Math.cos(a)*42, y:Math.sin(a)*42, t:.22 }; }   // 挨打後側閃
   if (!G.offline&&!m.training){ const dx = m.x - G.h.x, dy = m.y - G.h.y, dd = Math.hypot(dx, dy) || 1, kb = m.boss ? .2 : crit ? 1.6 : .6; m.x += dx/dd*kb; m.y += dy/dd*kb;   // 被打時往外退一點
     if (crit){ kick(.6, 0, 0, .35); if (dmg >= (G.maxHit || 0)*.8) hitStop(.05); if (G.fx.length < 40){ addFx({ k:'boom', x:m.x, y:m.y, z:BZ + 9, t:0, dur:.18 }); addFx({ k:'ring', x:m.x, y:m.y, col:'#ffffff', t:0, dur:.3 }); } } else if (m.boss) kick(.2); }
@@ -605,6 +605,7 @@ function recordDeath(){if(G.offline)return;const hits=(G.damageLog||[]).filter(r
 function blinkConsume(){const h=G.h;if(h.blinkRestUntil){if(G.time<h.blinkRestUntil)return false;h.blinkRestUntil=0;h.blinkCount=0;h.blinkWindow=G.time;}if(G.time-(h.blinkWindow??-99)>2){h.blinkWindow=G.time;h.blinkCount=0;}h.blinkCount=(h.blinkCount||0)+1;if(h.blinkCount>=6){h.blinkRestUntil=G.time+1.8;G.cds.FLICKER=Math.max(G.cds.FLICKER||0,1.8);}return true;}
 function summonDevices(id,mul,origin){const large=id==='GUARDIAN',cap=large?1:3,life=large?16:14;G.summons=G.summons||[];const existing=G.summons.filter(p=>p.skill===id);for(const p of existing){p.until=G.time+life;p.mul=Math.max(p.mul,mul);}for(let i=existing.length;i<cap;i++){const a=i*2.094,[x,y]=terrainProject(G.h.x+Math.cos(a)*6,G.h.y+Math.sin(a)*6);G.summons.push({skill:id,large,x,y,until:G.time+life,atk:.3+i*.2,mul,seed:i,attackAge:9});}G.h.drama={kind:'summon',start:G.time,duration:.6};}
 function castSpectacle(id,mul,origin,prim){
+ if(globalThis.SYS)SYS.info('skill','施放 '+id);
  if(id==='SWARM'||id==='GUARDIAN'){summonDevices(id,mul,origin);SFX(id.toLowerCase());return;}
  G.h.drama={kind:id==='GIANTBLADE'?'leap':'cast',start:G.time,duration:id==='GIANTBLADE'?1.5:.9};
  const angle=Math.atan2(prim.y-G.h.y,prim.x-G.h.x),schedule=(t,share,extra={})=>G.timers.push({t,id,spectacle:true,mul:mul*share,origin,x:prim.x,y:prim.y,...extra});

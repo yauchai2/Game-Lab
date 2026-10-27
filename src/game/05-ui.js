@@ -125,7 +125,7 @@ function saveHtml(){
   const dn = G.dmgNum == null ? 1 : G.dmgNum;
   return `<div class="mrow" style="margin-bottom:8px"><button class="mb pri" onclick="wikiOpen()">編年史（查看所有遊戲資訊）</button></div><div class="mct">傷害數字</div><div class="mrow">${[[2, '全部'], [1, '精簡'], [0, '關閉']].map(([v, n]) => `<button class="mb" aria-pressed="${dn === v}" style="${dn === v ? 'background:#1f3fb0;color:#fff' : ''}" onclick="setDmgNum(${v})">${n}</button>`).join('')}</div>` + `<div class="hint">每5秒在此瀏覽器保存角色列表；只有目前角色結算離線收益（最多6小時）。匯出碼只包含目前角色，其他角色請各自匯出。刪除只影響目前角色。</div>
     <div class="mrow"><button class="mb" onclick="doSave()">立即存檔</button><button class="mb" onclick="doExport()">匯出存檔碼</button><button class="mb" onclick="doImport()">匯入存檔碼</button><button class="mb" id="rbtn" onclick="doReset()">${resetArm ? '確認刪除目前角色' : '刪除目前角色'}</button></div>
-    <textarea id="sv" class="sv" placeholder="匯出的存檔碼會顯示在這裡；要匯入時把存檔碼貼在這裡再按「匯入」"></textarea><div id="smsg" class="hint"></div>`;
+    <textarea id="sv" class="sv" placeholder="匯出的存檔碼會顯示在這裡；要匯入時把存檔碼貼在這裡再按「匯入」"></textarea><div id="smsg" class="hint"></div><div class="mct">除錯</div><div class="mrow"><button class="mb" onclick="SYS.open()">系統記錄</button></div><div class="hint">版本：${globalThis.SYS?SYS.label():'?'}。遇到問題時打開「系統記錄」，按複製後貼給開發者。</div>`;
 }
 /* modal actions */
 function cartsHtml(){const sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active'),ids=Object.keys(MODES).filter(id=>(G.carts[id]||0)>0);let h=`<ol class="cart-guide"><li class="now">點下面的卡匣</li><li>在彈出的視窗選要裝到哪個技能</li><li>裝上後才鑑定效果；再點同一個技能可以卸下</li></ol>`;

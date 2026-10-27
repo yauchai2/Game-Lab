@@ -6,17 +6,12 @@ const STREET_CREATURES={
  antenna:['M08',14,2],cable:['M02',8],furnace:['B01',20],shard:['B04',13,2],
  jailer:['B01',21],specimen:['B02',22],sentinel:['B03',23]
 };
-// Shared visual identity lookup; audio derives material from this same owner.
-function streetCreatureSpec(m){
+function streetCreatureBuild(m){
+ if(!g1On()||typeof STREET_MONSTER_GLB==='undefined')return null;
  let spec=STREET_CREATURES[m.type];
  if(m.towerBoss)spec=[{warden:'B01',chimera:'B02',executor:'B03'}[m.towerBoss]||'B04',27];
  else if(m.boss)spec=[['B01','B02','B03','B04'][((m.bossForm??biomeNow())%4+4)%4],27];
  if(m.boss&&!m.towerBoss&&Number.isInteger(m.chap)&&m.chap>=0&&m.chap<6)spec=[['M04','B01','B03','M04','B02','B04'][m.chap],27];
- return spec;
-}
-function streetCreatureBuild(m){
- if(!g1On()||typeof STREET_MONSTER_GLB==='undefined')return null;
- const spec=streetCreatureSpec(m);
  if(!spec)return null;
  const [id,height,hover=0]=spec,g=g1MonsterBuild(id,STREET_MONSTER_GLB[id]),u=g.userData;
  u.streetCreature=true;u.assetId=id;u.hover=hover;u.m01=false;

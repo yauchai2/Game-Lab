@@ -1,1269 +1,598 @@
 {
-  "license": "Mixed; see per-asset records and LICENSES.md",
-  "source": "tools/audio/build_release_palette.py",
-  "external_samples": true,
+  "license": "Project-original",
+  "source": "tools/build_street_audio.py",
+  "external_samples": false,
   "reference_recording_sampled": false,
-  "inputBaseCommit": "96ec21e3587bd1c7892b01bfc12462b834475380",
   "sources": [
     {
       "asset": "drift.mp3",
       "kind": "music",
-      "sha256": "a603c228b11b0bc79639d807d21bba04cd764679ab2fb24c628785aa9d9e0561",
-      "source_sha256": "5e6c9f0dcc6f12c2c96c0bf991461d0b897dbe1eb89253979494f0954a47243b",
-      "bytes": 1738484,
-      "duration": 173.749031,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "631179afd0c96b5a91765b6f3a7bc44dd32d24babef593437864cb9c8c08d60a",
+      "source_sha256": "c6e8b9b7740a476e9f439af0ecc125989c98ce08028b07b44d375f12dcd3f978",
+      "bytes": 370124,
+      "duration": 36.9230625,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0",
-      "authorship": "Zane Little Music",
-      "title": "Wednesday Night [Funk Fusion]",
-      "sourceUrl": "https://opengameart.org/content/wednesday-night-funk-fusion",
-      "downloadUrl": "https://opengameart.org/sites/default/files/wednesday_night_0.mp3",
-      "original_sha256": "6187f62385f94db5feda3360da6309d90664c5410dda1351f837f978df2c5861",
-      "trimFrames": [
-        0,
-        5559969
-      ],
-      "processing": "Native arrangement; trim sub-audible edge, DC remove,6ms boundary protection, two-pass -18.7LUFS/-3.5dBTP; live deck crossfade on repeat; post-resample peak guard before MP3",
-      "mood": "sunny"
+      "bpm": 104,
+      "bars": 16,
+      "mood": "sunny",
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
     },
     {
       "asset": "haze.mp3",
       "kind": "music",
-      "sha256": "b206ae85661aef0982d8c6d7e857d0897b257c777cb9e52c93fff28fa7a03553",
-      "source_sha256": "0f13e560940a5eb302fdfba7b7fcdbeb2b6a9538025e0cb5002a01c1e50f83c9",
-      "bytes": 3478004,
-      "duration": 347.693531,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "e6f9a1ea8b9dd558727d6995fc2808cce4dc2376ce4813036e70b9494653aa2e",
+      "source_sha256": "ca9e2b7a5cd5e453f0eb3fadda5d8a51b18941b45d32240236085ff2d3f5d0f4",
+      "bytes": 418364,
+      "duration": 41.739125,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0",
-      "authorship": "cynicmusic",
-      "title": "November Snow",
-      "sourceUrl": "https://opengameart.org/content/november-snow",
-      "downloadUrl": "https://opengameart.org/sites/default/files/155%20November_snow-33_tape_leveled.mp3",
-      "original_sha256": "7e4675f6fbc86b97603d620dc54b0753eb5fe773ccc2fab99bc863cb7afde32c",
-      "trimFrames": [
-        0,
-        11126193
-      ],
-      "processing": "Native arrangement; trim sub-audible edge, DC remove,6ms boundary protection, two-pass -18.7LUFS/-3.5dBTP; live deck crossfade on repeat; post-resample peak guard before MP3",
-      "mood": "night"
-    },
-    {
-      "asset": "radio.mp3",
-      "kind": "music",
-      "sha256": "9bf8b6a71eaac125ea119633ed7e4d5781a6adc927876670ea081df3f5538122",
-      "source_sha256": "659a5a7c5c77d391ae21c8c04b424484d11281b41dda5098ee332eae28503521",
-      "bytes": 185444,
-      "duration": 18.461562,
-      "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0",
-      "authorship": "iamoneabe",
-      "title": "Funky Menu Loop",
-      "sourceUrl": "https://opengameart.org/content/funky-menu-loop",
-      "downloadUrl": "https://opengameart.org/sites/default/files/funkymenuloop_0.mp3",
-      "original_sha256": "19496d2f31410b186085c62e54e96964b646e90f0a1778493a6b6b3dbc8997cf",
-      "trimFrames": [
-        0,
-        590770
-      ],
-      "processing": "Native arrangement; trim sub-audible edge, DC remove,6ms boundary protection, two-pass -18.7LUFS/-3.5dBTP; live deck crossfade on repeat; post-resample peak guard before MP3",
-      "mood": "intro"
-    },
-    {
-      "asset": "boss.mp3",
-      "kind": "music",
-      "sha256": "29b95fee42a067b306fe1ee62cd4af713e3914a9513f7936c541ab29dafda87a",
-      "source_sha256": "016ab16ab68aa36e80ff0f990ff2a55afddebf7f244c69e1f8c27ac2a9e1455c",
-      "bytes": 1445084,
-      "duration": 144.408,
-      "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0",
-      "authorship": "Zane Little Music",
-      "title": "Midnight Cruiser",
-      "sourceUrl": "https://opengameart.org/content/midnight-cruiser",
-      "downloadUrl": "https://opengameart.org/sites/default/files/midnight_cruiser_0.mp3",
-      "original_sha256": "be0285ba239d85c47c6a0de6466123e3fe8dbc4ad4d9419ccd224ab8ea2b54fc",
-      "trimFrames": [
-        0,
-        4621056
-      ],
-      "processing": "Native arrangement; trim sub-audible edge, DC remove,6ms boundary protection, two-pass -18.7LUFS/-3.5dBTP; live deck crossfade on repeat; post-resample peak guard before MP3",
-      "mood": "boss"
+      "bpm": 92,
+      "bars": 16,
+      "mood": "night",
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
     },
     {
       "asset": "underpass.mp3",
       "kind": "music",
-      "sha256": "46aed2cde2888efd8648c6120c5584f5929ca57864b196f8d5e697b126ee48ad",
-      "source_sha256": "a2ab65efb8de46d2b6fd31429854377de69b6dc1c3f4c2e0677afe8d13909003",
-      "bytes": 686564,
-      "duration": 68.571438,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "e5870d257ede31eae85d1765140a429ad0f89a47925dc221371fef66d73486ae",
+      "source_sha256": "055a0f70db5a66b70745a13d4eae9c7a9b8046800201e1d9a6dee77bf7df12c4",
+      "bytes": 343844,
+      "duration": 34.28571875,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab deterministic composition/synthesis",
-      "sourceCommit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-      "sourceGenerator": "tools/build_street_audio.py with32-bar arrangement",
       "bpm": 112,
-      "bars": 32,
+      "bars": 16,
       "mood": "industrial",
-      "processing": "Rearranged from immutable generator; two-pass music master; post-resample peak guard before MP3"
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
     },
     {
       "asset": "rush.mp3",
       "kind": "music",
-      "sha256": "8ef3f9af70fc7dacfd76fedf2b1f9bb671f1473cd103bf2b931a679e2376a009",
-      "source_sha256": "32f925dd66e21c102f49af24801152c2d2869ac6dafbff9e3c096c75393082e3",
-      "bytes": 620324,
-      "duration": 61.935469,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "41e7adddfa791370153414affc8c42c4d0f0c283259c06003bccd1d3bf6f7fda",
+      "source_sha256": "844d8e4a2ce2a3414275eccd94791152fd0ad86cbd6220f447e75076deb52046",
+      "bytes": 310724,
+      "duration": 30.96775,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab deterministic composition/synthesis",
-      "sourceCommit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-      "sourceGenerator": "tools/build_street_audio.py with32-bar arrangement",
       "bpm": 124,
-      "bars": 32,
-      "mood": "elite",
-      "processing": "Rearranged from immutable generator; two-pass music master; post-resample peak guard before MP3"
+      "bars": 16,
+      "mood": "battle",
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
+    },
+    {
+      "asset": "radio.mp3",
+      "kind": "music",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "fbd5dda8712a7d3ed9ab874efe4918634f6bcb8229bd2c75aa247d9f5620553c",
+      "source_sha256": "132a15dd7450c07e666862dadf60b371a20064586bef67a000d9d5da67899799",
+      "bytes": 185444,
+      "duration": 18.46153125,
+      "sample_rate": 32000,
+      "bpm": 104,
+      "bars": 8,
+      "mood": "intro",
+      "notes": "Original voicings, melody, bass and synthesized percussion; no external samples."
     },
     {
       "asset": "sf_hit.mp3",
       "kind": "sfx",
-      "sha256": "7cca5c4d1c21053f1d7098325e1193c46407ba6a68ca12bee7d036880ba94e89",
-      "source_sha256": "47d01013c3212c73497de333d0d6936e28825c2ce7731f7dd4f52e7b2fc400ae",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "87462fa228d53ec923e993f36cd19287463cb0f86363b9e678798aea5a218bc7",
+      "source_sha256": "d4bdb642b874693f252239970b1f1df8e6df4fbc0ad296ed5fc996c74dd7daaf",
       "bytes": 2060,
       "duration": 0.15,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "hit",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_hit.wav",
-          "sha256": "d4bdb642b874693f252239970b1f1df8e6df4fbc0ad296ed5fc996c74dd7daaf"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactGeneric_light_000.ogg",
-          "sha256": "f0e982611e97512fee5f777986b67e8b435434b601f94992ec044f7e89fb5acb",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "hit"
     },
     {
       "asset": "sf_crit.mp3",
       "kind": "sfx",
-      "sha256": "b9793122e77afce8928869bb2ee4e5526e81d996b1857c3e8040b81099463056",
-      "source_sha256": "e760ba7523ce61665251ca0a12814d345a1f82b738f71e37bb48615aac4a5d78",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "182b1f1050a70c8634cf6fd67b5671d70c08356180598aa2e61f3df09b2b1e28",
+      "source_sha256": "e3b4e299e27dcbe11909b564eb9d06137851c742e4d89a63fb95dae6a75c5050",
       "bytes": 2636,
       "duration": 0.23,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "crit",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_crit.wav",
-          "sha256": "e3b4e299e27dcbe11909b564eb9d06137851c742e4d89a63fb95dae6a75c5050"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactMetal_light_000.ogg",
-          "sha256": "33b5e6e37c6e9d54e07bf5a89b12c76e879f40c1ea83cdd82714df1d6f9fec6d",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "crit"
     },
     {
       "asset": "sf_kill.mp3",
       "kind": "sfx",
-      "sha256": "6bfec5620d9b6b010b7097c5fd44b74dd38b2909af9726e7288248936e1569ee",
-      "source_sha256": "17eb66c23cf7945fd24220a392f5dcdb8aa6dcadb4aa96845f3e3e0c5be30ffc",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "022ee86ac7dfeffd35e785a25ef74ec87fc9befae6b93f0ec75f9e5737f3dd16",
+      "source_sha256": "94487945cb1efab1ceeccb92f492f96c484b28e92eebfc9ead7abd3d8312b34d",
       "bytes": 2636,
       "duration": 0.24,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "kill",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_kill.wav",
-          "sha256": "94487945cb1efab1ceeccb92f492f96c484b28e92eebfc9ead7abd3d8312b34d"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactPlate_light_000.ogg",
-          "sha256": "6e797cf8a5bfc52d7ed5eb47c227974c1cf2a674954fec5b539cea7d62c7282c",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "kill"
     },
     {
       "asset": "sf_hurt.mp3",
       "kind": "sfx",
-      "sha256": "8a89ad5bb521cba11d8d633a1b64601569bcc6e2a24742e3562568aeb6dc5815",
-      "source_sha256": "64265efb2041438c4d9b70ed02f5609b453d26258bd500390abaf986a7c763e5",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "07022f06b23b5c6ccd180e1966ea3f1fc00a2c26507141239e5d860e2747ccc9",
+      "source_sha256": "661b4d109f557282e02e01b1fadfdce75409f03c532566a3552e7132dc86e33b",
       "bytes": 3212,
       "duration": 0.3,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "hurt",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_hurt.wav",
-          "sha256": "661b4d109f557282e02e01b1fadfdce75409f03c532566a3552e7132dc86e33b"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactSoft_medium_000.ogg",
-          "sha256": "7d3ba0bb5e60a11b5d3e558c141303dcf494256675fbf753c0d252d2cf0481e3",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "hurt"
     },
     {
       "asset": "sf_die.mp3",
       "kind": "sfx",
-      "sha256": "b4d17dd243b413520cd565bb959711f478ec65bacc92d2cc8cfed978c14567ba",
-      "source_sha256": "8a1e6493c2fb98a6844cf3be011c4adf3a978300cd3404326d20edb4a93e0638",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "767fbc49f042d275e4625eb9b22aac6dfbce7b5e10c24a2bc31eb506d377949d",
+      "source_sha256": "1acfe8694dc6beb3576d80c0cf2c91ff1f80ad5ee294121b853eda454dbb33ce",
       "bytes": 6092,
       "duration": 0.65,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "die",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_die.wav",
-          "sha256": "1acfe8694dc6beb3576d80c0cf2c91ff1f80ad5ee294121b853eda454dbb33ce"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "die"
     },
     {
       "asset": "sf_fire.mp3",
       "kind": "sfx",
-      "sha256": "10fb647a073694f8488e41e4f08ab291d19d6ccd1a62cccc5980cdc5769ee8c7",
-      "source_sha256": "77182345e16a034450b202365fd82b8dd93669399a0dd7002dce33fffff23acb",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "5c284369adc1e2cec9575c758cc9b5987413aea457e4e54d309e9616635c65af",
+      "source_sha256": "a9cdbbd83fa119fa84f131aa41ee1d994b954ef5f6ecb5bf1d8f55bac8ddcf3d",
       "bytes": 3212,
       "duration": 0.3,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "fire",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_fire.wav",
-          "sha256": "a9cdbbd83fa119fa84f131aa41ee1d994b954ef5f6ecb5bf1d8f55bac8ddcf3d"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "fire"
     },
     {
       "asset": "sf_boom.mp3",
       "kind": "sfx",
-      "sha256": "f0c18cf149d4946aa7b1428e804d54e2e1db76f592b8f8d38971eb64ec664212",
-      "source_sha256": "9f3f027effbf98fdd04c022eaf6ae0422887b3030bea5b673c7d0f21911dd592",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "e4d1aa194c49e2c05f29cee18fd6f84d20f162e3d6556591cb362dccf367e982",
+      "source_sha256": "ef429efca8b57dcc19c95bfd8a61aea6096bb7768fbd95cbf95b8ad5fd791e68",
       "bytes": 4652,
       "duration": 0.48,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "boom",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_boom.wav",
-          "sha256": "ef429efca8b57dcc19c95bfd8a61aea6096bb7768fbd95cbf95b8ad5fd791e68"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactPlate_heavy_000.ogg",
-          "sha256": "112d4f93ddcc370b410630f971c0f5d991856102da9c76bc5c5540d388e75aaa",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "boom"
     },
     {
       "asset": "sf_frost.mp3",
       "kind": "sfx",
-      "sha256": "d3cb01bea036050ce9dcace81add8a4213d2f873a601e87d90ee654020864b30",
-      "source_sha256": "ee7315ef5160055421c1ee679cd9d90f4cd9e39edf2332d75c25f822733ff2d4",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "9569911074e35e72b9b1eceb5c7921eb726de55b550c4af8db6801cf48ae27d9",
+      "source_sha256": "6710b8d178011017444f59f131829d6291790b9510b98d55e5df91b39193fd29",
       "bytes": 3500,
       "duration": 0.36,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "frost",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_frost.wav",
-          "sha256": "6710b8d178011017444f59f131829d6291790b9510b98d55e5df91b39193fd29"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactGlass_light_000.ogg",
-          "sha256": "d750cf88097d0c3e69920e6e14496e1444e1a9da01aa4cca8f5ec8cb44c57b4f",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "frost"
     },
     {
       "asset": "sf_chain.mp3",
       "kind": "sfx",
-      "sha256": "a8e602d394890d4f22689f48c834739bd1196e081a87f8c58da9b7649e88910e",
-      "source_sha256": "3f115b3dcf4fbf2e97d0f474941ccd358f6d1eacad7b6533be689293d7f3dea9",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "ea5f743e4968079516472b3287c46b1b43dcd3e2fb1b6321c6bde0785aa56044",
+      "source_sha256": "309d1cbb5453afefdb5df1c4a83fda9150abf10d8e5f178dde352d69216a145d",
       "bytes": 2348,
       "duration": 0.19,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "chain",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_chain.wav",
-          "sha256": "309d1cbb5453afefdb5df1c4a83fda9150abf10d8e5f178dde352d69216a145d"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "chain"
     },
     {
       "asset": "sf_meteor.mp3",
       "kind": "sfx",
-      "sha256": "78519aaed5b843684e18722093ca57a37322280b7e7b4d3878e5d471b8984270",
-      "source_sha256": "4b360e233d39b1b2aca01d6c933d30f4cbf24059f0a6ea1e47ea73b017c118de",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "bf2f411c3d0772bd0c984a694f4401e2b9a608181a16cfd8e8caf64a1c5423bd",
+      "source_sha256": "3aeaf789769e8b01b6dc3b2ee6395fcf8f8994e0626058be70cc5047e19fd91f",
       "bytes": 5228,
       "duration": 0.56,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "meteor",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_meteor.wav",
-          "sha256": "3aeaf789769e8b01b6dc3b2ee6395fcf8f8994e0626058be70cc5047e19fd91f"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactMetal_heavy_000.ogg",
-          "sha256": "e07045693e4a2b3d165c424e3dab4c781d9ff8880a386880ac89a51315d7f831",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "meteor"
     },
     {
       "asset": "sf_pick.mp3",
       "kind": "sfx",
-      "sha256": "2f6b1d5a1346271f7757aab0df6d80610efa12864fed9f34a9ee7cd2fdc9c7d8",
-      "source_sha256": "61d0aa58e317e066035ae7b3549ccd2253c6bfadf715abf45e07df7b4252bea0",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "23d7c8c8ade9b46ef82b07727f045ab3c18b76cc0fc8c3bb3f035ea15025227c",
+      "source_sha256": "0d89051d2dcdde99df075706394741b29e3ac980361212976c86aab40c63fb79",
       "bytes": 1772,
       "duration": 0.12,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "pick",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_pick.wav",
-          "sha256": "0d89051d2dcdde99df075706394741b29e3ac980361212976c86aab40c63fb79"
-        },
-        {
-          "package": "kenney-interface",
-          "member": "Audio/click_001.ogg",
-          "sha256": "ccfb7fa0cccdd9faec0eb16033c732b1e308d139d80f799161495d58f7adcdb9",
-          "sourceUrl": "https://kenney.nl/assets/interface-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "pick"
     },
     {
       "asset": "sf_rare.mp3",
       "kind": "sfx",
-      "sha256": "d530ad2ceb655c675ccecdde8419af1d209104f1d4e79014899cf7f33b73c62d",
-      "source_sha256": "5cad7fca05b0f3f208c3aa7604639f7d2f2a23b627e9e94cbba8106d29dc6768",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "fbd13569008f25326c49f6761b5be09b511eba14f7ab1c7637decabd76ab4a4f",
+      "source_sha256": "66c796d79ecc2e4b659857158b5a9539e54af679bbcd57e69a6c5f3c999b47db",
       "bytes": 6092,
       "duration": 0.68,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "rare",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_rare.wav",
-          "sha256": "66c796d79ecc2e4b659857158b5a9539e54af679bbcd57e69a6c5f3c999b47db"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "rare"
     },
     {
       "asset": "sf_lvl.mp3",
       "kind": "sfx",
-      "sha256": "9ae814086fa51f300480df2a34286602361f5095ac2979923a05f5bbe7cfce0a",
-      "source_sha256": "674341531578749e326a4b2911506c24b231c4e8f2e6a1f0b43a7988e4f02b97",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "6ae6133f1b91dd4baba70ed8e1677db7650bc4d0018f6eef7f234702cebe52df",
+      "source_sha256": "c08a9f8e29a791cf7b092ec753ae246ebca8992a71987e9cab79d2c63ddfed23",
       "bytes": 6668,
       "duration": 0.75,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "lvl",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_lvl.wav",
-          "sha256": "c08a9f8e29a791cf7b092ec753ae246ebca8992a71987e9cab79d2c63ddfed23"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "lvl"
     },
     {
       "asset": "sf_card.mp3",
       "kind": "sfx",
-      "sha256": "7f2c59b1f7e0e15689a456f7ad9f8ef53fab999e9b65bfe8b0c157936ce389b4",
-      "source_sha256": "8a9238fb67132b8cf3be358f2615737770331319b94c97b0c2b9ccf5328be63d",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "eaae33f8839da0d7754b9864fa3f8e242fb09178f8dfd7abf391d1e032ce68e9",
+      "source_sha256": "6ca70f514a219a669914ef563c7b034483c27927335b2d4c04224a5f381b7f69",
       "bytes": 2636,
       "duration": 0.22,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "card",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_card.wav",
-          "sha256": "6ca70f514a219a669914ef563c7b034483c27927335b2d4c04224a5f381b7f69"
-        },
-        {
-          "package": "kenney-interface",
-          "member": "Audio/confirmation_001.ogg",
-          "sha256": "063564703b6094d70718a3e787a55cc9141611e4ecd6b6637f8828f79b4a8c3a",
-          "sourceUrl": "https://kenney.nl/assets/interface-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "card"
     },
     {
       "asset": "sf_snap.mp3",
       "kind": "sfx",
-      "sha256": "ae90500309a7a1580f0b38e4a09495fe65a6443d4f2abb2e2594f75a0dd679ae",
-      "source_sha256": "2068722185c66f153d09a7dfac9d5780e31495a3a9041101cf9abd3d4b00370c",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "621da483434d8d7c715ec28dbd183379affc07fc2671503c5b915ae2dabab7fb",
+      "source_sha256": "8dcb3445915f8654735b1be3304a94a35e2e75427994d7ed7aeb64d422ae07d1",
       "bytes": 1196,
       "duration": 0.07,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "snap",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_snap.wav",
-          "sha256": "8dcb3445915f8654735b1be3304a94a35e2e75427994d7ed7aeb64d422ae07d1"
-        },
-        {
-          "package": "kenney-interface",
-          "member": "Audio/click_002.ogg",
-          "sha256": "adcd1f4adc35f1b41bc1b5bbefeff7aa44f2f3f0d96d3199b544140c7c1e761c",
-          "sourceUrl": "https://kenney.nl/assets/interface-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "snap"
     },
     {
       "asset": "sf_ph_open.mp3",
       "kind": "sfx",
-      "sha256": "f8808fcdef7b4e1982344cfeb8daf3463f36325de850bfde6f7b095f12b8da75",
-      "source_sha256": "8d405e4a007bf394f56d8face90705925c62bfd93fef2570499a9e7c0ba2fd1c",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "3ad42ba7954d58267733ef77dcf3ab96d986574ec243ec97eb8c304b3b1937eb",
+      "source_sha256": "e3ffd5f5ea8c9dd64feb553e1a5ba35d66d137a9d943762fc7b9e9b0f4793f2c",
       "bytes": 2636,
       "duration": 0.25,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "ph_open",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_open.wav",
-          "sha256": "e3ffd5f5ea8c9dd64feb553e1a5ba35d66d137a9d943762fc7b9e9b0f4793f2c"
-        },
-        {
-          "package": "kenney-interface",
-          "member": "Audio/open_001.ogg",
-          "sha256": "a27c6bb0df7da1e6af5dd5937593c98bc58b6e513f42fe6a3254cd6a6949c648",
-          "sourceUrl": "https://kenney.nl/assets/interface-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "ph_open"
     },
     {
       "asset": "sf_ph_on.mp3",
       "kind": "sfx",
-      "sha256": "dc5a6db5ec4e458992b28117922d35e8b020b45409c7e883d2b407dcaab7d266",
-      "source_sha256": "9bd8f9f3acf34d87b070a8528734c465c3a84af40c64a357e08fffbf735cd11a",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "7ef5ebb676c13d7571aafa446a1635dc7ef166c650a784dff96bd4a843c41d27",
+      "source_sha256": "ef92370d703a0723fdc09e33d00d0249eeb3436ae071e6708f9698b5d0450410",
       "bytes": 3500,
       "duration": 0.35,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "ph_on",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_on.wav",
-          "sha256": "ef92370d703a0723fdc09e33d00d0249eeb3436ae071e6708f9698b5d0450410"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "ph_on"
     },
     {
       "asset": "sf_ph_key.mp3",
       "kind": "sfx",
-      "sha256": "da2d8351d2506fd712a6ba0387ddc4e9328d7feac321e91b4ee69351c0f04d8c",
-      "source_sha256": "5d62fef28cf91e44b2054794e14704bd23fec282efaba3318b0951731aebacac",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "90d7cddff0b4bf556970e376c81dce4d25d289fd1a04ab0d3c43cf92828d5024",
+      "source_sha256": "03dc4c41db5f0c395f8dd576f0ef0adf2dcbe3f98a59ae522e18acc0afd12045",
       "bytes": 1196,
       "duration": 0.045,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "ph_key",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_key.wav",
-          "sha256": "03dc4c41db5f0c395f8dd576f0ef0adf2dcbe3f98a59ae522e18acc0afd12045"
-        },
-        {
-          "package": "kenney-interface",
-          "member": "Audio/click_001.ogg",
-          "sha256": "ccfb7fa0cccdd9faec0eb16033c732b1e308d139d80f799161495d58f7adcdb9",
-          "sourceUrl": "https://kenney.nl/assets/interface-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "ph_key"
     },
     {
       "asset": "sf_ph_tab.mp3",
       "kind": "sfx",
-      "sha256": "c6c8a6cce6f1f6bf6dae5ef8621a4b99dff35e7f78a99efd2a47905fabc31b3f",
-      "source_sha256": "a16b3c6bf17ff8b3c514e40dd21520cd83802fd0ccd6b68640ef7034c3273377",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "7d2b97e8b67626d707bfd278c5f7dfe3d195ebde0c76e1f64cfd1f0c392478da",
+      "source_sha256": "00781f81d9347238add2dbfe8e4fbf4f1bd2e469f9fa6972066189cbba11bc53",
       "bytes": 1484,
       "duration": 0.1,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "ph_tab",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_tab.wav",
-          "sha256": "00781f81d9347238add2dbfe8e4fbf4f1bd2e469f9fa6972066189cbba11bc53"
-        },
-        {
-          "package": "kenney-interface",
-          "member": "Audio/click_002.ogg",
-          "sha256": "adcd1f4adc35f1b41bc1b5bbefeff7aa44f2f3f0d96d3199b544140c7c1e761c",
-          "sourceUrl": "https://kenney.nl/assets/interface-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "ph_tab"
     },
     {
       "asset": "sf_ph_zoom.mp3",
       "kind": "sfx",
-      "sha256": "c03c9ecef5994f5f494a744d5e59d35917746bbc9cedb2eeed9392d922d7f575",
-      "source_sha256": "16ece19516ef2c2be71b46eb16d5e744fb69839c20fbe3edce2417bc10550b7b",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "0f877c52ce81a6a777ed778857eaf7392de740d5a312c1445c1813cb3ccec742",
+      "source_sha256": "0a43f9343a2bd80424ac5c8c8cd9cd63d03a9a3341f8945ffd63f6d22ca744ad",
       "bytes": 2060,
       "duration": 0.16,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "ph_zoom",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_zoom.wav",
-          "sha256": "0a43f9343a2bd80424ac5c8c8cd9cd63d03a9a3341f8945ffd63f6d22ca744ad"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "ph_zoom"
     },
     {
       "asset": "sf_ph_zoomout.mp3",
       "kind": "sfx",
-      "sha256": "7198bb041b9f19a1e6d6f114b022439403172c7484432420d1a5b8332a075480",
-      "source_sha256": "7b85febf6aeecff0007e4b2593dba1fbac1feba6b2e4e16e6dc99d050161a2d9",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "5a7001374ef0d1cfdbbb4847d6a8b2be773c57e6f17e70f33fe5b57f01b5c03d",
+      "source_sha256": "b9895cb4ca39bd7a45d0e9d65166386c7cdfeba43122d879332e47b75af31262",
       "bytes": 2060,
       "duration": 0.17,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "ph_zoomout",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_zoomout.wav",
-          "sha256": "b9895cb4ca39bd7a45d0e9d65166386c7cdfeba43122d879332e47b75af31262"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "ph_zoomout"
     },
     {
       "asset": "sf_ph_off.mp3",
       "kind": "sfx",
-      "sha256": "dcd577a7c3ebdc2aba80a420841097507ba25180bb1c7da0f2ff8e7625de2347",
-      "source_sha256": "d90e84bc3f6ab51baf5a2f64d59b2f6e2f8e6caafe208a6a93ed2ba76b4c3cbb",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "1bd5c2140a0715faa5718be8b0af79b13d88e9581d9b5fe79e64f4eb10679c6a",
+      "source_sha256": "815ebde03c7e7d0dc8d1463dfd7800e99676e209ad2de5ae77d28533b919cd45",
       "bytes": 2924,
       "duration": 0.28,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "ph_off",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_ph_off.wav",
-          "sha256": "815ebde03c7e7d0dc8d1463dfd7800e99676e209ad2de5ae77d28533b919cd45"
-        },
-        {
-          "package": "kenney-interface",
-          "member": "Audio/close_001.ogg",
-          "sha256": "44af8249b933e0fd35ec957a638bb1a0b01f85b53fbe9674bf77bd3ca3168ef4",
-          "sourceUrl": "https://kenney.nl/assets/interface-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "ph_off"
     },
     {
       "asset": "sf_stair.mp3",
       "kind": "sfx",
-      "sha256": "4fbad4a9c5db9947871988f20ff5841dd74025074fdb21c1daba84ad3c93297b",
-      "source_sha256": "103976a83a7f9d04772d6c56f18c666e3ebb46c48fa0821cfedaacb92b480f73",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "fc1f54b79f32cb1ecc00d83a9df4f59bde0745ada6b42bc87c9d9cad5404d2ff",
+      "source_sha256": "8a832f37ccddedeefa58a6ab137147b6e0d392aca61c4db45926f158c6425194",
       "bytes": 3500,
       "duration": 0.35,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "stair",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_stair.wav",
-          "sha256": "8a832f37ccddedeefa58a6ab137147b6e0d392aca61c4db45926f158c6425194"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "stair"
     },
     {
       "asset": "sf_season.mp3",
       "kind": "sfx",
-      "sha256": "c8f756fb98efdef8f1a616e3111f352ddb388cb5557b4e1330b7ffa49b6e5ef2",
-      "source_sha256": "12a7b3010ff4f53368417bb14ef71ac55d836721c26462ecb4bc5628a7d0ae46",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "bb6310033191620e2064302eb96efb4bde02bb94796997c347a32ea3541c6ed4",
+      "source_sha256": "35d955e08c88c37b723d77238ee7fc1c85cff6ea85edf1e7f0f09014287980ab",
       "bytes": 5228,
       "duration": 0.55,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "season",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_season.wav",
-          "sha256": "35d955e08c88c37b723d77238ee7fc1c85cff6ea85edf1e7f0f09014287980ab"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "season"
     },
     {
       "asset": "sf_pulse.mp3",
       "kind": "sfx",
-      "sha256": "055650104fdff42e9c64a8816d4d2c830624b4ee96406690dba712136b35ea3e",
-      "source_sha256": "99c35df18daa29bffe343dc384c5d25e53a5aa8be20b4c52677fa0dc0c982826",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "423180242b66ba27fa47be4085bf4e10f23d8be7b5c49775a454a9492a8052e8",
+      "source_sha256": "ea34eee110ab5a205553daae84f1fc11cca58f4f80ea77b1886f9ef2c0cd8e46",
       "bytes": 3500,
       "duration": 0.35,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "pulse",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_pulse.wav",
-          "sha256": "ea34eee110ab5a205553daae84f1fc11cca58f4f80ea77b1886f9ef2c0cd8e46"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "pulse"
     },
     {
       "asset": "sf_magnet.mp3",
       "kind": "sfx",
-      "sha256": "a2e01c9a6be4a6d920db058df17c4c70a6e5b3d33c92b5ac1c44f6f47997abb7",
-      "source_sha256": "0a21ff7e4fd460eda64b21e0299acfc1f616640e901e68b6a7804b3dbd781cf7",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "ba9dacbce7d185012a33d4e8e745a290c42330c8c102f31deba66e076df4980d",
+      "source_sha256": "b219ac2760ca91ff4a8e61b81305463d58d20cf9225a8537e19d720c451740c0",
       "bytes": 2924,
       "duration": 0.27,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "magnet",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_magnet.wav",
-          "sha256": "b219ac2760ca91ff4a8e61b81305463d58d20cf9225a8537e19d720c451740c0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "magnet"
     },
     {
       "asset": "sf_spam.mp3",
       "kind": "sfx",
-      "sha256": "8f0aac835a58ca6d603ea0e0849f8aec56b6292f98599297646a6890520dc5a4",
-      "source_sha256": "ab8273d67d132442b0969299bd342521546b8a413087908b349d9aa4d012cf32",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "f2c8f5e821475a2f91750dedd20eded694e12cb8554bda9674d1c89e33a93cf8",
+      "source_sha256": "12af7fcc3c35518bf5421c821ded8a0fbb4f234757e7c993ac5cee112a8d6a78",
       "bytes": 2060,
       "duration": 0.18,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "spam",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_spam.wav",
-          "sha256": "12af7fcc3c35518bf5421c821ded8a0fbb4f234757e7c993ac5cee112a8d6a78"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "spam"
     },
     {
       "asset": "sf_flicker.mp3",
       "kind": "sfx",
-      "sha256": "fac4583fc1727640a9c5ae6238b884a498e2a9c4a84ca0c7ed329aabbcdf2999",
-      "source_sha256": "6da51d0a9d9ecd1aacc8ffb51d748da817cabd5642aa84572a7a2b5db71f37ee",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "a647225d9dbd6976634ad077ce104feb6577fbaec0a84061741e382c7365912b",
+      "source_sha256": "8796692450555bc36716deef755b6214d5fe46f31a193582a569ccbb6a648288",
       "bytes": 1772,
       "duration": 0.14,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "flicker",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_flicker.wav",
-          "sha256": "8796692450555bc36716deef755b6214d5fe46f31a193582a569ccbb6a648288"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "flicker"
     },
     {
       "asset": "sf_beam.mp3",
       "kind": "sfx",
-      "sha256": "e03a44b9e7eabf50426d7902e036c42de69308d64105791c5f30e50112abeb76",
-      "source_sha256": "308942c95c5423eacc5dc54c5d8b2a9b82acb8ad3f4c24d75bcfc0d41e2ab0e2",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "6a1d4a8673cee5f8c1c2b01c80919cb3af71b51eb3bedd5a6db38e66a0053f9f",
+      "source_sha256": "820dd593741cafb7a97af96a8d4f7bd5bbafb9841915ae543a3e803253a0f02c",
       "bytes": 4076,
       "duration": 0.4,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "beam",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_beam.wav",
-          "sha256": "820dd593741cafb7a97af96a8d4f7bd5bbafb9841915ae543a3e803253a0f02c"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "beam"
     },
     {
       "asset": "sf_arrows.mp3",
       "kind": "sfx",
-      "sha256": "99bf015b7d76e4a4574af96439a3edeac0e90fcb092545b99257ddcfd3e139b7",
-      "source_sha256": "494bda6a39301560cd8f2521c211a68cbf758a9107a4da3358dae67e25e09547",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "904f6aa02c53eb370c5e99cfe9568aff3d7685b19d2d7c7e7bfc98d2b9a67e4d",
+      "source_sha256": "1c1cfe84b483f971aabe68cf5007dd7ca89356fb5cac1153eb284aa8069f3b15",
       "bytes": 2060,
       "duration": 0.18,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "arrows",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_arrows.wav",
-          "sha256": "1c1cfe84b483f971aabe68cf5007dd7ca89356fb5cac1153eb284aa8069f3b15"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "arrows"
     },
     {
       "asset": "sf_summon.mp3",
       "kind": "sfx",
-      "sha256": "50bbce8f59e58fa5f5fb9284c3f3acafce26c15c95640b3d6cab0ac910da41e6",
-      "source_sha256": "10ec4019c31024c87254cdbc4688ee49941d4136e54e967365e5c255f6f99447",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "ed8adf1ddf80effef27254cfaefb5b920625cc95d2b03605afba3ea0b0dd8978",
+      "source_sha256": "c1869386e1f6fd6a6a2ac345ff406b3ead634e4a9fc279fe7d84373fb9e8f1c4",
       "bytes": 4076,
       "duration": 0.4,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "summon",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_summon.wav",
-          "sha256": "c1869386e1f6fd6a6a2ac345ff406b3ead634e4a9fc279fe7d84373fb9e8f1c4"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "summon"
     },
     {
       "asset": "sf_rift.mp3",
       "kind": "sfx",
-      "sha256": "7064bd65a725599e7810d10d97af5ee0730e3904467c2268c5e793d5e8b86cf5",
-      "source_sha256": "52ff53e027d56e97f422299d89785ab6aebcb01aa35f35b0ba9a06a1f7970278",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "e041feb9f1f4dc5f98d628aca8f95ee1edff868948d32b08c0ba99ad3848e151",
+      "source_sha256": "e9566e61007fd0ddfcc30d01917d5da0fc6fa812de61a6e3aeace3e58fe10a59",
       "bytes": 4652,
       "duration": 0.5,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "rift",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_rift.wav",
-          "sha256": "e9566e61007fd0ddfcc30d01917d5da0fc6fa812de61a6e3aeace3e58fe10a59"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "rift"
     },
     {
       "asset": "sf_resonance.mp3",
       "kind": "sfx",
-      "sha256": "6a9584283080e3576ef7887c8b75b1ea8c9ef8b83a444931ef401d75d48986cc",
-      "source_sha256": "307538d5c6adf16e74944a7f93da99640a0aa98e53a69f94036910793008f3f8",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "88fb45b10dda5065061f906cd026452891c764ed4fcee5c814c6ba5a0a584b9c",
+      "source_sha256": "cd013fe63e66388ceea06b0d862dbbccf990a9559e119c1995447b6b9a13379a",
       "bytes": 4364,
       "duration": 0.45,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "resonance",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_resonance.wav",
-          "sha256": "cd013fe63e66388ceea06b0d862dbbccf990a9559e119c1995447b6b9a13379a"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "resonance"
     },
     {
       "asset": "sf_st_fan.mp3",
       "kind": "sfx",
-      "sha256": "7597d6902134d5f8ad647d368cbb3f4ebf1a615a305b6c41c4126ab51d44c2cd",
-      "source_sha256": "38381934b4e3de2f70cdd62be2f823f7e536424a2914df1071151f9b2217cde9",
-      "bytes": 6668,
-      "duration": 0.75,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "2f09a5bc8fa68399ebf6c9d4fcdb56e5d97389ad3aff0ca5b41d7fef7fb3c8ad",
+      "source_sha256": "6115ca101df059c9dfe0acbd09b593028c0c41427d42b1092476d377f15d8101",
+      "bytes": 9873,
+      "duration": 1.3,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "st_fan",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_fan.wav",
-          "sha256": "6115ca101df059c9dfe0acbd09b593028c0c41427d42b1092476d377f15d8101"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "st_fan"
     },
     {
       "asset": "sf_st_horn.mp3",
       "kind": "sfx",
-      "sha256": "33674893ea46a3f78c57e130f68c3b11c4084c7f8fbfd234bd11821471c757d0",
-      "source_sha256": "026131383a11d1e0dc5568945b1e896c46e8db3a79995b5172406bb3cf707b3b",
-      "bytes": 9548,
-      "duration": 1.1,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "ca20797362a67837393b69226a960fa08272275bfb0c7b18162e8bc4f99d6d60",
+      "source_sha256": "884256a46f65ddff011e4c4d80bec03cfe8099877fed4ea11d60209c6738ff65",
+      "bytes": 11133,
+      "duration": 1.5,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "st_horn",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_horn.wav",
-          "sha256": "884256a46f65ddff011e4c4d80bec03cfe8099877fed4ea11d60209c6738ff65"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "st_horn"
     },
     {
       "asset": "sf_st_static.mp3",
       "kind": "sfx",
-      "sha256": "e773ffb7fe5b2b61991047175347873639b28d0657df1f95ecccdc40fa4f4328",
-      "source_sha256": "4a686836f33414c5f3e2b67d559449c71c2df1336bda40ddc628e6100a72d651",
-      "bytes": 2636,
-      "duration": 0.24,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "6e406bbe7be942eae6aae8b3e7123242e2ff7ab32c15920f17c2e52474b8e667",
+      "source_sha256": "a0a41e2fd998f06da985aace0e55554fabd26489a552849f1fb8ad5b598cd3ff",
+      "bytes": 6849,
+      "duration": 0.9,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "st_static",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_static.wav",
-          "sha256": "a0a41e2fd998f06da985aace0e55554fabd26489a552849f1fb8ad5b598cd3ff"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "st_static"
     },
     {
       "asset": "sf_st_coin.mp3",
       "kind": "sfx",
-      "sha256": "3579077b9a7e154bd1d0deb8277ba4d9c7e5c922974700afb9f41d7fdedfab06",
-      "source_sha256": "e9a09f958d81b560000c740fb6006f8675dcf9e465856748f56d4cf9a2e1e9f5",
-      "bytes": 2636,
-      "duration": 0.22,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "86801d17e5de4e7aafad0a74fc4f756056711578635fe1136e8bb9d35b2526c7",
+      "source_sha256": "25f6588cc8df7ac4f06453f5a3b0e42b51c9c18e40ce3feb7cce608e1e0e2ac2",
+      "bytes": 8361,
+      "duration": 1.1,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "st_coin",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_coin.wav",
-          "sha256": "25f6588cc8df7ac4f06453f5a3b0e42b51c9c18e40ce3feb7cce608e1e0e2ac2"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactMetal_light_000.ogg",
-          "sha256": "33b5e6e37c6e9d54e07bf5a89b12c76e879f40c1ea83cdd82714df1d6f9fec6d",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "st_coin"
     },
     {
       "asset": "sf_st_skid.mp3",
       "kind": "sfx",
-      "sha256": "8ffb7c3471ccf92ca9d50c5e3fe2120da07c650de5b9b4eb70ab34181f3ab6a2",
-      "source_sha256": "7211aeb929f7d7c9ff64faf42af6e49abe80fbf234888b1fe1cd1b878ff1c09d",
-      "bytes": 3788,
-      "duration": 0.38,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "78e1f425a7b7e857f8c9e09917ddbbb29befe11b1d581b2acf845d0131b72757",
+      "source_sha256": "9222f2a91b8ea09da61a5ff104ca673bba657ad6d435e9acc57a189a84f922be",
+      "bytes": 7605,
+      "duration": 1.0,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "st_skid",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_skid.wav",
-          "sha256": "9222f2a91b8ea09da61a5ff104ca673bba657ad6d435e9acc57a189a84f922be"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "st_skid"
     },
     {
       "asset": "sf_st_ding.mp3",
       "kind": "sfx",
-      "sha256": "642974c5fc99ed3af2b18c561e83178742374ce6573cd62d74bd7093bd142be7",
-      "source_sha256": "e1ec13ff3dca68f2a65abad501cf3ccf35ec96367e9bd58b15ef3d6f474b0b9f",
-      "bytes": 2060,
-      "duration": 0.18,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "5b4d3de9e6ae4779c060223ec322e8ec748d5950eee91e30321f05e623c323ec",
+      "source_sha256": "81030782f22e68d9665d070410c2d1d5a83f3ede08a2ef36f8f26861758d7b57",
+      "bytes": 7605,
+      "duration": 1.0,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "st_ding",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_ding.wav",
-          "sha256": "81030782f22e68d9665d070410c2d1d5a83f3ede08a2ef36f8f26861758d7b57"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "st_ding"
     },
     {
       "asset": "sf_st_chime.mp3",
       "kind": "sfx",
-      "sha256": "e84e8c14c132915989b698e41b557b98bb3065d603397a12cc2e66568f09d650",
-      "source_sha256": "a0daa0d76881536e87730aa7046afdbe77a19af7c760088d7e06a1f6488a5af5",
-      "bytes": 4076,
-      "duration": 0.4,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "1db39565c27f6e3ba146011b340f2f9f3c2869793b1854a0b22975a84e681dc1",
+      "source_sha256": "5f8681a122df00aec22df6749909fd169d366d1bf8fd7264de655e4eff5f8c53",
+      "bytes": 8613,
+      "duration": 1.15,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "st_chime",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_chime.wav",
-          "sha256": "5f8681a122df00aec22df6749909fd169d366d1bf8fd7264de655e4eff5f8c53"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "st_chime"
     },
     {
       "asset": "sf_st_jingle.mp3",
       "kind": "sfx",
-      "sha256": "40073a80ece6e72582099782dcd6758fef654366018b4df787f4b2e9ee82d09a",
-      "source_sha256": "88c0ff611e52a2298d382d521210372533ce0701ec298066c7bf704d32f1cb4d",
-      "bytes": 6092,
-      "duration": 0.65,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "d99ef4c74306d60c7eb0e161b7f74e7e814105854ddfceddbcd094e605f75f6d",
+      "source_sha256": "0800d9c3333720107810cea0e44afa4a144a72f14c8800c042ded10ee671e77b",
+      "bytes": 14661,
+      "duration": 2.0,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "st_jingle",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_jingle.wav",
-          "sha256": "0800d9c3333720107810cea0e44afa4a144a72f14c8800c042ded10ee671e77b"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "st_jingle"
     },
     {
       "asset": "sf_st_crystal.mp3",
       "kind": "sfx",
-      "sha256": "f6785c78c1f41a36085873125d7ef4e16a9c763ee8cb10e4b87a5328d0ac2c96",
-      "source_sha256": "79e339f6a5c00c3ce0a408351dfef8e5138cf14c9bdd44393799c1d34800fdeb",
-      "bytes": 6380,
-      "duration": 0.7,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "1e59f4dac6f32a7e224ffcb7b853c5c1f1d0ad2a7c6a0f0887bd262f5bc4a31a",
+      "source_sha256": "8ebb90f6288378700294540f4e25f3fc0234feaf7794bd4bb7c1b643f150f477",
+      "bytes": 10377,
+      "duration": 1.4,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "st_crystal",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_crystal.wav",
-          "sha256": "8ebb90f6288378700294540f4e25f3fc0234feaf7794bd4bb7c1b643f150f477"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactGlass_medium_000.ogg",
-          "sha256": "9252d50bfb85edb17d6073c4a7806e10cdb9de56d3dbfc93a4b9727146d2df6d",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "st_crystal"
     },
     {
       "asset": "sf_st_tornado.mp3",
       "kind": "sfx",
-      "sha256": "48187ebe993e555fc5382389e37f86c2d43729f1d2d1469c209bf5163e3c6e35",
-      "source_sha256": "5cece813d21494919cf998c0caf677b04aa7fbec338b2ad8235ecf6f9ff1029b",
-      "bytes": 15020,
-      "duration": 1.8,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "7508b6067773eb005e5187b17c5fea85dee2653f24059aff98072f7a691a1b96",
+      "source_sha256": "3b2df40555ffca8d91b95cacba70c5377a6f5bb858cfdb109d15aeabffb7b575",
+      "bytes": 17433,
+      "duration": 2.4,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "st_tornado",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_tornado.wav",
-          "sha256": "3b2df40555ffca8d91b95cacba70c5377a6f5bb858cfdb109d15aeabffb7b575"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "st_tornado"
     },
     {
       "asset": "sf_st_thunder.mp3",
       "kind": "sfx",
-      "sha256": "1cae227a256b148aa2b47c227aaee95c513b85d8a72c5de7a6e0ca2138854eec",
-      "source_sha256": "671fb2353b3bb3d2310dc7abf1ed67bbb9f25e1463ec89b417fbeb06a4c395be",
-      "bytes": 13580,
-      "duration": 1.6,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "0bcf39ded7c8f709674407ef2c40a1720df4b18f0fa66d1a00b6c5c1fa667510",
+      "source_sha256": "69ce07fa878438a049bec1d77a5c49c9ca10bc7c277fba5062ac714f6c43c662",
+      "bytes": 16173,
+      "duration": 2.2,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "Project-original",
-      "authorship": "Game-Lab remaster/arrangement",
-      "event": "st_thunder",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_thunder.wav",
-          "sha256": "69ce07fa878438a049bec1d77a5c49c9ca10bc7c277fba5062ac714f6c43c662"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master"
+      "event": "st_thunder"
     },
     {
       "asset": "sf_st_roll.mp3",
       "kind": "sfx",
-      "sha256": "a9b74f9deeb3ce0231c681966383d1fb4d181ffccf0d0e93374b52f2d41f4a6f",
-      "source_sha256": "4055d524fafb3874399d74c951dd9e95408b22144876675c22288a56338b2cf6",
-      "bytes": 3788,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "782b8992e09080f16001c023f28e39ad7071cf2b1e7d2c04614a48ce50efd823",
+      "source_sha256": "2e37be5196abf8d5ed013db68e0e1a30cce94f1a048772174dda1bd4bfdf06db",
+      "bytes": 3321,
       "duration": 0.38,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "st_roll",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_roll.wav",
-          "sha256": "2e37be5196abf8d5ed013db68e0e1a30cce94f1a048772174dda1bd4bfdf06db"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/footstep_carpet_000.ogg",
-          "sha256": "b9524658b52a99a20590f8feefc103088637fd13ea8ec35811aee785e1f2f330",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "st_roll"
     },
     {
       "asset": "sf_st_swing.mp3",
       "kind": "sfx",
-      "sha256": "e37da122da6a9fb056640fee594ceb0843c3a385ae07c954fb89ea94a8913971",
-      "source_sha256": "b03072f750c869549dc91646b09f66b095505c166cb768367b1977d401f7b164",
-      "bytes": 3500,
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "9ae4bbad6a4be408c4b33329163bdd0cae57103dccf2d0f6a63080f6f9c6193a",
+      "source_sha256": "9e3c71eebc0537d6bf928b2417a3672fd3b56d1092f33deac1dc2c9df2e9d73b",
+      "bytes": 3069,
       "duration": 0.34,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0 + Project-original",
-      "authorship": "Game-Lab remaster/arrangement + Kenney",
-      "event": "st_swing",
-      "inputs": [
-        {
-          "commit": "96ec21e3587bd1c7892b01bfc12462b834475380",
-          "path": "assets/audio-street/masters/sf_st_swing.wav",
-          "sha256": "9e3c71eebc0537d6bf928b2417a3672fd3b56d1092f33deac1dc2c9df2e9d73b"
-        },
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactSoft_medium_000.ogg",
-          "sha256": "7d3ba0bb5e60a11b5d3e558c141303dcf494256675fbf753c0d252d2cf0481e3",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds",
-          "license": "CC0-1.0"
-        }
-      ],
-      "processing": "Band shaping,short envelope,headroom master; physical layer"
+      "event": "st_swing"
     },
     {
-      "asset": "sf_hit_metal.mp3",
-      "kind": "sfx",
-      "sha256": "5476b85b56566b3fcb488f7a0199aac718f92a90c054069934053705de7d025e",
-      "source_sha256": "68c664912cbed201e334a7d9a5d26cd618e3c06cac99f528c5577952363a6927",
-      "bytes": 2060,
-      "duration": 0.18,
+      "asset": "boss.mp3",
+      "kind": "music",
+      "authorship": "Game-Lab original deterministic composition/synthesis",
+      "sha256": "c59518d2bda4f49a944024b3e87231d44075422c13cbdf3e1842a5bc2e00a2f7",
+      "source_sha256": "5cf6e3022c0e1a58bba7eab3c0f769a76b3adea800a296b869f8a329ddb6bae1",
+      "bytes": 192573,
+      "duration": 27.429,
       "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0",
-      "authorship": "Kenney; Game-Lab edit/master",
-      "event": "hit_metal",
-      "inputs": [
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactMetal_light_000.ogg",
-          "sha256": "33b5e6e37c6e9d54e07bf5a89b12c76e879f40c1ea83cdd82714df1d6f9fec6d",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds"
-        }
-      ],
-      "processing": "180ms material impact,band shaping/headroom"
-    },
-    {
-      "asset": "sf_hit_wood.mp3",
-      "kind": "sfx",
-      "sha256": "93630a62a5c706e3f588d9c2f194a58864d7f01180f85a4cc430535ac3a8902a",
-      "source_sha256": "ae8032030033e3c4ef519a9e231cfa02bd915ada640f4a558f7fd249b16d6ffc",
-      "bytes": 2060,
-      "duration": 0.18,
-      "sample_rate": 32000,
-      "channels": 2,
-      "license": "CC0-1.0",
-      "authorship": "Kenney; Game-Lab edit/master",
-      "event": "hit_wood",
-      "inputs": [
-        {
-          "package": "kenney-impact",
-          "member": "Audio/impactWood_medium_000.ogg",
-          "sha256": "1723a9fd25103ed41af06054814e84e65f4a772bac86ab2dc927da93d9592ff5",
-          "sourceUrl": "https://kenney.nl/assets/impact-sounds"
-        }
-      ],
-      "processing": "180ms material impact,band shaping/headroom"
+      "bpm": 140,
+      "bars": 16,
+      "mood": "boss",
+      "notes": "Original voicings, driving bass, drums and arpeggios; no external samples."
     }
   ]
 }

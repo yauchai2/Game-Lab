@@ -10,8 +10,6 @@ SR = 32000
 OUT = ROOT / 'src/audio'
 MASTER = ROOT / 'assets/audio-street/masters'
 MASTER.mkdir(parents=True, exist_ok=True)
-if (OUT/'provenance.json').exists() and json.loads((OUT/'provenance.json').read_text()).get('external_samples'):
- raise SystemExit('Mixed palette is active; rebuild with tools/audio/build_release_palette.py to preserve licensed selections.')
 rng = np.random.default_rng(20261027)
 records = []
 

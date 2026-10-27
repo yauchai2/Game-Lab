@@ -1,8 +1,7 @@
-const GAME_TEST_BASE=process.env.GAME_TEST_BASE||'http://127.0.0.1:8780';
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs');
 const out=process.env.GAME_LAB_FIT_OUTPUT||'/tmp/game-lab-equipment-fit';fs.mkdirSync(out,{recursive:true});
 (async()=>{const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});
-try{const p=await browser.newPage({viewport:{width:1000,height:960}}),errors=[];p.setDefaultTimeout(30000);p.on('pageerror',e=>errors.push(e.message));await p.goto(GAME_TEST_BASE+'/dist/equipment-review.html');await p.waitForFunction(()=>window.EQUIPMENT_REVIEW);
+try{const p=await browser.newPage({viewport:{width:1000,height:960}}),errors=[];p.setDefaultTimeout(30000);p.on('pageerror',e=>errors.push(e.message));await p.goto('http://127.0.0.1:8780/dist/equipment-review.html');await p.waitForFunction(()=>window.EQUIPMENT_REVIEW);
 const result=await p.evaluate(()=>{
  const check=(v,m)=>{if(!v)throw Error(m);},r=EQUIPMENT_REVIEW,actions=['idle','walk','run','attack','cast','hurt','dash','death','victory'];let combinations=0,poses=0;
  for(const owner of ['street','frost','beep','volt']){

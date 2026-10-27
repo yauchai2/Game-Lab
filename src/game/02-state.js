@@ -299,7 +299,7 @@ function applySave(o){
   if(typeof skillCollectionMigrate==='function')skillCollectionMigrate(o);if(G.run?.tower){G.run.map.biome=towerBiome(G.run.floor);if(o.towerRoomVersion!==1)for(const d of G.drops){const p=terrainProject(d.x,d.y),dist=Math.hypot(p[0]-HX,p[1]-HY)||1;[d.x,d.y]=terrainProject(HX+(p[0]-HX)*Math.min(1,24/dist),HY+(p[1]-HY)*Math.min(1,24/dist));}}
   normalizeBuilds(uidConflicts);recalc(); G.h.hp = Math.min(G.st.life, o.hp || G.st.life); if (o.log) G.log = o.log; return true;
 }
-function saveGame(){if(G.__wipe)return false;try{if(typeof rankCheck==='function')rankCheck();if(typeof profileSave==='function')return profileSave();localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));return true;}catch(e){return false;}}
+function saveGame(){if(G.__wipe)return false;try{if(typeof rankCheck==='function')rankCheck();if(typeof profileSave==='function')return profileSave();localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));return true;}catch(e){if(globalThis.SYS)SYS.error('save','存檔失敗：'+(e&&e.message));return false;}}
 function loadGame(){if(typeof profileLoad==='function')return profileLoad();try{return JSON.parse(localStorage.getItem(SAVE_KEY)||'null')}catch(e){return null;}}
 
 const encodeSave = () => { try { return btoa(unescape(encodeURIComponent(JSON.stringify(serialize())))); } catch (e) { return ''; } };

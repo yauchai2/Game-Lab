@@ -1,8 +1,7 @@
-const GAME_TEST_BASE=process.env.GAME_TEST_BASE||'http://127.0.0.1:8780';
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const out=process.env.GAME_LAB_TEST_OUTPUT||'docs/patreon-support-2026-10-25';
-const url=process.env.GAME_LAB_TEST_URL||GAME_TEST_BASE+'/';
+const url=process.env.GAME_LAB_TEST_URL||'http://127.0.0.1:8780/';
 (async()=>{
   fs.mkdirSync(out,{recursive:true});
   const browser=await chromium.launch({executablePath:process.env.GAME_LAB_CHROMIUM||'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});
