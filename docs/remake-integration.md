@@ -70,3 +70,9 @@ GOALS與ACHS是兩種現有owner：goals記目標／物品報酬，ach另有永�
 本輪已核對六章深度／模型、四個既有GOALS卡匣來源、buyCircuitMode、uiCartPick／equipCartTo、G.carts／seen／seenC、skillAvailable及四職業鍵。完成的是來源對照與遷移候選，不是可執行的轉換器；未跑舊檔回歸、未改正式資料。
 
 仍須驗：全新／部分／已通關存檔、首件已持有／盤面佔用／已領舊目標、儲存失敗與連點、切角色及匯入、揭示引發既有目標、試驗不改正式狀態、原夜間／終局入口可達。待辦在WORLD-02／BUILD-02及後續驗收項，沒有以文件完成勾掉程式或回歸測試。
+
+## 本輪新增的盤面可行性證據
+
+已用現用GridLab執行六組獨立資料案例，確認pocket的FIRE／HEAVY／AREA與duplex的CHAIN／FIRE／BEAM指定支援線路能合法接通、未超供電；SPREAD與FIRE／CHAIN不相容、與BEAM相容。詳見[構築進程](build-progression.md)、[重跑工具](../tools/design/probe_remake_boards.cjs)及[JSON證據](remake-board-feasibility.json)。工具不載入玩家資料或執行掉落，不改runtime；只是既有盤面來源的有界檢查。
+
+此結果補足BUILD-02的一部分；四角新循環、卡匣庫存／模式實戰、等級／板卡實際取得、試驗隔離與新舊存檔仍未驗，不能勾掉整項。正式介面保持手動逐格接線，研究工具的route不進入玩家自動配裝流程。

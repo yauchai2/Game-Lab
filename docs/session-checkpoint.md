@@ -1,3 +1,5 @@
+> 最新構築進程（2026-10-28，Asia/Hong_Kong）：[分階段規格](build-progression.md)補齊技能／板卡／取得條件、七部位與三暗金研究、卡住時調整。現用GridLab六例盤面可行性通過，來源／線路見[JSON證據](remake-board-feasibility.json)，可用tools/design/probe_remake_boards.cjs重跑。只驗接通、相容、供電；未驗模式實戰、四角新被動或離線／遷移，無可玩樣板或runtime修改。
+
 > 最新深化（2026-10-28，Asia/Hong_Kong）：複看SANDWICH六個抽幀，世界補六個生活角落／六個短事件；game-design補四角各兩方向與六配件研究問題。[接入對照](remake-integration.md)記六章摘要／舊檔、四個既有GOALS卡匣來源、揭示會觸發目標及指定合成保留。這是來源核對與文字規格，沒有遷移程式、盤面／戰鬥驗證；樣板仍暫停。
 
 > 最新世界／玩法文字交付（2026-10-28，Asia/Hong_Kong）：依Alan「詳細規劃和執行」完成[疊港世界設定](world-current.md)、[橋底里完整首區](first-district.md)，並同步story／game-design／角色故事入口／creative-direction／README及backlog。城市制度、三組織、三配角、Q01–Q05、兩條回訪路線、十二物件／七模式與分層解鎖、四角獨立參與、成就及中斷／失敗情境均有可執行文字規格。此為新提案，尚未程式接入、平衡、模型或真人驗證；可玩樣板仍暫停。
@@ -91,3 +93,9 @@
 完成world-current生活事件、game-design四角／配件取捨、story六章摘要入口、first-district來源分層、新remake-integration遷移對照及backlog。重要發現：GOAL_STAT.modes讀G.seen，提早揭示會影響m1／m2，故須保留舊計數與獎勵語義、新實戰成就另驗；r2／k2／d2／l3與指定合成途徑不能被新渠道抹掉。新第一章包含Q01–Q05，並非以五節點覆蓋六章；六章depth／model保持，新後五章只有摘要，未製作第二區內容。四角新被動與現用舊職業行為不能當同一實作。
 
 驗證範圍：六章／四職業鍵、七模式／六支援ID、四GOALS來源及指定合成門檻與程式核對；新增連結、JSON、原片SHA、diff空白及變更範圍檢查。未跑遊戲／瀏覽器、掉率平衡、舊檔遷移或人體驗；未改現用資產、src／index／dist，未生圖。WORLD-02／BUILD-02仍是接入待辦，本輪只完成其來源與文字子項。提交推送codex/character-turnaround-preview，未合併／發佈。
+
+2026-10-28（Asia/Hong_Kong）本輪構築接續：開始HEADb0d40da、工作目錄乾淨，fetch後HEAD與FETCH_HEAD一致、無PR。按AGENTS讀現行設計／交接，核對00-grid及legacy內部定義、01-data技能／部位詞綴／LEGENDS、02b的板卡取得條件。新增分階段構築規格與無畫面、無玩家狀態的有限盤面probe；這是設計可行性檢查，沒有恢復可玩樣板。
+
+結果：pocket起步FIRE零支援／HEAVY／HEAVY+AREA，duplex的CHAIN+FIRE、CHAIN+BEAM兩組支援例，共六例合法接通，供電分別0/3、1/3、2/3、2/5、2/5、1/5；SPREAD只在本輪三技能中適用BEAM。證據存JSON、附來源檔SHA與所有假設；雙FOCUS例需持有兩件，模式／技能／板卡取得不由Grid.resolve保證。起步只有一終點，duplex需8級／最深3且持有，CHAIN10、BEAM16仍有效，matrix18／最深8不是試兩技能的必要條件。
+
+同步game-design／first-district／remake-integration及backlog；新七部位／暗金內容只是原資料研究與文案候選。檢查工具可重跑且結果一致、新增本機連結／JSON／diff空白與無runtime／原角色改動。未跑戰鬥、DPS、掉率、四角新技能、瀏覽器、離線及遷移測試。BUILD-02／BUILD-03／WORLD-02保持待辦；提交推送codex/character-turnaround-preview，未合併／發佈。

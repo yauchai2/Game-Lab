@@ -987,3 +987,6 @@ v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release4049084216
 - [x] TONE-02（文字）：複看SANDWICH六個新抽幀、補manifest範圍；世界增加六個生活角落／六個短事件，將鬆弛、私人趣味與突發動作落到內容，不讓全城只剩制度與回收衝突。
 - [x] BUILD-02A（來源／文字）：完成四角各兩種跨用研究方向、六個既有支援配件的取捨問題；核對FIRE_SPLIT／FIRE_BLAST／CHAIN_FORK／CHAIN_OVERLOAD既有目標來源、BEAM_CAPACITOR合成及揭示觸發目標的實作差距，見remake-integration。未完成盤面求解或效果測試，BUILD-02仍未勾選。
 - [x] WORLD-02A（對照草案）：完成Q01–Q05同屬新第一章、現六章深度／模型及新故事摘要、未通／部分／已完成主線等存檔情境；確定保留ch／end／nc、玩家命名及既得獎勵。尚無遷移程式或回歸證據，WORLD-02仍未勾選。
+
+- [x] BUILD-02B（盤面可行性）：新增tools/design/probe_remake_boards.cjs與remake-board-feasibility.json，現用GridLab六例接通／相容／供電通過，記來源SHA；確認SPREAD適用BEAM、不適用FIRE／CHAIN。非戰鬥或新四職業驗收，BUILD-02及BUILD-03仍待後續檢查。
+- [x] BUILD-04（文字）：完成build-progression的分階段條件、七部位既有基底／合法詞綴取向、三件既有暗金研究、卡住時的一項調整及散貨窗口的玩法期待；未擴大第二區實作／新物品池或掉率。

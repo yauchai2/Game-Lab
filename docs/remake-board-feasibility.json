@@ -1,0 +1,786 @@
+{
+  "kind": "read-only circuit feasibility",
+  "date": "2026-10-28",
+  "timezone": "Asia/Hong_Kong",
+  "sources": [
+    {
+      "file": "src/game/00-grid.js",
+      "sha256": "9a06764294dc5594a434e4dc0b5b82b39256064a3ef1d7eb046d443e8c0b823d"
+    },
+    {
+      "file": "src/game/00-grid-legacy.js",
+      "sha256": "e98ee4910a4ee4d2c68492b21554f6b2d02f9ba755989cab1323e4208785d9be"
+    },
+    {
+      "file": "src/game/01-data.js",
+      "sha256": "c6ad492002e363b5c97cbdf21d6eec05585060f2bdff36a61351395c321b15da"
+    }
+  ],
+  "cases": [
+    {
+      "id": "start-bare",
+      "level": 1,
+      "template": "pocket",
+      "requiredBoardLevel": 1,
+      "requiredBoardDepth": 0,
+      "powerUsed": 0,
+      "powerCap": 3,
+      "slots": [
+        {
+          "skill": "FIRE",
+          "supports": []
+        }
+      ],
+      "board": {
+        "v": 6,
+        "rules": 2,
+        "template": "pocket",
+        "pieces": [
+          {
+            "id": 1,
+            "kind": "active",
+            "key": "FIRE",
+            "x": 4,
+            "y": 2,
+            "rot": 0
+          }
+        ],
+        "wires": [
+          {
+            "sock": 0,
+            "cells": [
+              [
+                1,
+                2
+              ],
+              [
+                2,
+                2
+              ],
+              [
+                3,
+                2
+              ]
+            ]
+          }
+        ],
+        "nextId": 2,
+        "extra": 0,
+        "w": 5,
+        "h": 5
+      },
+      "resolution": [
+        {
+          "id": 1,
+          "key": "FIRE",
+          "sock": 0,
+          "wired": true,
+          "linked": [],
+          "weights": [],
+          "over": [],
+          "missed": [],
+          "stat": {
+            "dmg": 0,
+            "area": 0,
+            "cd": 0,
+            "crit": 0,
+            "repeat": 0,
+            "leech": 0
+          },
+          "len": 3,
+          "lenMul": 1
+        }
+      ]
+    },
+    {
+      "id": "start-heavy",
+      "level": 1,
+      "template": "pocket",
+      "requiredBoardLevel": 1,
+      "requiredBoardDepth": 0,
+      "powerUsed": 1,
+      "powerCap": 3,
+      "slots": [
+        {
+          "skill": "FIRE",
+          "supports": [
+            "HEAVY"
+          ]
+        }
+      ],
+      "board": {
+        "v": 6,
+        "rules": 2,
+        "template": "pocket",
+        "pieces": [
+          {
+            "id": 1,
+            "kind": "active",
+            "key": "FIRE",
+            "x": 4,
+            "y": 2,
+            "rot": 0
+          },
+          {
+            "id": 2,
+            "kind": "support",
+            "key": "HEAVY",
+            "x": 1,
+            "y": 2,
+            "rot": 0,
+            "t": 1
+          }
+        ],
+        "wires": [
+          {
+            "sock": 0,
+            "cells": [
+              [
+                1,
+                2
+              ],
+              [
+                2,
+                2
+              ],
+              [
+                3,
+                2
+              ]
+            ]
+          }
+        ],
+        "nextId": 3,
+        "extra": 0,
+        "w": 5,
+        "h": 5
+      },
+      "resolution": [
+        {
+          "id": 1,
+          "key": "FIRE",
+          "sock": 0,
+          "wired": true,
+          "linked": [
+            2
+          ],
+          "weights": [
+            1
+          ],
+          "over": [],
+          "missed": [],
+          "stat": {
+            "dmg": 0.45,
+            "area": 0,
+            "cd": 0,
+            "crit": 0,
+            "repeat": 0,
+            "leech": 0
+          },
+          "len": 3,
+          "lenMul": 1
+        }
+      ]
+    },
+    {
+      "id": "start-cover",
+      "level": 1,
+      "template": "pocket",
+      "requiredBoardLevel": 1,
+      "requiredBoardDepth": 0,
+      "powerUsed": 2,
+      "powerCap": 3,
+      "slots": [
+        {
+          "skill": "FIRE",
+          "supports": [
+            "HEAVY",
+            "AREA"
+          ]
+        }
+      ],
+      "board": {
+        "v": 6,
+        "rules": 2,
+        "template": "pocket",
+        "pieces": [
+          {
+            "id": 1,
+            "kind": "active",
+            "key": "FIRE",
+            "x": 4,
+            "y": 2,
+            "rot": 0
+          },
+          {
+            "id": 2,
+            "kind": "support",
+            "key": "HEAVY",
+            "x": 1,
+            "y": 2,
+            "rot": 0,
+            "t": 1
+          },
+          {
+            "id": 3,
+            "kind": "support",
+            "key": "AREA",
+            "x": 3,
+            "y": 2,
+            "rot": 0,
+            "t": 1
+          }
+        ],
+        "wires": [
+          {
+            "sock": 0,
+            "cells": [
+              [
+                1,
+                2
+              ],
+              [
+                2,
+                2
+              ],
+              [
+                3,
+                2
+              ]
+            ]
+          }
+        ],
+        "nextId": 4,
+        "extra": 0,
+        "w": 5,
+        "h": 5
+      },
+      "resolution": [
+        {
+          "id": 1,
+          "key": "FIRE",
+          "sock": 0,
+          "wired": true,
+          "linked": [
+            2,
+            3
+          ],
+          "weights": [
+            1,
+            1
+          ],
+          "over": [],
+          "missed": [],
+          "stat": {
+            "dmg": 0.30000000000000004,
+            "area": 1,
+            "cd": 0,
+            "crit": 0,
+            "repeat": 0,
+            "leech": 0
+          },
+          "len": 3,
+          "lenMul": 1
+        }
+      ]
+    },
+    {
+      "id": "chain-cover",
+      "level": 10,
+      "template": "duplex",
+      "requiredBoardLevel": 8,
+      "requiredBoardDepth": 3,
+      "powerUsed": 2,
+      "powerCap": 5,
+      "slots": [
+        {
+          "skill": "CHAIN",
+          "supports": [
+            "FORK"
+          ]
+        },
+        {
+          "skill": "FIRE",
+          "supports": [
+            "HEAVY"
+          ]
+        }
+      ],
+      "board": {
+        "v": 6,
+        "rules": 2,
+        "template": "duplex",
+        "pieces": [
+          {
+            "id": 1,
+            "kind": "active",
+            "key": "CHAIN",
+            "x": 5,
+            "y": 1,
+            "rot": 0
+          },
+          {
+            "id": 2,
+            "kind": "support",
+            "key": "FORK",
+            "x": 2,
+            "y": 1,
+            "rot": 0,
+            "t": 1
+          },
+          {
+            "id": 3,
+            "kind": "active",
+            "key": "FIRE",
+            "x": 0,
+            "y": 4,
+            "rot": 0
+          },
+          {
+            "id": 4,
+            "kind": "support",
+            "key": "HEAVY",
+            "x": 3,
+            "y": 4,
+            "rot": 0,
+            "t": 1
+          }
+        ],
+        "wires": [
+          {
+            "sock": 0,
+            "cells": [
+              [
+                1,
+                1
+              ],
+              [
+                2,
+                1
+              ],
+              [
+                3,
+                1
+              ],
+              [
+                4,
+                1
+              ]
+            ]
+          },
+          {
+            "sock": 1,
+            "cells": [
+              [
+                4,
+                4
+              ],
+              [
+                3,
+                4
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                1,
+                4
+              ]
+            ]
+          }
+        ],
+        "nextId": 5,
+        "extra": 0,
+        "w": 6,
+        "h": 6
+      },
+      "resolution": [
+        {
+          "id": 1,
+          "key": "CHAIN",
+          "sock": 0,
+          "wired": true,
+          "linked": [
+            2
+          ],
+          "weights": [
+            1
+          ],
+          "over": [],
+          "missed": [],
+          "stat": {
+            "dmg": 0,
+            "area": 0,
+            "cd": 0,
+            "crit": 0,
+            "repeat": 0,
+            "leech": 0,
+            "fork": 1
+          },
+          "len": 4,
+          "lenMul": 1
+        },
+        {
+          "id": 3,
+          "key": "FIRE",
+          "sock": 1,
+          "wired": true,
+          "linked": [
+            4
+          ],
+          "weights": [
+            1
+          ],
+          "over": [],
+          "missed": [],
+          "stat": {
+            "dmg": 0.45,
+            "area": 0,
+            "cd": 0,
+            "crit": 0,
+            "repeat": 0,
+            "leech": 0
+          },
+          "len": 4,
+          "lenMul": 1
+        }
+      ]
+    },
+    {
+      "id": "beam-focus",
+      "level": 16,
+      "template": "duplex",
+      "requiredBoardLevel": 8,
+      "requiredBoardDepth": 3,
+      "powerUsed": 2,
+      "powerCap": 5,
+      "slots": [
+        {
+          "skill": "CHAIN",
+          "supports": [
+            "FOCUS"
+          ]
+        },
+        {
+          "skill": "BEAM",
+          "supports": [
+            "FOCUS"
+          ]
+        }
+      ],
+      "board": {
+        "v": 6,
+        "rules": 2,
+        "template": "duplex",
+        "pieces": [
+          {
+            "id": 1,
+            "kind": "active",
+            "key": "CHAIN",
+            "x": 5,
+            "y": 1,
+            "rot": 0
+          },
+          {
+            "id": 2,
+            "kind": "support",
+            "key": "FOCUS",
+            "x": 3,
+            "y": 1,
+            "rot": 0,
+            "t": 1
+          },
+          {
+            "id": 3,
+            "kind": "active",
+            "key": "BEAM",
+            "x": 0,
+            "y": 4,
+            "rot": 0
+          },
+          {
+            "id": 4,
+            "kind": "support",
+            "key": "FOCUS",
+            "x": 3,
+            "y": 4,
+            "rot": 0,
+            "t": 1
+          }
+        ],
+        "wires": [
+          {
+            "sock": 0,
+            "cells": [
+              [
+                1,
+                1
+              ],
+              [
+                2,
+                1
+              ],
+              [
+                3,
+                1
+              ],
+              [
+                4,
+                1
+              ]
+            ]
+          },
+          {
+            "sock": 1,
+            "cells": [
+              [
+                4,
+                4
+              ],
+              [
+                3,
+                4
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                1,
+                4
+              ]
+            ]
+          }
+        ],
+        "nextId": 5,
+        "extra": 0,
+        "w": 6,
+        "h": 6
+      },
+      "resolution": [
+        {
+          "id": 1,
+          "key": "CHAIN",
+          "sock": 0,
+          "wired": true,
+          "linked": [
+            2
+          ],
+          "weights": [
+            1
+          ],
+          "over": [],
+          "missed": [],
+          "stat": {
+            "dmg": 0.35,
+            "area": 0,
+            "cd": 0.15,
+            "crit": 0.15,
+            "repeat": 0,
+            "leech": 0
+          },
+          "len": 4,
+          "lenMul": 1
+        },
+        {
+          "id": 3,
+          "key": "BEAM",
+          "sock": 1,
+          "wired": true,
+          "linked": [
+            4
+          ],
+          "weights": [
+            1
+          ],
+          "over": [],
+          "missed": [],
+          "stat": {
+            "dmg": 0.35,
+            "area": 0,
+            "cd": 0.15,
+            "crit": 0.15,
+            "repeat": 0,
+            "leech": 0
+          },
+          "len": 4,
+          "lenMul": 1
+        }
+      ]
+    },
+    {
+      "id": "beam-wide",
+      "level": 16,
+      "template": "duplex",
+      "requiredBoardLevel": 8,
+      "requiredBoardDepth": 3,
+      "powerUsed": 1,
+      "powerCap": 5,
+      "slots": [
+        {
+          "skill": "CHAIN",
+          "supports": []
+        },
+        {
+          "skill": "BEAM",
+          "supports": [
+            "SPREAD"
+          ]
+        }
+      ],
+      "board": {
+        "v": 6,
+        "rules": 2,
+        "template": "duplex",
+        "pieces": [
+          {
+            "id": 1,
+            "kind": "active",
+            "key": "CHAIN",
+            "x": 5,
+            "y": 1,
+            "rot": 0
+          },
+          {
+            "id": 2,
+            "kind": "active",
+            "key": "BEAM",
+            "x": 0,
+            "y": 4,
+            "rot": 0
+          },
+          {
+            "id": 3,
+            "kind": "support",
+            "key": "SPREAD",
+            "x": 2,
+            "y": 4,
+            "rot": 0,
+            "t": 1
+          }
+        ],
+        "wires": [
+          {
+            "sock": 0,
+            "cells": [
+              [
+                1,
+                1
+              ],
+              [
+                2,
+                1
+              ],
+              [
+                3,
+                1
+              ],
+              [
+                4,
+                1
+              ]
+            ]
+          },
+          {
+            "sock": 1,
+            "cells": [
+              [
+                4,
+                4
+              ],
+              [
+                3,
+                4
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                1,
+                4
+              ]
+            ]
+          }
+        ],
+        "nextId": 4,
+        "extra": 0,
+        "w": 6,
+        "h": 6
+      },
+      "resolution": [
+        {
+          "id": 1,
+          "key": "CHAIN",
+          "sock": 0,
+          "wired": true,
+          "linked": [],
+          "weights": [],
+          "over": [],
+          "missed": [],
+          "stat": {
+            "dmg": 0,
+            "area": 0,
+            "cd": 0,
+            "crit": 0,
+            "repeat": 0,
+            "leech": 0
+          },
+          "len": 4,
+          "lenMul": 1
+        },
+        {
+          "id": 2,
+          "key": "BEAM",
+          "sock": 1,
+          "wired": true,
+          "linked": [
+            3
+          ],
+          "weights": [
+            1
+          ],
+          "over": [],
+          "missed": [],
+          "stat": {
+            "dmg": -0.2,
+            "area": 0.4,
+            "cd": 0,
+            "crit": 0,
+            "repeat": 0,
+            "leech": 0
+          },
+          "len": 4,
+          "lenMul": 1
+        }
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "skill": "FIRE",
+      "spread": false,
+      "area": true,
+      "recover": true
+    },
+    {
+      "skill": "CHAIN",
+      "spread": false,
+      "area": true,
+      "recover": true
+    },
+    {
+      "skill": "BEAM",
+      "spread": true,
+      "area": true,
+      "recover": true
+    }
+  ],
+  "limits": [
+    "No battle, DPS, character-passive, offline or migration simulation.",
+    "Fixtures assume listed skills, board and tier-I supports are legally owned and skill gates met.",
+    "Mode ownership, mode combat effects and equipment rolls are not executed by GridLab.resolve.",
+    "Shared board feasibility does not verify the proposed four new character loops."
+  ]
+}
