@@ -1,6 +1,6 @@
 # Game Lab：Idle Hero
 
-一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。本次版本：**v0.78.0**（授權配樂與全套音效更新；保留浮島、故事與技能）。驗證及來源見 [部署紀錄](docs/deployment.md)。
+一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。正式發佈版本：**v0.78.0**（授權配樂與全套音效更新；保留浮島、故事與技能）。驗證及來源見 [部署紀錄](docs/deployment.md)。
 
 
 **[直接試玩](https://yauchai2.github.io/Game-Lab/) · [版本紀錄與下載](https://github.com/yauchai2/Game-Lab/releases) · [開發分支](https://github.com/yauchai2/Game-Lab/tree/main)**
@@ -23,6 +23,8 @@
 - **圖鑑、成就、角色頁與裝扮**：四個固定職業、各三條昇華；自訂玩家名稱，最多保存十二個獨立角色。
 - **存檔與離線進度**：各角色獨立保存，只有目前角色獲得離線進度；裝備與電路板由玩家手動換用；扮工模式（按 `` ` `` 鍵）可以低調掛機。
 
+目前原始碼已合併 **0.79.1 開發版**（PR #116，`641c43d`）；這不代表正式根目錄或 Release 已更新。
+
 ## 在本機執行
 
 不需要安裝任何套件。
@@ -36,13 +38,14 @@
 
   然後開 `http://localhost:8000/`。
 - 重新打包單檔：`python3 tools/build.py`
-- 接線板邏輯測試：`node tools/test_grid.js`；瀏覽器測試：`node tools/test_wire_browser.cjs`（需先 `python3 -m http.server 8780`）
+- 接線板邏輯測試：`node tools/test_grid.js`。舊接線板瀏覽器測試已移至 `tools/stale-tests/`，不屬於日常驗證。
+- 分段網站啟動測試：`node tools/test_site_boot.cjs`（自行建立暫存網站與 HTTP 服務）。瀏覽器測試另需 Playwright 與 `/usr/bin/chromium`；「不需要安裝套件」僅指執行遊戲。
 - 離線結算回歸（不需瀏覽器）：`node tools/test_offline_return.cjs`
 - 多種子長時回訪：`node tools/probe_offline_returns.cjs /tmp/game-lab-offline-return.json`。直接執行正式模擬函式，驗證兩分鐘／六小時回訪、十二小時上限及城市單次出發；以四個工作執行緒運算，中斷後重跑同一輸出路徑可沿用已完成情境。結果不代表手機效能或真人長期體驗。
 
 ### 測試用網址參數
 
-`?fresh`（不讀存檔）、`?sim=秒數`（快轉）、`?lvl=`、`?depth=`、`?speed=`、`?give`、`?run`（進地圖）、`?modal=skills|tree|maps|save`、`?away=秒數`（模擬離線）、`?selftest`（存檔來回測試）、`?clean`（關閉復古顆粒）。
+`?fresh`（不讀存檔，但仍會自動保存，請使用獨立瀏覽器環境，避免覆寫既有角色）、`?sim=秒數`（快轉）、`?lvl=`、`?depth=`、`?speed=`、`?give`、`?run`（進地圖）、`?modal=skills|tree|maps|save`、`?away=秒數`（模擬離線）、`?selftest`（存檔來回測試）、`?clean`（關閉復古顆粒）。
 
 ## 目錄結構
 
@@ -64,11 +67,11 @@
 | `tools/` | 打包腳本與 Blender 建模腳本（`tools/model/`） |
 | `docs/` | 設計、美術風格與待辦文件 |
 
-所有 `src/game/` 檔案共用全域範圍，載入順序即檔名順序。
+所有 `src/game/` 檔案共用全域範圍；實際載入順序以 `index.html` 的 script 排列為準，並非完全按檔名排序。
 
 ## 美術風格
 
-Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機、街景高架橋，介面是作業系統視窗風，全介面保留 Cubic 11 像素字體，透過手機／桌機字級、行距及介面比例改善可讀性。細節見 [docs/art-style.md](docs/art-style.md) 與 [docs/art-direction-and-roadmap.md](docs/art-direction-and-roadmap.md)。
+Y2K 低面數平塗 3D：明亮街頭、semi-lowpoly／flat／unlit matte、寬褲厚底鞋、耳機、街景高架橋，介面是作業系統視窗風，全介面保留 Cubic 11 像素字體，透過手機／桌機字級、行距及介面比例改善可讀性。現行基準見 [docs/creative-direction.md](docs/creative-direction.md)；舊美術文件與其衝突時，以現行基準為準。
 
 ## 授權
 
@@ -76,13 +79,13 @@ Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機�
 
 0.32 地形、選卡暫停及回饋驗證：`node tools/test_update_032.cjs`、`node tools/test_terrain_mesh.cjs`。本次結果及限制見 [docs/update-0.32-validation.md](docs/update-0.32-validation.md)。
 
-0.32 視覺修正版：`node tools/test_world_review.cjs`；完整來源檢查：`python tools/run_review_checks.py`。開發分支可推送，Release／gh-pages 必須先取得版本確認。
+0.32 視覺修正版：`node tools/test_world_review.cjs`；歷史來源檢查：`python tools/run_review_checks.py`（固定 0.32 清單，含已不存在的測試，不可當作現版完整驗證）。開發分支可推送，Release／gh-pages 必須先取得版本確認。
 
-### 四主角候選（未 release）
+### 歷史四主角候選紀錄
 
-`codex/y2k-characters` 以 Alan 上傳模型製作 AKI、MILO、PING、NULL 的 16 骨架／9 動作版本。獨立動作審核：`dist/character-review.html`；含四角色切換的遊戲試玩：`dist/idle-hero-review.html`。來源、驗證界線及與 Claude 分支的整合 hooks 見 [整合指引](docs/y2k-characters-handoff.md)。正式公開版仍為 v0.32.0。
+`codex/y2k-characters` 以 Alan 上傳模型製作 AKI、MILO、PING、NULL 的 16 骨架／9 動作版本。獨立動作審核：`dist/character-review.html`；含四角色切換的遊戲試玩：`dist/idle-hero-review.html`。來源、驗證界線及與 Claude 分支的整合 hooks 見 [整合指引](docs/y2k-characters-handoff.md)。該段記錄當時的 v0.32.0 狀態，現行正式版本請看本文開頭與部署紀錄。
 
-### Y2K 專屬裝備候選（未發佈）
+### 歷史 Y2K 專屬裝備候選紀錄
 
 已接入本次 ZIP 的 16 件 3D 模型；素材清單另外 4 件尚只有參考圖，先以簡模代替。專裝只有對應角色可穿戴，獨立低機率掉落；其餘裝備暫用簡單幾何模型。
 
@@ -90,4 +93,4 @@ Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機�
 - 整合遊戲候選：`dist/idle-hero-review.html`（獨立測試存檔）
 - [素材對照、掉落規則與驗證](docs/y2k-equipment.md)
 - 邏輯與素材檢查：`node tools/test_signature_equipment.cjs`
-- 瀏覽器檢查：啟動本機 8780 伺服器後執行 `node tools/test_signature_equipment_browser.cjs`
+- 舊瀏覽器檢查已移至 `tools/stale-tests/test_signature_equipment_browser.cjs`，需更新後才能恢復日常驗證。

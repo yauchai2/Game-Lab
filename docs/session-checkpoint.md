@@ -1,3 +1,5 @@
+> 儲存庫探索（2026-10-28，Asia/Taipei）：基準 main `641c43d`／PR #116 已合併，下方入口／選角「未合併」描述屬歷史狀態。`727ed6d` 已改回低解像封面與序章，不能依舊交付表格修改瀏覽器斷言。本輪在 `codex/repository-verification-notes` 修正文件及兩個測試落差；原圖、接線、7 項離線回歸、分段啟動均通過。另以隔離 VM 重現 fresh 覆寫與多分頁回滾風險，未修產品；待辦 SAVE-EXP-01/02。證據與限制見 [探索紀錄](repository-exploration-2026-10-28.md)。此紀錄不代表發佈。
+
 > 入口原圖修復候選（2026-10-28，Asia/Hong_Kong）：延續 PR #113，分支 codex/hello-static-character-select 已整合 main c67529d。Alan 指定酸黃天線原直幅／橫幅作封面；找回生成原 PNG，無 screencap。一次取樣重做封面／Logo／序章，救回軟 alpha、人面、字標，boot 與 title 共用響應式 picture／CSS，移除靜止旋轉與多餘覆層。證據、原圖 SHA、限制及接線見 [entry-art-refresh](entry-art-refresh/README.md)。候選未合併／發佈。
 
 > 選角頁候選（2026-10-27，Asia/Hong_Kong）：`codex/hello-static-character-select`，基於 main `4d9fe30`，保留 v0.78 音訊及 0.79 測試版系統記錄。批准白底四人圖已處理為 192px／40 色／4 倍 nearest-neighbor，獨立人物亮色與短上浮、四職業按鍵、能力說明及命名已接入既有建立／存檔／教學流程。範圍、測試證據及限制見 [選角交付](character-select/README.md)。開發／分段版各 10 組選角流程與原封面／序章 8 組回歸通過；另修正新增角色遺失 G.pal 的繪製錯誤。候選不代表合併或發佈。

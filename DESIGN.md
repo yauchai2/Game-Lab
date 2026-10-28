@@ -44,7 +44,7 @@ ink → --ux-ink，muted → --ux-muted，screen → --ux-screen，primary → -
 
 ## Layout
 
-桌機是左側戰場＋右側操作台，取消常駐第三欄；面板寬度 clamp(480px, 34vw, 620px)，1180px 以下採上下排列。桌機與手機共用六入口：角色、戰鬥、打造、成長、冒險、更多。詳細角色資料在角色頁，手機保留底部導覽與工作適配戰場高度。跨尺寸只重排，不 reload、不清空輸入或選取。新增 shell 的 canonical source 是 src/game/05g-layout.js 的 UI_LAYOUT_CSS，覆蓋 setupPanel 的舊外框；盤面、場景與既有皮膚仍延伸原有來源。
+桌機是左側戰場＋右側操作台，取消常駐第三欄；面板寬度 clamp(480px, 34vw, 620px)，1180px 以下採上下排列。桌機與手機共用六入口：角色、背包、技能、打造、冒險、設定（以 `UI_NAV` 為準）。詳細角色資料在角色頁，手機保留底部導覽與工作適配戰場高度。跨尺寸只重排，不 reload、不清空輸入或選取。新增 shell 的 canonical source 是 src/game/05g-layout.js 的 UI_LAYOUT_CSS，覆蓋 setupPanel 的舊外框；盤面、場景與既有皮膚仍延伸原有來源。
 
 主要工作區只有一個內容捲動容器；選中詳情與盤面都在正常流中，不使用大型 sticky 摘要。選取後可返回盤面。盤面保留六欄，手機最大約 300px；詳情、工具列及固定導覽不可蓋住最後一列。編年史手機單欄內容。
 

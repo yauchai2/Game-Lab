@@ -22,7 +22,7 @@ function createRuntime(seed = 11) {
     console, Math: math, Date: Clock, performance,
     GridLab: require('../../src/game/00-grid.js'),
     ART_SHEETS: { icons: { ids: [] }, skills: { ids: [] }, gems: { ids: [] } },
-    document: { getElementById: () => null },
+    document: { getElementById: () => null, body: { classList: { toggle: () => {} } } },
     localStorage: {
       getItem: key => storage.get(key) ?? null,
       setItem: (key, value) => { storage.set(key, value); saves++; },
