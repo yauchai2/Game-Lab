@@ -39,5 +39,28 @@
       "black humor"
     ],
     "status": "User clarification of creative tone, not a description of the reference video"
-  }
+  },
+  "confirmed_classes": [
+    {
+      "name": "破壞者",
+      "gender": "male",
+      "archetype": "strength warrior"
+    },
+    {
+      "name": "駭客",
+      "gender": "female",
+      "archetype": "cool-tempered caster"
+    },
+    {
+      "name": "遊擊手",
+      "gender": "female",
+      "archetype": "agile ranger"
+    },
+    {
+      "name": "機偶師",
+      "gender": "male",
+      "archetype": "summoner"
+    }
+  ],
+  "classes_status": "User confirmed adoption; abilities, appearance and implementation still pending"
 }

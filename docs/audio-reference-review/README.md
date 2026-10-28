@@ -6,7 +6,7 @@
 
 ## 參考與證據邊界
 
-- Ice Cream.mp4：使用者原上傳，116.19秒，有音軌；仍是街頭日常、色彩層次與整體氣質的最高參考。未將錄音採樣進候選。
+- Ice Cream.mp4：使用者原上傳，116.19秒，有音軌；屬當時音訊選材的歷史來源；現行世界觀及人物氣質統一以[創作基準](../creative-direction.md)為準。未將錄音採樣進候選。
 - [Into Moon — Dream Logic](https://www.youtube.com/watch?v=Gbu3iBi9F7Y)：使用者提供Electronic Gems頁面內容，標題及「Tranquil textures」描述已確認。原作者連結[SoundCloud](https://soundcloud.com/intomoon/dreamlogic)。本環境YouTube／SoundCloud讀取受限，**未直接播放或量測此曲**，不捏造BPM、調性或逐秒分析。
 - [Dorephin Shopping Center — Lionclad](https://www.youtube.com/watch?v=gvtrG92q32Q)：使用者確認頁面；[官方製作介紹](https://azikazinmagicworld.com/en/news/5299/)描述短促鋼琴音色、琶音／重複觸發及鼓組帶出的開闊感。這是創作者的文字證據，**不是已完整播放影片的聲稱**。
 
