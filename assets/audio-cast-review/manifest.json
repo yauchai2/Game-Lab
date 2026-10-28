@@ -74,7 +74,7 @@
     "drift": "keep current",
     "haze": "keep current",
     "underpass": "new Space Ranger candidate",
-    "rush": "retire forced elite cue; inherit current scene theme",
+    "rush": "Confirmed recording match; retire forced elite cue and inherit current scene theme",
     "boss": "keep current"
   },
   "productionInstalled": false,
@@ -170,12 +170,12 @@
     },
     {
       "before": {
-        "title": "原創精英循環",
+        "title": "原創精英循環（錄音對應）",
         "file": "src/audio/rush.mp3",
         "excerptFile": "assets/audio-cast-review/excerpts/rush-before.mp3",
-        "start": 12,
+        "start": 18.24,
         "seconds": 24,
-        "excerptSha256": "a7d4d69b4f22f20474554702c80b4c79b199d231bcdc0cf3ca9f430db2f96f82",
+        "excerptSha256": "f6f1fab68643e6c0ca4b5960f084638296d782325e3bbc697d2a141dee046d88",
         "license": "Project-original",
         "author": "Game-Lab deterministic composition/synthesis"
       },

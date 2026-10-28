@@ -1,0 +1,541 @@
+{
+  "recordingDuration": 6.443,
+  "method": "Time-varying log-frequency spectrogram correlation, room/EQ-resistant high-pass temporal features. Scores are similarity, not probability.",
+  "matches": [
+    {
+      "file": "src/audio/rush.mp3",
+      "duration": 61.935,
+      "best": {
+        "score": 0.6289547585801026,
+        "recordingStart": 0.2,
+        "recordingEnd": 3,
+        "trackStart": 18.448,
+        "trackEnd": 21.264
+      },
+      "windows": [
+        {
+          "score": 0.5193091079403055,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 33.744,
+          "trackEnd": 40.144
+        },
+        {
+          "score": 0.49623833774285075,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 18.752,
+          "trackEnd": 24.048
+        },
+        {
+          "score": 0.5192371947344484,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 19.248,
+          "trackEnd": 23.456
+        },
+        {
+          "score": 0.6289547585801026,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 18.448,
+          "trackEnd": 21.264
+        },
+        {
+          "score": 0.3360332050609955,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 21.456,
+          "trackEnd": 24.464
+        }
+      ]
+    },
+    {
+      "file": "src/audio/haze.mp3",
+      "duration": 347.694,
+      "best": {
+        "score": 0.25137056962664894,
+        "recordingStart": 0.2,
+        "recordingEnd": 3,
+        "trackStart": 198.8,
+        "trackEnd": 201.616
+      },
+      "windows": [
+        {
+          "score": 0.1970886962602346,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 332.72,
+          "trackEnd": 339.12
+        },
+        {
+          "score": 0.21647273480864146,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 333.2,
+          "trackEnd": 338.496
+        },
+        {
+          "score": 0.20805781424217995,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 279.392,
+          "trackEnd": 283.6
+        },
+        {
+          "score": 0.25137056962664894,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 198.8,
+          "trackEnd": 201.616
+        },
+        {
+          "score": 0.23594557442525296,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 250.592,
+          "trackEnd": 253.6
+        }
+      ]
+    },
+    {
+      "file": "src/audio/underpass.mp3",
+      "duration": 68.571,
+      "best": {
+        "score": 0.24022901792630108,
+        "recordingStart": 0.2,
+        "recordingEnd": 3,
+        "trackStart": 46.352,
+        "trackEnd": 49.168
+      },
+      "windows": [
+        {
+          "score": 0.09522277649933089,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 48.288,
+          "trackEnd": 54.688
+        },
+        {
+          "score": 0.14470536182591634,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 31.648,
+          "trackEnd": 36.944
+        },
+        {
+          "score": 0.2015010640390226,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 49.296,
+          "trackEnd": 53.504
+        },
+        {
+          "score": 0.24022901792630108,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 46.352,
+          "trackEnd": 49.168
+        },
+        {
+          "score": 0.13372051426501122,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 64.176,
+          "trackEnd": 67.184
+        }
+      ]
+    },
+    {
+      "file": "assets/audio-cast-review/music/radio.mp3",
+      "duration": 453.851,
+      "best": {
+        "score": 0.19287944337255566,
+        "recordingStart": 3.2,
+        "recordingEnd": 6.2,
+        "trackStart": 213.2,
+        "trackEnd": 216.208
+      },
+      "windows": [
+        {
+          "score": 0.12019161158114086,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 210.016,
+          "trackEnd": 216.416
+        },
+        {
+          "score": 0.117670213599974,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 321.232,
+          "trackEnd": 326.528
+        },
+        {
+          "score": 0.14669025086321724,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 272.352,
+          "trackEnd": 276.56
+        },
+        {
+          "score": 0.17614342617615758,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 355.84,
+          "trackEnd": 358.656
+        },
+        {
+          "score": 0.19287944337255566,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 213.2,
+          "trackEnd": 216.208
+        }
+      ]
+    },
+    {
+      "file": "assets/audio-legacy/drift.mp3",
+      "duration": 72.0,
+      "best": {
+        "score": 0.19277689212664462,
+        "recordingStart": 0.2,
+        "recordingEnd": 3,
+        "trackStart": 64.016,
+        "trackEnd": 66.832
+      },
+      "windows": [
+        {
+          "score": 0.14476669195108058,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 63.808,
+          "trackEnd": 70.208
+        },
+        {
+          "score": 0.14227047624929992,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 46.784,
+          "trackEnd": 52.08
+        },
+        {
+          "score": 0.16692732009508526,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 50.512,
+          "trackEnd": 54.72
+        },
+        {
+          "score": 0.19277689212664462,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 64.016,
+          "trackEnd": 66.832
+        },
+        {
+          "score": 0.14486690245332362,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 66.672,
+          "trackEnd": 69.68
+        }
+      ]
+    },
+    {
+      "file": "src/audio/drift.mp3",
+      "duration": 173.749,
+      "best": {
+        "score": 0.17935634133190714,
+        "recordingStart": 0.2,
+        "recordingEnd": 3,
+        "trackStart": 6.832,
+        "trackEnd": 9.648
+      },
+      "windows": [
+        {
+          "score": 0.12011663728389282,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 85.072,
+          "trackEnd": 91.472
+        },
+        {
+          "score": 0.15088654537291063,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 0.272,
+          "trackEnd": 5.568
+        },
+        {
+          "score": 0.1576885200586468,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 2.48,
+          "trackEnd": 6.688
+        },
+        {
+          "score": 0.17935634133190714,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 6.832,
+          "trackEnd": 9.648
+        },
+        {
+          "score": 0.17356087238304319,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 25.04,
+          "trackEnd": 28.048
+        }
+      ]
+    },
+    {
+      "file": "src/audio/boss.mp3",
+      "duration": 144.408,
+      "best": {
+        "score": 0.17872288790728158,
+        "recordingStart": 0.2,
+        "recordingEnd": 3,
+        "trackStart": 0.32,
+        "trackEnd": 3.136
+      },
+      "windows": [
+        {
+          "score": 0.13047918056836771,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 0.832,
+          "trackEnd": 7.232
+        },
+        {
+          "score": 0.14171801760293445,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 1.328,
+          "trackEnd": 6.624
+        },
+        {
+          "score": 0.15256591421881838,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 1.84,
+          "trackEnd": 6.048
+        },
+        {
+          "score": 0.17872288790728158,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 0.32,
+          "trackEnd": 3.136
+        },
+        {
+          "score": 0.15314758377962376,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 1.648,
+          "trackEnd": 4.656
+        }
+      ]
+    },
+    {
+      "file": "assets/audio-cast-review/music/underpass.mp3",
+      "duration": 72.0,
+      "best": {
+        "score": 0.17566447050095735,
+        "recordingStart": 0.2,
+        "recordingEnd": 3,
+        "trackStart": 26.096,
+        "trackEnd": 28.912
+      },
+      "windows": [
+        {
+          "score": 0.11330966215198655,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 4.944,
+          "trackEnd": 11.344
+        },
+        {
+          "score": 0.11145109690092556,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 24.912,
+          "trackEnd": 30.208
+        },
+        {
+          "score": 0.134226748350958,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 25.408,
+          "trackEnd": 29.616
+        },
+        {
+          "score": 0.17566447050095735,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 26.096,
+          "trackEnd": 28.912
+        },
+        {
+          "score": 0.1395701451629342,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 2.368,
+          "trackEnd": 5.376
+        }
+      ]
+    },
+    {
+      "file": "src/audio/radio.mp3",
+      "duration": 18.462,
+      "best": {
+        "score": 0.12603685949208437,
+        "recordingStart": 1,
+        "recordingEnd": 5.2,
+        "trackStart": 8.96,
+        "trackEnd": 13.168
+      },
+      "windows": [
+        {
+          "score": 0.09003363200334176,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 7.968,
+          "trackEnd": 14.368
+        },
+        {
+          "score": 0.08832296736505157,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 8.464,
+          "trackEnd": 13.76
+        },
+        {
+          "score": 0.12603685949208437,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 8.96,
+          "trackEnd": 13.168
+        },
+        {
+          "score": 0.11338638555380721,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 13.792,
+          "trackEnd": 16.608
+        },
+        {
+          "score": 0.10584278081093097,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 11.168,
+          "trackEnd": 14.176
+        }
+      ]
+    },
+    {
+      "file": "assets/audio-legacy/rush.mp3",
+      "duration": 60.0,
+      "best": {
+        "score": 0.12200068455932275,
+        "recordingStart": 0.2,
+        "recordingEnd": 3,
+        "trackStart": 36.864,
+        "trackEnd": 39.68
+      },
+      "windows": [
+        {
+          "score": 0.07588436889608698,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 48.752,
+          "trackEnd": 55.152
+        },
+        {
+          "score": 0.1104587810369784,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 37.152,
+          "trackEnd": 42.448
+        },
+        {
+          "score": 0.10933223099234218,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 37.664,
+          "trackEnd": 41.872
+        },
+        {
+          "score": 0.12200068455932275,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 36.864,
+          "trackEnd": 39.68
+        },
+        {
+          "score": 0.10660814833240281,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 41.504,
+          "trackEnd": 44.512
+        }
+      ]
+    },
+    {
+      "file": "assets/audio-legacy/haze.mp3",
+      "duration": 72.0,
+      "best": {
+        "score": 0.07507124681517093,
+        "recordingStart": 0.2,
+        "recordingEnd": 3,
+        "trackStart": 1.248,
+        "trackEnd": 4.064
+      },
+      "windows": [
+        {
+          "score": 0.048083097805691796,
+          "recordingStart": 0,
+          "recordingEnd": 6.4426875,
+          "trackStart": 0.032,
+          "trackEnd": 6.432
+        },
+        {
+          "score": 0.04948704178376462,
+          "recordingStart": 0.5,
+          "recordingEnd": 5.8,
+          "trackStart": 1.536,
+          "trackEnd": 6.832
+        },
+        {
+          "score": 0.07393740121227424,
+          "recordingStart": 1,
+          "recordingEnd": 5.2,
+          "trackStart": 0.048,
+          "trackEnd": 4.256
+        },
+        {
+          "score": 0.07507124681517093,
+          "recordingStart": 0.2,
+          "recordingEnd": 3,
+          "trackStart": 1.248,
+          "trackEnd": 4.064
+        },
+        {
+          "score": 0.04942006822169123,
+          "recordingStart": 3.2,
+          "recordingEnd": 6.2,
+          "trackStart": 35.168,
+          "trackEnd": 38.176
+        }
+      ]
+    }
+  ],
+  "identifiedTrack": "src/audio/rush.mp3",
+  "identification": "Strong recording-to-project association: full clip and two independent subwindows match the repeated phrase; correlation scores are not probabilities.",
+  "privacy": "Recording remains only in the upload workspace; neither audio nor filename is in this repository.",
+  "subwindowAlignmentSeconds": [
+    18.248,
+    18.256
+  ]
+}

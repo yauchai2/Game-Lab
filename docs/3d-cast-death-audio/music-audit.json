@@ -1,7 +1,7 @@
 {
   "base": "641c43d",
   "coverage": "All six music files currently selected by streetMusicTrack; no separate six-chapter music assets in this main.",
-  "userFeedback": "Unidentified repeating 登登 sound; no title confirmed.",
+  "userFeedback": "User supplied a 6.44s recording of the unwanted repeating sound; identified as current rush.mp3.",
   "current": [
     {
       "file": "src/audio/radio.mp3",
@@ -211,8 +211,8 @@
       "number": "M05",
       "key": "rush",
       "label": "精英遭遇",
-      "note": "建議取消遇精英就強制切短曲，沿用當前場景樂；此處以日間曲示範。",
-      "decision": "建議停用獨立精英曲／減少打斷"
+      "note": "已用提供的錄音比對到這首精英循環。修訂方案停用強制精英切曲，延續當前場景音樂；此處以日間示範。",
+      "decision": "錄音已比對：停用獨立rush曲"
     },
     {
       "number": "M06",
@@ -222,5 +222,6 @@
       "decision": "保留原曲"
     }
   ],
-  "limitations": "No subjective listening approval claimed; exact offending track remains unidentified. Excerpts are level-matched identification aids, not full loop seam acceptance. Existing 2.2s music-loop crossfade must be preserved."
+  "limitations": "Recording association supports rush.mp3, not a claim of subjective approval of replacement music. Live loop/deck routing still requires production integration.",
+  "recordingIdentification": "recording-identification.json"
 }

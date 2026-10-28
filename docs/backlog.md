@@ -891,3 +891,5 @@ v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release4049084216
 
 - [x] 可操作3D選角樣板：四原生16骨角色同場／近看、真mesh點選／旋轉，12張實際GLB正側背；12款Death GLB候選保留原mesh/material/clip，新增1.2s落地動作；六首BGM完整盤點、兩首完整CC0候選／12片段及短提示音辨識。見[交接](3d-cast-death-audio/README.md)。只tools/assets/docs，未接入正式遊戲。
 - [ ] 原型接入四人PV變體、renderer私有有上限屍體queue、音樂routing／新資產；驗真角色返回／保存、整場擊殺／塔樓清場、雙deck循環與手機效能。「登登」確切來源未知，不能宣稱已修好；保留原曲及編號對照。
+
+2026-10-28補充：Alan已明確指定四人同場擺姿勢、僅選中者動作／亮起；取消手機單人近看試稿。已追加四個CastPose/CastSelect GLB及實際互動比較。新提供的6.44秒錄音已比對到M05精英rush曲，停用獨立精英曲的接入項目已明確，不再列未知曲目；正式路由仍待原型owner接入。

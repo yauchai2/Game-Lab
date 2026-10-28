@@ -3,13 +3,20 @@
   "scope": "Live standalone prototype and candidate GLBs; not production integration or natural gameplay acceptance",
   "checks": [
     "4 live skinned characters; 7 responsive sizes; reduced-motion default is paused",
-    "All four meshes selectable via native raycast; keyboard selection and rotation preserve name",
+    "All four posed characters remain visible at all viewport sizes; face mesh raycast, keyboard selection and rotation preserve name",
+    "Selected-only gesture and halo effect; other three stay in the same group",
     "Validation focus and mock submit; no game or localStorage writes",
-    "12 Death clips × 2 scales × 12 times: finite transforms, bounded ground contact, hold without fade and final fade",
+    "12 Death clips × 2 scales × 19 times: finite transforms, bounded ground contact, hold without fade and final fade",
     "Self-contained offline load with subresources blocked, no page errors",
     "Explicit teardown stops rendering, disconnects observers and disposes owned assets/canvas",
     "Unavailable WebGL falls back to approved art while role and name controls remain usable"
   ],
+  "castStats": {
+    "calls": 28,
+    "triangles": 56732,
+    "geometries": 27
+  },
+  "allFourVisibleAcrossViewportSizes": true,
   "deathPoseCount": 456,
   "deathPoses": [
     {
