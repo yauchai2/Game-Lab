@@ -1,3 +1,5 @@
+> 角色圖像接續（2026-10-28，Asia/Hong_Kong）：依Alan新授權，已接續生成破壞者、駭客、機偶師及黃色收音機吉祥物四張獨立候選，連先前遊擊手共五張，皆顯示於聊天。吉祥物無眼嘴笑臉，與機偶師工作機偶分開。候選待使用者評圖；詳見[圖像探索紀錄](character-image-exploration-2026-10-28.md)。未建模／接入遊戲／合併／發佈。
+
 > 最新圖像授權（2026-10-28，Asia/Hong_Kong）：Alan要求四人物圖片，先遊擊手；直接以Ice Cream.mp4為風格參考，允許誇張表情、動作與鏡頭。取代此前「不生圖」限制，其他三人與模型／遊戲接入未執行。角色文字仍以characters-current為準；本輪廣角動態候選不作三視圖。來源與範圍見[圖像探索紀錄](character-image-exploration-2026-10-28.md)。未合併／發佈。
 
 > 入口原圖修復候選（2026-10-28，Asia/Hong_Kong）：延續 PR #113，分支 codex/hello-static-character-select 已整合 main c67529d。Alan 指定酸黃天線原直幅／橫幅作封面；找回生成原 PNG，無 screencap。一次取樣重做封面／Logo／序章，救回軟 alpha、人面、字標，boot 與 title 共用響應式 picture／CSS，移除靜止旋轉與多餘覆層。證據、原圖 SHA、限制及接線見 [entry-art-refresh](entry-art-refresh/README.md)。候選未合併／發佈。
