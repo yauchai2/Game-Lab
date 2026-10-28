@@ -6,7 +6,7 @@
 
 **現行街頭風格使用 12 個基礎模型：M01–M08、B01–B04。** 使用者本次提供的十二款總覽與映射表和現行程式吻合。這十二款已有素材與三視圖，不能因本對話要求「先看單視角」就誤記為從未製作三視圖。
 
-本對話另生成的「13 種一般怪物＋3 種守關者＝16 款」依據舊敵人名稱作畫，屬於**錯誤設定試稿，作廢，不納入正式名單**。其中的硬碟蟹也不例外。保留檔案只供追溯，不匯入正式素材 catalog、不代換現行模型、不據此新增待辦或宣稱使用者已批准造型。
+本對話另生成的「13 種一般怪物＋3 種守關者＝16 款」依據舊敵人名稱作畫，屬於**錯誤設定試稿，作廢，不納入正式名單**。其中的硬碟蟹也不例外。歷史內容只供追溯，不匯入正式素材 catalog、不代換現行模型、不據此新增待辦或宣稱使用者已批准造型。
 
 ## 十二款模型與玩法類型對照
 
@@ -53,6 +53,6 @@ Ice Cream.mp4 為全遊戲創作基準；細節見 [creative-direction.md](creat
 2. [creative-direction.md](creative-direction.md)：全遊戲風格與最新使用者修訂。
 3. [style-complete/README.md](style-complete/README.md)：十二模型、素材、三視圖與驗證證據。
 4. [release-0.64.0/integration.md](release-0.64.0/integration.md)：已合併／已發佈的證據；不憑舊候選紀錄判斷線上狀態。
-5. [art-style.md](art-style.md)、[art-direction-and-roadmap.md](art-direction-and-roadmap.md)、[art-review.md](art-review.md)：舊版美術演進紀錄，衝突處不作現行驗收規格。
+5. [art-style.md](art-style.md)：整合後現行美術規格；舊演進資料見 [歷史索引](history.md)。
 
 本次文件分支 `codex/monster-docs-cleanup-2026-10-26`，以 main a428ceb 為基底。驗證限於映射／素材清單／文件連結與差異範圍；未重新生成圖片、重建遊戲或執行遊戲測試。提交／推送／合併狀態以 Git／PR 為準。

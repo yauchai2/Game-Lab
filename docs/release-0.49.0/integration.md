@@ -4,7 +4,7 @@
 
 本輪來源／單檔先提交推送，再經PR合併，之後發佈Pages與不可移動的v0.49.0標籤；所有舊分支、tag及Pages雜湊資產保留。發佈完成前不宣稱線上已更新。
 
-驗證見[本輪驗收](../season-signal-2026-10-24/review.md)。Cloudflare仍無環境部署憑證，回饋服務未接通；Ko-fi方式已確認但無收款網址，保持未開放。
+驗證見[本輪驗收](https://github.com/yauchai2/Game-Lab/blob/e2dd365318cda13ff11c480209445efe16f0b544/docs/season-signal-2026-10-24/review.md)。Cloudflare仍無環境部署憑證，回饋服務未接通；Ko-fi方式已確認但無收款網址，保持未開放。
 
 ## 正式結果
 

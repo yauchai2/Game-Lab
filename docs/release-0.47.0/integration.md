@@ -27,7 +27,7 @@
 
 [Claude查核](claude-integration.json)記錄每個分支SHA及未納入原因。PR #12舊人物候選已在主線；PR #10內部備份不帶入遊戲；歷史研究改名分支無新遊戲碼。不刪分支，不移動舊tag。
 
-沿用同一產物的25組來源檢查、19+8組瀏覽器、單檔無外部請求、字模及腳本驗證。詳見[最新驗收](../readability-brand-2026-10-24/review.md)與[首批昇華驗收](../window-ui-ascensions-2026-10-24/review.md)。本次無新增遊戲碼，重新內嵌生成暫存單檔並以位元組比對，避免重跑無變更測試。部署後再查核分離腳本啟動、線上雜湊及Release附件digest。
+沿用同一產物的25組來源檢查、19+8組瀏覽器、單檔無外部請求、字模及腳本驗證。詳見[最新驗收](https://github.com/yauchai2/Game-Lab/blob/e2dd365318cda13ff11c480209445efe16f0b544/docs/readability-brand-2026-10-24/review.md)與[首批昇華驗收](https://github.com/yauchai2/Game-Lab/blob/e2dd365318cda13ff11c480209445efe16f0b544/docs/window-ui-ascensions-2026-10-24/review.md)。本次無新增遊戲碼，重新內嵌生成暫存單檔並以位元組比對，避免重跑無變更測試。部署後再查核分離腳本啟動、線上雜湊及Release附件digest。
 
 strict audit仍保留兩項既有事件代理按鈕偵測提示，不宣稱全綠。真機Safari、長時運作與完整終局平衡未驗收。
 

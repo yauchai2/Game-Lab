@@ -12,6 +12,8 @@ Alan已指定Ice Cream.mp4為全遊戲參考；必讀[docs/creative-direction.md
 
 ## 開始工作
 
+- 現行文件與素材入口先查 [docs/README.md](docs/README.md)；已刪除的舊報告、截圖與測試可由 [歷史索引](docs/history.md) 及清理清單指定的提交追溯。不要由歷史候選文字重啟已被取代的需求。
+
 - 各對話不會自動共享完整聊天紀錄。以使用者當前指示、目前分支的實作及可核對的專案紀錄為依據，不把推測當成其他對話的決定。
 - 先讀本文件、README.md，並依任務查閱 DESIGN.md、UX-CONTRACT.md、docs/backlog.md 及相關交接文件；子目錄若有 AGENTS.md，也需遵守。
 - 有本機 checkout 時，先確認 git status、目前分支與最近提交。可連線時 fetch 遠端最新資訊，再比較相關分支；不要直接 pull、切分支或重設含有他人未提交修改的工作目錄。

@@ -1,7 +1,0 @@
-desktop {
-  buffer: [ 898, 749 ],
-  css: [ 898.40625, 749.984375 ],
-  sampling: 'pixelated'
-}
-phone { buffer: [ 390, 260 ], css: [ 390, 260 ], sampling: 'pixelated' }
-watch-1080p { buffer: [ 960, 540 ], css: [ 1920, 1080 ], sampling: 'pixelated' }
