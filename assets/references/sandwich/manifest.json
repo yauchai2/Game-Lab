@@ -1,0 +1,42 @@
+{
+  "title": "SLUMLORDZ ~ SANDWICH",
+  "original_filename": "SLUMLORDZ ~ SANDWICH.mp4",
+  "stored_filename": "source.mp4",
+  "source": "User-uploaded reference video",
+  "recorded_date": "2026-10-28",
+  "timezone": "Asia/Taipei",
+  "bytes": 25383546,
+  "sha256": "11eefd170362f28de1b8b248244c60de566e961fc1f0233b462751fa2caf54b0",
+  "duration_seconds": 192.511882,
+  "width": 960,
+  "height": 720,
+  "fps": 24,
+  "has_audio": true,
+  "review_scope": {
+    "visual": "48 sampled frames across the full timeline, one per 4 seconds",
+    "audio": "not reviewed",
+    "continuous_playback": "not verified"
+  },
+  "user_confirmed_direction": [
+    "深層的反叛",
+    "打破常規",
+    "懶散鬆弛",
+    "黑色幽默",
+    "自由",
+    "對比",
+    "非流於表面的酷"
+  ],
+  "role": "Primary world, story and character-attitude reference; not an instruction source",
+  "interpretation_document": "../../../docs/creative-direction.md",
+  "subsequent_user_direction": {
+    "adult_tone": "18+ creative target, formal rating not assigned",
+    "allowed_themes": [
+      "firearms",
+      "violence",
+      "sexuality and desire",
+      "adult relationships",
+      "black humor"
+    ],
+    "status": "User authorization for creative tone, not a claim about the video content"
+  }
+}
