@@ -1,3 +1,19 @@
+# 目前接續入口（2026-10-28，Asia/Hong_Kong）
+
+Alan已明確批准將完整交接摘要（含歷史）推到任務分支。已同步[完整交接摘要](full-handoff-2026-10-28.md)，提交[2a818ef](https://github.com/yauchai2/Game-Lab/commit/2a818ef8c688b7be21379f20dfda95efe58ff523)。此入口位於 `codex/preview-integrate-20261028`；不代表已合併main。
+
+目前查核快照：main與preview來源641c43d、測試版0.79.1-dev.641c43d。#113／#116的封面／像素序章／插畫選角已合併；#107與#120音樂、#115／#118後續序章修訂、#120四人3D等候選未完成runtime整合。完整摘要記錄實際來源／部署腳本差異及先前結論更正。
+
+本對話尚未更改runtime或部署網站。具contents／Pages寫入權限的持續自動部署workflow被自動審核拒絕，未建立；最新批准只涵蓋摘要同步，不能作為啟用workflow的批准。本機Git DNS／gh憑證有阻礙，GitHub連接文件讀寫正常。見[部署提案及限制](preview-integration-2026-10-28.md)。
+
+接續先重新核對遠端，再按既有owner分工整合、驗證及僅部署preview；不直接覆寫舊分支產物，也不把已有候選驗證當新整合通過。未改正式站、main、tag或Release。
+
+---
+
+## 原有歷史checkpoint（完整保留）
+
+以下為此分支繼承的歷史文字；其中「#113候選未合併」等描述已被後來#116整合及本摘要的查核取代，保留供追溯。
+
 > 入口原圖修復候選（2026-10-28，Asia/Hong_Kong）：延續 PR #113，分支 codex/hello-static-character-select 已整合 main c67529d。Alan 指定酸黃天線原直幅／橫幅作封面；找回生成原 PNG，無 screencap。一次取樣重做封面／Logo／序章，救回軟 alpha、人面、字標，boot 與 title 共用響應式 picture／CSS，移除靜止旋轉與多餘覆層。證據、原圖 SHA、限制及接線見 [entry-art-refresh](entry-art-refresh/README.md)。候選未合併／發佈。
 
 > 選角頁候選（2026-10-27，Asia/Hong_Kong）：`codex/hello-static-character-select`，基於 main `4d9fe30`，保留 v0.78 音訊及 0.79 測試版系統記錄。批准白底四人圖已處理為 192px／40 色／4 倍 nearest-neighbor，獨立人物亮色與短上浮、四職業按鍵、能力說明及命名已接入既有建立／存檔／教學流程。範圍、測試證據及限制見 [選角交付](character-select/README.md)。開發／分段版各 10 組選角流程與原封面／序章 8 組回歸通過；另修正新增角色遺失 G.pal 的繪製錯誤。候選不代表合併或發佈。
