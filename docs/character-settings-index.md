@@ -2,6 +2,12 @@
 
 2026-10-28，Asia/Taipei。基於 main `641c43d` 與本任務分支 `codex/character-turnaround-preview`；只整理來源入口，不修改設定或遊戲。已 fetch origin main；舊文件的候選／版本文字不代表目前發佈狀態。
 
+## 先讀這三份
+
+- [現行角色設定總表](characters-current.md)：四職業、背景、造型辨識、昇華與NPC；未定欄位明示。
+- [一致性審查](character-settings-review.md)：衝突、設定缺口、處理結果與程式端建議。
+- [驗證紀錄](character-settings-validation.json)：來源載入後結果及文件連結檢查。
+
 ## 四個玩家職業（現行）
 
 | 模型代號 | 職業 | 戰鬥定位 | 現行街區背景摘要 |
@@ -35,6 +41,18 @@
 
 ## 舊草案（可閱讀，不代表現行定稿）
 
-[characters.md](characters.md) 是茜 AKANE、蓮 REN、結衣 YUI、太一 TAICHI 的完整身份／性格／外觀／個人故事草案。它和現行模型代號、職業簡介與街區故事不同；story.md 末尾仍連向此草案，不表示草案全部被現行遊戲採用。原文完整保留。
+[characters.md](characters.md) 是茜 AKANE、蓮 REN、結衣 YUI、太一 TAICHI 的完整身份／性格／外觀／個人故事草案。它和現行模型代號、職業簡介與街區故事不同；story.md 已分開現行設定與草案入口，不表示草案全部被現行遊戲採用。原文完整保留。
 
 驗證：已檢查本索引的相對檔案連結存在，並執行 git diff --check；無遊戲實作修改，不重建或重跑遊戲測試。
+
+## 歷史與操作交接（不可當成新增人物定稿）
+
+- [角色舞台方案](character-art-direction-plan-2026-10-23.md)、[角色舞台實作交接](character-stage-2026-10-23.md)：介面與構圖演進。
+- [角色待機](character-preview-idles-2026-10-23.md)：姿態和動作意圖。
+- [裝備佩戴計劃及結果](y2k-equipment-placement-plan.md)、[佩戴收尾](wear-fit-final/README.md)：掛點、穿模及組合限制。
+- [風格整合](style-complete/README.md)：角色、專裝與敵人純色版本的實作證據。
+- [歷史美術風格](art-style.md)、[歷史美術計劃](art-direction-and-roadmap.md)：衝突段落已由creative-direction取代；PR75另有清理候選。
+
+## 給後續修改者
+
+重要設定按現行總表確認；能力改動以實作owner為準，故事改動核對最後載入檔案。待辦只更新[backlog](backlog.md)的CHAR-DOC項目；不另開第二份全專案待辦。

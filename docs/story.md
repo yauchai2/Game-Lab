@@ -12,7 +12,7 @@
 3. **把街區接回來**：阿澄守港口，小禾守電台。穿好拖鞋，帶上裝備，從前街開始。選職業，報名字，把這條街的聲音一段段搶回來。
 
 ## 六章主線
-來源：`src/game/02-state.js` 的 `STORY_CHAPTERS`，實際文字由 `src/game/street-neighborhoods.js` 覆寫。擊敗首領的深度到達即推進，不彈窗，只寫進日誌與電台手記。
+來源：`src/game/02-state.js` 的 `STORY_CHAPTERS`，先由 `src/game/street-world.js`、再由 `src/game/street-neighborhoods.js` 覆寫（依 index 載入順序，後者為第5／6章最終文字來源）。擊敗首領的深度到達即推進，不彈窗，只寫進日誌與電台手記。
 
 ### 第 1 章　電台前街（深度 3）
 - 委託人：唱片店 阿夏
@@ -150,5 +150,6 @@
 
 ## 其他
 - 電台手記（遊戲內可查看）：`src/game/street-neighborhoods.js`。
-- 角色背景：`docs/characters.md`。
+- 現行玩家職業、街區背景與故事配角：[現行角色設定總表](characters-current.md)。
+- 早期完整人物小傳：[characters.md](characters.md)（歷史草案，非現行定稿）。
 - 世界觀與美術方向：`docs/creative-direction.md`。

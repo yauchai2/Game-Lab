@@ -18,3 +18,8 @@
 ## 四角色三視圖首張候選（2026-10-28，Asia/Taipei）
 
 分支 `codex/character-turnaround-preview`，基於 fetch 後 main `641c43d`。按本聊天指定風格，以已批准選角四人原圖的 AKI 生成白底單人預覽；不採用 characters.md 的舊人物草案作現行故事。素材／完整 prompt／目視限制見 [交接](character-turnaround-preview.md)。PNG 1254×1254 RGB，格式與完整性驗證通過，SHA-256 `8f52138b7ccf48d8a3fdef0658f11659ff1efad84557ab7c3381e5b29a4dd948`。未接入遊戲、未完成三視圖、未定稿；視角偏正面及留白不足待後續調整。沒有更改其他選角／動作 PR 的實作；下一步先看使用者對首張的意見。
+
+
+## 角色設定整理與審查（2026-10-28，Asia/Taipei）
+
+`codex/character-turnaround-preview`基於main641c43d完成[現行設定總表](characters-current.md)、擴充來源索引、為草案與歷史交接加狀態提示、修正story導向；保留全部原內容與檔案路徑。主要發現：三套名稱混用、人物小傳缺口、PING標記文案與距離選敵不符、NULL寵機與故事同伴易混、側背及全套專裝不能由合照推定。詳見[審查與證據](character-settings-review.md)及character-settings-validation.json。按載入順序驗證四職業／12昇華／最終章文案與本地文件連結；未改src/index/dist或做發佈。待辦CHAR-DOC-02至04沿用backlog；PR75美術清理、PR117口號移除規格不重做。

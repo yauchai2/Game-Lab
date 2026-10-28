@@ -886,3 +886,11 @@ MAP-REBUILD接續優化：背包詳情依指定map key選圖，18區卡片改真
 2026-10-27 v0.78發佈候選：Alan已授權發佈並以整體效果優先；AUDIO-REVIEW後續實作已完成，4授權曲／2原創延長／46cue整音＋2材質命中，22場景選曲、完整曲循環淡換、故事／長聲配額與原混音owner接入。54檔、member／master／embed hash、實際MP3與重播／mute／stress及完整repo回歸通過，見[0.78整合](release-0.78.0/integration.md)。FINISH-05／06的真機、主觀聽感／30分鐘仍待實際結果，不把發佈當其已通過。
 
 v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
+
+
+## 角色設定文件整理（2026-10-28，Asia/Taipei）
+
+- [x] CHAR-DOC-01：建立[現行角色總表](characters-current.md)、[來源索引](character-settings-index.md)與[一致性審查](character-settings-review.md)，區分職業／代號／玩家名字／舊草案、NPC及兩類同伴；僅文件完成，未改遊戲。
+- [ ] CHAR-DOC-02：原型討論串按審查C03／C08核對PING「標記追蹤」與距離選敵實作、序章「拖鞋」與厚鞋造型的文案落差；建議優先調整文字，不自動新增標記機制。
+- [ ] CHAR-DOC-03：補四人性格、個人動機、關係及NPC造型的設定提案；未確認年齡／性別／背故事不可從舊草案直接套入。
+- [ ] CHAR-DOC-04：正式三視圖核對四人現行模型側背、同尺度姿勢及專裝可穿組合；AKI首張仍為風格候選。

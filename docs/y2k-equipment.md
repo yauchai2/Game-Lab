@@ -1,5 +1,7 @@
 # Y2K 角色專裝整合
 
+> **歷史交接閱讀提示（2026-10-28）：** 下文「未合併／未發佈」與材質、解鎖、缺件狀態描述屬當時候選快照，不作目前版本判斷。現行角色定位見[設定總表](characters-current.md)，現行純色材質及整合證據見[全遊戲創作基準](creative-direction.md)。原始來源與驗證記錄保留。
+
 狀態：已實作、已驗證、已推送；未合併、未發佈。分支 `codex/y2k-signature-equipment`；[PR #15](https://github.com/yauchai2/Game-Lab/pull/15)。2026-10-23（Asia/Taipei）。
 
 本次 Google Drive ZIP 的 16 件匿名 GLB 已按 `asset_list.zip` 圖片逐件對照，接入 AKI、MILO、PING、NULL 的裝備、地面掉落與收藏圖示。原始 ZIP 和高面數 GLB 留在工作區，不提交進 Git。這是開發候選，未更新公開 Pages 或建立 Release。
