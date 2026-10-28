@@ -76,3 +76,7 @@ GOALS與ACHS是兩種現有owner：goals記目標／物品報酬，ach另有永�
 已用現用GridLab執行六組獨立資料案例，確認pocket的FIRE／HEAVY／AREA與duplex的CHAIN／FIRE／BEAM指定支援線路能合法接通、未超供電；SPREAD與FIRE／CHAIN不相容、與BEAM相容。詳見[構築進程](build-progression.md)、[重跑工具](../tools/design/probe_remake_boards.cjs)及[JSON證據](remake-board-feasibility.json)。工具不載入玩家資料或執行掉落，不改runtime；只是既有盤面來源的有界檢查。
 
 此結果補足BUILD-02的一部分；四角新循環、卡匣庫存／模式實戰、等級／板卡實際取得、試驗隔離與新舊存檔仍未驗，不能勾掉整項。正式介面保持手動逐格接線，研究工具的route不進入玩家自動配裝流程。
+
+## 2026-10-29人物規格更新
+
+四職業鍵與技能行為對照保持，但外形／性格以characters-current新版本為準：Jax兇狠破壞與冷帽爆刺髮／粗鏈耳環；Vee清冷不笑／短槍形媒介；Skye狡黠惡作劇／無外套超短上衣與更短短褲；Niko陰暗控制／重機迷戀。全員窄短上身、長腿、闊褲與更厚鞋底，舊候選圖不再作當前比例底稿。先重核骨架、握點、鏈環／帽髮與大鞋穿插，不把本輪文字當模型適配完成。原六例盤面證據仍只驗共享GridLab，不因人物重寫變成新技能／巨型召喚物實戰驗證。

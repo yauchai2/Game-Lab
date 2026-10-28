@@ -1,3 +1,5 @@
+> 最新角色覆寫（2026-10-29，Asia/Hong_Kong）：[characters-current](characters-current.md)已按使用者新要求重寫。Jax兇殘／奸笑大笑、壓低冷帽半遮耳眼、帽下後方尖刺髮、粗鐵鏈與耳環；Vee清冷不笑、喜槍械、短槍形導能器；Skye鬆弛可愛但惡作劇／小機心、無閃亮眼、無外套超短上衣露腰、更短寬口短褲；Niko陰暗控制、重型／巨型機械迷戀。全員窄短上身、腿更長、褲更闊、鞋底更厚。原名字／16–17歲／性別／淺膚／技能保持；此前柔和人設與舊圖不可作現行規格。
+
 > 最新構築進程（2026-10-28，Asia/Hong_Kong）：[分階段規格](build-progression.md)補齊技能／板卡／取得條件、七部位與三暗金研究、卡住時調整。現用GridLab六例盤面可行性通過，來源／線路見[JSON證據](remake-board-feasibility.json)，可用tools/design/probe_remake_boards.cjs重跑。只驗接通、相容、供電；未驗模式實戰、四角新被動或離線／遷移，無可玩樣板或runtime修改。
 
 > 最新深化（2026-10-28，Asia/Hong_Kong）：複看SANDWICH六個抽幀，世界補六個生活角落／六個短事件；game-design補四角各兩方向與六配件研究問題。[接入對照](remake-integration.md)記六章摘要／舊檔、四個既有GOALS卡匣來源、揭示會觸發目標及指定合成保留。這是來源核對與文字規格，沒有遷移程式、盤面／戰鬥驗證；樣板仍暫停。
@@ -99,3 +101,9 @@
 結果：pocket起步FIRE零支援／HEAVY／HEAVY+AREA，duplex的CHAIN+FIRE、CHAIN+BEAM兩組支援例，共六例合法接通，供電分別0/3、1/3、2/3、2/5、2/5、1/5；SPREAD只在本輪三技能中適用BEAM。證據存JSON、附來源檔SHA與所有假設；雙FOCUS例需持有兩件，模式／技能／板卡取得不由Grid.resolve保證。起步只有一終點，duplex需8級／最深3且持有，CHAIN10、BEAM16仍有效，matrix18／最深8不是試兩技能的必要條件。
 
 同步game-design／first-district／remake-integration及backlog；新七部位／暗金內容只是原資料研究與文案候選。檢查工具可重跑且結果一致、新增本機連結／JSON／diff空白與無runtime／原角色改動。未跑戰鬥、DPS、掉率、四角新技能、瀏覽器、離線及遷移測試。BUILD-02／BUILD-03／WORLD-02保持待辦；提交推送codex/character-turnaround-preview，未合併／發佈。
+
+2026-10-29（Asia/Hong_Kong）角色強個性接續：開始HEAD066e841、工作目錄乾淨，fetch後HEAD與FETCH_HEAD一致、無PR；已讀AGENTS／README與相關角色、創作、世界／故事／玩法、圖像及交接文件。最新使用者要求優先於2026-10-28舊比例與人設。重整唯一角色入口，替換過時衣款／髮型／眼神／表情／動機；creative-direction保留原片／ZIP／Drive來源、manifest與實際觀察表，合併過時轉化段落。world-current／story／first-district的短事件及語氣、game-design／build-progression／remake-integration同步新個性與媒介；圖像探索紀錄只標明舊候選尚未重製，未刪他人製作證據。
+
+重要落點：Jax冷帽覆眼上段與半耳，嘴／眼線可辨，粗鏈／耳環用新增霧鐵灰無光澤大形；Skye保留三道大腿橫間襪、取消外套與鬆T、無袖超短上衣及更短寬口短褲；Vee平口成功不露笑；Niko有色護目鏡及起始小機偶保持，巨型機械是慾望／後續方向，不免費擴召喚預算。比例改約6–6.5頭身探索、窄短軀幹／長腿／闊褲超厚底，數字非驗收結果。
+
+驗證：四人12條技能／被動／昇華原文保持、姓名年齡／原膚髮眼色與Vee配色保持（只增加Jax霧鐵灰）、角色無嵌圖、最新人物條目／表情／故事與來源連結核對、git diff --check。未生圖／建模、未改src／index／dist／現用資產或玩家資料，未跑遊戲測試；帽髮鏈、短衣／襪／褲口、長腿厚底及表情辨識／動作穿插仍待製作。提交推送codex/character-turnaround-preview，未合併／發佈。
