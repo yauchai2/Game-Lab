@@ -20,3 +20,5 @@
 分支codex/character-turnaround-preview。本輪補刪9個非執行文件／圖檔；955個assets/src/dist檔案SHA-256未變；檢查最新文件純文字、連結修復與diff空白。下一步沿用backlog的CHAR-REMAKE輪廓探索→樣板→三視圖→模型動作→原型接入；未生成新角色素材或改遊戲行為。
 
 2026-10-28重製再優化：已更新同一份characters-current.md，核對03-combat共用普攻與characters-data自動循環。新方案明確分開造型表現及待測能力調整，特別關注PING無小怪首領戰的擊殺觸發、MILO轉場斷拍、AKI護盾覆蓋及NULL有效修復。補三場景同投資比較、昇華裝置差異與四個具體敘事行動；下一步四人各兩種輪廓及AKI／PING動作對照，CHAR-REMAKE-05記測試。只完成來源核對與規劃，未新生圖／建模／修改遊戲或宣稱失衡。
+
+2026-10-28使用者重申遊戲支柱：隨機新攻擊模式、忙碌上班族掛機、POE2／D2構築與VS自動清怪、離線經驗、成就解鎖、紓壓且有研究深度／耐玩。已更新game-design及角色方案，強調跨武器流派、有效選擇、短回訪與保留既有解鎖；不只優化造型或職業固定循環。美術ZIP已保存assets/references/art-reference-2026-10-28.zip，37張靜態總覽已看，GIF僅首幀，來源hash與取捨見creative-direction；附件文字不作指令。未新增遊戲機制、未生圖／建模或改現用素材；後續沿用CORE-28與CHAR-REMAKE待辦。
