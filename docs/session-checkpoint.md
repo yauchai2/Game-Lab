@@ -13,3 +13,8 @@
 素材8.35MB，上限9MB；完整源曲與逐檔CC0／原創／混合標記、raw/member/master/embed SHA齊。未採樣3參考影片、未付費。54資產／實際播放／22路由／loop-wrap／mute／mix／全repo回歸通過，見[整合](release-0.78.0/integration.md)、verification.json及audio-release-validation.json。線上部署／tag／附件完成證據以live-verification.json為準。
 
 歷史審查52檔凍結到assets/audio-review，不再讀現行src/audio冒認舊版；舊17封存音訊未變。舊生成器有防護，正式重建用tools/audio/build_release_palette.py、pack_audio.py、build.py。真機、主觀聽感與30分鐘疲勞仍未宣稱完成。
+
+
+## 四角色三視圖首張候選（2026-10-28，Asia/Taipei）
+
+分支 `codex/character-turnaround-preview`，基於 fetch 後 main `641c43d`。按本聊天指定風格，以已批准選角四人原圖的 AKI 生成白底單人預覽；不採用 characters.md 的舊人物草案作現行故事。素材／完整 prompt／目視限制見 [交接](character-turnaround-preview.md)。PNG 1254×1254 RGB，格式與完整性驗證通過，SHA-256 `8f52138b7ccf48d8a3fdef0658f11659ff1efad84557ab7c3381e5b29a4dd948`。未接入遊戲、未完成三視圖、未定稿；視角偏正面及留白不足待後續調整。沒有更改其他選角／動作 PR 的實作；下一步先看使用者對首張的意見。
