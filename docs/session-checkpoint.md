@@ -13,3 +13,7 @@
 素材8.35MB，上限9MB；完整源曲與逐檔CC0／原創／混合標記、raw/member/master/embed SHA齊。未採樣3參考影片、未付費。54資產／實際播放／22路由／loop-wrap／mute／mix／全repo回歸通過，見[整合](release-0.78.0/integration.md)、verification.json及audio-release-validation.json。線上部署／tag／附件完成證據以live-verification.json為準。
 
 歷史審查52檔凍結到assets/audio-review，不再讀現行src/audio冒認舊版；舊17封存音訊未變。舊生成器有防護，正式重建用tools/audio/build_release_palette.py、pack_audio.py、build.py。真機、主觀聽感與30分鐘疲勞仍未宣稱完成。
+
+## 開始頁／序章／晃動與角色動作接續（2026-10-27，香港）
+
+branch codex/entry-motion-polish，基底c67529d；按新分工只做tools/assets/docs。四項新要求及交接入口docs/entry-motion-polish/README.md：橫向屋頂素材與像素紙／膠紙／陰影樣板、8尺寸實測、原生四角色20格動作、hitMon普通／重擊／中毒分類診斷。原型owner接入src，保留0.79 syslog／存檔／preview；不把樣板／舊候選測試當成新QA通過。未合併／未發佈。

@@ -1,0 +1,246 @@
+{
+  "base": "c67529d",
+  "clips": {
+    "hero": "aki",
+    "clips": [
+      "attack",
+      "cast",
+      "dash",
+      "death",
+      "hurt",
+      "idle",
+      "run",
+      "victory",
+      "walk"
+    ],
+    "duration": {
+      "attack": 0.6333333253860474,
+      "cast": 0.8333333134651184,
+      "dash": 0.4333333373069763,
+      "death": 0.8666666746139526,
+      "hurt": 0.3333333432674408,
+      "idle": 2.8333332538604736,
+      "run": 0.6000000238418579,
+      "victory": 1.2333333492279053,
+      "walk": 0.8666666746139526
+    }
+  },
+  "heroScreen": {
+    "viewport": [
+      1440,
+      900
+    ],
+    "cssBoundsHeightPx": 52.15018555653974,
+    "includesAccessories": true
+  },
+  "poses": [
+    {
+      "request": "walk",
+      "selected": "walk",
+      "tilt": 0,
+      "leg": 0.16035277200654777,
+      "cast": false
+    },
+    {
+      "request": "run",
+      "selected": "run",
+      "tilt": 0.1,
+      "leg": 0.38112698386795474,
+      "cast": false
+    },
+    {
+      "request": "moving_attack",
+      "selected": "run",
+      "tilt": 0,
+      "leg": 0.5622814390189677,
+      "cast": false
+    },
+    {
+      "request": "cast_while_moving",
+      "selected": "run",
+      "tilt": 0,
+      "leg": 0.14493881271090736,
+      "cast": true
+    },
+    {
+      "request": "roll",
+      "selected": "run",
+      "tilt": 0.9817477042468103,
+      "leg": -1.345252647606701,
+      "cast": false
+    }
+  ],
+  "impacts": [
+    {
+      "source": "普通攻擊",
+      "crit": false,
+      "controlledClassifierProbe": true,
+      "shake": 1.05,
+      "punch": 0.25,
+      "flash": 0.12,
+      "theoreticalPeakCssPxAt1440BeforeDecay": 20.412
+    },
+    {
+      "source": "普通攻擊",
+      "crit": true,
+      "controlledClassifierProbe": true,
+      "shake": 2.2,
+      "punch": 0.65,
+      "flash": 0.32,
+      "theoreticalPeakCssPxAt1440BeforeDecay": 42.76800000000001
+    },
+    {
+      "source": "中毒",
+      "crit": false,
+      "controlledClassifierProbe": true,
+      "shake": 2.2,
+      "punch": 0.65,
+      "flash": 0.32,
+      "theoreticalPeakCssPxAt1440BeforeDecay": 42.76800000000001
+    },
+    {
+      "source": "FIRE",
+      "crit": false,
+      "controlledClassifierProbe": true,
+      "shake": 2.2,
+      "punch": 0.65,
+      "flash": 0.32,
+      "theoreticalPeakCssPxAt1440BeforeDecay": 42.76800000000001
+    },
+    {
+      "source": "METEOR",
+      "crit": false,
+      "controlledClassifierProbe": true,
+      "shake": 2.2,
+      "punch": 0.65,
+      "flash": 0.32,
+      "theoreticalPeakCssPxAt1440BeforeDecay": 42.76800000000001
+    }
+  ],
+  "poisonTick": {
+    "hp": 9990,
+    "shake": 2.2,
+    "punch": 0.65,
+    "flash": 0.32,
+    "route": "actual monsterPoisonTick -> hitMon with 中毒"
+  },
+  "title": [
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "art": [
+        -42.46875,
+        0,
+        474.9375,
+        844
+      ],
+      "logo": [
+        23.40625,
+        108.453125,
+        343.1875,
+        126.4375
+      ],
+      "source": [
+        157,
+        279
+      ],
+      "visibleFraction": 0.8211606790367153
+    },
+    {
+      "viewport": [
+        768,
+        1024
+      ],
+      "art": [
+        0,
+        -340.78125,
+        768,
+        1364.78125
+      ],
+      "logo": [
+        56.2578125,
+        143.8125,
+        655.484375,
+        241.484375
+      ],
+      "source": [
+        157,
+        279
+      ],
+      "visibleFraction": 0.7503033911112129
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "art": [
+        0,
+        -671.75,
+        1024,
+        1819.71875
+      ],
+      "logo": [
+        75.0078125,
+        115.1875,
+        873.984375,
+        321.984375
+      ],
+      "source": [
+        157,
+        279
+      ],
+      "visibleFraction": 0.42204324157235834
+    },
+    {
+      "viewport": [
+        1366,
+        768
+      ],
+      "art": [
+        0,
+        -1055.140625,
+        1366,
+        2427.46875
+      ],
+      "logo": [
+        100.0625,
+        115.1875,
+        1165.875,
+        429.53125
+      ],
+      "source": [
+        157,
+        279
+      ],
+      "visibleFraction": 0.3163789441161704
+    },
+    {
+      "viewport": [
+        1920,
+        1080
+      ],
+      "art": [
+        0,
+        -1482.75,
+        1920,
+        3411.96875
+      ],
+      "logo": [
+        140.640625,
+        162,
+        1638.71875,
+        603.734375
+      ],
+      "source": [
+        157,
+        279
+      ],
+      "visibleFraction": 0.31653279356676406
+    }
+  ],
+  "errors": [],
+  "scope": "Native source-driven poses and hitMon calls in paused local Chromium; no claim of frequency in organic gameplay or a production fix."
+}
