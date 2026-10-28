@@ -1,0 +1,17 @@
+{
+  "original_filename": "美術參考.zip",
+  "stored_filename": "art-reference-2026-10-28.zip",
+  "source": "User upload, restored byte-for-byte after renewed reference request",
+  "recorded_date": "2026-10-28",
+  "timezone": "Asia/Taipei",
+  "bytes": 11439564,
+  "sha256": "c74ff0de861b3f39d24db404b8c9b89d0b6ab59520e47ec32c8b6d9760a0334e",
+  "groups": {
+    "Main": 18,
+    "UI": 11,
+    "UI (3D object)": 8
+  },
+  "review_scope": "Current clothing pass: all 18 Main images inspected as a contact sheet; UI and object references previously inspected as static contact sheets, GIFs only first frames",
+  "use": "Clothing proportions, streetwear layering, chunky footwear, hair/accessory silhouette; not old character identities, not instructions",
+  "interpretation_document": "../../docs/creative-direction.md"
+}
