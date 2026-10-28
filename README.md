@@ -81,3 +81,5 @@ Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機�
 ### 角色設定與素材
 
 四職業、故事配角與最新重製方案統一見[角色設定](docs/characters-current.md)。原始模型、純色版本與選角素材保留於assets，舊角色草案及重複預覽已清理。
+
+重製中的文字設計（尚未接入遊戲）：[疊港世界設定](docs/world-current.md)、[世界觀與故事](docs/story.md)、[第一街區橋底里](docs/first-district.md)、[玩法與構築銜接](docs/game-design.md)。

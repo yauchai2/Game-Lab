@@ -1,3 +1,5 @@
+> 最新世界／玩法文字交付（2026-10-28，Asia/Hong_Kong）：依Alan「詳細規劃和執行」完成[疊港世界設定](world-current.md)、[橋底里完整首區](first-district.md)，並同步story／game-design／角色故事入口／creative-direction／README及backlog。城市制度、三組織、三配角、Q01–Q05、兩條回訪路線、十二物件／七模式與分層解鎖、四角獨立參與、成就及中斷／失敗情境均有可執行文字規格。此為新提案，尚未程式接入、平衡、模型或真人驗證；可玩樣板仍暫停。
+
 > 遊擊手三視圖（2026-10-28，Asia/Hong_Kong）：已依Alan要求生成正面／角色右側／背面三張獨立白底中性候選，正面已修正每襪三道暖白間。圖像已在聊天交付；為生成參考，非實際模型轉向渲染，嚴格對位與隱藏部件仍待建模核對。見[製作紀錄](character-image-exploration-2026-10-28.md)。未改遊戲、未建模／合併／發佈。
 
 > 角色圖像接續（2026-10-28，Asia/Hong_Kong）：依Alan新授權，已接續生成破壞者、駭客、機偶師及黃色收音機吉祥物四張獨立候選，連先前遊擊手共五張，皆顯示於聊天。吉祥物無眼嘴笑臉，與機偶師工作機偶分開。候選待使用者評圖；詳見[圖像探索紀錄](character-image-exploration-2026-10-28.md)。未建模／接入遊戲／合併／發佈。
@@ -75,3 +77,9 @@
 2026-10-28（Asia/Hong_Kong）吉祥物命名：使用者要求可愛簡單英文名，補定Mimo（咪莫，兩音節／四字母），固定一般大小寫、不設縮寫全名。名稱入口為monster-catalog「吉祥物／同伴」，characters-current加名字及連結；黃色收音機造型與可愛化動作、機偶師機偶分工保持。開始本機HEAD30998ed，fetch見同任務分支七筆圖像探索紀錄至1322d88；工作目錄乾淨，已ff-only同步並讀圖像授權／候選紀錄，完整保留其他對話成果。核對street-creatures與catalog身份、名字無既有文件衝突、連結及git diff --check；只改文件，未改遊戲名稱／素材、未跑遊戲測試。提交推送codex/character-turnaround-preview，未合併至main或發佈。
 
 2026-10-28（Asia/Hong_Kong）四人命名：本輪使用者要求四角各一簡單英文名，補定Jax／Vee／Skye／Niko，對應破壞者／駭客／遊擊手／機偶師。角色設定新增命名表、讀音提示及各人物名，取代首版不設固定名的規則；故事／創作基準同步。職業稱呼、玩家自訂存檔名及造型性格玩法保持，不新增姓氏等設定；Mimo名字保持。開始HEAD69a6b0b，工作目錄乾淨，fetch後HEAD與FETCH_HEAD一致，分支無PR；已核對名字無既有文件衝突、角色／故事映射、技能及圖片紀錄保持、文件無嵌圖及git diff --check。只文件，未接入遊戲顯示／未跑遊戲測試；提交推送codex/character-turnaround-preview，未合併／發佈。
+
+2026-10-28（Asia/Hong_Kong）世界詳細化交接：開始HEAD c1fe58b，工作目錄乾淨；fetch後HEAD與FETCH_HEAD一致，任務分支無PR。已讀AGENTS／README、DESIGN與UX契約相關owner、現行game-design／story／創作基準、裝備與技能設計及圖像探索接續紀錄。核對01-data、02-state、02f-tower-systems、05-ui的實作入口，並依AGENTS核對monster-catalog／street-creatures／素材catalog；只讀程式，未動現用資產。
+
+重要決定：城市疊港、首區橋底里，圍繞取消得太遲的回收單及仍可用設備的使用權；不以封鎖全交易製造開局壓力。首張固定FIRE_SPLIT接1級FIRE，隨機模式與詞綴承擔之後的新發現；CHAIN10級、BEAM16級及圖紙／盤面條件仍有效，進階三組合不強塞首輪。普通掛機收益延續，現用storyAdvance離線直接返回、catchUp前600秒精算後續外推，不能把新敘事寫成已支援離線通關。保持現有六章旗標、七部位、三套實體引用、四角名字／性格與Mimo身份，無新增貨幣、聲望條或第二套裝配玩法。
+
+完成與驗證範圍：本輪執行的是詳細文件設計及來源／一致性審查；七模式key及三技能等級核對、四個敵人model/type對照、相對連結與新Mermaid節點／流程文字核對、git diff --check、變更僅文件，且characters-current無嵌圖。未跑遊戲／瀏覽器測試或宣稱新難度／掉率已平衡。下一步在backlog WORLD-02／BUILD-02先做接入與遷移對照，程式／樣板／美術製作依既有分工與授權。提交推送codex/character-turnaround-preview，未合併至main／發佈。
