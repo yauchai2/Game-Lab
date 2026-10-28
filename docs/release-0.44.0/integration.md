@@ -8,7 +8,6 @@
 - PR #38，候選 e14f909b2ca5cde04f1b82f46c711e5bf95e38c6：3D 物件縮圖、訊號組裝台、整備台及設定網格。
 - PR #37，Claude 分支 claude/project-thread-yw9jjp，已 fetch 並納入截至 e0b3468a4585a1d105452af46afd83705dc1b4e3 的四筆新提交：64bb26e、5e9585e、efade4b、e0b3468。包含四角色日系中文姓名、用語、問候、力盡提示及最終冷峻台詞；不新增假名。
 - 透過 merge 保留 Claude ancestry，不只複製文字。CHANGELOG 合成單一 v0.44.0；衝突的 font.js 與 dist/idle-hero.html 從整合來源重新產生。
-- 接合修正：角色舞台代號及新產生的專裝顯示名稱對齊 AKANE／REN／YUI／TAICHI；模型資產 ID、存檔鍵、已存暱稱與既有物品資料不改。既有 pending 物件仍明示程序式 3D 代用。
 - PR #12：舊角色候選內容已在 main，沒有獨立未合併玩法改動可重複納入。
 - PR #10：內部交接備份，未當成遊戲改動合併；不發佈至網站。所有既有分支保留。
 

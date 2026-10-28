@@ -1,7 +1,5 @@
 > 入口原圖修復候選（2026-10-28，Asia/Hong_Kong）：延續 PR #113，分支 codex/hello-static-character-select 已整合 main c67529d。Alan 指定酸黃天線原直幅／橫幅作封面；找回生成原 PNG，無 screencap。一次取樣重做封面／Logo／序章，救回軟 alpha、人面、字標，boot 與 title 共用響應式 picture／CSS，移除靜止旋轉與多餘覆層。證據、原圖 SHA、限制及接線見 [entry-art-refresh](entry-art-refresh/README.md)。候選未合併／發佈。
 
-> 選角頁候選（2026-10-27，Asia/Hong_Kong）：`codex/hello-static-character-select`，基於 main `4d9fe30`，保留 v0.78 音訊及 0.79 測試版系統記錄。批准白底四人圖已處理為 192px／40 色／4 倍 nearest-neighbor，獨立人物亮色與短上浮、四職業按鍵、能力說明及命名已接入既有建立／存檔／教學流程。範圍、測試證據及限制見 [現行角色設定（取代已清理舊文件）](characters-current.md)。開發／分段版各 10 組選角流程與原封面／序章 8 組回歸通過；另修正新增角色遺失 G.pal 的繪製錯誤。候選不代表合併或發佈。
-
 > v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
 
 # v0.78.0音訊整合發佈
@@ -15,13 +13,8 @@
 歷史審查52檔凍結到assets/audio-review，不再讀現行src/audio冒認舊版；舊17封存音訊未變。舊生成器有防護，正式重建用tools/audio/build_release_palette.py、pack_audio.py、build.py。真機、主觀聽感與30分鐘疲勞仍未宣稱完成。
 
 
-## 角色文件與舊圖清理（2026-10-28，Asia/Taipei）
+## 最新角色重製入口（2026-10-28，Asia/Taipei）
 
-依使用者最新指示刪除舊角色文件與圖檔，只保留[角色設定](characters-current.md)作唯一入口。清除舊草案、過時交接、重複索引／審查／報告、舊截圖與AKI未定稿預覽；已批准四人原圖、實際選角素材、原始與純色GLB及來源manifest保留。分支codex/character-turnaround-preview；未改src/index/dist，未合併／發佈。檔案刪除與連結、資產雜湊檢查結果見本次提交；設定缺口與程式文案待辦仍在CHAR-DOC-02至04。舊版本僅由Git歷史追溯，不另建備份。
+使用者接受角色重製規劃，要求清除各處舊角色設定。唯一設計入口為[最新文字方案](characters-current.md)，無圖片或舊外形摘要。已清理獨立舊角色文件／圖檔、混合文件中的舊名與造型規則、過時選角說明及舊美術文檔。最新確認：現用模型、選角圖、內嵌副本與必要建置來源暫留，待新角色完成後替換，不當作新設計參考。未清洗Git歷史、未改其他分支／發佈站。
 
-驗證結果：145舊檔／9,271,826 bytes已清理；91保留資產hash未變；總表12連結與全庫被刪檔連結檢查通過。wear-fit測試補mkdir以支援乾淨checkout，Node語法及diff空白檢查通過；未跑遊戲。
-
-2026-10-28角色重製補充：使用者決定重製所有角色，characters-current.md僅保留文字，不附圖片；現有外形摘要只交代現況，舊剪影／服裝／比例不作新設計限制。已移除圖片展示並檢查無圖片標記或圖片連結；未生成新素材或修改遊戲。
-
-
-2026-10-28角色重製規劃：使用者要求從遊戲設計角度計劃優化，已直接納入characters-current.md，維持唯一純文字入口。四人提案主軸為AKI重量、MILO節奏、PING速度、NULL協作；補人物動機、與NPC短互動及單一職業亦可完成主線的限制。順序為四人輪廓→AKI風格樣板→三視圖→模型動作→原型接入；沿用四職業／十二昇華／存檔鍵，未生成新圖或改src。已查能力／9動作owner與PR清單，待辦CHAR-REMAKE-01至04；設定、技術預算及辨識率為提案／待測，非已驗收。
+分支codex/character-turnaround-preview。本輪補刪9個非執行文件／圖檔；955個assets/src/dist檔案SHA-256未變；檢查最新文件純文字、連結修復與diff空白。下一步沿用backlog的CHAR-REMAKE輪廓探索→樣板→三視圖→模型動作→原型接入；未生成新角色素材或改遊戲行為。

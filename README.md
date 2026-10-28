@@ -68,7 +68,7 @@
 
 ## 美術風格
 
-Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機、街景高架橋，介面是作業系統視窗風，全介面保留 Cubic 11 像素字體，透過手機／桌機字級、行距及介面比例改善可讀性。細節見 [docs/art-style.md](docs/art-style.md) 與 [docs/art-direction-and-roadmap.md](docs/art-direction-and-roadmap.md)。
+Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機、街景高架橋，介面是作業系統視窗風，全介面保留 Cubic 11 像素字體，透過手機／桌機字級、行距及介面比例改善可讀性。細節見 [現行創作基準](docs/creative-direction.md) 與 [現行創作基準](docs/creative-direction.md)。
 
 ## 授權
 
@@ -80,4 +80,4 @@ Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機�
 
 ### 角色設定與素材
 
-四職業、故事配角、造型參考與實作來源統一見[角色設定](docs/characters-current.md)。原始模型、純色版本與選角素材保留於assets，舊角色草案及重複預覽已清理。
+四職業、故事配角與最新重製方案統一見[角色設定](docs/characters-current.md)。原始模型、純色版本與選角素材保留於assets，舊角色草案及重複預覽已清理。

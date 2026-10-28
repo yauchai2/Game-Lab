@@ -40,7 +40,7 @@
 
 ## 畫面
 
-![四位角色，原生模型與純色面](heroes-flat.png)
+
 
 ![十六件裝備](equipment-flat.png)
 

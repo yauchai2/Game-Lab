@@ -53,6 +53,6 @@ Ice Cream.mp4 為全遊戲創作基準；細節見 [creative-direction.md](creat
 2. [creative-direction.md](creative-direction.md)：全遊戲風格與最新使用者修訂。
 3. [style-complete/README.md](style-complete/README.md)：十二模型、素材、三視圖與驗證證據。
 4. [release-0.64.0/integration.md](release-0.64.0/integration.md)：已合併／已發佈的證據；不憑舊候選紀錄判斷線上狀態。
-5. [art-style.md](art-style.md)、[art-direction-and-roadmap.md](art-direction-and-roadmap.md)、[art-review.md](art-review.md)：舊版美術演進紀錄，衝突處不作現行驗收規格。
+5. [現行創作基準](creative-direction.md)、[現行創作基準](creative-direction.md)、[現行創作基準](creative-direction.md)：舊版美術演進紀錄，衝突處不作現行驗收規格。
 
 本次文件分支 `codex/monster-docs-cleanup-2026-10-26`，以 main a428ceb 為基底。驗證限於映射／素材清單／文件連結與差異範圍；未重新生成圖片、重建遊戲或執行遊戲測試。提交／推送／合併狀態以 Git／PR 為準。
