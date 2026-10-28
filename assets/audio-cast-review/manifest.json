@@ -1,0 +1,216 @@
+{
+  "base": "641c43d",
+  "license": "Mixed: two full CC0 candidates; excerpt licenses retained per source",
+  "sources": [
+    {
+      "id": "after-midnight",
+      "file": "after-midnight.mp3",
+      "title": "After Midnight",
+      "author": "dant-e",
+      "page": "https://opengameart.org/content/after-midnight",
+      "sha256": "398b10e6c05583512885dff17162a26844f6dc17e68d92d4553c7604d3d34eae",
+      "license": "CC0-1.0",
+      "sourceCommit": "e6cf9ea8cd02c3d85b119848fee2c58c94b23a32",
+      "sourcePath": "assets/audio-online/originals/after-midnight.mp3",
+      "pageSha256": "d77eb0a061a1657c8fc48805a2adecc1935939496809f779a952ff348e0b8f08",
+      "retrieved": "2026-10-28 Asia/Hong_Kong",
+      "candidate": "assets/audio-cast-review/music/radio.mp3",
+      "candidateSha256": "4b178abe3dd6a2e0b67a6068af5a2c4fdbe1e30d5103361ddef459cd40f71aa1",
+      "processing": {
+        "filters": "highpass=f=35,lowpass=f=12000,equalizer=f=2200:t=q:w=0.8:g=-1.5",
+        "targetLufs": -19,
+        "peakTargetDb": -3,
+        "codec": "MP3 96kbps stereo 32kHz",
+        "sourceMeasure": {
+          "input_i": "-16.83",
+          "input_tp": "-0.05",
+          "input_lra": "8.70",
+          "input_thresh": "-26.83",
+          "output_i": "-17.53",
+          "output_tp": "-3.00",
+          "output_lra": "5.30",
+          "output_thresh": "-27.53",
+          "normalization_type": "dynamic",
+          "target_offset": "-1.47"
+        }
+      }
+    },
+    {
+      "id": "space-ranger",
+      "file": "space-ranger.wav",
+      "title": "Strong Downtempo / Space Ranger",
+      "author": "Nostromo",
+      "page": "https://opengameart.org/content/music-loop-strong-downtempo-seamless",
+      "sha256": "b7af8f7ca80958bcc79cb49faac128cd85093e484b8a42e661c2cda623a6521c",
+      "license": "CC0-1.0",
+      "sourceCommit": "e6cf9ea8cd02c3d85b119848fee2c58c94b23a32",
+      "sourcePath": "assets/audio-online/originals/space-ranger.wav",
+      "pageSha256": "2fedde2cf80187ee5fe1d92c78719484d53187da045b3e41a978332e92ebc8b9",
+      "retrieved": "2026-10-28 Asia/Hong_Kong",
+      "candidate": "assets/audio-cast-review/music/underpass.mp3",
+      "candidateSha256": "fc31351f44dbe72b8e1fa4c4422da078017a503355e1e8e59530978928c7e7ed",
+      "processing": {
+        "filters": "highpass=f=35,lowpass=f=12000,equalizer=f=140:t=q:w=0.8:g=-2,equalizer=f=3200:t=q:w=0.8:g=-1.5",
+        "targetLufs": -19,
+        "peakTargetDb": -3,
+        "codec": "MP3 96kbps stereo 32kHz",
+        "sourceMeasure": {
+          "input_i": "-17.09",
+          "input_tp": "-0.60",
+          "input_lra": "1.70",
+          "input_thresh": "-27.14",
+          "output_i": "-18.76",
+          "output_tp": "-3.00",
+          "output_lra": "1.50",
+          "output_thresh": "-28.80",
+          "normalization_type": "dynamic",
+          "target_offset": "-0.24"
+        }
+      }
+    }
+  ],
+  "routing": {
+    "radio": "new After Midnight candidate",
+    "drift": "keep current",
+    "haze": "keep current",
+    "underpass": "new Space Ranger candidate",
+    "rush": "retire forced elite cue; inherit current scene theme",
+    "boss": "keep current"
+  },
+  "productionInstalled": false,
+  "noReferenceMusicSampled": true,
+  "excerpts": [
+    {
+      "before": {
+        "title": "Funky Menu Loop",
+        "file": "src/audio/radio.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/radio-before.mp3",
+        "start": 0,
+        "seconds": 18.462,
+        "excerptSha256": "6016f2ce1ea842fac367caca15f9b892403e5df3a056c8245c3af8196405f441",
+        "license": "CC0-1.0",
+        "author": "iamoneabe"
+      },
+      "after": {
+        "title": "After Midnight",
+        "file": "assets/audio-cast-review/music/radio.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/radio-after.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "ea8db8cc6164155ac6edf7b71e5aba46c8fa6b96e4e359299746ed51e22dc84f",
+        "license": "CC0-1.0",
+        "author": "dant-e"
+      }
+    },
+    {
+      "before": {
+        "title": "Wednesday Night [Funk Fusion]",
+        "file": "src/audio/drift.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/drift-before.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "b4c25aa9e6e70cb33a828d34a4810f40ec28b33f7018c653a17d5b7b690e4e8b",
+        "license": "CC0-1.0",
+        "author": "Zane Little Music"
+      },
+      "after": {
+        "title": "Wednesday Night [Funk Fusion]",
+        "file": "src/audio/drift.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/drift-after.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "b4c25aa9e6e70cb33a828d34a4810f40ec28b33f7018c653a17d5b7b690e4e8b",
+        "license": "CC0-1.0",
+        "author": "Zane Little Music"
+      }
+    },
+    {
+      "before": {
+        "title": "November Snow",
+        "file": "src/audio/haze.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/haze-before.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "412b427cb16aeabbdb328adda7140efa875e43e58bd200da61c3470663b4b6d4",
+        "license": "CC0-1.0",
+        "author": "cynicmusic"
+      },
+      "after": {
+        "title": "November Snow",
+        "file": "src/audio/haze.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/haze-after.mp3",
+        "start": 24,
+        "seconds": 24,
+        "excerptSha256": "d64e7fa30a21ad3cef953b74fbeee1bf850d486556260013773b80a81fa4aae4",
+        "license": "CC0-1.0",
+        "author": "cynicmusic"
+      }
+    },
+    {
+      "before": {
+        "title": "原創工業循環",
+        "file": "src/audio/underpass.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/underpass-before.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "ee6e8cdfd4f59baff7462fd7630736fcc740e01567303e6edb13f233b536b0db",
+        "license": "Project-original",
+        "author": "Game-Lab deterministic composition/synthesis"
+      },
+      "after": {
+        "title": "Space Ranger",
+        "file": "assets/audio-cast-review/music/underpass.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/underpass-after.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "77c0ac68d14e57be1dd11bf00174c29692af58f78a46cfcdf85d9f81ef7e3b26",
+        "license": "CC0-1.0",
+        "author": "Nostromo"
+      }
+    },
+    {
+      "before": {
+        "title": "原創精英循環",
+        "file": "src/audio/rush.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/rush-before.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "a7d4d69b4f22f20474554702c80b4c79b199d231bcdc0cf3ca9f430db2f96f82",
+        "license": "Project-original",
+        "author": "Game-Lab deterministic composition/synthesis"
+      },
+      "after": {
+        "title": "沿用日間曲（示範）",
+        "file": "src/audio/drift.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/rush-after.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "b4c25aa9e6e70cb33a828d34a4810f40ec28b33f7018c653a17d5b7b690e4e8b",
+        "license": "CC0-1.0",
+        "author": "Zane Little Music"
+      }
+    },
+    {
+      "before": {
+        "title": "Midnight Cruiser",
+        "file": "src/audio/boss.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/boss-before.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "7f180e392f6d6dcd6d997cd1d1092b89450ae384063be49e03749d5e6d418830",
+        "license": "CC0-1.0",
+        "author": "Zane Little Music"
+      },
+      "after": {
+        "title": "Midnight Cruiser",
+        "file": "src/audio/boss.mp3",
+        "excerptFile": "assets/audio-cast-review/excerpts/boss-after.mp3",
+        "start": 12,
+        "seconds": 24,
+        "excerptSha256": "7f180e392f6d6dcd6d997cd1d1092b89450ae384063be49e03749d5e6d418830",
+        "license": "CC0-1.0",
+        "author": "Zane Little Music"
+      }
+    }
+  ]
+}

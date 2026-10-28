@@ -1,0 +1,30 @@
+{
+  "base": "641c43d",
+  "heroProvenance": "Existing user-supplied four-character GLBs, native flat derivative; no new model claim or image generation.",
+  "heroes": [
+    {
+      "model": "aki",
+      "file": "assets/style-flat/characters/aki.glb",
+      "sha256": "68153685cd7cec6817228d0c20b8e5f4a146a71d78fc9cf81219fe83b1f59c74",
+      "bytes": 559832
+    },
+    {
+      "model": "milo",
+      "file": "assets/style-flat/characters/milo.glb",
+      "sha256": "fb466f8009c204a2a55d9a0c302a196956a69794f2a7ad7b7be81399b1fdd625",
+      "bytes": 563808
+    },
+    {
+      "model": "ping",
+      "file": "assets/style-flat/characters/ping.glb",
+      "sha256": "e5d61509992ab539f03ed54403baec5ec82d40591cc03d68d04247a45f148b23",
+      "bytes": 574920
+    },
+    {
+      "model": "null",
+      "file": "assets/style-flat/characters/null.glb",
+      "sha256": "66887df98d40e14629191e18e0e274b9b9e526ad76cfa8e2617d4dde697c43a4",
+      "bytes": 559544
+    }
+  ]
+}

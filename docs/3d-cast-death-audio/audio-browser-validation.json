@@ -1,0 +1,68 @@
+{
+  "scope": "Browser decode/playback and mutually exclusive playback only; not subjective listening approval",
+  "noAutoplay": true,
+  "decoded": [
+    {
+      "label": "原版 · Funky Menu Loop",
+      "duration": 18.461563
+    },
+    {
+      "label": "修訂候選 · After Midnight",
+      "duration": 24
+    },
+    {
+      "label": "原版 · Wednesday Night [Funk Fusion]",
+      "duration": 24
+    },
+    {
+      "label": "修訂候選 · Wednesday Night [Funk Fusion]",
+      "duration": 24
+    },
+    {
+      "label": "原版 · November Snow",
+      "duration": 24
+    },
+    {
+      "label": "修訂候選 · November Snow",
+      "duration": 24
+    },
+    {
+      "label": "原版 · 原創工業循環",
+      "duration": 24
+    },
+    {
+      "label": "修訂候選 · Space Ranger",
+      "duration": 24
+    },
+    {
+      "label": "原版 · 原創精英循環",
+      "duration": 24
+    },
+    {
+      "label": "修訂候選 · 沿用日間曲（示範）",
+      "duration": 24
+    },
+    {
+      "label": "原版 · Midnight Cruiser",
+      "duration": 24
+    },
+    {
+      "label": "修訂候選 · Midnight Cruiser",
+      "duration": 24
+    },
+    {
+      "label": "S01 · 拾取提示",
+      "duration": 0.12
+    },
+    {
+      "label": "S02 · 升級通知",
+      "duration": 0.75
+    },
+    {
+      "label": "S03 · 序章叮聲",
+      "duration": 0.18
+    }
+  ],
+  "oneAtATime": true,
+  "errors": []
+}

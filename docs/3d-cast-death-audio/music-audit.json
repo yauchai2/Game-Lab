@@ -1,0 +1,226 @@
+{
+  "base": "641c43d",
+  "coverage": "All six music files currently selected by streetMusicTrack; no separate six-chapter music assets in this main.",
+  "userFeedback": "Unidentified repeating 登登 sound; no title confirmed.",
+  "current": [
+    {
+      "file": "src/audio/radio.mp3",
+      "sha256": "9bf8b6a71eaac125ea119633ed7e4d5781a6adc927876670ea081df3f5538122",
+      "bytes": 185444,
+      "duration": 18.462,
+      "integratedLufs": -19.1,
+      "truePeakDb": -6.2,
+      "loudnessRange": 0.4,
+      "rmsDb": -18.615516662597656,
+      "dcOffset": 2.083582330669742e-06,
+      "loopEndJump": 0.000501,
+      "scope": "Full file decode/loudness and rough onset analysis; not identification of the user-described sound or subjective listening approval."
+    },
+    {
+      "file": "src/audio/drift.mp3",
+      "sha256": "a603c228b11b0bc79639d807d21bba04cd764679ab2fb24c628785aa9d9e0561",
+      "bytes": 1738484,
+      "duration": 173.749,
+      "integratedLufs": -19.04,
+      "truePeakDb": -5.39,
+      "loudnessRange": 6.9,
+      "rmsDb": -18.738195419311523,
+      "dcOffset": -8.230545063270256e-06,
+      "loopEndJump": 2.3e-05,
+      "scope": "Full file decode/loudness and rough onset analysis; not identification of the user-described sound or subjective listening approval."
+    },
+    {
+      "file": "src/audio/haze.mp3",
+      "sha256": "b206ae85661aef0982d8c6d7e857d0897b257c777cb9e52c93fff28fa7a03553",
+      "bytes": 3478004,
+      "duration": 347.694,
+      "integratedLufs": -19.26,
+      "truePeakDb": -4.2,
+      "loudnessRange": 5.5,
+      "rmsDb": -18.06338119506836,
+      "dcOffset": 1.9913832147722133e-05,
+      "loopEndJump": 0.000403,
+      "scope": "Full file decode/loudness and rough onset analysis; not identification of the user-described sound or subjective listening approval."
+    },
+    {
+      "file": "src/audio/underpass.mp3",
+      "sha256": "46aed2cde2888efd8648c6120c5584f5929ca57864b196f8d5e697b126ee48ad",
+      "bytes": 686564,
+      "duration": 68.571,
+      "integratedLufs": -19.22,
+      "truePeakDb": -6.21,
+      "loudnessRange": 1.2,
+      "rmsDb": -17.614601135253906,
+      "dcOffset": -7.669830665690824e-06,
+      "loopEndJump": 0.000134,
+      "scope": "Full file decode/loudness and rough onset analysis; not identification of the user-described sound or subjective listening approval."
+    },
+    {
+      "file": "src/audio/rush.mp3",
+      "sha256": "8ef3f9af70fc7dacfd76fedf2b1f9bb671f1473cd103bf2b931a679e2376a009",
+      "bytes": 620324,
+      "duration": 61.935,
+      "integratedLufs": -19.15,
+      "truePeakDb": -6.02,
+      "loudnessRange": 0.9,
+      "rmsDb": -17.645776748657227,
+      "dcOffset": -3.181484862579964e-05,
+      "loopEndJump": 0.000804,
+      "scope": "Full file decode/loudness and rough onset analysis; not identification of the user-described sound or subjective listening approval."
+    },
+    {
+      "file": "src/audio/boss.mp3",
+      "sha256": "29b95fee42a067b306fe1ee62cd4af713e3914a9513f7936c541ab29dafda87a",
+      "bytes": 1445084,
+      "duration": 144.408,
+      "integratedLufs": -19.13,
+      "truePeakDb": -6.52,
+      "loudnessRange": 2.4,
+      "rmsDb": -18.399063110351562,
+      "dcOffset": -1.7357780279780854e-06,
+      "loopEndJump": 2e-06,
+      "scope": "Full file decode/loudness and rough onset analysis; not identification of the user-described sound or subjective listening approval."
+    }
+  ],
+  "newCandidates": [
+    {
+      "file": "assets/audio-cast-review/music/radio.mp3",
+      "sha256": "4b178abe3dd6a2e0b67a6068af5a2c4fdbe1e30d5103361ddef459cd40f71aa1",
+      "bytes": 5447132,
+      "duration": 453.851,
+      "integratedLufs": -19.44,
+      "truePeakDb": -3.96,
+      "loudnessRange": 5.3,
+      "rmsDb": -19.245561599731445,
+      "dcOffset": -3.4346292068221373e-06,
+      "loopEndJump": 3.1e-05,
+      "scope": "Full file decode/loudness and rough onset analysis; not identification of the user-described sound or subjective listening approval."
+    },
+    {
+      "file": "assets/audio-cast-review/music/underpass.mp3",
+      "sha256": "fc31351f44dbe72b8e1fa4c4422da078017a503355e1e8e59530978928c7e7ed",
+      "bytes": 864908,
+      "duration": 72.0,
+      "integratedLufs": -19.42,
+      "truePeakDb": -3.08,
+      "loudnessRange": 1.4,
+      "rmsDb": -17.40810775756836,
+      "dcOffset": 1.8028693375526927e-05,
+      "loopEndJump": 0.003752,
+      "scope": "Full file decode/loudness and rough onset analysis; not identification of the user-described sound or subjective listening approval."
+    }
+  ],
+  "sources": [
+    {
+      "id": "after-midnight",
+      "file": "after-midnight.mp3",
+      "title": "After Midnight",
+      "author": "dant-e",
+      "page": "https://opengameart.org/content/after-midnight",
+      "sha256": "398b10e6c05583512885dff17162a26844f6dc17e68d92d4553c7604d3d34eae",
+      "license": "CC0-1.0",
+      "sourceCommit": "e6cf9ea8cd02c3d85b119848fee2c58c94b23a32",
+      "sourcePath": "assets/audio-online/originals/after-midnight.mp3",
+      "pageSha256": "d77eb0a061a1657c8fc48805a2adecc1935939496809f779a952ff348e0b8f08",
+      "retrieved": "2026-10-28 Asia/Hong_Kong",
+      "candidate": "assets/audio-cast-review/music/radio.mp3",
+      "candidateSha256": "4b178abe3dd6a2e0b67a6068af5a2c4fdbe1e30d5103361ddef459cd40f71aa1",
+      "processing": {
+        "filters": "highpass=f=35,lowpass=f=12000,equalizer=f=2200:t=q:w=0.8:g=-1.5",
+        "targetLufs": -19,
+        "peakTargetDb": -3,
+        "codec": "MP3 96kbps stereo 32kHz",
+        "sourceMeasure": {
+          "input_i": "-16.83",
+          "input_tp": "-0.05",
+          "input_lra": "8.70",
+          "input_thresh": "-26.83",
+          "output_i": "-17.53",
+          "output_tp": "-3.00",
+          "output_lra": "5.30",
+          "output_thresh": "-27.53",
+          "normalization_type": "dynamic",
+          "target_offset": "-1.47"
+        }
+      }
+    },
+    {
+      "id": "space-ranger",
+      "file": "space-ranger.wav",
+      "title": "Strong Downtempo / Space Ranger",
+      "author": "Nostromo",
+      "page": "https://opengameart.org/content/music-loop-strong-downtempo-seamless",
+      "sha256": "b7af8f7ca80958bcc79cb49faac128cd85093e484b8a42e661c2cda623a6521c",
+      "license": "CC0-1.0",
+      "sourceCommit": "e6cf9ea8cd02c3d85b119848fee2c58c94b23a32",
+      "sourcePath": "assets/audio-online/originals/space-ranger.wav",
+      "pageSha256": "2fedde2cf80187ee5fe1d92c78719484d53187da045b3e41a978332e92ebc8b9",
+      "retrieved": "2026-10-28 Asia/Hong_Kong",
+      "candidate": "assets/audio-cast-review/music/underpass.mp3",
+      "candidateSha256": "fc31351f44dbe72b8e1fa4c4422da078017a503355e1e8e59530978928c7e7ed",
+      "processing": {
+        "filters": "highpass=f=35,lowpass=f=12000,equalizer=f=140:t=q:w=0.8:g=-2,equalizer=f=3200:t=q:w=0.8:g=-1.5",
+        "targetLufs": -19,
+        "peakTargetDb": -3,
+        "codec": "MP3 96kbps stereo 32kHz",
+        "sourceMeasure": {
+          "input_i": "-17.09",
+          "input_tp": "-0.60",
+          "input_lra": "1.70",
+          "input_thresh": "-27.14",
+          "output_i": "-18.76",
+          "output_tp": "-3.00",
+          "output_lra": "1.50",
+          "output_thresh": "-28.80",
+          "normalization_type": "dynamic",
+          "target_offset": "-0.24"
+        }
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "number": "M01",
+      "key": "radio",
+      "label": "開始／選角",
+      "note": "18.5秒的短循環容易讓重複音型變得明顯；改試較長的柔和電子樂。",
+      "decision": "更換候選，待辨認聲音"
+    },
+    {
+      "number": "M02",
+      "key": "drift",
+      "label": "日間街區",
+      "note": "保留現有放克律動與日間氣質，先保護可能喜歡的曲目。",
+      "decision": "保留原曲"
+    },
+    {
+      "number": "M03",
+      "key": "haze",
+      "label": "夜晚街區",
+      "note": "保留現有夜景氛圍，避免無差別換走喜歡的音樂。",
+      "decision": "保留原曲"
+    },
+    {
+      "number": "M04",
+      "key": "underpass",
+      "label": "工業／塔樓",
+      "note": "原本合成音型列為「登登」辨識候選；改試較圓潤的downtempo。",
+      "decision": "更換候選，待辨認聲音"
+    },
+    {
+      "number": "M05",
+      "key": "rush",
+      "label": "精英遭遇",
+      "note": "建議取消遇精英就強制切短曲，沿用當前場景樂；此處以日間曲示範。",
+      "decision": "建議停用獨立精英曲／減少打斷"
+    },
+    {
+      "number": "M06",
+      "key": "boss",
+      "label": "首領戰",
+      "note": "先保留完整首領曲，讓較強律動集中在真正首領戰。",
+      "decision": "保留原曲"
+    }
+  ],
+  "limitations": "No subjective listening approval claimed; exact offending track remains unidentified. Excerpts are level-matched identification aids, not full loop seam acceptance. Existing 2.2s music-loop crossfade must be preserved."
+}

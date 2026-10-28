@@ -886,3 +886,8 @@ MAP-REBUILD接續優化：背包詳情依指定map key選圖，18區卡片改真
 2026-10-27 v0.78發佈候選：Alan已授權發佈並以整體效果優先；AUDIO-REVIEW後續實作已完成，4授權曲／2原創延長／46cue整音＋2材質命中，22場景選曲、完整曲循環淡換、故事／長聲配額與原混音owner接入。54檔、member／master／embed hash、實際MP3與重播／mute／stress及完整repo回歸通過，見[0.78整合](release-0.78.0/integration.md)。FINISH-05／06的真機、主觀聽感／30分鐘仍待實際結果，不把發佈當其已通過。
 
 v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
+
+## 3D選角／怪物倒下／配樂再審（2026-10-28，香港）
+
+- [x] 可操作3D選角樣板：四原生16骨角色同場／近看、真mesh點選／旋轉，12張實際GLB正側背；12款Death GLB候選保留原mesh/material/clip，新增1.2s落地動作；六首BGM完整盤點、兩首完整CC0候選／12片段及短提示音辨識。見[交接](3d-cast-death-audio/README.md)。只tools/assets/docs，未接入正式遊戲。
+- [ ] 原型接入四人PV變體、renderer私有有上限屍體queue、音樂routing／新資產；驗真角色返回／保存、整場擊殺／塔樓清場、雙deck循環與手機效能。「登登」確切來源未知，不能宣稱已修好；保留原曲及編號對照。

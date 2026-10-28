@@ -1,0 +1,198 @@
+{
+  "base": "641c43d",
+  "scope": "Twelve actual GLB renders; existing meshes, no new model claim",
+  "views": [
+    {
+      "id": "aki",
+      "view": "front",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "aki",
+      "view": "side",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "aki",
+      "view": "back",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "milo",
+      "view": "front",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "milo",
+      "view": "side",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "milo",
+      "view": "back",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "ping",
+      "view": "front",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "ping",
+      "view": "side",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "ping",
+      "view": "back",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "null",
+      "view": "front",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "null",
+      "view": "side",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    },
+    {
+      "id": "null",
+      "view": "back",
+      "bones": 16,
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk"
+      ]
+    }
+  ]
+}

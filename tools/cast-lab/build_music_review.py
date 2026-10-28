@@ -1,0 +1,40 @@
+"""Audit all six live music files; build two licensed alternatives and fair excerpts.
+Does not write src/audio, source routing or packed game files.
+"""
+from pathlib import Path
+import base64,concurrent.futures,hashlib,json,subprocess,tempfile,urllib.request
+import numpy as np
+R=Path(__file__).resolve().parents[2];D=R/'docs/3d-cast-death-audio';O=R/'assets/audio-cast-review';(O/'music').mkdir(parents=True,exist_ok=True);(O/'excerpts').mkdir(exist_ok=True)
+PIN=subprocess.check_output(['git','rev-parse','e6cf9ea'],cwd=R,text=True).strip()
+SOURCES=[{'id':'after-midnight','file':'after-midnight.mp3','title':'After Midnight','author':'dant-e','page':'https://opengameart.org/content/after-midnight','sha256':'398b10e6c05583512885dff17162a26844f6dc17e68d92d4553c7604d3d34eae'},{'id':'space-ranger','file':'space-ranger.wav','title':'Strong Downtempo / Space Ranger','author':'Nostromo','page':'https://opengameart.org/content/music-loop-strong-downtempo-seamless','sha256':'b7af8f7ca80958bcc79cb49faac128cd85093e484b8a42e661c2cda623a6521c'}]
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+def run(args):return subprocess.run(args,capture_output=True,text=True,check=True)
+def analyze(p):
+ a=run(['ffmpeg','-v','info','-i',str(p),'-af','loudnorm=I=-20:TP=-3:LRA=11:print_format=json','-f','null','-']);l=json.JSONDecoder().raw_decode('{'+a.stderr.rsplit('{',1)[1])[0];raw=subprocess.check_output(['ffmpeg','-v','error','-i',str(p),'-ar','16000','-ac','1','-f','f32le','-']);x=np.frombuffer(raw,dtype='<f4');frames=x[:len(x)//512*512].reshape(-1,512);rms=np.sqrt(np.mean(frames**2,axis=1));d=np.maximum(0,np.diff(rms));return{'file':str(p.relative_to(R)),'sha256':sha(p),'bytes':p.stat().st_size,'duration':round(len(x)/16000,3),'integratedLufs':float(l['input_i']),'truePeakDb':float(l['input_tp']),'loudnessRange':float(l['input_lra']),'rmsDb':float(20*np.log10(max(1e-9,np.sqrt(np.mean(x*x))))),'dcOffset':float(x.mean()),'loopEndJump':round(float(abs(x[-1]-x[0])),6),'scope':'Full file decode/loudness and rough onset analysis; not identification of the user-described sound or subjective listening approval.'}
+def master(src,dst,extra=''):
+ filters='highpass=f=35,lowpass=f=12000'+(','+extra if extra else '')
+ a=run(['ffmpeg','-v','info','-i',str(src),'-af',filters+',loudnorm=I=-19:TP=-3:LRA=11:print_format=json','-f','null','-']);m=json.JSONDecoder().raw_decode('{'+a.stderr.rsplit('{',1)[1])[0];ln='loudnorm=I=-19:TP=-3:LRA=11:measured_I='+m['input_i']+':measured_TP='+m['input_tp']+':measured_LRA='+m['input_lra']+':measured_thresh='+m['input_thresh']+':offset='+m['target_offset']+':linear=true'
+ run(['ffmpeg','-v','error','-y','-i',str(src),'-af',filters+','+ln+',aresample=32000','-ar','32000','-ac','2','-c:a','libmp3lame','-b:a','96k','-map_metadata','-1',str(dst)])
+ return {'filters':filters,'targetLufs':-19,'peakTargetDb':-3,'codec':'MP3 96kbps stereo 32kHz','sourceMeasure':m}
+with tempfile.TemporaryDirectory(prefix='cast-music-review-')as td:
+ T=Path(td);sourceRecords=[]
+ for s in SOURCES:
+  original=T/s['file'];original.write_bytes(subprocess.check_output(['git','show',PIN+':assets/audio-online/originals/'+s['file']],cwd=R));assert sha(original)==s['sha256'];page=urllib.request.urlopen(s['page'],timeout=30).read();assert b'creativecommons.org/publicdomain/zero' in page or b'CC0' in page
+  dest=O/'music'/('radio.mp3'if s['id']=='after-midnight'else'underpass.mp3');eq='equalizer=f=2200:t=q:w=0.8:g=-1.5'if s['id']=='after-midnight'else'equalizer=f=140:t=q:w=0.8:g=-2,equalizer=f=3200:t=q:w=0.8:g=-1.5';processing=master(original,dest,eq);sourceRecords.append({**s,'license':'CC0-1.0','sourceCommit':PIN,'sourcePath':'assets/audio-online/originals/'+s['file'],'pageSha256':hashlib.sha256(page).hexdigest(),'retrieved':'2026-10-28 Asia/Hong_Kong','candidate':str(dest.relative_to(R)),'candidateSha256':sha(dest),'processing':processing})
+ names=['radio','drift','haze','underpass','rush','boss'];labels=['開始／選角','日間街區','夜晚街區','工業／塔樓','精英遭遇','首領戰'];notes=['18.5秒的短循環容易讓重複音型變得明顯；改試較長的柔和電子樂。','保留現有放克律動與日間氣質，先保護可能喜歡的曲目。','保留現有夜景氛圍，避免無差別換走喜歡的音樂。','原本合成音型列為「登登」辨識候選；改試較圓潤的downtempo。','建議取消遇精英就強制切短曲，沿用當前場景樂；此處以日間曲示範。','先保留完整首領曲，讓較強律動集中在真正首領戰。'];decisions=['更換候選，待辨認聲音','保留原曲','保留原曲','更換候選，待辨認聲音','建議停用獨立精英曲／減少打斷','保留原曲']
+ provenance=json.loads((R/'src/audio/provenance.json').read_text());meta={Path(s['asset']).stem:s for s in provenance['sources']if s['kind']=='music'}
+ paths=[R/'src/audio'/(n+'.mp3')for n in names]
+ with concurrent.futures.ThreadPoolExecutor(max_workers=3)as pool:before=list(pool.map(analyze,paths))
+ data=[]
+ for i,n in enumerate(names):
+  current=paths[i];candidate=O/'music'/(n+'.mp3')if n in ['radio','underpass']else R/'src/audio'/('drift.mp3'if n=='rush'else n+'.mp3');title=meta[n].get('title')or('原創工業循環'if n=='underpass'else'原創精英循環');afterTitle='After Midnight'if n=='radio'else'Space Ranger'if n=='underpass'else'沿用日間曲（示範）'if n=='rush'else title
+  row={'number':'M'+str(i+1).zfill(2),'key':n,'label':labels[i],'note':notes[i],'decision':decisions[i],'before':{'title':title,'file':str(current.relative_to(R))},'after':{'title':afterTitle,'file':str(candidate.relative_to(R))}}
+  # Representative excerpts, not full-song listening or loop approval. Whole files remain in package/repo.
+  for side,path,start in [('before',current,0 if n=='radio'else 12),('after',candidate,12 if n not in ['haze']else 24)]:
+   clip=O/'excerpts'/(n+'-'+side+'.mp3');run(['ffmpeg','-v','error','-y','-ss',str(start),'-i',str(path),'-t','24','-af','loudnorm=I=-20:TP=-3:LRA=11,afade=t=in:d=0.03,afade=t=out:st='+str(max(.1,min(24,before[i]['duration']-start)-.05)if side=='before'else 23.95)+':d=0.05','-ar','32000','-ac','2','-c:a','libmp3lame','-b:a','80k',str(clip)]);row[side].update(src='data:audio/mpeg;base64,'+base64.b64encode(clip.read_bytes()).decode(),excerptFile=str(clip.relative_to(R)),start=start,seconds=min(24,before[i]['duration']-start)if side=='before'else 24,excerptSha256=sha(clip))
+  row['before']['license']=meta[n]['license'];row['before']['author']=meta[n]['authorship'];row['after']['license']='CC0-1.0' if n in ['radio','underpass'] else meta['drift' if n=='rush' else n]['license'];row['after']['author']='dant-e' if n=='radio' else 'Nostromo' if n=='underpass' else meta['drift' if n=='rush' else n]['authorship'];data.append(row)
+ after=[analyze(O/'music'/n)for n in ['radio.mp3','underpass.mp3']]
+(D/'music-data.json').write_text(json.dumps([{**row,'before':{k:v for k,v in row['before'].items()if k!='src'},'after':{k:v for k,v in row['after'].items()if k!='src'}}for row in data],ensure_ascii=False,separators=(',',':'))+'\n')
+(D/'music-audit.json').write_text(json.dumps({'base':'641c43d','coverage':'All six music files currently selected by streetMusicTrack; no separate six-chapter music assets in this main.','userFeedback':'Unidentified repeating 登登 sound; no title confirmed.','current':before,'newCandidates':after,'sources':sourceRecords,'decisions':[{k:v for k,v in row.items()if k not in ['before','after']}for row in data],'limitations':'No subjective listening approval claimed; exact offending track remains unidentified. Excerpts are level-matched identification aids, not full loop seam acceptance. Existing 2.2s music-loop crossfade must be preserved.'},indent=2,ensure_ascii=False)+'\n')
+(O/'manifest.json').write_text(json.dumps({'base':'641c43d','license':'Mixed: two full CC0 candidates; excerpt licenses retained per source','sources':sourceRecords,'excerpts':[{side:{k:v for k,v in row[side].items()if k!='src'}for side in ['before','after']}for row in data],'routing':{'radio':'new After Midnight candidate','drift':'keep current','haze':'keep current','underpass':'new Space Ranger candidate','rush':'retire forced elite cue; inherit current scene theme','boss':'keep current'},'productionInstalled':False,'noReferenceMusicSampled':True},indent=2,ensure_ascii=False)+'\n')
+print('Audited 6 complete music files; built 2 full licensed candidates and 12 level-matched excerpts; production unchanged.')
