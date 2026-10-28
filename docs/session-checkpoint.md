@@ -1,3 +1,5 @@
+> 最新深化（2026-10-28，Asia/Hong_Kong）：複看SANDWICH六個抽幀，世界補六個生活角落／六個短事件；game-design補四角各兩方向與六配件研究問題。[接入對照](remake-integration.md)記六章摘要／舊檔、四個既有GOALS卡匣來源、揭示會觸發目標及指定合成保留。這是來源核對與文字規格，沒有遷移程式、盤面／戰鬥驗證；樣板仍暫停。
+
 > 最新世界／玩法文字交付（2026-10-28，Asia/Hong_Kong）：依Alan「詳細規劃和執行」完成[疊港世界設定](world-current.md)、[橋底里完整首區](first-district.md)，並同步story／game-design／角色故事入口／creative-direction／README及backlog。城市制度、三組織、三配角、Q01–Q05、兩條回訪路線、十二物件／七模式與分層解鎖、四角獨立參與、成就及中斷／失敗情境均有可執行文字規格。此為新提案，尚未程式接入、平衡、模型或真人驗證；可玩樣板仍暫停。
 
 > 遊擊手三視圖（2026-10-28，Asia/Hong_Kong）：已依Alan要求生成正面／角色右側／背面三張獨立白底中性候選，正面已修正每襪三道暖白間。圖像已在聊天交付；為生成參考，非實際模型轉向渲染，嚴格對位與隱藏部件仍待建模核對。見[製作紀錄](character-image-exploration-2026-10-28.md)。未改遊戲、未建模／合併／發佈。
@@ -83,3 +85,9 @@
 重要決定：城市疊港、首區橋底里，圍繞取消得太遲的回收單及仍可用設備的使用權；不以封鎖全交易製造開局壓力。首張固定FIRE_SPLIT接1級FIRE，隨機模式與詞綴承擔之後的新發現；CHAIN10級、BEAM16級及圖紙／盤面條件仍有效，進階三組合不強塞首輪。普通掛機收益延續，現用storyAdvance離線直接返回、catchUp前600秒精算後續外推，不能把新敘事寫成已支援離線通關。保持現有六章旗標、七部位、三套實體引用、四角名字／性格與Mimo身份，無新增貨幣、聲望條或第二套裝配玩法。
 
 完成與驗證範圍：本輪執行的是詳細文件設計及來源／一致性審查；七模式key及三技能等級核對、四個敵人model/type對照、相對連結與新Mermaid節點／流程文字核對、git diff --check、變更僅文件，且characters-current無嵌圖。未跑遊戲／瀏覽器測試或宣稱新難度／掉率已平衡。下一步在backlog WORLD-02／BUILD-02先做接入與遷移對照，程式／樣板／美術製作依既有分工與授權。提交推送codex/character-turnaround-preview，未合併至main／發佈。
+
+2026-10-28（Asia/Hong_Kong）本輪接續：開始HEAD0f9e36d、工作目錄乾淨，fetch後HEAD與FETCH_HEAD一致，無PR。依使用者提醒翻查本對話與專案紀錄；複看原片6／30／58／94／134／170秒六靜幀（臨時接觸表，非連續播放／音軌研究），manifest補範圍並同步過時能力狀態與題材摘要，原影片bytes不改。
+
+完成world-current生活事件、game-design四角／配件取捨、story六章摘要入口、first-district來源分層、新remake-integration遷移對照及backlog。重要發現：GOAL_STAT.modes讀G.seen，提早揭示會影響m1／m2，故須保留舊計數與獎勵語義、新實戰成就另驗；r2／k2／d2／l3與指定合成途徑不能被新渠道抹掉。新第一章包含Q01–Q05，並非以五節點覆蓋六章；六章depth／model保持，新後五章只有摘要，未製作第二區內容。四角新被動與現用舊職業行為不能當同一實作。
+
+驗證範圍：六章／四職業鍵、七模式／六支援ID、四GOALS來源及指定合成門檻與程式核對；新增連結、JSON、原片SHA、diff空白及變更範圍檢查。未跑遊戲／瀏覽器、掉率平衡、舊檔遷移或人體驗；未改現用資產、src／index／dist，未生圖。WORLD-02／BUILD-02仍是接入待辦，本輪只完成其來源與文字子項。提交推送codex/character-turnaround-preview，未合併／發佈。

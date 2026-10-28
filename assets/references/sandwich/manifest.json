@@ -39,7 +39,7 @@
       "freedom",
       "contrast"
     ],
-    "content_direction": "Teenage protagonists. Limited mature world themes such as violence, sexuality and rebellion are permitted; sexual themes confined to adult supporting characters or background, not the teenage protagonists.",
+    "content_direction": "Teenage protagonists. Limited mature world themes such as violence, sexuality and rebellion are permitted; these themes are optional rather than the focus.",
     "status": "User direction for this game; no inference about actual ages of video characters"
   },
   "confirmed_classes": [
@@ -64,7 +64,7 @@
       "archetype": "summoner"
     }
   ],
-  "classes_status": "User confirmed adoption; abilities, appearance and implementation still pending",
+  "classes_status": "User confirmed adoption; current text appearances and behavior proposals are in docs/characters-current.md; game integration and balance validation pending.",
   "proportion_review": {
     "date": "2026-10-28",
     "timezone": "UTC",
@@ -103,6 +103,20 @@
       70
     ],
     "method": "4 freshly sampled frames viewed in a 2x2 contact sheet at 640x480 per frame; qualitative still-image review, no continuous playback or expression-transition validation",
+    "interpretation_document": "../../../docs/creative-direction.md"
+  },
+  "world_tone_review": {
+    "date": "2026-10-28",
+    "timezone": "Asia/Hong_Kong",
+    "sampled_seconds": [
+      6,
+      30,
+      58,
+      94,
+      134,
+      170
+    ],
+    "method": "Six still frames freshly extracted from preserved source.mp4 and viewed as a temporary contact sheet. Qualitative scene, pose and framing review only; no continuous playback, audio or creator-intent verification. Temporary derived images not committed.",
     "interpretation_document": "../../../docs/creative-direction.md"
   }
 }
