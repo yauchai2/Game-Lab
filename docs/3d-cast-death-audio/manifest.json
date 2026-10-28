@@ -1,0 +1,84 @@
+{
+  "base": "641c43d",
+  "kind": "Standalone live 3D review; not production game",
+  "heroProvenance": "Existing user-supplied four-character meshes/skins; flat derivative plus authored CastPose/CastSelect clips. No new mesh or image generation.",
+  "heroes": [
+    {
+      "model": "aki",
+      "file": "assets/characters/cast-preview/models/aki.glb",
+      "sha256": "9253837799eb6b5b83bca9026e32660c61b154228146784835ad7a84c22ea264",
+      "bytes": 599864
+    },
+    {
+      "model": "milo",
+      "file": "assets/characters/cast-preview/models/milo.glb",
+      "sha256": "1d2a8a16a0e93c21071e8f1b3883f27555dbe8ce9348fbb7dcf0e118fceeca4c",
+      "bytes": 603840
+    },
+    {
+      "model": "ping",
+      "file": "assets/characters/cast-preview/models/ping.glb",
+      "sha256": "56387c7c9a1263699fe99e3c0cc6a21554a5adab041c716899bbcd23a05f870c",
+      "bytes": 614948
+    },
+    {
+      "model": "null",
+      "file": "assets/characters/cast-preview/models/null.glb",
+      "sha256": "1e2e7f0386e3c09b96765d77003d2316bfe92053bcb555452274cf902327c1a6",
+      "bytes": 599572
+    }
+  ],
+  "deathManifest": "../../assets/monsters/death-v1/manifest.json",
+  "previewSha256": "fee87b5b5fb7ea3961e83b234a601238d5c73c18aaab21d0991142fe5f3bc636",
+  "musicCount": 6,
+  "heroViews": [
+    {
+      "file": "assets/characters/cast-preview/aki-back.png",
+      "sha256": "d3ecb605d679c955917a7ced474d243deb9cec6116ca21c447cf11b80b535f24"
+    },
+    {
+      "file": "assets/characters/cast-preview/aki-front.png",
+      "sha256": "d67e10a4a9bd48a597e58c9f73f9278ca8ccec442bcee96fb18c0c7a742d3b1c"
+    },
+    {
+      "file": "assets/characters/cast-preview/aki-side.png",
+      "sha256": "ffc0865a49578dc825b42fdfce619b8daf96acea42dcfbca04bc62f0b28846be"
+    },
+    {
+      "file": "assets/characters/cast-preview/milo-back.png",
+      "sha256": "c66dd56b1e4d54609641e91c96f61c7d7e2c168c7889c0e49d273f32de2a243a"
+    },
+    {
+      "file": "assets/characters/cast-preview/milo-front.png",
+      "sha256": "fff60c9d325b92b775bc14d3613e310619888bdc2c067b22452164bc2f09faa5"
+    },
+    {
+      "file": "assets/characters/cast-preview/milo-side.png",
+      "sha256": "cca54d1d8def9ae914b289924a244bb3581ac570156cfa55b47a1ad6a0b3cdf6"
+    },
+    {
+      "file": "assets/characters/cast-preview/null-back.png",
+      "sha256": "82b9d4089d7aedb31305a67604b28b2d3f44636812f50276539b4e672b00c7ea"
+    },
+    {
+      "file": "assets/characters/cast-preview/null-front.png",
+      "sha256": "c6e4e0f93482769bb379ad9244c7faef2f28387cc01413fd2b4876c619839171"
+    },
+    {
+      "file": "assets/characters/cast-preview/null-side.png",
+      "sha256": "9efd6a1912d2573ef1d768b8d7091da2189ef65656b23fa27fe8cd81cf0c8141"
+    },
+    {
+      "file": "assets/characters/cast-preview/ping-back.png",
+      "sha256": "c4d46041f00c9b35ff8e41b0fa5e1362c8fdb60067aadc022526bfcee72a49b7"
+    },
+    {
+      "file": "assets/characters/cast-preview/ping-front.png",
+      "sha256": "64f707950a229be86ffd45fe5ab9893bcce02237d40dd69718eacc0dbea93052"
+    },
+    {
+      "file": "assets/characters/cast-preview/ping-side.png",
+      "sha256": "511af29bfb6e6c5d8d8a2b906b97c0e28b19f3ed09df8e6b81d8c72d6a742db2"
+    }
+  ]
+}
