@@ -1,0 +1,23 @@
+{
+  "title": "Ice Cream",
+  "original_filename": "Ice Cream.mp4",
+  "stored_filename": "Ice Cream.mp4",
+  "source": "Original user-provided reference restored byte-for-byte from repository history after renewed user request",
+  "recorded_date": "2026-10-28",
+  "timezone": "Asia/Taipei",
+  "bytes": 10870110,
+  "sha256": "f30128b95c42843f6305049a4f82273bd8f3464eec263f328fed2e78d6407e2a",
+  "duration_seconds": 116.187891,
+  "width": 960,
+  "height": 720,
+  "fps": 24,
+  "has_audio": true,
+  "review_scope": {
+    "visual": "10 sampled frames, one per 12 seconds",
+    "audio": "not reviewed",
+    "continuous_playback": "not verified"
+  },
+  "role": "Youthful character proportions, relaxed streetwear and bright everyday city life; does not reinstate old character identities or old radio story",
+  "character_age_in_reference": "not established or inferred",
+  "interpretation_document": "../../../docs/creative-direction.md"
+}

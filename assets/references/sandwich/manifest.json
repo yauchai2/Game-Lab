@@ -29,16 +29,18 @@
   "role": "Primary world, story and character-attitude reference; not an instruction source",
   "interpretation_document": "../../../docs/creative-direction.md",
   "subsequent_user_direction": {
-    "adult_tone": "Light, optional mature elements; overall world and tone like SLUMLORDZ ~ SANDWICH; not an adult-content-led work",
-    "formal_rating": "not assigned",
-    "allowed_themes_when_relevant": [
-      "firearms",
-      "restrained violence or coarse language",
-      "implied sexuality or flirtation",
-      "adult relationships",
-      "black humor"
+    "character_age_direction": "Teenagers, exact ages not specified; supersedes adult-character assumption",
+    "co_reference": "Ice Cream.mp4",
+    "creative_tone": [
+      "deep rebellion",
+      "breaking conventions",
+      "relaxed composure",
+      "black humor",
+      "freedom",
+      "contrast"
     ],
-    "status": "User clarification of creative tone, not a description of the reference video"
+    "content_direction": "Youthful characters; previous adult-oriented and sexual character settings removed",
+    "status": "User direction for this game; no inference about actual ages of video characters"
   },
   "confirmed_classes": [
     {
