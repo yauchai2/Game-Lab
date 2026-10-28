@@ -92,5 +92,17 @@
     ],
     "method": "16 freshly sampled frames inspected as contact sheet, plus 2 full-resolution frames; qualitative shape study only, no model measurements or continuous playback/audio review",
     "interpretation_document": "../../../docs/creative-direction.md"
+  },
+  "face_hair_review": {
+    "date": "2026-10-28",
+    "timezone": "UTC",
+    "sampled_seconds": [
+      18,
+      38,
+      44,
+      70
+    ],
+    "method": "4 freshly sampled frames viewed in a 2x2 contact sheet at 640x480 per frame; qualitative still-image review, no continuous playback or expression-transition validation",
+    "interpretation_document": "../../../docs/creative-direction.md"
   }
 }
