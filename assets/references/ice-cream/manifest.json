@@ -19,5 +19,33 @@
   },
   "role": "Youthful character proportions, relaxed streetwear and bright everyday city life; does not reinstate old character identities or old radio story",
   "character_age_in_reference": "not established or inferred",
-  "interpretation_document": "../../../docs/creative-direction.md"
+  "interpretation_document": "../../../docs/creative-direction.md",
+  "proportion_review": {
+    "date": "2026-10-28",
+    "timezone": "UTC",
+    "sampled_seconds": [
+      0,
+      7,
+      14,
+      21,
+      28,
+      35,
+      42,
+      49,
+      56,
+      63,
+      70,
+      77,
+      84,
+      91,
+      98,
+      105
+    ],
+    "full_resolution_frames_inspected_seconds": [
+      56,
+      84
+    ],
+    "method": "16 freshly sampled frames inspected as contact sheet, plus 2 full-resolution frames; qualitative shape study only, no model measurements or continuous playback/audio review",
+    "interpretation_document": "../../../docs/creative-direction.md"
+  }
 }

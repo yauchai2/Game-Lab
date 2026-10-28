@@ -64,5 +64,33 @@
       "archetype": "summoner"
     }
   ],
-  "classes_status": "User confirmed adoption; abilities, appearance and implementation still pending"
+  "classes_status": "User confirmed adoption; abilities, appearance and implementation still pending",
+  "proportion_review": {
+    "date": "2026-10-28",
+    "timezone": "UTC",
+    "sampled_seconds": [
+      14,
+      18,
+      22,
+      26,
+      30,
+      34,
+      38,
+      42,
+      46,
+      58,
+      70,
+      94,
+      118,
+      138,
+      154,
+      174
+    ],
+    "full_resolution_frames_inspected_seconds": [
+      18,
+      30
+    ],
+    "method": "16 freshly sampled frames inspected as contact sheet, plus 2 full-resolution frames; qualitative shape study only, no model measurements or continuous playback/audio review",
+    "interpretation_document": "../../../docs/creative-direction.md"
+  }
 }
