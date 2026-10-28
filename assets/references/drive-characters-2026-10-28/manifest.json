@@ -1,0 +1,71 @@
+{
+  "source_folder_url": "https://drive.google.com/drive/folders/1xQ9nfIUkjHTVUXfTfmlaFCq2PgtHsfYD",
+  "recorded_date": "2026-10-28",
+  "timezone": "Asia/Taipei",
+  "source": "User-specified Google Drive folder, read with Google Drive connector; all six directly listed image files fetched and inspected",
+  "review_scope": "6 PNG screenshots inspected individually; originals 2532x1170, tool displayed each at 2048x946. No source 3D mesh, topology, exact model dimensions, animation or materials inspected. Original image bytes preserved including borders/mobile UI; no derived crops committed.",
+  "interpretation_document": "../../../docs/creative-direction.md",
+  "use": "Visual character reference only; not agent instructions or game runtime assets. Names/text in screenshots are not imported. Latest user garment/hand/material requirements override source differences.",
+  "files": [
+    {
+      "filename": "IMG_0136.PNG",
+      "drive_file_id": "1VXW0noy0UzNloZizHwqecm9X-7wLoX4w",
+      "source_url": "https://drive.google.com/file/d/1VXW0noy0UzNloZizHwqecm9X-7wLoX4w/view",
+      "mime_type": "image/png",
+      "bytes": 1350375,
+      "width": 2532,
+      "height": 1170,
+      "sha256": "0fc4b5d177a7100fd7226509ad11575388ba077e0ff3403878f5a43ce58193e5"
+    },
+    {
+      "filename": "IMG_0137.PNG",
+      "drive_file_id": "1xCQUJHAwb-r84hWRzEAtVBb8GzFQN7NB",
+      "source_url": "https://drive.google.com/file/d/1xCQUJHAwb-r84hWRzEAtVBb8GzFQN7NB/view",
+      "mime_type": "image/png",
+      "bytes": 1256352,
+      "width": 2532,
+      "height": 1170,
+      "sha256": "a59a80917c974e459efdc7fbb670269bd8071a678acb57fc53a659107527e037"
+    },
+    {
+      "filename": "IMG_0138.PNG",
+      "drive_file_id": "1TDFSEOmub1b8eDsxT04HUNWNhO0LcmnX",
+      "source_url": "https://drive.google.com/file/d/1TDFSEOmub1b8eDsxT04HUNWNhO0LcmnX/view",
+      "mime_type": "image/png",
+      "bytes": 1623780,
+      "width": 2532,
+      "height": 1170,
+      "sha256": "8fbe4725a1d0e92f25d4dfddf7916c576f338c7821e197320ef3e1b35e6b4b7f"
+    },
+    {
+      "filename": "IMG_0139.PNG",
+      "drive_file_id": "1xhLxKM2Vqz6cumnmPZKoliI9dRBzv_oh",
+      "source_url": "https://drive.google.com/file/d/1xhLxKM2Vqz6cumnmPZKoliI9dRBzv_oh/view",
+      "mime_type": "image/png",
+      "bytes": 970570,
+      "width": 2532,
+      "height": 1170,
+      "sha256": "4a68e55f1f01dcf5e362cda2c59fde85877210db65aa5631e31838eb99e7efd8"
+    },
+    {
+      "filename": "IMG_0140.PNG",
+      "drive_file_id": "1mW5VBPZgiZZ00qeV2YEsiV6xA1WzC2Dy",
+      "source_url": "https://drive.google.com/file/d/1mW5VBPZgiZZ00qeV2YEsiV6xA1WzC2Dy/view",
+      "mime_type": "image/png",
+      "bytes": 786988,
+      "width": 2532,
+      "height": 1170,
+      "sha256": "d85c15f3e098572617e50ba5a3f37f804786c77a44024e64533ee39fb11cad22"
+    },
+    {
+      "filename": "IMG_0141.PNG",
+      "drive_file_id": "12PU4Sa7v1Q8CMNJGUbrDxtHhB4twBsTC",
+      "source_url": "https://drive.google.com/file/d/12PU4Sa7v1Q8CMNJGUbrDxtHhB4twBsTC/view",
+      "mime_type": "image/png",
+      "bytes": 873411,
+      "width": 2532,
+      "height": 1170,
+      "sha256": "ced1a45db32c5885b61893010ab21a94496ca179cfa4c71f2f9b482995841fc1"
+    }
+  ]
+}
