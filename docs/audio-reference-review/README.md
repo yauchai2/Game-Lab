@@ -1,5 +1,7 @@
 > 接續：Alan已授權正式發佈，0.78已接入54檔新palette；見[實際整合](../release-0.78.0/integration.md)。以下52檔／10候選是發佈前審查階段，歷史素材已凍結，並非現行音訊清單。
 
+> 2026-10-28 整理補註：這是音訊更新前的比較審查；v0.78.0 已完成配樂／音效整合，見 [發佈證據](../release-0.78.0/integration.md)。下文未替換正式音訊等屬當時狀態；來源／授權記錄仍供產線使用。
+
 # 全音訊審查與線上候選
 
 2026-10-27，Asia/Taipei。Alan授權全部音樂／音效可選線上資源，按Ice Cream.mp4、Into Moon〈Dream Logic〉及Rhythm* Pocket!〈Dorephin Shopping Center〉重新review。本批是具體比較與替換提案，未改正式src/audio、混音、存檔或發佈版本。

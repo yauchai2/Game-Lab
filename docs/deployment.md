@@ -1,123 +1,31 @@
-# 固定試玩與版本管理
+# 正式版、測試版與發佈
 
-固定試玩：https://yauchai2.github.io/Game-Lab/  
-版本紀錄與單檔下載：https://github.com/yauchai2/Game-Lab/releases  
-程式主線：https://github.com/yauchai2/Game-Lab/tree/main
+[正式試玩](https://yauchai2.github.io/Game-Lab/) · [測試版](https://yauchai2.github.io/Game-Lab/preview/) · [版本／驗證索引](releases.md)
 
-網站由 gh-pages 分支的根目錄發佈。包含 index.html、version.json、.nojekyll 及帶內容雜湊名稱的 vendor／game 腳本，不包含內部文件或參考圖。既有雜湊腳本保留，避免舊快取入口請求失效。來源先在任務分支提交並經 PR 合併 main；不刪除任何既有分支。
+## 頻道與授權
 
-網站腳本分檔：程式碼合併成數個 game-N 檔，音樂、角色、裝備、手機、字型等大型資源各自一個帶內容雜湊的檔案。資源沒變時雜湊不變，瀏覽器沿用快取，發佈新版只需重新下載約 1 MB 的程式碼。
+根目錄只在 Alan 要求「出 Release」時更新；日常開發版放 preview/。來源 main、測試部署、正式部署及 Release 各有不同提交，不能混用。版本號先查 tag，不重用既有版本或移動 tag。
 
-## 發佈流程
+例行文件清理只提交與推送任務分支，不執行部署。每次 Release 先 fetch 所有來源分支與 Claude 最新 PR，記錄納入／排除範圍及理由；保留其他分支。
 
-0. 每次 release 先 fetch 並查核 Claude 最新分支／PR，記錄整合範圍及排除原因；既有內部備份 PR 不當成遊戲內容直接發佈。
-1. 在 src/game/01-data.js 的 CHANGELOG 最前面新增版本，完成測試。
-2. python3 tools/build.py 重建單檔，將來源及產物一起提交。
-3. 推送目前來源分支，先完成來源同步；publish_pages.py 要求目前分支遠端與 HEAD 一致。
-4. python3 tools/publish_pages.py。腳本檢查來源已推送、遊戲及打包檔沒有未提交修改，再更新入口、版本資料與雜湊腳本的 gh-pages 提交；不切換或清理工作區，不強制推送。
-5. 等候 GitHub Pages 完成，查驗線上 version.json、index.html 與 assets 各腳本的 SHA-256 與該版本一致，然後以瀏覽器試玩。
-6. 為已發佈來源提交建立 v0.主要.小修 標籤與 Release，提供該標籤 dist/idle-hero.html 的下載連結。標籤不可移動覆蓋。
+## 已授權時的流程
 
-版本資料：https://yauchai2.github.io/Game-Lab/version.json 。它記錄來源版本、來源提交、網站入口 sha256、離線單檔 standalone_sha256 及 assets 各腳本 SHA-256。gh-pages 提交編號與來源提交不同，不能混用。
+1. 核對最新程式及 CHANGELOG 版本，完成適用測試；`python3 tools/build.py` 重建 dist/idle-hero.html。
+2. 提交並推送來源，經 PR 整合；生成檔按整合後來源重建，不逐行合併內嵌內容。
+3. 測試站用 `python3 tools/publish_pages.py --preview`；正式站用 `python3 tools/publish_pages.py`。腳本要求來源 HEAD 已推送、遊戲／建置無未提交改動，且單檔與來源一致。
+4. 等候 Pages 成功，核對 version.json 的來源 commit、入口 SHA、standalone_sha256 與每個雜湊腳本；再驗實際瀏覽器流程。
+5. 正式 Release 以確切來源 commit 建 tag。release workflow 從預設分支讀 notes_file，可選 upload_standalone 從 target 取得確切單檔；預發佈須勾選 prerelease，不能當成最新正式版。
 
-GitHub Pages 啟用方式為 Settings → Pages → Deploy from a branch → gh-pages → / (root)。本次原連線無 Pages 寫入權限；Alan 改為 Public 後，已確認站點 built、來源正確，線上 0.25.3 內容與提交 5d791a9 完全相符。
+## 部署檔案與快取
 
-## 存檔
+GitHub Pages 由 gh-pages 根目錄提供。tools/build_site.py 把 runtime 分為內容雜湊腳本；大型音訊、角色、裝備及字型各自快取，程式改動不必重傳未變的大型資源。首訪仍須載入所有必要資源，不宣稱下載量或效能固定改善。
 
-進度存放於目前瀏覽器的 localStorage。固定網址能避免每次換 Artifact 網址，但不提供帳號同步。由舊網址／本機單檔搬入時，先在舊遊戲「更多 → 存檔與備份」匯出存檔碼，再於固定網址匯入；不要在新網址使用 fresh 參數開始正式進度。
+gh-pages 上的歷史雜湊腳本保留，讓快取舊 index 的瀏覽器完成載入；不能用本次來源清理順手刪除。發布器保留 preview/ 與既有 lab/buildcraft/。README、參考圖及內部文件不部署到正式遊戲入口。
 
-## 回退
+## 存檔、回退與清理
 
-保留所有來源標籤及部署歷史。需要回退時從已驗證的來源提交建立新的回退提交、推送，再發佈該產物；不要刪除分支或覆蓋版本標籤。涉及存檔新欄位的版本，先核對舊版能否讀取及是否會遺失新內容，不以只換 HTML 代表已完成安全回退。
+進度存於 localStorage，沒有帳號同步。搬網址或單檔先匯出／匯入存檔碼。相同網域下測試前也先備份，不用 fresh 載入正式進度。
 
+回退從已驗證來源建立新提交並發佈；保留來源 tag 與部署歷史，先核對新舊存檔欄位相容性。cleanup-releases workflow 預設 dry run，只依指定範圍清理 Release 頁面／附件，保留 tag；不在文件清理中執行。
 
-## 目前已驗證發佈
-
-v0.26.0，來源提交 56b401ee7d33a9cba13dd1612b96e5e54d19b0a0，部署提交 c904260466a3003cb396d3dcce45bf798e694e27。GitHub Pages 狀態 built，HTTPS 下載的遊戲檔 SHA-256 與本機打包完全一致。版本記錄：[v0.26.0](https://github.com/yauchai2/Game-Lab/releases/tag/v0.26.0)。
-
-[線上核對證據](gameplay-first-pass-2026-10-21/live-verification.json)。雲端 Chromium 直接連外遇到代理憑證信任限制，未關閉 TLS 驗證；線上內容以使用已配置 CA 的 HTTPS 客戶端驗證，遊戲行為以同一份 SHA-256 產物在本機 HTTP 跑瀏覽器回歸。不宣稱直接連外的瀏覽器煙霧測試通過。
-
-## 0.26.1 載入與快取
-
-網站使用依序 defer 的引擎與遊戲腳本，瀏覽器可在初始化前顯示啟動狀態。引擎檔名只隨其內容變化，可沿用瀏覽器快取；首次完整下載量並沒有因此減半。單檔下載仍完整內嵌、不需要網站資源。GitHub Pages 的快取回應由平台管理，未宣稱設定自訂永久快取或實測 iPhone 網速。
-
-
-## 0.27.1 全介面像素風格
-
-正文／輸入、標題／讀數及輔助標籤分別使用 16／24／12px 共用像素字模。網站仍以相同的分離雜湊腳本流程發佈，三維渲染策略不變；沒有新增外部字體請求。字體新增 LCD 光學版本與嵌入授權，首次下載量會增加，不能把這次改動當成載入時間已改善。驗證及截圖見 [全介面像素掌機](lcd-ui-0.27.1.md)。
-
-
-## v0.42.0 整合發佈（2026-10-24，香港時間）
-
-PR #31 已合併；來源／標籤提交 b7f795fb51960bbc2642f80a7e273f153c1dd552，部署提交 ca48d2accbf62e2e29bd82ac196182ee29838cb7。Pages built；version.json、入口與兩個雜湊腳本已透過 HTTPS 逐一核對 SHA-256。證據見 [整合發佈目錄](release-0.42.0/integration.md) 與 [線上核對](release-0.42.0/live-verification.json)。
-
-直接上傳 Release 資產收到 401，因此現有 release workflow 增加可選 upload_standalone；從指定 target 提交取出 dist/idle-hero.html，使用 Actions 的儲存庫 token 上傳。發佈說明仍從預設分支讀取，標籤不移動。
-
-
-## v0.43.0 已發佈（2026-10-24，香港時間）
-
-來源標籤 v0.43.0 固定指向 6db59660c905d54bab2c10fff78c37768b841027，部署提交 864077335c2654cea13bc4d7bcd4b5bd844cb97a。PR #35 及 #34 已合併；所有分支保留。Pages built，線上入口與兩個雜湊腳本的 SHA-256、版本及來源提交均已核對。
-
-[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.43.0) 由工作流程 40049182421 成功建立並附上 idle-hero.html；GitHub 回傳附件 digest 及大小與已測試單檔相符。完整證據見 [線上核對](release-0.43.0/live-verification.json)。七部位存檔升級後不建議回匯舊三欄版本；真機效能與配裝平衡仍待驗收。
-
-
-## v0.44.0 已發佈（2026-10-24，香港時間）
-
-PR #39 整合 #38 的裝置介面與 #37 的最新角色文案（截至 e0b3468），已合併。來源／標籤為 2d36f4030e3bcb3d4d78b7d10e955d5cdc5032bc；Pages 提交 efe1aced7b23e1da631f52f59e21cb4c6bffc371，狀態 built。線上版本、入口及兩個雜湊腳本已核對；[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.44.0) 工作流程 40056106608 成功，附件 SHA-256 digest 與大小符合已測試單檔。
-
-證據見 [整合紀錄](release-0.44.0/integration.md) 與 [線上核對](release-0.44.0/live-verification.json)。固定流程已加入每次 release 查核 Claude 最新分支與 PR；不代表其他對話已自動讀取規則。
-
-
-## v0.45.0 已發佈（2026-10-24，香港時間）
-
-PR #41 已合併，來源／標籤 d3237f326d75d98278d749abcc9eb542067f1a23；Pages 提交 ccfb76d2e1bb1173cbe9ec1cd39889d821a26f0e，狀態 built。本次已 fetch 並查核 Claude 最新 e0b3468，無未納入的新遊戲提交，所有分支保留。
-
-[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.45.0) 工作流程 40071666931 成功並附離線單檔；線上 manifest、入口與兩個腳本的 SHA-256，以及附件 digest／大小均已核對。見 [整合紀錄](release-0.45.0/integration.md) 與 [線上核對](release-0.45.0/live-verification.json)。已有存檔直接續玩；短篇序章及起始角色選擇只在新局出現。
-
-
-## v0.46.0 已發佈（2026-10-24，香港時間）
-
-PR #43已合併，來源／標籤f7adc3357f5eed8dba7c95547c4ba2eb69f39797；Pages提交b853777fc8e6cc2874dbb951c4b96dc229a3eb83，狀態built。每次release的Claude查核已執行：最新e0b3468已在主線，其餘舊分支及PR保留，內部備份不帶入網站。
-
-[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.46.0)工作流程40077472352成功並附離線單檔；Pages工作流程40077490150成功。線上manifest、入口、兩個腳本、標籤來源及附件digest／大小均已核對。見[整合紀錄](release-0.46.0/integration.md)及[線上核對](release-0.46.0/live-verification.json)。
-
-此版改為固定職業與最多12個獨立角色；舊8×8板與物品保留，配件必須符合同色洞、供電及每技能三枚上限，未接通技能不會施放，舊構築可能需要重新手動組裝。備份碼只含目前角色，仍無帳號同步。長期平衡與真機效能不冒稱已驗收。
-
-
-## v0.47.0已發佈（2026-10-24）
-
-PR #45已合併，來源／標籤401a3658c4b47e0a47395fed157e971ff0fde268；Pages提交88d19f0a86195ee50448e9e0aa1fda983ad24e2a，狀態built。Claude各分支已重新fetch，最新e0b3468已在主線，無新遊戲提交待合併；全部分支保留。
-
-[Release](https://github.com/yauchai2/Game-Lab/releases/tag/v0.47.0)工作流程40093529090及Pages工作流程40093528098成功。線上版本、入口與兩個雜湊腳本、標籤來源及附件digest／大小已核對；見[整合紀錄](release-0.47.0/integration.md)與[線上證據](release-0.47.0/live-verification.json)。分離式部署啟動以已核對HTTPS雜湊的原檔重播；雲端Chromium直接連線CA限制仍如實記錄。
-
-一般天賦最多24點，舊超額配置保留，可主動轉換／還原；昇華四點獨立。更新前可匯出本機存檔。真機Safari、長時效能及完整終局平衡未宣稱已驗收。
-
-## v0.48.0已發佈（2026-10-24）
-
-PR #48合併，來源／tag88012d568acdc8dbc5db1423838f5174d357a83d，Pages08a8029a256e39f1e8f8a2bc8dc1a63172b9321c。Release40103262662／Pages40103207418成功；正式manifest、入口、兩腳本SHA-256及附件digest／大小已核對，線上瀏覽器啟動通過。Claude遊戲最新e0b3468已包含，內部備份與歷史研究改名分支排除，分支全保留。證據[發佈整合](release-0.48.0/integration.md)。
-
-## v0.49.0已發佈（2026-10-25，香港時間）
-
-PR #50合併，來源／tag78e989151c3dd0eba0cbf7000138227e68d9fb3b，Pages5d6b46ef87ee568a127ae52fa17294b44b12eb23。Release40139564065／Pages40139551744成功；正式HTTPS版本、入口、兩腳本SHA-256、附件digest及大小均已核對。直接正式站瀏覽器驗證任務、技能盤、七部位、角色頭像、正面手機、賽季，無頁面錯誤。[整合及證據](release-0.49.0/integration.md)。
-
-每次發佈的Claude所有分支及PR重新查核已完成，e0b3468已包含、無新遊戲提交待整合，內部備份及歷史研究改名排除，所有分支保留。新增本機斷訊季、連續背包及狀態機制；進度仍本機，建議先匯出備份。Cloudflare回饋及Ko-fi收款未接通，如實保留待辦。
-
-## v0.49.1遺漏修補（2026-10-25）
-
-PR #52合併，來源／tagcf0382089483843466ecc63590528c43dfc00c51，Pages764c138fada90d5fba52c48c5e90c8a9bf88c62a。Release40141178138／Pages40141169461成功。正式HTTPS版本、入口／腳本雜湊及附件digest／大小一致；直接正式站驗證主header生命週期及全部裝備／核心縮圖失敗退路通過。[整合與限制](release-0.49.1/integration.md)。來源先push，Claude所有分支及PR已重新查核，全部分支／tag保留。
-
-## v0.64.0 已發佈（2026-10-26，香港時間）
-
-PR84已合併，來源／標籤2f7c889f6a272d278d0aa44335dfc58151c0f2e3；Pages076180d07bcfaa5d05c8a0f00c29bf2a7a717b78。Pages40324674500與Release40324886785成功。正式manifest、入口、21腳本SHA-256及附件digest／大小已核對，直接正式站390px Chromium啟動通過。[整合與證據](release-0.64.0/integration.md)。已重新查核所有遠端分支與PR，Claude最新7be9377文件合入、已撤回精華不納入，所有分支保留。
-
-## v0.78.0 已發佈（2026-10-27，Asia/Taipei）
-
-v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release40490842162／Pages40490840786成功。正式HTTPS、附件SHA／大小、tag及54音檔、完整day/night實播／換曲／mute已驗。見docs/release-0.78.0/live-verification.json與live-browser.json。此為實際音訊更新，非只有審查頁；真機長時間與主觀聽感仍待實際結果。
-
-## 正式版與測試版（0.79 起）
-
-- 正式連結（根目錄）：只在 Alan 說「出 Release」時更新；GitHub Release 只用於正式版。
-- 測試連結 `/preview/`：日常開發版，用 `python3 tools/publish_pages.py --preview`，版本號自動加提交碼（例如 0.79.0-dev.abc1234），同一版本不會被舊頁面誤判為最新。
-- 平時要留存的開發節點可建預發佈：release 工作流程勾選 prerelease，不會變成最新正式版。
-- 遊戲設定頁與「系統記錄」會顯示正式版或測試版、版本與提交碼；回報問題時貼系統記錄即可。
-- cleanup-releases 工作流程：只刪指定 tag 之前的 Release 頁面與附件，tag 全部保留；預設只列出（dry run）。
+過往逐次來源、Pages SHA、Actions run 與驗證限制見 [版本索引](releases.md)，不再在本流程文件重複累加舊「目前版本」。

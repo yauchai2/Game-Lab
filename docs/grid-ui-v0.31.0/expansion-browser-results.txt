@@ -1,1 +1,0 @@
-PASS touch warehouse, guarded recycle, physical saved drops, synthesis, 100 nodes, 12 regions, reduced motion and bounded FX pool

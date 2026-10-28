@@ -1,5 +1,8 @@
 # Idle Hero UI 操作契約
 
+> 2026-10-28 整理：本文保留詳細互動規則及版本沿革；同一功能有多段時，後續明確要求及現行程式優先。「候選／未合併」是當時狀態，不代表現在仍未整合。現行視覺與 owner 見 [DESIGN](DESIGN.md)，版本見 [發佈索引](docs/releases.md)，待整合內容見 [開放 PR](docs/in-progress.md)。
+
+
 依據：Alan 的 UX 優化執行指示、docs/ux-optimization-plan-v0.25.2.md、遊戲現有資料定義與 0.25.2 UX 實測。價格、機率、解鎖與離線上限仍由遊戲資料及狀態邏輯決定。這是遊戲介面，不涉及帳號權限、付款或遠端 CRUD。
 
 | Capability | Canonical owner | Source of truth | Allowed variants | Verification |
