@@ -35,7 +35,7 @@
 - `PYTHONPATH=/tmp/game-font-deps python3 tools/test_font_grid.py`：Cubic 11原生面及16px LCD字型基線／advance通過。新增文字已重新打包。
 - DESIGN.md lint：零error／warning。[static-audit.json](static-audit.json)仍列兩項既有手機工具列按鈕靜態誤判（05k-phone.js 105／115，實際使用事件代理）；本次未新增此項，**strict audit不是全綠**。
 
-截圖：[接通](mobile-connected.png)、[角色](mobile-character.png)、[創角](mobile-class-select.png)、[8×8窄屏](board-320.png)、[窄屏放大](board-320-zoom.png)、[桌面](board-1440.png)。真實手機、Safari、報讀器及長時間效能未在本雲端驗證。
+截圖：[接通](mobile-connected.png)、[現行角色設定（取代已清理舊文件）](../characters-current.md)、[現行角色設定（取代已清理舊文件）](../characters-current.md)、[8×8窄屏](board-320.png)、[窄屏放大](board-320-zoom.png)、[桌面](board-1440.png)。真實手機、Safari、報讀器及長時間效能未在本雲端驗證。
 
 ## 平衡結論與限制
 

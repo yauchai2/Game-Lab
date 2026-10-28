@@ -28,7 +28,7 @@
 - [單檔驗證](bundle-results.json)與字模／45段正式內嵌腳本語法檢查通過。單檔識別見[artifact.json](artifact.json)。
 - [DESIGN lint](design-lint.json)無錯誤；[strict audit](static-audit.json)仍列兩個既有`05k-phone.js`事件代理按鈕偵測誤判（105／115行），未宣稱strict全綠。
 
-截圖：[天賦全貌](talent-overview.png)、[放大接線板](enlarged-board.png)、[角色流程與頁首Logo](character-flow.png)、[詞綴區間](gear-rolls.png)、[回到遊戲等待](return-loading.png)。
+截圖：[天賦全貌](talent-overview.png)、[放大接線板](enlarged-board.png)、[現行角色設定（取代已清理舊文件）](../characters-current.md)、[詞綴區間](gear-rolls.png)、[回到遊戲等待](return-loading.png)。
 
 瀏覽器為Linux Chromium軟體WebGL；沒有實機iOS Safari、實際離線長時收益／全配裝終局平衡驗收。初始全貌用於看結構，個別小字需放大查閱；不宣稱低倍率即可閱讀所有效果。
 

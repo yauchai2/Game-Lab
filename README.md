@@ -78,16 +78,6 @@ Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機�
 
 0.32 視覺修正版：`node tools/test_world_review.cjs`；完整來源檢查：`python tools/run_review_checks.py`。開發分支可推送，Release／gh-pages 必須先取得版本確認。
 
-### 四主角候選（未 release）
+### 角色設定與素材
 
-`codex/y2k-characters` 以 Alan 上傳模型製作 AKI、MILO、PING、NULL 的 16 骨架／9 動作版本。獨立動作審核：`dist/character-review.html`；含四角色切換的遊戲試玩：`dist/idle-hero-review.html`。來源、驗證界線及與 Claude 分支的整合 hooks 見 [整合指引](docs/y2k-characters-handoff.md)。正式公開版仍為 v0.32.0。
-
-### Y2K 專屬裝備候選（未發佈）
-
-已接入本次 ZIP 的 16 件 3D 模型；素材清單另外 4 件尚只有參考圖，先以簡模代替。專裝只有對應角色可穿戴，獨立低機率掉落；其餘裝備暫用簡單幾何模型。
-
-- 單檔模型與佩戴預覽：`dist/equipment-review.html`（不讀寫進度；逐件／三欄搭配／整套參考、九動作、四視角及時間拖桿）
-- 整合遊戲候選：`dist/idle-hero-review.html`（獨立測試存檔）
-- [素材對照、掉落規則與驗證](docs/y2k-equipment.md)
-- 邏輯與素材檢查：`node tools/test_signature_equipment.cjs`
-- 瀏覽器檢查：啟動本機 8780 伺服器後執行 `node tools/test_signature_equipment_browser.cjs`
+四職業、故事配角、造型參考與實作來源統一見[角色設定](docs/characters-current.md)。原始模型、純色版本與選角素材保留於assets，舊角色草案及重複預覽已清理。

@@ -42,7 +42,7 @@ Linux Chromium軟體WebGL驗證，沒有實測iOS Safari或手機FPS。本輪為
 
 ## 畫面
 
-[技能盤](skills.png) · [手機昇華](ascensions.png) · [腐化差異](corruption.png) · [死亡窗口](death.png) · [死亡總結](death-summary.png) · [像素序章](story-1.png)
+[技能盤](skills.png) · [現行角色設定（取代已清理舊文件）](../characters-current.md) · [腐化差異](corruption.png) · [死亡窗口](death.png) · [死亡總結](death-summary.png) · [像素序章](story-1.png)
 
 [實際召喚、空投、巨劍與箭雨](spectacle.png) · [音符與召喚](music-summons.png) · [天賦縮放](talent-zoom.png) · [未接通回饋](feedback.png)
 

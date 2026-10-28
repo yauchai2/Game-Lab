@@ -151,5 +151,4 @@
 ## 其他
 - 電台手記（遊戲內可查看）：`src/game/street-neighborhoods.js`。
 - 現行玩家職業、街區背景與故事配角：[現行角色設定總表](characters-current.md)。
-- 早期完整人物小傳：[characters.md](characters.md)（歷史草案，非現行定稿）。
 - 世界觀與美術方向：`docs/creative-direction.md`。

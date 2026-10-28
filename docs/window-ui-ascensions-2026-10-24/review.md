@@ -27,7 +27,7 @@
 - `PYTHONPATH=/tmp/game-font-deps python3 tools/test_font_grid.py`：原生Cubic 11與16px LCD字模基線／advance通過。新增文字已重新打包，沒有外部字型請求。
 - [design-lint.json](design-lint.json)：零error／warning。[static-audit.json](static-audit.json)保留兩項既有手機事件代理按鈕誤判（05k-phone.js 105／115）；本次無新增提示，strict audit未宣稱全綠。
 
-截圖：[原位頭像](mobile-character.png)、[昇華](mobile-ascension.png)、[320px](talents-320.png)、[短屏](talents-844.png)、[桌面](talents-1440.png)。四職業頭像分別為portrait-street／frost／beep／volt.png。
+截圖：[現行角色設定（取代已清理舊文件）](../characters-current.md)、[現行角色設定（取代已清理舊文件）](../characters-current.md)、[320px](talents-320.png)、[短屏](talents-844.png)、[桌面](talents-1440.png)。四職業頭像分別為portrait-street／frost／beep／volt.png。
 
 ## 平衡測量與限制
 

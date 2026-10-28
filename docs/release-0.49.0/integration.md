@@ -10,7 +10,7 @@
 
 PR #50已合併，來源／tag為78e989151c3dd0eba0cbf7000138227e68d9fb3b；Pages為5d6b46ef87ee568a127ae52fa17294b44b12eb23。Release工作流程40139564065、Pages40139551744皆success。正式manifest、index及兩個腳本SHA-256、標籤來源、附件digest及16,419,473bytes大小均符合已驗證產物。
 
-正式網址Chromium直接HTTPS驗收通過：任務直達、遊戲Logo欄移除、連通電流、七部位及無分頁背包、動態角色頭像、正面手機、賽季控制台，無頁面錯誤。見[live-verification.json](live-verification.json)、[site-browser.json](site-browser.json)、[角色截圖](live-character.png)及[技能盤截圖](live-circuit.png)。離線附件以GitHub API digest及大小核對，沒有宣稱額外下載附件redirect。
+正式網址Chromium直接HTTPS驗收通過：任務直達、遊戲Logo欄移除、連通電流、七部位及無分頁背包、動態角色頭像、正面手機、賽季控制台，無頁面錯誤。見[live-verification.json](live-verification.json)、[site-browser.json](site-browser.json)、[現行角色設定（取代已清理舊文件）](../characters-current.md)及[技能盤截圖](live-circuit.png)。離線附件以GitHub API digest及大小核對，沒有宣稱額外下載附件redirect。
 
 固定試玩：https://yauchai2.github.io/Game-Lab/
 版本：https://github.com/yauchai2/Game-Lab/releases/tag/v0.49.0
