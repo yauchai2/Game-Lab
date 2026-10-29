@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Hong_Kong",
+  "branch": "codex/character-images-2026-10-29",
+  "base_commit": "fd53c7f899b9d1004c4b28eaf89c3b0e909d730d",
+  "status": "generated-candidates-awaiting-user-review",
+  "reference": {
+    "path": "assets/references/ice-cream/Ice Cream.mp4",
+    "sha256": "f30128b95c42843f6305049a4f82273bd8f3464eec263f328fed2e78d6407e2a",
+    "inspection": "10-second contact sheet plus 29s and 61s full-size stills"
+  },
+  "character_setting": {
+    "path": "docs/characters-current.md",
+    "sha256": "5f9f61e0a152a510648416428f706c4ca9538b7a07949f3b697f8aeed5dc4e63"
+  },
+  "generation_tool": "image_gen.imagegen",
+  "post_processing": "none; original PNG bytes copied",
+  "assets": [
+    {
+      "character": "Jax",
+      "path": "assets/concepts/characters-2026-10-29/jax.png",
+      "source_file": "/workspace/generated_images/exec-2b30ed6d-4b1e-4c9f-be0f-3463e485bfe8.png",
+      "sha256": "29a25035182030a8489c6e5bccbf748530132422ee309a6b90364ba37eeb8440",
+      "bytes": 1179873,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "format": "PNG",
+      "full_decode": "passed",
+      "original_bytes_preserved": true
+    },
+    {
+      "character": "Vee",
+      "path": "assets/concepts/characters-2026-10-29/vee.png",
+      "source_file": "/workspace/generated_images/exec-dbd980e4-9cb5-48d2-8549-7b5b0738b065.png",
+      "sha256": "8ddd453ba432e0c10dd2c30aa0450b71a62a4f0b82970fc20fac3d4501a82669",
+      "bytes": 1190099,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "format": "PNG",
+      "full_decode": "passed",
+      "original_bytes_preserved": true
+    },
+    {
+      "character": "Skye",
+      "path": "assets/concepts/characters-2026-10-29/skye.png",
+      "source_file": "/workspace/generated_images/exec-576765af-1feb-48a7-90df-bb76b0ea34a8.png",
+      "sha256": "6fd3ae4f3013872a01322a3ca689b8510d65d056ddfae9719382a6bdc4c53480",
+      "bytes": 1143447,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "format": "PNG",
+      "full_decode": "passed",
+      "original_bytes_preserved": true
+    },
+    {
+      "character": "Niko",
+      "path": "assets/concepts/characters-2026-10-29/niko.png",
+      "source_file": "/workspace/generated_images/exec-a2efce75-3e81-433c-83ae-987092bc19db.png",
+      "sha256": "b6f1e8392648857fc8f17a8f96294df3d0c66ab39008646e6ec56ffcec85dd8a",
+      "bytes": 1085227,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "format": "PNG",
+      "full_decode": "passed",
+      "original_bytes_preserved": true
+    }
+  ]
+}
