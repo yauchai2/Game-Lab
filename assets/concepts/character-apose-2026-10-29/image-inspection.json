@@ -1,0 +1,178 @@
+{
+  "jax": {
+    "file": "jax.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "sha256": "c6d0824303357864016e7aa2a1d2b476ca4337a7bcf05ecc6cfb3a5dfa926bc3",
+    "bytes": 1466521,
+    "source_imagegen_file": "exec-aa36da3e-4337-47c1-a55d-9599acd3ea9b.png",
+    "views": [
+      {
+        "view": "front",
+        "bounds": [
+          55,
+          12,
+          521,
+          971
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      },
+      {
+        "view": "profile",
+        "bounds": [
+          634,
+          12,
+          934,
+          971
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      },
+      {
+        "view": "back",
+        "bounds": [
+          1013,
+          14,
+          1479,
+          971
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      }
+    ],
+    "crown_y_spread_px": 2,
+    "sole_y_spread_px": 0
+  },
+  "vee": {
+    "file": "vee.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "sha256": "46044fbf64fd83a49dd6f79ca99ecb5b127caa1cd054837971ff4cfeac144046",
+    "bytes": 1178292,
+    "source_imagegen_file": "exec-36501bea-1c03-4532-a7da-e02727ff29cc.png",
+    "views": [
+      {
+        "view": "front",
+        "bounds": [
+          83,
+          68,
+          504,
+          957
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      },
+      {
+        "view": "profile",
+        "bounds": [
+          642,
+          68,
+          915,
+          957
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      },
+      {
+        "view": "back",
+        "bounds": [
+          1030,
+          68,
+          1449,
+          957
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      }
+    ],
+    "crown_y_spread_px": 0,
+    "sole_y_spread_px": 0
+  },
+  "skye": {
+    "file": "skye.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "sha256": "b4d24332ea1dd01ff9e3551ee6c0ae3965ff51606bb42f090e7d42d51998ea44",
+    "bytes": 1290346,
+    "source_imagegen_file": "exec-ee6b8a57-688f-4acf-9d52-46b53b7f2e24.png",
+    "views": [
+      {
+        "view": "front",
+        "bounds": [
+          53,
+          13,
+          526,
+          975
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      },
+      {
+        "view": "profile",
+        "bounds": [
+          614,
+          14,
+          941,
+          973
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      },
+      {
+        "view": "back",
+        "bounds": [
+          1007,
+          12,
+          1481,
+          975
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      }
+    ],
+    "crown_y_spread_px": 2,
+    "sole_y_spread_px": 2
+  },
+  "niko": {
+    "file": "niko.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "sha256": "f3b6774155fb51bf02d25125b2d61bc5243e73dfeb95af926992c689205ac483",
+    "bytes": 1493613,
+    "source_imagegen_file": "exec-33ad664c-9f03-4052-acba-ecdd5f179584.png",
+    "views": [
+      {
+        "view": "front",
+        "bounds": [
+          76,
+          19,
+          531,
+          992
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      },
+      {
+        "view": "profile",
+        "bounds": [
+          648,
+          19,
+          899,
+          992
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      },
+      {
+        "view": "back",
+        "bounds": [
+          1004,
+          19,
+          1459,
+          989
+        ],
+        "method": "read-only RGB threshold min<215 and channel range>8; no pixel editing"
+      }
+    ],
+    "crown_y_spread_px": 0,
+    "sole_y_spread_px": 3
+  }
+}

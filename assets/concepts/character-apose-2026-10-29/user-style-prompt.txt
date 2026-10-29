@@ -1,0 +1,11 @@
+Rendered as a simple handmade early-2000s Japanese game asset.
+Semi-lowpoly geometry, chunky simplified forms, rounded silhouettes built from a few polygons, subtle faceted planes, primitive modeling, slightly awkward proportions. Charming, naive, and personally hand-crafted.
+PS1 / Dreamcast-era aesthetic, crude low-resolution real-time 3D, flat shading, unlit matte materials, simple vertex colors, limited pastel palette, no surface texture detail.
+For living characters: minimal pixel-painted facial features, chunky uneven pixel strokes, slightly asymmetrical eyes, a small expressive mouth, a quirky relaxed expression, personality through pose and proportions.
+Low-resolution rendering with nearest-neighbor upscaling, visible pixel stair-stepping along the silhouette, simple low-resolution face textures.
+One subject only, full object centered in frame, front three-quarter view, generous empty space, isolated on a solid plain white background, no text.
+
+Negative Prompt
+photorealistic, polished designer toy, glossy plastic, clay render, plush, metallic reflections, realistic lighting, studio lighting, ambient occlusion, soft shadows, detailed textures, surface noise, intricate details, excessive triangular facets, crystalline geometry, voxel art, realistic human facial anatomy, generic emoji face, perfect symmetry, smooth high-resolution rendering, cinematic effects, background scenery, props, text, watermark, turnaround sheet
+
+Execution override from the same user request: 四人物、三視圖、A-pose、能嚴格對位. Therefore front three-quarter and negative turnaround sheet are replaced by front / exact profile / back. One subject means one character identity per sheet, shown three times. Facial expressions follow characters-current rather than a shared relaxed smile.
