@@ -1,0 +1,55 @@
+{
+  "status": "generated concept candidates, not model renders",
+  "base_commit": "22b1dc56481a7bcd38c3101d4dd4b1f6299eb568",
+  "date": "2026-10-29",
+  "timezone": "Asia/Hong_Kong",
+  "reference_video": "assets/references/ice-cream/Ice Cream.mp4",
+  "reference_video_sha256": "f30128b95c42843f6305049a4f82273bd8f3464eec263f328fed2e78d6407e2a",
+  "reference_review": "Nine temporal samples at approximately 6,18,30,42,54,66,78,90,102 seconds (fps filter representative frames), plus extracted exact 24s and 84s frames. Static frames only; no audio or continuous playback review. Exact 24s and 84s frames supplied to image generation.",
+  "images": [
+    {
+      "name": "jax",
+      "file": "jax-three-views.png",
+      "source_file": "exec-6fcfa9a6-f8a9-4ee8-9f65-b935ab7f9600.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "bytes": 1258701,
+      "sha256": "d908a909f670579adc4ba1cf82c45aad6f119ea1b4620ad5914ba32132949e85"
+    },
+    {
+      "name": "vee",
+      "file": "vee-three-views.png",
+      "source_file": "exec-f6d52b83-fd63-48b0-8478-b106549dce39.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "bytes": 1236099,
+      "sha256": "3ca6a2d5236028863727eb298be29586be03bd183ada3c09e5c9543b00edb462"
+    },
+    {
+      "name": "skye",
+      "file": "skye-three-views.png",
+      "source_file": "exec-4d2ea0cf-4884-4e38-8ba1-dc8d252f3f56.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "bytes": 1222875,
+      "sha256": "d99e5b6c6c877c2d6e17ac5009714f0c7efd849ea324f9c59472e6d7484b336f"
+    },
+    {
+      "name": "niko",
+      "file": "niko-three-views.png",
+      "source_file": "exec-8cb77fab-66c5-4e12-abf4-5a3d61fc747c.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "bytes": 1241997,
+      "sha256": "808dc5451cf721ef47e8101a082d4e3475570691cdaa344f90250bbe6a2ecc99"
+    }
+  ]
+}
