@@ -59,5 +59,25 @@
     ],
     "method": "4 freshly sampled frames viewed in a 2x2 contact sheet at 640x480 per frame; qualitative still-image review, no continuous playback or expression-transition validation",
     "interpretation_document": "../../../docs/creative-direction.md"
+  },
+  "style_review_2026_10_29": {
+    "date": "2026-10-29",
+    "timezone": "Asia/Hong_Kong",
+    "sampled_seconds": [
+      7,
+      14,
+      28,
+      42,
+      56,
+      70,
+      84,
+      98,
+      110
+    ],
+    "full_resolution_frames_inspected_seconds": [
+      84
+    ],
+    "method": "Nine freshly sampled frames reviewed in contact sheet, plus one full-resolution still. Qualitative shape and clothing study; no continuous playback, audio or mesh measurements.",
+    "interpretation_document": "../../../docs/creative-direction.md"
   }
 }
