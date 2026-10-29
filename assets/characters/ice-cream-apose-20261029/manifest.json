@@ -1,0 +1,148 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Hong_Kong",
+  "status": "A-pose generated modeling references; strict 3D alignment NOT verified",
+  "base_commit": "d0a7c267fbd50dacb8f31ddb61813ced8248afc0",
+  "reference_source": "../ice-cream-turnarounds-20261029/",
+  "view_order": [
+    "front",
+    "right",
+    "back"
+  ],
+  "pose_target": "symmetric A-pose, arms 45 degrees below horizontal, straight legs, upright head, feet parallel",
+  "bounds_method": "RGB min <215 and max-min >8; fixed view ranges x[0,570),[570,950),[950,1536). Foreground bounds only, not anatomical correspondence or orthographic proof.",
+  "images": [
+    {
+      "character": "jax",
+      "file": "jax-apose-three-views.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "0e920588b817afb49bdb22f274e4570a090a994f5fd331ce6a818c5fad1ae45a",
+      "bytes": 1282354,
+      "source_file": "exec-49b90120-60d3-4508-a0c3-26ac7d2405f6.png",
+      "foreground_bounds_front_right_back": [
+        {
+          "left": 39,
+          "top": 24,
+          "right": 569,
+          "bottom": 986
+        },
+        {
+          "left": 570,
+          "top": 25,
+          "right": 922,
+          "bottom": 986
+        },
+        {
+          "left": 962,
+          "top": 24,
+          "right": 1494,
+          "bottom": 984
+        }
+      ],
+      "top_y_range_px": 1,
+      "bottom_y_range_px": 2
+    },
+    {
+      "character": "vee",
+      "file": "vee-apose-three-views.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "b61b418b4877808e104c1e17fd452592e6a141fdc8a5cd9b6597228599d16d27",
+      "bytes": 1252605,
+      "source_file": "exec-ce75df7e-8e1e-439d-b861-80cc9ef655c5.png",
+      "foreground_bounds_front_right_back": [
+        {
+          "left": 58,
+          "top": 32,
+          "right": 559,
+          "bottom": 986
+        },
+        {
+          "left": 637,
+          "top": 29,
+          "right": 919,
+          "bottom": 986
+        },
+        {
+          "left": 975,
+          "top": 31,
+          "right": 1476,
+          "bottom": 986
+        }
+      ],
+      "top_y_range_px": 3,
+      "bottom_y_range_px": 0
+    },
+    {
+      "character": "skye",
+      "file": "skye-apose-three-views.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "b0f45a137ab0f444a24f2f4b2b5bc2870f8ce7e97bb0692b2098d0221af7ad5e",
+      "bytes": 1532016,
+      "source_file": "exec-0e0c3197-ff36-4704-b128-c85d7710bbf0.png",
+      "foreground_bounds_front_right_back": [
+        {
+          "left": 63,
+          "top": 30,
+          "right": 533,
+          "bottom": 978
+        },
+        {
+          "left": 572,
+          "top": 37,
+          "right": 904,
+          "bottom": 978
+        },
+        {
+          "left": 991,
+          "top": 30,
+          "right": 1464,
+          "bottom": 978
+        }
+      ],
+      "top_y_range_px": 7,
+      "bottom_y_range_px": 0
+    },
+    {
+      "character": "niko",
+      "file": "niko-apose-three-views.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "92a2ba703bd3e507fd32be076f500ab15dddaf271c4dc07eac7f25633058419d",
+      "bytes": 1519521,
+      "source_file": "exec-34b5ee68-17df-49c0-98f0-ccc65aad55f6.png",
+      "foreground_bounds_front_right_back": [
+        {
+          "left": 45,
+          "top": 34,
+          "right": 563,
+          "bottom": 987
+        },
+        {
+          "left": 618,
+          "top": 29,
+          "right": 889,
+          "bottom": 987
+        },
+        {
+          "left": 973,
+          "top": 34,
+          "right": 1490,
+          "bottom": 987
+        }
+      ],
+      "top_y_range_px": 5,
+      "bottom_y_range_px": 0
+    }
+  ]
+}
