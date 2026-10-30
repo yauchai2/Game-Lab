@@ -1012,3 +1012,5 @@ v0.78.0已發佈：PR104／source-tag bca2a6e、Pages26a6d5e；Release4049084216
 - [ ] CHAR-ENSEMBLE-VERIFY：重製四人純人物及完整配件同尺度視圖，再驗Jax背板／Skye收槍與舞蹈、Vee手勢／控制可讀性、Niko控制器／機偶區隔；掛點、穿插、中斷及實際64px辨識未驗。
 
 - [x] CHAR-NIKO-PANTS-19（2026-10-30，Asia/Hong_Kong，文字）：Niko寬七分褲改灰橄欖合身及膝短褲，褲腳止膝蓋上緣，腰臀／大腿收整、留活動鬆量，窄直褲口不束口；短襪及圓頭厚底鞋保持。同步人物表／形體／衣物／製作核對與創作／接入，未改其他人物、能力或模型。
+
+- [x] CHAR-PANTS-CORRECTION-20（2026-10-30，Asia/Hong_Kong，文字）：使用者澄清CHAR-NIKO-PANTS-19對象應為Skye，前項Niko修訂作廢；Niko完整恢復f43febf寬七分褲設定。Skye改更短合身墨藍短褲，腰臀／褲管收整但留鬼步舞活動鬆量，三道過膝襪保持。已同步角色／創作／接入，未改能力或模型。
