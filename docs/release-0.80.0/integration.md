@@ -2,7 +2,7 @@
 
 2026-11-01，Asia/Hong_Kong。Alan 本次明確要求「而家仲有乜嘢未搞掂？全部搞掂晒，然後出個 release」，範圍為截圖中等候接入的 Codex 更新與發佈。這次直接完成 runtime 接線，取代舊分工要求原型串另接的等待狀態；日常分工文件保留。基底 main 641c43d，正式站原為0.78.0，preview原為0.79.1-dev.641c43d。
 
-狀態：已實作並完成本機驗證；實際合併／正式部署／Release／附件以 live-verification.json 及 GitHub 連結為準。
+狀態：PR124已合併，正式站v0.80.0已發佈；來源524d451，Pages f90a31e。線上29檔SHA及直接HTTPS選角／建角／保存通過，Release與附件見 [live-verification.json](live-verification.json)。
 
 ## 納入與保留
 

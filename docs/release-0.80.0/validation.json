@@ -18,5 +18,8 @@
   "premium": "premium-audit.json",
   "design_lint": "design-lint.txt",
   "build_sha256": "9d01fab64b72c5867c6b0e54058cfdb17c3899543b7846150240b1f56ea27c9b",
-  "limitations": "No physical Safari/iPad/Android, subjective audio or real hardware performance claim."
+  "limitations": "No physical Safari/iPad/Android, subjective audio or real hardware performance claim.",
+  "live_evidence": "live-verification.json",
+  "live_browser": "live-browser.json",
+  "release_workflow": 41319879480
 }

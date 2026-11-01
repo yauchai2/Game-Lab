@@ -1,6 +1,8 @@
 # 版本與部署證據索引
 
-2026-10-28 核對遠端 gh-pages：正式根目錄 version.json 為 0.78.0／bca2a6e；preview/version.json 為 0.79.1-dev.641c43d／641c43d。此為 GitHub 部署分支資料，這次沒有重新做線上瀏覽器或真機驗收。
+2026-11-01：**v0.80.0 已更新正式站**，來源524d451、Pages f90a31e，29個線上檔案雜湊及直接HTTPS建角通過；[完整證據](release-0.80.0/live-verification.json)。
+
+歷史2026-10-28快照：正式根目錄 version.json 為 0.78.0／bca2a6e；preview/version.json 為 0.79.1-dev.641c43d／641c43d。此為 GitHub 部署分支資料，這次沒有重新做線上瀏覽器或真機驗收。
 
 [正式版本資料](https://yauchai2.github.io/Game-Lab/version.json) · [測試版本資料](https://yauchai2.github.io/Game-Lab/preview/version.json) · [GitHub Releases](https://github.com/yauchai2/Game-Lab/releases) · [部署流程](deployment.md)
 
@@ -8,6 +10,7 @@ Release 說明、integration、live-verification 及 digest 是追溯依據，�
 
 | 版本 | 紀錄 |
 | --- | --- |
+| 0.80.0 | [integration](release-0.80.0/integration.md) · [release-notes](release-0.80.0/release-notes.md) · [live](release-0.80.0/live-verification.json) |
 | 0.42.0 | [integration](release-0.42.0/integration.md) · [release-notes](release-0.42.0/release-notes.md) |
 | 0.43.0 | [integration](release-0.43.0/integration.md) · [notes](release-0.43.0/notes.md) |
 | 0.44.0 | [integration](release-0.44.0/integration.md) · [release-notes](release-0.44.0/release-notes.md) |
