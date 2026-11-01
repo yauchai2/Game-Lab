@@ -1,0 +1,10 @@
+{
+  "kind": "review-only generated landscape title asset",
+  "base": "c67529d",
+  "generator": "OpenAI image_gen; composition referenced existing approved portrait rooftop",
+  "reference_sha256": "4a2164ea1d9fa9bea2eae3dd486a94c7d902921663c0ae1d479cf5d612b4e423",
+  "output": "assets/brand/hello-static/entry-polish/rooftop-wide-source.png",
+  "sha256": "f1f571fc770a157a4be7b34d1e185a267c7b5030a508415da5e2609f13340f45",
+  "runtime_delivery": "Prototype samples the scene onto its low-resolution canvas; production owner decides final packing. Original portrait/logo/panels unchanged.",
+  "preview_sha256": "1d533ac05129baeffe0b45a4f653a676de49e3bea99b760a7b2d5ea8ad0e1689"
+}
