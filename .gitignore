@@ -58,3 +58,5 @@ tools/font/*.ttf
 /docs/window-ui-ascensions-2026-10-24/
 /docs/hello-static-title/
 /docs/y2k-equipment/
+/node_modules/
+docs/qa/reports/latest.md
