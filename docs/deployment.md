@@ -29,3 +29,7 @@ gh-pages 上的歷史雜湊腳本保留，讓快取舊 index 的瀏覽器完成�
 回退從已驗證來源建立新提交並發佈；保留來源 tag 與部署歷史，先核對新舊存檔欄位相容性。cleanup-releases workflow 預設 dry run，只依指定範圍清理 Release 頁面／附件，保留 tag；不在文件清理中執行。
 
 過往逐次來源、Pages SHA、Actions run 與驗證限制見 [版本索引](releases.md)，不再在本流程文件重複累加舊「目前版本」。
+
+## v0.80.0 正式整合（2026-11-01，香港）
+
+PR124已squash合併；來源524d4518f189b3cf0c167e43c91087d195622be3，Pages f90a31e98cee6194e0494addfea0d42e0615d6a5／工作流程41319703873成功。正式HTTPS版本、入口及28個腳本雜湊全數吻合，直接HTTPS手機尺寸四人選角、真建立／保存、預覽清理及角色頁零錯誤。Release工作流程41319879480成功，tag固定524d451；附件46,078,324 bytes及SHA-256 digest與已測試單檔相同。Release／附件資料見[線上證據](release-0.80.0/live-verification.json)，[整合範圍](release-0.80.0/integration.md)。所有分支與舊tag保留；12個整合或過期PR收尾，內部備份PR10不帶入網站。

@@ -1,4 +1,4 @@
-> 2026-11-01更新：本表的遊戲接入、QA與文件整理已整合到[PR124](https://github.com/yauchai2/Game-Lab/pull/124)，逐項處理見[0.80.0](release-0.80.0/integration.md)。#107為選擇性接入，#75／#12由現行內容取代，#10僅備份。以下保留歷史PR快照，不代表仍缺runtime。
+> 2026-11-01更新：本表的遊戲接入、QA與文件整理已由[PR124](https://github.com/yauchai2/Game-Lab/pull/124)合併並更新正式站，12個整合／過期PR已關閉，逐項處理見[0.80.0](release-0.80.0/integration.md)。#107為選擇性接入，#75／#12由現行內容取代，#10僅備份。以下保留歷史PR快照，不代表仍缺runtime。
 
 # 在途工作快照
 

@@ -4,7 +4,7 @@ Y2K 低面數 3D 掛機 ARPG：在浮島街區自動戰鬥、刷裝備，手動�
 
 [正式試玩](https://yauchai2.github.io/Game-Lab/) · [開發測試版](https://yauchai2.github.io/Game-Lab/preview/) · [版本與下載](https://github.com/yauchai2/Game-Lab/releases) · [完整文件索引](docs/README.md)
 
-2026-10-28 核對 gh-pages 的版本資料：正式版為 0.78.0，測試版為 0.79.1-dev.641c43d。這是部署分支快照；即時版本以各站的 version.json 為準，main 的程式版本不代表正式站已更新。
+2026-11-01 正式站已更新 **v0.80.0**：四人3D選角、完整死亡動畫、薄血條與HUD、打造／動作／序章及音訊更新。[整合及驗證](docs/release-0.80.0/integration.md) · [線上雜湊與來源](docs/release-0.80.0/live-verification.json)。測試連結保留先前開發節點；最新正式內容請用正式試玩。
 
 ## 本機開發
 

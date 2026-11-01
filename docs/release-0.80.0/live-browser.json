@@ -1,0 +1,19 @@
+{
+  "site": "https://yauchai2.github.io/Game-Lab/",
+  "tls": "Browser default TLS verification; no insecure flags",
+  "viewport": "390x844 Chromium/SwiftShader",
+  "fourActorCast": true,
+  "trueCharacterCreation": {
+    "version": "0.80.0",
+    "name": "正式版驗證",
+    "career": "frost",
+    "profiles": 1,
+    "running": true,
+    "castDisposed": true,
+    "sysErrors": [],
+    "monsterHealthBars": true
+  },
+  "errors": [],
+  "bad": [],
+  "scope": "Direct production HTTPS new-session smoke; no real user saves or physical Safari test"
+}
