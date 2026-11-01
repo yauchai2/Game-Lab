@@ -1,0 +1,23 @@
+{
+  "references": [
+    {
+      "name": "Quaternius Universal Animation Library",
+      "url": "https://quaternius.com/packs/universalanimationlibrary.html",
+      "licenseEvidence": "Official page lists License CC0 and FBX/GLB/Blend formats.",
+      "adopted": false,
+      "retrieved": "2026-10-27 UTC",
+      "httpStatus": 200,
+      "pageSha256": "9157d71e192638132706d6734bfb109b0647f150f305d4514b81a0cdfe9bf471"
+    },
+    {
+      "name": "Adobe Mixamo FAQ",
+      "url": "https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html",
+      "licenseEvidence": "Official FAQ permits royalty-free personal, commercial and non-profit use including video games; not CC0.",
+      "adopted": false,
+      "retrieved": "2026-10-27 UTC",
+      "httpStatus": 200,
+      "pageSha256": "a877ef2ca21f22f124a2bd1673b899126fb17a6c66e4060150edee6ba5e9c2b4"
+    }
+  ],
+  "scope": "Reference research only. No external animation binary downloaded, redistributed or integrated."
+}
