@@ -1,0 +1,121 @@
+{
+  "base": "641c43d",
+  "passed": true,
+  "scope": "Review artifact and projected-geometry policy only; not production integration or QA gate.",
+  "viewportWidths": [
+    320,
+    390,
+    768,
+    1024,
+    1440
+  ],
+  "cases": 7,
+  "policyCases": [
+    {
+      "width": 288,
+      "zoom": "far",
+      "count": 2,
+      "budget": 2,
+      "targetFallback": true
+    },
+    {
+      "width": 288,
+      "zoom": "middle",
+      "count": 2,
+      "budget": 2,
+      "targetFallback": true
+    },
+    {
+      "width": 288,
+      "zoom": "near",
+      "count": 0,
+      "budget": 2,
+      "targetFallback": true
+    },
+    {
+      "width": 366,
+      "zoom": "far",
+      "count": 2,
+      "budget": 2,
+      "targetFallback": true
+    },
+    {
+      "width": 366,
+      "zoom": "middle",
+      "count": 2,
+      "budget": 2,
+      "targetFallback": true
+    },
+    {
+      "width": 366,
+      "zoom": "near",
+      "count": 1,
+      "budget": 4,
+      "targetFallback": true
+    },
+    {
+      "width": 744,
+      "zoom": "far",
+      "count": 2,
+      "budget": 2,
+      "targetFallback": true
+    },
+    {
+      "width": 744,
+      "zoom": "middle",
+      "count": 1,
+      "budget": 4,
+      "targetFallback": true
+    },
+    {
+      "width": 744,
+      "zoom": "near",
+      "count": 1,
+      "budget": 6,
+      "targetFallback": true
+    },
+    {
+      "width": 1000,
+      "zoom": "far",
+      "count": 2,
+      "budget": 2,
+      "targetFallback": true
+    },
+    {
+      "width": 1000,
+      "zoom": "middle",
+      "count": 1,
+      "budget": 4,
+      "targetFallback": true
+    },
+    {
+      "width": 1000,
+      "zoom": "near",
+      "count": 1,
+      "budget": 6,
+      "targetFallback": true
+    },
+    {
+      "width": 1120,
+      "zoom": "far",
+      "count": 1,
+      "budget": 2,
+      "targetFallback": true
+    },
+    {
+      "width": 1120,
+      "zoom": "middle",
+      "count": 1,
+      "budget": 4,
+      "targetFallback": true
+    },
+    {
+      "width": 1120,
+      "zoom": "near",
+      "count": 1,
+      "budget": 6,
+      "targetFallback": true
+    }
+  ],
+  "errors": []
+}

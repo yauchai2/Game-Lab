@@ -1,0 +1,975 @@
+{
+  "base": "641c43d",
+  "cases": [
+    {
+      "id": "normal",
+      "label": "普通",
+      "item": {
+        "name": "訊號槍",
+        "slot": "weapon",
+        "rarity": "普通",
+        "r": 0,
+        "il": 12,
+        "lg": null,
+        "corrupt": false,
+        "affixes": [
+          {
+            "index": 0,
+            "text": "5% 技能急速",
+            "tier": 4,
+            "range": {
+              "tier": 4,
+              "min": 5,
+              "max": 6
+            },
+            "locked": false
+          }
+        ],
+        "implicit": "10% 全元素傷害",
+        "special": null,
+        "icon": "<img class=\"spr eq3d\" alt=\"\" aria-hidden=\"true\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB00lEQVR4AeyYv0oDQRCH19OX0bSKIAhWIjaiPoO1WNhEbBRjIRqsfQfFztLKRlvxTdRCPfkdDMzm9pK73O7MHCQwN3t/Nvd9O7sJbOY6/pkJaBfQfAUW13bycYNkWoDgkREhEdMCW7cDjzkkYVbg6PW9mDqQyOYXPBF+YlKA4Al08+aMmm60CuYERuGJHJWgNs+mBKrgATxc6c0hf7w8FhlthBmBaeDNCNSBB2wo1CvQBh5CqgJt4VUFYsCrCcSCVxGICS8uEBteVCAFvJhAKngRgZTwDQXweLNIDQ+aZH9kEvDJBKTgkwhIwkcXkIaPKqABH01ACz6KgCZ8awFt+FYCFuAbC2BPpre+n1uBbyQA+IvBqfv7/UG/YNDWR/BmootZ3e/FfsxJ/7x4/OmwX2R+0IDH+2sL4GEeXEILHjy1BTCF0IEHJDThwVJLAPC7VwcOgU4UWBPU1soTBQgegA/Hd0gO6wGxt7Hs7VMWN4UPlQIAR9Coc3hhxrGvCwoAnPeyCg9GT+D++S3vEnxJABeuh5dIXmC+excMnXgVwKL8/vp0XGIqeEFBT4DeSxJchO5ZyyUBVAEBie3VJfWfyUkDVhKgDpCgtuVcKWAZmrN1XuAfAAD//5gdYT4AAAAGSURBVAMArqHQYXjhpt4AAAAASUVORK5CYII=\" width=\"64\" height=\"64\" style=\"width:64px;height:64px;image-rendering:pixelated;vertical-align:middle;margin-right:4px\">"
+      },
+      "operations": {
+        "recal": {
+          "label": "重新校準",
+          "description": "只重洗同階內數值；保留詞綴種類與階級，已鎖定的詞綴不變",
+          "ok": true,
+          "cost": 20,
+          "reason": ""
+        },
+        "swap": {
+          "label": "改裝詞綴",
+          "description": "隨機替換一條沒鎖定的詞綴",
+          "ok": true,
+          "cost": 40,
+          "reason": ""
+        },
+        "upgrade": {
+          "label": "升級稀有度",
+          "description": "普通→魔法→稀有，各多一到兩條詞綴",
+          "ok": true,
+          "cost": 100,
+          "reason": ""
+        },
+        "extend": {
+          "label": "追加詞綴",
+          "description": "替稀有裝備再加一條新詞綴，最多 6 條；打造出來的裝備大多只有 4 條",
+          "ok": false,
+          "cost": 80,
+          "reason": "要先升級成稀有才能追加詞綴"
+        },
+        "corrupt": {
+          "label": "腐化",
+          "description": "賭一把：25% 數值 +20%、25% 多一條詞綴、25% 沒變化、25% 數值 -15%；腐化後不能再改機",
+          "ok": true,
+          "cost": 60,
+          "reason": ""
+        }
+      },
+      "tiers": [
+        {
+          "index": 0,
+          "ok": true,
+          "reason": "",
+          "from": 4,
+          "to": 3,
+          "parts": 40,
+          "fragments": 0,
+          "dust": 0,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "7% 技能急速"
+        }
+      ],
+      "refine": {
+        "ok": false,
+        "reason": "這件裝備不支援城市核心重構，可改用校準或詞綴升階",
+        "parts": 0,
+        "fragments": 0,
+        "dust": 0,
+        "cap": 20
+      },
+      "publicOps": [
+        "重新校準可執行20 零件",
+        "改裝詞綴可執行40 零件",
+        "升級稀有度可執行100 零件",
+        "追加詞綴要先升級成稀有才能追加詞綴80 零件",
+        "腐化可執行60 零件"
+      ],
+      "duplicateCoreEntries": [
+        {
+          "text": "核心重構12 殘晶",
+          "action": "studioDrawer('core')"
+        }
+      ]
+    },
+    {
+      "id": "magic",
+      "label": "魔法",
+      "item": {
+        "name": "過熱的霓虹光管",
+        "slot": "weapon",
+        "rarity": "魔法",
+        "r": 1,
+        "il": 12,
+        "lg": null,
+        "corrupt": false,
+        "affixes": [
+          {
+            "index": 0,
+            "text": "28% 火焰傷害",
+            "tier": 3,
+            "range": {
+              "tier": 3,
+              "min": 25,
+              "max": 31
+            },
+            "locked": false
+          },
+          {
+            "index": 1,
+            "text": "+14 物理傷害",
+            "tier": 2,
+            "range": {
+              "tier": 2,
+              "min": 13,
+              "max": 15
+            },
+            "locked": false
+          }
+        ],
+        "implicit": "+22 物理傷害",
+        "special": null,
+        "icon": "<img class=\"spr eq3d\" alt=\"\" aria-hidden=\"true\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB00lEQVR4AeyYv0oDQRCH19OX0bSKIAhWIjaiPoO1WNhEbBRjIRqsfQfFztLKRlvxTdRCPfkdDMzm9pK73O7MHCQwN3t/Nvd9O7sJbOY6/pkJaBfQfAUW13bycYNkWoDgkREhEdMCW7cDjzkkYVbg6PW9mDqQyOYXPBF+YlKA4Al08+aMmm60CuYERuGJHJWgNs+mBKrgATxc6c0hf7w8FhlthBmBaeDNCNSBB2wo1CvQBh5CqgJt4VUFYsCrCcSCVxGICS8uEBteVCAFvJhAKngRgZTwDQXweLNIDQ+aZH9kEvDJBKTgkwhIwkcXkIaPKqABH01ACz6KgCZ8awFt+FYCFuAbC2BPpre+n1uBbyQA+IvBqfv7/UG/YNDWR/BmootZ3e/FfsxJ/7x4/OmwX2R+0IDH+2sL4GEeXEILHjy1BTCF0IEHJDThwVJLAPC7VwcOgU4UWBPU1soTBQgegA/Hd0gO6wGxt7Hs7VMWN4UPlQIAR9Coc3hhxrGvCwoAnPeyCg9GT+D++S3vEnxJABeuh5dIXmC+excMnXgVwKL8/vp0XGIqeEFBT4DeSxJchO5ZyyUBVAEBie3VJfWfyUkDVhKgDpCgtuVcKWAZmrN1XuAfAAD//5gdYT4AAAAGSURBVAMArqHQYXjhpt4AAAAASUVORK5CYII=\" width=\"64\" height=\"64\" style=\"width:64px;height:64px;image-rendering:pixelated;vertical-align:middle;margin-right:4px\">"
+      },
+      "operations": {
+        "recal": {
+          "label": "重新校準",
+          "description": "只重洗同階內數值；保留詞綴種類與階級，已鎖定的詞綴不變",
+          "ok": true,
+          "cost": 30,
+          "reason": ""
+        },
+        "swap": {
+          "label": "改裝詞綴",
+          "description": "隨機替換一條沒鎖定的詞綴",
+          "ok": true,
+          "cost": 60,
+          "reason": ""
+        },
+        "upgrade": {
+          "label": "升級稀有度",
+          "description": "普通→魔法→稀有，各多一到兩條詞綴",
+          "ok": true,
+          "cost": 250,
+          "reason": ""
+        },
+        "extend": {
+          "label": "追加詞綴",
+          "description": "替稀有裝備再加一條新詞綴，最多 6 條；打造出來的裝備大多只有 4 條",
+          "ok": false,
+          "cost": 80,
+          "reason": "要先升級成稀有才能追加詞綴"
+        },
+        "corrupt": {
+          "label": "腐化",
+          "description": "賭一把：25% 數值 +20%、25% 多一條詞綴、25% 沒變化、25% 數值 -15%；腐化後不能再改機",
+          "ok": true,
+          "cost": 80,
+          "reason": ""
+        }
+      },
+      "tiers": [
+        {
+          "index": 0,
+          "ok": true,
+          "reason": "",
+          "from": 3,
+          "to": 2,
+          "parts": 80,
+          "fragments": 0,
+          "dust": 0,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "35% 火焰傷害"
+        },
+        {
+          "index": 1,
+          "ok": true,
+          "reason": "",
+          "from": 2,
+          "to": 1,
+          "parts": 140,
+          "fragments": 0,
+          "dust": 0,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "+17 物理傷害"
+        }
+      ],
+      "refine": {
+        "ok": false,
+        "reason": "這件裝備不支援城市核心重構，可改用校準或詞綴升階",
+        "parts": 0,
+        "fragments": 0,
+        "dust": 0,
+        "cap": 20
+      },
+      "publicOps": [
+        "重新校準可執行30 零件",
+        "改裝詞綴可執行60 零件",
+        "升級稀有度可執行250 零件",
+        "追加詞綴要先升級成稀有才能追加詞綴80 零件",
+        "腐化可執行80 零件"
+      ],
+      "duplicateCoreEntries": [
+        {
+          "text": "核心重構12 殘晶",
+          "action": "studioDrawer('core')"
+        }
+      ]
+    },
+    {
+      "id": "rare",
+      "label": "稀有",
+      "item": {
+        "name": "像素裂縫",
+        "slot": "weapon",
+        "rarity": "稀有",
+        "r": 2,
+        "il": 12,
+        "lg": null,
+        "corrupt": false,
+        "affixes": [
+          {
+            "index": 0,
+            "text": "+25% 會心傷害",
+            "tier": 3,
+            "range": {
+              "tier": 3,
+              "min": 25,
+              "max": 30
+            },
+            "locked": false
+          },
+          {
+            "index": 1,
+            "text": "31% 增加傷害",
+            "tier": 1,
+            "range": {
+              "tier": 1,
+              "min": 27,
+              "max": 33
+            },
+            "locked": false
+          },
+          {
+            "index": 2,
+            "text": "1.8% 生命偷取",
+            "tier": 2,
+            "range": {
+              "tier": 2,
+              "min": 1.6,
+              "max": 2
+            },
+            "locked": false
+          }
+        ],
+        "implicit": "6% 攻擊速度",
+        "special": null,
+        "icon": "<img class=\"spr eq3d\" alt=\"\" aria-hidden=\"true\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB00lEQVR4AeyYv0oDQRCH19OX0bSKIAhWIjaiPoO1WNhEbBRjIRqsfQfFztLKRlvxTdRCPfkdDMzm9pK73O7MHCQwN3t/Nvd9O7sJbOY6/pkJaBfQfAUW13bycYNkWoDgkREhEdMCW7cDjzkkYVbg6PW9mDqQyOYXPBF+YlKA4Al08+aMmm60CuYERuGJHJWgNs+mBKrgATxc6c0hf7w8FhlthBmBaeDNCNSBB2wo1CvQBh5CqgJt4VUFYsCrCcSCVxGICS8uEBteVCAFvJhAKngRgZTwDQXweLNIDQ+aZH9kEvDJBKTgkwhIwkcXkIaPKqABH01ACz6KgCZ8awFt+FYCFuAbC2BPpre+n1uBbyQA+IvBqfv7/UG/YNDWR/BmootZ3e/FfsxJ/7x4/OmwX2R+0IDH+2sL4GEeXEILHjy1BTCF0IEHJDThwVJLAPC7VwcOgU4UWBPU1soTBQgegA/Hd0gO6wGxt7Hs7VMWN4UPlQIAR9Coc3hhxrGvCwoAnPeyCg9GT+D++S3vEnxJABeuh5dIXmC+excMnXgVwKL8/vp0XGIqeEFBT4DeSxJchO5ZyyUBVAEBie3VJfWfyUkDVhKgDpCgtuVcKWAZmrN1XuAfAAD//5gdYT4AAAAGSURBVAMArqHQYXjhpt4AAAAASUVORK5CYII=\" width=\"64\" height=\"64\" style=\"width:64px;height:64px;image-rendering:pixelated;vertical-align:middle;margin-right:4px\">"
+      },
+      "operations": {
+        "recal": {
+          "label": "重新校準",
+          "description": "只重洗同階內數值；保留詞綴種類與階級，已鎖定的詞綴不變",
+          "ok": true,
+          "cost": 40,
+          "reason": ""
+        },
+        "swap": {
+          "label": "改裝詞綴",
+          "description": "隨機替換一條沒鎖定的詞綴",
+          "ok": true,
+          "cost": 80,
+          "reason": ""
+        },
+        "upgrade": {
+          "label": "升級稀有度",
+          "description": "普通→魔法→稀有，各多一到兩條詞綴",
+          "ok": false,
+          "cost": 0,
+          "reason": "已達可升級的稀有度上限"
+        },
+        "extend": {
+          "label": "追加詞綴",
+          "description": "替稀有裝備再加一條新詞綴，最多 6 條；打造出來的裝備大多只有 4 條",
+          "ok": true,
+          "cost": 80,
+          "reason": ""
+        },
+        "corrupt": {
+          "label": "腐化",
+          "description": "賭一把：25% 數值 +20%、25% 多一條詞綴、25% 沒變化、25% 數值 -15%；腐化後不能再改機",
+          "ok": true,
+          "cost": 100,
+          "reason": ""
+        }
+      },
+      "tiers": [
+        {
+          "index": 0,
+          "ok": true,
+          "reason": "",
+          "from": 3,
+          "to": 2,
+          "parts": 80,
+          "fragments": 0,
+          "dust": 0,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "+31% 會心傷害"
+        },
+        {
+          "index": 1,
+          "ok": false,
+          "reason": "T0 需要物品等級 25",
+          "from": 1,
+          "to": 0,
+          "parts": 240,
+          "fragments": 8,
+          "dust": 0,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "38% 增加傷害"
+        },
+        {
+          "index": 2,
+          "ok": true,
+          "reason": "",
+          "from": 2,
+          "to": 1,
+          "parts": 140,
+          "fragments": 0,
+          "dust": 0,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "2.2% 生命偷取"
+        }
+      ],
+      "refine": {
+        "ok": false,
+        "reason": "這件裝備不支援城市核心重構，可改用校準或詞綴升階",
+        "parts": 0,
+        "fragments": 0,
+        "dust": 0,
+        "cap": 20
+      },
+      "publicOps": [
+        "重新校準可執行40 零件",
+        "改裝詞綴可執行80 零件",
+        "升級稀有度已達可升級的稀有度上限—",
+        "追加詞綴可執行80 零件",
+        "腐化可執行100 零件"
+      ],
+      "duplicateCoreEntries": [
+        {
+          "text": "核心重構12 殘晶",
+          "action": "studioDrawer('core')"
+        }
+      ]
+    },
+    {
+      "id": "city",
+      "label": "城市傳奇",
+      "item": {
+        "name": "碎星球棒",
+        "slot": "weapon",
+        "rarity": "傳奇",
+        "r": 3,
+        "il": 12,
+        "lg": "W_FORK",
+        "corrupt": false,
+        "affixes": [
+          {
+            "index": 0,
+            "text": "追星：17% 對精英與首領增傷，5.1% 移動速度",
+            "tier": 4,
+            "range": {
+              "tier": 4,
+              "min": 15,
+              "max": 19
+            },
+            "locked": false
+          },
+          {
+            "index": 1,
+            "text": "星群：身邊有 4 隻以上敵人時，增加 15.5% 傷害",
+            "tier": 2,
+            "range": {
+              "tier": 2,
+              "min": 30,
+              "max": 37
+            },
+            "locked": false
+          },
+          {
+            "index": 2,
+            "text": "流星：18% 增加傷害，最大生命 -4.5%",
+            "tier": 4,
+            "range": {
+              "tier": 4,
+              "min": 18,
+              "max": 22
+            },
+            "locked": false
+          },
+          {
+            "index": 3,
+            "text": "星屑回收：擊殺精英或首領時，回復 2.5% 最大生命",
+            "tier": 4,
+            "range": {
+              "tier": 4,
+              "min": 0.4,
+              "max": 0.5
+            },
+            "locked": false
+          }
+        ],
+        "implicit": "+22 物理傷害",
+        "special": "技能會心時，另外對 2 個附近敵人造成 50% 傷害",
+        "icon": "<img class=\"spr eq3d\" alt=\"\" aria-hidden=\"true\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABuklEQVR4AeyYsU7DMBCG08LLoK6wICExITYEPAMzYmApYgHRBQnEzDuAWBAjExKCFXgTYABCf1eukmAnjXO+OyRXPcex4/b7fFaiuJ/9808SkE5gykDKQMcZULmEFpY3chtNfioF1i9GU26ITE8cFXUCe08vOTgh0Z+bRzWrk1AlYOEN9bhYOzsal5OvT0KNQBV+gp1lyATqbw83PRyroULABw/Y86VBzwePfnGBJnhA1oWoQFd4iIkJUMCLCVDBiwhQwrMLUMOzCsSAZxOIBc8iEBO+pQAubxex4UET7TnAAR9NgAs+igAnPLkANzypgAQ8mYAUPImAJHxnAWn4YIHBynauAT5IALsDP99fGOsMvMM6OyI1Bj2JT0aH2d3u8A8SNzwAggQOhscYW5KQgAdEKwEsn83THYwzYTMhBQ+ImQWq8BhsM4G6VMwkUIS/3r80rNhssmEahIpGAcBbtiK8bZM+egVuH1/NHr0F1AgPNqfA1f1z/vnxjv5SYMmUGhScOAW2VhfNTjDuMpZRIzzYnALoKEpohQenVwCdkECg3ioYL64VYOQI/qskEDx1RANTBogmMvhnfgEAAP//57J9KQAAAAZJREFUAwANBbZhyukpqAAAAABJRU5ErkJggg==\" width=\"64\" height=\"64\" style=\"width:64px;height:64px;image-rendering:pixelated;vertical-align:middle;margin-right:4px\">"
+      },
+      "operations": {
+        "recal": {
+          "label": "重新校準",
+          "description": "只重洗同階內數值；保留詞綴種類與階級，已鎖定的詞綴不變",
+          "ok": true,
+          "cost": 50,
+          "reason": ""
+        },
+        "swap": {
+          "label": "改裝詞綴",
+          "description": "隨機替換一條沒鎖定的詞綴",
+          "ok": false,
+          "cost": 100,
+          "reason": "傳奇裝備不能替換詞綴"
+        },
+        "upgrade": {
+          "label": "升級稀有度",
+          "description": "普通→魔法→稀有，各多一到兩條詞綴",
+          "ok": false,
+          "cost": 0,
+          "reason": "傳奇裝備可使用下方的核心重構"
+        },
+        "extend": {
+          "label": "追加詞綴",
+          "description": "替稀有裝備再加一條新詞綴，最多 6 條；打造出來的裝備大多只有 4 條",
+          "ok": false,
+          "cost": 140,
+          "reason": "傳奇裝備的詞綴固定"
+        },
+        "corrupt": {
+          "label": "腐化",
+          "description": "賭一把：25% 數值 +20%、25% 多一條詞綴、25% 沒變化、25% 數值 -15%；腐化後不能再改機",
+          "ok": true,
+          "cost": 120,
+          "reason": ""
+        }
+      },
+      "tiers": [
+        {
+          "index": 0,
+          "ok": true,
+          "reason": "",
+          "from": 4,
+          "to": 3,
+          "parts": 40,
+          "fragments": 0,
+          "dust": 1,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "追星：23% 對精英與首領增傷，6.9% 移動速度"
+        },
+        {
+          "index": 1,
+          "ok": true,
+          "reason": "",
+          "from": 2,
+          "to": 1,
+          "parts": 140,
+          "fragments": 0,
+          "dust": 1,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "星群：身邊有 4 隻以上敵人時，增加 19% 傷害"
+        },
+        {
+          "index": 2,
+          "ok": true,
+          "reason": "",
+          "from": 4,
+          "to": 3,
+          "parts": 40,
+          "fragments": 0,
+          "dust": 1,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "流星：24% 增加傷害，最大生命 -6%"
+        },
+        {
+          "index": 3,
+          "ok": true,
+          "reason": "",
+          "from": 4,
+          "to": 3,
+          "parts": 40,
+          "fragments": 0,
+          "dust": 1,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "星屑回收：擊殺精英或首領時，回復 3.5% 最大生命"
+        }
+      ],
+      "refine": {
+        "ok": true,
+        "reason": "",
+        "parts": 96,
+        "fragments": 5,
+        "dust": 2,
+        "route": "signal",
+        "routeName": "廢訊號網",
+        "cap": 20,
+        "nextLevel": 13
+      },
+      "publicOps": [
+        "重新校準可執行50 零件",
+        "改裝詞綴傳奇裝備不能替換詞綴100 零件",
+        "核心重構可執行零件 · 碎片 · 殘晶",
+        "追加詞綴傳奇裝備的詞綴固定140 零件",
+        "腐化可執行120 零件"
+      ],
+      "duplicateCoreEntries": [
+        {
+          "text": "核心重構可執行零件 · 碎片 · 殘晶",
+          "action": "uiWork('craftAct','upgrade')"
+        },
+        {
+          "text": "核心重構12 殘晶",
+          "action": "studioDrawer('core')"
+        }
+      ]
+    },
+    {
+      "id": "signature",
+      "label": "角色專屬傳奇",
+      "item": {
+        "name": "戰士・改裝伸縮電棍",
+        "slot": "weapon",
+        "rarity": "傳奇",
+        "r": 3,
+        "il": 12,
+        "lg": "Y2K_AKI_BATON",
+        "corrupt": false,
+        "affixes": [
+          {
+            "index": 0,
+            "text": "專屬・增幅：13% 攻擊速度，增加傷害 -5.2%",
+            "tier": 3,
+            "range": {
+              "tier": 3,
+              "min": 12,
+              "max": 14
+            },
+            "locked": false
+          },
+          {
+            "index": 1,
+            "text": "專屬・協奏：+29% 會心傷害，攻擊速度 -5.8%",
+            "tier": 4,
+            "range": {
+              "tier": 4,
+              "min": 25,
+              "max": 30
+            },
+            "locked": false
+          },
+          {
+            "index": 2,
+            "text": "專屬・同調：30% 對精英與首領增傷，9% 移動速度",
+            "tier": 2,
+            "range": {
+              "tier": 2,
+              "min": 26,
+              "max": 31
+            },
+            "locked": false
+          },
+          {
+            "index": 3,
+            "text": "專屬・共振：25% 增加傷害，最大生命 -6.3%",
+            "tier": 3,
+            "range": {
+              "tier": 3,
+              "min": 24,
+              "max": 29
+            },
+            "locked": false
+          }
+        ],
+        "implicit": "+22 物理傷害",
+        "special": "戰士 專屬裝備；僅對應職業可裝備。雜兵 0.001%、精英 0.01%、BOSS 0.1% 機率掉落一件隨機專裝；不受暗金保底影響。",
+        "icon": "<img class=\"spr eq3d\" alt=\"\" aria-hidden=\"true\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABWUlEQVR4AeyUT0rDQBjFJ17BTbYimCMIOYCQm7j1AiIewFO48wBx7UZdu8rCrArNvgdI+QUGJoVAO6+ZofAVXjuTMO97f9JcuQv/mIHcBVoD1oCYgD1CYoDycWtAjlAksAbEAOXj1oAcoUhgDYgBysetATlCkcAaEAOUj2dpoGmaMYTi4gQDyhjn7l6+R4BwjWl+OomBYRjGr8cbd/v76v7vn2cK/q4fZvtTN6saQDhYEtV1ndu8PxVL94+5vooBRINQQF3X03b7+ebati1A3/eSeAjPZgDBHhB7lGVZAMQievfzIYv23PxGG+DPGMInDClANGC9JqINHIqqqmq6hGgwbRJ8RRvgbQJCjSmF+7nRBnglAoh4tgHr1Ig2gGCP1KLDedEGQpKcazOQM31mWwOkkBPWQM70mW0NkEJOWAM502f2Og3AnAhmIFHQi2OsgcVoEt24+Ab2AAAA//+e7IDuAAAABklEQVQDALfNYmHCzkC1AAAAAElFTkSuQmCC\" width=\"64\" height=\"64\" style=\"width:64px;height:64px;image-rendering:pixelated;vertical-align:middle;margin-right:4px\">"
+      },
+      "operations": {
+        "recal": {
+          "label": "重新校準",
+          "description": "只重洗同階內數值；保留詞綴種類與階級，已鎖定的詞綴不變",
+          "ok": true,
+          "cost": 50,
+          "reason": ""
+        },
+        "swap": {
+          "label": "改裝詞綴",
+          "description": "隨機替換一條沒鎖定的詞綴",
+          "ok": false,
+          "cost": 100,
+          "reason": "傳奇裝備不能替換詞綴"
+        },
+        "upgrade": {
+          "label": "升級稀有度",
+          "description": "普通→魔法→稀有，各多一到兩條詞綴",
+          "ok": false,
+          "cost": 0,
+          "reason": "傳奇裝備可使用下方的核心重構"
+        },
+        "extend": {
+          "label": "追加詞綴",
+          "description": "替稀有裝備再加一條新詞綴，最多 6 條；打造出來的裝備大多只有 4 條",
+          "ok": false,
+          "cost": 140,
+          "reason": "傳奇裝備的詞綴固定"
+        },
+        "corrupt": {
+          "label": "腐化",
+          "description": "賭一把：25% 數值 +20%、25% 多一條詞綴、25% 沒變化、25% 數值 -15%；腐化後不能再改機",
+          "ok": true,
+          "cost": 120,
+          "reason": ""
+        }
+      },
+      "tiers": [
+        {
+          "index": 0,
+          "ok": true,
+          "reason": "",
+          "from": 3,
+          "to": 2,
+          "parts": 80,
+          "fragments": 0,
+          "dust": 1,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "專屬・增幅：16% 攻擊速度，增加傷害 -6.4%"
+        },
+        {
+          "index": 1,
+          "ok": true,
+          "reason": "",
+          "from": 4,
+          "to": 3,
+          "parts": 40,
+          "fragments": 0,
+          "dust": 1,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "專屬・協奏：+39% 會心傷害，攻擊速度 -7.8%"
+        },
+        {
+          "index": 2,
+          "ok": true,
+          "reason": "",
+          "from": 2,
+          "to": 1,
+          "parts": 140,
+          "fragments": 0,
+          "dust": 1,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "專屬・同調：37% 對精英與首領增傷，11.1% 移動速度"
+        },
+        {
+          "index": 3,
+          "ok": true,
+          "reason": "",
+          "from": 3,
+          "to": 2,
+          "parts": 80,
+          "fragments": 0,
+          "dust": 1,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "專屬・共振：31% 增加傷害，最大生命 -7.8%"
+        }
+      ],
+      "refine": {
+        "ok": false,
+        "reason": "這件裝備不支援城市核心重構，可改用校準或詞綴升階",
+        "parts": 0,
+        "fragments": 0,
+        "dust": 0,
+        "cap": 20
+      },
+      "publicOps": [
+        "重新校準可執行50 零件",
+        "改裝詞綴傳奇裝備不能替換詞綴100 零件",
+        "核心重構這件裝備不支援城市核心重構，可改用校準或詞綴升階零件 · 碎片 · 殘晶",
+        "追加詞綴傳奇裝備的詞綴固定140 零件",
+        "腐化可執行120 零件"
+      ],
+      "duplicateCoreEntries": [
+        {
+          "text": "核心重構這件裝備不支援城市核心重構，可改用校準或詞綴升階零件 · 碎片 · 殘晶",
+          "action": "uiWork('craftAct','upgrade')"
+        },
+        {
+          "text": "核心重構12 殘晶",
+          "action": "studioDrawer('core')"
+        }
+      ]
+    },
+    {
+      "id": "corrupt",
+      "label": "已腐化",
+      "item": {
+        "name": "午夜特急",
+        "slot": "weapon",
+        "rarity": "稀有",
+        "r": 2,
+        "il": 12,
+        "lg": null,
+        "corrupt": true,
+        "affixes": [
+          {
+            "index": 0,
+            "text": "+18 物理傷害",
+            "tier": 1,
+            "range": {
+              "tier": 1,
+              "min": 16,
+              "max": 19
+            },
+            "locked": false
+          },
+          {
+            "index": 1,
+            "text": "13% 對精英與首領增傷",
+            "tier": 4,
+            "range": {
+              "tier": 4,
+              "min": 11,
+              "max": 14
+            },
+            "locked": false
+          },
+          {
+            "index": 2,
+            "text": "25% 閃電傷害",
+            "tier": 3,
+            "range": {
+              "tier": 3,
+              "min": 25,
+              "max": 31
+            },
+            "locked": false
+          }
+        ],
+        "implicit": "6% 攻擊速度",
+        "special": null,
+        "icon": "<img class=\"spr eq3d\" alt=\"\" aria-hidden=\"true\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB00lEQVR4AeyYv0oDQRCH19OX0bSKIAhWIjaiPoO1WNhEbBRjIRqsfQfFztLKRlvxTdRCPfkdDMzm9pK73O7MHCQwN3t/Nvd9O7sJbOY6/pkJaBfQfAUW13bycYNkWoDgkREhEdMCW7cDjzkkYVbg6PW9mDqQyOYXPBF+YlKA4Al08+aMmm60CuYERuGJHJWgNs+mBKrgATxc6c0hf7w8FhlthBmBaeDNCNSBB2wo1CvQBh5CqgJt4VUFYsCrCcSCVxGICS8uEBteVCAFvJhAKngRgZTwDQXweLNIDQ+aZH9kEvDJBKTgkwhIwkcXkIaPKqABH01ACz6KgCZ8awFt+FYCFuAbC2BPpre+n1uBbyQA+IvBqfv7/UG/YNDWR/BmootZ3e/FfsxJ/7x4/OmwX2R+0IDH+2sL4GEeXEILHjy1BTCF0IEHJDThwVJLAPC7VwcOgU4UWBPU1soTBQgegA/Hd0gO6wGxt7Hs7VMWN4UPlQIAR9Coc3hhxrGvCwoAnPeyCg9GT+D++S3vEnxJABeuh5dIXmC+excMnXgVwKL8/vp0XGIqeEFBT4DeSxJchO5ZyyUBVAEBie3VJfWfyUkDVhKgDpCgtuVcKWAZmrN1XuAfAAD//5gdYT4AAAAGSURBVAMArqHQYXjhpt4AAAAASUVORK5CYII=\" width=\"64\" height=\"64\" style=\"width:64px;height:64px;image-rendering:pixelated;vertical-align:middle;margin-right:4px\">"
+      },
+      "operations": {
+        "recal": {
+          "label": "重新校準",
+          "description": "只重洗同階內數值；保留詞綴種類與階級，已鎖定的詞綴不變",
+          "ok": false,
+          "cost": 40,
+          "reason": "已腐化，不能再改機"
+        },
+        "swap": {
+          "label": "改裝詞綴",
+          "description": "隨機替換一條沒鎖定的詞綴",
+          "ok": false,
+          "cost": 80,
+          "reason": "已腐化，不能再改機"
+        },
+        "upgrade": {
+          "label": "升級稀有度",
+          "description": "普通→魔法→稀有，各多一到兩條詞綴",
+          "ok": false,
+          "cost": 0,
+          "reason": "已腐化，不能再改機"
+        },
+        "extend": {
+          "label": "追加詞綴",
+          "description": "替稀有裝備再加一條新詞綴，最多 6 條；打造出來的裝備大多只有 4 條",
+          "ok": false,
+          "cost": 80,
+          "reason": "已腐化，不能再改機"
+        },
+        "corrupt": {
+          "label": "腐化",
+          "description": "賭一把：25% 數值 +20%、25% 多一條詞綴、25% 沒變化、25% 數值 -15%；腐化後不能再改機",
+          "ok": false,
+          "cost": 100,
+          "reason": "已腐化，不能再改機"
+        }
+      },
+      "tiers": [
+        {
+          "index": 0,
+          "ok": false,
+          "reason": "已腐化，不能升階",
+          "from": 1,
+          "to": 0,
+          "parts": 240,
+          "fragments": 8,
+          "dust": 0,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "+22 物理傷害"
+        },
+        {
+          "index": 1,
+          "ok": false,
+          "reason": "已腐化，不能升階",
+          "from": 4,
+          "to": 3,
+          "parts": 40,
+          "fragments": 0,
+          "dust": 0,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "18% 對精英與首領增傷"
+        },
+        {
+          "index": 2,
+          "ok": false,
+          "reason": "已腐化，不能升階",
+          "from": 3,
+          "to": 2,
+          "parts": 80,
+          "fragments": 0,
+          "dust": 0,
+          "route": "signal",
+          "routeName": "廢訊號網",
+          "next": "31% 閃電傷害"
+        }
+      ],
+      "refine": {
+        "ok": false,
+        "reason": "這件裝備不支援城市核心重構，可改用校準或詞綴升階",
+        "parts": 0,
+        "fragments": 0,
+        "dust": 0,
+        "cap": 20
+      },
+      "publicOps": [
+        "重新校準已腐化，不能再改機40 零件",
+        "改裝詞綴已腐化，不能再改機80 零件",
+        "升級稀有度已腐化，不能再改機—",
+        "追加詞綴已腐化，不能再改機80 零件",
+        "腐化已腐化，不能再改機100 零件"
+      ],
+      "duplicateCoreEntries": [
+        {
+          "text": "核心重構12 殘晶",
+          "action": "studioDrawer('core')"
+        }
+      ]
+    },
+    {
+      "id": "empty",
+      "label": "空欄位",
+      "item": null,
+      "operations": {
+        "recal": {
+          "label": "重新校準",
+          "description": "只重洗同階內數值；保留詞綴種類與階級，已鎖定的詞綴不變",
+          "ok": false,
+          "cost": 0,
+          "reason": "尚未裝備道具"
+        },
+        "swap": {
+          "label": "改裝詞綴",
+          "description": "隨機替換一條沒鎖定的詞綴",
+          "ok": false,
+          "cost": 0,
+          "reason": "尚未裝備道具"
+        },
+        "upgrade": {
+          "label": "升級稀有度",
+          "description": "普通→魔法→稀有，各多一到兩條詞綴",
+          "ok": false,
+          "cost": 0,
+          "reason": "尚未裝備道具"
+        },
+        "extend": {
+          "label": "追加詞綴",
+          "description": "替稀有裝備再加一條新詞綴，最多 6 條；打造出來的裝備大多只有 4 條",
+          "ok": false,
+          "cost": 0,
+          "reason": "尚未裝備道具"
+        },
+        "corrupt": {
+          "label": "腐化",
+          "description": "賭一把：25% 數值 +20%、25% 多一條詞綴、25% 沒變化、25% 數值 -15%；腐化後不能再改機",
+          "ok": false,
+          "cost": 0,
+          "reason": "尚未裝備道具"
+        }
+      },
+      "tiers": [],
+      "refine": {
+        "ok": false,
+        "reason": "先裝備一件傳奇核心",
+        "parts": 0,
+        "fragments": 0,
+        "dust": 0,
+        "cap": 20
+      },
+      "publicOps": [],
+      "duplicateCoreEntries": [
+        {
+          "text": "核心重構12 殘晶",
+          "action": "studioDrawer('core')"
+        }
+      ]
+    }
+  ],
+  "resources": {
+    "parts": 900,
+    "dust": 12,
+    "chips": 140,
+    "gold": 42000
+  },
+  "cityRefineIds": [
+    "W_FORK",
+    "R_DIAL",
+    "R_LINK",
+    "W_ECHO",
+    "A_RESET",
+    "A_PHOENIX",
+    "W_MULTI",
+    "A_RIPOSTE",
+    "R_LAST"
+  ],
+  "allLegendCount": 37,
+  "quotes": {
+    "street": "接地，再突破。",
+    "frost": "讓節拍穿過靜默。",
+    "beep": "確認訊號，鎖定目標。",
+    "volt": "啟動，保持連線。"
+  },
+  "note": "Controlled native equipped-item fixtures in paused fresh page; costs/eligibility from craftState/affTierState/coreRefineState, not invented balance."
+}

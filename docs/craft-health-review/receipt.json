@@ -1,0 +1,15 @@
+{
+  "base": "641c43d51601f9f3ed12a76bcf943238753c53b4",
+  "sha256": {
+    "src/game/04-render.js": "f4d27f79bb97ee7cdb6849085ff8db12d1a2b44d0fa64467ee47e9dff00d64e7",
+    "src/game/05q-device-workspaces.js": "902f55c25f804f16bf5accf46fc731e678e0c6074a9a85c2e80efcbdda5f1017",
+    "src/game/05w-signal-studio.js": "df038011c7057cd8a92ee4295d215d82be463b2bcf02f75a092b1c806ca735b0",
+    "src/game/characters-data.js": "69432d7f682d23b96e0e7fd6fd88a78081314c07f10dcba4803a5c150722b20e",
+    "src/game/05g-layout.js": "878524759981b1cb0f7176edaaa48c8838d16de3a94ed4a2961e0e2bfdc791c0",
+    "src/game/05k-phone.js": "2ebae5f72d4ab3637e8d60bde4c6aef41b57f6f6f4632c7044a4f18fb667e572",
+    "src/game/05r-direct-play.js": "a7a7c640aea6e2044dc9008be584a05d73fb40de8e47cb886a83f868dd26b6f2",
+    "docs/craft-health-review/native-craft.json": "427373217fd8863d96118fa28eda244d13ecae49a39874b364f2395956f67a5d",
+    "docs/craft-health-review/native-health.json": "6d2a2ba373115ae0a1ccfdcf0bda852ec729e7f81cfff9f95ae62e35ba29fdfd",
+    "docs/craft-health-review/preview.html": "88dc526d360c7271c0d88e7e2064b25946806736f73c4362f6cd30fe764f301e"
+  }
+}
