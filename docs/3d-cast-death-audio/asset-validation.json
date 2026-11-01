@@ -1,0 +1,112 @@
+{
+  "base": "641c43d",
+  "models": [
+    {
+      "id": "M01",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "fceccc9e19437fee352b578959975bc7124383440319bb1c1b56955df9f22a7f"
+    },
+    {
+      "id": "M04",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "69a952872685c3ed024fa6c221ff926aa3a6256637f7fe2661f1a824c94623b2"
+    },
+    {
+      "id": "M02",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "df153056dc16c6c0d967198bdc66af5d8c6aabefe15996948d1d0b8eaccd159a"
+    },
+    {
+      "id": "M03",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "1ccd8c68e7843a05c51297044a36f512fc18146231fdff7365eacf18a9b9868d"
+    },
+    {
+      "id": "M05",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "45cdbcd1a16064ef3aa2bacfebed63d3c86fff7e610cd713704447f3dac1351b"
+    },
+    {
+      "id": "M06",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "c1a5351656f0417ebc95f33b31ec334afab6328d480bad222efd695197acec75"
+    },
+    {
+      "id": "M07",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "b691de496ca78579e6e456cec97f924ac2a947015b129d154058031face4cfa8"
+    },
+    {
+      "id": "M08",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "e3e0c4cb9328614ee3970e1be55c5642c2131b8ca0a6537e285425fff37de14e"
+    },
+    {
+      "id": "B01",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "e09b2284dbea68160d8c8f184bdc5099a91fea2e169076e0e9e89b8bd4bae084"
+    },
+    {
+      "id": "B02",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "482ed14e9edb92b5cb13acf435a5c876a58f101940383cc29fe6a939d5a9bee6"
+    },
+    {
+      "id": "B03",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "5be912246fae5aa5085e162cd60fb6b87624929e35947755f940ad7346e4bfe3"
+    },
+    {
+      "id": "B04",
+      "meshMaterialsOriginalClipsAndBinaryPreserved": true,
+      "duration": 1.2,
+      "deathKeys": 73,
+      "sha256": "e69f052afad388c5c15a5fe6e1a2cabd8bea00c9b65c5c3fb7bd54ad6217026e"
+    }
+  ],
+  "scope": "GLB structural/original-payload checks; ground contact verified separately by Three.js precise mesh poses.",
+  "castModels": [
+    {
+      "model": "aki",
+      "meshSkinMaterialsAndOriginalClipsPreserved": true,
+      "sha256": "9253837799eb6b5b83bca9026e32660c61b154228146784835ad7a84c22ea264"
+    },
+    {
+      "model": "milo",
+      "meshSkinMaterialsAndOriginalClipsPreserved": true,
+      "sha256": "1d2a8a16a0e93c21071e8f1b3883f27555dbe8ce9348fbb7dcf0e118fceeca4c"
+    },
+    {
+      "model": "ping",
+      "meshSkinMaterialsAndOriginalClipsPreserved": true,
+      "sha256": "56387c7c9a1263699fe99e3c0cc6a21554a5adab041c716899bbcd23a05f870c"
+    },
+    {
+      "model": "null",
+      "meshSkinMaterialsAndOriginalClipsPreserved": true,
+      "sha256": "1e2e7f0386e3c09b96765d77003d2316bfe92053bcb555452274cf902327c1a6"
+    }
+  ]
+}
