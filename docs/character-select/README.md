@@ -1,5 +1,7 @@
 # Hello, Static! 角色選擇頁
 
+> 2026-10-28 整理補註：這套選角流程已進入 main 的 0.79.1 開發來源，下文未合併等為當時紀錄；不代表正式站已更新。後續 3D 同場方案仍見 [在途工作](../in-progress.md)。
+
 2026-10-27 · Asia/Hong_Kong。已實作候選，分支 `codex/hello-static-character-select`，整合 main `4d9fe30`。尚未合併或發佈。
 
 使用 Alan 批准的白底四人圖。`source.png` 保存原圖；`tools/pack_intro_cast.py` 將圖縮至 192×341、量化 40 色、裁去上下白邊至 192×231，再用 nearest-neighbor 放大為 768×924。四個透明人物圖層與輪廓熱區共用同一格線，原圖、產物 SHA 與尺寸見 `assets/brand/hello-static/character-select/manifest.json`。沒有外部圖片服務或執行期下載；分段及單檔包均內嵌。

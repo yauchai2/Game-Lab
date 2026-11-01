@@ -6,7 +6,7 @@ sharpening, repeated resize, hard alpha threshold, or shared 40-color palette.
 """
 from pathlib import Path
 import base64, hashlib, io, json, re
-from PIL import Image
+from PIL import Image, ImageDraw
 ROOT=Path(__file__).resolve().parents[1]
 BG=ROOT/'assets/brand/hello-static'; PRO=ROOT/'assets/prologue'
 OUT=BG/'entry-pixels'; OUT.mkdir(exist_ok=True)
@@ -37,6 +37,16 @@ panels=[]
 for stem,boxes in PAGES.items():
  page=source(PRO/(stem+'-source.png')).convert('RGB')
  panels.append([asset(stem+'-'+str(i+1),pixel(page.crop(box),168))for i,box in enumerate(boxes)])
+# Paper, tape and shadow are authored on the same native grid as each picture.
+for row in panels:
+ for panel in row:
+  image=Image.open(io.BytesIO(base64.b64decode(panel['src'].split(',')[1]))).convert('RGBA')
+  frame=Image.new('RGBA',(image.width+12,image.height+30),(0,0,0,0));draw=ImageDraw.Draw(frame)
+  draw.rectangle((4,8,frame.width-1,frame.height-1),fill=(0,0,0,100))
+  draw.rectangle((0,5,frame.width-5,frame.height-5),fill='#fff9df');frame.alpha_composite(image,(4,9))
+  draw.polygon([(frame.width//2-18,2),(frame.width//2+20,0),(frame.width//2+19,11),(frame.width//2-20,13)],fill=(255,226,122,220))
+  item=asset('framed-'+str(panel['w'])+'-'+hashlib.sha256(image.tobytes()).hexdigest()[:10],frame)
+  panel.update(frame=item['src'],fw=item['w'],fh=item['h'])
 data={'bg':portrait['src'],'bgW':portrait['w'],'bgH':portrait['h'],'wide':landscape['src'],'wideW':landscape['w'],'wideH':landscape['h'],'logo':logo['src'],'logoW':logo['w'],'logoH':logo['h'],'storyBackdrop':backdrop['src'],'pages':panels}
 (ROOT/'src/game/pixel-art-assets.js').write_text('/* Generated from originals by tools/pack_pixel_art.py. */\nconst PIXEL_ART='+json.dumps(data,separators=(',',':'))+';\n')
 (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')

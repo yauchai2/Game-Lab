@@ -1,8 +1,0 @@
-{
-  "standalone": true,
-  "requests": [],
-  "errors": [],
-  "pausedStopsRendering": true,
-  "releaseOnStart": true,
-  "method": "HTTP document intercepted; other network requests rejected. Not a native file URL test."
-}

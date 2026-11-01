@@ -1,0 +1,153 @@
+{
+  "scope": "Four real GLBs with authored group poses and selected-only gestures; current base geometry/skins retained",
+  "models": [
+    {
+      "model": "aki",
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk",
+        "CastPose",
+        "CastSelect"
+      ],
+      "bones": 16,
+      "minY": 7.077716634995568e-9,
+      "height": 32.66807966138377,
+      "samples": [
+        {
+          "time": 0,
+          "maxQuaternionDelta": 0
+        },
+        {
+          "time": 0.2,
+          "maxQuaternionDelta": 0.14369171683423176
+        },
+        {
+          "time": 0.4,
+          "maxQuaternionDelta": 0.2098169321311177
+        },
+        {
+          "time": 0.85,
+          "maxQuaternionDelta": 1.91124690726574e-8
+        }
+      ]
+    },
+    {
+      "model": "milo",
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk",
+        "CastPose",
+        "CastSelect"
+      ],
+      "bones": 16,
+      "minY": -6.962472154370403e-9,
+      "height": 32.228695921615376,
+      "samples": [
+        {
+          "time": 0,
+          "maxQuaternionDelta": 0
+        },
+        {
+          "time": 0.2,
+          "maxQuaternionDelta": 0.08628929571683669
+        },
+        {
+          "time": 0.4,
+          "maxQuaternionDelta": 0.17153559792947384
+        },
+        {
+          "time": 0.85,
+          "maxQuaternionDelta": 1.2420283662661902e-8
+        }
+      ]
+    },
+    {
+      "model": "ping",
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk",
+        "CastPose",
+        "CastSelect"
+      ],
+      "bones": 16,
+      "minY": -1.8463426565418217e-8,
+      "height": 32.571515490760724,
+      "samples": [
+        {
+          "time": 0,
+          "maxQuaternionDelta": 0
+        },
+        {
+          "time": 0.2,
+          "maxQuaternionDelta": 0.1801296897744495
+        },
+        {
+          "time": 0.4,
+          "maxQuaternionDelta": 0.2629216455533527
+        },
+        {
+          "time": 0.85,
+          "maxQuaternionDelta": 2.3960906717079844e-8
+        }
+      ]
+    },
+    {
+      "model": "null",
+      "clips": [
+        "attack",
+        "cast",
+        "dash",
+        "death",
+        "hurt",
+        "idle",
+        "run",
+        "victory",
+        "walk",
+        "CastPose",
+        "CastSelect"
+      ],
+      "bones": 16,
+      "minY": -7.1024356396165444e-9,
+      "height": 25.590209465487046,
+      "samples": [
+        {
+          "time": 0,
+          "maxQuaternionDelta": 0
+        },
+        {
+          "time": 0.2,
+          "maxQuaternionDelta": 0.08817753089414793
+        },
+        {
+          "time": 0.4,
+          "maxQuaternionDelta": 0.1285035308839959
+        },
+        {
+          "time": 0.85,
+          "maxQuaternionDelta": 1.1835047941666232e-8
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "date": "2026-10-28",
+  "timezone": "Asia/Hong_Kong",
+  "status": "cleanup checks passed; unrelated pre-existing checks recorded below",
+  "repository_audit": {
+    "source_commit": "e2dd365318cda13ff11c480209445efe16f0b544",
+    "deleted_files_verified": 747,
+    "deleted_bytes": 77558349,
+    "relative_links_checked": 374,
+    "runtime_script_paths_checked": 81,
+    "pending_rows_preserved": 90,
+    "protected_sources_unchanged": true,
+    "failures": []
+  },
+  "passed": [
+    {
+      "command": "bash tools/run_tests.sh",
+      "result": "6 logic suites, equipment poses/reference captures, 8 title/prologue flows, 6 phone flows, resource disposal/visibility, 4 support flows, wire touch, split-build boot; all passed"
+    },
+    {
+      "command": "python3 tools/test_review_build.py",
+      "result": "4 HTML documents: 82, 83, 39, 39 inline scripts parsed; syntax and production/review storage-key isolation passed"
+    },
+    {
+      "check": "three regenerated review pages in Chromium",
+      "result": [
+        {
+          "page": "character-review.html",
+          "errors": [],
+          "canvas": 1
+        },
+        {
+          "page": "equipment-review.html",
+          "errors": [],
+          "canvas": 1
+        },
+        {
+          "page": "idle-hero-review.html",
+          "errors": [],
+          "canvas": 1
+        }
+      ]
+    },
+    {
+      "command": "python3 tools/build.py /tmp/game-lab-cleanup-game.html; cmp dist/idle-hero.html /tmp/game-lab-cleanup-game.html",
+      "result": "byte-identical official standalone"
+    },
+    {
+      "command": "python3 tools/test_intro_cast.py",
+      "result": "source hashes, native resolution/color count, nearest blocks, transparent layers and bundle passed"
+    },
+    {
+      "command": "python3 tools/test_audio_assets.py",
+      "result": "54 current assets/master hashes, embedded bytes, decode/peaks/size and 17 legacy hashes passed"
+    },
+    {
+      "command": "node tools/test_signature_equipment.cjs",
+      "result": "drop/owner/save rules and all 16 original derived GLB hashes/embedded bytes passed"
+    },
+    {
+      "check": "equipment browser test migrated to current slot data",
+      "result": {
+        "combinations": 7,
+        "poses": 756,
+        "actions": 9,
+        "originalTriangles": 14000,
+        "replacedTriangles": 11836,
+        "errors": [],
+        "visualReview": "Snapshots captured for human inspection; finite bounds do not prove collision-free geometry."
+      }
+    },
+    {
+      "check": "output-path changes retested after daily suite",
+      "result": [
+        {
+          "test": "phone_natural",
+          "exit_code": 0,
+          "stdout": "PASS 6 phone presentation browser flows",
+          "stderr": ""
+        },
+        {
+          "test": "release_043",
+          "exit_code": 0,
+          "stdout": "PASS drop cleanup frees private resources, preserves shared signature assets; real visibility toggle, continuing simulation, persistence and redraw",
+          "stderr": ""
+        },
+        {
+          "test": "support",
+          "exit_code": 0,
+          "stdout": "PASS 4 Patreon support flows",
+          "stderr": ""
+        }
+      ]
+    },
+    {
+      "check": "Python compilation, changed JavaScript syntax, bash -n, git diff --check",
+      "result": "passed"
+    },
+    {
+      "check": "original user prompt",
+      "result": "unchanged byte for byte from e2dd365; SHA256 abb26b1aff740b8d0e2cbe9fcfbe5092075875775caf558dadfbbd56ebc5f031"
+    }
+  ],
+  "preexisting_failures": [
+    {
+      "command": "python3 tools/test_entry_art.py",
+      "failure": "Logo RGBA/640px assertion at line 13",
+      "baseline": "same assertion reproduced in an isolated e2dd365 worktree; test and asset bytes unchanged"
+    },
+    {
+      "command": "node tools/test_characters.cjs",
+      "failure": "ReferenceError: g1HeroMaterial is not defined",
+      "baseline": "same failure reproduced in an isolated e2dd365 worktree; isolated test omits current runtime dependency; game source unchanged"
+    }
+  ],
+  "baseline_comparison": "Original daily suite passed against its old committed review pages. Regenerating pages exposed obsolete armor/ring slot assumptions; equipment tests now use head/offhand and exercise seven actual loadout combinations. Character review now uses current index dependencies. No gameplay logic modified.",
+  "limits": [
+    "No deployment, merge, tag or Release creation/deletion.",
+    "No remote branch deletion or Git history rewrite.",
+    "No real-device Safari/Android, long-duration GPU, subjective art or audio acceptance claimed.",
+    "Audit validates repository-relative Markdown destinations, not every external URL or Markdown anchor."
+  ]
+}

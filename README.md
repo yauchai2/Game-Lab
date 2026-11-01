@@ -1,93 +1,44 @@
-# Game Lab：Idle Hero
+# Game Lab：Hello, Static!／Idle Hero
 
-一款 Y2K 低面數 3D 風格的掛機 ARPG（Web 版）。耳機、摺機、手提電話、數碼產品都是你的裝備與技能，在浮島街景上自動刷怪、撿寶、搭配構築。本次版本：**v0.78.0**（授權配樂與全套音效更新；保留浮島、故事與技能）。驗證及來源見 [部署紀錄](docs/deployment.md)。
+Y2K 低面數 3D 掛機 ARPG：在浮島街區自動戰鬥、刷裝備，手動組裝技能電路。四個固定職業、昇華、裝備改造與本機多角色存檔。
 
+[正式試玩](https://yauchai2.github.io/Game-Lab/) · [開發測試版](https://yauchai2.github.io/Game-Lab/preview/) · [版本與下載](https://github.com/yauchai2/Game-Lab/releases) · [完整文件索引](docs/README.md)
 
-**[直接試玩](https://yauchai2.github.io/Game-Lab/) · [版本紀錄與下載](https://github.com/yauchai2/Game-Lab/releases) · [開發分支](https://github.com/yauchai2/Game-Lab/tree/main)**
+2026-10-28 核對 gh-pages 的版本資料：正式版為 0.78.0，測試版為 0.79.1-dev.641c43d。這是部署分支快照；即時版本以各站的 version.json 為準，main 的程式版本不代表正式站已更新。
 
-固定網址會更新至最新試玩版本。進度保存在目前瀏覽器；從舊網址或本機檔案搬入，請先匯出存檔碼，再在固定網址匯入。
+## 本機開發
 
-## 玩法
+```sh
+python3 -m http.server 8000
+```
 
-- **網格庫存與設定**：裝備、核心、機件及地圖以緊湊格瀏覽，點選看完整資料；設定入口使用網格，控制項直接顯示目前值。
+開啟 http://localhost:8000/ 。或直接開啟 dist/idle-hero.html 使用離線單檔。
 
-- **自動戰鬥**：英雄自動走位、打怪、撿裝備，適合時間不多的上班族；離線回來也有經驗與掉落。
-- **傳奇核心收藏**：保留不同特殊效果，裝備中的核心不會被自動換走；可換用收藏並切回上一件。
-- **構築記憶**：同一職業的三套配置記住七部位裝備、天賦及技能；物品仍是同一件，引用中的裝備受回收保護。
-- **長期改機**：同階校準、指定詞綴升階與核心等級重構分開；城市碎片及重複核心殘晶都有用途。
-- **裝備與詞綴**：普通、魔法、稀有、暗金四種稀有度，隨機詞綴，還有改機與重鑄。
-- **模式卡匣**：隨機掉落，裝上才鑑定出會改變攻擊方式的效果，每次都有新驚喜。
-- **電路板接線**：由對應起點逐格接通終點才啟動技能；紅、藍、綠配件只入同色洞，受供電及每技能三枚限制。冒險可獲得3×3至8×8不同板型，全由玩家手動裝配。
-- **天賦盤、遺物、元素反應**：多條成長路線可以互相搭配。
-- **地圖與無限之塔**：帶詞綴的刷怪區、首領戰，多個生態與天空。
-- **圖鑑、成就、角色頁與裝扮**：四個固定職業、各三條昇華；自訂玩家名稱，最多保存十二個獨立角色。
-- **存檔與離線進度**：各角色獨立保存，只有目前角色獲得離線進度；裝備與電路板由玩家手動換用；扮工模式（按 `` ` `` 鍵）可以低調掛機。
+```sh
+python3 tools/build.py
+python3 tools/build_reviews.py
+```
 
-## 在本機執行
+第一個命令重建正式單檔；第二個按目前來源產生角色、裝備與整合審閱頁，審閱 HTML 不再提交。測試與所需工具見 [測試指引](docs/testing.md)。
 
-不需要安裝任何套件。
+| 目錄 | 用途 |
+| --- | --- |
+| src/、index.html | 遊戲程式與開發入口；src/game/ 共用全域，載入順序由入口定義 |
+| assets/ | 可編輯模型、原圖、參考、音訊母帶與來源清單 |
+| tools/ | 建置、素材處理及測試 |
+| dist/idle-hero.html | 與來源一致的正式離線產物 |
+| docs/ | 現行規格、待辦及必要交付／發佈證據 |
+| services/feedback/ | 回饋服務 |
+| .github/ | 檢查、發佈及維護工作流程 |
 
-- 直接玩：用瀏覽器開 `dist/idle-hero.html`（單一檔案）。
-- 開發模式：開 `index.html`，會逐檔載入 `src/`。建議用簡單的本機伺服器，例如：
+## 創作與保存
 
-  ```
-  python3 -m http.server 8000
-  ```
+[Ice Cream 全遊戲創作基準](docs/creative-direction.md)、[美術規格](docs/art-style.md) 與 [共用生圖提示詞](docs/handmade-japanese-asset-prompt.md) 為現行入口。介面維持藍紫視窗與 Cubic 11，素材展示白底不影響遊戲場景。
 
-  然後開 `http://localhost:8000/`。
-- 重新打包單檔：`python3 tools/build.py`
-- 接線板邏輯測試：`node tools/test_grid.js`；瀏覽器測試：`node tools/test_wire_browser.cjs`（需先 `python3 -m http.server 8780`）
-- 離線結算回歸（不需瀏覽器）：`node tools/test_offline_return.cjs`
-- 多種子長時回訪：`node tools/probe_offline_returns.cjs /tmp/game-lab-offline-return.json`。直接執行正式模擬函式，驗證兩分鐘／六小時回訪、十二小時上限及城市單次出發；以四個工作執行緒運算，中斷後重跑同一輸出路徑可沿用已完成情境。結果不代表手機效能或真人長期體驗。
+存檔存於目前瀏覽器；搬網址或裝置前先匯出存檔碼。正式版與測試版共用來源網域，測試正式進度前先備份；不以 fresh 參數開正式存檔。
 
-### 測試用網址參數
-
-`?fresh`（不讀存檔）、`?sim=秒數`（快轉）、`?lvl=`、`?depth=`、`?speed=`、`?give`、`?run`（進地圖）、`?modal=skills|tree|maps|save`、`?away=秒數`（模擬離線）、`?selftest`（存檔來回測試）、`?clean`（關閉復古顆粒）。
-
-## 目錄結構
-
-| 路徑 | 內容 |
-|---|---|
-| `index.html` | 開發入口，逐檔載入 `src/` |
-| `dist/idle-hero.html` | 打包後的單檔版本 |
-| `src/core.js` | 頁面外殼：按鈕、數值欄、天空背景 |
-| `src/game/00-grid.js` | 電路板接線：佈線、配件強度、舊存檔遷移 |
-| `src/game/01-data.js` | 稀有度、詞綴、技能、地圖、更新日誌等資料 |
-| `src/game/02-state.js` | 遊戲狀態、天賦、裝備生成、屬性計算、存檔 |
-| `src/game/03-combat.js` | 怪物、掉落、戰鬥與技能結算 |
-| `src/game/04-render.js` | three.js 場景：英雄、怪物、浮島、特效 |
-| `src/game/05*.js` | 介面：側欄、視窗、裝扮、改機、首領、圖鑑 |
-| `src/game/06-main.js` | 啟動與主迴圈 |
-| `src/game/models*.js`, `assets.js`, `audio.js`, `font.js` | 3D 模型資料、圖片資源、音效、像素字體 |
-| `src/assets/` | 簡約像素向量圖示與圖片素材 |
-| `src/vendor/` | three.js r160（MIT） |
-| `tools/` | 打包腳本與 Blender 建模腳本（`tools/model/`） |
-| `docs/` | 設計、美術風格與待辦文件 |
-
-所有 `src/game/` 檔案共用全域範圍，載入順序即檔名順序。
-
-## 美術風格
-
-Y2K 低面數平塗 3D：柔和粉彩、天藍白雲、寬褲厚底鞋、耳機、街景高架橋，介面是作業系統視窗風，全介面保留 Cubic 11 像素字體，透過手機／桌機字級、行距及介面比例改善可讀性。細節見 [docs/art-style.md](docs/art-style.md) 與 [docs/art-direction-and-roadmap.md](docs/art-direction-and-roadmap.md)。
+開工先讀 [AGENTS.md](AGENTS.md)。重要進度回寫對應文件與 [待辦](docs/backlog.md)。部署與 Release 依 [發佈流程](docs/deployment.md) 辦理。
 
 ## 授權
 
-頁面外殼（Colorfigures）為 MIT，見 `docs/colorfigures-LICENSE`。three.js 為 MIT，見 `src/vendor/three.LICENSE`。
-
-0.32 地形、選卡暫停及回饋驗證：`node tools/test_update_032.cjs`、`node tools/test_terrain_mesh.cjs`。本次結果及限制見 [docs/update-0.32-validation.md](docs/update-0.32-validation.md)。
-
-0.32 視覺修正版：`node tools/test_world_review.cjs`；完整來源檢查：`python tools/run_review_checks.py`。開發分支可推送，Release／gh-pages 必須先取得版本確認。
-
-### 四主角候選（未 release）
-
-`codex/y2k-characters` 以 Alan 上傳模型製作 AKI、MILO、PING、NULL 的 16 骨架／9 動作版本。獨立動作審核：`dist/character-review.html`；含四角色切換的遊戲試玩：`dist/idle-hero-review.html`。來源、驗證界線及與 Claude 分支的整合 hooks 見 [整合指引](docs/y2k-characters-handoff.md)。正式公開版仍為 v0.32.0。
-
-### Y2K 專屬裝備候選（未發佈）
-
-已接入本次 ZIP 的 16 件 3D 模型；素材清單另外 4 件尚只有參考圖，先以簡模代替。專裝只有對應角色可穿戴，獨立低機率掉落；其餘裝備暫用簡單幾何模型。
-
-- 單檔模型與佩戴預覽：`dist/equipment-review.html`（不讀寫進度；逐件／三欄搭配／整套參考、九動作、四視角及時間拖桿）
-- 整合遊戲候選：`dist/idle-hero-review.html`（獨立測試存檔）
-- [素材對照、掉落規則與驗證](docs/y2k-equipment.md)
-- 邏輯與素材檢查：`node tools/test_signature_equipment.cjs`
-- 瀏覽器檢查：啟動本機 8780 伺服器後執行 `node tools/test_signature_equipment_browser.cjs`
+[頁面外殼 MIT](docs/colorfigures-LICENSE)、[three.js MIT](src/vendor/three.LICENSE)、[Cubic 11 OFL](tools/font/Cubic-OFL.txt)、[音訊逐檔來源與授權](src/audio/LICENSES.md)。使用者提供與生成素材各按來源清單記錄，不以專案授權覆蓋第三方素材。

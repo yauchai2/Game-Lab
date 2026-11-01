@@ -34,7 +34,7 @@ const base=process.env.TITLE_TEST_URL||GAME_TEST_BASE+'/';
   const caps=await p.locator('.cut figcaption').allTextContents();assert.equal(caps.length,3);assert(caps.every(c=>c.length>=4&&c.length<=14),'one short caption under each panel '+caps);
   assert.equal(await p.locator('.cut').count(),3);
   assert.equal(await p.locator('.cut img').first().evaluate(e=>getComputedStyle(e).imageRendering),'pixelated');
-  assert(await p.locator('.cut img').evaluateAll(a=>a.every(i=>i.naturalWidth===168)),'panels are stored as low-resolution mosaics');
+  assert(await p.locator('.cut img').evaluateAll(a=>a.every(i=>i.naturalWidth===180)),'pictures, paper and tape share a 180px native mosaic');
   checks.push('keyboard start opens a captioned, button-free prologue');
   /* Tapping while panels are still arriving completes the collage; the next tap turns the page. */
   await p.locator('.story-tap').click();

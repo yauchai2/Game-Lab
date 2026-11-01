@@ -1,0 +1,30 @@
+{
+  "base": "641c43d",
+  "heroProvenance": "Existing user-supplied four-character meshes/skins; flat derivative plus authored CastPose/CastSelect clips. No new mesh or image generation.",
+  "heroes": [
+    {
+      "model": "aki",
+      "file": "assets/characters/cast-preview/models/aki.glb",
+      "sha256": "9253837799eb6b5b83bca9026e32660c61b154228146784835ad7a84c22ea264",
+      "bytes": 599864
+    },
+    {
+      "model": "milo",
+      "file": "assets/characters/cast-preview/models/milo.glb",
+      "sha256": "1d2a8a16a0e93c21071e8f1b3883f27555dbe8ce9348fbb7dcf0e118fceeca4c",
+      "bytes": 603840
+    },
+    {
+      "model": "ping",
+      "file": "assets/characters/cast-preview/models/ping.glb",
+      "sha256": "56387c7c9a1263699fe99e3c0cc6a21554a5adab041c716899bbcd23a05f870c",
+      "bytes": 614948
+    },
+    {
+      "model": "null",
+      "file": "assets/characters/cast-preview/models/null.glb",
+      "sha256": "1e2e7f0386e3c09b96765d77003d2316bfe92053bcb555452274cf902327c1a6",
+      "bytes": 599572
+    }
+  ]
+}

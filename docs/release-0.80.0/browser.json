@@ -1,0 +1,221 @@
+{
+  "entry": [
+    {
+      "width": 320,
+      "actors": 4,
+      "overflow": false,
+      "canvas": {
+        "x": 52.359375,
+        "y": 71,
+        "width": 215.265625,
+        "height": 215.265625,
+        "top": 71,
+        "right": 267.625,
+        "bottom": 286.265625,
+        "left": 52.359375
+      },
+      "oneBack": 1,
+      "back": "← 返回原角色"
+    },
+    {
+      "width": 390,
+      "actors": 4,
+      "overflow": false,
+      "canvas": {
+        "x": 72.234375,
+        "y": 71,
+        "width": 245.515625,
+        "height": 245.515625,
+        "top": 71,
+        "right": 317.75,
+        "bottom": 316.515625,
+        "left": 72.234375
+      },
+      "oneBack": 1,
+      "back": "← 返回原角色"
+    },
+    {
+      "width": 768,
+      "actors": 4,
+      "overflow": false,
+      "canvas": {
+        "x": 37,
+        "y": 293.953125,
+        "width": 354.078125,
+        "height": 354.078125,
+        "top": 293.953125,
+        "right": 391.078125,
+        "bottom": 648.03125,
+        "left": 37
+      },
+      "oneBack": 1,
+      "back": "← 返回原角色"
+    },
+    {
+      "width": 1440,
+      "actors": 4,
+      "overflow": false,
+      "canvas": {
+        "x": 285,
+        "y": 235.078125,
+        "width": 448.21875,
+        "height": 448.21875,
+        "top": 235.078125,
+        "right": 733.21875,
+        "bottom": 683.296875,
+        "left": 285
+      },
+      "oneBack": 1,
+      "back": "← 返回原角色"
+    },
+    {
+      "width": 2560,
+      "actors": 4,
+      "overflow": false,
+      "canvas": {
+        "x": 845,
+        "y": 275.078125,
+        "width": 448.21875,
+        "height": 448.21875,
+        "top": 275.078125,
+        "right": 1293.21875,
+        "bottom": 723.296875,
+        "left": 845
+      },
+      "oneBack": 1,
+      "back": "← 返回原角色"
+    }
+  ],
+  "world": {
+    "models": [
+      "M01",
+      "M05",
+      "M03",
+      "M07",
+      "M06",
+      "M02",
+      "M08",
+      "M04",
+      "B01",
+      "B03",
+      "B04",
+      "B02"
+    ],
+    "cap": 12,
+    "healthOn": 530,
+    "healthOff": 0,
+    "corpsesAfterClear": 0
+  },
+  "errors": [],
+  "raycast": "four actual head mesh clicks select the corresponding class; only the selected actor has a halo",
+  "cancel": {
+    "restored": true,
+    "cast": false,
+    "pal": "mint",
+    "equip": {
+      "head": null,
+      "armor": {
+        "slot": "armor",
+        "r": 0,
+        "il": 1,
+        "name": "粗布衣",
+        "imp": {
+          "k": "life",
+          "v": 9
+        },
+        "aff": [
+          {
+            "k": "armor",
+            "v": 7,
+            "tier": 4
+          }
+        ],
+        "bs": 2,
+        "uid": 2
+      },
+      "gloves": null,
+      "ring": null,
+      "boots": null,
+      "weapon": {
+        "slot": "weapon",
+        "r": 0,
+        "il": 1,
+        "name": "新手摺疊傘",
+        "imp": {
+          "k": "ele",
+          "v": 4
+        },
+        "aff": [
+          {
+            "k": "aps",
+            "v": 5,
+            "tier": 3
+          }
+        ],
+        "bs": 2,
+        "uid": 3
+      },
+      "offhand": null
+    },
+    "beforeEquip": {
+      "head": null,
+      "armor": {
+        "slot": "armor",
+        "r": 0,
+        "il": 1,
+        "name": "粗布衣",
+        "imp": {
+          "k": "life",
+          "v": 9
+        },
+        "aff": [
+          {
+            "k": "armor",
+            "v": 7,
+            "tier": 4
+          }
+        ],
+        "bs": 2,
+        "uid": 2
+      },
+      "gloves": null,
+      "ring": null,
+      "boots": null,
+      "weapon": {
+        "slot": "weapon",
+        "r": 0,
+        "il": 1,
+        "name": "新手摺疊傘",
+        "imp": {
+          "k": "ele",
+          "v": 4
+        },
+        "aff": [
+          {
+            "k": "aps",
+            "v": 5,
+            "tier": 3
+          }
+        ],
+        "bs": 2,
+        "uid": 3
+      },
+      "offhand": null
+    },
+    "active": false
+  },
+  "created": {
+    "char": "volt",
+    "name": "第二位",
+    "profiles": 2,
+    "cast": false,
+    "active": false
+  },
+  "prefs": false,
+  "hud": {
+    "right": 372,
+    "panelLeft": 1602,
+    "overlap": false
+  },
+  "fallback": "WebGL construction fails; approved image, class selection and real creation still work"
+}

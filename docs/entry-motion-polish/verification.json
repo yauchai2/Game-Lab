@@ -1,0 +1,25 @@
+{
+  "base": "c67529d",
+  "branch": "codex/entry-motion-polish",
+  "status": "review assets/prototype/diagnostics implemented; production changes handed off, not applied",
+  "ownership": "tools/assets/docs only; no tools/qa or docs/qa",
+  "checks": {
+    "prototype_layouts": 8,
+    "native_frames": 20,
+    "native_errors": [],
+    "prototype_errors": [],
+    "offline_requests": [
+      "https://offline-review.invalid/?still"
+    ],
+    "keyboard": "start, page forward/back, escape and visible focus pass",
+    "reduced_motion": "no CSS/WAAPI animations",
+    "production_unchanged": true
+  },
+  "limitations": [
+    "Chromium viewport emulation, not physical iPad/Safari",
+    "Proposed impact tier values not integrated into native combat or certified by QA",
+    "Native action frames show existing clips, not organic trigger frequency",
+    "QA gate still under construction; no release or deploy"
+  ],
+  "prototype_sha256": "1d533ac05129baeffe0b45a4f653a676de49e3bea99b760a7b2d5ea8ad0e1689"
+}

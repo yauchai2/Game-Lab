@@ -1,0 +1,172 @@
+{
+  "date": "2026-11-01 Asia/Hong_Kong",
+  "base": "641c43d51601f9f3ed12a76bcf943238753c53b4",
+  "last_release": "v0.78.0",
+  "claude_branches": [
+    {
+      "ref": "origin/claude/handoff-backup-docs",
+      "sha": "f27a05c2f15ef4ca09d37057878f1363a25eab5a",
+      "unique_commits": [
+        "f27a05c 更新交接文件至 2026-11-01（版本與 PR 核對）",
+        "45ecb31 docs：加入待辦清單備份（暫放，上線前清除或搬到私人 repo）",
+        "f0a13e1 docs：加入專案記憶全文（暫放，上線前清除或搬到私人 repo）",
+        "53e3a28 docs：加入交接總覽 HANDOFF（暫放，上線前清除或搬到私人 repo）",
+        "8e3a5e2 docs：加入交接文件（暫放，上線前清除或搬到私人 repo）"
+      ]
+    },
+    {
+      "ref": "origin/claude/project-thread-0y5wy1",
+      "sha": "6373edd926f7a3abc75de3ec2cbda5592abf96f4",
+      "unique_commits": []
+    },
+    {
+      "ref": "origin/claude/project-thread-88pkli",
+      "sha": "4684415ccec6031370e43a9a400bfb99ec2fd278",
+      "unique_commits": [
+        "4684415 QA 關卡：已登記的未修問題在 CI 只算警告，--release 時仍攔住",
+        "613dea3 QA-001 已修復並重驗",
+        "3cada2b 報告 latest.md 不入版控（由關卡產生）",
+        "509b865 加入 QA 舊功能保護網：出版前關卡、內容清單比對、隨機與掛機壓力、舊版存檔相容"
+      ]
+    },
+    {
+      "ref": "origin/claude/project-thread-afu9rh",
+      "sha": "4fad995e5179cec89202865905abf214dd1524f2",
+      "unique_commits": []
+    },
+    {
+      "ref": "origin/claude/project-thread-az65jh",
+      "sha": "66da37445fb120967041e366b5a518f8bb5211a5",
+      "unique_commits": [
+        "66da374 codex-sync-notes 加入交接欄",
+        "6440348 AGENTS.md 加入 GitHub 流程指引，供 Codex 讀取",
+        "baf40b0 加入 PR 範本與 GitHub 一人工作流程說明"
+      ]
+    },
+    {
+      "ref": "origin/claude/project-thread-kg811g",
+      "sha": "91a8a85c405acc6925a4dbd61479a564bb65301e",
+      "unique_commits": []
+    },
+    {
+      "ref": "origin/claude/project-thread-md2o27",
+      "sha": "1ea3943fc1d6fd52878c8e26b32b1c895ba469d6",
+      "unique_commits": []
+    },
+    {
+      "ref": "origin/claude/project-thread-vpdkfi",
+      "sha": "83b5934ccfa7678d9f1c1686fa4918596f9f37f5",
+      "unique_commits": [
+        "83b5934 backlog 同步 G1 街區樣板已批准",
+        "ba3c1b1 美術文件移除固定頭身比，backlog 加入影片對照審查入口",
+        "d6be924 美術文件改為街頭 3D 方向，清除舊粉彩、Q 版與童話設定"
+      ]
+    },
+    {
+      "ref": "origin/claude/project-thread-ydxxmb",
+      "sha": "394c84f5c5ed22050961a11dea1660120fb7548a",
+      "unique_commits": [
+        "394c84f docs: 出擊循環與戰鬥手感方案（待確認）"
+      ]
+    },
+    {
+      "ref": "origin/claude/project-thread-yw9jjp",
+      "sha": "b16a79fcb122824868bf92a1ad222039bf20d16f",
+      "unique_commits": [
+        "b16a79f 同步 main（#116）"
+      ]
+    },
+    {
+      "ref": "origin/claude/project-thread-z3r5g1",
+      "sha": "fd689ed332116345defec9ae8ac3bddfedd659b6",
+      "unique_commits": [
+        "fd689ed docs：參考遊戲名稱改為中性說法，研究文件改名"
+      ]
+    },
+    {
+      "ref": "origin/claude/release-workflow",
+      "sha": "0c91243945b506913375a28a2488cd9395720083",
+      "unique_commits": []
+    }
+  ],
+  "open_prs": [
+    {
+      "number": 122,
+      "head": "424a4f948e1aa252504f43d9c5caae2af9a9f08b",
+      "branch": "codex/repository-document-cleanup",
+      "draft": false
+    },
+    {
+      "number": 121,
+      "head": "66da37445fb120967041e366b5a518f8bb5211a5",
+      "branch": "claude/project-thread-az65jh",
+      "draft": true
+    },
+    {
+      "number": 120,
+      "head": "443703b458a337c439861a3399d713bd915c95f0",
+      "branch": "codex/3d-cast-death-audio",
+      "draft": false
+    },
+    {
+      "number": 119,
+      "head": "ac3793711f238021cc6d204750c34e90b5520f0b",
+      "branch": "codex/preview-0791-dev2",
+      "draft": false
+    },
+    {
+      "number": 118,
+      "head": "7f4b9b8ae68b26b45651124a0f21d0396a049311",
+      "branch": "codex/fullscreen-entry-followup",
+      "draft": false
+    },
+    {
+      "number": 117,
+      "head": "a416ee9752a1c0476b69f1191ec31674fbbdd7f2",
+      "branch": "codex/craft-copy-healthbar-review",
+      "draft": false
+    },
+    {
+      "number": 115,
+      "head": "00e99deef8327996e3c519e17d4958a05958efc0",
+      "branch": "codex/entry-motion-polish",
+      "draft": false
+    },
+    {
+      "number": 114,
+      "head": "c7d55baf8bca8f37b6bab6c4fd1330e7507ee2c2",
+      "branch": "codex/sync-079-handoff",
+      "draft": false
+    },
+    {
+      "number": 110,
+      "head": "4684415ccec6031370e43a9a400bfb99ec2fd278",
+      "branch": "claude/project-thread-88pkli",
+      "draft": true
+    },
+    {
+      "number": 107,
+      "head": "e6cf9ea8cd02c3d85b119848fee2c58c94b23a32",
+      "branch": "codex/navigation-audio-boss-fixes",
+      "draft": true
+    },
+    {
+      "number": 75,
+      "head": "83b5934ccfa7678d9f1c1686fa4918596f9f37f5",
+      "branch": "claude/project-thread-vpdkfi",
+      "draft": true
+    },
+    {
+      "number": 12,
+      "head": "cb1bdc2eb49718fd24a8742fee2cabef9901976b",
+      "branch": "codex/y2k-characters",
+      "draft": true
+    },
+    {
+      "number": 10,
+      "head": "f27a05c2f15ef4ca09d37057878f1363a25eab5a",
+      "branch": "claude/handoff-backup-docs",
+      "draft": true
+    }
+  ]
+}

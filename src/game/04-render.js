@@ -806,13 +806,32 @@ function terrainCameraWindow(p,width,overview=false){
   return {span,view:overview?span:Math.min(span,limit),follow:!overview&&span>limit*1.1};
 }
 function toggleWorldOverview(){FXO.overview=!FXO.overview;FXO.zoomT=1;G.dirty=true;if(typeof renderModal==='function')renderModal();}
+/* World bars in actual CSS pixels; transient damage visibility never enters saves. */
+const MONSTER_BAR_RECENT=new WeakMap();
+function monsterHealthOverlay(){
+ if(GAME_VIEW.prefs.monsterHealthBars===false)return '';
+ const width=R3.W,height=R3.H,ux=R3.vbW/width,uy=R3.vbH/height,actors=[],target=nearestMon(true),hud=$('stats').getBoundingClientRect(),fig=$('fig').getBoundingClientRect();
+ const rect=(x,y,w,h,pct,col)=>`<rect data-monster-bar="true" x="${x*ux}" y="${y*uy}" width="${w*ux}" height="${h*uy}" fill="#172751"/><rect x="${x*ux}" y="${y*uy}" width="${w*tClamp(pct)*ux}" height="${h*uy}" fill="${col}"/>`;
+ for(const m of G.mons){if(m.dead)continue;let recent=MONSTER_BAR_RECENT.get(m);if(!recent){recent={hp:m.hp,until:-1};MONSTER_BAR_RECENT.set(m,recent);}if(m.hp<recent.hp)recent.until=G.time+1.2;recent.hp=m.hp;
+  const g=R3.ent.get(m);if(!g)continue;const box=new T3.Box3();g.updateWorldMatrix(true,true);g.traverse(o=>{if(!o.isMesh||!o.visible||o===g.userData.sh||o===g.userData.eliteRing)return;if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld));});if(box.isEmpty())continue;
+  let left=Infinity,right=-Infinity,top=Infinity,bottom=-Infinity;for(const x of[box.min.x,box.max.x])for(const y of[box.min.y,box.max.y])for(const z of[box.min.z,box.max.z]){const p=new T3.Vector3(x,y,z).project(R3.cam),X=(p.x+1)*width/2,Y=(1-p.y)*height/2;left=Math.min(left,X);right=Math.max(right,X);top=Math.min(top,Y);bottom=Math.max(bottom,Y);}
+  if(right<0||left>width||bottom<0||top>height)continue;actors.push({m,x:left,y:top,w:right-left,h:bottom-top,recent:G.time<recent.until,target:m===target});
+ }
+ const sizes=actors.filter(a=>!a.m.boss).map(a=>a.h).sort((a,b)=>a-b),median=sizes[Math.floor(sizes.length/2)]||0,budget=median<40?2:median<70?4:6,bars=[];let s='';
+ const overlap=(a,b,p=0)=>a.x-p<b.x+b.w&&a.x+a.w+p>b.x&&a.y-p<b.y+b.h&&a.y+a.h+p>b.y;
+ const block={x:hud.left-fig.left,y:hud.top-fig.top,w:hud.width,h:hud.height};
+ const candidates=actors.filter(a=>!a.m.boss&&a.m.hp<a.m.hpMax&&(a.target||a.m.elite||a.recent||a.m.hp<=a.m.hpMax*.2)).sort((a,b)=>(b.target?100:b.m.elite?80:b.recent?60:40)-(a.target?100:a.m.elite?80:a.recent?60:40));
+ for(const a of candidates){if(bars.length>=budget)break;if(a.h<12&&!a.target&&!a.m.elite)continue;const w=Math.min(a.m.elite?34:28,Math.max(a.target?18:8,a.w*.65)),h=a.target||a.h>=38?2:1,x=Math.max(3,Math.min(width-w-3,a.x+(a.w-w)/2));
+  for(const dy of[0,-3,-6]){const r={x,y:a.y-3-h+dy,w,h};if(r.y<3||r.y+h>height-6||overlap(r,block,2)||bars.some(b=>overlap(r,b,2))||actors.some(o=>o!==a&&overlap(r,o)))continue;
+   bars.push({...r,m:a.m});s+=rect(x,r.y,w,h,a.m.hp/a.m.hpMax,a.m.elite?'#ffd56b':'#ef805e');if(a.target&&a.m.shield>0)s+=rect(x,r.y+3,w,1,a.m.shield/a.m.shieldMax,'#57dce8');break;}
+ }
+ const fixed=actors.filter(a=>a.m.boss).slice(0,2);const hidden=actors.find(a=>a.target&&!a.m.boss&&!bars.some(b=>b.m===a.m));if(hidden)fixed.push(hidden);
+ fixed.slice(0,3).forEach((a,i)=>{const w=Math.min(260,width-24),x=(width-w)/2,y=height-24-i*37,m=a.m,label=(m.boss?'首領':'目標')+' '+tFmt(m.hp)+'／'+tFmt(m.hpMax)+(m.shield>0?' · 護盾 '+tFmt(m.shield):'');s+=`<text data-monster-readout="true" x="${(width/2)*ux}" y="${(y-5)*uy}" text-anchor="middle" fill="#fff" stroke="#172751" stroke-width="${2*ux}" paint-order="stroke" style="font-size:${12*uy}px">${uxEsc(label)}</text>`+rect(x,y,w,2,m.hp/m.hpMax,m.boss?'#f46b79':'#ef805e');if(m.shield>0)s+=rect(x,y+4,w,1,m.shield/m.shieldMax,'#57dce8');});return s;
+}
+
 function overlay(){
   const k = pxu(); let s = '';
-  const bar = (x, y, z, w, pct, col) => { const [X, Y] = pj(x, y, z+terrainHeight(x,y)), W2 = Math.max(14,w*k*.8), H2 = Math.max(2.6,Math.min(7,5/Math.max(.4,R3.W/Math.max(1,R3.vbW))));   /* 血條約 5 像素厚，最少 2.6 單位，不隨畫面放大變粗 */ return `<rect x="${(X - W2/2).toFixed(1)}" y="${Y.toFixed(1)}" width="${W2.toFixed(1)}" height="${H2.toFixed(1)}" rx="${(H2/2).toFixed(1)}" fill="#2b2552" opacity=".55"/>` + (pct > 0 ? `<rect x="${(X - W2/2 + .5).toFixed(1)}" y="${(Y + .5).toFixed(1)}" width="${Math.max(0, (W2 - 1)*tClamp(pct)).toFixed(1)}" height="${(H2 - 1).toFixed(1)}" rx="${((H2 - 1)/2).toFixed(1)}" fill="${col}"/>` : ''); };
-  if (G.h.dead <= 0) s += bar(G.h.x, G.h.y, BZ + 36*CK, 9, G.h.hp/G.st.life, '#4fe38a');
-  for (const m of G.mons) if (!m.dead && (m.boss || m.hp < m.hpMax*.999)){const anchor=typeof streetCreatureBarAnchor==='function'&&streetCreatureBarAnchor(m)||{x:m.x,y:m.y,z:BZ + (m.boss?140:m.type==='golem'?48:m.type==='lantern'?38:(m.type==='slime'?11:m.type==='brute'?32:m.type==='drone'?24:m.type==='bomb'?20:28)*(MONSTER_TRAITS[m.type]?.scale||1))*CK};s+=bar(anchor.x,anchor.y,anchor.z,m.boss?26:8,m.hp/m.hpMax,m.boss?'#ff3b3b':'#ff6a4a');}
-  if(G.h.dead<=0&&G.time<(G.h.bufferUntil||0)&&G.h.buffer>0)s+=bar(G.h.x,G.h.y,BZ+40*CK,9,G.h.buffer/(G.st.life*.12),'#57dce8');
-  for(const m of G.mons)if(!m.dead&&m.shield>0){const anchor=typeof streetCreatureBarAnchor==='function'&&streetCreatureBarAnchor(m);s+=anchor?bar(anchor.x,anchor.y,anchor.z+2.2,8,m.shield/m.shieldMax,'#57dce8'):bar(m.x,m.y,BZ+(m.boss?44:32)*CK,8,m.shield/m.shieldMax,'#57dce8');}
+  s+=monsterHealthOverlay();
   for (const fl of G.floats){ const [X, Y] = pj(fl.x + 3, fl.y, fl.z + terrainHeight(fl.x,fl.y) + fl.t*9);
     const unit=R3.vbW/Math.max(1,R3.W),size=battleTextSize(fl.kind,fl.size,innerWidth)*unit;
     s += `<text x="${X.toFixed(1)}" y="${Y.toFixed(1)}" text-anchor="middle" fill="${fl.col}" style="font-size:${size.toFixed(2)}px!important;font-family:var(--ux-body)!important;stroke:#f7faff;stroke-width:${(2.5*unit).toFixed(2)}px;stroke-linejoin:round;paint-order:stroke" font-weight="400" opacity="${(1-fl.t*fl.t).toFixed(2)}">${fl.txt}</text>`; }
@@ -828,12 +847,12 @@ function disposeWorldObject(root){
 function scene(){
   if (window.BOSSON) return '';
   if (!R3.ready) r3init();if(typeof riftThemeUpdate==='function')riftThemeUpdate();
-  if (document.body.classList.contains('battle-fold')){ if (R3.rd) R3.rd.domElement.style.display = 'none'; return ''; }   // 戰場收起時整個不畫，省電
+  if (document.body.classList.contains('battle-fold')){streetCorpseClear(); if (R3.rd) R3.rd.domElement.style.display = 'none'; return ''; }   // 戰場收起時整個不畫，省電
   if (R3.rd && R3.rd.domElement.style.display === 'none') R3.rd.domElement.style.display = '';
   r3frame();
   const bi = biomeNow();
   if (R3.bi !== bi || R3.terrainKey!==terrainKey()){
-    R3.terrainKey=terrainKey();worldTravelStart(terrainNow());
+    streetCorpseClear();R3.terrainKey=terrainKey();worldTravelStart(terrainNow());
     [G.h.x,G.h.y]=terrainProject(G.h.x,G.h.y);G.h.gx=G.h.x;G.h.gy=G.h.y;
     for(const m of G.mons)[m.x,m.y]=terrainProject(m.x,m.y,authoredTerrainPlan(m));
     R3.bi = bi; { const SK = BIOMES[bi].sky || [['#8fcdf7', '#c9e9ff', '#f5fbff'], ['#ffc98a', '#ffe6bf', '#fff7ea'], ['#a9d8ff', '#d9efff', '#ffffff'], ['#c07a9a', '#e9b4cc', '#ffe2ee'], ['#141450', '#3a3a8c', '#7a6ad0'], ['#ffa6d6', '#ffd0ee', '#fff0fa']][bi%6] || []; SK.forEach((c, i) => document.documentElement.style.setProperty('--sk' + i, c)); }
@@ -855,7 +874,7 @@ function scene(){
   // 魔物與掉落物
   for (const e of R3.ent.values()) e.userData.seen = false;
   streetCreatureMode();
-  for (const m of G.mons){ const g = entFor(m, () => streetCreatureBuild(m)||(m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm,m.chap??null):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss))); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
+  for (const m of G.mons){ if(m.dead){streetCorpseEnqueue(m);if(STREET_CORPSES.seen.has(m))continue;} const g = entFor(m, () => streetCreatureBuild(m)||(m.towerBoss?buildTowerCreature(m.towerBoss,true):['jailer','specimen','sentinel'].includes(m.type)?buildTowerCreature(m.type,false):m.boss?buildCircuitBoss(biomeNow(),m.bossForm,m.chap??null):NEW_MONSTERS.includes(m.type)?buildStreetMonster(m.type):['ranger','lantern','mole','golem'].includes(m.type)?buildFieldMonster(m.type):['spider','speaker','wisp','crab'].includes(m.type)?buildCircuitMon(m.type):m.type === 'slime' ? (g1On() ? g1MonsterBuild('m01', G1_M01_GLB) : buildSlime()) : m.type === 'skel' ? (g=>(g.userData.s=2.1,g))(buildFieldMonster('skel',m.ph>3?1:0)) : m.type === 'drone' ? buildDrone() : m.type === 'bomb' ? buildBomb() : buildBrute(m.boss))); monLook(m, g);if(g.userData.towerRig)animateTowerCreature(m,g); }
   for (const d of G.drops){
     if (d.t < 0) continue;
     const g = entFor(d, () => buildDrop(d)), u = g.userData; const flight=dropVisualPosition(d);let x = flight.x, y = flight.y, z = BZ+flight.lift;
@@ -865,6 +884,7 @@ function scene(){
   }
   renderSupportWorld();renderRiftWorld();
   for (const [k, e] of R3.ent) if (!e.userData.seen){ R3.world.remove(e); disposeWorldObject(e); R3.ent.delete(k); }
+  streetCorpseTick();
   updateFx();
   if(typeof worldTravelRender==='function')worldTravelRender();
   updateSceneryOcclusion(R3.scenery,R3.cam,R3.hero,R3.frameDt||0);

@@ -8,7 +8,7 @@
 
 [正式站瀏覽器](browser-results.json)直接HTTPS驗證320及1440載入期間從未建立遊戲header、等待Logo保留；真實縮圖render拋錯後112一般變體及33核心皆有圖，零頁面錯誤。[桌面](game-1440.png)／[手機](game-320.png)／[失敗退路](fallback-after.png)。
 
-完整要求複核與未完成範圍見[本輪複核](../visual-omissions-2026-10-25/review.md)。0.49.0新載入的Logo及黃圈未重現；已修正原Logo先建後刪、舊像素／空白退路、專裝JPEG灰底，沒有把快取或退路當黃圈已證實成因。
+完整要求複核與未完成範圍見[本輪複核](https://github.com/yauchai2/Game-Lab/blob/e2dd365318cda13ff11c480209445efe16f0b544/docs/visual-omissions-2026-10-25/review.md)。0.49.0新載入的Logo及黃圈未重現；已修正原Logo先建後刪、舊像素／空白退路、專裝JPEG灰底，沒有把快取或退路當黃圈已證實成因。
 
 試玩：https://yauchai2.github.io/Game-Lab/?v=0.49.1
 Release：https://github.com/yauchai2/Game-Lab/releases/tag/v0.49.1

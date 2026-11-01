@@ -1,5 +1,7 @@
 # 構築試玩室
 
+> 2026-10-28 整理補註：本原型保留作機制探索，文末正式版 0.31.0 等為當時快照。當前 [版本](../../releases.md) 與 [接線板](../../wire-board-design.md) 另行核對；原型不替代正式存檔或規則。
+
 Alan 要求把六個創意各做非常簡單的可玩 Demo，供親自比較。本目錄是獨立原型，不讀取正式遊戲 localStorage，不改 src/，數值不代表正式平衡。
 
 試玩入口：https://yauchai2.github.io/Game-Lab/lab/buildcraft/

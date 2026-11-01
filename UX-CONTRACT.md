@@ -1,5 +1,8 @@
 # Idle Hero UI 操作契約
 
+> 2026-10-28 整理：本文保留詳細互動規則及版本沿革；同一功能有多段時，後續明確要求及現行程式優先。「候選／未合併」是當時狀態，不代表現在仍未整合。現行視覺與 owner 見 [DESIGN](DESIGN.md)，版本見 [發佈索引](docs/releases.md)，待整合內容見 [開放 PR](docs/in-progress.md)。
+
+
 依據：Alan 的 UX 優化執行指示、docs/ux-optimization-plan-v0.25.2.md、遊戲現有資料定義與 0.25.2 UX 實測。價格、機率、解鎖與離線上限仍由遊戲資料及狀態邏輯決定。這是遊戲介面，不涉及帳號權限、付款或遠端 CRUD。
 
 | Capability | Canonical owner | Source of truth | Allowed variants | Verification |
@@ -523,3 +526,11 @@ Y2K 佩戴補正：`EQUIPMENT_SOCKETS`／`EQUIPMENT_FITS` 擁有骨架位置與�
 最新封面圖為酸黃天線的直幅／橫幅原 PNG，picture 依方向切換，不使用用戶辨認素材的 screencap。tools/pack_pixel_art.py 為 source → native PNG → four-times NEAREST／PIXEL_ART／boot 的唯一 owner；tools/entry_cover_layout.css 為載入／互動頁幾何 owner，05ab-intro-logo.js 保留啟動生命週期。boot 與互動首屏的 Logo、背景選擇及排版一致。128 色以下的全圖量化與二值 Logo alpha 不再用於這組資產。
 
 全畫面開始保留原生按鈕、Enter／Space 與 Escape，焦點顯示於開始提示；hover 提示反色、pressed 位移 2px，退出只做一次淡出，減少效果立即轉頁。序章沿用 INTRO_STAGE 的字幕／計時／音效及下一頁動作，八個圖片框只提高來源密度與移除靜止旋轉，不改狀態／存檔。驗證見 tools/test_entry_art_browser.cjs 與 docs/entry-art-refresh/README.md。
+
+## 0.80.0 接入
+
+- 選角的四個 actor 使用顯式 characterId／equip，不切換 G.char 或寫入裝備。PV 共用 renderer；career 用獨立 host ID，關閉時釋放展示實例，保留共用快取。選擇不重建名字欄，IME、焦點與能力展開保留。
+- 怪物血條偏好由 GAME_VIEW.prefs.monsterHealthBars 擁有，舊偏好缺欄位預設開；false 保留。關閉只影響敵人生命／護盾讀數。世界條以 CSS px 計量、目標／精英／近期受傷優先，首領與受遮目標保留固定讀數。
+- 屍體由 STREET_CORPSES 私有渲染佇列管理，普通最多12、首領2、1.2秒後釋放；kill／獎勵／碰撞與通關時序維持原 owner。移圖、換角、低效果時清理。
+- 打造沿用 craftState／coreRefineState／gearOperationAsk/Confirm 的成本與重驗；只統一詞彙與移除重複入口，不改數值或存檔鍵。
+- 證據：tools/test_release080_browser.cjs、tools/qa/gate.py --release、docs/release-0.80.0。

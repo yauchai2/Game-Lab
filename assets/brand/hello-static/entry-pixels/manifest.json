@@ -190,6 +190,94 @@
       "sha256": "7109d63648e1b1435b005aea478b578ec7b0fedba9bcb3efe43d1a7358672034",
       "runtime": "assets/brand/hello-static/entry-pixels/03-reconnect-2-native.webp",
       "runtime_sha256": "2cdb195f36259955b934fb8f04564d0a3abaa822f6491147c75e7f4c46124fca"
+    },
+    "framed-168-66df122fac": {
+      "native": [
+        180,
+        159
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/framed-168-66df122fac-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/framed-168-66df122fac-4x.png",
+      "sha256": "3e724df157793e021f2dee00751e9dba983013cf6f7fe6b5bea78237f83ef646",
+      "runtime": "assets/brand/hello-static/entry-pixels/framed-168-66df122fac-native.webp",
+      "runtime_sha256": "cf19e18a338eeca8cee36a4066c1e9b46808ef0093159a7f0bf37599c8b8efa9"
+    },
+    "framed-168-a7e7fcae4e": {
+      "native": [
+        180,
+        92
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/framed-168-a7e7fcae4e-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/framed-168-a7e7fcae4e-4x.png",
+      "sha256": "43436e002f0466a2a873557b4a01771be1f2551f1641dac8e2104628d867f92f",
+      "runtime": "assets/brand/hello-static/entry-pixels/framed-168-a7e7fcae4e-native.webp",
+      "runtime_sha256": "cb64be0088124f0bfbfd0152708f4bacd48c7e05c5382e311498f78496e9e566"
+    },
+    "framed-168-02ab53c0b6": {
+      "native": [
+        180,
+        137
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/framed-168-02ab53c0b6-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/framed-168-02ab53c0b6-4x.png",
+      "sha256": "d8224bef2bbf89a2af33f28ae0f6e2ea94a838497695e573b76194f0e1bc8dc9",
+      "runtime": "assets/brand/hello-static/entry-pixels/framed-168-02ab53c0b6-native.webp",
+      "runtime_sha256": "c6bb277117910b8489956e3541d3865b6ae47ed74329f3a4e6d747fb25fb6beb"
+    },
+    "framed-168-e1fe23d8c3": {
+      "native": [
+        180,
+        108
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/framed-168-e1fe23d8c3-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/framed-168-e1fe23d8c3-4x.png",
+      "sha256": "a57014722b38eab6f50f5fcab4a058000fe601d3fdd3aa6a3cb7bffc60dfd224",
+      "runtime": "assets/brand/hello-static/entry-pixels/framed-168-e1fe23d8c3-native.webp",
+      "runtime_sha256": "f2d00b0dfeb003090cd1476645356fa60068481850f5f1844033e15c28a0a93e"
+    },
+    "framed-168-a404c73e9e": {
+      "native": [
+        180,
+        149
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/framed-168-a404c73e9e-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/framed-168-a404c73e9e-4x.png",
+      "sha256": "80a5bf800dca01efb2f96477852ed369942b56f79c4c653c0d260982b370d696",
+      "runtime": "assets/brand/hello-static/entry-pixels/framed-168-a404c73e9e-native.webp",
+      "runtime_sha256": "b4a123658ba44c52e41f99718510ba841e18fec056b041647cafb3a4956c7b81"
+    },
+    "framed-168-ccefa75d4e": {
+      "native": [
+        180,
+        130
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/framed-168-ccefa75d4e-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/framed-168-ccefa75d4e-4x.png",
+      "sha256": "a67ea01009a7bf8cdcc06e4449557ce2da417667adf2693a3e43f41a11a511be",
+      "runtime": "assets/brand/hello-static/entry-pixels/framed-168-ccefa75d4e-native.webp",
+      "runtime_sha256": "e9a9303d352b946d660453030bb642afde860b51fd63d00c06e22bd042cd3068"
+    },
+    "framed-168-80cb4869bb": {
+      "native": [
+        180,
+        176
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/framed-168-80cb4869bb-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/framed-168-80cb4869bb-4x.png",
+      "sha256": "6ec80462774f5665867ea3694892c3ad13ec1676bd2382f10b048cdb876ef3e0",
+      "runtime": "assets/brand/hello-static/entry-pixels/framed-168-80cb4869bb-native.webp",
+      "runtime_sha256": "2bc72f772afd7a6b113691e5597065df7246de708ec014192199206f99a37171"
+    },
+    "framed-168-5dfe9295b4": {
+      "native": [
+        180,
+        187
+      ],
+      "source": "assets/brand/hello-static/entry-pixels/framed-168-5dfe9295b4-native.png",
+      "upscaled": "assets/brand/hello-static/entry-pixels/framed-168-5dfe9295b4-4x.png",
+      "sha256": "0419639ea2e3a1801c75a7966fffad89de8d57731f3e53a6948f593f4b925498",
+      "runtime": "assets/brand/hello-static/entry-pixels/framed-168-5dfe9295b4-native.webp",
+      "runtime_sha256": "5b8439789a75773cee153ec1f1aec0f88f8f4bf492358edc6280943200d147dd"
     }
   }
 }

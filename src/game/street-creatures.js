@@ -12,6 +12,8 @@ function streetCreatureSpec(m){
  if(m.towerBoss)spec=[{warden:'B01',chimera:'B02',executor:'B03'}[m.towerBoss]||'B04',27];
  else if(m.boss)spec=[['B01','B02','B03','B04'][((m.bossForm??biomeNow())%4+4)%4],27];
  if(m.boss&&!m.towerBoss&&Number.isInteger(m.chap)&&m.chap>=0&&m.chap<6)spec=[['M04','B01','B03','M04','B02','B04'][m.chap],27];
+ // Keep native boss roles and attacks, restore a clear giant silhouette.
+ if(spec&&m.boss)spec=[spec[0],m.towerBoss?64:[52,58,64,56,66,72][m.chap]||58,spec[2]||0];
  return spec;
 }
 function streetCreatureBuild(m){
@@ -66,4 +68,28 @@ function streetCreatureBarAnchor(m){
  g.traverse(o=>{if(!o.isMesh||!o.visible||o===g.userData.sh||o===g.userData.eliteRing)return;const geo=o.geometry;if(!geo.boundingBox)geo.computeBoundingBox();cache.box.copy(geo.boundingBox).applyMatrix4(o.matrixWorld);top=Math.max(top,cache.box.max.y);});
  g.getWorldPosition(cache.position);const x=cache.position.x,y=cache.position.z;
  return Number.isFinite(top)?{x,y,z:top+1.4-terrainHeight(x,y)}:null;
+}
+
+/* Render-only ownership. Kills, drops, collisions and stage completion stay immediate. */
+const STREET_CORPSES={items:[],seen:new WeakSet(),key:null,hero:null};
+function streetCorpseDrop(c){R3.world.remove(c.g);c.g.userData.mixer.stopAllAction();c.g.userData.mixer.uncacheRoot(c.g.userData.mixer.getRoot());disposeWorldObject(c.g);}
+function streetCorpseClear(){for(const c of STREET_CORPSES.items)streetCorpseDrop(c);STREET_CORPSES.items=[];STREET_CORPSES.key=terrainKey();STREET_CORPSES.hero=G.h;}
+function streetCorpseEnqueue(m){
+ if(!R3.ready||!m.dead||STREET_CORPSES.seen.has(m))return;
+ if(STREET_CORPSES.key!==terrainKey()||STREET_CORPSES.hero!==G.h)streetCorpseClear();
+ const g=R3.ent.get(m);if(!g?.userData.streetCreature)return;STREET_CORPSES.seen.add(m);
+ if(viewEffectsReduced()||document.body.classList.contains('battle-fold'))return;
+ const u=g.userData,a=u.actions.Death;if(!a)return;
+ // Only the added parent pivot animates; preserve the exact child pose at the kill.
+ const pose=[];g.traverse(o=>pose.push([o,o.position.clone(),o.quaternion.clone(),o.scale.clone()]));u.mixer.stopAllAction();for(const[o,p,q,s]of pose){o.position.copy(p);o.quaternion.copy(q);o.scale.copy(s);}
+ a.reset().setLoop(T3.LoopOnce,1);a.clampWhenFinished=true;a.play();R3.ent.delete(m);if(u.eliteRing)u.eliteRing.visible=false;
+ const floor=BZ+terrainHeight(m.x,m.y),c={g,boss:!!m.boss,start:G.time,last:0,floor,hover:Math.max(0,g.position.y-floor)};
+ STREET_CORPSES.items.push(c);const same=STREET_CORPSES.items.filter(x=>x.boss===c.boss);if(same.length>(c.boss?2:12)){const old=same[0];STREET_CORPSES.items.splice(STREET_CORPSES.items.indexOf(old),1);streetCorpseDrop(old);}
+}
+function streetCorpseTick(){
+ if(STREET_CORPSES.key!==terrainKey()||STREET_CORPSES.hero!==G.h){streetCorpseClear();return;}
+ for(const c of [...STREET_CORPSES.items]){const t=Math.max(0,G.time-c.start);if(t>=1.2||viewEffectsReduced()){streetCorpseDrop(c);STREET_CORPSES.items.splice(STREET_CORPSES.items.indexOf(c),1);continue;}
+  c.g.userData.mixer.update(Math.max(0,t-c.last));c.last=t;const k=Math.min(1,t/.2);c.g.position.y=c.floor+c.hover*(1-k*k*(3-2*k));const opacity=1-Math.max(0,(t-.94)/.26);
+  for(const mat of c.g.userData.mats){mat.transparent=true;mat.opacity=opacity;mat.depthWrite=opacity>.8;}if(c.g.userData.sh)c.g.userData.sh.visible=false;
+ }
 }

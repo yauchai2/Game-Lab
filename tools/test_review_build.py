@@ -1,8 +1,10 @@
 """Parse complete HTML script elements: nested wiki HTML must not receive review controls."""
 from html.parser import HTMLParser
 from pathlib import Path
-import subprocess, tempfile
+import subprocess, tempfile, sys
 root=Path(__file__).resolve().parents[1]
+if any(not (root/'dist'/name).exists() for name in ['idle-hero-review.html','character-review.html','equipment-review.html']):
+ subprocess.run([sys.executable,str(root/'tools/build_reviews.py')],cwd=root,check=True)
 class Scripts(HTMLParser):
  def __init__(self):super().__init__();self.inside=False;self.parts=[]
  def handle_starttag(self,tag,attrs):

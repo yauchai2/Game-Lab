@@ -97,12 +97,12 @@ function disposeEquipmentStraps(g){
  g.userData.equipmentStraps=[];
 }
 
-function characterEquipmentGeometry(asset,id){
+function characterEquipmentGeometry(asset,id,equip=G.equip){
  if(id!=='aki'||typeof CHARACTER_EQUIPMENT_MASKS==='undefined')return asset.geometry;
- const gear=G.equip.head,signature=signatureOf(gear),ordinary=gear&&!signature&&aTier(gear)===1,mask=CHARACTER_EQUIPMENT_MASKS[ordinary?'aki_ordinary_headphones':'aki_headphones'];
+ const gear=equip.head,signature=signatureOf(gear),ordinary=gear&&!signature&&aTier(gear)===1,mask=CHARACTER_EQUIPMENT_MASKS[ordinary?'aki_ordinary_headphones':'aki_headphones'];
  const replacesHeadset=signature?.model==='aki_headphones'||ordinary,cache=ordinary?'ordinaryHeadsetVariant':'headsetVariant';
  if(!replacesHeadset||!canUseGear(gear)||!mask)return asset.geometry;
  if((asset.flat?asset.sourceVertices:asset.geometry.attributes.position.count)!==mask.vertices||asset.geometry.index.count!==mask.triangles*3)throw Error('Character equipment mask is stale');
- if(!asset[cache]){const removed=new Set(mask.remove),indices=asset.geometry.index.array,kept=[];for(let i=0;i<indices.length;i+=3)if(!removed.has(i/3))kept.push(indices[i],indices[i+1],indices[i+2]);asset[cache]=asset.geometry.clone();asset[cache].setIndex(kept);}
+ if(!asset[cache]){const removed=new Set(mask.remove),indices=asset.geometry.index.array,kept=[];for(let i=0;i<indices.length;i+=3)if(!removed.has(i/3))kept.push(indices[i],indices[i+1],indices[i+2]);asset[cache]=asset.geometry.clone();asset[cache].userData.equipmentShared=true;asset[cache].setIndex(kept);}
  return asset[cache];
 }

@@ -129,7 +129,7 @@ function saveHtml(){
 }
 /* modal actions */
 function cartsHtml(){const sp=G.board.pieces.find(p=>p.id===selPiece&&p.kind==='active'),ids=Object.keys(MODES).filter(id=>(G.carts[id]||0)>0);let h=`<ol class="cart-guide"><li class="now">點下面的卡匣</li><li>在彈出的視窗選要裝到哪個技能</li><li>裝上後才鑑定效果；再點同一個技能可以卸下</li></ol>`;
- if(!ids.length)return h+'<p>還沒有卡匣。冒險或電路合成都能取得。</p>';
+ if(!ids.length)return h+'<p>還沒有卡匣。冒險或合成配件與卡匣都能取得。</p>';
  const eq=id=>G.board.pieces.some(p=>p.kind==='active'&&p.key===MODES[id].sk)&&cartFree(id)>0;ids.sort((x,y)=>eq(y)-eq(x));const nOk=ids.filter(eq).length;h+=`<p class="cart-sum">${nOk?`有 ${nOk} 張可以裝到已裝備的技能，排在最前面；其餘變暗，要先裝上對應技能。`:'目前沒有可裝的卡匣：先把對應的主動技能裝上。'}</p>`;
  return h+'<div class="ui-cart-grid">'+ids.map(id=>{const M=MODES[id],f=cartFree(id),n=G.carts[id],seen=G.seen[id],has=G.board.pieces.some(p=>p.kind==='active'&&p.key===M.sk),ok=has&&f>0,name=seen?M.n:'未鑑定・'+SKILLS[M.sk].n;return `<button class="gt" data-focus="cart-${id}" data-availability="${ok?'available':'unavailable'}" aria-label="${uxEsc(name)}，可用 ${f}／${n}，${uxEsc(seen?M.d:M.hint)}" onclick="uiCartPick('${id}')">${noticeHas('carts',id)?'<i class="nw">NEW</i>':''}${sico(M.sk,26)}<b>${uxEsc(name)}</b><small>${has?(f>0?`${SKILLS[M.sk].n}已裝備・可用 ${f}／${n}・點選裝上`:`全部已裝在別處（${n}／${n}）・點選可移過來`):`需先裝上${SKILLS[M.sk].n}`}</small></button>`;}).join('')+'</div>';
 }
@@ -202,7 +202,7 @@ function cardsHtml(){
 /* offline progress */
 const HELP = {
   skills:['接線板說明','電路板以可用格數、洞色與供電構成。先在終點手動裝技能，再從對應起點逐格拉線；完整接通才亮燈並施放。<br>紅、藍、綠配件只可裝在同色洞，每技能最多三枚。Ⅰ／Ⅱ／Ⅲ效果為1／1.35／1.65倍，耗電1／2／3。<br>電路板可在冒險中取得，尺寸由3×3至8×8，不會自動裝備或自動接線。'],
-  craft:['改機說明', '用不到的裝備會自動拆成零件。零件可以重新校準數值、改裝詞綴、升級稀有度，或賭一把腐化。<br>鎖定一條詞綴可以保住它；已腐化的裝備不能再改。'],
+  craft:['改機說明', '用不到的裝備會自動拆成零件。零件可以重洗詞綴數值數值、隨機替換詞綴、提升稀有度，或賭一把腐化。<br>鎖定一條詞綴可以保住它；已腐化的裝備不能再改。'],
   maps:['冒險說明', '挑戰詞綴只表示敵人強化或取捨詞綴的數量，不是難度評分。<br>地圖詞綴讓敵人更強，但戰利品更好；每張卡下方的標籤是風險與回報彙總。<br>無限之塔每層殺滿怪上樓，每 10 層是BOSS，死亡就結束。<br>訓練場用不還手的假人量 30 秒傷害。'],
   goals:['任務與目標', '新手任務一次一個，完成後解鎖新系統。目標達成會自動給獎勵，不用手動領取。']
 };
@@ -229,7 +229,7 @@ function setFilter(i){ G.filter = i; G.dirty = true; renderModal(); if(typeof ux
 function rulesBar(){
   return `<div class="mc" style="margin:0 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><b>拾取規則</b>${['全部撿', '魔法以上', '稀有以上'].map((n, i) => `<button class="mb${G.filter === i ? ' on' : ''}" aria-pressed="${G.filter === i}" onclick="setFilter(${i})">${G.filter === i ? '✓ ' : ''}${n}</button>`).join('')}${qm('craft')}</div>`;
 }
-function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未開放.txt</div><div style="font-size:13px;line-height:1.7">升到 ${L} 級開放${k === 'craft' ? '改機（拆裝備得零件，重洗與改裝詞綴）' : '天賦盤（升級得到的點數在這裡分配）'}。</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
+function lockTip(k){ const L = TAB_LVL[k]; showOverlay(`<div class="mct">尚未開放.txt</div><div style="font-size:13px;line-height:1.7">升到 ${L} 級開放${k === 'craft' ? '改機（拆裝備得零件，重洗與隨機替換詞綴）' : '天賦盤（升級得到的點數在這裡分配）'}。</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 function showHelp(k){ if(k==='maps')return directHelp('maps');const H = HELP[k]; if (H) showOverlay(`<div class="mct">${H[0]}.txt</div><div style="font-size:13px;line-height:1.7">${H[1]}</div><button class="mb" onclick="hideOverlay()">知道了</button>`); }
 const qm = k => `<button aria-label="${HELP[k] ? HELP[k][0] : '說明'}" class="qm" onclick="showHelp('${k}')">?</button>`;
 let OVERLAY_CLOSE=null;

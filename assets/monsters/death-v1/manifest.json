@@ -1,0 +1,247 @@
+{
+  "base": "641c43d",
+  "authorship": "Original project meshes plus Game-Lab authored death clip; no external motion samples.",
+  "scope": "Candidate asset package, not installed in production.",
+  "models": [
+    {
+      "id": "M01",
+      "source": "assets/monsters/m01-battery-hopper/M01-battery-hopper.glb",
+      "sourceSha256": "ab540c6b60d4f01276a58b3a9f99489621217caff8e5aadd19fc739f03bebb53",
+      "file": "assets/monsters/death-v1/M01.glb",
+      "sha256": "fceccc9e19437fee352b578959975bc7124383440319bb1c1b56955df9f22a7f",
+      "bytes": 69884,
+      "axis": "x",
+      "angle": -1.43,
+      "landTime": 0.6,
+      "duration": 1.2,
+      "description": "向前失衡，插頭身體側倒",
+      "floor": 0.019999999552965164,
+      "vertices": 1264,
+      "originalClips": [
+        "Hop",
+        "Idle",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "M04",
+      "source": "assets/monsters/m04-low-frequency/M04-low-frequency.glb",
+      "sourceSha256": "fcaa6a8f1e37f60cc69efa9c2d2c77d686980f722960d23cd8ad1b08857d1e45",
+      "file": "assets/monsters/death-v1/M04.glb",
+      "sha256": "69a952872685c3ed024fa6c221ff926aa3a6256637f7fe2661f1a824c94623b2",
+      "bytes": 182428,
+      "axis": "x",
+      "angle": 1.42,
+      "landTime": 0.68,
+      "duration": 1.2,
+      "description": "重音箱向前倒下，落地微震",
+      "floor": -7.320300488000697e-08,
+      "vertices": 3568,
+      "originalClips": [
+        "Move",
+        "Idle",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "M02",
+      "source": "assets/monsters/m02/M02.glb",
+      "sourceSha256": "34a16bfe2e8172749e4310cef22ae00de5bc64c1e80a0558be9234beec716033",
+      "file": "assets/monsters/death-v1/M02.glb",
+      "sha256": "df153056dc16c6c0d967198bdc66af5d8c6aabefe15996948d1d0b8eaccd159a",
+      "bytes": 86676,
+      "axis": "z",
+      "angle": 1.35,
+      "landTime": 0.62,
+      "duration": 1.2,
+      "description": "低身重心翻側，拖板接地",
+      "floor": -1.5522627638819841e-07,
+      "vertices": 1560,
+      "originalClips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "M03",
+      "source": "assets/monsters/m03/M03.glb",
+      "sourceSha256": "84bad6e9766e3c83172e119801086d34e01df746a35c8daf78333dc6fa02aca5",
+      "file": "assets/monsters/death-v1/M03.glb",
+      "sha256": "1ccd8c68e7843a05c51297044a36f512fc18146231fdff7365eacf18a9b9868d",
+      "bytes": 38728,
+      "axis": "z",
+      "angle": 0.48,
+      "landTime": 0.48,
+      "duration": 1.2,
+      "description": "滑翔失速落地，盤身傾斜",
+      "floor": -1.2605629007289565e-07,
+      "vertices": 576,
+      "originalClips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "M05",
+      "source": "assets/monsters/m05/M05.glb",
+      "sourceSha256": "b41ea7ecd3d17dc1ef9ac7224ed3d0000afaebdce89233d9d928cb60f30a2c47",
+      "file": "assets/monsters/death-v1/M05.glb",
+      "sha256": "45cdbcd1a16064ef3aa2bacfebed63d3c86fff7e610cd713704447f3dac1351b",
+      "bytes": 91144,
+      "axis": "z",
+      "angle": -1.4,
+      "landTime": 0.62,
+      "duration": 1.2,
+      "description": "摺翼失衡，側身落地",
+      "floor": 0.0,
+      "vertices": 1644,
+      "originalClips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "M06",
+      "source": "assets/monsters/m06/M06.glb",
+      "sourceSha256": "c56a4134b0a2562132dc64485cc506faf96ef44756bc40a31262d3b6144a2054",
+      "file": "assets/monsters/death-v1/M06.glb",
+      "sha256": "c1a5351656f0417ebc95f33b31ec334afab6328d480bad222efd695197acec75",
+      "bytes": 53016,
+      "axis": "z",
+      "angle": 0.92,
+      "landTime": 0.78,
+      "duration": 1.2,
+      "description": "車身向一側壓下，重落地",
+      "floor": 0.0,
+      "vertices": 858,
+      "originalClips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "M07",
+      "source": "assets/monsters/m07/M07.glb",
+      "sourceSha256": "30a3af76048e11e53d49271aabc24da4397facaf65efb865603a29a4a062dea2",
+      "file": "assets/monsters/death-v1/M07.glb",
+      "sha256": "b691de496ca78579e6e456cec97f924ac2a947015b129d154058031face4cfa8",
+      "bytes": 58476,
+      "axis": "x",
+      "angle": -1.48,
+      "landTime": 0.62,
+      "duration": 1.2,
+      "description": "裝置向後翻倒，螢幕朝斜上",
+      "floor": -7.450580596923828e-09,
+      "vertices": 1020,
+      "originalClips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "M08",
+      "source": "assets/monsters/m08/M08.glb",
+      "sourceSha256": "65a1c66eb29e908f218fdd5e75fcffb8a7fda29625c9fbe4715b809f5f0791d7",
+      "file": "assets/monsters/death-v1/M08.glb",
+      "sha256": "e3e0c4cb9328614ee3970e1be55c5642c2131b8ca0a6537e285425fff37de14e",
+      "bytes": 35772,
+      "axis": "z",
+      "angle": 1.25,
+      "landTime": 0.6,
+      "duration": 1.2,
+      "description": "懸浮中止，燈體落地翻側",
+      "floor": 0.0,
+      "vertices": 488,
+      "originalClips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "B01",
+      "source": "assets/monsters/b01/B01.glb",
+      "sourceSha256": "a72eae407be58cd80b70c2c13572adfbabb4cac86b770285d003263acdda6538",
+      "file": "assets/monsters/death-v1/B01.glb",
+      "sha256": "e09b2284dbea68160d8c8f184bdc5099a91fea2e169076e0e9e89b8bd4bae084",
+      "bytes": 117768,
+      "axis": "x",
+      "angle": 1.45,
+      "landTime": 0.84,
+      "duration": 1.2,
+      "description": "重型工頭前倒，停留後退場",
+      "floor": -6.7999539332674885e-09,
+      "vertices": 2184,
+      "originalClips": [
+        "Move",
+        "Idle",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "B02",
+      "source": "assets/monsters/b02/B02.glb",
+      "sourceSha256": "8afc475b1115830b0330c7d65f6915dfd49a38aa67a69fdfa62d14a1ee2e09db",
+      "file": "assets/monsters/death-v1/B02.glb",
+      "sha256": "482ed14e9edb92b5cb13acf435a5c876a58f101940383cc29fe6a939d5a9bee6",
+      "bytes": 75280,
+      "axis": "z",
+      "angle": -1.28,
+      "landTime": 0.88,
+      "duration": 1.2,
+      "description": "港務機失去支撐，側倒",
+      "floor": -5.1346642493399486e-08,
+      "vertices": 1296,
+      "originalClips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "B03",
+      "source": "assets/monsters/b03/B03.glb",
+      "sourceSha256": "3c4f84116eb73c4fd7497237b1d9d197074112f5e9760ffa729ca141133c26d5",
+      "file": "assets/monsters/death-v1/B03.glb",
+      "sha256": "5be912246fae5aa5085e162cd60fb6b87624929e35947755f940ad7346e4bfe3",
+      "bytes": 93656,
+      "axis": "x",
+      "angle": -1.42,
+      "landTime": 0.86,
+      "duration": 1.2,
+      "description": "塔身後傾倒下，保持整體輪廓",
+      "floor": -2.807219826594931e-07,
+      "vertices": 1626,
+      "originalClips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    },
+    {
+      "id": "B04",
+      "source": "assets/monsters/b04/B04.glb",
+      "sourceSha256": "a087580776f37a455f1929f915449c4b4e42e62ce9165121f17b22418ee0e3e4",
+      "file": "assets/monsters/death-v1/B04.glb",
+      "sha256": "e69f052afad388c5c15a5fe6e1a2cabd8bea00c9b65c5c3fb7bd54ad6217026e",
+      "bytes": 48428,
+      "axis": "z",
+      "angle": 1.38,
+      "landTime": 0.8,
+      "duration": 1.2,
+      "description": "終端身體失衡側倒",
+      "floor": -9.785230048464655e-08,
+      "vertices": 576,
+      "originalClips": [
+        "Idle",
+        "Move",
+        "Hurt"
+      ]
+    }
+  ]
+}

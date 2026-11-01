@@ -1,0 +1,4501 @@
+{
+  "date": "2026-10-28",
+  "timezone": "Asia/Hong_Kong",
+  "source_commit": "e2dd365318cda13ff11c480209445efe16f0b544",
+  "main_commit": "641c43d51601f9f3ed12a76bcf943238753c53b4",
+  "scope": "yauchai2/Game-Lab source checkout; remote branches and open PRs inspected; no deployment, branch, tag or Release deletion",
+  "tracked_files_before": 2487,
+  "deleted_files": 747,
+  "deleted_bytes": 77558349,
+  "historical_pending_rows_preserved": 90,
+  "reason_counts": {
+    "generated-review": 3,
+    "historical-review": 665,
+    "consolidated-document": 39,
+    "retired-test": 40
+  },
+  "files": [
+    {
+      "path": "dist/character-review.html",
+      "reason": "generated-review",
+      "bytes": 11257533,
+      "sha256": "b63b461075e8fa4b6d0c2214d8f49dcffb12a8dd3f26143f6b617e47ce60c86d"
+    },
+    {
+      "path": "dist/equipment-review.html",
+      "reason": "generated-review",
+      "bytes": 11508596,
+      "sha256": "3ce60f491893b54c4f55e8eec9469485592e38546dc5ab29ce63e4849588e258"
+    },
+    {
+      "path": "dist/idle-hero-review.html",
+      "reason": "generated-review",
+      "bytes": 13441419,
+      "sha256": "349ac42f8d8cc82a5af4aefbaa33d4f86135f07ed5f00f73635c999510d4093d"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-char-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 119153,
+      "sha256": "6d23c961006deead36b7bca72b0fff62ddd2e9abd28b3368a2cfcee2678e69a2"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-char-320x740.png",
+      "reason": "historical-review",
+      "bytes": 48321,
+      "sha256": "c4d56aec849216c308bd5ef8e4475b8ac069e690d7aa8e073275ba43bdaa76e3"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-char-390x844.png",
+      "reason": "historical-review",
+      "bytes": 53872,
+      "sha256": "83a20143378f8c9036ed56efadce25c54e3f0c28e442e69c32e713da6ae63a43"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-char-768x700.png",
+      "reason": "historical-review",
+      "bytes": 54731,
+      "sha256": "54a380fb46a6d15866e53260b8a6f015fe976c2cec2122a8b14d3a6690d3f3ba"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-char-844x390.png",
+      "reason": "historical-review",
+      "bytes": 31271,
+      "sha256": "2c427f233819f57e077863c80574cf9868c00d9bbf9cc87306a2428968c3f86b"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-tree-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 105829,
+      "sha256": "a2590e360e82769b2e53b38a2c535b65453c7c54eb5ad3b5eb0954d842f751d5"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-tree-320x740.png",
+      "reason": "historical-review",
+      "bytes": 42180,
+      "sha256": "10c9f01df991b738c1b7c3f8c6cf1cf2da04013d40369dd6540c1c8fc059b325"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-tree-390x844.png",
+      "reason": "historical-review",
+      "bytes": 50350,
+      "sha256": "5ded094cdf8ab95a325df15e2ef3126b5c3590328b3c1c0a186080f18d83406a"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-tree-768x700.png",
+      "reason": "historical-review",
+      "bytes": 52371,
+      "sha256": "4f339e69dcd90ae7052976842d5b9a08e4d55bb4fdfdffc93388c463e53843b4"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-tree-844x390.png",
+      "reason": "historical-review",
+      "bytes": 28769,
+      "sha256": "5e3a4ff8a7cbdcaf6cbd134aa4cdf9e029a39b41124bbffbc99d8a00ed67ae8a"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-warehouse-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 109648,
+      "sha256": "a12c249a01649ed924d9ffe2387222a2cd2f78ecf810367ca312d33492996c17"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-warehouse-320x740.png",
+      "reason": "historical-review",
+      "bytes": 37559,
+      "sha256": "af65efb9981b29710d4dda541800e84f35717a71875df53ae5505d882552846f"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-warehouse-390x844.png",
+      "reason": "historical-review",
+      "bytes": 41698,
+      "sha256": "df5320a114916658cf76134d791db1c4cfbd2ede67cd5c4e5952c3021f4942f5"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-warehouse-768x700.png",
+      "reason": "historical-review",
+      "bytes": 36412,
+      "sha256": "1a4e2855e11aee372afb6716c08ea3485e33cbee7826d7b420d3aa95a3a38c0d"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/after-warehouse-844x390.png",
+      "reason": "historical-review",
+      "bytes": 27123,
+      "sha256": "b08a2a7664627f98770017460cc0a470b24e9ab7458a8435fb919fdfe724683f"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/artifact.json",
+      "reason": "historical-review",
+      "bytes": 209,
+      "sha256": "02ba65aaf41c4ae42ea68af5123aba990959209af95a1c00302fe9672a0639fe"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/before-char-1440.png",
+      "reason": "historical-review",
+      "bytes": 123705,
+      "sha256": "1757d84ac67e189f461b31529564927eca82f68684dd78d2b6ce0426c66ce74f"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/before-char-390.png",
+      "reason": "historical-review",
+      "bytes": 68455,
+      "sha256": "1b1f2ad548d71dbe21233cd67e1d8d072446a12c1dd9a83c50ca5b0a8a5bd4bd"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/before-tree-1440.png",
+      "reason": "historical-review",
+      "bytes": 106347,
+      "sha256": "aa30cebda239b076300917a5c15d7f83476862690b488039ecc64646614d9438"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/before-tree-390.png",
+      "reason": "historical-review",
+      "bytes": 57038,
+      "sha256": "5471cadbf6c10374595760c4ec0b16061691750643b0fb1914f05d93b93890a4"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/before-warehouse-1440.png",
+      "reason": "historical-review",
+      "bytes": 130642,
+      "sha256": "ce9f6d6662818abfa47b5d1130e64fc9480ef175f2fe099d590ff904ed60e2ac"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/before-warehouse-390.png",
+      "reason": "historical-review",
+      "bytes": 59577,
+      "sha256": "b75f980c9183416b51813a83ce08aec31e71a943185ba2abe0191a696237d9d3"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1019,
+      "sha256": "f739784f896a78baa9998d5eb80e4928376c36daf787a4039dee91cd39bcdc05"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "ea0c6e050107ca69468b44da732a02bb3179337a679b84cc9050dcbf2b1cf381"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-char-1440.png",
+      "reason": "historical-review",
+      "bytes": 119470,
+      "sha256": "fd1e8411c586824c01497f62bff69c05d1ef720b84d74f495a437b9d840406ea"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-char-320.png",
+      "reason": "historical-review",
+      "bytes": 35596,
+      "sha256": "68a6a8a92ff80b523073ee1badb57656b2e6991cc4db315e6bce0f0376abb855"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-char-390.png",
+      "reason": "historical-review",
+      "bytes": 53659,
+      "sha256": "00ddb5fe6bb1dbe3b38de032fc3b49434d1349bfeaad1dbd237efc989bf7d858"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-comparison-1440.png",
+      "reason": "historical-review",
+      "bytes": 120930,
+      "sha256": "2f8acf96e40691a0202df857b98ac4038ee50740e35fed9f016286523f76a2a8"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-comparison-320.png",
+      "reason": "historical-review",
+      "bytes": 32949,
+      "sha256": "365fe174a04b13ef0c9f4678bec00474fa6fc7005006a5af8022281ee5b6e9cb"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-comparison-390.png",
+      "reason": "historical-review",
+      "bytes": 44592,
+      "sha256": "f809bb7cca2e9d6425a3aa861f0042d8bfe51b40183827e280e10e5a0a23d8c9"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-grid-1440.png",
+      "reason": "historical-review",
+      "bytes": 120622,
+      "sha256": "1cd6ed4a5991adcab63466321b4e2f716f1d0930565be93ea48f626e0fc28a5a"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-grid-320.png",
+      "reason": "historical-review",
+      "bytes": 39521,
+      "sha256": "f0d5aa2dfea91ea77c406b6c665df01802a74a49457899a6e4f4d1cb69ecdbd2"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-grid-390.png",
+      "reason": "historical-review",
+      "bytes": 46976,
+      "sha256": "58016d7f701218689cd657ad31bdc4f8040ac83c2c6ddd74faa66c6d21656526"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-tree-1440.png",
+      "reason": "historical-review",
+      "bytes": 119517,
+      "sha256": "3ac252677eed396b1314dc4a5a6f53352e4ac93b84c5ea90d16f72f1052cba58"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-tree-320.png",
+      "reason": "historical-review",
+      "bytes": 44966,
+      "sha256": "de90021a6f53f4cb91ca126f0ae5a3b3f13434f75cb18f1d51fbe75ede0e14e7"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-tree-390.png",
+      "reason": "historical-review",
+      "bytes": 54673,
+      "sha256": "7d20b07a7472c104e04f3205ac5662e68eb17ff834d7e15cc4beb78b2093266e"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-warehouse-1440.png",
+      "reason": "historical-review",
+      "bytes": 109476,
+      "sha256": "b5a6cb68438cd52da70677d2c7cc265616d1b81e59a6c887dd1b42d3a3412245"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-warehouse-320.png",
+      "reason": "historical-review",
+      "bytes": 36733,
+      "sha256": "ee480a278c72924e45429519dc9bc652891b281c9b17ae967d95a85c17c27908"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/final-warehouse-390.png",
+      "reason": "historical-review",
+      "bytes": 43225,
+      "sha256": "184e17ce95e2be3dd4a4ccd2fcae57bf940bb7c211c3e0b94ee2ac7276563d1d"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/font-check.txt",
+      "reason": "historical-review",
+      "bytes": 96,
+      "sha256": "5e6a1fb2178d07a4ccf4cdb24387d6175c039254ac8cb826e1f8812a9e91966c"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/plan.md",
+      "reason": "historical-review",
+      "bytes": 6576,
+      "sha256": "75e662177aa9cb5a8e57b9596822d54e4f804b9a31a6814f5c1d153c8b4091fd"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/review.md",
+      "reason": "historical-review",
+      "bytes": 4403,
+      "sha256": "4abacecf909569aca84bb21eaee643685ce3b16081947677fb76403102ca3eed"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 16169,
+      "sha256": "cee188a8b82f75b05362cf3fecbe775766003af05ca9504f9893e0beaf94100c"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 970,
+      "sha256": "d34ef18be53f9ebb3e2b26654c5c321205924b98782f800940f52716f01c5f92"
+    },
+    {
+      "path": "docs/arpg-ui-2026-10-24/syntax-checks.json",
+      "reason": "historical-review",
+      "bytes": 1023,
+      "sha256": "ca412418ce8279e422b8b4ea1d335d07ca55d7e67440a5e15113301fc3b38808"
+    },
+    {
+      "path": "docs/art-direction-and-roadmap.md",
+      "reason": "consolidated-document",
+      "bytes": 11846,
+      "sha256": "345ae13d6cb8ced8b3222ae466741a0f187d9796337f3ecbb5e804cd6dd311a7"
+    },
+    {
+      "path": "docs/art-review.md",
+      "reason": "consolidated-document",
+      "bytes": 3057,
+      "sha256": "27e60c8a30b8ebe4eeb6ba9582f2b7397ccf61a6c8612f1ff0f335bff024b606"
+    },
+    {
+      "path": "docs/backup-check-2026-10-22.md",
+      "reason": "consolidated-document",
+      "bytes": 2060,
+      "sha256": "937fdeab6fa8bd785c99517cef8d26cb0e5c5e661e72e468c90a40082f62c6ae"
+    },
+    {
+      "path": "docs/bright-y2k-theme-2026-10-23.md",
+      "reason": "consolidated-document",
+      "bytes": 3321,
+      "sha256": "fae230b9abff2ece3615876eb396888bdd2edbdc0e17d936577c1182935a8401"
+    },
+    {
+      "path": "docs/build-lab-balance-notes.md",
+      "reason": "consolidated-document",
+      "bytes": 2216,
+      "sha256": "8e6fd3a7618179101652f394d2e90bb3aa41fdf163535201dceae9ee339b017e"
+    },
+    {
+      "path": "docs/build-lab-for-idle-hero.md",
+      "reason": "consolidated-document",
+      "bytes": 4703,
+      "sha256": "46f9ef13f229f52de5180540ef91323ec511a3626bc828027d2b02c9f14f8662"
+    },
+    {
+      "path": "docs/buildcraft-creative-directions-2026-10-22.md",
+      "reason": "consolidated-document",
+      "bytes": 5277,
+      "sha256": "054c645d981f879c0feb719fa9bc6327e5923afb04ee96cfeea9cd191a25d25e"
+    },
+    {
+      "path": "docs/character-art-direction-plan-2026-10-23.md",
+      "reason": "consolidated-document",
+      "bytes": 12741,
+      "sha256": "ed6c0561485168b63a3e492addb3247540a13501e4ba0aa9f3dfb84b1a381b94"
+    },
+    {
+      "path": "docs/character-preview-idles-2026-10-23.md",
+      "reason": "consolidated-document",
+      "bytes": 3162,
+      "sha256": "5513971440216994a176cc900607531e50f7aa23e9405add08cd9bf5d4c97bd3"
+    },
+    {
+      "path": "docs/character-stage-2026-10-23.md",
+      "reason": "consolidated-document",
+      "bytes": 10855,
+      "sha256": "84c766c59f22c4ffa670339a42d4a774533d2ac9c20d6f645257a8fbbe681a5e"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/01-overview-desktop.png",
+      "reason": "historical-review",
+      "bytes": 127362,
+      "sha256": "c6861de6856f9eb93aa183ebe95f56e4a3cdc668c46460e771a1289251f2511c"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/02-beep.png",
+      "reason": "historical-review",
+      "bytes": 125191,
+      "sha256": "430eb327148c24d593d81de7daaa187f7f29be5b43dd124f7e0b5280a8a8cbfd"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/02-frost.png",
+      "reason": "historical-review",
+      "bytes": 139252,
+      "sha256": "ecd747da298bca554f9cb08998679dbf56b53d09ac8e30b9da8b88109be8b242"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/02-street.png",
+      "reason": "historical-review",
+      "bytes": 129964,
+      "sha256": "d63ca9097ff53c6ee512d8fc3945a9df01a6b98937a38f55d5d2185999f551db"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/02-volt.png",
+      "reason": "historical-review",
+      "bytes": 127576,
+      "sha256": "ec01b784cab322dee17ea8a42f34842f8b9ce1cfac818ee5c33acf32af9e929a"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/03-wardrobe-desktop.png",
+      "reason": "historical-review",
+      "bytes": 133517,
+      "sha256": "dfe56d1b23934f96c0484b8355d9b1df89b9f98d20191fbdaf968c0374ad2307"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-char-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 130520,
+      "sha256": "b33c21d5469b7ad31b45045d8348be7244cb72d64f0bcc321ead62ed128b58e7"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-char-320x740.png",
+      "reason": "historical-review",
+      "bytes": 53335,
+      "sha256": "7169e29a59a115aa4352ec6344699758682622dd93550e36925914bd182d2659"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-char-390x844.png",
+      "reason": "historical-review",
+      "bytes": 64448,
+      "sha256": "8c19fc8d993c6bc88bc98cc3b86ee9620571b45711d1bcf462496df229c1c252"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-char-768x700.png",
+      "reason": "historical-review",
+      "bytes": 51174,
+      "sha256": "39d34974f1a1f95adb19e36e82c4ef70b5bdb6cb67c6fe13ad803e8713b55ee2"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-char-844x390.png",
+      "reason": "historical-review",
+      "bytes": 31739,
+      "sha256": "cefde51c32df8d9e3f353cbd5f636c53c8b540a2eab4f810c1d58e6888c4c3ba"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-dress-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 133685,
+      "sha256": "1552a93674b2bd8d386609a83cc99a323d88e33f9d15fccc43d889a22e48eadd"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-dress-320x740.png",
+      "reason": "historical-review",
+      "bytes": 54070,
+      "sha256": "3fd9e501309dbaffb42c77cc61f2744268037b39a3a6c64c07ced337d9da3a8b"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-dress-390x844.png",
+      "reason": "historical-review",
+      "bytes": 64579,
+      "sha256": "d57e7cdec3bd372c102b495d4a82debcbf4a0c2802d409993905ea5c575f1db0"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-dress-768x700.png",
+      "reason": "historical-review",
+      "bytes": 51433,
+      "sha256": "8093ff8ca1aa60d6fc086a34e5eb9679ec9ead1e2cb3bddb6f660fc9c1abd21e"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/04-dress-844x390.png",
+      "reason": "historical-review",
+      "bytes": 32527,
+      "sha256": "8059492968422d066940390f40a1e41df86c7acd59c350687ac68210d2b6b35a"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/artifact-sha256.json",
+      "reason": "historical-review",
+      "bytes": 158,
+      "sha256": "c940b8094b84439fdb02e83f745e150e3b58f644a36879d2e6a206f60d368666"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 835,
+      "sha256": "c9d7b0764170e30c341d97840fc5f89c0ee42a61aa1a32786dcd753abd6e8e41"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "a22ab33667e4c84c8c0aba459aeb34543cff2058c2c2d8ee77a88053fb19a3bd"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/font-coverage.json",
+      "reason": "historical-review",
+      "bytes": 75,
+      "sha256": "cb2c4a76986fa720d75485d0768f873e45fc68483baeb0c17a42e4f628091fbd"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 926,
+      "sha256": "45632e6b2eb9851f4446cc891ad78cc448d2873d7e9e49da63406a0e30a38a6c"
+    },
+    {
+      "path": "docs/character-stage-resume-2026-10-23/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 978,
+      "sha256": "41e85a7fec79ef61ef0478abea444589324aac5ab5c06201acd495ad3912dc5d"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/balance.json",
+      "reason": "historical-review",
+      "bytes": 7153,
+      "sha256": "aa9376a7fa9e15c898704918285609afbebe62cbd1790436157b2c58c8d2b1ea"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/board-1440.png",
+      "reason": "historical-review",
+      "bytes": 94824,
+      "sha256": "b20a404251cae640d360c271ccf92a9cf026de88a8226fe53a7154ef241ccf10"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/board-320-zoom.png",
+      "reason": "historical-review",
+      "bytes": 31953,
+      "sha256": "0a4a3a74b0b4936b71358f43aff0d5ce0dda8d5e51841a652248b42e3d8a63eb"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/board-320.png",
+      "reason": "historical-review",
+      "bytes": 39777,
+      "sha256": "1081bb3d92f10b8cff67a44846124c3698d1a7294ce0df085621d873fa17ff9f"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/board-844.png",
+      "reason": "historical-review",
+      "bytes": 29077,
+      "sha256": "dba6c35bc0444e727ac46f82c6b9c3bdb66c1fc6caa156ae9dc5f2a130b37ac9"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 708,
+      "sha256": "730f26dee6f2f409fc6cc2575b8b3e6255639a20f204480b75424c6a4edd2ad8"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "1d43cf42082ed8b455f2d4e8cd393ed0f43ae78e5061d1b61aebc0f5e2e5cdc3"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/mobile-character.png",
+      "reason": "historical-review",
+      "bytes": 71569,
+      "sha256": "ceecb4f46330ef9a1bc50ce86a2a78cf25d90342c928b4f380b1c1a7caffa699"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/mobile-class-select.png",
+      "reason": "historical-review",
+      "bytes": 63968,
+      "sha256": "08245b906e7aad28f0ca3eb56c480aec7444b97facaf2f4db137245331c3d933"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/mobile-connected.png",
+      "reason": "historical-review",
+      "bytes": 42243,
+      "sha256": "a3f3b86591a5bf117fa47eb817c343b45a625a968eea938690f8e58611d11caa"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/plan.md",
+      "reason": "historical-review",
+      "bytes": 3973,
+      "sha256": "2f7adb624d019993517230ad3b0fb6dbb748ae2b25933191902a01e3d906b9a7"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/review.md",
+      "reason": "historical-review",
+      "bytes": 6914,
+      "sha256": "d2ea8550aa1c8fadd8754c1d8f3ab413019b8edc807d37d04428eec0ea706d44"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 16748,
+      "sha256": "41690407cd80e2c6f79742d424370261853b6b62b4684b4bb683badf642a3eb6"
+    },
+    {
+      "path": "docs/classes-circuits-2026-10-24/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 970,
+      "sha256": "e346499e53d1c15345d9573285dd28cfaf982e2475a5a4ef7da0f40b109271cd"
+    },
+    {
+      "path": "docs/collaboration-baseline-2026-10-23.md",
+      "reason": "consolidated-document",
+      "bytes": 2595,
+      "sha256": "41de10c80f37a8758078f65881a1b00e416edc741da7ebc867831ca4fe1b9237"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/artifact.json",
+      "reason": "historical-review",
+      "bytes": 220,
+      "sha256": "73e76228199ec76dfdd3030982f9a4095e26d0b1156adb539de2d5e4c85014e4"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/ascensions.png",
+      "reason": "historical-review",
+      "bytes": 78404,
+      "sha256": "4e418e4817630ee357843f14a59099e2b5b0ef6e94ea40b549d23a9a59eb69eb"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1096,
+      "sha256": "c16b905617badf3916dfc68d42329cb58ecb37cc16465528bac9be8fb9b61a0c"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "69b00eb56de6c0a55f0c26f8ab3762c7d651a5e31e6bd330c3aed644176aa69b"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/corruption.png",
+      "reason": "historical-review",
+      "bytes": 64288,
+      "sha256": "16fa1403cdd616e25431e1de536c2d63c67052fd163888c1658229b043eafb4f"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/death-summary.png",
+      "reason": "historical-review",
+      "bytes": 56825,
+      "sha256": "b32b17b650e94160d24e131ab2deee5955e09693be110aae5a512cf13f7ac3af"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/death.png",
+      "reason": "historical-review",
+      "bytes": 51632,
+      "sha256": "349a49fb9c0e6144c9c881f5a59eb802f7340bc1e788b4d4257cf30c35e16b4e"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/feedback-mocked.png",
+      "reason": "historical-review",
+      "bytes": 53165,
+      "sha256": "b768afc977406dadd1398a18a57acff8b578f8c6d75931ef84d948dc22e8d116"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/feedback-service.json",
+      "reason": "historical-review",
+      "bytes": 124,
+      "sha256": "662109286f744f7f60af9d33e8e236d0e19d6e1bb8972006b28f3802da6d832c"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/feedback.png",
+      "reason": "historical-review",
+      "bytes": 56948,
+      "sha256": "774990418f7a8f9932ec80edeaa89eaa45ec2e457d1f9caef2fe127f271c7050"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/jobs.png",
+      "reason": "historical-review",
+      "bytes": 77507,
+      "sha256": "02d47a0b7a5d6a0067fc0fd834554109c017229f103ce48a0d2779aba047f3e1"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/bag.png",
+      "reason": "historical-review",
+      "bytes": 60058,
+      "sha256": "1ab89b90355a8adbf341cb9714f07ee17bd124c1826ff91daf222060106bc9d0"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1488,
+      "sha256": "e87414e7a3b451c198785114d84c316af24aa4684653323bbf78b14012abc3f8"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/cleanup.png",
+      "reason": "historical-review",
+      "bytes": 60819,
+      "sha256": "a56d79f0be6fee7cfd1f4590c55ab37763122c9c10056100c9cadae06d9616a2"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/monsters.png",
+      "reason": "historical-review",
+      "bytes": 56917,
+      "sha256": "018c7cb7a6bf2f8988e1be1ed98ef7039b83f5052ecfd8468265ce4c60440e2d"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/phone.png",
+      "reason": "historical-review",
+      "bytes": 203165,
+      "sha256": "3dab7c21c47472314c67773236d821b451df7a7f41b8222855a93deaa39f7f50"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/pixel-0.png",
+      "reason": "historical-review",
+      "bytes": 2211,
+      "sha256": "b9663fb28603b984c71e7cb012c21aa0958508b27b995ed4e16ee4b506a4c03a"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/pixel-1.png",
+      "reason": "historical-review",
+      "bytes": 3023,
+      "sha256": "b936a971ef3c7ebc15858bf8b38cd6353eacf28b517ecaf8e8838cd4e50bfa0d"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/pixel-2.png",
+      "reason": "historical-review",
+      "bytes": 3171,
+      "sha256": "06a58736161877fd62241dc5d1d022b2c72b65165c167c22232268ed9e73ea61"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/pixel-3.png",
+      "reason": "historical-review",
+      "bytes": 3331,
+      "sha256": "cff83374d007ae3b64042f61c248a5d35c315085a01e811ee897cf7d7e49b26d"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/regions.png",
+      "reason": "historical-review",
+      "bytes": 58767,
+      "sha256": "e64b95b497a586abea47323527e63f7a57cec05502d4dc5cc90b748ec279d55b"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/story-0.png",
+      "reason": "historical-review",
+      "bytes": 29739,
+      "sha256": "068d88a605c295addb0314ba378323274f469ae8eb47595490d95f21204021a7"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/story-1.png",
+      "reason": "historical-review",
+      "bytes": 31950,
+      "sha256": "47f8358c5288f54f2c4d28e33515de9ed2cbad9d63f2b371495dbde9c4847552"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/loot-regression/story-2.png",
+      "reason": "historical-review",
+      "bytes": 34937,
+      "sha256": "b9695da88d3863ba80300817da9c1ff55a2a39131a911ff6cb387e33946ec9fa"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/music-summons.png",
+      "reason": "historical-review",
+      "bytes": 341367,
+      "sha256": "64d1276df4b8815a5584218ca553589f4190fff3a6e4cf1e7bca0c3018413506"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/plan.md",
+      "reason": "historical-review",
+      "bytes": 1769,
+      "sha256": "91e2e5bc719d190f625504a265eeeeca0ab66f5c8773ad782d31965ff217b5aa"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 968,
+      "sha256": "985b954748f88a179f48e3d5fbabe397476cad35ac54a1819f48119c05b7fbab"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1356,
+      "sha256": "4e14dd962d54134353d4493347ea1edf42f47a7e850e50976136e2118a952a77"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/mobile-ascension.png",
+      "reason": "historical-review",
+      "bytes": 70870,
+      "sha256": "a3b172d8cdbef979b20f7e2421b0f114d272faacf8f78abb1a24a6a6887e3e64"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/mobile-character.png",
+      "reason": "historical-review",
+      "bytes": 66831,
+      "sha256": "ea84e2997c83726e4a55c742db946c6f24d77d6e7bf1dc2bfd01a921428f7a87"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/portrait-beep.png",
+      "reason": "historical-review",
+      "bytes": 65951,
+      "sha256": "6cf3f4e429ad7966f435f083cc991a5dd7cdfa148eea54c8f4b90f8d93a52a45"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/portrait-frost.png",
+      "reason": "historical-review",
+      "bytes": 67200,
+      "sha256": "99d205540278f7f233e1657b7b9fba7bd8ec2f7ce484b2988ccbbce5468380cb"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/portrait-street.png",
+      "reason": "historical-review",
+      "bytes": 66676,
+      "sha256": "43a6a6632a6dcae6b82d849cb8d1af61b41272fddf3a709ae5ad8ae6193705a5"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/portrait-volt.png",
+      "reason": "historical-review",
+      "bytes": 68326,
+      "sha256": "d2b34e838bdc95f4eb5dff2db8dc2b8c358db8fc1036c5f75231f6d9b46bbc8d"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/talents-1440.png",
+      "reason": "historical-review",
+      "bytes": 160449,
+      "sha256": "d7518665c4308a51a4238678fd697dba9302c166b0452a90c3d0644ebc01fb0f"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/talents-320.png",
+      "reason": "historical-review",
+      "bytes": 52917,
+      "sha256": "0fe38351fbba64164359756e74fc60906b5d21cb98e52e35a5493cd5c423f80d"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/regression/talents-844.png",
+      "reason": "historical-review",
+      "bytes": 54921,
+      "sha256": "378bff3c45cd5afd3c54851560c634bd04122c1085f2a28333a6ed34c70f9f7f"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/review.md",
+      "reason": "historical-review",
+      "bytes": 7053,
+      "sha256": "5adb7f3e5c337fb4a698b0b0a2581bb3d086f974e7ff1fb8fd797c3a08bec64a"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/skills-1440.png",
+      "reason": "historical-review",
+      "bytes": 101099,
+      "sha256": "19ee638bac939d1de5e34baeb4191839954c707ae8e3449e3a6086eed473ac37"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/skills-320.png",
+      "reason": "historical-review",
+      "bytes": 47782,
+      "sha256": "edcac9f7885d195a68cd6206d53459936af8d7c0b3a20bdfa76201aeb93582a2"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/skills-844.png",
+      "reason": "historical-review",
+      "bytes": 34976,
+      "sha256": "c84d2142abeda9268367615670af57411303d70c3737a148d1cdafca8d5b842f"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/skills.png",
+      "reason": "historical-review",
+      "bytes": 60312,
+      "sha256": "2fbe50d176550a92e0b461261c2e97f2f68f6ec6db41ef1549e6815fc1266dc5"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 18143,
+      "sha256": "2e00135ba8b674d6d7efe6712d62bd7edde6ee7c45cea65b12a8a297a2e9d5d5"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/spectacle.png",
+      "reason": "historical-review",
+      "bytes": 309833,
+      "sha256": "25997c9eb8e7c5a6a65349ca1622e64ad09252d43e2724469d3c0a67e0825877"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/story-0.png",
+      "reason": "historical-review",
+      "bytes": 29739,
+      "sha256": "068d88a605c295addb0314ba378323274f469ae8eb47595490d95f21204021a7"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/story-1.png",
+      "reason": "historical-review",
+      "bytes": 32031,
+      "sha256": "9f3346f57d9bcb712b53038bb3ef0630495079c6ea0edcc9e059b7f62abf527f"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/story-2.png",
+      "reason": "historical-review",
+      "bytes": 35059,
+      "sha256": "e802dbf9c5aedb9755b3d99bfbe45541143227e7114fd1dc83fbda64bc70a42e"
+    },
+    {
+      "path": "docs/combat-feedback-2026-10-24/talent-zoom.png",
+      "reason": "historical-review",
+      "bytes": 51392,
+      "sha256": "8bf757f8c8848d10daf829f46b9f1e4fb7f42ec3f8c87fde59c762595078101c"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0.md",
+      "reason": "consolidated-document",
+      "bytes": 5361,
+      "sha256": "4904bf635a58541c8c456eb83b5f81c5320fd934ab34f19375ac34c1f7238766"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 2235,
+      "sha256": "f37ddf1eb2ce2aae9d84bde9928580253604065ba4ee0e8552d73a8ccf38d4fb"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0/design-lint.txt",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0/perf-after.json",
+      "reason": "historical-review",
+      "bytes": 693,
+      "sha256": "5be031fe58412e5dfd2f68ca8c6445fc9a87523f51dfe94add80ce368c162afa"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0/perf-before.json",
+      "reason": "historical-review",
+      "bytes": 579,
+      "sha256": "af7c6b7493e424f2aedb1696251af616a72a7e04700c6ef6469c6d761754f441"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0/server-room.png",
+      "reason": "historical-review",
+      "bytes": 231322,
+      "sha256": "ba428762d2ab599ebf455c7e320253f0da018abd1f7128dfec0870e9a1d560ff"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0/signal-station.png",
+      "reason": "historical-review",
+      "bytes": 232711,
+      "sha256": "0dfe7f18893967ab08b7bd94a63a40940dc0551249f89fc90cb1b517ac3eea2f"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 216,
+      "sha256": "a3a23ee1f9725f61819541256269e1a4e0d124befcfb26888603dc8d31e19228"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0/talents-mobile.png",
+      "reason": "historical-review",
+      "bytes": 92489,
+      "sha256": "e848dfccf6e87362572d4ccf088242fa5f633201fdc8512fe9ced3fc88b0aba0"
+    },
+    {
+      "path": "docs/content-expansion-0.27.0/warehouse-mobile.png",
+      "reason": "historical-review",
+      "bytes": 72092,
+      "sha256": "017d62a94210b12a282d4b3d2c33b4a47003923e7d9350861921045475c15ca8"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/artifact.json",
+      "reason": "historical-review",
+      "bytes": 176,
+      "sha256": "bb182ab15900b7b1ef3c78467a14250a0a7442309abde899416a13f66fb3de6a"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/before-craft-1440.png",
+      "reason": "historical-review",
+      "bytes": 113821,
+      "sha256": "dcd908aea196ca88908de486c343e6497ecc1a73c707ec8b39af6c91586541fa"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/before-craft-390.png",
+      "reason": "historical-review",
+      "bytes": 55752,
+      "sha256": "974166cd9c8108ea22fdf8fc590ac742dd68dcc11d4a811b09439388be314c54"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/before-dress-1440.png",
+      "reason": "historical-review",
+      "bytes": 131376,
+      "sha256": "81fa8aa02fd86fdc3c788bbb7a66a0b4044e48534cc3714ab0fb5c20f584142d"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/before-dress-390.png",
+      "reason": "historical-review",
+      "bytes": 77968,
+      "sha256": "2d6abf008bfa4c927a34fde4e7d405a0b9687d35848357f43174afdc0a98f6c3"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/before-menu-1440.png",
+      "reason": "historical-review",
+      "bytes": 98786,
+      "sha256": "671167910de843c3b695c5a32b22250061138cc5466930278a1f79ad9eb396b9"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/before-menu-390.png",
+      "reason": "historical-review",
+      "bytes": 52618,
+      "sha256": "7f3143cdb42ce379177212a08cf1398eb772c5b22729cd543811491217a4232a"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/before-skills-1440.png",
+      "reason": "historical-review",
+      "bytes": 128498,
+      "sha256": "2b119e516704c51b3ed74391013d045d45d2db90958f46026f3bb9008f764827"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/before-skills-390.png",
+      "reason": "historical-review",
+      "bytes": 82027,
+      "sha256": "bbc207629e50d19e2fd055daba568439750d2959139a39f6999dcc90cab3df88"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1139,
+      "sha256": "5bb4f2c4ffcd881ab73f173f22739ce03974763933057b844c95bbcdf6220b17"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "8f75e2c9579299c51411eaeb57a6e51f1d5ba585a12571a9eb567c8ed4cfe0ba"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/drag-results.json",
+      "reason": "historical-review",
+      "bytes": 116,
+      "sha256": "fa04544d6a5224fe50f2664bdb66924462f5dd856ba07fc3bd90201e1d387a55"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-cosmetics-grid.png",
+      "reason": "historical-review",
+      "bytes": 9817,
+      "sha256": "9d51146e087e2d40f83e82444065f9a932d23d465fab5c588056b4b172121a97"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-craft-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 128360,
+      "sha256": "3e4333911ff32bf8cf6ce5af4032d25ebe953ca51cdeb1987501ef3f8847ac3b"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-craft-320x740.png",
+      "reason": "historical-review",
+      "bytes": 46021,
+      "sha256": "79a2c3d7baa880db3b6532549e68ffb059e77cb3172d6e1b9e0aaaf78b871076"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-craft-390x844.png",
+      "reason": "historical-review",
+      "bytes": 55954,
+      "sha256": "807f7f6843f22e6265c8f0258175ed137eadd84370d7d394ce8d58f31dd08b4e"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-craft-768x700.png",
+      "reason": "historical-review",
+      "bytes": 50334,
+      "sha256": "5bc0c3adb9c9a8628f3cd4e6655f37e121842cb6188792d145500f0b88ee0f69"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-craft-844x390.png",
+      "reason": "historical-review",
+      "bytes": 30653,
+      "sha256": "f00e68df2b20586921de9908bc27ce6f1543e7996ee33fd68380d80f1cd45ea6"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-craft-operation-390.png",
+      "reason": "historical-review",
+      "bytes": 37233,
+      "sha256": "eac95e1bd8a4618486b2ed2170069c7d6bdfe48b9b0e837b406b3ff9728dbb0b"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-menu-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 117670,
+      "sha256": "ca1ab10b3e9e17efc9e04d4b8ae3e94e71d0b4049fc2c48b88e8a01741fa97a3"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-menu-320x740.png",
+      "reason": "historical-review",
+      "bytes": 45327,
+      "sha256": "db44c1ee0aefb1c775d886ccedc3a41cac773b5c9f41f65045d313aac8066989"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-menu-390x844.png",
+      "reason": "historical-review",
+      "bytes": 49694,
+      "sha256": "1c3570510a7e7fafd788e91d2e2f2a3b4bc5b241903eea376bf8204604f2fec3"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-menu-768x700.png",
+      "reason": "historical-review",
+      "bytes": 51513,
+      "sha256": "70e5f450377b3efd18b16885895deca440196b935f217d6f6894a330d3254388"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-menu-844x390.png",
+      "reason": "historical-review",
+      "bytes": 30362,
+      "sha256": "3ea73cf64b3bfc912f24b24111bdb4b7013e4fdd3f45de2602b4b34dc94c4506"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-settings-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 123492,
+      "sha256": "025822638345f91bec83209e7edeb90183cf6fb534dd0bebb78b741474b6fe83"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-settings-320x740.png",
+      "reason": "historical-review",
+      "bytes": 46332,
+      "sha256": "80b439dda3491ae6b5422f0f86f8153aa181eb594a5b967941bb514161bbc460"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-settings-390x844.png",
+      "reason": "historical-review",
+      "bytes": 51149,
+      "sha256": "a1a98ea875810b9d4405ae55f073af3b7971db3b87974957e25407955750a7e1"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-settings-768x700.png",
+      "reason": "historical-review",
+      "bytes": 46993,
+      "sha256": "11ac1416d2f1299b83c1274e619d81b3c3b422ebb6b2c6c400954c3fb290c1aa"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-settings-844x390.png",
+      "reason": "historical-review",
+      "bytes": 30228,
+      "sha256": "582a4881a395f93e637ec510252240428077345a713c7fc2edc7e6ba8803e08e"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-skills-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 122450,
+      "sha256": "043971735b566c6fd8285e3bcd4b35c3715a47db2ee52f73c984d5c35b826561"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-skills-320x740.png",
+      "reason": "historical-review",
+      "bytes": 45817,
+      "sha256": "caaf089de4a0c5c404e782be12e71530f3d198a130e8fa362e7675067a39bfe0"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-skills-390x844.png",
+      "reason": "historical-review",
+      "bytes": 55171,
+      "sha256": "ee9a40a39c857aa12a6017f0dd47943a0d81be342f38b4ca03249e7d266d16f9"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-skills-768x700.png",
+      "reason": "historical-review",
+      "bytes": 43877,
+      "sha256": "ccf967da824747bef776ce5e8981932e1dc8516ff00a22803e344667ba559396"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/final-skills-844x390.png",
+      "reason": "historical-review",
+      "bytes": 31277,
+      "sha256": "8a3e6981d64f1f659b4acb1fc7439de450e24f15c59da5d480f4aa014a2145e3"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/font-check.txt",
+      "reason": "historical-review",
+      "bytes": 96,
+      "sha256": "185bcee5c82786595f2c189d7d77d4384a121f19f66c8c66ad99c4699760ea95"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/plan.md",
+      "reason": "historical-review",
+      "bytes": 2878,
+      "sha256": "16db36dabd23ea9ebf916e815757b5dcff5d799992b6afff4a96c9465e6c9965"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/review.md",
+      "reason": "historical-review",
+      "bytes": 4169,
+      "sha256": "d59e2eb99db319e373b4acff96bc48079d994f036cd71da41cb098277628fa2d"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 16169,
+      "sha256": "8a3689871409e186e1f5ebc525cbf6ced2763cac0b1e41019a4fe83274ed46f1"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 972,
+      "sha256": "ad4ad4b1253eb3af6911a4b7934d9ad63235ab3425e93d6559e330aac9d3e46b"
+    },
+    {
+      "path": "docs/device-ui-2026-10-24/syntax-checks.json",
+      "reason": "historical-review",
+      "bytes": 1099,
+      "sha256": "22eedd8efe3eb4f50ca727117de95e0262f3dc7dec2697b0b71b49c6892266b4"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/artifact.json",
+      "reason": "historical-review",
+      "bytes": 176,
+      "sha256": "fceabdeb7be840e29078a097ae21bb4247ae701afb7242da9115cf52fe54e64c"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1122,
+      "sha256": "606db19d550d99dbaf78e23b5382d12b56bc51171dcf2b3fd9957d5baa5b221d"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/build-check.txt",
+      "reason": "historical-review",
+      "bytes": 294,
+      "sha256": "7823eb3dc9bc2aba67d31021c7d21420a843bd2e908b739a0a60f370ef25294c"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "4d3108e4dd598c4e4157c5224e8b1277433b0f17ce45f8bd734fe11e267e2a69"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-char-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 119329,
+      "sha256": "21681406d64a1502fc2bcd83c2b12fdb1af2700e1323c3a3a6ff9b2c1da5c13a"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-char-320x740.png",
+      "reason": "historical-review",
+      "bytes": 47488,
+      "sha256": "6722383ac0e8e95b09a6e65c11f3dd60d964a7734a111666e21ef2ade49bd5a9"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-char-390x844.png",
+      "reason": "historical-review",
+      "bytes": 53206,
+      "sha256": "d418c7a999f2b8d8a84594ff39c8641dc56440dd5d97240b2d5ec45f52fd4cb1"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-char-768x700.png",
+      "reason": "historical-review",
+      "bytes": 54226,
+      "sha256": "259614203b6737a59b788f715ae91df077332c1024e6ffd0fc37c42f6ac0f316"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-char-844x390.png",
+      "reason": "historical-review",
+      "bytes": 31245,
+      "sha256": "165798b9fd7ec83f153dcacfc22422faf91d50ed22ff62e7d85bb2859be71cff"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-intro-select-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 63199,
+      "sha256": "27a82ca19fc5fb1d3f2fc1cc9ec63a344e636f9278daa2b0abcb9297157cb12a"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-intro-select-320x740.png",
+      "reason": "historical-review",
+      "bytes": 48066,
+      "sha256": "3eb7ac3eda56156ca6c611c1534285d4cf78f600a88e6da9da357d3cc3e2be76"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-intro-select-390.png",
+      "reason": "historical-review",
+      "bytes": 56186,
+      "sha256": "0f26abb495f2f06f2a99f90008420b52598e94fa98c855cb37e2a2e8c4ac51c1"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-intro-select-390x844.png",
+      "reason": "historical-review",
+      "bytes": 57096,
+      "sha256": "32a6635269c8bb9565112d200d05202cc28f070ff3516aed9d246dccbd1cfc18"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-intro-select-844x390.png",
+      "reason": "historical-review",
+      "bytes": 30848,
+      "sha256": "a7c89d7e853fdbff2a5a64288c15a93c7a366abf90e58d085601b8c39bba498b"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-intro-story-390.png",
+      "reason": "historical-review",
+      "bytes": 25718,
+      "sha256": "256792dd15d51d7e38278ba923bda0bdcc4d650d718ce289bd876deafe05d22d"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-rank-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 87967,
+      "sha256": "15b0746a842086d34141e7a1f56750e33da64609aa2c6b38346d8e104fa94200"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-rank-320x740.png",
+      "reason": "historical-review",
+      "bytes": 48442,
+      "sha256": "24d3aa6c9ae1a229f47a857ebf02bee5ff5ba1731498186686d44e052d74f6fd"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-rank-390x844.png",
+      "reason": "historical-review",
+      "bytes": 53146,
+      "sha256": "a1d25a1a36d6a0d96bcc28a7b1df769983014c5996f10aebe111fb4492067a81"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-rank-768x700.png",
+      "reason": "historical-review",
+      "bytes": 47892,
+      "sha256": "66cdfa2effb95c26ad93b770ba7a2a1c61e80093bb590cd643395e3b2a07cf58"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-rank-844x390.png",
+      "reason": "historical-review",
+      "bytes": 34614,
+      "sha256": "960391de23bf21c94d9c97e75a012852743cfe106c3e9195acde71bc74720dea"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-rank-board-390.png",
+      "reason": "historical-review",
+      "bytes": 45541,
+      "sha256": "ec6ad8c7585b84219b25be6503e9ebc27a1caf99c0c4973703bc26231726ba14"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-skills-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 122840,
+      "sha256": "0392b90aad223965685036c52b9a4fb64a2feb089e83013da0ef24909e8a5512"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-skills-320x740.png",
+      "reason": "historical-review",
+      "bytes": 50273,
+      "sha256": "40975198fb72a374f154014945f5d954fb3f34abcf5b8661c6bba8849000ada4"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-skills-390x844.png",
+      "reason": "historical-review",
+      "bytes": 56608,
+      "sha256": "d2ad04b94c019babe7a6e0cf3259abfa493bca2002d4d77a4b47b7edb9d00cef"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-skills-768x700.png",
+      "reason": "historical-review",
+      "bytes": 47422,
+      "sha256": "fcaa0b9f3d3e689184a98a10dbd512a4833b4964b9b7bab84e32e697807ef921"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-skills-844x390.png",
+      "reason": "historical-review",
+      "bytes": 30688,
+      "sha256": "eadfa0258422c6ea15a161dc96d13a7927d0b5f4071b5d4cfb8c5cc12ede84af"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-tree-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 127451,
+      "sha256": "c5001829ab40286eca706b066d78985e96b0b1cf92ec1c54ca362fa56fce1a22"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-tree-320x740.png",
+      "reason": "historical-review",
+      "bytes": 40483,
+      "sha256": "71fd28bfba3810e663cd15d9914d01f078562339257117ab9f4af9cede6c715f"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-tree-390x844.png",
+      "reason": "historical-review",
+      "bytes": 55283,
+      "sha256": "5c115156cae4f69235dd1cde5bc6e1897ffc46f3e7984bb3d655d1ce9ae7584e"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-tree-768x700.png",
+      "reason": "historical-review",
+      "bytes": 64622,
+      "sha256": "260d4411a65376228c1c45833bbfed5d8d5cc285768749a6fadb3a25dc61bac4"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/final-tree-844x390.png",
+      "reason": "historical-review",
+      "bytes": 29283,
+      "sha256": "22c2aaa9da488d559c72efd679a94a0faf0cdfa809347658398840533e252a02"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/plan.md",
+      "reason": "historical-review",
+      "bytes": 3131,
+      "sha256": "b22f310f11eef361b13f324ceefb04939be9d15dc0fb81c35c0c249362e80233"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/polish-browser.json",
+      "reason": "historical-review",
+      "bytes": 305,
+      "sha256": "e1250075eed1a352b4b52d660cc7a14a9635994811efeef36b136d833898301e"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/review.md",
+      "reason": "historical-review",
+      "bytes": 5174,
+      "sha256": "86a088d11c71cb22857789d1ecacee4ab20eba84329405c42856f486f454ce22"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 16219,
+      "sha256": "e0d6b448a363ba8fde978ddea9588e18520ad1f83f38fe2f640b0fa6656a5344"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/state-checks.txt",
+      "reason": "historical-review",
+      "bytes": 461,
+      "sha256": "d0140f9bfe2ed58ac7f136b9d1fe397cb9e3b5e728e9419fb73b593e13e7edeb"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 974,
+      "sha256": "0ae2e1d95412a6a6add0aa8dc2dc2080a39f10f11581e85603b22b9adb719cc7"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/syntax-checks.json",
+      "reason": "historical-review",
+      "bytes": 1472,
+      "sha256": "7b0c7a3aa1bb9f92c69029b779625cb1af64095f607c2e9152bd7365036bc154"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-char-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 119640,
+      "sha256": "243f24906b738d7b1cc220f29757d560b7ca482e4cbe2b867303632fc54db5f4"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-char-320x740.png",
+      "reason": "historical-review",
+      "bytes": 48350,
+      "sha256": "ceda399e1c31ce7f1ea5cf5b6c6e840f63540ab1f1a4a424d60a6fa113d1451d"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-char-390x844.png",
+      "reason": "historical-review",
+      "bytes": 53891,
+      "sha256": "a68f36991e472c757ab1b528c8063478cda712fcb21ebb5edd8751a758354744"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-char-768x700.png",
+      "reason": "historical-review",
+      "bytes": 54959,
+      "sha256": "e472ded45e98fcd581cc86cd3f25ad6624453929f29ed8fd10fe51219c0c36f1"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-char-844x390.png",
+      "reason": "historical-review",
+      "bytes": 31616,
+      "sha256": "a3599ad1fe991ee0a9e7a6169b503471bc1d8df7114bc2288de441251871dc6b"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-tree-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 121431,
+      "sha256": "f9b6230d678c9fde14f149a8034abb13132d771c8796439dbdd791119681ec9f"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-tree-320x740.png",
+      "reason": "historical-review",
+      "bytes": 40275,
+      "sha256": "3feb649383f98139df5cc42871600c5c91cfca511ccfadf2e144023d535dd52a"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-tree-390x844.png",
+      "reason": "historical-review",
+      "bytes": 49069,
+      "sha256": "6a8e28818f289cbd20bb36275d2bff04c6601ef91da45faa6547a4dcd9e81dce"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-tree-768x700.png",
+      "reason": "historical-review",
+      "bytes": 59860,
+      "sha256": "5b15f4ae6c49a3e961c5772749855ca36718834d9908ecae39103a6ef342307a"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-tree-844x390.png",
+      "reason": "historical-review",
+      "bytes": 29650,
+      "sha256": "6026cf411383690996e9820df1a724cefe83e719c66ffe7086b5f950fbbb6706"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-warehouse-1440x1000.png",
+      "reason": "historical-review",
+      "bytes": 110145,
+      "sha256": "0255131aadf524a68f2104e50e68146ce7ca08a2178cce50993aa3bbea948dc3"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-warehouse-320x740.png",
+      "reason": "historical-review",
+      "bytes": 38175,
+      "sha256": "8b6574bf3c1eabfe55d0ae5bb2e3204ad42dadfa31490349a083e92ae8957ed8"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-warehouse-390x844.png",
+      "reason": "historical-review",
+      "bytes": 42257,
+      "sha256": "f0433943d88a4a7d92b32a1be82317972cca0eb05222e1fa67538c24069d1e0d"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-warehouse-768x700.png",
+      "reason": "historical-review",
+      "bytes": 36954,
+      "sha256": "10a86abfbb15b7977faee9261655c3d0db194b766e0b7d45b8c73280f792b232"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/after-warehouse-844x390.png",
+      "reason": "historical-review",
+      "bytes": 27527,
+      "sha256": "2f0826e4fba319ee49bece22864275238c70b72936de15d08c360ff0c6b8b44a"
+    },
+    {
+      "path": "docs/direct-play-2026-10-24/workspace-regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 983,
+      "sha256": "9fccb4ad16c57949b34119d888106c501afd176d527886fa240da0e5db1f7b5f"
+    },
+    {
+      "path": "docs/downsampled-rendering-v0.26.2.md",
+      "reason": "consolidated-document",
+      "bytes": 3300,
+      "sha256": "e74e318999bd5962536fa2ec4b8b08b80625fbb0c5527b049cd9cf104da461ab"
+    },
+    {
+      "path": "docs/downsampled-rendering-v0.26.2/before-desktop.png",
+      "reason": "historical-review",
+      "bytes": 297535,
+      "sha256": "d9beaf125f3191d7736446a116ffa5f3ecb71f31f9ca540d397016ffb679d681"
+    },
+    {
+      "path": "docs/downsampled-rendering-v0.26.2/before-dimensions.txt",
+      "reason": "historical-review",
+      "bytes": 248,
+      "sha256": "3d79449d2d9da5ae6881866a5194ea69135130e0b101385d2938ce828ef38be0"
+    },
+    {
+      "path": "docs/downsampled-rendering-v0.26.2/design-lint.txt",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/downsampled-rendering-v0.26.2/desktop.png",
+      "reason": "historical-review",
+      "bytes": 254724,
+      "sha256": "485acd538143b754f869cf72520d591694a44ed082dec498642ebc4912b5b8f6"
+    },
+    {
+      "path": "docs/downsampled-rendering-v0.26.2/phone.png",
+      "reason": "historical-review",
+      "bytes": 297342,
+      "sha256": "dc06c48c9e6ed7182bdde4b3a6300985ff6b4820484382e7ac2489ce0094fa37"
+    },
+    {
+      "path": "docs/downsampled-rendering-v0.26.2/results.json",
+      "reason": "historical-review",
+      "bytes": 6241,
+      "sha256": "928c7f5729c793773444969cd6261281d6bf27df1751d712900abc538a281953"
+    },
+    {
+      "path": "docs/downsampled-rendering-v0.26.2/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 216,
+      "sha256": "a3a23ee1f9725f61819541256269e1a4e0d124befcfb26888603dc8d31e19228"
+    },
+    {
+      "path": "docs/downsampled-rendering-v0.26.2/watch-1080p.png",
+      "reason": "historical-review",
+      "bytes": 126900,
+      "sha256": "d9beb5c733f6206b1cc1e30d73dbd178feb1e25de63cf1d110633829c43ea26d"
+    },
+    {
+      "path": "docs/equipment-v0.30.0.md",
+      "reason": "consolidated-document",
+      "bytes": 5173,
+      "sha256": "288d713ce5a20a9afb0f73f1472783bf0e12bb793bf33a3f7ec3377740187854"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/affix-1440.png",
+      "reason": "historical-review",
+      "bytes": 118613,
+      "sha256": "7e1125806eb60d582c456d9348153c05571c1078f39187c58e0afee944abf16e"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/affix-390.png",
+      "reason": "historical-review",
+      "bytes": 98173,
+      "sha256": "65c7b1f2f80f135d755f4b31122934cc60dc559e7c53271b9ed7d7e582986d06"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 419,
+      "sha256": "e4e5e8f7c823217cf143e11e0799188a9d261cdd17d7e0698a83a227f529d21a"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/builds-1440.png",
+      "reason": "historical-review",
+      "bytes": 120964,
+      "sha256": "82c9ad102d4d9948ce859ea631b4857f6b7e36b871b7ff9b59d1cf5e3b75cbae"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/builds-390.png",
+      "reason": "historical-review",
+      "bytes": 100348,
+      "sha256": "2cc3e17ffe8c59f31fbb819fba1f89f4080fd4601676a0078e0326b093816e10"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/city-browser-desktop-retry.txt",
+      "reason": "historical-review",
+      "bytes": 111,
+      "sha256": "74843ce14815302b7efa871cbe7366da112e351012b73c8ee74cf32979d08d52"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/city-browser-first-run.txt",
+      "reason": "historical-review",
+      "bytes": 489,
+      "sha256": "cd9eec3c1d42c9818b4ad9820078d7443fccd278d9f345e454945a8a02342253"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/core-1440.png",
+      "reason": "historical-review",
+      "bytes": 120396,
+      "sha256": "249824115c3da9f72cc421f9fd662dcffa6e5f8ab316827036156ec61918bf6e"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/core-390.png",
+      "reason": "historical-review",
+      "bytes": 99271,
+      "sha256": "9c5999fcee0fb444d01dc79e454716b1e9a25e0a0fd01f4da23a5c73c46987cd"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/font-results.txt",
+      "reason": "historical-review",
+      "bytes": 96,
+      "sha256": "7573720974e4a37cab502b7a8c020f9c6bf93857ab4be550cc1f5f3e7506e39e"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/logic-results.txt",
+      "reason": "historical-review",
+      "bytes": 1603,
+      "sha256": "4306b5fcb278b65dd9ca819f0dc5d65d369317eaa3b72b28f5274ddb01d93ef7"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 216,
+      "sha256": "a3a23ee1f9725f61819541256269e1a4e0d124befcfb26888603dc8d31e19228"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/regression-results.txt",
+      "reason": "historical-review",
+      "bytes": 5354,
+      "sha256": "0393e8c68f45f65158ebcbc22c250b3c14af0115fa1ebba1f3dd969cc1f96345"
+    },
+    {
+      "path": "docs/equipment-v0.30.0/ux-browser-results.txt",
+      "reason": "historical-review",
+      "bytes": 663,
+      "sha256": "684889da6214b2ab62ff651232cb6b7c49c99a83cb2c44da90f29530fb6bd22a"
+    },
+    {
+      "path": "docs/game-design.md",
+      "reason": "consolidated-document",
+      "bytes": 5556,
+      "sha256": "54b06eea7a0e0beb5c9f2bf081f298e2469251cfacce9da69fdeaa497b1b1a72"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21.md",
+      "reason": "consolidated-document",
+      "bytes": 4799,
+      "sha256": "0f9b36ef218bdcca65274828d4c97feb8055629475ede702e10219af199afa4b"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/01-core-collection-mobile.png",
+      "reason": "historical-review",
+      "bytes": 82551,
+      "sha256": "fa29ee344dac4983ec488967e64c0eca730a763f9a7d5cef190cadaaefa5dfeb"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/02-core-collection-desktop.png",
+      "reason": "historical-review",
+      "bytes": 155204,
+      "sha256": "63ca41a9fc497968834e83e3094e7559a6ab6588c0fac94b4f9bdd89d0467bd8"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/03-offline-pending.png",
+      "reason": "historical-review",
+      "bytes": 106130,
+      "sha256": "2f0ae635357201320c206aa740693c8718702076cf00f1c5ec2fd773b3ebefbf"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/04-offline-automatic.png",
+      "reason": "historical-review",
+      "bytes": 110329,
+      "sha256": "b93b970236d38820a77c2a512c939f419ca14c6572c515d8557e13a96037fc4c"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/gameplay-browser.json",
+      "reason": "historical-review",
+      "bytes": 548,
+      "sha256": "8f1ac09ccc4d38c9b01ca8ca83e5a0cb7f8f97d85a80960b4a5a693e78e77868"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/gameplay-logic.txt",
+      "reason": "historical-review",
+      "bytes": 882,
+      "sha256": "9d8707940e2451718b301187e1cab02b84b4b2ea0453366debf0c174fbfd4b2f"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/layout-regression.json",
+      "reason": "historical-review",
+      "bytes": 749,
+      "sha256": "a4f2d3d09ec7b0d77046f47869ae107816391c3dc930eeab298d64fbbc933510"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/live-verification.json",
+      "reason": "historical-review",
+      "bytes": 245,
+      "sha256": "0ef3052e4f57e2ed1872d270269e67d849d53e9cf4b79768d294bb24a5c46a28"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 216,
+      "sha256": "a3a23ee1f9725f61819541256269e1a4e0d124befcfb26888603dc8d31e19228"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/ux-regression.json",
+      "reason": "historical-review",
+      "bytes": 698,
+      "sha256": "f444813da4b23c3f5172283cdcfe6b70d0fa01cbfdb5d744403b6bb8ab226302"
+    },
+    {
+      "path": "docs/gameplay-first-pass-2026-10-21/view-regression.json",
+      "reason": "historical-review",
+      "bytes": 895,
+      "sha256": "2370b184cee79d98c7a81863dea6469f9cb8fb6a49096bc84b1c3223dfc66479"
+    },
+    {
+      "path": "docs/gameplay-review-2026-10-21/baseline-probe.cjs",
+      "reason": "historical-review",
+      "bytes": 1804,
+      "sha256": "01b8e866d1cef28f680d6187ef439b3b5d31e70059c7fe2ea4b08680628b0190"
+    },
+    {
+      "path": "docs/gameplay-review-2026-10-21/baseline.json",
+      "reason": "historical-review",
+      "bytes": 815,
+      "sha256": "0ece9f8c9023c48a6b047e3b7a9a9f572ca5ec42036db78fa710926a9d77ead6"
+    },
+    {
+      "path": "docs/gameplay-review-2026-10-21/source-fingerprints.json",
+      "reason": "historical-review",
+      "bytes": 656,
+      "sha256": "07097daee320931df8baa02d45e26c67bbcc6e739869f7bcca9b2a8a054e981d"
+    },
+    {
+      "path": "docs/gameplay-review-plan-2026-10-21.md",
+      "reason": "consolidated-document",
+      "bytes": 16751,
+      "sha256": "35b1fd8e8a3fa1d5ef046d6e65a8760170b8dd550c96fca15bec3c43c29d9767"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0.md",
+      "reason": "consolidated-document",
+      "bytes": 5336,
+      "sha256": "ab9d08b467bba82f6d93db98c6edb5a3de67a5cc6578181d1978719e3184db4b"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/before-inventory-390.png",
+      "reason": "historical-review",
+      "bytes": 52457,
+      "sha256": "8ecee875339b3ab760406692f0774c967157c7e8503ece0faf3687f9f124b462"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/before-settings-390.png",
+      "reason": "historical-review",
+      "bytes": 48294,
+      "sha256": "38c86c75fbb2b34be50e75e99f555f85051f2543c3f27819e7c977487ed77db3"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/before-warehouse-390.png",
+      "reason": "historical-review",
+      "bytes": 48653,
+      "sha256": "d2410298112b40a9cb4aba9ca61d3bc07d234362c1465239f6bd4d28df46541a"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1105,
+      "sha256": "01ce985bc1eda4efdddf5423fbc1ce39829034c5c0314efa7400e5ec9bb6210e"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/cores-1440.png",
+      "reason": "historical-review",
+      "bytes": 140141,
+      "sha256": "8cb2fb73bffb6a04ab9755d0946b9456e38a207f399a8fa57c5dc51637827416"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/cores-390.png",
+      "reason": "historical-review",
+      "bytes": 281405,
+      "sha256": "519e5d9569729664c1e248af0b0a82eb7425f1d9016511cae07b674a6a2096d9"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/display-1440.png",
+      "reason": "historical-review",
+      "bytes": 138375,
+      "sha256": "42ce307134dc6463d5496fe77e773b8eafafb5b80ed10e663e9bd7b981e3ccfe"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/display-390.png",
+      "reason": "historical-review",
+      "bytes": 216401,
+      "sha256": "2bcb87385f67f27d099bf2f2b9ea9329d8ce77584773688f154557b467918fe7"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/expansion-browser-results.txt",
+      "reason": "historical-review",
+      "bytes": 130,
+      "sha256": "4f4d78cb33af1a97883ce12f17e03c0b55fa39190c46735a8406431dec45f07b"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/font-results.txt",
+      "reason": "historical-review",
+      "bytes": 96,
+      "sha256": "1efe270c89fdc5e79498f03a4c2f6b09dcb5afad7788338f80cab1ba119c5352"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/gameplay-browser-results.txt",
+      "reason": "historical-review",
+      "bytes": 533,
+      "sha256": "413978b4772ec151ee5d2c9672ec1b918422cf5f6c369ea03438352f6d40abdb"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/grid-browser-results.txt",
+      "reason": "historical-review",
+      "bytes": 79,
+      "sha256": "418465ed87ef6448939561a54689bfbf27e7c0a5bc2b7b36ec73c29758d45c8a"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/inventory-1440.png",
+      "reason": "historical-review",
+      "bytes": 146025,
+      "sha256": "eb55e708b207c42ac7278df7a2a72237adf5207e9b7bc77c9b3cdffba8d44691"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/inventory-390.png",
+      "reason": "historical-review",
+      "bytes": 88262,
+      "sha256": "46e0e0b27216a659525b1623c7d1ee87ed474e5deb12a5babf24c949d35cfbd2"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/layout-browser-results.txt",
+      "reason": "historical-review",
+      "bytes": 717,
+      "sha256": "5ce9acbe181f0e4f28e835f4d0cd9e2c32b4a985d1a4d0143d37f5f08623c9af"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/logic-equipment.txt",
+      "reason": "historical-review",
+      "bytes": 1603,
+      "sha256": "4306b5fcb278b65dd9ca819f0dc5d65d369317eaa3b72b28f5274ddb01d93ef7"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/logic-expansion.txt",
+      "reason": "historical-review",
+      "bytes": 1141,
+      "sha256": "ea896bbaaddae611438b8d7e05f01dc821dd65da621250f6977b83080b64f76a"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/logic-gameplay.txt",
+      "reason": "historical-review",
+      "bytes": 882,
+      "sha256": "9d8707940e2451718b301187e1cab02b84b4b2ea0453366debf0c174fbfd4b2f"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/logic-grid.txt",
+      "reason": "historical-review",
+      "bytes": 14,
+      "sha256": "231ac7e9efb610a76cabf29a69a2760b8a79337ee0668bcc11843b7957b84fc8"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/logic-ux.txt",
+      "reason": "historical-review",
+      "bytes": 73,
+      "sha256": "5cda155cb44a14d705457c7c7fa1ade08cd5661edd1e731998c001ce82e42119"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/maps-1440.png",
+      "reason": "historical-review",
+      "bytes": 148519,
+      "sha256": "a35b640973af27c89882dec5c563a19c0218359696b4c79aae5bee648cee7c9b"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/maps-390.png",
+      "reason": "historical-review",
+      "bytes": 304312,
+      "sha256": "defc368c8f5388788471dcd07b56d955ba841daa6b4a6e36626e3cf646640a78"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 216,
+      "sha256": "a3a23ee1f9725f61819541256269e1a4e0d124befcfb26888603dc8d31e19228"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/settings-1440.png",
+      "reason": "historical-review",
+      "bytes": 141324,
+      "sha256": "bf761ed21588f12f5fdf044ecf1ce7799bae8a2d14776af86adc7a3afde43d9b"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/settings-320.png",
+      "reason": "historical-review",
+      "bytes": 71620,
+      "sha256": "b53c26e3b266576a5aa64eb2301b32bd0506de891878e4ec59b094eb3a687d46"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/settings-390.png",
+      "reason": "historical-review",
+      "bytes": 216708,
+      "sha256": "265d7cb17f1f72a29d43d507910180b4e5ae2450904f8bb0858322d075b78930"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/settings-768.png",
+      "reason": "historical-review",
+      "bytes": 80101,
+      "sha256": "8aa5662aa6f41faf4e525a8a1e71b30776b0ec85bcb79452627ad001278f33af"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/ux-browser-results.txt",
+      "reason": "historical-review",
+      "bytes": 663,
+      "sha256": "684889da6214b2ab62ff651232cb6b7c49c99a83cb2c44da90f29530fb6bd22a"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/view-browser-results.txt",
+      "reason": "historical-review",
+      "bytes": 823,
+      "sha256": "070a4669db1266865ae206ceb002be02a64433d1e0aed81990f3722a368e7e95"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/warehouse-1440.png",
+      "reason": "historical-review",
+      "bytes": 154212,
+      "sha256": "125334125c6397c72c593a9e6ab28aa624133c3d4916b55e65e48b4f9e534f5d"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/warehouse-320.png",
+      "reason": "historical-review",
+      "bytes": 70784,
+      "sha256": "32fa11adc2f7664fb32a0485758fac8426eae1d9a5af3bd23f436bce347102c9"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/warehouse-390.png",
+      "reason": "historical-review",
+      "bytes": 214184,
+      "sha256": "9ea0e2140b1d31909935d9fccbd89d18a11047bea1030e1d0644fa874b1c5b10"
+    },
+    {
+      "path": "docs/grid-ui-v0.31.0/warehouse-768.png",
+      "reason": "historical-review",
+      "bytes": 89048,
+      "sha256": "ae00c7b415001828192a7c1ba3f0c28861785aa0258ed1cdc3cd9b9ef1dd64c9"
+    },
+    {
+      "path": "docs/hello-static-title/README.md",
+      "reason": "historical-review",
+      "bytes": 7405,
+      "sha256": "98b5fb7577d7fe61696c071dcb3277689ce101c060d497c43d10033e827c7243"
+    },
+    {
+      "path": "docs/hello-static-title/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 792,
+      "sha256": "271748aa7d84c311351255e7cafcc6e72978efb77de72f3ab9d9955ba3a8b4d8"
+    },
+    {
+      "path": "docs/hello-static-title/comic-browser-results.json",
+      "reason": "historical-review",
+      "bytes": 745,
+      "sha256": "6766a9a617d35d8dc6d860a18163528f1fd8d3d1d8901e667db52963c59d9797"
+    },
+    {
+      "path": "docs/hello-static-title/comic-desktop-1.png",
+      "reason": "historical-review",
+      "bytes": 617039,
+      "sha256": "4f3cfbb38938c450dc3fb558266cf3af792055ba2cbcba161086492ed688abba"
+    },
+    {
+      "path": "docs/hello-static-title/comic-desktop-2.png",
+      "reason": "historical-review",
+      "bytes": 614373,
+      "sha256": "6c82025794a7b33259041db4847729a17601b8a098f20acffda43e6740b0782c"
+    },
+    {
+      "path": "docs/hello-static-title/comic-desktop-3.png",
+      "reason": "historical-review",
+      "bytes": 595691,
+      "sha256": "0ca262c6ab2a346deba0eecf058ef36037c63014d50d19f06d84ae05c2747b5d"
+    },
+    {
+      "path": "docs/hello-static-title/comic-landscape-1.png",
+      "reason": "historical-review",
+      "bytes": 96754,
+      "sha256": "7279cec0d1b89f40374deb5c4b1bd1655e6419f663bb9b4974d7d5094b8d5716"
+    },
+    {
+      "path": "docs/hello-static-title/comic-mobile-1.png",
+      "reason": "historical-review",
+      "bytes": 381020,
+      "sha256": "9d4fdd7266e9d63ab6c3670f4e236693b49da1b00e93d987b7d583690038ac8b"
+    },
+    {
+      "path": "docs/hello-static-title/comic-mobile-2.png",
+      "reason": "historical-review",
+      "bytes": 368371,
+      "sha256": "d739d66c7a7e1a3799b67906349c54f537d115c07498bbfd5b8f19a072e8fb40"
+    },
+    {
+      "path": "docs/hello-static-title/comic-mobile-3.png",
+      "reason": "historical-review",
+      "bytes": 358836,
+      "sha256": "1d1c36f0ad66dba416539c39d47032999da83330a7bfe44fa4b0f8d6bd411944"
+    },
+    {
+      "path": "docs/hello-static-title/comic-narrow-1.png",
+      "reason": "historical-review",
+      "bytes": 199117,
+      "sha256": "b8441ddd8c8e678720ea68917d3f06c817221b4fb5436a7c294a1bdf5b9b7aad"
+    },
+    {
+      "path": "docs/hello-static-title/comic-transcript.png",
+      "reason": "historical-review",
+      "bytes": 300746,
+      "sha256": "b7ab4f07135bfe18e5f03eca6ad65a431e2e1ebbdee82a1803f22b240b0ec5d9"
+    },
+    {
+      "path": "docs/hello-static-title/desktop.png",
+      "reason": "historical-review",
+      "bytes": 361582,
+      "sha256": "16680d989a89a22be7cd5d23ae832590839be0cb69f0d02dad9739c89e7f81d4"
+    },
+    {
+      "path": "docs/hello-static-title/landscape.png",
+      "reason": "historical-review",
+      "bytes": 95582,
+      "sha256": "72be5d763b34d3ada72121b54f307edfeeadca76b70b1b4bd52ec9c3da873f9d"
+    },
+    {
+      "path": "docs/hello-static-title/mobile.png",
+      "reason": "historical-review",
+      "bytes": 196415,
+      "sha256": "fe6687260c83a24f3b008637dde9c34befe4d955abf3cc45e5cb2a69f2587d12"
+    },
+    {
+      "path": "docs/hello-static-title/narrow.png",
+      "reason": "historical-review",
+      "bytes": 142590,
+      "sha256": "5be220cc59948eca10855919a029d1747fbadbcb12519cfbd5da7717bbc3ea59"
+    },
+    {
+      "path": "docs/hello-static-title/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 967,
+      "sha256": "4d5868a650687957757980efa4a6c6c8eb53abfc972feaccc946104e67febf34"
+    },
+    {
+      "path": "docs/hello-static-title/premium-baseline.json",
+      "reason": "historical-review",
+      "bytes": 968,
+      "sha256": "a1b147d98e61176838fd89a25988180bf1328666d0ee857421f7b6f0af7a1aaa"
+    },
+    {
+      "path": "docs/hello-static-title/short-mobile.png",
+      "reason": "historical-review",
+      "bytes": 155646,
+      "sha256": "d9525933b66491e8bee2647518d8fef1529a2cede37b8e270371b9cf9f4b60ed"
+    },
+    {
+      "path": "docs/lcd-ui-0.27.1.md",
+      "reason": "consolidated-document",
+      "bytes": 3149,
+      "sha256": "da15085c5168fe574d90307c31f87ac605c0a665e4722275fa1134d5a88c8d46"
+    },
+    {
+      "path": "docs/lcd-ui-0.27.1/audit.json",
+      "reason": "historical-review",
+      "bytes": 216,
+      "sha256": "a3a23ee1f9725f61819541256269e1a4e0d124befcfb26888603dc8d31e19228"
+    },
+    {
+      "path": "docs/lcd-ui-0.27.1/chronicle-independent.png",
+      "reason": "historical-review",
+      "bytes": 49673,
+      "sha256": "fc42cef5ecfeb11a6e8beb540eab360a8b0cef1e39b6f6d1ea1bcc151397fab1"
+    },
+    {
+      "path": "docs/lcd-ui-0.27.1/chronicle-mobile.png",
+      "reason": "historical-review",
+      "bytes": 26911,
+      "sha256": "90a3becde4376207feacebd6af9f703f6e3fccdc9f295ce29a26b67fdc44c2fa"
+    },
+    {
+      "path": "docs/lcd-ui-0.27.1/desktop.png",
+      "reason": "historical-review",
+      "bytes": 107579,
+      "sha256": "0d837eac2c38eb443520ccfddea2d2258b700af10629b011e0872733461e34a1"
+    },
+    {
+      "path": "docs/lcd-ui-0.27.1/dialog.png",
+      "reason": "historical-review",
+      "bytes": 89547,
+      "sha256": "e0148f85f66771a47c050aebedccd7fdef5d4da3f2bb8f4955fcfef70616f76c"
+    },
+    {
+      "path": "docs/lcd-ui-0.27.1/mobile-dpr3.png",
+      "reason": "historical-review",
+      "bytes": 92185,
+      "sha256": "a0dbcaef0b3c82b002e82f806904ff632a942e7c0de1123e16f864352898408a"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/artifact.json",
+      "reason": "historical-review",
+      "bytes": 220,
+      "sha256": "0bc21bd92e797423d7273857c1e08520ce55c1b068ba0f334908db2c58648b82"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/bag.png",
+      "reason": "historical-review",
+      "bytes": 60220,
+      "sha256": "8fe6362737bd45732fa10c12eba2ef212952b3dea12e17e09c0a61832ddb5bb8"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/balance.json",
+      "reason": "historical-review",
+      "bytes": 4479,
+      "sha256": "5714663bd0acb4ae3bf95a6671a4155af218e614f0e53dd7ec985a9750106b57"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1488,
+      "sha256": "e6d64a1b701e714bd22b2b2b940e52266cd337c4d99d49a4ff5ac1e4d6156369"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "69b00eb56de6c0a55f0c26f8ab3762c7d651a5e31e6bd330c3aed644176aa69b"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/cleanup.png",
+      "reason": "historical-review",
+      "bytes": 60968,
+      "sha256": "00b407405b57f99cb64788ccbb8a3047865cb8c5e6a1543b3a329036fb3320ab"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/final-checks.json",
+      "reason": "historical-review",
+      "bytes": 2117,
+      "sha256": "9966a0e49448eab9914df17c9177028ec34c80f945017d3c777087d7487f1b2b"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/mechanics.md",
+      "reason": "historical-review",
+      "bytes": 2404,
+      "sha256": "bd8c0015737031e71d0cf5a093f4579e89707fb2472645876f03c9cb64e0de8f"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/monsters.png",
+      "reason": "historical-review",
+      "bytes": 57066,
+      "sha256": "0f69992eab4f21605ecf948f56958dcf6e5a22ef074b55d3bb6dd3220fd9a5e8"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/phone.png",
+      "reason": "historical-review",
+      "bytes": 203162,
+      "sha256": "c8226abe5600819b94696d5cdeced6d68f65886c0c30640d9a0e47f4a2935cf1"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/pixel-0.png",
+      "reason": "historical-review",
+      "bytes": 2211,
+      "sha256": "b9663fb28603b984c71e7cb012c21aa0958508b27b995ed4e16ee4b506a4c03a"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/pixel-1.png",
+      "reason": "historical-review",
+      "bytes": 3023,
+      "sha256": "b936a971ef3c7ebc15858bf8b38cd6353eacf28b517ecaf8e8838cd4e50bfa0d"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/pixel-2.png",
+      "reason": "historical-review",
+      "bytes": 3171,
+      "sha256": "06a58736161877fd62241dc5d1d022b2c72b65165c167c22232268ed9e73ea61"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/pixel-3.png",
+      "reason": "historical-review",
+      "bytes": 3331,
+      "sha256": "cff83374d007ae3b64042f61c248a5d35c315085a01e811ee897cf7d7e49b26d"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/plan.md",
+      "reason": "historical-review",
+      "bytes": 1510,
+      "sha256": "c617b8a31c4b5dfbd9ca3cdba7a9e34c6bc82cf659fe92f1d34320219d46ffd3"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regions.png",
+      "reason": "historical-review",
+      "bytes": 58914,
+      "sha256": "7bd3e4f5358ddaaf6081019a77995abfc151b54499a42cc9cf048602b5ee36e7"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1333,
+      "sha256": "a9f7b58ed70f54c023820fcc8458510c326d57842de0f71ae9f1b24aefeb440e"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/mobile-ascension.png",
+      "reason": "historical-review",
+      "bytes": 75660,
+      "sha256": "7e60f78f5df383e0a06a14fc48033926762db8c1fc43ed7b9c1b1b8518e7ac9a"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/mobile-character.png",
+      "reason": "historical-review",
+      "bytes": 66808,
+      "sha256": "17441c0beb07e71a17a313d6496c480f24498d19830731224e4fd9f5c36101ef"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/portrait-beep.png",
+      "reason": "historical-review",
+      "bytes": 65917,
+      "sha256": "153852ed4c107e78944ced4e31f952c20c393e8040d3b57b60accc28c713b071"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/portrait-frost.png",
+      "reason": "historical-review",
+      "bytes": 66346,
+      "sha256": "cc1488f91d6a9660c7dd20cf5d5392b3441383b26ea2a4c96f6f09a88d37bfbd"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/portrait-street.png",
+      "reason": "historical-review",
+      "bytes": 66562,
+      "sha256": "303152251bafcec6427e3196e1b059bc9b49e242b46d028515e943926b8af4ff"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/portrait-volt.png",
+      "reason": "historical-review",
+      "bytes": 67218,
+      "sha256": "e606c423c8085685a38e0ee7a1ac47d2fca586304580178407361328ee196104"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/talents-1440.png",
+      "reason": "historical-review",
+      "bytes": 144494,
+      "sha256": "2a32954f559428abd6cae055ee64509898990084980deeeacaab20d9af0bdc44"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/talents-320.png",
+      "reason": "historical-review",
+      "bytes": 47695,
+      "sha256": "28ec44b9f13f35a93261548092b30acb9a93d6579ec93867118cd4023541d0f1"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/regression/talents-844.png",
+      "reason": "historical-review",
+      "bytes": 45834,
+      "sha256": "56b19326a6c5f8ce4aa7e01fca7a33236c8b5eec8173a8d2dcffe28ffb249e1c"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/review.md",
+      "reason": "historical-review",
+      "bytes": 6030,
+      "sha256": "e29305d3a8d7802f651c0953ad38f7250ba556972e5b1141b8bbb4e2fc57f364"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 17630,
+      "sha256": "f77ea02b788c7ac7c1442519046019a30ef0d494a5a0e0c8d11632542f97eaf8"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 968,
+      "sha256": "985b954748f88a179f48e3d5fbabe397476cad35ac54a1819f48119c05b7fbab"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/story-0.png",
+      "reason": "historical-review",
+      "bytes": 28970,
+      "sha256": "0e5e9c7f218118ad74043ff6da792dd117bfd502e8f57c0b6e70dd1715237be2"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/story-1.png",
+      "reason": "historical-review",
+      "bytes": 30156,
+      "sha256": "eba7c5cfed3d82285991617447638dc16ffeb63d41a32afc30481b20268ac944"
+    },
+    {
+      "path": "docs/loot-world-2026-10-24/story-2.png",
+      "reason": "historical-review",
+      "bytes": 33347,
+      "sha256": "04a06a0ab7388748bf558ad507be1a36135978960c6fba88a3a2deaaa10e0949"
+    },
+    {
+      "path": "docs/mechanics-depth-blueprint-2026-10-22.md",
+      "reason": "consolidated-document",
+      "bytes": 26533,
+      "sha256": "e5b104d008fdac6bb1cb8f53889116ff3336690551bf1c9601fefc16489d88e9"
+    },
+    {
+      "path": "docs/mechanics-v0.28.0.md",
+      "reason": "consolidated-document",
+      "bytes": 4962,
+      "sha256": "00db71655a23b221680909f3cafea682a2411119430a86098163e4d8a7163491"
+    },
+    {
+      "path": "docs/mechanics-v0.28.0/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 2685,
+      "sha256": "e2dc3b3d723685fc2631a8a6e87d417d6d012a0efd5a2a9d8ea971187427773d"
+    },
+    {
+      "path": "docs/mechanics-v0.28.0/circuits-mobile.png",
+      "reason": "historical-review",
+      "bytes": 84088,
+      "sha256": "a3c85e6985e80f7a1bac251deb43a45ee43dab879708a52a36dd5ffb8b864692"
+    },
+    {
+      "path": "docs/mechanics-v0.28.0/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 216,
+      "sha256": "a3a23ee1f9725f61819541256269e1a4e0d124befcfb26888603dc8d31e19228"
+    },
+    {
+      "path": "docs/mechanics-v0.28.0/training-desktop.png",
+      "reason": "historical-review",
+      "bytes": 116108,
+      "sha256": "62e1e6a24cdb3a9aebef1f50856f63ba06687f622a0be94993a91e553f6937cb"
+    },
+    {
+      "path": "docs/mechanics-v0.28.0/training-mobile.png",
+      "reason": "historical-review",
+      "bytes": 97710,
+      "sha256": "393858158a279349e21357eae8234e03889bcdf549107824e50d239dfa176b2a"
+    },
+    {
+      "path": "docs/offline-return-0.35.0.md",
+      "reason": "consolidated-document",
+      "bytes": 1784,
+      "sha256": "932692f82cb002928c34a0cd577d533de54949ead42d65dbcfdd0d7365296b14"
+    },
+    {
+      "path": "docs/offline-return-2026-10-22.md",
+      "reason": "consolidated-document",
+      "bytes": 5930,
+      "sha256": "85c09d1e33c362620b5c62b0c06706e2a32bd2c38eee70e1e7db014453c33d65"
+    },
+    {
+      "path": "docs/offline-return-2026-10-22/results.json",
+      "reason": "historical-review",
+      "bytes": 18361,
+      "sha256": "ac69d23631087ccfc505fa61eef794e6b7c3fe1d6eab00b3231024dd2ba50cc2"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/adventure-clean.png",
+      "reason": "historical-review",
+      "bytes": 53400,
+      "sha256": "89bdc1d564dbb1e332ff738dbe0bdf1dc21d326b6fd6e427e7e047c038576ee5"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1631,
+      "sha256": "d543e66dc7c57ec9099be05749b5a5db9e0aa2e6a3614127f3e68cdf0c07685f"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "f25603752d96b5eabde73a5edaabf233c0b90bbdfb4dcc5117bb36f91d62d739"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/character-clean.png",
+      "reason": "historical-review",
+      "bytes": 60024,
+      "sha256": "8db3651df2d4319839fc55a35c77e6feab3d0f0e75fbff532a9e56ceafd3e784"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/first-circuit.png",
+      "reason": "historical-review",
+      "bytes": 62678,
+      "sha256": "3bb7d7f49d4208dea3a553672e02cb8d70e9e2efc5f3dee1de63bba04008c98c"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/first-step.png",
+      "reason": "historical-review",
+      "bytes": 61968,
+      "sha256": "b209f3b3b4ca09ea5e19b7e64ace0a0c0161bf2358c0c71d4f5c0b2e4d1c63a4"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/layout-1440.png",
+      "reason": "historical-review",
+      "bytes": 148742,
+      "sha256": "0afc04e20e056faac976d9225f9335021a9e60f036a67bec07e94224b43a6557"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/layout-320.png",
+      "reason": "historical-review",
+      "bytes": 63160,
+      "sha256": "66b02cbd4c96db0d62d02ae187e0f5e1aec2e57ade60696f568ecdf602e2b8ea"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/layout-844.png",
+      "reason": "historical-review",
+      "bytes": 37115,
+      "sha256": "0e5f9e33835a8a4b84ce84e6889423c018bc4ff9e1dbbdc6b41561cfdc586444"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/logo-browser-results.json",
+      "reason": "historical-review",
+      "bytes": 564,
+      "sha256": "1521f522cc2ac115591c520c03c053d859991b789c432fe60941082521a658f7"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/logo-bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 220,
+      "sha256": "3a66782ecbd446fae604e59ecd65afca8fe9b8b25fc842da99ec2a446aa4b2e0"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/logo-side.png",
+      "reason": "historical-review",
+      "bytes": 289468,
+      "sha256": "1a48035fb61737cfc50c8dbec84de789fd78710e51d47437bb52b6e769957ac2"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/logo-title-1440.png",
+      "reason": "historical-review",
+      "bytes": 765187,
+      "sha256": "f724b312cf607d050d7e3a06983455d6efadc02b019d2260ecd32d934a7cfb49"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/logo-title-320.png",
+      "reason": "historical-review",
+      "bytes": 214983,
+      "sha256": "fae1f6c1a671d76c4cec692647ac4f7a198abe14d9e9d85a26146400b6d1eca5"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/logo-title-844.png",
+      "reason": "historical-review",
+      "bytes": 352938,
+      "sha256": "34a105613fc9c5d07230a70c13fc5779f587c3e9d9b6fe2508f18f8d923590e5"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/logo-title-mobile.png",
+      "reason": "historical-review",
+      "bytes": 292055,
+      "sha256": "a49b6de07e5569dc27ecd2159e5cb77ebee432c82ba0a6ebdc35677318068151"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/plan.md",
+      "reason": "historical-review",
+      "bytes": 1664,
+      "sha256": "ccac8a5468f40153dd385697cfd480d6629eab601585b86ad5559d229a5e3b98"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 972,
+      "sha256": "a9c94567155b046c9bd8a02d26ef393064b02d4ece1182a36a6bbea7bd48cf58"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/review.md",
+      "reason": "historical-review",
+      "bytes": 4945,
+      "sha256": "88c7975808b83ad8b02c5f1fac78e5ca382c8536fc58fad3770611d986c8af58"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/rift-purple.png",
+      "reason": "historical-review",
+      "bytes": 59984,
+      "sha256": "d5dab834c49c9f3fd857a211a91bd7cf01ebf228bc24aad7de20379aa667daa4"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/season-hub.png",
+      "reason": "historical-review",
+      "bytes": 57568,
+      "sha256": "b6615f980e84767b3c72fe55f112b0b667fd90a1da4a463f9e30a7b06c82c048"
+    },
+    {
+      "path": "docs/onboarding-focus-2026-10-25/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 20511,
+      "sha256": "5d3673486aeed20dafb82a570b489bb7a70ac1daf4aab4d844b8831e8188b38c"
+    },
+    {
+      "path": "docs/patreon-support-2026-10-25/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 490,
+      "sha256": "009d1aa5e4ef3b503d5fb18b387ee1a7f4aa7964de56d30f1767c7d78c8b71f7"
+    },
+    {
+      "path": "docs/patreon-support-2026-10-25/review.md",
+      "reason": "historical-review",
+      "bytes": 3268,
+      "sha256": "fb13a1ef0bf2774c75863b83b24e7804d7add0ede52a376b24460274eacc8fde"
+    },
+    {
+      "path": "docs/patreon-support-2026-10-25/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 969,
+      "sha256": "7fc876dae5fc1a9269ca21b45498e7eeb134bdeea3fd04712c46cddb66fa2076"
+    },
+    {
+      "path": "docs/patreon-support-2026-10-25/support-1440.png",
+      "reason": "historical-review",
+      "bytes": 120802,
+      "sha256": "f6ede36c44d6a3835a2007984b713cf274951f2ebd9eefc407241eb66be4cc46"
+    },
+    {
+      "path": "docs/patreon-support-2026-10-25/support-320.png",
+      "reason": "historical-review",
+      "bytes": 40853,
+      "sha256": "86a60949faaee0e0102a498ded8700349ecb8522c0cf8f1104d981fdbb48348f"
+    },
+    {
+      "path": "docs/patreon-support-2026-10-25/support-390.png",
+      "reason": "historical-review",
+      "bytes": 60694,
+      "sha256": "d02870d2ba87ba16f12a907809436f852229b94473b6702e1d291fad18564a3a"
+    },
+    {
+      "path": "docs/patreon-support-2026-10-25/support-844.png",
+      "reason": "historical-review",
+      "bytes": 32887,
+      "sha256": "3236f4ffabbbf6959830487de9861cc5b3b4e7d63d4185536ef8e8bdd67a2d19"
+    },
+    {
+      "path": "docs/patreon-support-2026-10-25/support-overview.png",
+      "reason": "historical-review",
+      "bytes": 123106,
+      "sha256": "93ef86c5ef652041873c1bf350665ea13d49338fee6a8dd7ef5059c0772f6d10"
+    },
+    {
+      "path": "docs/phone-gentle-spin-2026-10-23.md",
+      "reason": "consolidated-document",
+      "bytes": 1504,
+      "sha256": "05bd236509de117a51f463858dfa674acec57dd86d6f904d48a6e3b102675499"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/before-open.png",
+      "reason": "historical-review",
+      "bytes": 210305,
+      "sha256": "b11ed22122b9e2a8ede66e9907d1905fbc15b55f080f3827fa3c768e9c3c6ad8"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/before.png",
+      "reason": "historical-review",
+      "bytes": 54801,
+      "sha256": "bf9939e9590a75a54e65f44f337c06db2f55592e48fab14bb11b053b356c0952"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 4840,
+      "sha256": "4cc54fa6df098bd0346b1d7b3769336eab34017eebce647a2728fe6a78ac5322"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/build-checks.txt",
+      "reason": "historical-review",
+      "bytes": 294,
+      "sha256": "6d00a6a6d46744c4817bdae5e289b2b741bbcd1f7948622105803fc6a457cb3a"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "5dc2104985d624268fafd69437cf5ec6a6605dbe566bb7fe158b81ffc385c567"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/mobile-after.png",
+      "reason": "historical-review",
+      "bytes": 79562,
+      "sha256": "fd17fe99d999054cc55d21970e02d1d4103023bb04659ab697b143b47e9c9747"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/phone-1440.png",
+      "reason": "historical-review",
+      "bytes": 161489,
+      "sha256": "aaff45ad660f5497c98c34136b7e162f4eb4ea1932ddca85d5215ccdf120ed78"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/phone-320.png",
+      "reason": "historical-review",
+      "bytes": 75547,
+      "sha256": "431c5ca448bd521ae12f695e538887fd265a17a2ddb1375a2020cfc7e7d44501"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/phone-front.png",
+      "reason": "historical-review",
+      "bytes": 7437,
+      "sha256": "a21e78a11e9489797e5908514f4ed7e4b9a0220d6fabe5854156a4b7095f50b7"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/phone-open.png",
+      "reason": "historical-review",
+      "bytes": 209870,
+      "sha256": "a6c8de90a142380a4264a57cad21acb6e3c5d1287b89d7e1b499c568a01bae75"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/phone-turn.png",
+      "reason": "historical-review",
+      "bytes": 4524,
+      "sha256": "fd83a60e796bca38898351fd378f0db94d8e00ad0b31a4586c2d011b380efa66"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 967,
+      "sha256": "fc13b2034b0bfd286fcfb2a20dae849fb127beedb8aae3e40c994e788bd72e4f"
+    },
+    {
+      "path": "docs/phone-natural-2026-10-25/review.md",
+      "reason": "historical-review",
+      "bytes": 1537,
+      "sha256": "d633f7b1f99ec89932ac564347c01a1038422b9aeefd955fc2791756f1b74715"
+    },
+    {
+      "path": "docs/progression-curve-2026-10-23.md",
+      "reason": "consolidated-document",
+      "bytes": 4828,
+      "sha256": "c0b0e856770b0049bac2f176bd1c04579009a30e54cd41957ca2d8e582c0a072"
+    },
+    {
+      "path": "docs/progression-v0.29.0.md",
+      "reason": "consolidated-document",
+      "bytes": 8107,
+      "sha256": "9c3b8399ebfcdbb3199287d4ea07d6d712cf091ce64e5f5af0f347ef86071abd"
+    },
+    {
+      "path": "docs/progression-v0.29.0/branch-mobile.png",
+      "reason": "historical-review",
+      "bytes": 92724,
+      "sha256": "e3ca4503bda16c82a4491ddf92ca4219a65bcbcd7f6627cb027cf806fb263b0b"
+    },
+    {
+      "path": "docs/progression-v0.29.0/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 3359,
+      "sha256": "900b9d4ed30b01f9328bc6c71a94b5c2ee115f1c9e02fde2f84dfad4a3b57b3a"
+    },
+    {
+      "path": "docs/progression-v0.29.0/city-mobile.png",
+      "reason": "historical-review",
+      "bytes": 101658,
+      "sha256": "bb80cc680d004a34dae8f8e2c36635a08637f3e495806eb3e962535430b7ed29"
+    },
+    {
+      "path": "docs/progression-v0.29.0/city-simulation.json",
+      "reason": "historical-review",
+      "bytes": 21209,
+      "sha256": "4fad827e4d5187b97fa9492a69df1bd788b7a2e9bfc3c94a24a6de0a0133d0c1"
+    },
+    {
+      "path": "docs/progression-v0.29.0/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 216,
+      "sha256": "a3a23ee1f9725f61819541256269e1a4e0d124befcfb26888603dc8d31e19228"
+    },
+    {
+      "path": "docs/progression-v0.29.0/shield-encounter-desktop.png",
+      "reason": "historical-review",
+      "bytes": 107077,
+      "sha256": "2e7f72e2b90c7af6e117928b4bde406a1f68ddc5acac98213345960427047689"
+    },
+    {
+      "path": "docs/progression-v0.29.0/talents-desktop.png",
+      "reason": "historical-review",
+      "bytes": 120845,
+      "sha256": "bf195a7ce392b03691045120f9c6da0cd04194b1a4fcca0c5c3758bf6d53b487"
+    },
+    {
+      "path": "docs/prototype-grid-and-mod-design.md",
+      "reason": "consolidated-document",
+      "bytes": 5798,
+      "sha256": "9c95a53f2c58a61c959346e4ec5806772e9d796026944e412f671991395b3aa4"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/artifact.json",
+      "reason": "historical-review",
+      "bytes": 236,
+      "sha256": "bd269c044754948de43202637887b2710b31c93d390f43015952004c20e7f0d1"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 659,
+      "sha256": "19fc08f3b84520895194370ceeaf61862ed91611d6107a2fc54c11f10ce407e4"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "d277b05e2ac44800523cbc0a1cbb652e32d4d311623c21871231b3225ff02765"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/character-flow.png",
+      "reason": "historical-review",
+      "bytes": 55005,
+      "sha256": "9852a84b0c61ddeb4ce12e9b3ae732986a2d14599cdab72aaafe729cc0dd7d77"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/enlarged-board.png",
+      "reason": "historical-review",
+      "bytes": 49103,
+      "sha256": "9df438460d831b107d135af5f7455a5f739038da067b6eb0c845cacc9c0a353f"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/gear-rolls.png",
+      "reason": "historical-review",
+      "bytes": 46459,
+      "sha256": "a63397a8f124a9fe09dc2481fbf4b2283edef5dd53195beda67dcd5ed70191fe"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/logo-prepared.png",
+      "reason": "historical-review",
+      "bytes": 1373560,
+      "sha256": "315bfed26345775803767d24aa760445e8e65b4b4a15af6133478e6b2af9fd2c"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/plan.md",
+      "reason": "historical-review",
+      "bytes": 1790,
+      "sha256": "a7c40f299e6e8e6b1130285ac8b9723000450ff0f32a204592a882f4d7d6016f"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/return-loading.png",
+      "reason": "historical-review",
+      "bytes": 64786,
+      "sha256": "62c9426719ded2f0518558b531cd8ed5b0482dd128c383a0dc0534df653da931"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/review.md",
+      "reason": "historical-review",
+      "bytes": 4118,
+      "sha256": "6d4335d910ae1a4b8e67a0e592c9790ae81bf0cbc36d15ab85118da080b3486e"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 17317,
+      "sha256": "c9f5941a44b79a50e1be2d1a4d234cce3511a9f40a7a37eba1cc731d17d07c59"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 970,
+      "sha256": "87e276559ad22ba18160c5e6ed3346de87d4491c56902b32d3ed1399763c8bc8"
+    },
+    {
+      "path": "docs/readability-brand-2026-10-24/talent-overview.png",
+      "reason": "historical-review",
+      "bytes": 49415,
+      "sha256": "ccd8972a5a7e78ce4cf0c56417bf2efec0091ab2601676b9a9cacfca0fc37642"
+    },
+    {
+      "path": "docs/reference-game-research.md",
+      "reason": "consolidated-document",
+      "bytes": 11650,
+      "sha256": "2d66c7ffe7070ef7c99bbb76b8145cd40b672b208923adcf6d389215ad2aa9d2"
+    },
+    {
+      "path": "docs/reference-mechanics-ideas.md",
+      "reason": "consolidated-document",
+      "bytes": 2864,
+      "sha256": "82fd3505825c6d255a32fa81c4e5e1ae8597fa849670ace4a9ed75de03c4ee6b"
+    },
+    {
+      "path": "docs/review-0.32.1/checks.json",
+      "reason": "historical-review",
+      "bytes": 13812,
+      "sha256": "0adbfa969f0ab4de1a4caf54f3aaf65d5dca6d5072740912d885f31cde8d65cf"
+    },
+    {
+      "path": "docs/review-0.32.1/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 237,
+      "sha256": "c293d18a95a1ce79dbabee756c62f839606dc49abc27b309fca2cfc2b4feeb4c"
+    },
+    {
+      "path": "docs/review-0.32/checks.json",
+      "reason": "historical-review",
+      "bytes": 13195,
+      "sha256": "8631916a8052c412ef29ded7a18bae6ccdd1e8eb9ce7d000838e2c63b976fec2"
+    },
+    {
+      "path": "docs/review-0.32/encounters.png",
+      "reason": "historical-review",
+      "bytes": 114146,
+      "sha256": "179cc554af69a419f3b4565370322bf77db0f06c9c7db9dc17deb2c3c52d55bc"
+    },
+    {
+      "path": "docs/review-0.32/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 237,
+      "sha256": "c293d18a95a1ce79dbabee756c62f839606dc49abc27b309fca2cfc2b4feeb4c"
+    },
+    {
+      "path": "docs/review-0.32/world-and-type.png",
+      "reason": "historical-review",
+      "bytes": 372332,
+      "sha256": "cd446d81bdbd0ce5cdc3a9c5b589e70f51ad0b02774e87a348522f306c882634"
+    },
+    {
+      "path": "docs/review-and-plan-2026-10-23.md",
+      "reason": "consolidated-document",
+      "bytes": 15484,
+      "sha256": "b24db6f2296fcdc6f94baee6b976fdb2af0d0446839e6da7d7901a199fa928d8"
+    },
+    {
+      "path": "docs/review-characters/attack-review.jpg",
+      "reason": "historical-review",
+      "bytes": 78765,
+      "sha256": "062b9290bcd5ff384f9a696280bd1b2a570c99772676cd65c681268ed9f0eef3"
+    },
+    {
+      "path": "docs/review-characters/checks.json",
+      "reason": "historical-review",
+      "bytes": 14662,
+      "sha256": "b20b4299e6cbbb65195109681b8ccea40fbb90a873d737ca8d5c97b4989e91d2"
+    },
+    {
+      "path": "docs/review-characters/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 237,
+      "sha256": "c293d18a95a1ce79dbabee756c62f839606dc49abc27b309fca2cfc2b4feeb4c"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/balance-probe.json",
+      "reason": "historical-review",
+      "bytes": 6028,
+      "sha256": "5e1e823cb2e57e950497efa002788c335a01f25a7d9631dc762f4c1324e09ea6"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1990,
+      "sha256": "bc0cf5cf293c1777f6badafc4731c231a6f6a0e339d8f63024a5fec98848d616"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/build-checks.txt",
+      "reason": "historical-review",
+      "bytes": 294,
+      "sha256": "ce3d16bac76d084de130e047b45ddd5b275657a1b6961f996fce6dc13b3e8d1c"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "f25603752d96b5eabde73a5edaabf233c0b90bbdfb4dcc5117bb36f91d62d739"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/circuit-colors.png",
+      "reason": "historical-review",
+      "bytes": 54763,
+      "sha256": "a34d2ba6b363b925f989131abebfb20ee1641d78386aa0eda20271555125cc8e"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/important-loot.png",
+      "reason": "historical-review",
+      "bytes": 60229,
+      "sha256": "655045cde81224f83b79b42977a375d326fba47dc84052fffddb306624f5e665"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/layout-1440.png",
+      "reason": "historical-review",
+      "bytes": 156265,
+      "sha256": "dd11f6f0deeb4d22a65956c86bb38c27f19cd0ab402bf94e560b8c2a9d5f2a47"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/layout-320.png",
+      "reason": "historical-review",
+      "bytes": 71595,
+      "sha256": "deefef1695a15c45ba8ea774939f9ee181c7896a7cdcbd7a8b75f249bf4b0ada"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/layout-844.png",
+      "reason": "historical-review",
+      "bytes": 39724,
+      "sha256": "e1ac1b502c49fc2c63ce361762c72fd7cdb6fdea4747ad1b9f1736fac1c3db5e"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/bag.png",
+      "reason": "historical-review",
+      "bytes": 48937,
+      "sha256": "3fd9c0040337f1a7fc5ffa2e4756ef0972beb517a6d44c585b484acb30f9e9bc"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1489,
+      "sha256": "a91f66ff269196b19cdb991d3afc9dd2e906c7f144b7ea60bb60c19102462082"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/cleanup.png",
+      "reason": "historical-review",
+      "bytes": 52984,
+      "sha256": "bd3fa906d10143e4a1e391b71b9503da48952f641058c9ac7bb64a11ca928b11"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/monsters.png",
+      "reason": "historical-review",
+      "bytes": 42897,
+      "sha256": "e599ea07fe2916998a67710c83476e7e52c3fe812bb49154ecd71ecfa65dfbec"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/phone.png",
+      "reason": "historical-review",
+      "bytes": 209320,
+      "sha256": "f19e28e6c7d984d746931f507009c70b849970e3139a54ffd9f163a8d0771676"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/pixel-0.png",
+      "reason": "historical-review",
+      "bytes": 2211,
+      "sha256": "b9663fb28603b984c71e7cb012c21aa0958508b27b995ed4e16ee4b506a4c03a"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/pixel-1.png",
+      "reason": "historical-review",
+      "bytes": 3123,
+      "sha256": "d490c5eeeb67b3864e374168b2c4d4b4648b4f1a865867fb408f20033ff9287e"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/pixel-2.png",
+      "reason": "historical-review",
+      "bytes": 3179,
+      "sha256": "d1e85841eeaf23b3fa33cd18ec84bc8433cd9be7619227956d26ed2eb65585d1"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/regions.png",
+      "reason": "historical-review",
+      "bytes": 43668,
+      "sha256": "b6a2b1fe087f476c7b0780c7e223c6260de2ee013e08a7ce522adc65f975dc88"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/story-0.png",
+      "reason": "historical-review",
+      "bytes": 29739,
+      "sha256": "068d88a605c295addb0314ba378323274f469ae8eb47595490d95f21204021a7"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/story-1.png",
+      "reason": "historical-review",
+      "bytes": 31950,
+      "sha256": "47f8358c5288f54f2c4d28e33515de9ed2cbad9d63f2b371495dbde9c4847552"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-regression/story-2.png",
+      "reason": "historical-review",
+      "bytes": 34973,
+      "sha256": "0f3bdb53ecb99a6132b7522c32adfbc0a4eb3c13aca67cc98af7d4c4f0048582"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/loot-sources.png",
+      "reason": "historical-review",
+      "bytes": 62281,
+      "sha256": "ff0f00d769d13fa62ac7e7ec5dd1c483a0156762c259cda607d0b4344aedbea5"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/mobile-watch.png",
+      "reason": "historical-review",
+      "bytes": 45325,
+      "sha256": "861572860edbc263abd0de4108800804948e21e53a582688a42becfe1aba3235"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/page-char.png",
+      "reason": "historical-review",
+      "bytes": 50533,
+      "sha256": "f96dc4b557ad76dc2a6e752940bd9693a7aa9bf68c10cc0479dcf11e0e8010d6"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/page-craft.png",
+      "reason": "historical-review",
+      "bytes": 54810,
+      "sha256": "08e9f2d43e992fdf7f2755091dc1f108db2e303fa89db4af3715214b5e81363c"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/page-settings.png",
+      "reason": "historical-review",
+      "bytes": 48907,
+      "sha256": "129cfc11df8075285b1de13885f21a16ff039d09a5c27af75d9b9e5b07febd2b"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/page-skills.png",
+      "reason": "historical-review",
+      "bytes": 43646,
+      "sha256": "bb10dc1f0be66095fed0c3ee3ee819a932b13909f0c9e0e2e993a4ffb2c8196a"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/page-tree.png",
+      "reason": "historical-review",
+      "bytes": 44523,
+      "sha256": "f82aabe9ba0601c027b90499f803a849e8997387dd32343a5971d3e72c541802"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/page-warehouse.png",
+      "reason": "historical-review",
+      "bytes": 41228,
+      "sha256": "db8e9db1508f671ad883eb1a02c2948b1e55e06862ebdfc50501fd976f2cffda"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/phone-zoom.png",
+      "reason": "historical-review",
+      "bytes": 260106,
+      "sha256": "4bb43ebdd2594139458f3f4d16fec3385e24a22b244443d207e4447059bdee51"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/pixel-settings.png",
+      "reason": "historical-review",
+      "bytes": 60954,
+      "sha256": "d71a79b066e8b82a456147ffde3dc34f21fbe009a7a93cdb4649934bcd2157b1"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/plan.md",
+      "reason": "historical-review",
+      "bytes": 1281,
+      "sha256": "7a087b71ea1a184ac7eead646b21c90786df97cf7f1cc26cae8e771f3de28d3c"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/polish-browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1152,
+      "sha256": "f3aa3a45c32acfa5aef25239544b3e7b7a3fd35e6b95bff41f1755d28ceb06e3"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 966,
+      "sha256": "2b869198c416de3b7838c9cbb456555ebfda8f8fce25cad903d440b59adc9b05"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/preview-FLICKER.png",
+      "reason": "historical-review",
+      "bytes": 109021,
+      "sha256": "99e836f078cc1011e3a19be40a712b98aaf05807431b698f7f3fe6cde013f9b2"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/preview-GIANTBLADE.png",
+      "reason": "historical-review",
+      "bytes": 107343,
+      "sha256": "c27034e9e1a661e2701a562086fffd1d6d000f269976e870c40e633ee25e4e52"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/preview-GUARDIAN.png",
+      "reason": "historical-review",
+      "bytes": 107883,
+      "sha256": "6b36f930a95ee37aa92c75253c7aa98583a57177075f591097cdf9939e1e6e25"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/preview-SWARM.png",
+      "reason": "historical-review",
+      "bytes": 108456,
+      "sha256": "d8ad1b0d3414f0723060b090cb83a09690f54764574c222e05ecf7a8941a6841"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/review.md",
+      "reason": "historical-review",
+      "bytes": 7080,
+      "sha256": "835ce8448d35c5f05647c0441fd184ed36d3985cec93fc1955957ae3786c9996"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/rift-hand.png",
+      "reason": "historical-review",
+      "bytes": 74768,
+      "sha256": "9d80053f5a6b5907d5fc4ccb17acefffe5f130a546cef45623c21e167d2723fe"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/rift-live.png",
+      "reason": "historical-review",
+      "bytes": 74135,
+      "sha256": "f13c91d8fd7d1c0593b23ddac2fc5ceb89826230a6f0620a2c2378c9ea715e9a"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/skill-arrows.png",
+      "reason": "historical-review",
+      "bytes": 103133,
+      "sha256": "562b47b4f40989e9e54bcefffbc23ceb776351435c363bc991b96561a55122ea"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 19248,
+      "sha256": "eea8bb9204604e203afd10b2b4c89cdc86c9c82f1181fa79d83d33b366000729"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/support-colors.png",
+      "reason": "historical-review",
+      "bytes": 49285,
+      "sha256": "3f91443358a7faa2ac0e002e7201a259481f2bc5c6292ca52fb47f6e9bbfd1a9"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/tower-live.png",
+      "reason": "historical-review",
+      "bytes": 77754,
+      "sha256": "133055b78e8ba402202f1d7f3ce417d420446619e4c8dbce8fcc4b399ee6abd8"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/tower-stairs-death.png",
+      "reason": "historical-review",
+      "bytes": 67607,
+      "sha256": "8f35b793a9ff7727c0fad19d1d9bcce02273124439b6e71903fc37cceda7cb8c"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1356,
+      "sha256": "4e14dd962d54134353d4493347ea1edf42f47a7e850e50976136e2118a952a77"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/mobile-ascension.png",
+      "reason": "historical-review",
+      "bytes": 66217,
+      "sha256": "aa426e68fe90628d429d1106adcec3a35cfae085645a84f0de43e86c2d0afa93"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/mobile-character.png",
+      "reason": "historical-review",
+      "bytes": 54148,
+      "sha256": "81e1b1090fd215ac34f72d6c19807d705c024d8c0e9647f2cb8e64a0e4d2310c"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/portrait-beep.png",
+      "reason": "historical-review",
+      "bytes": 53845,
+      "sha256": "de40ededb16932f788aaca410941f6adcb3cbc1d605619e20183d89bbf136a0b"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/portrait-frost.png",
+      "reason": "historical-review",
+      "bytes": 53689,
+      "sha256": "81be1184ccbc57ef20eb30685375fed9b3bce546b4895de10a908749127f958e"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/portrait-street.png",
+      "reason": "historical-review",
+      "bytes": 52801,
+      "sha256": "d2aebb63c09164c37b189f1dee66602dde81cb63461d7cde1728aef89de65b45"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/portrait-volt.png",
+      "reason": "historical-review",
+      "bytes": 54240,
+      "sha256": "875387517a363d6ab6c7c582e1c9db4c2d37e0ee6027510d9d287e0eae4653a3"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/talents-1440.png",
+      "reason": "historical-review",
+      "bytes": 143449,
+      "sha256": "496a42ea1ffd37ae0ecf4132e6554500c22b79f826a8fcf6c11739217f6831b2"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/talents-320.png",
+      "reason": "historical-review",
+      "bytes": 53084,
+      "sha256": "ce4483c32f0c956e61dd38e60b101a5620984d6d8ff63c2a6730f51b1bfe2573"
+    },
+    {
+      "path": "docs/rift-experience-2026-10-25/window-regression/talents-844.png",
+      "reason": "historical-review",
+      "bytes": 52741,
+      "sha256": "fdc3a4c923861a7f7e33d2252d00733eddb1a6019d4c4a4304e9e7c48a360cbb"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/audio-validation.json",
+      "reason": "historical-review",
+      "bytes": 2032,
+      "sha256": "49eb0ed5795bec41e18fd9da0804c7e529625384f373c6c1fa0384de64ebd60d"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/boards.png",
+      "reason": "historical-review",
+      "bytes": 48806,
+      "sha256": "588132a9968ee3a43bbe37cf63fc8d6ffa086ae69159c6871c70abffaaeb778f"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1363,
+      "sha256": "be7f7c525144e522eca4fd83dbaa8f34e4a4fd82f08e98deffa4d2f62a8303ee"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "0b89b1193282d57031fa977dd42df3c62ef37356a37aed26d2028a4172b1648a"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/character.png",
+      "reason": "historical-review",
+      "bytes": 66448,
+      "sha256": "ae1b7b63ac4b7297b10989f3eabe263b612a6a6afc42843db00abdfa7c00c025"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/continuous-inventory.png",
+      "reason": "historical-review",
+      "bytes": 50867,
+      "sha256": "c8f0ac61bd48c36b0ae7e99dda63c0fb0b8db9d7f1d781d14cace7b42142c2ca"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/craft-1440.png",
+      "reason": "historical-review",
+      "bytes": 105208,
+      "sha256": "ee7d4bb9e801323d293b2c5ef213d61003a127230eb0a75b43d78f3183a26ce6"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/craft-320.png",
+      "reason": "historical-review",
+      "bytes": 38453,
+      "sha256": "04a7a8ef839002c7e09031def5fcaebd993a54c95da73b8999111e710bbb4971"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/craft-844.png",
+      "reason": "historical-review",
+      "bytes": 34076,
+      "sha256": "7fb766159ba0d93e68906e69409c6e015b0b36a4374e7bab5142f57cb9020211"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/craft-tools.png",
+      "reason": "historical-review",
+      "bytes": 69204,
+      "sha256": "121b92c1e9c3499303dd2cb83324b64b42fb3c13a8ec8e61b070dc75757b02f1"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/craft.png",
+      "reason": "historical-review",
+      "bytes": 60185,
+      "sha256": "1d8b4e73cce5b00e0a9f8ad0aba3749d4bc38e0d66bad0cec034a6ef6f0aef44"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/effects-settings.png",
+      "reason": "historical-review",
+      "bytes": 64817,
+      "sha256": "54f317a31acbca9823796208fe0bbb2f94b0e2d01b992bfd6870b0975da3e8c7"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/electric-board.png",
+      "reason": "historical-review",
+      "bytes": 48365,
+      "sha256": "846aa0ce08b3974117236ed644176f2036cb2723e1314d5dc627cea26b9dddcd"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/guidance-1440.png",
+      "reason": "historical-review",
+      "bytes": 174172,
+      "sha256": "98f1c6b3050d340d0b9ef500cf0c347dd70824fc581f9b58c857d8ca5a52a313"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/guidance-320.png",
+      "reason": "historical-review",
+      "bytes": 42162,
+      "sha256": "1122c96fcc489e4ef7ef06675bc41cea7ecc42f30aef527f9609a5ff2006efe4"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/guidance-844.png",
+      "reason": "historical-review",
+      "bytes": 39871,
+      "sha256": "62896b768628222c69f2ca4b02f8e0ea409cbb6e773e2805019529673f1ee02c"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/guidance-browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1363,
+      "sha256": "1c2fe61d9d22680fa13f97734b591970554671961d67416f55dc5dd0e11872ee"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/bag.png",
+      "reason": "historical-review",
+      "bytes": 52250,
+      "sha256": "3b278d4afa0c06b529cbfc9d37a6c73443892ee9436948e5d57e3260b86f5df0"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1488,
+      "sha256": "9d8d8de3c6d2a8f983ce7e43dae496005fe789be1381667785377047b46b4694"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/cleanup.png",
+      "reason": "historical-review",
+      "bytes": 55758,
+      "sha256": "ee986de7b99b3c7b2fdbea589b5d408352a05d57c619622bbe5a081048730bd0"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/monsters.png",
+      "reason": "historical-review",
+      "bytes": 44504,
+      "sha256": "48ff5e465797bed8ab827b40b751d4847b979fc6f5e06aca444081bf4418a37c"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/phone.png",
+      "reason": "historical-review",
+      "bytes": 209305,
+      "sha256": "c811e4edc5083027b2c265be774f9f2437bebd86022e0740b8d7c2c0f0889973"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/pixel-0.png",
+      "reason": "historical-review",
+      "bytes": 2211,
+      "sha256": "b9663fb28603b984c71e7cb012c21aa0958508b27b995ed4e16ee4b506a4c03a"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/pixel-1.png",
+      "reason": "historical-review",
+      "bytes": 2952,
+      "sha256": "26c2d90cee08876658b798c40db219af0ad87f7488578857b6dbf73f4f93a6a9"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/pixel-2.png",
+      "reason": "historical-review",
+      "bytes": 3172,
+      "sha256": "e24b1b4b909eeb48bece683f7e4fbf7f390c047a9a9080c6eae19c555ed86e81"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/pixel-3.png",
+      "reason": "historical-review",
+      "bytes": 3251,
+      "sha256": "011f6c78742b4273e1b50068de895c2c2d2db9d0913934be137496e381e5db8b"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/regions.png",
+      "reason": "historical-review",
+      "bytes": 44514,
+      "sha256": "bbabad73af22e35fa3e87c585bbb2157b8a4f3e62d40fcec7f22b178e9f7f120"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/story-0.png",
+      "reason": "historical-review",
+      "bytes": 29739,
+      "sha256": "068d88a605c295addb0314ba378323274f469ae8eb47595490d95f21204021a7"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/story-1.png",
+      "reason": "historical-review",
+      "bytes": 31950,
+      "sha256": "47f8358c5288f54f2c4d28e33515de9ed2cbad9d63f2b371495dbde9c4847552"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/loot-regression/story-2.png",
+      "reason": "historical-review",
+      "bytes": 34973,
+      "sha256": "0f3bdb53ecb99a6132b7522c32adfbc0a4eb3c13aca67cc98af7d4c4f0048582"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/model-budgets.json",
+      "reason": "historical-review",
+      "bytes": 743,
+      "sha256": "b2e5b1e277dad84b558a2a040b0241a17bdb74a53469aabc5f91993ef80cf725"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/models.png",
+      "reason": "historical-review",
+      "bytes": 99817,
+      "sha256": "5189844ec9792b4c0dc6923ba7cc36232fb9ac7605b98803613c744e2278040a"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/phone-front.png",
+      "reason": "historical-review",
+      "bytes": 210704,
+      "sha256": "55afb320de897137a57f27b478b27b5e97e69ac9fb72d7cf252c2274e645ea3f"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/phone.png",
+      "reason": "historical-review",
+      "bytes": 209261,
+      "sha256": "825fb4e733b25a7c5b6324920dd91ee38720edeba67c819849da15c6f886fe3d"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/plan.md",
+      "reason": "historical-review",
+      "bytes": 2489,
+      "sha256": "46a694e6b410ef601d1f2c766f84e52192a9532e58226d2257214d5c3339a302"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/player-ailments.png",
+      "reason": "historical-review",
+      "bytes": 65707,
+      "sha256": "3c7de6e228d1c55b0cada3b5919d9e1a693e6b5e21348980fea9288570e6e809"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 968,
+      "sha256": "36ba4f4f2bbcbd4d4986c897857f23c5caffbd9bbfc46e86bfd1fc1aa4387d1e"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/rarity.png",
+      "reason": "historical-review",
+      "bytes": 49823,
+      "sha256": "30fde367a17e69eb690455f9dc13b5e843fd37e671ad65f658ff7aa3d031dbee"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1356,
+      "sha256": "4e14dd962d54134353d4493347ea1edf42f47a7e850e50976136e2118a952a77"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/mobile-ascension.png",
+      "reason": "historical-review",
+      "bytes": 71273,
+      "sha256": "6a20451010ffa6ce1af44414d85f3f3b34beb205dea9b8eae12bb8c5f766066e"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/mobile-character.png",
+      "reason": "historical-review",
+      "bytes": 59809,
+      "sha256": "47e66e54391ba7bb96d945faa3e087d99a79e5fcb0d9b6c42a244eba30dabfb2"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/portrait-beep.png",
+      "reason": "historical-review",
+      "bytes": 59954,
+      "sha256": "d114a38e7969be9e94ca89e3cd61cffaf30aa544b6bcc0b1870ece9cdf83382e"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/portrait-frost.png",
+      "reason": "historical-review",
+      "bytes": 59266,
+      "sha256": "58fde091e84caa33b7d67485363733a78fde09510a02f7130f8b61d09e91852b"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/portrait-street.png",
+      "reason": "historical-review",
+      "bytes": 59381,
+      "sha256": "47f3e2d1dc6ed32088903e0b5906195b69f5dc55c5d75e0b1dc5efb52f946dd3"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/portrait-volt.png",
+      "reason": "historical-review",
+      "bytes": 60010,
+      "sha256": "c1f894f5973790c31c6a84e7786cfa9362d85101a771d9a5aaec04eb8a3a8b64"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/talents-1440.png",
+      "reason": "historical-review",
+      "bytes": 148343,
+      "sha256": "e3d6ed945513988d0088181b76f0487a64ba4e38c40c6d6781eb82151d5e007c"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/talents-320.png",
+      "reason": "historical-review",
+      "bytes": 49454,
+      "sha256": "b2ee81d82d3e80c33bb10c443da8209ec886362d99711761760d8ae22cbb0ffe"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/regression/talents-844.png",
+      "reason": "historical-review",
+      "bytes": 54894,
+      "sha256": "9f1d4e8e9dba26e780a17b1c3635f3ca843694639a28bc9705943bd7908b5814"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/review.md",
+      "reason": "historical-review",
+      "bytes": 5010,
+      "sha256": "0e89f124d9f2a53b3b0cc53d87ef59fd8aee0d4e741fc9170ff334231cfc298c"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/season-1440.png",
+      "reason": "historical-review",
+      "bytes": 114417,
+      "sha256": "f40ccc7a610298b49e5230f025a24c09d2e26486a7781d554d7c11160392f307"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/season-320.png",
+      "reason": "historical-review",
+      "bytes": 41104,
+      "sha256": "358b4e1c50405b83b6132c4219bf8d2f5177a0d64f6d703efb598296b76e5361"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/season-844.png",
+      "reason": "historical-review",
+      "bytes": 39053,
+      "sha256": "7b4bad8be161738980b95bc0993486002fcb8ba72669143ed1f44bfd9be13e62"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/season.png",
+      "reason": "historical-review",
+      "bytes": 69014,
+      "sha256": "135f5d730ec6b7452d50876e291db1d542c5717936843a601a6d8122c248b81b"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/settings.png",
+      "reason": "historical-review",
+      "bytes": 49333,
+      "sha256": "7be0360ba489f90fbcc837602ef0141a56a83b1d8a0dcec0d3f44a9d34f3835f"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 18820,
+      "sha256": "6a867af070ddabb0d42cd7676754a933e68acc41ff70c811271e4375765c6460"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/talent-hover.png",
+      "reason": "historical-review",
+      "bytes": 52138,
+      "sha256": "b7e7bdda38ccb55e79e4fc79d1867ee3ce2532e944fdf8ea824357a1b42720b4"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/task-guide.png",
+      "reason": "historical-review",
+      "bytes": 68086,
+      "sha256": "d5bdb0ef5ad693ee81b461086b011ed80ff834490b2764bb8241883540420355"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/task-links.png",
+      "reason": "historical-review",
+      "bytes": 61263,
+      "sha256": "a55498041e062c304802cbcd7e5aa0c0ccffc1a135c9cde9161ab69cbc458ec8"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/tower-stairs.png",
+      "reason": "historical-review",
+      "bytes": 25782,
+      "sha256": "bc1506827cc364ed93edff731ba6ce5c1ae7a7fb919e26fc2a24afd72e97c610"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/tower.png",
+      "reason": "historical-review",
+      "bytes": 50382,
+      "sha256": "773c7f397001f6df7f18d9ad9ffc62142eb4ddf625b0018034b41b86eb37dcff"
+    },
+    {
+      "path": "docs/season-signal-2026-10-24/zoomed-healthbars.png",
+      "reason": "historical-review",
+      "bytes": 64989,
+      "sha256": "c7442c2266fafec2bf047881cdb92de1cc7ae74ce2e7e611781e81a3eb13c1b9"
+    },
+    {
+      "path": "docs/skill-assembly-ideas.md",
+      "reason": "consolidated-document",
+      "bytes": 14076,
+      "sha256": "60c5efec9a39553dc6348e94830522b69d7b5e3689ae96be75470da39e6e9595"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/balance-probe.json",
+      "reason": "historical-review",
+      "bytes": 6948,
+      "sha256": "430cb65005fd88cd6e0d2bb17d18b416b7f24cead21c6443eb26703e25e12edd"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/boss-10.png",
+      "reason": "historical-review",
+      "bytes": 191557,
+      "sha256": "3ba48acd2911e98420ce5b3263021290eede4588ee648bc84dac7618d2905f1c"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/boss-20.png",
+      "reason": "historical-review",
+      "bytes": 173346,
+      "sha256": "57d14866f200c7e7500f7ee7d4cbf092942127c6d21fecc6574e7808a52ffaa7"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/boss-30.png",
+      "reason": "historical-review",
+      "bytes": 156243,
+      "sha256": "c51019931b543dd63d00066d688e714a92b78e9fdbea4a7074e5a51c00008437"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1422,
+      "sha256": "d44405c9158463d6a69ecc31e370f337d649048bee2a887ca30d25d5be5be895"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "5dc2104985d624268fafd69437cf5ec6a6605dbe566bb7fe158b81ffc385c567"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/compact-receipts.png",
+      "reason": "historical-review",
+      "bytes": 83541,
+      "sha256": "ef976a2059fbb8be95c5ca4418adac1edb305285cfdb722fc0fe583e0d031581"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/bag.png",
+      "reason": "historical-review",
+      "bytes": 46870,
+      "sha256": "9c7476fa6ece8ffe1f811ccd64434cc5d674752080cbdc2eda81702230be5aa1"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1488,
+      "sha256": "cf5ecdb04bcbf05f14c759cc06ca6af6fa0f9439eb556c5eb343df8fe1530b9f"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/cleanup.png",
+      "reason": "historical-review",
+      "bytes": 54175,
+      "sha256": "7f01281907c78c9e93696c4fc509e18e924637d7a32518655fe380f761f4064f"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/monsters.png",
+      "reason": "historical-review",
+      "bytes": 44621,
+      "sha256": "27a3f1249631840e22433fe65788e3f75f66553fc5e8a77c7dd1784d3069666e"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/phone.png",
+      "reason": "historical-review",
+      "bytes": 209322,
+      "sha256": "6aea13b1e2950fdc8c8eb3547ddf35ce82f45c21074126c950f37ce7395ce8c0"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/pixel-0.png",
+      "reason": "historical-review",
+      "bytes": 2211,
+      "sha256": "b9663fb28603b984c71e7cb012c21aa0958508b27b995ed4e16ee4b506a4c03a"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/pixel-1.png",
+      "reason": "historical-review",
+      "bytes": 2952,
+      "sha256": "26c2d90cee08876658b798c40db219af0ad87f7488578857b6dbf73f4f93a6a9"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/pixel-2.png",
+      "reason": "historical-review",
+      "bytes": 3172,
+      "sha256": "e24b1b4b909eeb48bece683f7e4fbf7f390c047a9a9080c6eae19c555ed86e81"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/pixel-3.png",
+      "reason": "historical-review",
+      "bytes": 3251,
+      "sha256": "011f6c78742b4273e1b50068de895c2c2d2db9d0913934be137496e381e5db8b"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/regions.png",
+      "reason": "historical-review",
+      "bytes": 42734,
+      "sha256": "9f58b4a08dbebe966f3628f154bfd84e9e41abcecfab5ffebc255f53f1d5ef21"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/story-0.png",
+      "reason": "historical-review",
+      "bytes": 29687,
+      "sha256": "aad46ce82f65bce6ea7d4c7cf3c348efe10367eaf3ad00c40e41b748486f0e27"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/story-1.png",
+      "reason": "historical-review",
+      "bytes": 31950,
+      "sha256": "47f8358c5288f54f2c4d28e33515de9ed2cbad9d63f2b371495dbde9c4847552"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/loot-regression/story-2.png",
+      "reason": "historical-review",
+      "bytes": 34973,
+      "sha256": "0f3bdb53ecb99a6132b7522c32adfbc0a4eb3c13aca67cc98af7d4c4f0048582"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/mobile-hidden.png",
+      "reason": "historical-review",
+      "bytes": 43308,
+      "sha256": "ce86b4c116e09439ecca984d64a36ba4a1bdace80c0b8aba702215742f056ddb"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/plan.md",
+      "reason": "historical-review",
+      "bytes": 2102,
+      "sha256": "ce116904bdf375c7efe5d357c825b2a7a93d2ed0f0c352f8a6fae1b87244cb40"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 967,
+      "sha256": "250405edf9cd87f1b547194e406e3829cdaa8087649526b79d700abd8f48e219"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/review.md",
+      "reason": "historical-review",
+      "bytes": 5667,
+      "sha256": "44dfb3f31cbad36216f616f2ad12e6807819a71f17350d787f172ba5252e93ae"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/skill-ARROWS.png",
+      "reason": "historical-review",
+      "bytes": 46677,
+      "sha256": "ad125eaba19ab30610bb0c236db2e5ab8a3050386a6bebf4b113b2bf3b52d56c"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/skill-GIANTBLADE.png",
+      "reason": "historical-review",
+      "bytes": 39309,
+      "sha256": "4bad52111345343fb5cf3e1ed60ce2ebbfd3f7e095aa289f4c94567ffd5263da"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/skill-GRAVITY.png",
+      "reason": "historical-review",
+      "bytes": 27094,
+      "sha256": "b6eb7122a36632d441b61a5590ca4aa7d1990c9a77ce57fdcb524497ac9c1273"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/skill-RESONANCE.png",
+      "reason": "historical-review",
+      "bytes": 31518,
+      "sha256": "53ed6b393e952a6a2ae8785502abfb90b1cf045a3bb669c50d5da7ba36b573ea"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/skill-RIFT.png",
+      "reason": "historical-review",
+      "bytes": 30826,
+      "sha256": "f47cb5324484230842035b062b8a8583a5a586e5f1b8427270b75c0ff7fbd6fa"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 19022,
+      "sha256": "bf70eb7d6150f6940096746078a1036a9c0dc28c8e78b5d545b308cf53ca7c94"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/source-skill-picker.png",
+      "reason": "historical-review",
+      "bytes": 58637,
+      "sha256": "88ab8901418cc98cac6f4f8ea20e3b98e4156c4681e7e6df5d1e9bde93afb0f2"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/tower-ascent.png",
+      "reason": "historical-review",
+      "bytes": 51517,
+      "sha256": "f7379ee7909b5db9c61c0f93a8124d4d4b0b2be62ca9222c2f9b13b770d05bb6"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/tower-room-1.png",
+      "reason": "historical-review",
+      "bytes": 50586,
+      "sha256": "c74b38318a9a84865dd9b9ba6c5b01ac3b3fee3930d5ae89cb2df2b5c1329ba2"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/tower-room-11.png",
+      "reason": "historical-review",
+      "bytes": 50980,
+      "sha256": "e3a8a8d80c0a57ba4a38be22bf1c91387cbb5654784631ca0597b256f6daa9ee"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/tower-room-21.png",
+      "reason": "historical-review",
+      "bytes": 51078,
+      "sha256": "b636dd64c427b88b9856cc75470825fd0a56fd3515bd46b1017bdc65c8400af0"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/tower-ui-1440.png",
+      "reason": "historical-review",
+      "bytes": 98498,
+      "sha256": "795c2c453633baba5e6be15a27f77c773b2a185052d52bfd22fcb624d6dee042"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/tower-ui-320.png",
+      "reason": "historical-review",
+      "bytes": 50651,
+      "sha256": "4f9f33b7c90162cb7550ca93bfed59b9054a8f16cda0a0694407e76c597b88c3"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/tower-ui-844.png",
+      "reason": "historical-review",
+      "bytes": 40324,
+      "sha256": "a8cd9ba8099bbda1501ebab8e233ec2af0b5133fa0d4ba95b69eaa04acbe96b6"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1356,
+      "sha256": "4e14dd962d54134353d4493347ea1edf42f47a7e850e50976136e2118a952a77"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/mobile-ascension.png",
+      "reason": "historical-review",
+      "bytes": 71915,
+      "sha256": "74a3ce15cf91bf7653b36cdb2600777ecf593aa798cf225f11df3b23a2e17632"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/mobile-character.png",
+      "reason": "historical-review",
+      "bytes": 53772,
+      "sha256": "e650d891a9154cb8bc96d2cc90fe74f1eb85d4d2552e4c60ff8bc550ee0dbc57"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/portrait-beep.png",
+      "reason": "historical-review",
+      "bytes": 52464,
+      "sha256": "6ecd978ffc39aeac8f9a095c630469276a0e5a58b89119ebbfd597ff6c26014b"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/portrait-frost.png",
+      "reason": "historical-review",
+      "bytes": 53130,
+      "sha256": "c051c3061054ff560dcd5d6ce0194462e0fe9d4fbef829111bcfee938ec7aaf3"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/portrait-street.png",
+      "reason": "historical-review",
+      "bytes": 54301,
+      "sha256": "7cababe171ae96f98c1d0a3df2bf6e6b6a2a32f7286b161182331e22cff00805"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/portrait-volt.png",
+      "reason": "historical-review",
+      "bytes": 53775,
+      "sha256": "f025bb419e148ecf6667c94cf73fefd2a866610f6c62e0fb65616e5750c4f608"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/talents-1440.png",
+      "reason": "historical-review",
+      "bytes": 148276,
+      "sha256": "cd7f238630493926b8df3f8659329e94d4d0f0730cf779e937c414261d15b2df"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/talents-320.png",
+      "reason": "historical-review",
+      "bytes": 50294,
+      "sha256": "c3e159c05babf113d6261ba3af971a7a46a84eddab897988916e9e508f34ef46"
+    },
+    {
+      "path": "docs/tower-combat-2026-10-25/window-regression/talents-844.png",
+      "reason": "historical-review",
+      "bytes": 54876,
+      "sha256": "490f571ee257c75b61f2584c297afaea7fde4ce072057baf53cac2c555b65188"
+    },
+    {
+      "path": "docs/ui-performance-v0.26.1.md",
+      "reason": "consolidated-document",
+      "bytes": 3047,
+      "sha256": "543e2173219f8514e2158e7d45195c4c188a1ec5f1aae15a626cf3b4449bdc0d"
+    },
+    {
+      "path": "docs/ui-performance-v0.26.1/after.json",
+      "reason": "historical-review",
+      "bytes": 415,
+      "sha256": "4214fed83393ade9ed004c8528e5f3453ba5358d3a7e8040dc3372911e7873ab"
+    },
+    {
+      "path": "docs/ui-performance-v0.26.1/before.json",
+      "reason": "historical-review",
+      "bytes": 419,
+      "sha256": "2611c146a8dd5b04157495734c325bed271e33f866224d3457ff54d5a3da2d92"
+    },
+    {
+      "path": "docs/ui-performance-v0.26.1/mobile.png",
+      "reason": "historical-review",
+      "bytes": 74583,
+      "sha256": "dce12765a8833d80a1b8c1e6e27d1482ee5350ca4b17005dc8fa4351d22654a9"
+    },
+    {
+      "path": "docs/ui-performance-v0.26.1/probe.cjs",
+      "reason": "historical-review",
+      "bytes": 1650,
+      "sha256": "82d613eb0b55440ce1a54812e1ea365ef109b10c04a88f9aed43f23019df39d0"
+    },
+    {
+      "path": "docs/ui-performance-v0.26.1/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 216,
+      "sha256": "a3a23ee1f9725f61819541256269e1a4e0d124befcfb26888603dc8d31e19228"
+    },
+    {
+      "path": "docs/ui-performance-v0.26.1/structural-result.json",
+      "reason": "historical-review",
+      "bytes": 218,
+      "sha256": "2af4c510fcc24eace19d3e6851d0e463e48cfe9ae1db64e673ba0fe6dca1a158"
+    },
+    {
+      "path": "docs/ui-review.md",
+      "reason": "consolidated-document",
+      "bytes": 3991,
+      "sha256": "526c48375eeece16bbb15c676f171003732726031c17d0b26389f01886370073"
+    },
+    {
+      "path": "docs/ui-ux-plan.md",
+      "reason": "consolidated-document",
+      "bytes": 4917,
+      "sha256": "ac9a45453be7cae7d738f1744fc555b8e03d1f15594d82f8e20fc64a111d981f"
+    },
+    {
+      "path": "docs/update-0.32-validation.md",
+      "reason": "consolidated-document",
+      "bytes": 6869,
+      "sha256": "0423115622633c61c1fd23d935cb5a807792f26c0f7a4322fffae55eb32bfe6e"
+    },
+    {
+      "path": "docs/ux-review-0.32.1.md",
+      "reason": "consolidated-document",
+      "bytes": 2515,
+      "sha256": "ef18981c9d79cd4bd1cb8a7deabea3fb2a0fcc01fe01888f768dd5eb485c6938"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 410,
+      "sha256": "4c968da42f4cf27ca055df703f39393e7ed775a201ff7b3a4218dd4aa7c03c82"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "d6ef65f0a04911ac95ecc89a2ffa9e2f82d2be44d139d9acc9bb0aef884abcbf"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/fallback-after.png",
+      "reason": "historical-review",
+      "bytes": 47746,
+      "sha256": "17def0b76699d2b9a50110f1b97d6c8f929a532be8f2694e31c04a1a57c3d06b"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/fallback-before.png",
+      "reason": "historical-review",
+      "bytes": 87484,
+      "sha256": "bb854b1b5699bbf594ac8ff0c617b18665983e3e07c2fee3e773e5035d1fe0ef"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/fallback-manifest.json",
+      "reason": "historical-review",
+      "bytes": 280,
+      "sha256": "3b537b1ea024eee1e337540fb94da53f3937361a8a45fb962913cacc0df75541"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/game-1440.png",
+      "reason": "historical-review",
+      "bytes": 134469,
+      "sha256": "fa4821a72b5dc36700b57633e5150537e6b298e6dc776b564de867d3e7296e92"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/game-320.png",
+      "reason": "historical-review",
+      "bytes": 59064,
+      "sha256": "ef2638098149cab05336dbc01964dc6a1a537efa9308429a36e6c67bf7c17d26"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/live-desktop-before.png",
+      "reason": "historical-review",
+      "bytes": 138256,
+      "sha256": "8a0035fb90fe4c109430cd545a086eb5a3c203eddcb6595182d1dcf979fdab7f"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/live-mobile-before.png",
+      "reason": "historical-review",
+      "bytes": 63883,
+      "sha256": "96bd9be257c74e36bc2727e425c983e10b81aff64d95bfa9c1c498a3bb89a4a3"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/premium-audit.json",
+      "reason": "historical-review",
+      "bytes": 967,
+      "sha256": "4a9320bc14d8d1b9fa0cfb833967ccc186370ff20ccbca19506ee9a69c645717"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/review.md",
+      "reason": "historical-review",
+      "bytes": 5263,
+      "sha256": "86ce1187cb2f0bfb2667849989fcf8413fae39bd66194b2c0ec6482d140f263a"
+    },
+    {
+      "path": "docs/visual-omissions-2026-10-25/source-checks.txt",
+      "reason": "historical-review",
+      "bytes": 855,
+      "sha256": "caefe5a179609864f62ec91ff7f0992605be46377c28f079357c596299a1e021"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/artifact.json",
+      "reason": "historical-review",
+      "bytes": 236,
+      "sha256": "d3a67ebedd45f0cee680c87e5e04ec59c78f89cf9b709fee502fec7a45309def"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/ascension-guide.md",
+      "reason": "historical-review",
+      "bytes": 5702,
+      "sha256": "4a8e945f247e469e1b5e0c1526d51f38315a202d5427b4db4929ac5018908502"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/balance.json",
+      "reason": "historical-review",
+      "bytes": 203447,
+      "sha256": "fa320adbf5f5f00d1060f17cedfe93283c40b4fbb12a8b32d83b8226e06db66d"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/browser-results.json",
+      "reason": "historical-review",
+      "bytes": 1333,
+      "sha256": "a9f7b58ed70f54c023820fcc8458510c326d57842de0f71ae9f1b24aefeb440e"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/bundle-results.json",
+      "reason": "historical-review",
+      "bytes": 239,
+      "sha256": "d277b05e2ac44800523cbc0a1cbb652e32d4d311623c21871231b3225ff02765"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/design-lint.json",
+      "reason": "historical-review",
+      "bytes": 451,
+      "sha256": "51fac27d7b859e75d32778419b0f275eac8050e36621da9a7ad20ab69180fcc5"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/mobile-ascension.png",
+      "reason": "historical-review",
+      "bytes": 58868,
+      "sha256": "88e7976f25613f832e2db31e068f164b08cdc64b90288ec6775ea787742a5211"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/mobile-character.png",
+      "reason": "historical-review",
+      "bytes": 55314,
+      "sha256": "54469776d663d241461cf38623d8fed25fd36328184522a67b9ceec560907432"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/node-effects.json",
+      "reason": "historical-review",
+      "bytes": 64959,
+      "sha256": "61b6269a08e92901dad8b03cb7f6f8b0fe9caf739458c660d36e2716c8ba6813"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/plan.md",
+      "reason": "historical-review",
+      "bytes": 2743,
+      "sha256": "d31d7c0c9ca55536a89cee23ee048e3283dba3b9c203606acdbc4c8be0147545"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/portrait-beep.png",
+      "reason": "historical-review",
+      "bytes": 54575,
+      "sha256": "9816c06b61dffa0fa331b9d8acec3e5f16c926a23eb5b4175d51a3370637f909"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/portrait-frost.png",
+      "reason": "historical-review",
+      "bytes": 54786,
+      "sha256": "ce8ef6619e2911df554d9dd81bcb6bf8a9d097178220dc61beb8f71237665742"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/portrait-street.png",
+      "reason": "historical-review",
+      "bytes": 56022,
+      "sha256": "9e33aeef13c5aab711bd39e83b989ec4f3f5528581fe5bccc9a3c09a7352f66e"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/portrait-volt.png",
+      "reason": "historical-review",
+      "bytes": 55473,
+      "sha256": "0d85503b3ded80d13e0cd42354dfa6741a35878b92ea49449cd72aac3fca9475"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/review.md",
+      "reason": "historical-review",
+      "bytes": 6435,
+      "sha256": "2894fc901fb51f38e0f9e95e98371844892c0e9cb839b3a65d8689429f26e120"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/source-checks.json",
+      "reason": "historical-review",
+      "bytes": 17060,
+      "sha256": "86000db7203b807a378a308300801254c1d79591e811324db85d12ae1e1419c7"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/static-audit.json",
+      "reason": "historical-review",
+      "bytes": 970,
+      "sha256": "87e276559ad22ba18160c5e6ed3346de87d4491c56902b32d3ed1399763c8bc8"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/talents-1440.png",
+      "reason": "historical-review",
+      "bytes": 119391,
+      "sha256": "e54ff1cf1ced9a3998817dff91fc602c95535398c7803f6457a967940009b7d1"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/talents-320.png",
+      "reason": "historical-review",
+      "bytes": 42817,
+      "sha256": "fca48bb803d5aaecd6f0a57247d781ccb29cc41cccc5d75f06fed301c257f4c1"
+    },
+    {
+      "path": "docs/window-ui-ascensions-2026-10-24/talents-844.png",
+      "reason": "historical-review",
+      "bytes": 40343,
+      "sha256": "b3a777c9ea14f90e2a3fa3e7662734ca1d8bf1fa68f42effa9e47a0093572b88"
+    },
+    {
+      "path": "docs/wire-board-routing-ideas.md",
+      "reason": "consolidated-document",
+      "bytes": 7453,
+      "sha256": "5da777c174fe8401b85bab5b1d837ed4a087604219b9f9c31760e634ae45e121"
+    },
+    {
+      "path": "docs/y2k-characters-handoff.md",
+      "reason": "consolidated-document",
+      "bytes": 6204,
+      "sha256": "bd8b6d3cf20621f3d7150338b5b2352d7d6f372a7d07ad39bcd5339b64a92806"
+    },
+    {
+      "path": "docs/y2k-equipment-placement-plan.md",
+      "reason": "consolidated-document",
+      "bytes": 11289,
+      "sha256": "39d4999409e6270c88cbb2a37305f28e42fea6cc163f7c668a9bd69088e047e6"
+    },
+    {
+      "path": "docs/y2k-equipment/browser.json",
+      "reason": "historical-review",
+      "bytes": 79,
+      "sha256": "4bdb0432eae84062ded8bbaa9385c6d0f2f8e30a4bd975fbf50b79b649030011"
+    },
+    {
+      "path": "docs/y2k-equipment/characters.jpg",
+      "reason": "historical-review",
+      "bytes": 60902,
+      "sha256": "78b88b38fd7e057ae61b30b1becd0a2e0811e4a96671895ecf22e6d14dc5049e"
+    },
+    {
+      "path": "docs/y2k-equipment/checks.json",
+      "reason": "historical-review",
+      "bytes": 15104,
+      "sha256": "92949c12fb11603c8f41f3c3fee76a84276e5af4486fbfe8b32e8ac19451f5fa"
+    },
+    {
+      "path": "docs/y2k-equipment/fit-actions.jpg",
+      "reason": "historical-review",
+      "bytes": 358566,
+      "sha256": "01a4bdee8713e481e4e566d729906ac1b7b3205c27df594ad153409ba824c92c"
+    },
+    {
+      "path": "docs/y2k-equipment/fit-browser.json",
+      "reason": "historical-review",
+      "bytes": 247,
+      "sha256": "2d6a5f5865a00fd0c2d438319b13a9c909d229fa4d27253672351a9ce3afd935"
+    },
+    {
+      "path": "docs/y2k-equipment/fit-checks.json",
+      "reason": "historical-review",
+      "bytes": 15367,
+      "sha256": "3eefec76bfb4651ccb54d98fbe83a06b866045b4e5f640e3ed666d2e80b64a8a"
+    },
+    {
+      "path": "docs/y2k-equipment/fit-outfits.jpg",
+      "reason": "historical-review",
+      "bytes": 49596,
+      "sha256": "cf00a33493bced3e614cc23204b1c195034127186cc7e4ba2f662cfa8e49a893"
+    },
+    {
+      "path": "docs/y2k-equipment/fit-views.jpg",
+      "reason": "historical-review",
+      "bytes": 150858,
+      "sha256": "093ae0d53e515e057228ad72552adeedb389115bc3429939ccb3bdccd3fc5d3f"
+    },
+    {
+      "path": "docs/y2k-equipment/model-catalog.jpg",
+      "reason": "historical-review",
+      "bytes": 110175,
+      "sha256": "37d5e1dab4ee0881fb0e4d33947f2910d6b68679d18bf1d2750272cfc4ccf31f"
+    },
+    {
+      "path": "tools/stale-tests/README.md",
+      "reason": "retired-test",
+      "bytes": 4737,
+      "sha256": "4a50eb954fed84a92777f889027e4aa327cd82e91f289a3ab6adb9f2026ee93b"
+    },
+    {
+      "path": "tools/stale-tests/test_character_stage_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 10253,
+      "sha256": "865e5da4674454c3ce11975533dafe7b58e30809dba4ce249febe27c20dfd6e8"
+    },
+    {
+      "path": "tools/stale-tests/test_character_workspace_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 9627,
+      "sha256": "88690ab7b5c4094d1e92ac1c935a037b4fefd9b4611e6b3d0df5ac1caed87fcb"
+    },
+    {
+      "path": "tools/stale-tests/test_classes_circuits_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 6562,
+      "sha256": "a4a3f885a47f5b3edfd711320486e8d2d5a35f2e9325492189ac8f655cc9c3f0"
+    },
+    {
+      "path": "tools/stale-tests/test_combat_experience_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 11202,
+      "sha256": "b30f99024913e9d65c8d39d40c8cee5c24f7a81d74ae264305b36477b6c07128"
+    },
+    {
+      "path": "tools/stale-tests/test_device_wire_drag_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 1808,
+      "sha256": "6aea2c8770f67ef03068ce37b2e8fa439daab3c4c02038348e565bc502a9fef0"
+    },
+    {
+      "path": "tools/stale-tests/test_device_workspaces_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 11730,
+      "sha256": "dbf32c0b4d5c81528fc06fac3a5a038e06c8367fbaa3f2b2c69a92436cd1ac66"
+    },
+    {
+      "path": "tools/stale-tests/test_direct_play_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 14128,
+      "sha256": "32a631b495a3aece86104a9b952f296bdaf6edf3700bc668e4968335da96be28"
+    },
+    {
+      "path": "tools/stale-tests/test_direct_play_polish_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 4525,
+      "sha256": "79c2501297d8d92b23e4ed534efb4c0be29a01245c63c25ae98afe8b004e7b50"
+    },
+    {
+      "path": "tools/stale-tests/test_equipment_depth_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 8755,
+      "sha256": "cbc2dfe07c3c1fdc50b51c8b3dcfeadb8d230f8410ca9636c2773ebf10318aed"
+    },
+    {
+      "path": "tools/stale-tests/test_expansion_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 5630,
+      "sha256": "045253a2bc141ad86d44446c00decb0285e940b91b846a158ffd3c0e09d86b0f"
+    },
+    {
+      "path": "tools/stale-tests/test_experience_polish_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 6233,
+      "sha256": "53f50db2e5964e10fb200a1c24523cbe3ff932abcc74c2fdf63a9591df3a346a"
+    },
+    {
+      "path": "tools/stale-tests/test_gameplay_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 6359,
+      "sha256": "6ae833620f0e6a1de3df2432009796e002e59bfbada77baa938e67fc4393bb67"
+    },
+    {
+      "path": "tools/stale-tests/test_grid_ui_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 14186,
+      "sha256": "93cf11c51efb37edf02bf84156b381377edd501618983f823a8841c2efa5c8e3"
+    },
+    {
+      "path": "tools/stale-tests/test_guidance_play_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 10855,
+      "sha256": "f5c93b5f06595f1c66e34e1ea8c88572eb776926644e1c148dbbee68c0abaa9f"
+    },
+    {
+      "path": "tools/stale-tests/test_icons_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 7538,
+      "sha256": "71157d9e4e86dc9eba31e2ad1724efd5339c6698f47c261d825058cfba95b8cb"
+    },
+    {
+      "path": "tools/stale-tests/test_layout_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 11387,
+      "sha256": "2474fc41b3c457546410acc6484aeaedc62efe27cb92981e69e010a81797b9c0"
+    },
+    {
+      "path": "tools/stale-tests/test_lcd_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 3880,
+      "sha256": "0ace6aabc4480853db94b04cbda27be21248412b72af0b31f449a8d1e13d4a79"
+    },
+    {
+      "path": "tools/stale-tests/test_loot_world_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 10199,
+      "sha256": "ba4b4392d698a45b54565f60aba98aeae446f7d4d2de24bc60c9d029aab52a33"
+    },
+    {
+      "path": "tools/stale-tests/test_mechanics_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 5159,
+      "sha256": "2479484404bdc8de134b9529bf7c4a76d145e8391e927ff5b8b5fc5300737b80"
+    },
+    {
+      "path": "tools/stale-tests/test_onboarding_focus_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 9905,
+      "sha256": "232e9ccc86e4e35ab4aaff570fbf6ad44bfbb46eb1f468f536e0be99258c5bb0"
+    },
+    {
+      "path": "tools/stale-tests/test_phone_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 3151,
+      "sha256": "d5d132a5d6ae4c51e8fa035194b014551ae156c7a07a8b6eb8a6b8a01d92ac8e"
+    },
+    {
+      "path": "tools/stale-tests/test_progression_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 7223,
+      "sha256": "87cb2e2ea515341687fdb09dad547d77f12c2c6bd3f6181a4456809a7d3f4edc"
+    },
+    {
+      "path": "tools/stale-tests/test_readability_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 5796,
+      "sha256": "71d621e92b84f72f03a0620f55c091890b736752aeee547bb011f64e98a82fa1"
+    },
+    {
+      "path": "tools/stale-tests/test_release052_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 4752,
+      "sha256": "23ad0758f6bf6fe8024219020621467d448387bd91b3bbb84559848f7e8bea68"
+    },
+    {
+      "path": "tools/stale-tests/test_release_044_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 2601,
+      "sha256": "46f0bdf5fff7895fdc961c7555f91fce91d8415601cc2c6d518bc7d7cd342903"
+    },
+    {
+      "path": "tools/stale-tests/test_release_integration_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 4642,
+      "sha256": "36b3889e0c7cb7dfa512faf80f1a7c3569c7f13be48f867bf3641611cf588771"
+    },
+    {
+      "path": "tools/stale-tests/test_render_resolution_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 4668,
+      "sha256": "9813702992c638645b3d9f8bba67ce91f779af437849f12f022c90df54715658"
+    },
+    {
+      "path": "tools/stale-tests/test_rift_experience_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 12084,
+      "sha256": "24b5fc8a24a956d36f8cc174dea12088fc919a98c3e0c13c7304274bc42a5ea2"
+    },
+    {
+      "path": "tools/stale-tests/test_signal_studio_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 11543,
+      "sha256": "8cec14880aa53a022cbecff4816b5691faa61678bbd31dac75c91f2d7d7dcf8d"
+    },
+    {
+      "path": "tools/stale-tests/test_signature_equipment_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 3586,
+      "sha256": "cf926f78ec70299e18696585ac9d90a378d7952ba8841b70864d6de9e2ba5b0d"
+    },
+    {
+      "path": "tools/stale-tests/test_tooltip_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 1645,
+      "sha256": "422de3484c7f8f0d45e1aaa1957f2987cd1ca21f68721d6b4dbc3d74d1382ee3"
+    },
+    {
+      "path": "tools/stale-tests/test_tower_combat_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 10626,
+      "sha256": "d5a79cb5f425dd2f82f091d6c314b0e3b0d0ab15db45f6218fd1592d14fc1eb2"
+    },
+    {
+      "path": "tools/stale-tests/test_ui_effects_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 9735,
+      "sha256": "47207242f550a56a7357750a54b287ce317ab0e648fe0f0a1020ae32052b3a6e"
+    },
+    {
+      "path": "tools/stale-tests/test_ui_performance_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 3011,
+      "sha256": "98ce534dfd7187bd0b1d90ca60799f351ecf5aec30044ac45930a432e6a13937"
+    },
+    {
+      "path": "tools/stale-tests/test_ux_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 11510,
+      "sha256": "69d717f96ce11803330f8399361ddf12d23beaafffe6cd004957c4239ea04204"
+    },
+    {
+      "path": "tools/stale-tests/test_view_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 12089,
+      "sha256": "5f454957eb31343f340e10669a71267304f8b772c7a24eefb882a274d79ee9dd"
+    },
+    {
+      "path": "tools/stale-tests/test_visual_omissions_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 3566,
+      "sha256": "8a9e9c58707313f0b52c33f692ef1991140ecb64555e2dc50e3e3c620bacd50c"
+    },
+    {
+      "path": "tools/stale-tests/test_window_ui_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 11707,
+      "sha256": "7cc165bde7f4085d987867390c13c2177ca653a5b414321580fc7eab1a7fc3d4"
+    },
+    {
+      "path": "tools/stale-tests/test_wire_browser.cjs",
+      "reason": "retired-test",
+      "bytes": 5854,
+      "sha256": "0aa44621488fd09fd482232c8c6e5d432187a2873cf449c1573b305cae99dac3"
+    }
+  ]
+}

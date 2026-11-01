@@ -49,7 +49,7 @@ const G1_SIGNS={"radio": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"256\
 const G1_CACHE={mat:new Map(),sign:new Map()};
 function g1On(){return typeof streetSampleOn==='function'&&streetSampleOn();}
 /* 同一個來源材質只複製一次，避免每次重建角色都多一份貼圖。 */
-function g1HeroMaterial(id,material){if(!g1On()||!G1Materials.recipes[id])return material;const k='h:'+id;if(!G1_CACHE.mat.has(k))G1_CACHE.mat.set(k,G1Materials.hero(material));return G1_CACHE.mat.get(k);}
+function g1HeroMaterial(id,material){if(!g1On()||!G1Materials.recipes[id])return material;const k='h:'+id;if(!G1_CACHE.mat.has(k)){const m=G1Materials.hero(material);m.userData.equipmentShared=true;G1_CACHE.mat.set(k,m);}return G1_CACHE.mat.get(k);}
 function g1EquipMaterial(id,material){if(!g1On()||!G1Materials.recipes[id])return material;const k='e:'+id+':'+material.uuid;if(!G1_CACHE.mat.has(k)){const m=G1Materials.equipment(material,id);m.userData.equipmentShared=true;G1_CACHE.mat.set(k,m);}return G1_CACHE.mat.get(k);}
 /* 店面招牌：先畫底色，圖片載入後再畫上去；最近點取樣保持像素感。 */
 function g1SignTexture(kind){
