@@ -10,6 +10,10 @@ Alan已指定Ice Cream.mp4為全遊戲參考；必讀[docs/creative-direction.md
 
 共用儲存庫：https://github.com/yauchai2/Game-Lab
 
+## GitHub 流程（2026-10-28）
+
+分支命名、PR、版本與發佈規則見 [docs/github-workflow.md](docs/github-workflow.md)。Codex 只用 `codex/` 分支，只動 `tools/`、`assets/`、`docs/`，不碰 `src/`；PR 依 `.github/pull_request_template.md` 填寫。
+
 ## 開始工作
 
 - 現行文件與素材入口先查 [docs/README.md](docs/README.md)；已刪除的舊報告、截圖與測試可由 [歷史索引](docs/history.md) 及清理清單指定的提交追溯。不要由歷史候選文字重啟已被取代的需求。
