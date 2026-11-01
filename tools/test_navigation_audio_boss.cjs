@@ -10,7 +10,7 @@ const base=process.env.GAME_TEST_BASE||'http://127.0.0.1:8823',out=process.env.G
   for(const stage of ['cover','comic','pick']){
    await p.evaluate(()=>careerProfiles());await p.getByRole('button',{name:/建立新角色/}).click();
    if(stage!=='cover')await p.evaluate(stage=>introStep(stage==='comic'?0:3),stage);
-   await p.getByRole('button',{name:'返回原角色',exact:true}).click();
+   await p.getByRole('button',{name:/返回原角色/}).click();
    const before=await p.evaluate(()=>G.time);await p.waitForFunction(t=>G.time>t+.15,before);
    const r=await p.evaluate(()=>({id:PROFILE_SESSION.active,name:G.heroName,paused:G.paused,intro:INTRO.active,pending:PROFILE_SESSION.pending,layers:UX_LAYERS.length,inert:document.querySelectorAll('[inert]').length,pal:G.pal,classes:document.body.className,stored:localStorage.getItem(INTRO_KEY)}));
    assert.equal(r.id,original);assert.equal(r.name,'回街測試');assert(!r.paused&&!r.intro&&!r.pending&&!r.layers&&!r.inert);assert.equal(r.stored,null);assert(!/intro-active|title-screen-active|comic-screen-active/.test(r.classes));report.profiles.push({stage,...r});
