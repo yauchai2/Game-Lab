@@ -102,12 +102,12 @@
       "B02"
     ],
     "cap": 12,
-    "healthOn": 532,
+    "healthOn": 530,
     "healthOff": 0,
     "corpsesAfterClear": 0
   },
   "errors": [],
-  "raycast": "four actual head mesh clicks select the corresponding class",
+  "raycast": "four actual head mesh clicks select the corresponding class; only the selected actor has a halo",
   "cancel": {
     "restored": true,
     "cast": false,
@@ -120,17 +120,17 @@
         "il": 1,
         "name": "粗布衣",
         "imp": {
-          "k": "dodgeA",
-          "v": 1
+          "k": "life",
+          "v": 9
         },
         "aff": [
           {
-            "k": "armorP",
-            "v": 6,
-            "tier": 3
+            "k": "armor",
+            "v": 7,
+            "tier": 4
           }
         ],
-        "bs": 1,
+        "bs": 2,
         "uid": 2
       },
       "gloves": null,
@@ -142,17 +142,17 @@
         "il": 1,
         "name": "新手摺疊傘",
         "imp": {
-          "k": "aps",
-          "v": 3
+          "k": "ele",
+          "v": 4
         },
         "aff": [
           {
-            "k": "dmg",
-            "v": 3,
+            "k": "aps",
+            "v": 5,
             "tier": 3
           }
         ],
-        "bs": 1,
+        "bs": 2,
         "uid": 3
       },
       "offhand": null
@@ -165,17 +165,17 @@
         "il": 1,
         "name": "粗布衣",
         "imp": {
-          "k": "dodgeA",
-          "v": 1
+          "k": "life",
+          "v": 9
         },
         "aff": [
           {
-            "k": "armorP",
-            "v": 6,
-            "tier": 3
+            "k": "armor",
+            "v": 7,
+            "tier": 4
           }
         ],
-        "bs": 1,
+        "bs": 2,
         "uid": 2
       },
       "gloves": null,
@@ -187,17 +187,17 @@
         "il": 1,
         "name": "新手摺疊傘",
         "imp": {
-          "k": "aps",
-          "v": 3
+          "k": "ele",
+          "v": 4
         },
         "aff": [
           {
-            "k": "dmg",
-            "v": 3,
+            "k": "aps",
+            "v": 5,
             "tier": 3
           }
         ],
-        "bs": 1,
+        "bs": 2,
         "uid": 3
       },
       "offhand": null

@@ -38,7 +38,7 @@ function buildY2KHero(at,ar,wt,wr,cos,preview=null){
  for(const [name,action]of Object.entries(actions)){if(!['idle','walk','run'].includes(name)){action.setLoop(T3.LoopOnce,1);action.clampWhenFinished=true;}}
  g.userData={y2k:true,id,B,mesh,skeleton,mixer,actions,animation:'',face:Math.PI};
  characterPlay(g,'idle',0);characterEquipment(g,cos||G.cos,wt,wr,preview?.equip||G.equip);g.userData.aura=buildBodyAura(g,(cos||G.cos).auraStyle);
- mk(new T3.RingGeometry(8,9,28).rotateX(-Math.PI/2),basic('#7ef0ff',.7),0,.2,0,g);
+ if(!preview?.cast)mk(new T3.RingGeometry(8,9,28).rotateX(-Math.PI/2),basic('#7ef0ff',.7),0,.2,0,g);
  const orb=mk(ico(1.2,1),basic('#81cbd1',.8),0,0,0,B.handL);orb.position.set(0,0,2);orb.visible=false;g.userData.orb=orb;
  addShadow(g,5.5);g.scale.setScalar(.85*CK);return g;
 }

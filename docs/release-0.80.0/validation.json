@@ -1,0 +1,22 @@
+{
+  "full_release_gate": {
+    "source_commit": "c97cab0f60ef0a52985d99066fca52eb1d9a6899",
+    "pass": 61,
+    "warning": 12,
+    "fail": 0,
+    "report": "qa.md"
+  },
+  "focused_browser": "browser.json",
+  "post_gate_change": "Preview actors omit their inherited decorative ring; the selected actor keeps the single halo. Full focused browser flow rerun passed.",
+  "daily": "daily-tests.txt",
+  "navigation": "navigation/browser-results.json",
+  "audio": [
+    "audio-assets.json",
+    "audio-runtime.json",
+    "audio-lifecycle.json"
+  ],
+  "premium": "premium-audit.json",
+  "design_lint": "design-lint.txt",
+  "build_sha256": "9d01fab64b72c5867c6b0e54058cfdb17c3899543b7846150240b1f56ea27c9b",
+  "limitations": "No physical Safari/iPad/Android, subjective audio or real hardware performance claim."
+}

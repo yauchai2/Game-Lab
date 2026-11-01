@@ -10,7 +10,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
  }
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:'docs/release-0.80.0/cast-390.png'});
  for(const id of ['street','frost','beep','volt']){const pt=await page.evaluate(id=>{const a=PV.cast.actors.find(a=>a.id===id),v=a.g.userData.B.head.getWorldPosition(new T3.Vector3()).project(PV.cam),r=PV.cv.getBoundingClientRect();return {x:r.x+(v.x+1)*r.width/2,y:r.y+(1-v.y)*r.height/2};},id);await page.mouse.click(pt.x,pt.y);assert.equal(await page.evaluate(()=>INTRO.selected),id,'native mesh selection '+id);}
- report.raycast='four actual head mesh clicks select the corresponding class';
+ assert.equal(await page.evaluate(()=>PV.cast.actors.reduce((n,a)=>n+a.g.children.filter(o=>o.isMesh&&o.geometry.type==='RingGeometry').length,0)),0,'no all-member rings competing with the selected halo');report.raycast='four actual head mesh clicks select the corresponding class; only the selected actor has a halo';
  await page.locator('#intro-name').fill('新角色');await page.locator('[data-intro-char="frost"]').click();assert.equal(await page.locator('#intro-name').inputValue(),'新角色');
  await page.locator('[data-intro-char="frost"]').press('ArrowRight');assert.equal(await page.evaluate(()=>INTRO.selected),'beep');assert.equal(await page.locator('#intro-name').inputValue(),'新角色');
  await page.locator('.cs-back').click();await page.waitForTimeout(200);

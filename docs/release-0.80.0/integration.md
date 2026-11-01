@@ -38,7 +38,7 @@
 
 ## 驗證
 
-- `python3 tools/qa/gate.py --release --base v0.78.0`：完整關卡，4000裝備、26技能、37傳奇、36深度、四職業各兩小時遊戲模擬、離線30秒至3日、七個歷史正式存檔。最新版結果見qa.md；舊測試已知過期斷言如實列警告。
+- `python3 tools/qa/gate.py --release --base v0.78.0`：完整關卡，4000裝備、26技能、37傳奇、36深度、四職業各兩小時遊戲模擬、離線30秒至3日、七個歷史正式存檔。最終完整結果61通過／12警告／0失敗，來源c97cab0，見qa.md；之後只收斂選角裝飾為唯一選中光圈並重跑完整新增整合流程；舊測試已知過期斷言如實列警告。
 - `bash tools/run_tests.sh`：日常邏輯、52佩戴捕捉、8開始／序章、6手機、資源釋放／畫面開關、補給、接線觸控、分段啟動全部通過。
 - `node tools/test_release080_browser.cjs`：五尺寸、四人mesh點選、鍵盤／名字／驗證、取消／建立／舊裝備恢復、Death時序／上限、血條保存、2560px HUD、無WebGL真建立；見browser.json與截圖。另以navigation/browser-results.json驗證開始頁／序章／選角三處取消、新角完成後切回、六章巨大Boss與塔樓。
 - 音訊實播：54資產／22路由／loop雙deck、mute、切景續播／中斷、晚到story／battle decode取消；見audio-runtime.json、audio-lifecycle.json與audio-assets.json。
