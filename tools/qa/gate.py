@@ -37,7 +37,7 @@ def legacy_tests():
     skip = ('browser', 'site_boot', 'intro_logo', 'stage', 'preview', 'world_review')
     for f in sorted(glob.glob(os.path.join(ROOT, 'tools', 'test_*.js')) + glob.glob(os.path.join(ROOT, 'tools', 'test_*.cjs'))):
         rel = os.path.relpath(f, ROOT)
-        if any(s in rel for s in skip):
+        if any(s in rel for s in skip) or "require('playwright')" in open(f,encoding='utf-8').read() or 'require("playwright")' in open(f,encoding='utf-8').read():
             continue
         r = sh(['node', rel], timeout=300)
         ok = r.returncode == 0
@@ -45,7 +45,6 @@ def legacy_tests():
         detail = [] if ok else [l.strip() for l in (r.stderr or r.stdout).splitlines() if l.strip() and not l.strip().startswith('at ') and not l.startswith('Node.js') and l.strip() not in '^~'][-2:]
         items.append({'name': rel, 'ok': ok or known, 'warn': (not ok) and known, 'fixed': ok and known,
                       'detail': '' if ok else '已知失敗：' + ' | '.join(detail)[:300] if known else ' | '.join(detail)[:600]})
-    sh(['git', 'checkout', '--', 'docs/window-ui-ascensions-2026-10-24/node-effects.json'])  # 某測試會改寫這個檔
     return items
 
 

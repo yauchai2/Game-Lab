@@ -27,13 +27,19 @@ function buildSingle(ref, out) {
   return out;
 }
 /* 開新頁並累積錯誤。console 的 error 與 pageerror 都算；三方庫的棄用警告不算。 */
+let qaServer=null,qaOrigin=null;const qaFiles=new Map();
+async function qaURL(file){
+ const token=require('node:crypto').createHash('sha256').update(file).digest('hex');qaFiles.set('/'+token,file);
+ if(!qaServer){qaServer=require('node:http').createServer((req,res)=>{const target=qaFiles.get(new URL(req.url,'http://localhost').pathname);if(!target){res.writeHead(404);res.end();return;}res.setHeader('Content-Type','text/html; charset=utf-8');require('node:fs').createReadStream(target).pipe(res);});await new Promise(resolve=>qaServer.listen(0,'127.0.0.1',resolve));qaServer.unref();qaOrigin='http://127.0.0.1:'+qaServer.address().port;}
+ return qaOrigin+'/'+token;
+}
 async function openGame(browser, file, { viewport = { width: 1280, height: 800 }, fresh = true, init, wait = 2500, touch = false } = {}) {
   const ctx = await browser.newContext({ viewport, hasTouch: touch, isMobile: touch, deviceScaleFactor: 1 });
   if (init) await ctx.addInitScript(init.fn, init.arg);
   const page = await ctx.newPage(); const errors = [];
   page.on('pageerror', e => errors.push('js: ' + e.message));
   page.on('console', m => { if (m.type() === 'error' && !/favicon|Failed to load resource/.test(m.text())) errors.push('console: ' + m.text()); });
-  await page.goto('file://' + file + (fresh ? '?fresh' : ''));
+  await page.goto(await qaURL(file) + (fresh ? '?fresh' : ''));
   await page.waitForTimeout(wait);
   return { ctx, page, errors };
 }

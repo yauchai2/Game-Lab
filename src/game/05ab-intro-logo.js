@@ -2,7 +2,7 @@
 const INTRO_TITLE={timer:0};
 function introCoverRender(){
  const o=$('ovl');introLogoDispose();document.body.classList.add('title-screen-active');
- o.innerHTML=`<section class="intro-title entry-surface entry-cover" aria-label="Hello, Static! 哈囉，雜訊！"><picture class="title-scene cover-picture" aria-hidden="true"><source media="(min-aspect-ratio:1/1)" srcset="${PIXEL_ART.wide}"><img class="title-art cover-art" src="${PIXEL_ART.bg}" width="${PIXEL_ART.bgW}" height="${PIXEL_ART.bgH}" alt="" draggable="false"></picture><h1 class="title-wordmark cover-brand" aria-hidden="true"><img src="${PIXEL_ART.logo}" width="${PIXEL_ART.logoW}" height="${PIXEL_ART.logoH}" alt="" draggable="false"></h1><span class="title-hint cover-hint" aria-hidden="true">點擊畫面開始</span><button type="button" class="title-start" data-initial-focus aria-label="開始遊戲" onclick="introTitleStart()"></button></section>`;
+ o.innerHTML=`<section class="intro-title entry-surface entry-cover" aria-label="Hello, Static! 哈囉，雜訊！"><picture class="title-scene cover-picture" aria-hidden="true"><source media="(min-aspect-ratio:1/1)" srcset="${PIXEL_ART.wide}"><img class="title-art cover-art" src="${PIXEL_ART.bg}" width="${PIXEL_ART.bgW}" height="${PIXEL_ART.bgH}" alt="" draggable="false"></picture><h1 class="title-wordmark cover-brand" aria-hidden="true"><img src="${PIXEL_ART.logo}" width="${PIXEL_ART.logoW}" height="${PIXEL_ART.logoH}" alt="" draggable="false"></h1><span class="title-hint cover-hint" aria-hidden="true">點擊畫面開始</span><button type="button" class="title-start" data-initial-focus aria-label="開始遊戲" onclick="introTitleStart()"></button>${introCancelButton()}</section>`;
  uxOpenDialog(o,'Hello, Static! 哈囉，雜訊！',introEscape);introPersist();
 }
 function introTitleStart(){

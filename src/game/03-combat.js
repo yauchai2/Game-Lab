@@ -60,7 +60,7 @@ function killMon(m){
   if(!m.training){const board=circuitDrop(m.boss?'boss':m.elite?'elite':'normal');if(board)dropGround({kind:'circuit',id:board,x:m.x,y:m.y,t:0});}
   if(m.training){m.hp=m.hpMax;return;}
   if(typeof skillDropFor==='function'){const sk=skillDropFor(m);if(sk)dropGround({kind:'skill',id:sk,x:m.x,y:m.y,t:0});}
-  riftOnKill(m);deathStain(m);m.dead = true; m.deadT = 0; SFX('kill'); if (!G.train && G.mk) G.mk[m.type] = (G.mk[m.type] || 0) + 1; const T = MTYPES[m.type], d = lvlNow(), R = G.run, q = runQ(), mods = R ? R.map.mods : [];
+  riftOnKill(m);deathStain(m);m.dead = true; m.deadT = 0; if(!G.offline&&typeof streetCorpseEnqueue==='function')streetCorpseEnqueue(m); SFX('kill'); if (!G.train && G.mk) G.mk[m.type] = (G.mk[m.type] || 0) + 1; const T = MTYPES[m.type], d = lvlNow(), R = G.run, q = runQ(), mods = R ? R.map.mods : [];
   let hk = m.boss ? 1 : HORDE.xp, xp = Math.max(1, Math.round(5 * Math.pow(1.2, d-1) * T.xp * hk * (G.relics.CALC ? 1.2 : 1) * (offPen() ? .75 : 1))), gold = Math.max(1, Math.round(3 * Math.pow(1.2, d-1) * T.g * tRand(.8, 1.2) * (mods.includes('rich') ? 1.6 : 1) * (m.boss ? 1 : HORDE.gold)));
   if (m.elite){ gold *= 4; xp *= 4; } if (mods.includes('wise')) xp = Math.round(xp*1.5);
   if (G.relics.PIG) gold = Math.round(gold*1.3);
@@ -216,7 +216,7 @@ function hitMon(m, dmg, crit, source=G.src||'其他'){
   if(!Number.isFinite(dmg)||dmg<=0)return;
   dmg=cityIncoming(m,dmg)*lgRuleMul()*(m.guardUntil>G.time?.55:1)*((m.boss||m.elite)&&G.st.vsElite?1+G.st.vsElite/100:1);if(dmg<=0)return;
   combatDamage(source,Math.min(Math.max(0,m.hp),dmg));
-  if(!m.training&&!G.offline&&G.time-(G.impactAt??-10)>.16){G.impactAt=G.time;const skill=source!=='普通攻擊',heavy=crit||skill;const col=skill?'#b5dfff':'#ffffff';kick(heavy?2.2:1.05,heavy?.32:.12,col,heavy?.65:.25);}
+  if(!m.training&&!G.offline&&G.time-(G.impactAt??-10)>.16){G.impactAt=G.time;const dot=/中毒|燃燒|持續/.test(source),skill=source!=='普通攻擊',heavy=crit&&!dot;const col=skill?'#b5dfff':'#ffffff';if(!dot)kick(heavy?.7:skill?.35:.18,heavy?.12:.04,col,heavy?.22:.08);}
   m.hp -= dmg; m.hurtT = .12; SFX(crit ? 'crit' : 'hit',m);
   if (!m.training && !m.boss && !m.dv && !G.offline && Math.random() < .14){ const a = Math.random()*6.28; m.dv = { x:Math.cos(a)*42, y:Math.sin(a)*42, t:.22 }; }   // 挨打後側閃
   if (!G.offline&&!m.training){ const dx = m.x - G.h.x, dy = m.y - G.h.y, dd = Math.hypot(dx, dy) || 1, kb = m.boss ? .2 : crit ? 1.6 : .6; m.x += dx/dd*kb; m.y += dy/dd*kb;   // 被打時往外退一點

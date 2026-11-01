@@ -26,7 +26,7 @@ function dressHtml(){
   return `<div class="character-view device-wardrobe" data-character="${G.char}">${charSegHtml()}${uiCharacterIdentity()}${uiCharacterStage(true)}<section class="cv-wardrobe"><div class="cv-section-label"><h3>外觀試穿</h3><span>金幣 <span id="cv-gold">${tFmt(G.gold)}</span></span></div><p class="uxmeta">武器、副手與飾品只改變外觀，不影響能力。</p><div class="dcats" role="group" aria-label="裝扮部位">${COS_CATS.map(([k,n])=>`<button class="mb" aria-pressed="${k===cat}" data-focus="dress-cat-${k}" onclick="dressCat('${k}')">${n}</button>`).join('')}</div><h4 class="cv-style-title">${COS_CATS.find(([k])=>k===cat)[1]}款式<small>${COS[cat].length} 款</small></h4><div class="cv-styles" role="group" aria-label="${COS_CATS.find(([k])=>k===cat)[1]}款式">${COS[cat].map(([id,n,col,price])=>{const url=typeof icon3dCosmeticUrl==='function'?icon3dCosmeticUrl(cat,id):'',icon=url?`<img src="${url}" alt="" width="56" height="56">`:spr(cat==='weaponStyle'?'sword':cat==='offhandStyle'?'shield':'coin',40);return `<button class="mb cv-style" aria-pressed="${id===sel}" data-focus="dress-item-${cat}-${id}" onclick="dressPick('${cat}','${id}')"><span class="cv-style-art">${icon}</span><span>${uxEsc(n)}</span><small>${id===cur?'穿著中':cosOwned(cat,id)?'已擁有':tFmt(price)+' 金幣'}</small></button>`;}).join('')}</div><div class="cv-dress-action"><div><strong>${uxEsc(e[1])}</strong><p role="status">${state}</p></div><div class="uxactions">${action}${!worn?'<button class="mb" data-focus="dress-cancel" onclick="dressCat(dSel.cat)">取消試穿</button>':''}</div></div><details class="cv-detail"><summary>目前三件外觀</summary><dl class="ui-stat-list">${COS_CATS.map(([k,n])=>`<div><dt>${n}</dt><dd>${uxEsc(cosGet(k,G.cos[k])?.[1]||cosGet(k,'0')[1])}</dd></div>`).join('')}</dl></details></section>${uiCharacterProfile()}</div>`;
 }
 function dressPreviewFailure(host){
-  host.dataset.preview='failed';const status=$('cv-preview-status');if(status)status.textContent='3D 預覽暫時無法顯示，仍可管理裝備及外觀。';const retry=$('cv-preview-retry');if(retry)retry.hidden=false;
+  host.dataset.preview='failed';if(host.dataset.cast){host.querySelector('.cs-art-error').hidden=false;host.closest('.cs-screen').querySelectorAll('.cs-rotate button').forEach(b=>b.disabled=true);}const status=$('cv-preview-status');if(status)status.textContent='3D 預覽暫時無法顯示，仍可管理裝備及外觀。';const retry=$('cv-preview-retry');if(retry)retry.hidden=false;
 }
 function dressDisposePreview(){
   const hero=PV.hero;if(!hero)return;
@@ -42,7 +42,7 @@ function dressRetry(){
   Object.assign(PV,{rd:null,cv:null,sc:null,cam:null,hero:null,plinth:null,sig:'',failed:false,lastTime:null,drag:null});dressMount();
 }
 function dressMount(){
-  const host=$('pvhost');if(!host||host.closest('details')?.open===false)return;
+  const host=document.querySelector('#ovl [data-cast]')||$('pvhost');if(!host||host.closest('details')?.open===false)return;
   if(PV.failed){dressPreviewFailure(host);return;}
   try{
     if(!PV.rd){
@@ -53,13 +53,14 @@ function dressMount(){
       PV.plinth=new T3.Mesh(new T3.CylinderGeometry(13,14,1,12),new T3.MeshLambertMaterial({color:0xb4c4ec,flatShading:true}));PV.sc.add(PV.plinth);
       PV.cv.addEventListener('pointerdown',e=>{if(e.button!==0)return;PV.drag={x:e.clientX,y:e.clientY,yaw:PV.yaw,id:e.pointerId,active:false};});
       PV.cv.addEventListener('pointermove',e=>{const d=PV.drag;if(!d||e.pointerId!==d.id)return;const dx=e.clientX-d.x,dy=e.clientY-d.y;if(!d.active&&Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)){d.active=true;PV.cv.setPointerCapture(e.pointerId);PV.cv.style.cursor='grabbing';}if(d.active)PV.yaw=d.yaw+dx*.012;});
-      const end=()=>{PV.drag=null;PV.cv.style.cursor='grab';};PV.cv.addEventListener('pointerup',end);PV.cv.addEventListener('pointercancel',end);PV.cv.addEventListener('lostpointercapture',end);
+      const end=e=>{if(e.type==='pointerup'&&PV.cv.parentElement?.dataset.cast)introCastPick(e,PV.drag);PV.drag=null;PV.cv.style.cursor='grab';};PV.cv.addEventListener('pointerup',end);PV.cv.addEventListener('pointercancel',end);PV.cv.addEventListener('lostpointercapture',end);
       if(!PV.timer)PV.timer=setInterval(dressTick,40);
     }
     PV.cv.style.pointerEvents=host.dataset.framing==='portrait'?'none':'auto';host.appendChild(PV.cv);PV.lastTime=null;dressTick();
   }catch(e){PV.failed=true;PV.rd?.dispose();PV.rd=null;PV.cv?.remove();dressPreviewFailure(host);}
 }
 function dressTick(){
+  const castHost=PV.cv?.parentElement;if(castHost?.dataset.cast&&PV.cv.isConnected&&INTRO.active&&INTRO.step===3&&!INTRO.cover&&!document.hidden){try{const r=castHost.getBoundingClientRect();if(r.width>4&&r.height>4&&r.bottom>0&&r.top<innerHeight)introCastTick(castHost,r.width,r.height,performance.now());}catch(e){introCastDispose();PV.cv.remove();castHost.querySelector('.cs-art-error').hidden=false;}return;}
   if(!PV.rd||!PV.cv.isConnected||!['char','dress'].includes(modalTab)||$('modal').hidden||document.hidden||(typeof UX_LAYERS!=='undefined'&&UX_LAYERS.length)){PV.lastTime=null;PV.drag=null;return;}
   // A scrolled-out stage must not spend GPU time while the player reads lower sections.
   const host=PV.cv.parentElement,rect=host.getBoundingClientRect(),panel=$('mbody').getBoundingClientRect();

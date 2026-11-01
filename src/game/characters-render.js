@@ -1,16 +1,16 @@
 /* Imported Y2K characters. The small reader accepts only our build-time validated GLBs;
    no runtime URL, provider, loader dependency or player save is involved. */
 const CHARACTER_RENDER = {cache:new Map()};
-function characterAsset(id){
- const flat=typeof STREET_CHARACTER_GLB!=='undefined'&&g1On(),cacheKey=id+(flat?'+flat':'');
+function characterAsset(id,cast=false){
+ const flat=typeof STREET_CHARACTER_GLB!=='undefined'&&g1On(),cacheKey=id+(cast?'+cast':flat?'+flat':'');
  if(CHARACTER_RENDER.cache.has(cacheKey))return CHARACTER_RENDER.cache.get(cacheKey);
- const encoded=flat?STREET_CHARACTER_GLB[id]:CHARACTER_GLB[id];if(!encoded)throw new Error('Unknown character asset: '+id);
+ const encoded=cast?CAST_CHARACTER_GLB[id]:flat?STREET_CHARACTER_GLB[id]:CHARACTER_GLB[id];if(!encoded)throw new Error('Unknown character asset: '+id);
  const bin=Uint8Array.from(atob(encoded),c=>c.charCodeAt(0)),view=new DataView(bin.buffer);
  if(view.getUint32(0,true)!==0x46546c67)throw new Error('Invalid character GLB');
  const size=view.getUint32(12,true),doc=JSON.parse(new TextDecoder().decode(bin.subarray(20,20+size))),start=28+size;
  const types={5121:Uint8Array,5123:Uint16Array,5125:Uint32Array,5126:Float32Array},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
  const access=i=>{const a=doc.accessors[i],v=doc.bufferViews[a.bufferView],C=types[a.componentType],n=widths[a.type];if(v.byteStride||a.sparse||!C||!n)throw new Error('Unsupported packed character attribute');const off=start+(v.byteOffset||0)+(a.byteOffset||0);return new T3.BufferAttribute(new C(bin.buffer.slice(off,off+a.count*n*C.BYTES_PER_ELEMENT)),n,!!a.normalized);};
- const primitive=doc.meshes[0].primitives[0],geometry=new T3.BufferGeometry();
+ const primitive=doc.meshes[0].primitives[0],geometry=new T3.BufferGeometry();geometry.userData.equipmentShared=true;
  for(const [from,to] of [['POSITION','position'],['NORMAL','normal'],['TEXCOORD_0','uv'],['JOINTS_0','skinIndex'],['WEIGHTS_0','skinWeight']])if(primitive.attributes[from]!=null)geometry.setAttribute(to,access(primitive.attributes[from]));
  geometry.setIndex(access(primitive.indices));
  if(primitive.attributes.COLOR_0!=null)geometry.setAttribute('color',access(primitive.attributes.COLOR_0));
@@ -23,29 +23,30 @@ function characterAsset(id){
  material=new T3.MeshLambertMaterial({map:texture,color:0xffffff,side:T3.DoubleSide});
  const image=document.createElement('img');image.onload=()=>{texture.image=image;texture.needsUpdate=true;};image.onerror=()=>{material.map=null;material.color.set('#8092a0');material.needsUpdate=true;};image.src='data:'+imageDef.mimeType+';base64,'+btoa(text);
  }
+ material.userData.equipmentShared=true;
  const clips=doc.animations.map(a=>new T3.AnimationClip(a.name,-1,a.channels.map(ch=>{const sa=a.samplers[ch.sampler],node=doc.nodes[ch.target.node],prop={rotation:'quaternion',translation:'position',scale:'scale'}[ch.target.path],C=prop==='quaternion'?T3.QuaternionKeyframeTrack:T3.VectorKeyframeTrack;return new C(node.name+'.'+prop,access(sa.input).array,access(sa.output).array,sa.interpolation==='STEP'?T3.InterpolateDiscrete:T3.InterpolateLinear);})));
  const asset={doc,geometry,material,access,clips,flat,sourceVertices:doc.extras?.streetSourceVertices};CHARACTER_RENDER.cache.set(cacheKey,asset);return asset;
 }
-function buildY2KHero(at,ar,wt,wr,cos){
- const profile=CHARS[G.char],id=profile.model||'aki',asset=characterAsset(id),doc=asset.doc,g=new T3.Group(),joints=new Set(doc.skins[0].joints),B={};
+function buildY2KHero(at,ar,wt,wr,cos,preview=null){
+ const profile=CHARS[preview?.characterId||G.char],id=profile.model||'aki',asset=characterAsset(id,!!preview?.cast),doc=asset.doc,g=new T3.Group(),joints=new Set(doc.skins[0].joints),B={};
  const nodes=doc.nodes.map((n,i)=>{const o=joints.has(i)?new T3.Bone():new T3.Group();o.name=n.name||'node_'+i;if(n.translation)o.position.fromArray(n.translation);if(n.rotation)o.quaternion.fromArray(n.rotation);if(n.scale)o.scale.fromArray(n.scale);if(n.matrix)new T3.Matrix4().fromArray(n.matrix).decompose(o.position,o.quaternion,o.scale);if(joints.has(i))B[o.name]=o;return o;});
  doc.nodes.forEach((n,i)=>(n.children||[]).forEach(c=>nodes[i].add(nodes[c])));for(const i of doc.scenes[doc.scene||0].nodes)g.add(nodes[i]);
  const s=doc.skins[0],inv=asset.access(s.inverseBindMatrices).array,skeleton=new T3.Skeleton(s.joints.map(i=>nodes[i]),s.joints.map((_,i)=>new T3.Matrix4().fromArray(inv,i*16)));
- const mesh=new T3.SkinnedMesh(characterEquipmentGeometry(asset,id),g1HeroMaterial(id,asset.material));mesh.name=id+'_skin';mesh.frustumCulled=false;
+ const mesh=new T3.SkinnedMesh(characterEquipmentGeometry(asset,id,preview?.equip||G.equip),g1HeroMaterial(id,asset.material));mesh.name=id+'_skin';mesh.frustumCulled=false;
  const meshNode=doc.nodes.findIndex(n=>n.mesh===0);nodes[meshNode].add(mesh);g.updateMatrixWorld(true);mesh.bind(skeleton,mesh.matrixWorld);mesh.normalizeSkinWeights();
  const mixer=new T3.AnimationMixer(g),actions=Object.fromEntries(asset.clips.map(clip=>[clip.name,mixer.clipAction(clip)]));
  for(const [name,action]of Object.entries(actions)){if(!['idle','walk','run'].includes(name)){action.setLoop(T3.LoopOnce,1);action.clampWhenFinished=true;}}
  g.userData={y2k:true,id,B,mesh,skeleton,mixer,actions,animation:'',face:Math.PI};
- characterPlay(g,'idle',0);characterEquipment(g,cos||G.cos,wt,wr);g.userData.aura=buildBodyAura(g,(cos||G.cos).auraStyle);
+ characterPlay(g,'idle',0);characterEquipment(g,cos||G.cos,wt,wr,preview?.equip||G.equip);g.userData.aura=buildBodyAura(g,(cos||G.cos).auraStyle);
  mk(new T3.RingGeometry(8,9,28).rotateX(-Math.PI/2),basic('#7ef0ff',.7),0,.2,0,g);
  const orb=mk(ico(1.2,1),basic('#81cbd1',.8),0,0,0,B.handL);orb.position.set(0,0,2);orb.visible=false;g.userData.orb=orb;
  addShadow(g,5.5);g.scale.setScalar(.85*CK);return g;
 }
-function characterEquipment(g,cos,wt,wr){
+function characterEquipment(g,cos,wt,wr,equip=G.equip){
  const B=g.userData.B;
  const grip=new T3.Group();B.handR.add(grip);grip.rotation.x=Math.PI/2;g.userData.sword=grip;
  for(const slot of Object.keys(SLOTN)){
-  const it=G.equip[slot];if(it&&attachSignatureGear(g,it))continue;
+  const it=equip[slot];if(it&&attachSignatureGear(g,it))continue;
   if(slot==='weapon'){const style={umbrella:0,bat:1,tube:2,saber:3}[cos.weaponStyle]??wt;buildWeapon(grip,style,wr);}
   else if(it){
    if(slot==='offhand'&&cos.offhandStyle&&cos.offhandStyle!=='0')continue;
@@ -95,37 +96,41 @@ function buildBodyAura(parent,kind){
    Offsets are multiplied onto the mixer pose each frame and removed again before the next mixer update. */
 const HERO_RAISE=new Set(['FROST','SHARDS','METEOR','GIANTBLADE','ARROWS','THUNDER','SWARM','GUARDIAN','OVERTURE']);
 const HERO_SWEEP=new Set(['CYCLONE','BEAM','GRAVITY','PULSE','RESONANCE','RIFT','MAGNET']);
+/* Review candidate, not production-installed. Reuses native clips and the same skeleton.
+   No combat timing, root displacement, collision, dodge chance, assets or saves change. */
+function characterMotionMode(s,u={}){
+ if(s.dead)return'death';if(s.hurt)return'hurt';if(s.dash||s.roll>=0)return'dash';
+ if(s.attack&&s.swing>=0)return'attack';if(s.cast)return'cast';
+ const v=Number.isFinite(s.speed)?s.speed:0;
+ return v>(u.animation==='run'?6.5:8)?'run':v>1?'walk':'idle';
+}
 function heroActionLayer(g,state){
- const u=g.userData,tq=new T3.Quaternion(),te=new T3.Euler();u.actPose=u.actPose||{};u.actApplied=true;u.yawOff=0;u.fwd=0;u.lift=0;u.tilt=0;u.squash=1;
- const turn=(name,x=0,y=0,z=0)=>{const b=u.B[name];if(!b)return;(u.actPose[name]||(u.actPose[name]=new T3.Quaternion())).copy(b.quaternion);b.quaternion.multiply(tq.setFromEuler(te.set(x,y,z)));};
- const bell=x=>Math.sin(Math.PI*Math.max(0,Math.min(1,x))),ease=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);};
- if(state.dead)return;
- if(state.roll>=0){const r=state.roll,th=ease(r)*Math.PI*2;u.tilt=th;u.lift=8*(1-Math.cos(th))+3*bell(r);u.fwd=-8*Math.sin(th)+7*bell(r);u.squash=1-.14*bell(r);
-  turn('torso',.9*bell(r));turn('head',.7*bell(r));turn('legL',-1.3*bell(r));turn('legR',-1.3*bell(r));turn('shinL',1.5*bell(r));turn('shinR',1.5*bell(r));turn('armL',-1.2*bell(r));turn('armR',-1.2*bell(r));return;}
- if(state.attack&&state.swing>=0){const p=Math.max(0,Math.min(1,state.swing/.3)),v=u.swingN%3;
-  if(v===1){u.fwd=5*bell(p);turn('torso',.35*bell(p),-.5*(1-ease(p))+.35*ease(p));turn('armR',-.7*bell(p));u.lift=1.5*bell(p);}
-  else if(v===2){u.yawOff=Math.PI*2*ease(p);u.lift=3*bell(p);turn('torso',.2*bell(p));turn('armR',-.5*bell(p));turn('armL',-.5*bell(p),0,-.4*bell(p));}
-  return;}
- if(state.cast){const p=Math.max(0,Math.min(1,state.castTime/.45)),id=state.skill;
-  if(HERO_RAISE.has(id)){turn('armL',-1.4*bell(p),0,-.2*bell(p));turn('armR',-1.4*bell(p),0,.2*bell(p));turn('head',-.3*bell(p));turn('torso',-.25*bell(p));u.lift=4*bell(p);}
-  else if(HERO_SWEEP.has(id)){turn('torso',.15*bell(p),(-.8+1.6*ease(p))*bell(Math.min(1,p*1.1)+.0));turn('armL',-.3*bell(p),0,-1.1*bell(p));turn('armR',-.3*bell(p),0,1.1*bell(p));u.fwd=2*bell(p);}
-  else{turn('torso',.4*bell(p));turn('head',.2*bell(p));u.fwd=2.5*bell(p);}
-  return;}
- if(state.speed>8){const k=Math.min(1,(state.speed-8)/10);turn('torso',.22*k);turn('head',-.12*k);u.tilt=.1*k;}
+ const u=g.userData,q=new T3.Quaternion(),e=new T3.Euler();u.actPose=u.actPose||{};u.actApplied=true;u.yawOff=0;u.fwd=0;u.lift=0;u.tilt=0;u.squash=1;
+ const turn=(name,x=0,y=0,z=0)=>{const b=u.B[name];if(!b)return;(u.actPose[name]||(u.actPose[name]=new T3.Quaternion())).copy(b.quaternion);b.quaternion.multiply(q.setFromEuler(e.set(x,y,z)))};
+ if(state.dead||state.calm)return;
+ if(state.roll>=0){const r=Math.max(0,Math.min(1,state.roll)),smooth=r*r*(3-2*r),bell=Math.sin(Math.PI*r);const angle=smooth*Math.PI*2,pivot=5.3;u.tilt=angle;u.lift=pivot*(1-Math.cos(angle))+.5*bell;u.fwd=-pivot*Math.sin(angle);turn('torso',.5*bell);turn('head',.3*bell);turn('legL',-.65*bell);turn('legR',-.65*bell);turn('shinL',.9*bell);turn('shinR',.9*bell);turn('armL',-.5*bell);turn('armR',-.5*bell);return;}
+ // Native attack/cast clips already supply the gesture. Avoid another full spin or arm lift.
+ if(u.animation==='run'&&!u.movingUpper){turn('head',-.04);}
 }
 function characterAnimate(g,dt,state={}){
  const u=g.userData;if(!u.y2k)return;dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));
- // Preview offsets are temporary: remove them before the mixer writes the next pose.
- if(u.previewApplied){for(const [name,q]of Object.entries(u.previewPose))u.B[name].quaternion.copy(q);u.previewApplied=false;}
- if(u.actApplied){for(const [name,q]of Object.entries(u.actPose))u.B[name].quaternion.copy(q);u.actApplied=false;}
- const mode=state.dead?'death':state.hurt?'hurt':state.dash?'dash':state.speed>8?'run':state.attack?'attack':state.cast?'cast':state.speed>7?'run':state.speed>1?'walk':'idle';
- if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack'){u.actions.attack.reset().play();u.swingN=(u.swingN||0)+1;if(u.swingN%3&&typeof SFX==='function'&&!state.calm)SFX('swing');}u.lastSwing=state.swing;
+ if(u.previewApplied){for(const[name,q]of Object.entries(u.previewPose))u.B[name].quaternion.copy(q);u.previewApplied=false}
+ if(u.actApplied){for(const[name,q]of Object.entries(u.actPose))u.B[name].quaternion.copy(q);u.actApplied=false}
+ const requested=characterMotionMode(state,u),moving=(state.speed||0)>1&&['attack','cast'].includes(requested),mode=moving?((state.speed||0)>8?'run':'walk'):requested;u.movingUpper=moving?requested:null;
+ if(state.attack&&u.lastSwing!=null&&state.swing<u.lastSwing&&u.animation==='attack'){u.actions.attack.reset().play();u.swingN=(u.swingN||0)+1;if(u.swingN%3&&typeof SFX==='function'&&!state.calm)SFX('swing')}u.lastSwing=state.swing;
  if(state.cast&&u.lastCast!=null&&state.castTime<u.lastCast&&u.animation==='cast')u.actions.cast.reset().play();u.lastCast=state.castTime;
- characterPlay(g,mode,mode==='hurt'?.045:.1);const action=u.actions[mode];if(action&&mode==='attack')action.timeScale=.6/.3;if(action&&mode==='cast')action.timeScale=.8/.45;
- u.mixer.update(dt);
- if(!state.calm)heroActionLayer(g,state);else{u.yawOff=0;u.fwd=0;u.lift=0;u.tilt=0;u.squash=1;}
- animateEquipment(g,state);if(u.aura){u.aura.root.visible=!state.dead;u.aura.update(dt);}
- g.updateMatrixWorld(true);u.skeleton.update();
+ characterPlay(g,mode,mode==='hurt'?.045:.12);const a=u.actions[mode];
+ if(a){if(mode==='attack')a.timeScale=a.getClip().duration/.3;else if(mode==='cast')a.timeScale=a.getClip().duration/.45;else if(mode==='run')a.timeScale=Math.max(.75,Math.min(1.3,(state.speed||24)/24));else if(mode==='walk')a.timeScale=Math.max(.75,Math.min(1.25,(state.speed||4)/4));else a.timeScale=1;}
+ u.mixer.update(dt);heroActionLayer(g,state);
+ if(moving){
+  const clip=u.actions[requested].getClip(),phase=requested==='attack'?Math.max(0,state.swing)/.3:Math.max(0,state.castTime)/.45,time=Math.min(clip.duration,phase*clip.duration);
+  u.upperSamples=u.upperSamples||{};
+  for(const track of clip.tracks){const name=track.name.split('.')[0],bone=u.B[name];if(!bone||!['torso','head','hairBack','armL','armR','foreL','foreR','handL','handR'].includes(name)||!track.name.endsWith('.quaternion'))continue;
+   (u.actPose[name]||(u.actPose[name]=new T3.Quaternion())).copy(bone.quaternion);
+   const key=requested+':'+track.name,interp=u.upperSamples[key]||(u.upperSamples[key]=track.createInterpolant());bone.quaternion.fromArray(interp.evaluate(time));
+  }
+ }
+ animateEquipment(g,state);if(u.aura){u.aura.root.visible=!state.dead;u.aura.update(dt)}g.updateMatrixWorld(true);u.skeleton.update();
 }
 // Presentation only. No game clocks, combat flags, save data or model assets change.
 function characterPreviewAnimate(g,dt,reduced=false){

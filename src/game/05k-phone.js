@@ -39,7 +39,7 @@ function phoneCounts(){
 function phonePage(){
   const P = phoneProfile();
   if (PH.tab === 0) return `${phoneHead()}
-    <fieldset><legend>自我介紹</legend><p>${phEsc(P.identity || '')}</p><p class="phs-q">「${phEsc(P.quote || '…')}」</p></fieldset>
+    <fieldset><legend>自我介紹</legend><p>${phEsc(P.identity || '')}</p></fieldset>
     <fieldset><legend>基本資料</legend><dl class="phs-dl"><dt>生日</dt><dd>${(G.born || [1, 1]).join(' 月 ')} 日</dd><dt>遊戲時間</dt><dd>${phTime(G.time)}</dd><dt>倒下次數</dt><dd>${G.deaths || 0}</dd></dl></fieldset>`;
   if (PH.tab === 1) {
     const rows = [['累計討伐', tFmt(G.totalKills)], ['BOSS擊破', G.bossKills || 0], ['最深深度', G.maxDepth], ['無限之塔最高', (G.towerBest || 0) + ' 層'], ['完成地圖', G.mapsDone || 0], ['打造次數', G.craftN || 0], ['遊戲時間', phTime(G.time)], ['倒下次數', G.deaths || 0]];
@@ -87,8 +87,8 @@ function phoneScanTick(now){
 function phRar(r){ return ['#9fb3c8', '#6fb0ff', '#ffd45a', '#ff8a4c'][r] || '#cfeaff'; }
 function phoneScreenHtml(){
   const last = (G.log && G.log[0] && G.log[0].txt) || '一切正常。';
-  return `<div class="phs-win"><div class="phs-title"><span>▣ ${phEsc(phoneProfile().n || 'HERO')}.HOME</span><button data-act="zoom" aria-label="放大或縮小螢幕">□</button><button data-act="close" aria-label="關閉手機">×</button></div>
-   <div class="phs-tabs" role="tablist">${PH_TABS.map((n, i) => `<button role="tab" aria-selected="${PH.tab === i}" data-tab="${i}">${n}</button>`).join('')}</div>
+  return `<div class="phs-win"><div class="phs-title"><span>▣ ${phEsc(phoneProfile().n || 'HERO')}.HOME</span><button type="button" onclick="event.stopPropagation();phonePress(event)" data-act="zoom" aria-label="放大或縮小螢幕">□</button><button type="button" onclick="event.stopPropagation();phonePress(event)" data-act="close" aria-label="關閉手機">×</button></div>
+   <div class="phs-tabs" role="tablist">${PH_TABS.map((n, i) => `<button type="button" onclick="event.stopPropagation();phonePress(event)" role="tab" aria-selected="${PH.tab === i}" data-tab="${i}">${n}</button>`).join('')}</div>
    <div class="phs-tick"><span>${phEsc(last)}　★　${phEsc(last)}</span></div>
    <div class="phs-body" id="ph-body">${phonePage()}</div>
    <div class="phs-status"><span>選項 ▾</span><span>您是第 <b>${phNum(G.totalKills + G.lvl * 7)}</b> 位訪客</span></div></div>`;
@@ -98,7 +98,7 @@ function phoneBuild(){
   let slices = ''; const N = 24; for (let i = 0; i < N; i++) { const z = (-T / 2 + 4 + (T - 8) * i / (N - 1)).toFixed(1); slices += `<div class="ph-plane ph-slice" style="transform:translateZ(${z}px)"></div>`; }
   return `<div class="ph-root" id="ph-root" role="dialog" aria-modal="true" aria-label="角色手機">
    <div class="ph-bg"><div class="ph-stars"></div><div class="ph-grid"></div><div class="ph-mq"><span>★ 歡迎來到角色手機 ★ BEST VIEWED WITH ANY BROWSER ★ 請勿關閉電源 ★ UNDER CONSTRUCTION ★ 拖曳可以轉動手機 ★ 按 ESC 離開 ★</span></div></div>
-   <button class="ph-close" data-act="close" aria-label="關閉手機">×</button>
+   <button type="button" class="ph-close" onclick="event.stopPropagation();phonePress(event)" data-act="close" aria-label="關閉手機">×</button>
    <div class="ph-stage" id="ph-stage"><div class="ph-fit" id="ph-fit"><div class="ph-enter" id="ph-enter"><div class="ph-tilt" id="ph-tilt">
     <div class="ph-phone" style="width:${M.w}px;height:${M.h}px">
      ${slices}
@@ -198,7 +198,7 @@ function phoneBuildGL(){
     <div class="ph-screen ph-glel" id="ph-screen" style="width:${PH_SCREEN.w}px;height:${PH_SCREEN.h}px"><div class="ph-crt" id="ph-crt"></div></div>
     <div class="ph-keys ph-glel" id="ph-keys" style="width:${PHONE_META.w}px;height:${PHONE_META.h}px">${PH_KEYS.map(k => `<button class="ph-key" data-act="${k.act}" aria-label="${k.tip}" data-tip="${k.tip}" style="left:${k.x - k.w / 2}px;top:${k.y - k.h / 2}px;width:${k.w}px;height:${k.h}px"></button>`).join('')}</div>
    </div></div>
-   <button class="ph-close" data-act="close" aria-label="關閉手機">×</button>
+   <button type="button" class="ph-close" onclick="event.stopPropagation();phonePress(event)" data-act="close" aria-label="關閉手機">×</button>
    <div class="ph-hint">拖曳轉動 · 雙擊翻面 · 方向鍵換頁 · ✦ 放大螢幕</div></div>`;
 }
 function phoneFit(){

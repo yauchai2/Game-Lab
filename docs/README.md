@@ -4,6 +4,7 @@
 
 | 要找甚麼 | 文件／唯一來源 |
 | --- | --- |
+| 本次整合與發佈驗證 | [v0.80.0](release-0.80.0/integration.md) |
 | 開始開發、目前分工 | [協作指引](../AGENTS.md)、[跨對話方式](collaboration.md)、[同步規則](codex-sync-notes.md) |
 | 接續現況與未完成工作 | [接續摘要](session-checkpoint.md)、[待辦](backlog.md)、[開放 PR 快照](in-progress.md) |
 | 現行設計、操作契約 | [設計](../DESIGN.md)、[UX 契約](../UX-CONTRACT.md) |

@@ -1,0 +1,17 @@
+wrote dist/idle-hero-review.html (isolated review storage)
+wrote dist/character-review.html
+wrote dist/equipment-review.html
+grid tests ok
+14 expansion checks passed
+13 mechanics checks passed
+24 progression checks passed
+10 gameplay checks passed
+UX logic tests passed: crafting guards, modifier coverage, shared search
+PASS reference-kit isolation, 52 WebGL captures and mobile controls
+PASS 8 title and prologue flows
+PASS 6 phone presentation browser flows
+PASS drop cleanup frees private resources, preserves shared signature assets; real visibility toggle, continuing simulation, persistence and redraw
+PASS 4 Patreon support flows
+PASS pick skill by tap shows equipped message, then drag
+PASS split-build boot has no script errors and the settings panel is built
+全部通過

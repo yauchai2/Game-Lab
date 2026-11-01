@@ -1,0 +1,34 @@
+{
+  "sources": [
+    {
+      "id": "after-midnight",
+      "title": "After Midnight",
+      "author": "dant-e",
+      "page": "https://opengameart.org/content/after-midnight",
+      "download": "https://opengameart.org/sites/default/files/after_midnight.mp3",
+      "license": "CC0-1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sourceSha256": "398b10e6c05583512885dff17162a26844f6dc17e68d92d4553c7604d3d34eae",
+      "sourceBytes": 7263983,
+      "pageSha256": "a94d48958a91001127322c1c264b9779a7797d12397ba6fdc83421c1d51def66",
+      "originalLocalPath": "/workspace/audio-polish-candidates/after_midnight.mp3",
+      "admission": "Alan authorized online audio replacements; exact downloaded bytes and CC0 source-page evidence verified before project copy",
+      "assessment": "source-described chill electronic / seamless downtempo; no claim of subjective listening approval"
+    },
+    {
+      "id": "space-ranger",
+      "title": "Strong Downtempo / Space Ranger",
+      "author": "Nostromo",
+      "page": "https://opengameart.org/content/music-loop-strong-downtempo-seamless",
+      "download": "https://opengameart.org/sites/default/files/space_ranger_seamless_loop.wav",
+      "license": "CC0-1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "sourceSha256": "b7af8f7ca80958bcc79cb49faac128cd85093e484b8a42e661c2cda623a6521c",
+      "sourceBytes": 12700878,
+      "pageSha256": "91a853cea399322d4e99f8a2332884b80ff2c9c0fd6531dfc32b68994fed21be",
+      "originalLocalPath": "/workspace/audio-polish-candidates/space_ranger_seamless_loop.wav",
+      "admission": "Alan authorized online audio replacements; exact downloaded bytes and CC0 source-page evidence verified before project copy",
+      "assessment": "source-described chill electronic / seamless downtempo; no claim of subjective listening approval"
+    }
+  ]
+}

@@ -5,8 +5,6 @@ tools/test_combat_experience.cjs
 tools/test_equipment_slots.cjs
 tools/test_field_update.cjs
 tools/test_loot_world.cjs
-tools/test_offline_return.cjs
-tools/test_player_ailments.cjs
 tools/test_progress_curve.cjs
 tools/test_rift_experience.cjs
 tools/test_terrain_mesh.cjs
